@@ -49,6 +49,7 @@ class CreateGameTables extends Migration
             
             $table->string('name');
             $table->string('description', 512);
+            $table->text('specifications')->nullable()->default(null);
             $table->boolean('has_image')->default(0);
         });
 
@@ -88,6 +89,7 @@ class CreateGameTables extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('description', 512);
+            $table->text('specifications')->nullable()->default(null);
             $table->boolean('has_image')->default(0);
             $table->integer('sort')->unsigned()->default(0);
         });
@@ -114,6 +116,7 @@ class CreateGameTables extends Migration
             
             $table->string('name');
             $table->string('description', 512);
+            $table->text('specifications')->nullable()->default(null);
             $table->boolean('has_image')->default(0);
         });
 
