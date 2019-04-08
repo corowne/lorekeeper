@@ -15,6 +15,10 @@
                     @endif
 
                     You are logged in!
+
+                    @if(Auth::user()->hasAlias)
+                        <p>Your account is linked to <a href="https://www.deviantart.com/{{ Auth::user()->alias }}">{{ Auth::user()->alias }}@dA</a>.</p>
+                    @endif
                 </div>
             </div>
         </div>

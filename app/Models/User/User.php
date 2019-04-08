@@ -6,7 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
 
@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'alias', 'email', 'password',
+        'name', 'alias', 'rank_id', 'email', 'password',
     ];
 
     /**
@@ -37,8 +37,67 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public $timestamps = true;
+
     public function settings() 
     {
         return $this->hasOne('App\Models\User\UserSettings');
+    }
+    
+    public function rank() 
+    {
+        return $this->belongsTo('App\Models\Rank\Rank');
+    }
+
+    public function canEditRank($rank)
+    {
+        return $this->rank->canEditRank($rank);
+    }
+
+    public function getHasAliasAttribute() 
+    {
+        return !is_null($this->alias);
+    }
+
+    public function getIsAdminAttribute()
+    {
+        return $this->rank->isAdmin;
+    }
+
+    public function hasPower($power)
+    {
+        return $this->rank->hasPower($power); 
+    }
+
+    public function getPowers()
+    {
+        return $this->rank->getPowers();
+    }
+
+    public function getUrlAttribute()
+    {
+        return url('user/'.$this->name);
+    }
+
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/users/edit/'.$this->name);
+    }
+
+    public function getAliasUrlAttribute()
+    {
+        if(!$this->alias) return null;
+        return 'https://www.deviantart.com/'.$this->alias;
+    }
+
+    public function getDisplayNameAttribute()
+    {
+        return '<a href="'.$this->url.'" class="display-user" '.($this->rank->color ? 'style="color: #'.$this->rank->color.';"' : '').'>'.$this->name.'</a>';
+    }
+
+    public function getDisplayAliasAttribute()
+    {
+        if (!$this->alias) return '(Unverified)';
+        return '<a href="'.$this->aliasUrl.'">'.$this->alias.'@dA</a>';
     }
 }
