@@ -6,6 +6,7 @@ use DB;
 use Config;
 
 use App\Models\Item\ItemCategory;
+use App\Models\Item\Item;
 
 class ItemService extends Service
 {
@@ -91,7 +92,7 @@ class ItemService extends Service
 
         try {
             // Check first if the category is currently in use
-            if(Item::where('category_id', $category->id)->exists()) throw new \Exception("An item with this category exists. Please change its category first.");
+            if(Item::where('item_category_id', $category->id)->exists()) throw new \Exception("An item with this category exists. Please change its category first.");
             
             if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
             $category->delete();
@@ -146,7 +147,7 @@ class ItemService extends Service
 
             $item = Item::create($data);
 
-            if ($image) $this->handleImage($image, $item->itemImagePath, $item->itemImageFileName);
+            if ($image) $this->handleImage($image, $item->imagePath, $item->imageFileName);
 
             return $this->commitReturn($item);
         } catch(\Exception $e) { 
@@ -174,7 +175,7 @@ class ItemService extends Service
 
             $item->update($data);
 
-            if ($item) $this->handleImage($image, $item->itemImagePath, $item->itemImageFileName);
+            if ($item) $this->handleImage($image, $item->ImagePath, $item->ImageFileName);
 
             return $this->commitReturn($item);
         } catch(\Exception $e) { 
@@ -187,12 +188,14 @@ class ItemService extends Service
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
         
+        if(!isset($data['allow_transfer'])) $data['allow_transfer'] = 0;
+
         if(isset($data['remove_image']))
         {
             if($item && $item->has_image && $data['remove_image']) 
             { 
                 $data['has_image'] = 0; 
-                $this->deleteImage($item->itemImagePath, $item->itemImageFileName); 
+                $this->deleteImage($item->ImagePath, $item->ImageFileName); 
             }
             unset($data['remove_image']);
         }
@@ -205,11 +208,10 @@ class ItemService extends Service
         DB::beginTransaction();
 
         try {
-            // Check first if the item is currently in use
-            //if(Character::where('item_id', $item->id)->exists()) throw new \Exception("A character with this item exists. Please change its item first.");
-            //if(Feature::where('item_id', $item->id)->exists()) throw new \Exception("A character with this item exists. Please change its item first.");
+            // Check first if the item is currently owned
+            if(DB::table('inventory')->where('item_id', $item->id)->exists()) throw new \Exception("At least one user currently owns this item. Please remove the item(s) before deleting it.");
             
-            if($item->has_image) $this->deleteImage($item->itemImagePath, $item->itemImageFileName); 
+            if($item->has_image) $this->deleteImage($item->ImagePath, $item->ImageFileName); 
             $item->delete();
 
             return $this->commitReturn(true);

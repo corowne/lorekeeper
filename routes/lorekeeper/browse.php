@@ -35,5 +35,7 @@ Route::group(['prefix' => 'world'], function() {
     Route::get('rarities', 'WorldController@getRarities');
     Route::get('species', 'WorldController@getSpecieses');
     Route::get('item-categories', 'WorldController@getItemCategories');
+    Route::get('items', 'WorldController@getItems');
     Route::get('trait-categories', 'WorldController@getFeatureCategories');
+    Route::get('traits', 'WorldController@getFeatures');
 });

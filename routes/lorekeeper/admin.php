@@ -81,6 +81,15 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('item-categories/delete/{id}', 'ItemController@postDeleteItemCategory');
     Route::post('item-categories/sort', 'ItemController@postSortItemCategory');
     
+    Route::get('items', 'ItemController@getItemIndex');
+    Route::get('items/create', 'ItemController@getCreateItem');
+    Route::get('items/edit/{id}', 'ItemController@getEditItem');
+    Route::get('items/delete/{id}', 'ItemController@getDeleteItem');
+    Route::post('items/create', 'ItemController@postCreateEditItem');
+    Route::post('items/edit/{id?}', 'ItemController@postCreateEditItem');
+    Route::post('items/delete/{id}', 'ItemController@postDeleteItem');
+    Route::post('items/sort', 'ItemController@postSortItem');
+    
     #FEATURES (TRAITS)
     Route::get('trait-categories', 'FeatureController@getIndex');
     Route::get('trait-categories/create', 'FeatureController@getCreateFeatureCategory');
@@ -90,4 +99,13 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('trait-categories/edit/{id?}', 'FeatureController@postCreateEditFeatureCategory');
     Route::post('trait-categories/delete/{id}', 'FeatureController@postDeleteFeatureCategory');
     Route::post('trait-categories/sort', 'FeatureController@postSortFeatureCategory');
+    
+    Route::get('traits', 'FeatureController@getFeatureIndex');
+    Route::get('traits/create', 'FeatureController@getCreateFeature');
+    Route::get('traits/edit/{id}', 'FeatureController@getEditFeature');
+    Route::get('traits/delete/{id}', 'FeatureController@getDeleteFeature');
+    Route::post('traits/create', 'FeatureController@postCreateEditFeature');
+    Route::post('traits/edit/{id?}', 'FeatureController@postCreateEditFeature');
+    Route::post('traits/delete/{id}', 'FeatureController@postDeleteFeature');
+    Route::post('traits/sort', 'FeatureController@postSortFeature');
 });

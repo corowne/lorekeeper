@@ -52,7 +52,7 @@
     <h3>Preview</h3>
     <div class="card mb-3">
         <div class="card-body">
-            @include('world._entry', ['imageUrl' => $rarity->rarityImageUrl, 'name' => $rarity->displayName, 'description' => $rarity->description])
+            @include('world._entry', ['imageUrl' => $rarity->rarityImageUrl, 'name' => $rarity->displayName, 'description' => $rarity->parsed_description])
         </div>
     </div>
 @endif

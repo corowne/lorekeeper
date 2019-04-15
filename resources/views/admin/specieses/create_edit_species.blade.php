@@ -34,7 +34,7 @@
 
 <div class="form-group">
     {!! Form::label('Description (Optional)') !!}
-    {!! Form::textarea('description', $species->description, ['class' => 'form-control']) !!}
+    {!! Form::textarea('description', $species->parsed_description, ['class' => 'form-control']) !!}
 </div>
 
 <div class="text-right">

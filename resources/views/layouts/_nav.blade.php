@@ -41,8 +41,12 @@
                         <a class="dropdown-item" href="{{ url('users') }}">
                             Users
                         </a>
-                        <a class="dropdown-item" href="#">
+                        <a class="dropdown-item" href="{{ url('characters') }}">
                             Characters
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ url('raffles') }}">
+                            Raffles
                         </a>
                     </div>
                 </li>
@@ -53,21 +57,10 @@
 
                     <div class="dropdown-menu" aria-labelledby="loreDropdown">
                         <a class="dropdown-item" href="{{ url('world') }}">
-                            Home
+                            Encyclopedia
                         </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">
-                            Species
-                        </a>
-                        <a class="dropdown-item" href="#">
-                            Traits
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">
-                            Items
-                        </a>
-                        <a class="dropdown-item" href="{{ url('world/currencies') }}">
-                            Currencies
+                        <a class="dropdown-item" href="{{ url('world/prompts') }}">
+                            Prompts
                         </a>
                     </div>
                 </li>

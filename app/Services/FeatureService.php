@@ -6,12 +6,13 @@ use DB;
 use Config;
 
 use App\Models\Feature\FeatureCategory;
+use App\Models\Feature\Feature;
 
 class FeatureService extends Service
 {
     /**********************************************************************************************
      
-        ITEM CATEGORIES
+        FEATURE CATEGORIES
 
     **********************************************************************************************/
     public function createFeatureCategory($data, $user)
@@ -91,7 +92,7 @@ class FeatureService extends Service
 
         try {
             // Check first if the category is currently in use
-            if(Feature::where('category_id', $category->id)->exists()) throw new \Exception("A trait with this category exists. Please change its category first.");
+            if(Feature::where('feature_category_id', $category->id)->exists()) throw new \Exception("A trait with this category exists. Please change its category first.");
             
             if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
             $category->delete();
@@ -125,7 +126,7 @@ class FeatureService extends Service
     
     /**********************************************************************************************
      
-        ITEMS
+        FEATURES
 
     **********************************************************************************************/
 
@@ -146,7 +147,7 @@ class FeatureService extends Service
 
             $feature = Feature::create($data);
 
-            if ($image) $this->handleImage($image, $feature->featureImagePath, $feature->featureImageFileName);
+            if ($image) $this->handleImage($image, $feature->imagePath, $feature->imageFileName);
 
             return $this->commitReturn($feature);
         } catch(\Exception $e) { 
@@ -174,7 +175,7 @@ class FeatureService extends Service
 
             $feature->update($data);
 
-            if ($feature) $this->handleImage($image, $feature->featureImagePath, $feature->featureImageFileName);
+            if ($feature) $this->handleImage($image, $feature->imagePath, $feature->imageFileName);
 
             return $this->commitReturn($feature);
         } catch(\Exception $e) { 
@@ -186,13 +187,14 @@ class FeatureService extends Service
     private function populateData($data, $feature = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
-        
+        if(isset($data['species_id']) && $data['species_id'] == 'none') $data['species_id'] = null;
+        if(isset($data['feature_category_id']) && $data['feature_category_id'] == 'none') $data['feature_category_id'] = null;
         if(isset($data['remove_image']))
         {
             if($feature && $feature->has_image && $data['remove_image']) 
             { 
                 $data['has_image'] = 0; 
-                $this->deleteImage($feature->featureImagePath, $feature->featureImageFileName); 
+                $this->deleteImage($feature->imagePath, $feature->imageFileName); 
             }
             unset($data['remove_image']);
         }
@@ -206,10 +208,9 @@ class FeatureService extends Service
 
         try {
             // Check first if the feature is currently in use
-            //if(Character::where('feature_id', $feature->id)->exists()) throw new \Exception("A character with this feature exists. Please change its feature first.");
-            //if(Feature::where('feature_id', $feature->id)->exists()) throw new \Exception("A character with this feature exists. Please change its feature first.");
+            if(DB::table('character_features')->where('feature_id', $feature->id)->exists()) throw new \Exception("A character with this trait exists. Please remove the trait first.");
             
-            if($feature->has_image) $this->deleteImage($feature->featureImagePath, $feature->featureImageFileName); 
+            if($feature->has_image) $this->deleteImage($feature->imagePath, $feature->imageFileName); 
             $feature->delete();
 
             return $this->commitReturn(true);

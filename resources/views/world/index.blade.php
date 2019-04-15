@@ -3,7 +3,7 @@
 @section('title') Home @endsection
 
 @section('content')
-{!! breadcrumbs(['World' => 'world']) !!}
+{!! breadcrumbs(['Encyclopedia' => 'world']) !!}
 
 <h1>World</h1>
 <div class="row">

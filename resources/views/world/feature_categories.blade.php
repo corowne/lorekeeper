@@ -8,7 +8,7 @@
 
 <div>
     {!! Form::open(['method' => 'GET', 'class' => 'form-inline justify-content-end']) !!}
-        <div class="form-group mx-sm-3 mb-3">
+        <div class="form-group mr-3 mb-3">
             {!! Form::text('name', Request::get('name'), ['class' => 'form-control']) !!}
         </div>
         <div class="form-group mb-3">
@@ -21,7 +21,7 @@
 @foreach($categories as $category)
     <div class="card mb-3">
         <div class="card-body">
-        @include('world._entry', ['imageUrl' => $category->categoryImageUrl, 'name' => $category->displayName, 'description' => $category->description, 'searchUrl' => $category->searchUrl])
+        @include('world._entry', ['imageUrl' => $category->categoryImageUrl, 'name' => $category->displayName, 'description' => $category->parsed_description, 'searchUrl' => $category->searchUrl])
         </div>
     </div>
 @endforeach

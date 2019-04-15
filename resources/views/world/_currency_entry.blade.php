@@ -7,7 +7,7 @@
         <div><strong>Displays as:</strong> {!! $currency->display(0) !!}</div>
         <div><strong>Held by:</strong> <?php echo ucfirst(implode(' and ', ($currency->is_user_owned ? ['users'] : []) + ($currency->is_character_owned ? ['characters'] : []))); ?></div>
         <div class="world-entry-text parsed-text">
-            {!! $currency->description !!}
+            {!! $currency->parsed_description !!}
         </div>
     </div>
 </div>
