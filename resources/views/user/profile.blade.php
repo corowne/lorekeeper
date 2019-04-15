@@ -3,7 +3,7 @@
 @section('profile-title') {{ $user->name }}'s Profile @endsection
 
 @section('profile-content')
-{!! breadcrumbs(['Users' => 'users', $user->name . '\'s Profile' => $user->url]) !!}
+{!! breadcrumbs(['Users' => 'users', $user->name => $user->url]) !!}
 
 <h1>
     {!! $user->displayName !!}
@@ -39,20 +39,22 @@
     <div class="card">
         <div class="card-body text-center">
             <h5 class="card-title">Bank</h5>
-            <div>500 G</div>
-            <div>10 Coin</div>
+            @foreach($user->getCurrencies(true) as $currency)
+                <div>{!! $currency->display($currency->quantity) !!}</div>
+            @endforeach
+            <div class="text-right"><a href="{{ $user->url.'/bank' }}">View all...</a></div>
         </div>
     </div>
     <div class="card">
         <div class="card-body text-center">
-            <h5 class="card-title">Items</h5>
-            <div>Last 8 items</div>
-            <div>View all...</div>
+            <h5 class="card-title">Inventory</h5>
+            <div>Shows last 8 items obtained</div>
+            <div class="text-right"><a href="{{ $user->url.'/inventory' }}">View all...</a></div>
         </div>
     </div>
 </div>
 
-<h2>Characters (first 8 by sort order)</h2>
+<h2>Characters</h2>
 <div class="row">
     @for($i = 0; $i < 8; $i++)
         <div class="col-md-3 col-6 mb-3">

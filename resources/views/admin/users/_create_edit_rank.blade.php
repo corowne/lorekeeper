@@ -8,7 +8,7 @@
 
     <div class="form-group">
         {!! Form::label('Description (optional)') !!}
-        {!! Form::text('description', $rank->description, ['class' => 'form-control']) !!}
+        {!! Form::textarea('description', $rank->description, ['class' => 'form-control']) !!}
     </div>
 
     <div class="form-group">

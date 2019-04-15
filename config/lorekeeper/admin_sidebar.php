@@ -23,16 +23,32 @@ return [
     ],
     'Data' => [
         [
+            'name' => 'rarities',
+            'url' => 'admin/data/rarities'
+        ],
+        [
             'name' => 'Species',
             'url' => 'admin/data/species'
+        ],
+        [
+            'name' => 'Trait Categories',
+            'url' => 'admin/data/trait-categories'
         ],
         [
             'name' => 'Traits',
             'url' => 'admin/data/traits'
         ],
         [
+            'name' => 'Item Categories',
+            'url' => 'admin/data/item-categories'
+        ],
+        [
             'name' => 'Items',
-            'url' => 'admin/data/traits'
+            'url' => 'admin/data/items'
+        ],
+        [
+            'name' => 'Currencies',
+            'url' => 'admin/data/currencies'
         ]
     ],
     'Characters' => [

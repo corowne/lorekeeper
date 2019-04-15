@@ -16,7 +16,7 @@
             <th></th><th>Rank</th><th>Description</th><th>Powers</th><th></th>
         </tr>
     </thead>
-    <tbody id="sortable">
+    <tbody id="sortable" class="sortable">
         @foreach($ranks as $rank)
             <tr {{ !$rank->isAdmin ? 'class=sort-item' : '' }} data-id="{{ $rank->id }}">
                 <td>@if(!$rank->isAdmin)<a class="fas fa-arrows-alt-v handle" href="#"></a>@endif</td>
@@ -51,6 +51,8 @@
 @section('scripts')
 @parent
 <script>
+
+$( document ).ready(function() {
     $('.create-rank-button').on('click', function(e) {
         e.preventDefault();
         loadModal("{{ url('admin/users/ranks/create') }}", 'Create Rank');
@@ -78,5 +80,6 @@
         }
     });
     $( "#sortable" ).disableSelection();
+});
 </script>
 @endsection

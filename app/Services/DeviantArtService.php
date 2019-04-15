@@ -1,6 +1,7 @@
 <?php namespace App\Services;
 
 use App\Services\Service;
+use App\Models\User\UserUpdateLog;
 
 use chillerlan\HTTP\Psr7;
 use chillerlan\OAuth\Providers\DeviantArt\DeviantArt;
@@ -84,5 +85,7 @@ class DeviantArtService extends Service
         // Also consider: save the user's dA join date
         $user->alias = $data->username;
         $user->save();
+        
+        UserUpdateLog::create(['user_id' => $user->id, 'data' => json_encode(['alias' => $data->username]), 'type' => 'Alias Added']);
     }
 }

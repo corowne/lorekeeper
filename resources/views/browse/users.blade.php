@@ -1,9 +1,10 @@
 @extends('layouts.app')
 
-@section('title') User List @endsection
+@section('title') Users @endsection
 
 @section('content')
-<h1>User List</h1>
+{!! breadcrumbs(['Users' => 'users']) !!}
+<h1>User Index</h1>
 
 <div>
     {!! Form::open(['method' => 'GET', 'class' => 'form-inline justify-content-end']) !!}
@@ -32,14 +33,16 @@
     <tbody>
         @foreach($users as $user)
             <tr>
-                <td>{{ $user->name }}</td>
-                <td>{{ $user->alias }}</td>
-                <td>Rank</td>
-                <td>{{ $user->created_at }}</td>
+                <td>{!! $user->displayName !!}</td>
+                <td>{!! $user->displayAlias !!}</td>
+                <td>{!! $user->rank->displayName !!}</td>
+                <td>{{ format_date($user->created_at) }}</td>
             </tr>
         @endforeach
     </tbody>
 </table>
 {!! $users->render() !!}
+
+<div class="text-center mt-4 small text-muted">{{ $users->total() }} result{{ $users->total() == 1 ? '' : 's' }} found.</div>
 
 @endsection

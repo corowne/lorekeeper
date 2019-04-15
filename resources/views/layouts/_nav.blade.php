@@ -13,7 +13,7 @@
                 @if(Auth::check())
                     <li class="nav-item dropdown">
                         <a id="inventoryDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            Inventory
+                            Home
                         </a>
 
                         <div class="dropdown-menu" aria-labelledby="inventoryDropdown">
@@ -21,10 +21,13 @@
                                 My Characters
                             </a>
                             <a class="dropdown-item" href="#">
-                                My Items
+                                Inventory
                             </a>
                             <a class="dropdown-item" href="#">
                                 Bank
+                            </a>
+                            <a class="dropdown-item" href="#">
+                                Trades
                             </a>
                         </div>
                     </li>
@@ -36,7 +39,7 @@
 
                     <div class="dropdown-menu" aria-labelledby="browseDropdown">
                         <a class="dropdown-item" href="{{ url('users') }}">
-                            User List
+                            Users
                         </a>
                         <a class="dropdown-item" href="#">
                             Characters
@@ -49,14 +52,22 @@
                     </a>
 
                     <div class="dropdown-menu" aria-labelledby="loreDropdown">
+                        <a class="dropdown-item" href="{{ url('world') }}">
+                            Home
+                        </a>
+                        <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#">
                             Species
                         </a>
                         <a class="dropdown-item" href="#">
                             Traits
                         </a>
+                        <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#">
                             Items
+                        </a>
+                        <a class="dropdown-item" href="{{ url('world/currencies') }}">
+                            Currencies
                         </a>
                     </div>
                 </li>
@@ -75,9 +86,11 @@
                         </li>
                     @endif
                 @else
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('admin') }}"><i class="fas fa-crown"></i></a>
-                    </li>
+                    @if(Auth::user()->isStaff)
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url('admin') }}"><i class="fas fa-crown"></i></a>
+                        </li>
+                    @endif
                     <li class="nav-item dropdown">
                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="{{ Auth::user()->url }}" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                             {{ Auth::user()->name }} <span class="caret"></span>

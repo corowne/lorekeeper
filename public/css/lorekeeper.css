@@ -42,6 +42,16 @@ body {
 
 /**************************************************************************************************
     
+    Helpers
+    
+**************************************************************************************************/
+
+.hide {
+    display: none;
+}
+
+/**************************************************************************************************
+    
     Layout
     
 **************************************************************************************************/
@@ -118,6 +128,17 @@ main > .row {
     font-weight: bold;
 }
 
+.sidebar .sidebar-header {
+    background-color: #343a40;
+}
+.sidebar .sidebar-header a {
+    color: white;
+}
+.sidebar .sidebar-header a:hover {
+    background-color: transparent;
+    color: rgba(255,255,255,0.8);
+}
+
 .sidebar a,
 .sidebar-section-header {
     display: block;
@@ -176,6 +197,14 @@ main > .row {
     max-width: 350px !important; 
 }
 
+.nav-tabs .nav-link.active {
+    background-color: transparent;
+}
+.nav-tabs .nav-link {
+    text-transform: uppercase;
+    font-family: Roboto Condensed, serif;
+}
+
 .display-user {
     font-weight: bold;
 }
@@ -207,6 +236,17 @@ main > .row {
 
 /* BROWSE ****************************************************************************************/
 
+.world-entry-image {
+    text-align: center;
+}
+
+.world-entry-image img {
+    max-width: 100%;
+}
+.world-entry-search {
+    opacity: 0.5;
+}
+
 
 /* ADMIN ****************************************************************************************/
 
@@ -214,9 +254,9 @@ main > .row {
     text-align: right;
 }
 
-#sortable .handle {
+.sortable .handle {
     color: #343a40;
 }
-#sortable .sortable-placeholder {
+.sortable .sortable-placeholder {
     background-color: rgba(0,0,0,0.1);
 }

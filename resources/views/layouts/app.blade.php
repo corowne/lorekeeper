@@ -13,6 +13,7 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/site.js') }}"></script>
     <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap4-toggle.min.js') }}"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -27,6 +28,9 @@
 
     {{-- jQuery UI --}}
     <link href="{{ asset('css/jquery-ui.min.css') }}" rel="stylesheet">
+
+    {{-- Bootstrap Toggle --}}
+    <link href="{{ asset('css/bootstrap4-toggle.min.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">

@@ -14,13 +14,13 @@ class Rank extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'sort', 'color'
+        'name', 'description', 'parsed_description', 'sort', 'color'
     ];
     protected $table = 'ranks';
     
     public static $rules = [
         'name' => 'required|between:3,25',
-        'description' => 'nullable|size:200',
+        'description' => 'nullable',
         'color' => 'nullable|regex:/^#?[0-9a-fA-F]{6}$/i'
     ];
 
@@ -57,7 +57,7 @@ class Rank extends Model
     public function hasPower($power)
     {
         if($this->isAdmin) return true;
-        return $this->powers->where('power', $power)->exists(); 
+        return $this->powers()->where('power', $power)->exists(); 
     }
 
     public function getPowers()

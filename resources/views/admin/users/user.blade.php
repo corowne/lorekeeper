@@ -6,9 +6,17 @@
 {!! breadcrumbs(['Admin Panel' => 'admin', 'User Index' => 'admin/users', $user->name => 'admin/user/'.$user->name]) !!}
 
 <h1>User: {!! $user->displayName !!}</h1>
+<ul class="nav nav-tabs mb-3">
+  <li class="nav-item">
+    <a class="nav-link active" href="{{ $user->adminUrl }}">Account</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url('admin/users/'.$user->name.'/updates') }}">Account Updates</a>
+  </li>
+</ul>
 
 <h3>Basic Info</h3>
-{!! Form::open(['url' => 'admin/users/edit/basic/'.$user->name]) !!}
+{!! Form::open(['url' => 'admin/users/'.$user->name.'/basic']) !!}
     <div class="form-group row">
         <label class="col-md-2 col-form-label">Username</label>
         <div class="col-md-10">
@@ -24,7 +32,7 @@
             @endif
         </label>
         <div class="col-md-10">
-            @if(!$user->isAdmin && Auth::user()->canEditRank($user->rank)
+            @if(!$user->isAdmin && Auth::user()->canEditRank($user->rank))
                 {!! Form::select('rank_id', $ranks, Request::get('rank_id'), ['class' => 'form-control']) !!}
             @else
                 {!! Form::text('rank_id', $ranks[$user->rank_id], ['class' => 'form-control', 'disabled']) !!}
@@ -44,13 +52,13 @@
         {!! Form::text('alias', $user->alias, ['class' => 'form-control', 'disabled']) !!}
     </div>
 </div>
-{!! Form::open(['url' => 'admin/users/edit/alias/'.$user->name]) !!}
+{!! Form::open(['url' => 'admin/users/'.$user->name.'/alias']) !!}
     <div class="text-right">{!! Form::submit('Clear Alias', ['class' => 'btn btn-danger']) !!}</div>
 {!! Form::close() !!}
 
 <h3>Account</h3>
 
-{!! Form::open(['url' => 'admin/users/account/'.$user->name]) !!}
+{!! Form::open(['url' => 'admin/users/'.$user->name.'/account']) !!}
     <div class="form-group row">
         <label class="col-md-2 col-form-label">Email Address</label>
         <div class="col-md-10">

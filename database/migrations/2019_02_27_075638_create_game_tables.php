@@ -96,6 +96,9 @@ class CreateGameTables extends Migration
 
         // These are named "species", but can also be used for making subspecies 
         // (just change the wording on the views)
+        // I'll add a recipe to add a category above species so that multiple species
+        // with subspecies can be done, it just appears to be uncommon in ARPGs to
+        // have so many levels of options at once.
         Schema::create('specieses', function(Blueprint $table) {
             $table->increments('id');
             $table->string('name');

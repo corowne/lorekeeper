@@ -47,7 +47,8 @@ class HomeController extends Controller
         // Step 4: verify the token and use the API
         elseif($request->get('granted') === 'DeviantArt'){
             $deviantart->linkUser(Auth::user());
-            return redirect()->to('home');
+            flash('deviantART account has been linked successfully.')->success();
+            return redirect()->to('/');
         }
 
         // Step 1: display a login link

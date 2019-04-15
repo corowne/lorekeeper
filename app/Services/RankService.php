@@ -39,6 +39,7 @@ class RankService extends Service
             Rank::where('sort', '>=', $data['sort'])->increment('sort');
 
             $data['color'] = isset($data['color']) ? str_replace('#', '', $data['color']) : null;
+            if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
 
             $rank = Rank::create($data);
             if($powers) foreach($powers as $power) DB::table('rank_powers')->insert(['rank_id' => $rank->id, 'power' => $power]);
@@ -52,8 +53,6 @@ class RankService extends Service
     
     public function updateRank($rank, $data, $user)
     {
-        // name, description, sort, colour
-
         DB::beginTransaction();
 
         try {
@@ -71,6 +70,7 @@ class RankService extends Service
             }
 
             $data['color'] = isset($data['color']) ? str_replace('#', '', $data['color']) : null;
+            if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
 
             $rank->update($data);
             if($powers) {

@@ -36,7 +36,7 @@ Route::group(['middleware' => ['auth', 'verified']], function() {
         /**********************************************************************************************
             Admin panel routes
         **********************************************************************************************/
-        Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
+        Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => ['staff']], function() {
 
             require_once __DIR__.'/lorekeeper/admin.php';
 

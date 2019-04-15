@@ -18,7 +18,7 @@ class UserSettings extends Model
     public $primaryKey = 'user_id';
     protected $table = 'user_settings';
 
-    public function settings() 
+    public function user() 
     {
         return $this->belongsTo('App\Models\User\User');
     }

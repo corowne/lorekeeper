@@ -13,6 +13,7 @@ function add_help($text) {
 function breadcrumbs($links) {
     $ret = '<nav><ol class="breadcrumb">';
     $count = 0;
+    $ret .= '<li class="breadcrumb-item"><a href="'.url('/').'">'.config('app.name', 'Lorekeeper').'</a></li>';
     foreach($links as $key => $link) {
         $isLast = ($count == count($links) - 1);
 
@@ -35,4 +36,10 @@ function breadcrumbs($links) {
 
 function format_date($timestamp) {
     return $timestamp->format('j F Y, H:i:s e');
+}
+
+function parse($text) {
+
+
+    return $text;
 }

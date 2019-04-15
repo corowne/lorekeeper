@@ -6,6 +6,9 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+use App\Models\Rank\RankPower;
+use App\Models\Currency\Currency;
+
 class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
@@ -64,6 +67,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->rank->isAdmin;
     }
 
+    public function getIsStaffAttribute()
+    {
+        return (RankPower::where('rank_id', $this->rank_id)->exists() || $this->isAdmin);
+    }
+
     public function hasPower($power)
     {
         return $this->rank->hasPower($power); 
@@ -81,7 +89,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getAdminUrlAttribute()
     {
-        return url('admin/users/edit/'.$this->name);
+        return url('admin/users/'.$this->name.'/edit');
     }
 
     public function getAliasUrlAttribute()
@@ -99,5 +107,28 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if (!$this->alias) return '(Unverified)';
         return '<a href="'.$this->aliasUrl.'">'.$this->alias.'@dA</a>';
+    }
+
+    public function getCurrencies($displayedOnly = false)
+    {
+        // Get a list of currencies that need to be displayed
+        // On profile: only ones marked is_displayed
+        // In bank: ones marked is_displayed + the ones the user has
+
+        $owned = UserCurrency::where('user_id', $this->user_id)->pluck('quantity', 'currency_id')->toArray();
+
+        $currencies = Currency::where('is_user_owned', 1);
+        if($displayedOnly) $currencies->where(function($query) use($owned) {
+            $query->where('is_displayed', 1)->orWhereIn('id', array_keys($owned));
+        });
+        else $currencies = $currencies->where('is_displayed', 1);
+
+        $currencies = $currencies->orderBy('sort_user', 'DESC')->get();
+
+        foreach($currencies as $currency) {
+            $currency->quantity = isset($owned[$currency->id]) ? $owned[$currency->id] : 0;
+        }
+
+        return $currencies;
     }
 }

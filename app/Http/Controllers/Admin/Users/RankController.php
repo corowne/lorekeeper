@@ -13,15 +13,6 @@ use App\Http\Controllers\Controller;
 class RankController extends Controller
 {
     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * Show the rank index.
      *
      * @return \Illuminate\Contracts\Support\Renderable

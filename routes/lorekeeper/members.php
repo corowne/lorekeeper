@@ -10,9 +10,6 @@
 */
 
 
-Route::group(['prefix' => 'user', 'namespace' => 'Users'], function() {
-    Route::get('{name}', 'UserController@getUser');
-});
 
 Route::group(['prefix' => 'account', 'namespace' => 'Users'], function() {
     Route::get('settings', 'AccountController@getSettings');

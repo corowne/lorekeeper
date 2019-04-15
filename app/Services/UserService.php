@@ -12,7 +12,7 @@ class UserService extends Service
     public function createUser($data)
     {
         // If the rank is not given, create a user with the lowest existing rank.
-        if(!isset($data['rank_id'])) $data['rank_id'] = Rank::orderBy('sort')->first()->pluck('id');
+        if(!isset($data['rank_id'])) $data['rank_id'] = Rank::orderBy('sort')->first()->id;
 
         $user = User::create([
             'name' => $data['name'],

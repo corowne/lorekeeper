@@ -6,7 +6,7 @@
             <div class="sidebar-section-header">{{ str_replace(' ', '', $key) }}</div>
             
             @foreach($section as $item)
-                <div class="sidebar-item"><a href="{{ url($item['url']) }}" class="{{ set_active($item['url']) }}">{{ $item['name'] }}</a></div>
+                <div class="sidebar-item"><a href="{{ url($item['url']) }}" class="{{ set_active($item['url'] . '*') }}">{{ $item['name'] }}</a></div>
             @endforeach
         </li>
     @endforeach

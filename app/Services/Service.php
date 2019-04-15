@@ -3,6 +3,7 @@
 use App;
 use Auth;
 use DB;
+use File;
 use Request;
 use Illuminate\Support\MessageBag;
 
@@ -177,4 +178,57 @@ abstract class Service {
         return $this->user ? $this->user : Auth::user();
     }
 
+    // 1. Old image exists, want to move it to a new location.
+    // 2. Given new image, want to upload it to new location.
+    //    (old image may or may not exist)
+    // 3. Nothing happens (no changes required)
+    public function handleImage($image, $dir, $name, $oldName = null)
+    {
+        if(!$oldName && !$image) return true;
+
+        if(!$image)
+        {
+            // Check if we're moving an old image, and move it if it does.
+            if($oldName) { return $this->moveImage($dir, $name, $oldName); }
+        }
+        else
+        {
+            // Don't want to leave a lot of random images lying around,
+            // so move the old image first if it exists.
+            if($oldName) { $this->moveImage($dir, $name, $oldName); }
+            
+            // Then overwrite the old image.
+            return $this->saveImage($image, $dir, $name);
+        }
+
+        return false;
+    }
+
+    // Moves an old image within the same directory.
+    private function moveImage($dir, $name, $oldName)
+    {
+        File::move($dir . '/' . $oldName, $dir . '/' . $name);
+        return true;
+    }
+
+    // Moves an uploaded image into a directory, checking if it exists.
+    private function saveImage($image, $dir, $name)
+    {
+        if(!file_exists($dir))
+        {
+            // Create the directory.
+            if (!mkdir($dir, 0755, true)) {
+                $this->setError('Failed to create image directory.');
+                return false;
+            }
+            chmod($dir, 0755);
+        }
+        File::move($image, $dir . '/' . $name);
+        return true;
+    }
+
+    public function deleteImage($dir, $name)
+    {
+        unlink($dir . '/' . $name);
+    }
 }
