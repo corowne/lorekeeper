@@ -1,11 +1,330 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4731429c7f25ab92eaa813447a972209",
+    "content-hash": "d09f0a7ab6e46a48a5189909348333bf",
     "packages": [
+        {
+            "name": "chillerlan/php-dotenv",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/chillerlan/php-dotenv.git",
+                "reference": "f7bb3ce71ebe970812fae0e12c3b2c0e3ba5c006"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/chillerlan/php-dotenv/zipball/f7bb3ce71ebe970812fae0e12c3b2c0e3ba5c006",
+                "reference": "f7bb3ce71ebe970812fae0e12c3b2c0e3ba5c006",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "chillerlan\\DotEnv\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "smiley",
+                    "email": "smiley@chillerlan.net",
+                    "homepage": "https://github.com/codemasher"
+                }
+            ],
+            "description": "A simple .env loader - PHP 7.2+",
+            "homepage": "https://github.com/chillerlan/php-dotenv",
+            "keywords": [
+                "PHP7",
+                "dotenv",
+                "helper",
+                "trait"
+            ],
+            "time": "2018-09-07T03:59:25+00:00"
+        },
+        {
+            "name": "chillerlan/php-httpinterface",
+            "version": "3.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/chillerlan/php-httpinterface.git",
+                "reference": "88d2fe7ab317821ee43867939ff8af7240faa267"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/chillerlan/php-httpinterface/zipball/88d2fe7ab317821ee43867939ff8af7240faa267",
+                "reference": "88d2fe7ab317821ee43867939ff8af7240faa267",
+                "shasum": ""
+            },
+            "require": {
+                "chillerlan/php-settings-container": "^1.0",
+                "ext-json": "*",
+                "fig/http-message-util": "^1.1",
+                "php": "^7.2",
+                "psr/http-client": "^1.0",
+                "psr/http-factory": "^1.0",
+                "psr/http-message": "^1.0",
+                "psr/log": "^1.0"
+            },
+            "provide": {
+                "chillerlan/php-httpinterface": "2.0",
+                "psr/http-client-implementation": "1.0",
+                "psr/http-factory-implementation": "1.0",
+                "psr/http-message-implementation": "1.0"
+            },
+            "require-dev": {
+                "guzzlehttp/psr7": "^1.5",
+                "phpunit/phpunit": "^7.5"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/includes.php"
+                ],
+                "psr-4": {
+                    "chillerlan\\HTTP\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "smiley",
+                    "email": "smiley@chillerlan.net",
+                    "homepage": "https://github.com/codemasher"
+                }
+            ],
+            "description": "A http PSR-7/17/18 client/interface for PHP7.2+",
+            "keywords": [
+                "client",
+                "http",
+                "psr-17",
+                "psr-18",
+                "psr-7"
+            ],
+            "time": "2019-02-25T02:53:28+00:00"
+        },
+        {
+            "name": "chillerlan/php-magic-apiclient",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/chillerlan/php-magic-apiclient.git",
+                "reference": "93c3d49b4ef8a9250b5d3b41e52e9d6bec905a24"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/chillerlan/php-magic-apiclient/zipball/93c3d49b4ef8a9250b5d3b41e52e9d6bec905a24",
+                "reference": "93c3d49b4ef8a9250b5d3b41e52e9d6bec905a24",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2"
+            },
+            "require-dev": {
+                "chillerlan/php-httpinterface": "^3.0",
+                "phpunit/phpunit": "^7.5",
+                "psr/log": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "chillerlan\\HTTP\\MagicAPI\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "smiley",
+                    "email": "smiley@chillerlan.net",
+                    "homepage": "https://github.com/codemasher"
+                }
+            ],
+            "description": "A magic API client for PHP7.2+.",
+            "homepage": "https://github.com/chillerlan/php-magic-apiclient",
+            "keywords": [
+                "api",
+                "client",
+                "http",
+                "magic"
+            ],
+            "time": "2019-02-23T20:54:42+00:00"
+        },
+        {
+            "name": "chillerlan/php-oauth-core",
+            "version": "2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/chillerlan/php-oauth-core.git",
+                "reference": "a48c8e2fa5a0d09346349bfc4d947b8a48400811"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/chillerlan/php-oauth-core/zipball/a48c8e2fa5a0d09346349bfc4d947b8a48400811",
+                "reference": "a48c8e2fa5a0d09346349bfc4d947b8a48400811",
+                "shasum": ""
+            },
+            "require": {
+                "chillerlan/php-dotenv": "^1.0",
+                "chillerlan/php-httpinterface": "^3.0.1",
+                "chillerlan/php-magic-apiclient": "^2.0",
+                "chillerlan/php-settings-container": "^1.0",
+                "ext-json": "*",
+                "php": "^7.2",
+                "psr/log": "^1.0"
+            },
+            "require-dev": {
+                "chillerlan/php-log": "^3.0",
+                "phpunit/phpunit": "^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "chillerlan\\OAuth\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "smiley",
+                    "email": "smiley@chillerlan.net",
+                    "homepage": "https://github.com/codemasher"
+                }
+            ],
+            "description": "A PHP7.2+ OAuth client core library",
+            "homepage": "https://github.com/chillerlan/php-oauth-core",
+            "keywords": [
+                "client",
+                "core",
+                "oauth",
+                "oauth1",
+                "oauth2",
+                "psr-17",
+                "psr-18",
+                "psr-7"
+            ],
+            "time": "2019-03-08T09:41:03+00:00"
+        },
+        {
+            "name": "chillerlan/php-oauth-deviantart",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/chillerlan/php-oauth-deviantart.git",
+                "reference": "69f2cffed17b5736ec855125549fc8a58666ab55"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/chillerlan/php-oauth-deviantart/zipball/69f2cffed17b5736ec855125549fc8a58666ab55",
+                "reference": "69f2cffed17b5736ec855125549fc8a58666ab55",
+                "shasum": ""
+            },
+            "require": {
+                "chillerlan/php-oauth-core": "^2.1",
+                "php": "^7.2"
+            },
+            "require-dev": {
+                "chillerlan/php-log": "^3.0",
+                "phpunit/phpunit": "^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "chillerlan\\OAuth\\Providers\\DeviantArt\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "smiley",
+                    "email": "smiley@chillerlan.net",
+                    "homepage": "https://github.com/codemasher"
+                }
+            ],
+            "description": "A PHP 7.2+ client for the DeviantArt API.",
+            "homepage": "https://github.com/chillerlan/php-oauth-deviantart",
+            "keywords": [
+                "api",
+                "client",
+                "deviantart",
+                "oauth",
+                "oauth2",
+                "psr-17",
+                "psr-18",
+                "psr-7"
+            ],
+            "time": "2019-03-01T21:42:51+00:00"
+        },
+        {
+            "name": "chillerlan/php-settings-container",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/chillerlan/php-settings-container.git",
+                "reference": "d7a555304a3e687db1de1b8b0a6b4196ba9957da"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/chillerlan/php-settings-container/zipball/d7a555304a3e687db1de1b8b0a6b4196ba9957da",
+                "reference": "d7a555304a3e687db1de1b8b0a6b4196ba9957da",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^7.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "chillerlan\\Settings\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Smiley",
+                    "email": "smiley@chillerlan.net",
+                    "homepage": "https://github.com/codemasher"
+                }
+            ],
+            "description": "A container class for immutable settings objects. Not a DI container. PHP 7.2+",
+            "homepage": "https://github.com/chillerlan/php-settings-container",
+            "keywords": [
+                "PHP7",
+                "Settings",
+                "container",
+                "helper"
+            ],
+            "time": "2019-03-01T15:54:49+00:00"
+        },
         {
             "name": "dnoegel/php-xdg-base-dir",
             "version": "0.1",
@@ -367,6 +686,56 @@
             "time": "2019-01-10T14:06:47+00:00"
         },
         {
+            "name": "fig/http-message-util",
+            "version": "1.1.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-message-util.git",
+                "reference": "35b19404371b31b3a43823c755398c48c9966db4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-message-util/zipball/35b19404371b31b3a43823c755398c48c9966db4",
+                "reference": "35b19404371b31b3a43823c755398c48c9966db4",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3 || ^7.0",
+                "psr/http-message": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Fig\\Http\\Message\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Utility classes and constants for use with PSR-7 (psr/http-message)",
+            "keywords": [
+                "http",
+                "http-message",
+                "psr",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "time": "2018-11-19T16:19:58+00:00"
+        },
+        {
             "name": "jakub-onderka/php-console-color",
             "version": "v0.2",
             "source": {
@@ -453,6 +822,60 @@
             ],
             "description": "Highlight PHP code in terminal",
             "time": "2018-09-29T18:48:56+00:00"
+        },
+        {
+            "name": "laracasts/flash",
+            "version": "3.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laracasts/flash.git",
+                "reference": "10cd420ab63fd0796bf5e1e5b99f87636d2f4333"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laracasts/flash/zipball/10cd420ab63fd0796bf5e1e5b99f87636d2f4333",
+                "reference": "10cd420ab63fd0796bf5e1e5b99f87636d2f4333",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "~5.0",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "dev-master",
+                "phpunit/phpunit": "^6.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Laracasts\\Flash\\FlashServiceProvider"
+                    ],
+                    "aliases": {
+                        "Flash": "Laracasts\\Flash\\Flash"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Laracasts\\Flash": "src/"
+                },
+                "files": [
+                    "src/Laracasts/Flash/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jeffrey Way",
+                    "email": "jeffrey@laracasts.com"
+                }
+            ],
+            "description": "Easy flash notifications",
+            "time": "2017-06-22T19:01:19+00:00"
         },
         {
             "name": "laravel/framework",
@@ -663,6 +1086,74 @@
                 "psysh"
             ],
             "time": "2018-10-12T19:39:35+00:00"
+        },
+        {
+            "name": "laravelcollective/html",
+            "version": "v5.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/LaravelCollective/html.git",
+                "reference": "0e360143d3476fe4141d267a260c140569fa207b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/LaravelCollective/html/zipball/0e360143d3476fe4141d267a260c140569fa207b",
+                "reference": "0e360143d3476fe4141d267a260c140569fa207b",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/http": "5.8.*",
+                "illuminate/routing": "5.8.*",
+                "illuminate/session": "5.8.*",
+                "illuminate/support": "5.8.*",
+                "illuminate/view": "5.8.*",
+                "php": ">=7.1.3"
+            },
+            "require-dev": {
+                "illuminate/database": "5.8.*",
+                "mockery/mockery": "~1.0",
+                "phpunit/phpunit": "~7.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.8-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Collective\\Html\\HtmlServiceProvider"
+                    ],
+                    "aliases": {
+                        "Form": "Collective\\Html\\FormFacade",
+                        "Html": "Collective\\Html\\HtmlFacade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Collective\\Html\\": "src/"
+                },
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylorotwell@gmail.com"
+                },
+                {
+                    "name": "Adam Engebretson",
+                    "email": "adam@laravelcollective.com"
+                }
+            ],
+            "description": "HTML and Form Builders for the Laravel Framework",
+            "homepage": "https://laravelcollective.com",
+            "time": "2019-03-01T22:53:41+00:00"
         },
         {
             "name": "league/flysystem",
@@ -1141,6 +1632,157 @@
                 "psr"
             ],
             "time": "2017-02-14T16:28:37+00:00"
+        },
+        {
+            "name": "psr/http-client",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-client.git",
+                "reference": "496a823ef742b632934724bf769560c2a5c7c44e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-client/zipball/496a823ef742b632934724bf769560c2a5c7c44e",
+                "reference": "496a823ef742b632934724bf769560c2a5c7c44e",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0",
+                "psr/http-message": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Client\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP clients",
+            "homepage": "https://github.com/php-fig/http-client",
+            "keywords": [
+                "http",
+                "http-client",
+                "psr",
+                "psr-18"
+            ],
+            "time": "2018-10-30T23:29:13+00:00"
+        },
+        {
+            "name": "psr/http-factory",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-factory.git",
+                "reference": "378bfe27931ecc54ff824a20d6f6bfc303bbd04c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-factory/zipball/378bfe27931ecc54ff824a20d6f6bfc303bbd04c",
+                "reference": "378bfe27931ecc54ff824a20d6f6bfc303bbd04c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0",
+                "psr/http-message": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Message\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interfaces for PSR-7 HTTP message factories",
+            "keywords": [
+                "factory",
+                "http",
+                "message",
+                "psr",
+                "psr-17",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "time": "2018-07-30T21:54:04+00:00"
+        },
+        {
+            "name": "psr/http-message",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-message.git",
+                "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-message/zipball/f6561bf28d520154e4b0ec72be95418abe6d9363",
+                "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Message\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP messages",
+            "homepage": "https://github.com/php-fig/http-message",
+            "keywords": [
+                "http",
+                "http-message",
+                "psr",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "time": "2016-08-06T14:39:51+00:00"
         },
         {
             "name": "psr/log",
