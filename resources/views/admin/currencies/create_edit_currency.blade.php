@@ -60,7 +60,7 @@
 
 <div class="form-group">
     {!! Form::label('Description (Optional)') !!}
-    {!! Form::textarea('description', $currency->description, ['class' => 'form-control']) !!}
+    {!! Form::textarea('description', $currency->description, ['class' => 'form-control wysiwyg']) !!}
 </div>
 
 <h3>Usage</h3>

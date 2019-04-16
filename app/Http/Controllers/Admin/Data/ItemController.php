@@ -57,7 +57,7 @@ class ItemController extends Controller
     {
         $id ? $request->validate(ItemCategory::$updateRules) : $request->validate(ItemCategory::$createRules);
         $data = $request->only([
-            'name', 'color', 'description', 'image', 'remove_image'
+            'name', 'description', 'image', 'remove_image'
         ]);
         if($id && $service->updateItemCategory(ItemCategory::find($id), $data, Auth::user())) {
             flash('Category updated successfully.')->success();

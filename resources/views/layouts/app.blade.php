@@ -14,6 +14,10 @@
     <script src="{{ asset('js/site.js') }}"></script>
     <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap4-toggle.min.js') }}"></script>
+    <script src="{{ asset('js/tinymce.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.tinymce.min.js') }}"></script>
+    <script src="{{ asset('js/lightbox.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap-colorpicker.min.js') }}"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -31,6 +35,10 @@
 
     {{-- Bootstrap Toggle --}}
     <link href="{{ asset('css/bootstrap4-toggle.min.css') }}" rel="stylesheet">
+
+    
+    <link href="{{ asset('css/lightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap-colorpicker.min.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">
@@ -70,7 +78,28 @@
         </div>
 
         @yield('scripts')
-        <script>$('[data-toggle="tooltip"]').tooltip();</script>
+        <script>
+            $(function() {
+                $('[data-toggle="tooltip"]').tooltip();
+                $('.cp').colorpicker();
+                tinymce.init({
+                    selector: '.wysiwyg',
+                    height: 500,
+                    menubar: false,
+                    plugins: [
+                        'advlist autolink lists link image charmap print preview anchor',
+                        'searchreplace visualblocks code fullscreen',
+                        'insertdatetime media table paste code help wordcount'
+                    ],
+                    toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | code',
+                    content_css: [
+                        '//www.tiny.cloud/css/codepen.min.css',
+                        '{{ asset('css/app.css') }}',
+                        '{{ asset('css/lorekeeper.css') }}'
+                    ]
+                });
+            });
+        </script>
     </div>
 </body>
 </html>

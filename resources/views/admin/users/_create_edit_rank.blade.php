@@ -13,7 +13,12 @@
 
     <div class="form-group">
         {!! Form::label('Colour (Hex code; optional)') !!}
-        {!! Form::text('description', $rank->color, ['class' => 'form-control']) !!}
+        <div class="input-group cp">
+            {!! Form::text('color', $rank->color, ['class' => 'form-control']) !!}
+            <span class="input-group-append">
+                <span class="input-group-text colorpicker-input-addon"><i></i></span>
+            </span>
+        </div>
     </div>
 
     @if($editable != 2)
@@ -42,7 +47,10 @@
     </div>
 
     {!! Form::close() !!}
-    <script>$('[data-toggle=tooltip]').tooltip();</script>
+    <script>
+        $('[data-toggle=tooltip]').tooltip();
+        $('.cp').colorpicker();
+    </script>
 @else 
     Invalid rank selected.
 @endif

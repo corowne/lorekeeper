@@ -58,7 +58,7 @@
 </div>
 <div class="form-group">
     {!! Form::label('Description (Optional)') !!}
-    {!! Form::textarea('description', $feature->parsed_description, ['class' => 'form-control']) !!}
+    {!! Form::textarea('description', $feature->description, ['class' => 'form-control wysiwyg']) !!}
 </div>
 
 <div class="text-right">
@@ -71,7 +71,7 @@
     <h3>Preview</h3>
     <div class="card mb-3">
         <div class="card-body">
-            @include('world._entry', ['imageUrl' => $feature->imageUrl, 'name' => $feature->displayName, 'description' => $feature->description, 'searchUrl' => $feature->searchUrl])
+            @include('world._entry', ['imageUrl' => $feature->imageUrl, 'name' => $feature->displayName, 'description' => $feature->parsed_description, 'searchUrl' => $feature->searchUrl])
         </div>
     </div>
 @endif

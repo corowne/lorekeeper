@@ -56,7 +56,7 @@ class SpeciesController extends Controller
     {
         $id ? $request->validate(Species::$updateRules) : $request->validate(Species::$createRules);
         $data = $request->only([
-            'name', 'color', 'description', 'image', 'remove_image'
+            'name', 'description', 'image', 'remove_image'
         ]);
         if($id && $service->updateSpecies(Species::find($id), $data, Auth::user())) {
             flash('Species updated successfully.')->success();

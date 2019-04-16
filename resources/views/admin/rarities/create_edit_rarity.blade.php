@@ -22,7 +22,12 @@
 
 <div class="form-group">
     {!! Form::label('Colour (Hex code; optional)') !!}
-    {!! Form::text('color', $rarity->color, ['class' => 'form-control']) !!}
+    <div class="input-group cp">
+        {!! Form::text('color', $rarity->color, ['class' => 'form-control']) !!}
+        <span class="input-group-append">
+            <span class="input-group-text colorpicker-input-addon"><i></i></span>
+        </span>
+    </div>
 </div>
 
 <div class="form-group">
@@ -39,7 +44,7 @@
 
 <div class="form-group">
     {!! Form::label('Description (Optional)') !!}
-    {!! Form::textarea('description', $rarity->description, ['class' => 'form-control']) !!}
+    {!! Form::textarea('description', $rarity->description, ['class' => 'form-control wysiwyg']) !!}
 </div>
 
 <div class="text-right">

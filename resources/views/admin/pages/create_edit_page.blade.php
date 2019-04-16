@@ -33,7 +33,7 @@
 
 <div class="form-group">
     {!! Form::label('Page Content') !!}
-    {!! Form::textarea('text', $page->text, ['class' => 'form-control']) !!}
+    {!! Form::textarea('text', $page->text, ['class' => 'form-control wysiwyg']) !!}
 </div>
 
 <div class="form-group">
