@@ -9,7 +9,7 @@
     {!! $user->displayName !!}
 
     @if($user->settings->is_fto)
-        <span class="badge badge-success float-right">FTO</span>
+        <span class="badge badge-success float-right" data-toggle="tooltip" title="This user has not owned any characters from this world before.">FTO</span>
     @endif
 </h1>
 <div class="mb-1">

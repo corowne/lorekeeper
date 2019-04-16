@@ -44,8 +44,8 @@
                     @yield('sidebar')
                 </div>
                 <div class="main-content col-lg-8 p-4">
-                    @include('flash::message')
                     <div class="container">
+                        @include('flash::message')
                         @yield('content')
                     </div>
                     

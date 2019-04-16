@@ -46,7 +46,7 @@
 @foreach($features as $feature)
     <div class="card mb-3">
         <div class="card-body">
-        @include('world._entry', ['imageUrl' => $feature->imageUrl, 'name' => $feature->displayName, 'description' => $feature->parsed_description, 'searchUrl' => $feature->searchUrl])
+        @include('world._feature_entry', ['feature' => $feature])
         </div>
     </div>
 @endforeach

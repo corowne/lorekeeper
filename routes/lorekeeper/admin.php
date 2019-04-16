@@ -37,10 +37,18 @@ Route::group(['prefix' => 'users', 'namespace' => 'Users'], function() {
     });
 });
 
-#DATA
+# SETTINGS
+Route::group(['prefix' => 'invitations', 'middleware' => 'power:edit_user_info'], function() {
+    Route::get('/', 'InvitationController@getIndex');
+
+    Route::post('create', 'InvitationController@postGenerateKey');
+    Route::post('delete/{id}', 'InvitationController@postDeleteKey');
+});
+
+# DATA
 Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:edit_data'], function() {
 
-    #CURRENCIES
+    # CURRENCIES
     Route::get('currencies', 'CurrencyController@getIndex');
     Route::get('currencies/sort', 'CurrencyController@getSort');
     Route::get('currencies/create', 'CurrencyController@getCreateCurrency');
@@ -51,7 +59,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('currencies/delete/{id}', 'CurrencyController@postDeleteCurrency');
     Route::post('currencies/sort/{type}', 'CurrencyController@postSortCurrency')->where('type', 'user|character');
 
-    #RARITIES
+    # RARITIES
     Route::get('rarities', 'RarityController@getIndex');
     Route::get('rarities/create', 'RarityController@getCreateRarity');
     Route::get('rarities/edit/{id}', 'RarityController@getEditRarity');
@@ -61,7 +69,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('rarities/delete/{id}', 'RarityController@postDeleteRarity');
     Route::post('rarities/sort', 'RarityController@postSortRarity');
     
-    #SPECIES
+    # SPECIES
     Route::get('species', 'SpeciesController@getIndex');
     Route::get('species/create', 'SpeciesController@getCreateSpecies');
     Route::get('species/edit/{id}', 'SpeciesController@getEditSpecies');
@@ -71,7 +79,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('species/delete/{id}', 'SpeciesController@postDeleteSpecies');
     Route::post('species/sort', 'SpeciesController@postSortSpecies');
     
-    #ITEMS
+    # ITEMS
     Route::get('item-categories', 'ItemController@getIndex');
     Route::get('item-categories/create', 'ItemController@getCreateItemCategory');
     Route::get('item-categories/edit/{id}', 'ItemController@getEditItemCategory');
@@ -90,7 +98,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('items/delete/{id}', 'ItemController@postDeleteItem');
     Route::post('items/sort', 'ItemController@postSortItem');
     
-    #FEATURES (TRAITS)
+    # FEATURES (TRAITS)
     Route::get('trait-categories', 'FeatureController@getIndex');
     Route::get('trait-categories/create', 'FeatureController@getCreateFeatureCategory');
     Route::get('trait-categories/edit/{id}', 'FeatureController@getEditFeatureCategory');
@@ -108,4 +116,23 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('traits/edit/{id?}', 'FeatureController@postCreateEditFeature');
     Route::post('traits/delete/{id}', 'FeatureController@postDeleteFeature');
     Route::post('traits/sort', 'FeatureController@postSortFeature');
+});
+
+
+# PAGES
+Route::group(['prefix' => 'pages', 'middleware' => 'power:edit_pages'], function() {
+
+    Route::get('/', 'PageController@getIndex');
+    Route::get('create', 'PageController@getCreatePage');
+    Route::get('edit/{id}', 'PageController@getEditPage');
+    Route::get('delete/{id}', 'PageController@getDeletePage');
+    Route::post('create', 'PageController@postCreateEditPage');
+    Route::post('edit/{id?}', 'PageController@postCreateEditPage');
+    Route::post('delete/{id}', 'PageController@postDeletePage');
+});
+
+# SITE SETTINGS
+Route::group(['prefix' => 'settings', 'middleware' => 'power:edit_site_settings'], function() {
+    Route::get('/', 'SettingsController@getIndex');
+    Route::post('{key}', 'SettingsController@postEditSetting');
 });

@@ -24,12 +24,12 @@ return [
         'description' => 'Allow rank to create/modify text pages. This includes pages created using the page creator tool and news posts.'
     ],
     'edit_user_info' => [
-        'name' => 'Edit User Info',
-        'description' => 'Allow rank to view/modify user account info. This will grant access to the user admin panel.'
+        'name' => 'Manage Users',
+        'description' => 'Allow rank to view/modify user account info and create invitation keys. This will grant access to the user admin panel.'
     ],
     'edit_ranks' => [
         'name' => 'Edit Ranks',
-        'description' => 'Allow rank to modify and assign user ranks. This power requires the Edit User Info power to be attached as well.'
+        'description' => 'Allow rank to change the rank of a user. This power requires the Edit User Info power to be attached as well.'
     ],
     'edit_inventories' => [
         'name' => 'Edit Inventories',

@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers\Auth;
 
+use DB;
+use Settings;
+
 use App\Models\User\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
+use App\Models\Invitation;
 use App\Services\UserService;
+use App\Services\InvitationService;
 
 class RegisterController extends Controller
 {
@@ -64,6 +69,14 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'code' => ['string', function ($attribute, $value, $fail) {
+                    if(!Settings::get('is_registration_open')) {
+                        if(!$value) $fail('An invitation code is required to register an account.');
+                        $invitation = Invitation::where('code', $value)->whereNull('recipient_id')->first();
+                        if(!$invitation) $fail('Invalid code entered.');
+                    }
+                }
+            ]
         ]);
     }
 
@@ -75,7 +88,13 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        DB::beginTransaction();
         $service = new UserService;
-        return $service->createUser(array_only($data, ['name', 'email', 'password']));
+        $user = $service->createUser(array_only($data, ['name', 'email', 'password']));
+        if(!Settings::get('is_registration_open')) {
+            (new InvitationService)->useInvitation(Invitation::where('code', $data['code'])->first(), $user);
+        }
+        DB::commit();
+        return $user;
     }
 }
