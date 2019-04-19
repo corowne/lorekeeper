@@ -4,7 +4,7 @@ namespace App\Models\User;
 
 use App\Models\Model;
 
-class UserCurrency extends Model
+class UserItem extends Model
 {
 
     /**
@@ -13,18 +13,18 @@ class UserCurrency extends Model
      * @var array
      */
     protected $fillable = [
-        'quantity', 'user_id', 'currency_id'
+        'quantity'
     ];
     //public $primaryKey = 'user_id';
-    protected $table = 'user_currencies';
+    protected $table = 'user_items';
 
     public function user() 
     {
         return $this->belongsTo('App\Models\User\User');
     }
     
-    public function currency() 
+    public function item() 
     {
-        return $this->belongsTo('App\Models\Currency\Currency');
+        return $this->belongsTo('App\Models\Item\Item');
     }
 }

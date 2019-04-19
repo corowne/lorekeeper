@@ -115,7 +115,7 @@ class User extends Authenticatable implements MustVerifyEmail
         // On profile: only ones marked is_displayed
         // In bank: ones marked is_displayed + the ones the user has
 
-        $owned = UserCurrency::where('user_id', $this->user_id)->pluck('quantity', 'currency_id')->toArray();
+        $owned = UserCurrency::where('user_id', $this->id)->pluck('quantity', 'currency_id')->toArray();
 
         $currencies = Currency::where('is_user_owned', 1);
         if($displayedOnly) $currencies->where(function($query) use($owned) {
@@ -130,5 +130,10 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return $currencies;
+    }
+
+    public function getLogTypeAttribute()
+    {
+        return 'User';
     }
 }

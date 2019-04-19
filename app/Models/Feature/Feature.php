@@ -22,8 +22,8 @@ class Feature extends Model
     protected $table = 'features';
     
     public static $createRules = [
-        'feature_category_id' => 'nullable|exists:feature_categories,id',
-        'species_id' => 'nullable|exists:specieses,id',
+        'feature_category_id' => 'nullable',
+        'species_id' => 'nullable',
         'rarity_id' => 'required|exists:rarities,id',
         'name' => 'required|unique:features|between:3,25',
         'description' => 'nullable',
@@ -31,8 +31,8 @@ class Feature extends Model
     ];
     
     public static $updateRules = [
-        'feature_category_id' => 'nullable|exists:feature_categories,id',
-        'species_id' => 'nullable|exists:specieses,id',
+        'feature_category_id' => 'nullable',
+        'species_id' => 'nullable',
         'rarity_id' => 'required|exists:rarities,id',
         'name' => 'required|between:3,25',
         'description' => 'nullable',

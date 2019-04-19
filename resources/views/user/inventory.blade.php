@@ -6,7 +6,7 @@
 {!! breadcrumbs(['Users' => 'users', $user->name => $user->url, 'Inventory' => $user->url . '/inventory']) !!}
 
 <h1>
-    {!! $user->displayName !!}'s Inventory
+    Inventory
 </h1>
 
 

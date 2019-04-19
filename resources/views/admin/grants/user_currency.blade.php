@@ -1,0 +1,45 @@
+@extends('admin.layout')
+
+@section('admin-title') Grant User Currency @endsection
+
+@section('admin-content')
+{!! breadcrumbs(['Admin Panel' => 'admin', 'Grant Currency' => 'admin/grants/user-currency']) !!}
+
+<h1>Grant User Currency</h1>
+
+{!! Form::open(['url' => 'admin/grants/user-currency']) !!}
+
+<h3>Basic Information</h3>
+
+<div class="form-group">
+    {!! Form::label('names', 'Username(s)') !!} {!! add_help('You can list multiple users as a comma-separated list, e.g. "user1, user2, user3"') !!}
+    {!! Form::text('names', null, ['class' => 'form-control']) !!}
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            {!! Form::label('currency_id', 'Currency') !!} 
+            {!! Form::select('currency_id', $userCurrencies, null, ['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            {!! Form::label('quantity', 'Quantity') !!} {!! add_help('If the value given is less than 0, this will be deducted from the user(s).') !!}
+            {!! Form::text('quantity', null, ['class' => 'form-control']) !!}
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    {!! Form::label('data', 'Reason (Optional)') !!} {!! add_help('A reason for the grant. This will be noted in the logs.') !!}
+    {!! Form::text('data', null, ['class' => 'form-control']) !!}
+</div>
+
+<div class="text-right">
+    {!! Form::submit('Submit', ['class' => 'btn btn-primary']) !!}
+</div>
+
+{!! Form::close() !!}
+
+@endsection

@@ -7,6 +7,7 @@ use Config;
 
 use App\Models\Feature\FeatureCategory;
 use App\Models\Feature\Feature;
+use App\Models\Species;
 
 class FeatureService extends Service
 {
@@ -135,6 +136,12 @@ class FeatureService extends Service
         DB::beginTransaction();
 
         try {
+            if(isset($data['feature_category_id']) && $data['feature_category_id'] == 'none') $data['feature_category_id'] = null;
+            if(isset($data['species_id']) && $data['species_id'] == 'none') $data['species_id'] = null;
+
+            if((isset($data['feature_category_id']) && $data['feature_category_id']) && !FeatureCategory::where('id', $data['feature_category_id'])->exists()) throw new \Exception("The selected trait category is invalid.");
+            if((isset($data['species_id']) && $data['species_id']) && !Species::where('id', $data['species_id'])->exists()) throw new \Exception("The selected species is invalid.");
+
             $data = $this->populateData($data);
 
             $image = null;
@@ -161,8 +168,13 @@ class FeatureService extends Service
         DB::beginTransaction();
 
         try {
+            if(isset($data['feature_category_id']) && $data['feature_category_id'] == 'none') $data['feature_category_id'] = null;
+            if(isset($data['species_id']) && $data['species_id'] == 'none') $data['species_id'] = null;
+
             // More specific validation
             if(Feature::where('name', $data['name'])->where('id', '!=', $feature->id)->exists()) throw new \Exception("The name has already been taken.");
+            if((isset($data['feature_category_id']) && $data['feature_category_id']) && !FeatureCategory::where('id', $data['feature_category_id'])->exists()) throw new \Exception("The selected trait category is invalid.");
+            if((isset($data['species_id']) && $data['species_id']) && !Species::where('id', $data['species_id'])->exists()) throw new \Exception("The selected species is invalid.");
 
             $data = $this->populateData($data);
 

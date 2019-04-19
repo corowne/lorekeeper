@@ -20,6 +20,7 @@ class ItemService extends Service
         DB::beginTransaction();
 
         try {
+
             $data = $this->populateCategoryData($data);
 
             $image = null;
@@ -135,6 +136,10 @@ class ItemService extends Service
         DB::beginTransaction();
 
         try {
+            if(isset($data['item_category_id']) && $data['item_category_id'] == 'none') $data['item_category_id'] = null;
+
+            if((isset($data['item_category_id']) && $data['item_category_id']) && !ItemCategory::where('id', $data['item_category_id'])->exists()) throw new \Exception("The selected item category is invalid.");
+
             $data = $this->populateData($data);
 
             $image = null;
@@ -161,8 +166,11 @@ class ItemService extends Service
         DB::beginTransaction();
 
         try {
+            if(isset($data['item_category_id']) && $data['item_category_id'] == 'none') $data['item_category_id'] = null;
+
             // More specific validation
             if(Item::where('name', $data['name'])->where('id', '!=', $item->id)->exists()) throw new \Exception("The name has already been taken.");
+            if((isset($data['item_category_id']) && $data['item_category_id']) && !ItemCategory::where('id', $data['item_category_id'])->exists()) throw new \Exception("The selected item category is invalid.");
 
             $data = $this->populateData($data);
 

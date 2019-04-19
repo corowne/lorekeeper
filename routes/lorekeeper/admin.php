@@ -136,3 +136,11 @@ Route::group(['prefix' => 'settings', 'middleware' => 'power:edit_site_settings'
     Route::get('/', 'SettingsController@getIndex');
     Route::post('{key}', 'SettingsController@postEditSetting');
 });
+
+# GRANTS
+Route::group(['prefix' => 'grants', 'namespace' => 'Users', 'middleware' => 'power:edit_inventories'], function() {
+    Route::get('user-currency', 'GrantController@getUserCurrency');
+    Route::post('user-currency', 'GrantController@postUserCurrency');
+    Route::get('items', 'GrantController@getItems');
+    
+});

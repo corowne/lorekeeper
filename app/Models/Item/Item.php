@@ -20,14 +20,14 @@ class Item extends Model
     protected $table = 'items';
     
     public static $createRules = [
-        'item_category_id' => 'nullable|exists:item_categories,id',
+        'item_category_id' => 'nullable',
         'name' => 'required|unique:items|between:3,25',
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
     
     public static $updateRules = [
-        'item_category_id' => 'nullable|exists:item_categories,id',
+        'item_category_id' => 'nullable',
         'name' => 'required|between:3,25',
         'description' => 'nullable',
         'image' => 'mimes:png',
