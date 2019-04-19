@@ -19,7 +19,7 @@
     </div>
     <div class="row">
         <div class="col-md-2 col-4"><h5>Rank</h5></div>
-        <div class="col-md-10 col-8">{!! $user->rank->displayName !!} {!! add_help($user->rank->description) !!}</div>
+        <div class="col-md-10 col-8">{!! $user->rank->displayName !!} {!! add_help($user->rank->parsed_description) !!}</div>
     </div>
     <div class="row">
         <div class="col-md-2 col-4"><h5>Joined</h5></div>

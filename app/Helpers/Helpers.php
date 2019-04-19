@@ -40,6 +40,11 @@ function format_date($timestamp) {
 
 function parse($text) {
 
+    require_once(base_path().'/vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php');
+    
+    $config = HTMLPurifier_Config::createDefault();
+    $purifier = new HTMLPurifier($config);
+    $text = $purifier->purify($text);
 
     return $text;
 }

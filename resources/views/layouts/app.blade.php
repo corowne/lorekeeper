@@ -80,7 +80,7 @@
         @yield('scripts')
         <script>
             $(function() {
-                $('[data-toggle="tooltip"]').tooltip();
+                $('[data-toggle="tooltip"]').tooltip({html: true});
                 $('.cp').colorpicker();
                 tinymce.init({
                     selector: '.wysiwyg',

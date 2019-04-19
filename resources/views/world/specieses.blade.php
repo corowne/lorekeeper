@@ -21,7 +21,7 @@
 @foreach($specieses as $species)
     <div class="card mb-3">
         <div class="card-body">
-        @include('world._entry', ['imageUrl' => $species->speciesImageUrl, 'name' => $species->displayName, 'description' => $species->description, 'searchUrl' => $species->searchUrl])
+        @include('world._entry', ['imageUrl' => $species->speciesImageUrl, 'name' => $species->displayName, 'description' => $species->parsed_description, 'searchUrl' => $species->searchUrl])
         </div>
     </div>
 @endforeach

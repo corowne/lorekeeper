@@ -16,7 +16,7 @@
 <table class="table table-sm">
     <thead>
         <tr>
-            <th>Name</th><th>Displays As</th><th>Description</th><th>Attaches To</th>
+            <th>Name</th><th>Displays As</th><th>Attaches To</th>
         </tr>
     </thead>
     <tbody>
@@ -24,7 +24,6 @@
             <tr>
                 <td><a href="{{ url('admin/data/currencies/edit/'.$currency->id) }}">{{ $currency->name }}</a> @if($currency->abbreviation) ({{ $currency->abbreviation }}) @endif</td>
                 <td>{!! $currency->display(100) !!}</td>
-                <td>{{ $currency->description }}</td>
                 <td>
                     <div>{{ $currency->is_user_owned ? 'User' : '' }}</div>
                     <div>{{ $currency->is_character_owned ? 'Character' : '' }}</div>

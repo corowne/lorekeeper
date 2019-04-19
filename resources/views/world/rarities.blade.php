@@ -21,7 +21,7 @@
 @foreach($rarities as $rarity)
     <div class="card mb-3">
         <div class="card-body">
-        @include('world._rarity_entry', ['imageUrl' => $rarity->rarityImageUrl, 'name' => $rarity->displayName, 'description' => $rarity->description, 'searchFeaturesUrl' => $rarity->searchFeaturesUrl, 'searchCharactersUrl' => $rarity->searchCharactersUrl])
+        @include('world._rarity_entry', ['imageUrl' => $rarity->rarityImageUrl, 'name' => $rarity->displayName, 'description' => $rarity->parsed_description, 'searchFeaturesUrl' => $rarity->searchFeaturesUrl, 'searchCharactersUrl' => $rarity->searchCharactersUrl])
         </div>
     </div>
 @endforeach
