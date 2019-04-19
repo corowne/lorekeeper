@@ -200,7 +200,7 @@ class FeatureController extends Controller
      */
     public function getDeleteFeature($id)
     {
-        $category = Feature::find($id);
+        $feature = Feature::find($id);
         return view('admin.features._delete_feature', [
             'feature' => $feature,
         ]);

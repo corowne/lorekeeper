@@ -21,7 +21,7 @@
             <tr {{ !$rank->isAdmin ? 'class=sort-item' : '' }} data-id="{{ $rank->id }}">
                 <td>@if(!$rank->isAdmin)<a class="fas fa-arrows-alt-v handle" href="#"></a>@endif</td>
                 <td>{!! $rank->displayName !!}</td>
-                <td>{{ $rank->description }}</td>
+                <td>{!! $rank->description !!}</td>
                 <td>
                     @foreach($rank->getPowers() as $power)
                         <div>{{ $power['name'] }}</div>
