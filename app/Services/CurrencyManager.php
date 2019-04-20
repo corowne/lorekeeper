@@ -45,15 +45,14 @@ class CurrencyManager extends Service
         DB::beginTransaction();
 
         try {
-            $record = UserCurrency::where('user_id', $recipient->id)->where('currency_id', $currency->id)->first();
+            $record = DB::table('user_currencies')->where('user_id', $recipient->id)->where('currency_id', $currency->id)->first();
             if($record) {
-                $record->quantity += $quantity;
-                $record->save();
+                // Laravel doesn't support composite primary keys, so directly updating the DB row here
+                DB::table('user_currencies')->where('user_id', $recipient->id)->where('currency_id', $currency->id)->update(['quantity' => $record->quantity + $quantity]);
             }
             else {
                 $record = UserCurrency::create(['user_id' => $recipient->id, 'currency_id' => $currency->id, 'quantity' => $quantity]);
             }
-
             if(!$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, $recipient->id, $recipient->logType, $type, $data, $currency->id, $quantity)) throw new \Exception("Failed to create log.");
 
             return $this->commitReturn(true);
@@ -71,10 +70,10 @@ class CurrencyManager extends Service
             $record = UserCurrency::where('user_id', $recipient->id)->where('currency_id', $currency->id)->first();
             if(!$record || $record->quantity < $quantity) throw new \Exception("Not enough ".$currency->name." to deduct.");
 
-            $record->quantity -= $quantity;
-            $record->save();
+            // Laravel doesn't support composite primary keys, so directly updating the DB row here
+            DB::table('user_currencies')->where('user_id', $recipient->id)->where('currency_id', $currency->id)->update(['quantity' => $record->quantity - $quantity]);
 
-            if(!$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, $recipient->id, $recipient->logType, $type, $data, $currency->id, $quantity)) throw new \Exception("Failed to create log.");
+            if(!$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, $recipient->id, $recipient->logType, $type, $data, $currency->id, -$quantity)) throw new \Exception("Failed to create log.");
 
             return $this->commitReturn($currency);
         } catch(\Exception $e) { 

@@ -21,6 +21,8 @@ Route::group(['prefix' => 'user', 'namespace' => 'Users'], function() {
     Route::get('{name}/characters', 'UserController@getUserCharacters');
     Route::get('{name}/inventory', 'UserController@getUserInventory');
     Route::get('{name}/bank', 'UserController@getUserBank');
+    
+    Route::get('{name}/currency-logs', 'UserController@getUserCurrencyLogs');
 });
 
 

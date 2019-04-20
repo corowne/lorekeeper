@@ -86,4 +86,9 @@ class Currency extends Model
         if (!$this->has_image) return null;
         return asset($this->imageDirectory . '/' . $this->currencyIconFileName);
     }
+    
+    public function getUrlAttribute()
+    {
+        return url('world/currencies?name='.$this->name);
+    }
 }

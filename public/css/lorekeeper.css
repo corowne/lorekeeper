@@ -260,3 +260,12 @@ main > .row {
 .sortable .sortable-placeholder {
     background-color: rgba(0,0,0,0.1);
 }
+
+
+/* LOGS ****************************************************************************************/
+tr.inflow {
+    background-color: #fafaff;
+}
+tr.outflow {
+    background-color: #fffafa
+}

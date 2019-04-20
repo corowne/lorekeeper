@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Users;
 
 use Illuminate\Http\Request;
 
+use DB;
 use App\Models\User\User;
+use App\Models\Currency\CurrencyLog;
 
 use App\Http\Controllers\Controller;
 
@@ -26,8 +28,10 @@ class UserController extends Controller
      */
     public function getUser($name)
     {
+        $this->user = User::where('name', $name)->first();
+        if(!$this->user) abort(404);
         return view('user.profile', [
-            'user' => User::where('name', $name)->first()
+            'user' => $this->user
         ]);
     }
     
@@ -38,8 +42,10 @@ class UserController extends Controller
      */
     public function getUserCharacters($name)
     {
+        $this->user = User::where('name', $name)->first();
+        if(!$this->user) abort(404);
         return view('user.characters', [
-            'user' => User::where('name', $name)->first()
+            'user' => $this->user
         ]);
     }
     
@@ -50,8 +56,10 @@ class UserController extends Controller
      */
     public function getUserInventory($name)
     {
+        $this->user = User::where('name', $name)->first();
+        if(!$this->user) abort(404);
         return view('user.inventory', [
-            'user' => User::where('name', $name)->first()
+            'user' => $this->user
         ]);
     }
 
@@ -63,8 +71,31 @@ class UserController extends Controller
      */
     public function getUserBank($name)
     {
+        $this->user = User::where('name', $name)->first();
+        if(!$this->user) abort(404);
+
+        $user = $this->user;
         return view('user.bank', [
-            'user' => User::where('name', $name)->first()
+            'user' => $this->user,
+            'logs' => $this->user->getCurrencyLogs()
+        ]);
+    }
+
+    
+    /**
+     * Show a user's profile.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserCurrencyLogs($name)
+    {
+        $this->user = User::where('name', $name)->first();
+        if(!$this->user) abort(404);
+
+        $user = $this->user;
+        return view('user.currency_logs', [
+            'user' => $this->user,
+            'logs' => $this->user->getCurrencyLogs(0)
         ]);
     }
 
