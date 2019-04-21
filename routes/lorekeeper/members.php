@@ -16,13 +16,14 @@ Route::group(['prefix' => 'account', 'namespace' => 'Users'], function() {
 });
 
 Route::group(['prefix' => 'inventory', 'namespace' => 'Users'], function() {
-    Route::get('inventory', 'InventoryController@getIndex');
+    Route::get('/', 'InventoryController@getIndex');
 });
 
 Route::group(['prefix' => 'characters', 'namespace' => 'Users'], function() {
-    Route::get('inventory', 'CharacterController@getIndex');
+    Route::get('/', 'CharacterController@getIndex');
 });
 
 Route::group(['prefix' => 'bank', 'namespace' => 'Users'], function() {
-    Route::get('bank', 'BankController@getIndex');
+    Route::get('/', 'BankController@getIndex');
+    Route::post('transfer', 'BankController@postTransfer');
 });

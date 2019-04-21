@@ -40,6 +40,25 @@ class CurrencyManager extends Service
         return $this->rollbackReturn(false);
     }
 
+    public function transferCurrency($sender, $recipient, $currency, $quantity)
+    {
+        DB::beginTransaction();
+
+        try {
+            if(!$recipient) throw new \Exception("Invalid recipient selected.");
+            if(!$recipient->hasAlias) throw new \Exception("Cannot transfer currency to a non-verified member.");
+            if(!$currency) throw new \Exception("Invalid currency selected.");
+            if($quantity <= 0) throw new \Exception("Invalid quantity entered.");
+
+            if($this->debitCurrency($sender, $sender, 'User Transfer', 'Transferred to '.$recipient->displayName, $currency, $quantity) &&
+            $this->creditCurrency($recipient, $recipient, 'User Transfer', 'Received transfer from '.$sender->displayName, $currency, $quantity))
+                return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
     public function creditCurrency($sender, $recipient, $type, $data, $currency, $quantity)
     {
         DB::beginTransaction();
@@ -68,7 +87,7 @@ class CurrencyManager extends Service
 
         try {
             $record = UserCurrency::where('user_id', $recipient->id)->where('currency_id', $currency->id)->first();
-            if(!$record || $record->quantity < $quantity) throw new \Exception("Not enough ".$currency->name." to deduct.");
+            if(!$record || $record->quantity < $quantity) throw new \Exception("Not enough ".$currency->name." to carry out this action.");
 
             // Laravel doesn't support composite primary keys, so directly updating the DB row here
             DB::table('user_currencies')->where('user_id', $recipient->id)->where('currency_id', $currency->id)->update(['quantity' => $record->quantity - $quantity]);
@@ -90,7 +109,7 @@ class CurrencyManager extends Service
                 'sender_type' => $senderType,
                 'recipient_id' => $recipientId,
                 'recipient_type' => $recipientType,
-                'log' => $type . ($data ? '(' . $data . ')' : ''),
+                'log' => $type . ($data ? ' (' . $data . ')' : ''),
                 'log_type' => $type,
                 'data' => $data, // this should be just a string
                 'currency_id' => $currencyId,
