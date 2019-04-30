@@ -44,7 +44,7 @@
     </thead>
     <tbody>
         @foreach($logs as $log)
-            {!! $log->displayRow !!}
+            {!! $log->displayRow($user) !!}
         @endforeach
     </tbody>
 </table>

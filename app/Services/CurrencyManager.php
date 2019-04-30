@@ -5,6 +5,7 @@ use App\Services\Service;
 
 use DB;
 use Config;
+use Notifications;
 
 use App\Models\User\User;
 use App\Models\Currency\Currency;
@@ -29,9 +30,25 @@ class CurrencyManager extends Service
             if(!$currency->is_user_owned) throw new \Exception("This currency cannot be held by users.");
 
             if($data['quantity'] < 0) 
-                foreach($users as $user) $this->debitCurrency($staff, $user, 'Staff Removal', $data['data'], $currency, -$data['quantity']);
+                foreach($users as $user) {
+                    $this->debitCurrency($staff, $user, 'Staff Removal', $data['data'], $currency, -$data['quantity']);
+                    Notifications::create('CURRENCY_REMOVAL', $user, [
+                        'currency_name' => $currency->name,
+                        'currency_quantity' => -$data['quantity'],
+                        'sender_url' => $staff->url,
+                        'sender_name' => $staff->name
+                    ]);
+                }
             else
-                foreach($users as $user) $this->creditCurrency($staff, $user, 'Staff Grant', $data['data'], $currency, $data['quantity']);
+                foreach($users as $user) {
+                    $this->creditCurrency($staff, $user, 'Staff Grant', $data['data'], $currency, $data['quantity']);
+                    Notifications::create('CURRENCY_GRANT', $user, [
+                        'currency_name' => $currency->name,
+                        'currency_quantity' => $data['quantity'],
+                        'sender_url' => $staff->url,
+                        'sender_name' => $staff->name
+                    ]);
+                }
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
@@ -40,6 +57,7 @@ class CurrencyManager extends Service
         return $this->rollbackReturn(false);
     }
 
+    // NOTE: currently only transfers between users.
     public function transferCurrency($sender, $recipient, $currency, $quantity)
     {
         DB::beginTransaction();
@@ -50,9 +68,20 @@ class CurrencyManager extends Service
             if(!$currency) throw new \Exception("Invalid currency selected.");
             if($quantity <= 0) throw new \Exception("Invalid quantity entered.");
 
-            if($this->debitCurrency($sender, $sender, 'User Transfer', 'Transferred to '.$recipient->displayName, $currency, $quantity) &&
-            $this->creditCurrency($recipient, $recipient, 'User Transfer', 'Received transfer from '.$sender->displayName, $currency, $quantity))
+
+            if($this->debitCurrency($sender, $recipient, null, null, $currency, $quantity) &&
+            $this->creditCurrency($sender, $recipient, null, null, $currency, $quantity)) 
+            {
+                $this->createLog($sender->id, $sender->logType, $recipient->id, $recipient->logType, 'User Transfer', null, $currency->id, $quantity);
+                
+                Notifications::create('CURRENCY_TRANSFER', $recipient, [
+                    'currency_name' => $currency->name,
+                    'currency_quantity' => $quantity,
+                    'sender_url' => $sender->url,
+                    'sender_name' => $sender->name
+                ]);
                 return $this->commitReturn(true);
+            }
         } catch(\Exception $e) { 
             $this->setError('error', $e->getMessage());
         }
@@ -64,7 +93,7 @@ class CurrencyManager extends Service
         DB::beginTransaction();
 
         try {
-            $record = DB::table('user_currencies')->where('user_id', $recipient->id)->where('currency_id', $currency->id)->first();
+            $record = UserCurrency::where('user_id', $recipient->id)->where('currency_id', $currency->id)->first();
             if($record) {
                 // Laravel doesn't support composite primary keys, so directly updating the DB row here
                 DB::table('user_currencies')->where('user_id', $recipient->id)->where('currency_id', $currency->id)->update(['quantity' => $record->quantity + $quantity]);
@@ -72,7 +101,7 @@ class CurrencyManager extends Service
             else {
                 $record = UserCurrency::create(['user_id' => $recipient->id, 'currency_id' => $currency->id, 'quantity' => $quantity]);
             }
-            if(!$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, $recipient->id, $recipient->logType, $type, $data, $currency->id, $quantity)) throw new \Exception("Failed to create log.");
+            if($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, $recipient->id, $recipient->logType, $type, $data, $currency->id, $quantity)) throw new \Exception("Failed to create log.");
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
@@ -86,13 +115,13 @@ class CurrencyManager extends Service
         DB::beginTransaction();
 
         try {
-            $record = UserCurrency::where('user_id', $recipient->id)->where('currency_id', $currency->id)->first();
+            $record = UserCurrency::where('user_id', $sender->id)->where('currency_id', $currency->id)->first();
             if(!$record || $record->quantity < $quantity) throw new \Exception("Not enough ".$currency->name." to carry out this action.");
 
             // Laravel doesn't support composite primary keys, so directly updating the DB row here
-            DB::table('user_currencies')->where('user_id', $recipient->id)->where('currency_id', $currency->id)->update(['quantity' => $record->quantity - $quantity]);
+            DB::table('user_currencies')->where('user_id', $sender->id)->where('currency_id', $currency->id)->update(['quantity' => $record->quantity - $quantity]);
 
-            if(!$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, $recipient->id, $recipient->logType, $type, $data, $currency->id, -$quantity)) throw new \Exception("Failed to create log.");
+            if($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, $recipient->id, $recipient->logType, $type, $data, $currency->id, $quantity)) throw new \Exception("Failed to create log.");
 
             return $this->commitReturn($currency);
         } catch(\Exception $e) { 

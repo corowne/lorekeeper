@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\Rank\RankPower;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
+use App\Models\Item\ItemLog;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -41,11 +42,20 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    protected $appends = [
+        'verified_name'
+    ];
+
     public $timestamps = true;
 
     public function settings() 
     {
         return $this->hasOne('App\Models\User\UserSettings');
+    }
+
+    public function notifications() 
+    {
+        return $this->hasMany('App\Models\Notification');
     }
     
     public function rank() 
@@ -53,9 +63,19 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo('App\Models\Rank\Rank');
     }
 
+    public function items()
+    {
+        return $this->belongsToMany('App\Models\Item\Item', 'user_items')->withPivot('data', 'updated_at', 'id');
+    }
+
     public function canEditRank($rank)
     {
         return $this->rank->canEditRank($rank);
+    }
+
+    public function getVerifiedNameAttribute()
+    {
+        return $this->name . ($this->hasAlias ? '' : ' (Unverified)');
     }
 
     public function getHasAliasAttribute() 
@@ -145,6 +165,18 @@ class User extends Authenticatable implements MustVerifyEmail
             $query->where('sender_type', 'User')->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Staff Removal']);
         })->orWhere(function($query) use ($user) {
             $query->where('recipient_type', 'User')->where('recipient_id', $user->id);
+        })->orderBy('created_at', 'DESC');
+        if($limit) return $query->take($limit)->get();
+        else return $query->paginate(30);
+    }
+
+    public function getItemLogs($limit = 10)
+    {
+        $user = $this;
+        $query = ItemLog::where(function($query) use ($user) {
+            $query->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Staff Removal']);
+        })->orWhere(function($query) use ($user) {
+            $query->where('recipient_id', $user->id);
         })->orderBy('created_at', 'DESC');
         if($limit) return $query->take($limit)->get();
         else return $query->paginate(30);

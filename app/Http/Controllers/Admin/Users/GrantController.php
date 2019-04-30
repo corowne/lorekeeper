@@ -10,6 +10,7 @@ use App\Models\Item\Item;
 use App\Models\Currency\Currency;
 
 use App\Services\CurrencyManager;
+use App\Services\InventoryManager;
 
 use App\Http\Controllers\Controller;
 
@@ -40,36 +41,22 @@ class GrantController extends Controller
     }
     
     /**
-     * Get the rank deletion modal.
+     * Show the item grant page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getDeleteRank($id)
+    public function getItems()
     {
-        $rank = Rank::find($id);
-        $editable = Auth::user()->canEditRank($rank);
-        if(!$editable) $rank = null;
-        return view('admin.users._delete_rank', [
-            'rank' => $rank,
-            'editable' => $editable
+        return view('admin.grants.items', [
+            'items' => Item::orderBy('name')->pluck('name', 'id')
         ]);
     }
 
-    public function postDeleteRank(Request $request, RankService $service, $id)
+    public function postItems(Request $request, InventoryManager $service)
     {
-        if($id && $service->deleteRank(Rank::find($id), Auth::user())) {
-            flash('Rank deleted successfully.')->success();
-        }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
-        return redirect()->back();
-    }
-    
-    public function postSortRanks(Request $request, RankService $service)
-    {
-        if($service->sortRanks($request->get('sort'), Auth::user())) {
-            flash('Ranks sorted successfully.')->success();
+        $data = $request->only(['names', 'item_id', 'quantity', 'data', 'disallow_transfer', 'notes']);
+        if($service->grantItems($data, Auth::user())) {
+            flash('Items granted successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

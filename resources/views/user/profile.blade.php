@@ -35,20 +35,34 @@
     </div>
 </div>
 
-<div class="card-deck mb-4">
-    <div class="card">
+<div class="card-deck mb-4 profile-assets">
+    <div class="card profile-currencies profile-assets-card">
         <div class="card-body text-center">
             <h5 class="card-title">Bank</h5>
-            @foreach($user->getCurrencies(true) as $currency)
-                <div>{!! $currency->display($currency->quantity) !!}</div>
-            @endforeach
+            <div class="profile-assets-content">
+                @foreach($user->getCurrencies(true) as $currency)
+                    <div>{!! $currency->display($currency->quantity) !!}</div>
+                @endforeach
+            </div>
             <div class="text-right"><a href="{{ $user->url.'/bank' }}">View all...</a></div>
         </div>
     </div>
-    <div class="card">
+    <div class="card profile-inventory profile-assets-card">
         <div class="card-body text-center">
             <h5 class="card-title">Inventory</h5>
-            <div>Shows last 8 items obtained</div>
+            <div class="profile-assets-content">
+                @if(count($items))
+                    <div class="row">
+                        @foreach($items as $item)
+                            <div class="col-md-3 col-6 profile-inventory-item">
+                                <img src="{{ $item->imageUrl }}" data-toggle="tooltip" title="{{ $item->name }}" />
+                            </div>
+                        @endforeach
+                    </div>
+                @else 
+                    <div>No items owned.</div>
+                @endif
+            </div>
             <div class="text-right"><a href="{{ $user->url.'/inventory' }}">View all...</a></div>
         </div>
     </div>

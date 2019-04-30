@@ -15,7 +15,7 @@ class Item extends Model
      * @var array
      */
     protected $fillable = [
-        'item_category_id', 'name', 'has_image', 'description', 'parsed_description'
+        'item_category_id', 'name', 'has_image', 'description', 'parsed_description', 'allow_transfer'
     ];
     protected $table = 'items';
     

@@ -20,10 +20,10 @@
                             <a class="dropdown-item" href="#">
                                 My Characters
                             </a>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{{ url('inventory') }}">
                                 Inventory
                             </a>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{{ url('bank') }}">
                                 Bank
                             </a>
                             <a class="dropdown-item" href="#">
@@ -84,6 +84,12 @@
                             <a class="nav-link" href="{{ url('admin') }}"><i class="fas fa-crown"></i></a>
                         </li>
                     @endif
+                    @if(Auth::user()->notifications_unread)
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-secondary btn-sm" href="{{ url('notifications') }}"><span class="fas fa-envelope"></span> {{ Auth::user()->notifications_unread }}</a>
+                        </li>
+                    @endif
+                    
                     <li class="nav-item dropdown">
                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="{{ Auth::user()->url }}" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                             {{ Auth::user()->name }} <span class="caret"></span>
@@ -92,6 +98,9 @@
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{{ Auth::user()->url }}">
                                 Profile
+                            </a>
+                            <a class="dropdown-item" href="{{ url('notifications') }}">
+                                Notifications
                             </a>
                             <a class="dropdown-item" href="{{ url('account/settings') }}">
                                 Settings

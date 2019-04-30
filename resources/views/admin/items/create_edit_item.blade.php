@@ -23,7 +23,7 @@
 <div class="form-group">
     {!! Form::label('World Page Image (Optional)') !!} {!! add_help('This image is used only on the world information pages.') !!}
     <div>{!! Form::file('image') !!}</div>
-    <div class="text-muted">Recommended size: 200px x 200px</div>
+    <div class="text-muted">Recommended size: 100px x 100px</div>
     @if($item->has_image)
         <div class="form-check">
             {!! Form::checkbox('remove_image', 1, false, ['class' => 'form-check-input']) !!}
@@ -43,7 +43,7 @@
 
 
 {!! Form::checkbox('allow_transfer', 1, $item->id ? $item->allow_transfer : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-{!! Form::label('allow_transfer', 'Allow User → User Transfer', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is off, users will not be able to transfer this item to other users. This setting can be overridden when the item is granted to users directly.') !!}
+{!! Form::label('allow_transfer', 'Allow User → User Transfer', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is off, users will not be able to transfer this item to other users. Non-account-bound items can be account-bound when granted to users directly.') !!}
 
 <div class="text-right">
     {!! Form::submit($item->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}

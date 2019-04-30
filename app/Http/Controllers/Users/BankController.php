@@ -25,7 +25,7 @@ class BankController extends Controller
     {
     }
     /**
-     * Show a user's profile.
+     * Show the user's bank page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */

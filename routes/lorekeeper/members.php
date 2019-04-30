@@ -9,7 +9,11 @@
 |
 */
 
-
+Route::group(['prefix' => 'notifications', 'namespace' => 'Users'], function() {
+    Route::get('/', 'AccountController@getNotifications');
+    Route::get('delete/{id}', 'AccountController@getDeleteNotification');
+    Route::post('clear', 'AccountController@postClearNotifications');
+});
 
 Route::group(['prefix' => 'account', 'namespace' => 'Users'], function() {
     Route::get('settings', 'AccountController@getSettings');
@@ -17,6 +21,8 @@ Route::group(['prefix' => 'account', 'namespace' => 'Users'], function() {
 
 Route::group(['prefix' => 'inventory', 'namespace' => 'Users'], function() {
     Route::get('/', 'InventoryController@getIndex');
+    Route::post('transfer/{id}', 'InventoryController@postTransfer');
+    Route::post('delete/{id}', 'InventoryController@postDelete');
 });
 
 Route::group(['prefix' => 'characters', 'namespace' => 'Users'], function() {

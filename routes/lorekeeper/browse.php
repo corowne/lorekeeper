@@ -11,6 +11,12 @@
 */
 
 /**************************************************************************************************
+    Widgets
+**************************************************************************************************/
+
+Route::get('items/{id}', 'Users\InventoryController@getStack');
+
+/**************************************************************************************************
     Users
 **************************************************************************************************/
 Route::get('/users', 'BrowseController@getUsers');
@@ -23,6 +29,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'Users'], function() {
     Route::get('{name}/bank', 'UserController@getUserBank');
     
     Route::get('{name}/currency-logs', 'UserController@getUserCurrencyLogs');
+    Route::get('{name}/item-logs', 'UserController@getUserItemLogs');
 });
 
 

@@ -6,10 +6,16 @@ use Illuminate\Http\Request;
 
 use DB;
 use Auth;
+use Route;
 use App\Models\User\User;
 use App\Models\User\UserCurrency;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
+
+use App\Models\User\UserItem;
+use App\Models\Item\Item;
+use App\Models\Item\ItemCategory;
+use App\Models\Item\UserItemLog;
 
 use App\Http\Controllers\Controller;
 
@@ -22,6 +28,9 @@ class UserController extends Controller
      */
     public function __construct()
     {
+        $name = Route::current()->parameter('name');
+        $this->user = User::where('name', $name)->first();
+        if(!$this->user) abort(404);
     }
 
     /**
@@ -31,10 +40,9 @@ class UserController extends Controller
      */
     public function getUser($name)
     {
-        $this->user = User::where('name', $name)->first();
-        if(!$this->user) abort(404);
         return view('user.profile', [
-            'user' => $this->user
+            'user' => $this->user,
+            'items' => $this->user->items()->orderBy('user_items.updated_at', 'DESC')->take(4)->get()
         ]);
     }
     
@@ -45,8 +53,6 @@ class UserController extends Controller
      */
     public function getUserCharacters($name)
     {
-        $this->user = User::where('name', $name)->first();
-        if(!$this->user) abort(404);
         return view('user.characters', [
             'user' => $this->user
         ]);
@@ -59,10 +65,13 @@ class UserController extends Controller
      */
     public function getUserInventory($name)
     {
-        $this->user = User::where('name', $name)->first();
-        if(!$this->user) abort(404);
         return view('user.inventory', [
-            'user' => $this->user
+            'user' => $this->user,
+            'categories' => ItemCategory::orderBy('sort', 'DESC')->get()->keyBy('id'),
+            'items' => $this->user->items()->orderBy('name')->orderBy('updated_at')->get()->groupBy('item_category_id'),
+            'userOptions' => User::where('id', '!=', $this->user->id)->orderBy('name')->pluck('name', 'id')->toArray(),
+            'user' => $this->user,
+            'logs' => $this->user->getItemLogs()
         ]);
     }
 
@@ -74,9 +83,6 @@ class UserController extends Controller
      */
     public function getUserBank($name)
     {
-        $this->user = User::where('name', $name)->first();
-        if(!$this->user) abort(404);
-
         $user = $this->user;
         return view('user.bank', [
             'user' => $this->user,
@@ -96,13 +102,25 @@ class UserController extends Controller
      */
     public function getUserCurrencyLogs($name)
     {
-        $this->user = User::where('name', $name)->first();
-        if(!$this->user) abort(404);
-
         $user = $this->user;
         return view('user.currency_logs', [
             'user' => $this->user,
             'logs' => $this->user->getCurrencyLogs(0)
+        ]);
+    }
+
+    
+    /**
+     * Show a user's profile.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserItemLogs($name)
+    {
+        $user = $this->user;
+        return view('user.item_logs', [
+            'user' => $this->user,
+            'logs' => $this->user->getItemLogs(0)
         ]);
     }
 

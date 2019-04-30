@@ -1,14 +1,15 @@
-@extends('user.layout')
+@extends('home.layout')
 
-@section('profile-title') {{ $user->name }}'s Inventory @endsection
+@section('home-title') Inventory @endsection
 
-@section('profile-content')
-{!! breadcrumbs(['Users' => 'users', $user->name => $user->url, 'Inventory' => $user->url . '/inventory']) !!}
+@section('home-content')
+{!! breadcrumbs(['Inventory' => 'inventory']) !!}
 
 <h1>
     Inventory
 </h1>
 
+<p>This is your inventory. Click on an item to view more details and actions you can perform on it.</p>
 @foreach($items as $categoryId=>$categoryItems)
     <div class="card mb-3 inventory-category">
         <h5 class="card-header inventory-header">
@@ -32,29 +33,11 @@
         </div>
     </div>
 @endforeach
-
-
-<h3>Latest Activity</h3>
-<table class="table table-sm">
-    <thead>
-        <th>Sender</th>
-        <th>Recipient</th>
-        <th>Item</th>
-        <th>Log</th>
-        <th>Date</th>
-    </thead>
-    <tbody>
-        @foreach($logs as $log)
-            {!! $log->displayRow($user) !!}
-        @endforeach
-    </tbody>
-</table>
-<div class="text-right">
-    <a href="{{ url($user->url.'/item-logs') }}">View all...</a>
+<div class="text-right mb-4">
+    <a href="{{ url(Auth::user()->url.'/item-logs') }}">View logs...</a>
 </div>
 
 @endsection
-
 @section('scripts')
 <script>
 

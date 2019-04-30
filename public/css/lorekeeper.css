@@ -19,16 +19,19 @@
     
 **************************************************************************************************/
 
-h1, h2, h3, h4, h5 {
+h1, h2, h3, h4, h5,
+.h1, .h2, .h3, .h4, .h5 {
     text-transform: uppercase;
     font-family: Roboto Condensed, serif; 
     font-weight: bold;
 }
 
-h1 a, h2 a, h3 a, h4 a, h5 a {
+h1 a, h2 a, h3 a, h4 a, h5 a,
+a.h1, a.h2, a.h3, a.h4, a.h5 {
     color: rgba(0,0,0,0.7);
 }
-h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover {
+h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover,
+a.h1:hover, a.h2:hover, a.h3:hover, a.h4:hover, a.h5:hover {
     color: inherit;
     text-decoration: none;
 }
@@ -192,6 +195,12 @@ main > .row {
     Content
     
 **************************************************************************************************/
+.modal-header {
+    border-bottom: 0px;
+}
+.modal-header .modal-title {
+    line-height: 1em;
+}
 
 .tooltip-inner {
     max-width: 350px !important; 
@@ -233,6 +242,24 @@ main > .row {
 .breadcrumb-item+.breadcrumb-item:before {
     content: "»";
 }
+.collapse-title {
+    position: relative;
+}
+.collapse-title:after {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    right: -20px;
+    top: 0.425em;
+    border: 0.3em solid rgba(0,0,0,0.3);
+    border-color: rgba(0,0,0,0.3) transparent transparent transparent;
+}
+
+/* NOTIFICATIONS *********************************************************************************/
+
+.notifications-table .unread, .notifications-table .unread td {
+    background-color: #fffdf0;
+}
 
 /* BROWSE ****************************************************************************************/
 
@@ -262,10 +289,38 @@ main > .row {
 }
 
 
-/* LOGS ****************************************************************************************/
+/* LOGS ******************************************************************************************/
 tr.inflow {
     background-color: #fafaff;
 }
 tr.outflow {
     background-color: #fffafa
+}
+
+
+/* PROFILE ***************************************************************************************/
+
+.profile-assets-card .card-body {
+    display: flex;
+    flex-direction: column;
+}
+.profile-assets-card .card-body .profile-assets-content {
+    flex-grow: 1;
+}
+
+.profile-assets .profile-inventory .profile-inventory-item img {
+    max-width: 100%;
+}
+
+/* INVENTORY *************************************************************************************/
+
+.inventory-category .inventory-body .inventory-item img {
+    max-width: 100%;
+}
+.inventory-stack-name {
+    color: rgba(0,0,0,0.7);
+}
+.inventory-stack-name:hover {
+    color: inherit;
+    text-decoration: none;
 }

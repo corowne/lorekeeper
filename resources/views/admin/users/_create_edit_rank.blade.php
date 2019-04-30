@@ -47,10 +47,6 @@
     </div>
 
     {!! Form::close() !!}
-    <script>
-        $('[data-toggle=tooltip]').tooltip();
-        $('.cp').colorpicker();
-    </script>
 @else 
     Invalid rank selected.
 @endif

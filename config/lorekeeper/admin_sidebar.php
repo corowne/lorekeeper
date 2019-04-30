@@ -46,6 +46,19 @@ return [
             ],
         ]
     ],
+    'Grants' => [
+        'power' => 'edit_inventories',
+        'links' => [
+            [
+                'name' => 'Currency Grants',
+                'url' => 'admin/grants/user-currency'
+            ],
+            [
+                'name' => 'Items',
+                'url' => 'admin/grants/items'
+            ],
+        ]
+    ],
     'Data' => [
         'power' => 'edit_data',
         'links' => [

@@ -176,6 +176,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         App\Providers\SettingsProvider::class,
+        App\Providers\NotificationsProvider::class,
 
     ],
 
@@ -230,6 +231,7 @@ return [
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
         'Settings' => App\Facades\Settings::class,
+        'Notifications' => App\Facades\Notifications::class,
 
     ],
 

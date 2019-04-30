@@ -36,12 +36,12 @@ class CurrencyLog extends Model
         return $this->belongsTo('App\Models\Currency\Currency');
     }
 
-    public function getDisplayRowAttribute() 
+    public function displayRow($user) 
     {
-        $ret = '<tr class="'.($this->quantity > 0 ? 'inflow' : 'outflow').'">';
+        $ret = '<tr class="'.($this->recipient_id == $user->id ? 'inflow' : 'outflow').'">';
         $ret .= '<td>'.$this->sender->displayName.'</td>';
         $ret .= '<td>'.$this->recipient->displayName.'</td>';
-        $ret .= '<td>'.($this->quantity > 0 ? '+' : '-').' '.$this->currency->display(abs($this->quantity)).'</td>';
+        $ret .= '<td>'.($this->recipient_id == $user->id ? '+' : '-').' '.$this->currency->display(abs($this->quantity)).'</td>';
         $ret .= '<td>'.$this->log.'</td>';
         $ret .= '<td>'.format_date($this->created_at).'</td>';
         return $ret . '</tr>';
