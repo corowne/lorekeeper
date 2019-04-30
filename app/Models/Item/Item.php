@@ -88,6 +88,6 @@ class Item extends Model
 
     public function getUrlAttribute()
     {
-        return url('world/item-categories?name='.$this->name);
+        return url('world/items?name='.$this->name);
     }
 }

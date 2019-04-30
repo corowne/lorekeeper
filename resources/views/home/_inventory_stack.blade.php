@@ -2,8 +2,8 @@
     <div class="text-center">Invalid item selected.</div>
 @else
     <div class="text-center">
-        <div class="mb-1"><a href="{{ $stack->item->searchUrl }}"><img src="{{ $stack->item->imageUrl }}" /></a></div>
-        <div><a href="{{ $stack->item->searchUrl }}">{{ $stack->item->name }}</a></div>
+        <div class="mb-1"><a href="{{ $stack->item->url }}"><img src="{{ $stack->item->imageUrl }}" /></a></div>
+        <div><a href="{{ $stack->item->url }}">{{ $stack->item->name }}</a></div>
     </div>
     
     @if(isset($stack->data['notes']) || isset($stack->data['data']))
