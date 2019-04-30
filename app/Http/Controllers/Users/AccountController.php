@@ -38,7 +38,7 @@ class AccountController extends Controller
      */
     public function getNotifications()
     {
-        $notifications = Auth::user()->notifications()->paginate(30);
+        $notifications = Auth::user()->notifications()->orderBy('created_at', 'DESC')->paginate(30);
         Auth::user()->notifications()->update(['is_unread' => 0]);
         Auth::user()->notifications_unread = 0;
         Auth::user()->save();
