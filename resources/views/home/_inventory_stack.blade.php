@@ -25,7 +25,7 @@
         </div>
     @endif
 
-    @if(($user && $stack->user_id == $user->id) || $user->hasPower('edit_inventories'))
+    @if($user && ($stack->user_id == $user->id || $user->hasPower('edit_inventories')))
         <div class="card mt-3">
             <ul class="list-group list-group-flush">
                 @if($stack->isTransferrable || $user->hasPower('edit_inventories'))
