@@ -33,7 +33,7 @@
         </label>
         <div class="col-md-10">
             @if(!$user->isAdmin && Auth::user()->canEditRank($user->rank))
-                {!! Form::select('rank_id', $ranks, Request::get('rank_id'), ['class' => 'form-control']) !!}
+                {!! Form::select('rank_id', $ranks, $user->rank_id, ['class' => 'form-control']) !!}
             @else
                 {!! Form::text('rank_id', $ranks[$user->rank_id], ['class' => 'form-control', 'disabled']) !!}
             @endif

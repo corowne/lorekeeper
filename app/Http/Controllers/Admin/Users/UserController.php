@@ -67,10 +67,9 @@ class UserController extends Controller
             $request->validate([
                 'name' => 'required|between:3,25'
             ]);
-            $data = $request->only(['name'] + (!$user->isAdmin ? ['rank_id'] : []));
+            $data = $request->only(['name'] + (!$user->isAdmin ? [1 => 'rank_id'] : []));
 
             $logData = ['old_name' => $user->name] + $data;
-
             if($user->update($data)) {
                 UserUpdateLog::create(['staff_id' => Auth::user()->id, 'user_id' => $user->id, 'data' => json_encode($logData), 'type' => 'Name/Rank Change']);
                 flash('Updated user\'s information successfully.')->success();
