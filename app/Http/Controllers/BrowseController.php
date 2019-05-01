@@ -15,10 +15,17 @@ class BrowseController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUsers()
+    public function getUsers(Request $request)
     {
+        $query = User::join('ranks','users.rank_id', '=', 'ranks.id')->select('ranks.name AS rank_name', 'users.*');
+        
+        if($request->get('name')) $query->where(function($query) use ($request) {
+            $query->where('users.name', 'LIKE', '%' . $request->get('name') . '%')->orWhere('users.alias', 'LIKE', '%' . $request->get('name') . '%');
+        });
+        if($request->get('rank_id')) $query->where('rank_id', $request->get('rank_id'));
+
         return view('browse.users', [  
-            'users' => User::paginate(50),
+            'users' => $query->orderBy('ranks.sort', 'DESC')->orderBy('name')->paginate(30),
             'ranks' => [0 => 'Any Rank'] + Rank::orderBy('ranks.sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }

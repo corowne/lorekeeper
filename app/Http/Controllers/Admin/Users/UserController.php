@@ -31,7 +31,7 @@ class UserController extends Controller
         if($request->get('rank_id')) $query->where('rank_id', $request->get('rank_id'));
 
         return view('admin.users.index', [
-            'users' => $query->orderBy('ranks.sort', 'DESC')->paginate(30),
+            'users' => $query->orderBy('ranks.sort', 'DESC')->orderBy('name')->paginate(30),
             'ranks' => [0 => 'Any Rank'] + Rank::orderBy('ranks.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'count' => $query->count()
         ]);
