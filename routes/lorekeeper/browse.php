@@ -57,6 +57,7 @@ Route::group(['prefix' => 'world'], function() {
     Route::get('items', 'WorldController@getItems');
     Route::get('trait-categories', 'WorldController@getFeatureCategories');
     Route::get('traits', 'WorldController@getFeatures');
+    Route::get('character-categories', 'WorldController@getCharacterCategories');
 });
 
 /**************************************************************************************************

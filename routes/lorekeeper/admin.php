@@ -116,6 +116,17 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('traits/edit/{id?}', 'FeatureController@postCreateEditFeature');
     Route::post('traits/delete/{id}', 'FeatureController@postDeleteFeature');
     Route::post('traits/sort', 'FeatureController@postSortFeature');
+
+    # CHARACTER CATEGORIES
+    Route::get('character-categories', 'CharacterCategoryController@getIndex');
+    Route::get('character-categories/create', 'CharacterCategoryController@getCreateCharacterCategory');
+    Route::get('character-categories/edit/{id}', 'CharacterCategoryController@getEditCharacterCategory');
+    Route::get('character-categories/delete/{id}', 'CharacterCategoryController@getDeleteCharacterCategory');
+    Route::post('character-categories/create', 'CharacterCategoryController@postCreateEditCharacterCategory');
+    Route::post('character-categories/edit/{id?}', 'CharacterCategoryController@postCreateEditCharacterCategory');
+    Route::post('character-categories/delete/{id}', 'CharacterCategoryController@postDeleteCharacterCategory');
+    Route::post('character-categories/sort', 'CharacterCategoryController@postSortCharacterCategory');
+    
 });
 
 

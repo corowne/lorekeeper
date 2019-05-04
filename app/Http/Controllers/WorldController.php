@@ -11,6 +11,7 @@ use App\Models\Item\ItemCategory;
 use App\Models\Item\Item;
 use App\Models\Feature\FeatureCategory;
 use App\Models\Feature\Feature;
+use App\Models\Character\CharacterCategory;
 
 class WorldController extends Controller
 {
@@ -196,6 +197,23 @@ class WorldController extends Controller
         return view('world.items', [
             'items' => $query->paginate(20),
             'categories' => ['none' => 'Any Category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
+        ]);
+    }
+
+    
+    
+    /**
+     * Show the character categories page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterCategories(Request $request)
+    {
+        $query = CharacterCategory::query();
+        $name = $request->get('name');
+        if($name) $query->where('name', 'LIKE', '%'.$name.'%')->orWhere('code', 'LIKE', '%'.$name.'%');
+        return view('world.character_categories', [  
+            'categories' => $query->orderBy('sort', 'DESC')->paginate(20),
         ]);
     }
     
