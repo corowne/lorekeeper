@@ -73,7 +73,7 @@ class NewsService extends Service
             DB::beginTransaction();
 
             try {
-                News::shouldBeVisible()->update('is_visible', 1);
+                News::shouldBeVisible()->update(['is_visible', 1]);
                 $this->alertUsers();
 
                 return $this->commitReturn(true);
