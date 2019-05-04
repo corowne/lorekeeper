@@ -54,7 +54,7 @@ return [
                 'url' => 'admin/grants/user-currency'
             ],
             [
-                'name' => 'Items',
+                'name' => 'Item Grants',
                 'url' => 'admin/grants/items'
             ],
         ]
@@ -93,6 +93,10 @@ return [
             [
                 'name' => 'Prompts',
                 'url' => 'admin/prompts'
+            ],
+            [
+                'name' => 'Character Categories',
+                'url' => 'admin/data/character-categories'
             ],
         ]
     ],
