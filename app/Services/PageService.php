@@ -16,6 +16,8 @@ class PageService extends Service
 
         try {
             if(isset($data['text']) && $data['text']) $data['parsed_text'] = parse($data['text']);
+            $data['user_id'] = $user->id;
+            if(!isset($data['is_visible'])) $data['is_visible'] = 0;
 
             $page = SitePage::create($data);
 
@@ -35,6 +37,8 @@ class PageService extends Service
             if(Page::where('key', $data['key'])->where('id', '!=', $page->id)->exists()) throw new \Exception("The key has already been taken.");
 
             if(isset($data['text']) && $data['text']) $data['parsed_text'] = parse($data['text']);
+            $data['user_id'] = $user->id;
+            if(!isset($data['is_visible'])) $data['is_visible'] = 0;
 
             $page->update($data);
 

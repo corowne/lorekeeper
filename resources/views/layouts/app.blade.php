@@ -19,6 +19,7 @@
     <script src="{{ asset('js/lightbox.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap-colorpicker.min.js') }}"></script>
     <script src="{{ asset('js/selectize.min.js') }}"></script>
+    <script src="{{ asset('js/jquery-ui-timepicker-addon.js') }}"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -40,6 +41,7 @@
     
     <link href="{{ asset('css/lightbox.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap-colorpicker.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/jquery-ui-timepicker-addon.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">
@@ -54,6 +56,11 @@
                 </div>
                 <div class="main-content col-lg-8 p-4">
                     <div class="container">
+                        @if(Auth::check())
+                            @if(Auth::user()->is_news_unread)
+                                <div class="alert alert-info"><a href="{{ url('news') }}">There is a new news post!</a></div>
+                            @endif
+                        @endif
                         @include('flash::message')
                         @yield('content')
                     </div>

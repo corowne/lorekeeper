@@ -17,6 +17,16 @@
 Route::get('items/{id}', 'Users\InventoryController@getStack');
 
 /**************************************************************************************************
+    News
+**************************************************************************************************/
+# PROFILES
+Route::group(['prefix' => 'news'], function() {
+    Route::get('/', 'NewsController@getIndex');
+    Route::get('{id}.{slug?}', 'NewsController@getNews');
+    Route::get('{id}.', 'NewsController@getNews');
+});
+
+/**************************************************************************************************
     Users
 **************************************************************************************************/
 Route::get('/users', 'BrowseController@getUsers');
