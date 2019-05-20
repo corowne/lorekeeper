@@ -177,6 +177,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         App\Providers\SettingsProvider::class,
         App\Providers\NotificationsProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
 
     ],
 
@@ -232,6 +233,7 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'Settings' => App\Facades\Settings::class,
         'Notifications' => App\Facades\Notifications::class,
+        'Image' => Intervention\Image\Facades\Image::class
 
     ],
 

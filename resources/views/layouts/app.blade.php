@@ -20,6 +20,7 @@
     <script src="{{ asset('js/bootstrap-colorpicker.min.js') }}"></script>
     <script src="{{ asset('js/selectize.min.js') }}"></script>
     <script src="{{ asset('js/jquery-ui-timepicker-addon.js') }}"></script>
+    <script src="{{ asset('js/croppie.min.js') }}"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -42,6 +43,8 @@
     <link href="{{ asset('css/lightbox.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap-colorpicker.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/jquery-ui-timepicker-addon.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/croppie.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/selectize.bootstrap4.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">

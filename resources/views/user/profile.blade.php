@@ -69,14 +69,19 @@
 </div>
 
 <h2>Characters</h2>
+@foreach($user->characters()->take(4)->get()->chunk(4) as $chunk)
 <div class="row">
-    @for($i = 0; $i < 8; $i++)
-        <div class="col-md-3 col-6 mb-3">
-            <div class="card">
-                <img class="card-img" src="https://via.placeholder.com/150" />
+    @foreach($chunk as $character)
+        <div class="col-md-3 col-6 text-center">
+            <div>
+                <a href="{{ $character->url }}"><img src="{{ $character->image->thumbnailUrl }}" class="img-thumbnail" /></a>
+            </div>
+            <div class="mt-1">
+                <a href="{{ $character->url }}" class="h5 mb-0">{{ $character->fullName }}</a>
             </div>
         </div>
-    @endfor
+    @endforeach
 </div>
-
+@endforeach
+<div class="text-right"><a href="{{ $user->url.'/characters' }}">View all...</a></div>
 @endsection

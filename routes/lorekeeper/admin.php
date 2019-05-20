@@ -170,3 +170,11 @@ Route::group(['prefix' => 'grants', 'namespace' => 'Users', 'middleware' => 'pow
     Route::post('items', 'GrantController@postItems');
     
 });
+
+# MASTERLIST
+Route::group(['prefix' => 'masterlist', 'namespace' => 'Characters', 'middleware' => 'power:manage_characters'], function() {
+    Route::get('create-character', 'CharacterController@getCreateCharacter');
+    Route::post('create-character', 'CharacterController@postCreateCharacter');
+    
+    Route::get('get-number', 'CharacterController@getPullNumber');
+});

@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+use App\Models\Character\Character;
 use App\Models\Rank\RankPower;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
@@ -56,6 +57,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function notifications() 
     {
         return $this->hasMany('App\Models\Notification');
+    }
+    
+    public function characters() 
+    {
+        return $this->hasMany('App\Models\Character\Character');
     }
     
     public function rank() 
@@ -180,5 +186,16 @@ class User extends Authenticatable implements MustVerifyEmail
         })->orderBy('created_at', 'DESC');
         if($limit) return $query->take($limit)->get();
         else return $query->paginate(30);
+    }
+
+    public function updateCharacters()
+    {
+        if(!$this->alias) return;
+
+        // Find any uncredited characters and credit them.
+        Character::where('owner_alias', $this->alias)->update([
+            'owner_alias' => null,
+            'user_id' => $this->id
+        ]);
     }
 }

@@ -65,4 +65,5 @@ class Notification extends Model
     const CURRENCY_TRANSFER     = 4;
     const ITEM_TRANSFER         = 5;
     const FORCED_ITEM_TRANSFER  = 6;
+    const CHARACTER_UPLOAD      = 7;
 }

@@ -1,0 +1,28 @@
+<div class="row">
+    <div class="col-lg-3 col-4"><h5>Owner</h5></div>
+    <div class="col-lg-9 col-8">{!! $character->displayOwner !!}</div>
+</div>
+<div class="row">
+    <div class="col-lg-3 col-4"><h5>Category</h5></div>
+    <div class="col-lg-9 col-8">{!! $character->category->displayName !!}</div>
+</div>
+<div class="row">
+    <div class="col-lg-3 col-4"><h5 class="mb-0">Created</h5></div>
+    <div class="col-lg-9 col-8">{!! format_date($character->created_at) !!}</div>
+</div>
+
+<hr />
+
+<h5><i class="text-{{ $character->is_giftable ? 'success far fa-circle' : 'danger fas fa-times'  }} fa-fw mr-2"></i> {{ $character->is_giftable ? 'Can' : 'Cannot'  }} be gifted</h5>
+<h5><i class="text-{{ $character->is_tradeable ? 'success far fa-circle' : 'danger fas fa-times'  }} fa-fw mr-2"></i> {{ $character->is_tradeable ? 'Can' : 'Cannot'  }} be traded</h5>
+<h5><i class="text-{{ $character->is_sellable ? 'success far fa-circle' : 'danger fas fa-times'  }} fa-fw mr-2"></i> {{ $character->is_sellable ? 'Can' : 'Cannot'  }} be sold</h5>
+<div class="row">
+    <div class="col-lg-3 col-4"><h5>Sale Value</h5></div>
+    <div class="col-lg-9 col-8">${{ $character->sale_value }}</div>
+</div>
+@if($character->transferrable_at && $character->transferrable_at->isFuture())
+    <div class="row">
+        <div class="col-lg-3 col-4"><h5>Cooldown</h5></div>
+        <div class="col-lg-9 col-8">Cannot be transferred until {{ format_date($character->transferrable_at) }}</div>
+    </div>
+@endif

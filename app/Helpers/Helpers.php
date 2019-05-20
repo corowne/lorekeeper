@@ -39,6 +39,7 @@ function format_date($timestamp) {
 }
 
 function parse($text) {
+    if(!$text) return null;
 
     require_once(base_path().'/vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php');
     
@@ -47,4 +48,12 @@ function parse($text) {
     $text = $purifier->purify($text);
 
     return $text;
+}
+
+function randomString($characters)
+{
+    $src = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    $code = '';
+    for ($i = 0; $i < $characters; $i++) $code .= $src[mt_rand(0, strlen($src) - 1)];
+    return $code;
 }

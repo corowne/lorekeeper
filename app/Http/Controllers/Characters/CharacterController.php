@@ -1,25 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Users;
+namespace App\Http\Controllers\Characters;
 
 use Illuminate\Http\Request;
 
 use DB;
 use Auth;
 use Route;
-use App\Models\User\User;
-use App\Models\User\UserCurrency;
-use App\Models\Currency\Currency;
-use App\Models\Currency\CurrencyLog;
-
-use App\Models\User\UserItem;
-use App\Models\Item\Item;
-use App\Models\Item\ItemCategory;
-use App\Models\Item\UserItemLog;
+use App\Models\Character\Character;
 
 use App\Http\Controllers\Controller;
 
-class UserController extends Controller
+class CharacterController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -28,23 +20,34 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $name = Route::current()->parameter('name');
-        $this->user = User::where('name', $name)->first();
-        if(!$this->user) abort(404);
+        $slug = Route::current()->parameter('slug');
+        $this->character = Character::where('slug', $slug)->first();
+        if(!$this->character) abort(404);
 
-        $this->user->updateCharacters();
+        $this->character->updateOwner();
     }
 
     /**
-     * Show a user's profile.
+     * Show a character's masterlist entry.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUser($name)
+    public function getCharacter($slug)
     {
-        return view('user.profile', [
-            'user' => $this->user,
-            'items' => $this->user->items()->orderBy('user_items.updated_at', 'DESC')->take(4)->get()
+        return view('character.character', [
+            'character' => $this->character,
+        ]);
+    }
+
+    /**
+     * Show a character's profile.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterProfile($slug)
+    {
+        return view('character.profile', [
+            'character' => $this->character,
         ]);
     }
     

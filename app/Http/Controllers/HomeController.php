@@ -48,6 +48,7 @@ class HomeController extends Controller
         elseif($request->get('granted') === 'DeviantArt'){
             $deviantart->linkUser(Auth::user());
             flash('deviantART account has been linked successfully.')->success();
+            Auth::user()->updateCharacters();
             return redirect()->to('/');
         }
 

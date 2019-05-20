@@ -36,6 +36,14 @@ a.h1:hover, a.h2:hover, a.h3:hover, a.h4:hover, a.h5:hover {
     text-decoration: none;
 }
 
+a {
+    color: rgba(0,0,0,0.7);
+}
+a:hover {
+    color: rgba(0,0,0,1);
+    text-decoration: none;
+}
+
 body {
     background-color: transparent;
     font-family: Lato, sans-serif; 
@@ -255,6 +263,10 @@ main > .row {
     border-color: rgba(0,0,0,0.3) transparent transparent transparent;
 }
 
+.image, .image-thumb {
+    max-width: 100%;
+}
+
 /* NOTIFICATIONS *********************************************************************************/
 
 .notifications-table .unread, .notifications-table .unread td {
@@ -294,7 +306,7 @@ tr.inflow {
     background-color: #fafaff;
 }
 tr.outflow {
-    background-color: #fffafa
+    background-color: #fffafa;
 }
 
 
@@ -310,6 +322,10 @@ tr.outflow {
 
 .profile-assets .profile-inventory .profile-inventory-item img {
     max-width: 100%;
+}
+
+.character-bio .nav-tabs.card-header-tabs .active {
+    background-color: white;
 }
 
 /* INVENTORY *************************************************************************************/

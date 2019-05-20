@@ -48,10 +48,15 @@ return [
     ],
 
     // FORCED_ITEM_TRANSFER
-    5 => [
+    6 => [
         'message' => '{item_name} (×{item_quantity}) was transferred out of your inventory by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Inventory</a>)',
         'url' => 'inventory'
     ],
 
+    // CHARACTER_UPLOAD
+    7 => [
+        'message' => 'A new character (<a href="{character_url}">{character_slug}</a>) has been uploaded for you. (<a href="{url}">View Characters</a>)',
+        'url' => 'characters'
+    ],
 
 ];
