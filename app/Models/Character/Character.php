@@ -139,6 +139,10 @@ class Character extends Model
             $this->user_id = $owner->id;
             $this->owner_alias = null;
             $this->save();
+
+            $owner->settings->is_fto = 0;
+            $owner->settings->character_count++;
+            $owner->settings->save();
         }
     }
 }

@@ -193,9 +193,16 @@ class User extends Authenticatable implements MustVerifyEmail
         if(!$this->alias) return;
 
         // Find any uncredited characters and credit them.
-        Character::where('owner_alias', $this->alias)->update([
+        if(Character::where('owner_alias', $this->alias)->update([
             'owner_alias' => null,
             'user_id' => $this->id
-        ]);
+        ])) {
+            $count = $this->characters->count();
+            if($count) {
+                $this->settings->is_fto = 0;
+                $this->settings->character_count = $count;
+                $this->settings->save();
+            }
+        }
     }
 }

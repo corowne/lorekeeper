@@ -81,6 +81,13 @@ class CharacterManager extends Service
             // Add a log for the user
             $this->createLog($user->id, $recipientId, $alias, $character->id, 'Character Created', 'Initial upload', 'user');
 
+            // Update the user's FTO status and character count
+            if($recipient) {
+                $recipient->settings->is_fto = 0;
+                $recipient->settings->character_count++;
+                $recipient->settings->save();
+            }
+
             // If the recipient has an account, send them a notification
             if($recipient && $user->id != $recipient->id) {
                 Notifications::create('CHARACTER_UPLOAD', $recipient, [
