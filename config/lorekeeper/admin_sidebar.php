@@ -109,7 +109,7 @@ return [
             ],
             [
                 'name' => 'Create Character',
-                'url' => 'admin/characters/create'
+                'url' => 'admin/masterlist/create-character'
             ]
         ]
     ],
