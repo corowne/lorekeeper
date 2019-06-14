@@ -29,11 +29,10 @@ class CharacterImage extends Model
     public $timestamps = true;
     
     public static $createRules = [
-        'character_id' => 'required',
-        'user_id' => 'required',
         'species_id' => 'required',
         'rarity_id' => 'required',
-        'description' => 'nullable',
+        'image' => 'required|mimes:jpeg,gif,png|max:20000',
+        'thumbnail' => 'nullable|mimes:jpeg,gif,png|max:20000',
     ];
     
     public static $updateRules = [
@@ -70,6 +69,11 @@ class CharacterImage extends Model
         $ids = FeatureCategory::orderBy('sort', 'DESC')->pluck('id')->toArray();
 
         return $this->hasMany('App\Models\Character\CharacterFeature', 'character_image_id')->join('features', 'features.id', '=', 'character_features.feature_id')->orderByRaw(DB::raw('FIELD(features.feature_category_id, '.implode(',', $ids).')'));
+    }
+    
+    public function creators() 
+    {
+        return $this->hasMany('App\Models\Character\CharacterImageCreator', 'character_image_id');
     }
     
     public function designers() 

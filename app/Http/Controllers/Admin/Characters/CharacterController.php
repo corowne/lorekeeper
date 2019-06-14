@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Characters;
 use Illuminate\Http\Request;
 
 use Auth;
+use Config;
 
 use App\Models\Character\Character;
 use App\Models\Character\CharacterCategory;
@@ -14,6 +15,7 @@ use App\Models\Species;
 use App\Models\Feature\Feature;
 
 use App\Services\CharacterManager;
+use App\Services\CurrencyManager;
 
 use App\Http\Controllers\Controller;
 
@@ -62,37 +64,116 @@ class CharacterController extends Controller
         }
         return redirect()->back();
     }
-    
+
+
     /**
-     * Get the character category deletion modal.
+     * Show the edit character stats modal.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getDeleteCharacterCategory($id)
+    public function getEditCharacterStats($slug)
     {
-        $category = CharacterCategory::find($id);
-        return view('admin.characters._delete_character_category', [
-            'category' => $category,
+        $this->character = Character::where('slug', $slug)->first();
+        if(!$this->character) abort(404);
+
+        return view('character.admin._edit_stats_modal', [
+            'character' => $this->character,
+            'categories' => CharacterCategory::orderBy('sort')->pluck('name', 'id')->toArray(),
+            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
+            'number' => format_masterlist_number($this->character->number, Config::get('lorekeeper.settings.character_number_digits'))
         ]);
     }
 
-    public function postDeleteCharacterCategory(Request $request, CharacterCategoryService $service, $id)
+    public function postEditCharacterStats(Request $request, CharacterManager $service, $slug)
     {
-        if($id && $service->deleteCharacterCategory(CharacterCategory::find($id))) {
-            flash('Category deleted successfully.')->success();
+        $request->validate(Character::$updateRules);
+        $data = $request->only([
+            'character_category_id', 'number', 'slug',
+            'is_giftable', 'is_tradeable', 'is_sellable', 'sale_value',
+            'transferrable_at'
+        ]);
+        $this->character = Character::where('slug', $slug)->first();
+        if(!$this->character) abort(404);
+        if ($service->updateCharacterStats($data, $this->character, Auth::user())) {
+            flash('Character stats updated successfully.')->success();
+            return redirect()->to($this->character->url);
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
-        return redirect()->to('admin/data/character-categories');
+        return redirect()->back();
     }
 
-    
-
-    public function postSortCharacterCategory(Request $request, CharacterCategoryService $service)
+    /**
+     * Show the edit character description modal.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getEditCharacterDescription($slug)
     {
-        if($service->sortCharacterCategory($request->get('sort'))) {
-            flash('Category order updated successfully.')->success();
+        $this->character = Character::where('slug', $slug)->first();
+        if(!$this->character) abort(404);
+        
+        return view('character.admin._edit_description_modal', [
+            'character' => $this->character,
+        ]);
+    }
+
+    public function postEditCharacterDescription(Request $request, CharacterManager $service, $slug)
+    {
+        $data = $request->only([
+            'description'
+        ]);
+        $this->character = Character::where('slug', $slug)->first();
+        if(!$this->character) abort(404);
+        if ($service->updateCharacterDescription($data, $this->character, Auth::user())) {
+            flash('Character description updated successfully.')->success();
+            return redirect()->to($this->character->url);
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    public function postCharacterSettings(Request $request, CharacterManager $service, $slug)
+    {
+        $data = $request->only([
+            'is_visible'
+        ]);
+        $this->character = Character::where('slug', $slug)->first();
+        if(!$this->character) abort(404);
+        if ($service->updateCharacterSettings($data, $this->character, Auth::user())) {
+            flash('Character settings updated successfully.')->success();
+            return redirect()->to($this->character->url);
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Show the delete character modal.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterDelete($slug)
+    {
+        $this->character = Character::where('slug', $slug)->first();
+        if(!$this->character) abort(404);
+
+        return view('character.admin._delete_character_modal', [
+            'character' => $this->character,
+        ]);
+    }
+
+    public function postCharacterDelete(Request $request, CharacterManager $service, $slug)
+    {
+        //$request->validate(Character::$createRules);
+        if ($service->deleteCharacter($character, Auth::user())) {
+            flash('Character deleted successfully.')->success();
+            return redirect()->to($character->url);
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

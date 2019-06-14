@@ -19,6 +19,7 @@ class CharacterProfile extends Model
         'character_id', 'text', 'parsed_text',
     ];
     protected $table = 'character_profiles';
+    public $primaryKey = 'character_id';
     
     public function character() 
     {

@@ -7,7 +7,7 @@ function loadModal(url, title) {
             $( "#modal" ).find('.modal-body').html( msg + xhr.status + " " + xhr.statusText );
         }
         else {
-            $('#modal [data-toggle=tooltip]').tooltip();
+            $('#modal [data-toggle=tooltip]').tooltip({html: true});
             $('#modal .cp').colorpicker();
         }
     });

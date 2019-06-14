@@ -92,8 +92,8 @@
         {!! Form::label('is_tradeable', 'Is Tradeable', ['class' => 'form-check-label ml-3']) !!}
     </div>
     <div class="form-group">
-        {!! Form::checkbox('is_resellable', 1, old('is_resellable'), ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'resellable']) !!}
-        {!! Form::label('is_resellable', 'Is Resellable', ['class' => 'form-check-label ml-3']) !!}
+        {!! Form::checkbox('is_sellable', 1, old('is_sellable'), ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'resellable']) !!}
+        {!! Form::label('is_sellable', 'Is Resellable', ['class' => 'form-check-label ml-3']) !!}
     </div>
     <div class="card mb-3" id="resellOptions">
         <div class="card-body">

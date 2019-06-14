@@ -40,7 +40,7 @@
         <div class="card-body text-center">
             <h5 class="card-title">Bank</h5>
             <div class="profile-assets-content">
-                @foreach($user->getCurrencies(true) as $currency)
+                @foreach($user->getCurrencies(false) as $currency)
                     <div>{!! $currency->display($currency->quantity) !!}</div>
                 @endforeach
             </div>

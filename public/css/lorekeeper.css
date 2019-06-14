@@ -340,3 +340,14 @@ tr.outflow {
     color: inherit;
     text-decoration: none;
 }
+
+/* CHARACTERS ************************************************************************************/
+
+.image-nav .nav-item a {
+    border: 5px solid transparent;
+    border-radius: .25rem;
+    display: block;
+}
+.image-nav .nav-item a.active {
+    border: 5px solid #ddd;
+}

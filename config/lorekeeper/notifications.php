@@ -59,4 +59,29 @@ return [
         'url' => 'characters'
     ],
 
+    // CHARACTER_CURRENCY_GRANT
+    8 => [
+        'message' => '{character_name} has received a staff grant of {currency_quantity} {currency_name} from <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Bank</a>)',
+        'url' => 'character/{character_slug}/bank'
+    ],
+    
+    // CHARACTER_CURRENCY_REMOVAL
+    9 => [
+        'message' => '{currency_quantity} {currency_name} was removed from {character_name} by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Bank</a>)',
+        'url' => 'character/{character_slug}/bank'
+    ],
+    
+    // CHARACTER_PROFILE_EDIT
+    10 => [
+        'message' => '{character_name}\'s profile was edited by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Character</a>)',
+        'url' => 'character/{character_slug}/profile'
+    ],
+    
+    // IMAGE_UPLOAD
+    11 => [
+        'message' => 'A new image for {character_name} was uploaded by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Character</a>)',
+        'url' => 'character/{character_slug}/profile'
+    ],
+
+
 ];

@@ -40,6 +40,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'Users'], function() {
     
     Route::get('{name}/currency-logs', 'UserController@getUserCurrencyLogs');
     Route::get('{name}/item-logs', 'UserController@getUserItemLogs');
+    Route::get('{name}/ownership', 'UserController@getUserOwnershipLogs');
 });
 
 /**************************************************************************************************
@@ -50,6 +51,17 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() 
     Route::get('{slug}', 'CharacterController@getCharacter');
     Route::get('{slug}/profile', 'CharacterController@getCharacterProfile');
     Route::get('{slug}/bank', 'CharacterController@getCharacterBank');
+    Route::get('{slug}/images', 'CharacterController@getCharacterImages');
+    
+    Route::get('{slug}/currency-logs', 'CharacterController@getCharacterCurrencyLogs');
+    Route::get('{slug}/ownership', 'CharacterController@getCharacterOwnershipLogs');
+    Route::get('{slug}/change-log', 'CharacterController@getCharacterLogs');
+
+    Route::get('{slug}/profile/edit', 'CharacterController@getEditCharacterProfile');
+    Route::post('{slug}/profile/edit', 'CharacterController@postEditCharacterProfile');
+    
+    Route::get('{slug}/transfer', 'CharacterController@getTransfer');
+    Route::post('{slug}/transfer', 'CharacterController@postTransfer');
 });
 
 /**************************************************************************************************

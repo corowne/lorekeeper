@@ -30,8 +30,8 @@ class CharacterFeature extends Model
         return $this->belongsTo('App\Models\Feature\Feature', 'feature_id');
     }
     
-    public function getDataAttribute()
-    {
-        return json_decode($this->attributes['data'], true);
-    }
+    //public function getDataAttribute()
+    //{
+    //    return json_decode($this->attributes['data'], true);
+    //}
 }

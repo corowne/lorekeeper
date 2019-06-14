@@ -11,6 +11,7 @@ use App\Models\Rank\RankPower;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
 use App\Models\Item\ItemLog;
+use App\Models\User\UserCharacterLog;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -136,7 +137,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return '<a href="'.$this->aliasUrl.'">'.$this->alias.'@dA</a>';
     }
 
-    public function getCurrencies($displayedOnly = false)
+    public function getCurrencies($showAll = false)
     {
         // Get a list of currencies that need to be displayed
         // On profile: only ones marked is_displayed
@@ -145,7 +146,7 @@ class User extends Authenticatable implements MustVerifyEmail
         $owned = UserCurrency::where('user_id', $this->id)->pluck('quantity', 'currency_id')->toArray();
 
         $currencies = Currency::where('is_user_owned', 1);
-        if($displayedOnly) $currencies->where(function($query) use($owned) {
+        if($showAll) $currencies->where(function($query) use($owned) {
             $query->where('is_displayed', 1)->orWhereIn('id', array_keys($owned));
         });
         else $currencies = $currencies->where('is_displayed', 1);
@@ -168,9 +169,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $user = $this;
         $query = CurrencyLog::where(function($query) use ($user) {
-            $query->where('sender_type', 'User')->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Staff Removal']);
+            $query->where('sender_type', 'User')->where('sender_id', $user->id)->where('log_type', '!=', 'Staff Grant');
         })->orWhere(function($query) use ($user) {
-            $query->where('recipient_type', 'User')->where('recipient_id', $user->id);
+            $query->where('recipient_type', 'User')->where('recipient_id', $user->id)->where('log_type', '!=', 'Staff Removal');
         })->orderBy('created_at', 'DESC');
         if($limit) return $query->take($limit)->get();
         else return $query->paginate(30);
@@ -204,5 +205,16 @@ class User extends Authenticatable implements MustVerifyEmail
                 $this->settings->save();
             }
         }
+    }
+
+    public function getOwnershipLogs()
+    {
+        $user = $this;
+        $query = UserCharacterLog::where(function($query) use ($user) {
+            $query->where('sender_id', $user->id)->where('log_type', '!=', 'Character Created');
+        })->orWhere(function($query) use ($user) {
+            $query->where('recipient_id', $user->id);
+        })->orderBy('created_at', 'DESC');
+        return $query->paginate(30);
     }
 }

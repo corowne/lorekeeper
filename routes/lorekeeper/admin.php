@@ -174,7 +174,53 @@ Route::group(['prefix' => 'grants', 'namespace' => 'Users', 'middleware' => 'pow
 # MASTERLIST
 Route::group(['prefix' => 'masterlist', 'namespace' => 'Characters', 'middleware' => 'power:manage_characters'], function() {
     Route::get('create-character', 'CharacterController@getCreateCharacter');
-    //Route::post('create-character', 'CharacterController@postCreateCharacter');
+    Route::post('create-character', 'CharacterController@postCreateCharacter');
     
     Route::get('get-number', 'CharacterController@getPullNumber');
+});
+Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware' => 'power:manage_inventories'], function() {
+    Route::post('{slug}/transfer', 'CharacterController@postCurrencyTransfer');
+});
+Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware' => 'power:manage_characters'], function() {
+
+    # IMAGES
+    Route::get('{slug}/image', 'CharacterImageController@getNewImage');
+    Route::post('{slug}/image', 'CharacterImageController@postNewImage');
+
+    Route::get('image/{id}/traits', 'CharacterImageController@getEditImageFeatures');
+    Route::post('image/{id}/traits', 'CharacterImageController@postEditImageFeatures');
+
+    Route::get('image/{id}/notes', 'CharacterImageController@getEditImageNotes');
+    Route::post('image/{id}/notes', 'CharacterImageController@postEditImageNotes');
+
+    Route::get('image/{id}/credits', 'CharacterImageController@getEditImageCredits');
+    Route::post('image/{id}/credits', 'CharacterImageController@postEditImageCredits');
+
+    Route::get('image/{id}/reupload', 'CharacterImageController@getImageReupload');
+    Route::post('image/{id}/reupload', 'CharacterImageController@postImageReupload');
+    
+    Route::post('image/{id}/settings', 'CharacterImageController@postImageSettings');
+
+    Route::get('image/{id}/active', 'CharacterImageController@getImageActive');
+    Route::post('image/{id}/active', 'CharacterImageController@postImageActive');
+
+    Route::get('image/{id}/delete', 'CharacterImageController@getImageDelete');
+    Route::post('image/{id}/delete', 'CharacterImageController@postImageDelete');
+    
+    Route::post('{slug}/images/sort', 'CharacterImageController@postSortImages');
+
+    # CHARACTER
+    Route::get('{slug}/stats', 'CharacterController@getEditCharacterStats');
+    Route::post('{slug}/stats', 'CharacterController@postEditCharacterStats');
+
+    Route::get('{slug}/description', 'CharacterController@getEditCharacterDescription');
+    Route::post('{slug}/description', 'CharacterController@postEditCharacterDescription');
+
+    Route::get('{slug}/profile', 'CharacterController@getEditCharacterProfile');
+    Route::post('{slug}/profile', 'CharacterController@postEditCharacterProfile');
+
+    Route::get('{slug}/delete', 'CharacterController@getCharacterDelete');
+    Route::post('{slug}/delete', 'CharacterController@postCharacterDelete');
+    
+    Route::post('{slug}/settings', 'CharacterController@postCharacterSettings');
 });

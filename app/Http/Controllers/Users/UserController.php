@@ -98,7 +98,7 @@ class UserController extends Controller
 
     
     /**
-     * Show a user's profile.
+     * Show a user's currency logs.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -113,7 +113,7 @@ class UserController extends Controller
 
     
     /**
-     * Show a user's profile.
+     * Show a user's item logs.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -123,6 +123,21 @@ class UserController extends Controller
         return view('user.item_logs', [
             'user' => $this->user,
             'logs' => $this->user->getItemLogs(0)
+        ]);
+    }
+
+    
+    
+    /**
+     * Show a user's character ownership logs.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserOwnershipLogs($name)
+    {
+        return view('user.ownership_logs', [
+            'user' => $this->user,
+            'logs' => $this->user->getOwnershipLogs()
         ]);
     }
 

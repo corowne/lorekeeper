@@ -58,12 +58,16 @@ class Notification extends Model
         return constant('self::'. $type);
     }
 
-    const CURRENCY_GRANT        = 0;
-    const ITEM_GRANT            = 1;
-    const CURRENCY_REMOVAL      = 2;
-    const ITEM_REMOVAL          = 3;
-    const CURRENCY_TRANSFER     = 4;
-    const ITEM_TRANSFER         = 5;
-    const FORCED_ITEM_TRANSFER  = 6;
-    const CHARACTER_UPLOAD      = 7;
+    const CURRENCY_GRANT                  = 0;
+    const ITEM_GRANT                      = 1;
+    const CURRENCY_REMOVAL                = 2;
+    const ITEM_REMOVAL                    = 3;
+    const CURRENCY_TRANSFER               = 4;
+    const ITEM_TRANSFER                   = 5;
+    const FORCED_ITEM_TRANSFER            = 6;
+    const CHARACTER_UPLOAD                = 7;
+    const CHARACTER_CURRENCY_GRANT        = 8;
+    const CHARACTER_CURRENCY_REMOVAL      = 9;
+    const CHARACTER_PROFILE_EDIT          = 10;
+    CONST IMAGE_UPLOAD                    = 11;
 }

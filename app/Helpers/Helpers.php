@@ -38,6 +38,10 @@ function format_date($timestamp) {
     return $timestamp->format('j F Y, H:i:s e');
 }
 
+function format_masterlist_number($number, $digits) {
+    return sprintf('%0'.$digits.'d', $number);
+}
+
 function parse($text) {
     if(!$text) return null;
 

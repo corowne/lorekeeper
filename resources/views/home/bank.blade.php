@@ -13,7 +13,7 @@
 <div class="card mb-2">
     <ul class="list-group list-group-flush">
     
-        @foreach(Auth::user()->getCurrencies(false) as $currency)
+        @foreach(Auth::user()->getCurrencies(true) as $currency)
             <li class="list-group-item">
                 <div class="row">
                     <div class="col-lg-2 col-md-3 col-6 text-right">
@@ -51,7 +51,7 @@
             </div>
             <div class="col-md-6">
                 {!! Form::label('currency_id', 'Currency') !!}
-                {!! Form::select('currency_id', $currencyOptions, null, ['class' => 'form-control']) !!}
+                {!! Form::select('currency_id', $currencyOptions, null, ['class' => 'form-control', 'placeholder' => 'Select Currency']) !!}
             </div>
         </div>
     </div>

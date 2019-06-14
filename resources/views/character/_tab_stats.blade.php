@@ -26,3 +26,8 @@
         <div class="col-lg-9 col-8">Cannot be transferred until {{ format_date($character->transferrable_at) }}</div>
     </div>
 @endif
+@if(Auth::check() && Auth::user()->hasPower('manage_masterlist'))
+    <div class="mt-3">
+        <a href="#" class="btn btn-outline-info btn-sm edit-stats" data-slug="{{ $character->slug }}"><i class="fas fa-cog"></i> Edit</a>
+    </div>
+@endif

@@ -1,6 +1,6 @@
 @extends('character.layout')
 
-@section('profile-title') {{ $character->fullName }} @endsection
+@section('profile-title') {{ $character->fullName }}'s Profile @endsection
 
 @section('profile-content')
 {!! breadcrumbs(['Masterlist' => 'masterlist', $character->fullName => $character->url]) !!}
@@ -14,23 +14,18 @@
 </div>
 
 {{-- Bio --}}
-@if($character->profile->parsed_description)
-    <div class="card mb-3">
-        @if($character->profile->parsed_description)
-            <div class="card-body parsed-text">
-                {!! $character->profile->parsed_description !!}
-
-            </div>
-        @endif
+@if(Auth::check() && ($character->user_id == Auth::user()->id || Auth::user()->hasPower('manage_masterlist')))
+    <div class="text-right mb-2">
+        <a href="{{ $character->url . '/profile/edit' }}" class="btn btn-outline-info btn-sm"><i class="fas fa-cog"></i> Edit Profile</a>
     </div>
 @endif
+@if($character->profile->parsed_text)
     <div class="card mb-3">
         <div class="card-body parsed-text">
-            Custom character profile content goes here.
-
+                {!! $character->profile->parsed_text !!}
         </div>
-
     </div>
+@endif
 
 @if($character->is_trading || $character->is_gift_art_allowed)
     <div class="card mb-3">

@@ -33,7 +33,7 @@ return [
     ],
     'edit_inventories' => [
         'name' => 'Edit Inventories',
-        'description' => 'Allow rank to grant and remove items from user inventories, as well as grant/remove currency.'
+        'description' => 'Allow rank to grant and remove items from user inventories, as well as grant/remove currency from users and characters.'
     ],
     'manage_characters' => [
         'name' => 'Manage Masterlist',

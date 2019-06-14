@@ -7,7 +7,12 @@ use DB;
 use App\Models\Model;
 
 use App\Models\User\User;
+use App\Models\Character\Character;
+use App\Models\User\UserCharacterLog;
 use App\Models\Character\CharacterCategory;
+use App\Models\Character\CharacterCurrency;
+use App\Models\Currency\Currency;
+use App\Models\Currency\CurrencyLog;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Character extends Model
@@ -38,16 +43,16 @@ class Character extends Model
         'slug' => 'required|unique:characters,slug',
         'description' => 'nullable',
         'sale_value' => 'nullable',
+        'image' => 'required|mimes:jpeg,gif,png|max:20000',
+        'thumbnail' => 'nullable|mimes:jpeg,gif,png|max:20000',
     ];
     
     public static $updateRules = [
         'character_category_id' => 'required',
-        'rarity_id' => 'required',
-        'user_id' => 'required',
         'number' => 'required',
         'slug' => 'required',
         'description' => 'nullable',
-        'sale_value' => 'required|min:0',
+        'sale_value' => 'nullable',
     ];
     
     public function user() 
@@ -144,5 +149,56 @@ class Character extends Model
             $owner->settings->character_count++;
             $owner->settings->save();
         }
+    }
+    public function getCurrencies($displayedOnly = false)
+    {
+        // Get a list of currencies that need to be displayed
+        // On profile: only ones marked is_displayed
+        // In bank: ones marked is_displayed + the ones the user has
+
+        $owned = CharacterCurrency::where('character_id', $this->id)->pluck('quantity', 'currency_id')->toArray();
+
+        $currencies = Currency::where('is_character_owned', 1);
+        if($displayedOnly) $currencies->where(function($query) use($owned) {
+            $query->where('is_displayed', 1)->orWhereIn('id', array_keys($owned));
+        });
+        else $currencies = $currencies->where('is_displayed', 1);
+
+        $currencies = $currencies->orderBy('sort_character', 'DESC')->get();
+
+        foreach($currencies as $currency) {
+            $currency->quantity = isset($owned[$currency->id]) ? $owned[$currency->id] : 0;
+        }
+
+        return $currencies;
+    }
+
+    public function getCurrencyLogs($limit = 10)
+    {
+        $character = $this;
+        $query = CurrencyLog::where(function($query) use ($character) {
+            $query->where('sender_type', 'Character')->where('sender_id', $character->id)->where('log_type', '!=', 'Staff Grant');
+        })->orWhere(function($query) use ($character) {
+            $query->where('recipient_type', 'Character')->where('recipient_id', $character->id)->where('log_type', '!=', 'Staff Removal');
+        })->orderBy('created_at', 'DESC');
+        if($limit) return $query->take($limit)->get();
+        else return $query->paginate(30);
+    }
+
+    public function getOwnershipLogs()
+    {
+        $query = UserCharacterLog::where('character_id', $this->id)->orderBy('created_at', 'DESC');
+        return $query->paginate(30);
+    }
+
+    public function getCharacterLogs()
+    {
+        $query = CharacterLog::where('character_id', $this->id)->orderBy('created_at', 'DESC');
+        return $query->paginate(30);
+    }
+
+    public function getLogTypeAttribute()
+    {
+        return 'Character';
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\Character;
+namespace App\Models\User;
 
 use Config;
 use App\Models\Model;
 
-class CharacterLog extends Model
+class UserCharacterLog extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -14,9 +14,9 @@ class CharacterLog extends Model
      */
     protected $fillable = [
         'character_id', 'sender_id', 'recipient_id', 'recipient_alias',
-        'log', 'log_type', 'data', 'change_log'
+        'log', 'log_type', 'data',
     ];
-    protected $table = 'character_log';
+    protected $table = 'user_character_log';
     public $timestamps = true;
 
     public function sender() 
@@ -36,22 +36,17 @@ class CharacterLog extends Model
 
     public function getDisplayRecipientAliasAttribute()
     {
-        if($this->recipient_alias)
-            return '<a href="http://www.deviantart.com/'.$this->recipient_alias.'">'.$this->recipient_alias.'@dA</a>';
-        else return '---';
+        return '<a href="http://www.deviantart.com/'.$this->recipient_alias.'">'.$this->recipient_alias.'@dA</a>';
     }
 
     public function displayRow($user) 
     {
-        $ret = '<tr class="inflow">';
+        $ret = '<tr class="'.(($this->recipient_id == $user->id || $this->recipient_alias == $user->alias) ? 'inflow' : 'outflow').'">';
         $ret .= '<td>'.($this->sender ? $this->sender->displayName : '').'</td>';
+        $ret .= '<td>'.($this->recipient ? $this->recipient->displayName : $this->displayRecipientAlias).'</td>';
         $ret .= '<td>'.$this->log.'</td>';
         $ret .= '<td>'.format_date($this->created_at).'</td>';
         return $ret . '</tr>';
     }
 
-    public function getChangedDataAttribute()
-    {
-        return json_decode($this->change_log, true);
-    }
 }
