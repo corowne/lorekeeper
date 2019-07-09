@@ -42,7 +42,7 @@ function format_masterlist_number($number, $digits) {
     return sprintf('%0'.$digits.'d', $number);
 }
 
-function parse($text) {
+function parse($text, &$pings = null) {
     if(!$text) return null;
 
     require_once(base_path().'/vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php');
@@ -50,6 +50,47 @@ function parse($text) {
     $config = HTMLPurifier_Config::createDefault();
     $purifier = new HTMLPurifier($config);
     $text = $purifier->purify($text);
+
+    $users = $characters = null;
+    $text = parseUsers($text, $users);
+    $text = parseCharacters($text, $characters);
+    if($pings) $pings = ['users' => $users, 'characters' => $characters];
+
+    return $text;
+}
+
+function parseUsers($text, &$users) {
+    $matches = null;
+    $users = [];
+    $count = preg_match_all('/\B@([A-Za-z0-9_-]+)/', $text, $matches);
+    if($count) {
+        $matches = array_unique($matches);
+        foreach($matches as $match) {
+            $user = \App\Models\User\User::where('name', $match)->first();
+            if($user) {
+                $users[] = $user;
+                $text = preg_replace('\B@'.$match.'\b', $user->displayName, $text);
+            }
+        }
+    }
+
+    return $text;
+}
+
+function parseCharacters($text, &$characters) {
+    $matches = null;
+    $characters = [];
+    $count = preg_match_all('/\[character=([^\[\]&<>?"\']+)\]/', $text, $matches);
+    if($count) {
+        $matches = array_unique($matches);
+        foreach($matches as $match) {
+            $character = \App\Models\Character\Character::where('slug', $match)->first();
+            if($character) {
+                $characters[] = $character;
+                $text = preg_replace('[character='.$match.']', $character->displayName, $text);
+            }
+        }
+    }
 
     return $text;
 }

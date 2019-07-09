@@ -56,7 +56,8 @@ class UserController extends Controller
     public function getUserCharacters($name)
     {
         return view('user.characters', [
-            'user' => $this->user
+            'user' => $this->user,
+            'characters' => $this->user->characters()->visible()->get()
         ]);
     }
     

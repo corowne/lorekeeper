@@ -7,11 +7,14 @@ use Illuminate\Http\Request;
 use DB;
 use Auth;
 use Route;
+use Settings;
+use App\Models\User\User;
 use App\Models\Character\Character;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
 use App\Models\User\UserCurrency;
 use App\Models\Character\CharacterCurrency;
+use App\Models\Character\CharacterTransfer;
 
 use App\Services\CurrencyManager;
 use App\Services\CharacterManager;
@@ -209,21 +212,34 @@ class CharacterController extends Controller
         $isOwner = ($this->character->user_id == Auth::user()->id);
         if(!$isMod && !$isOwner) abort(404);
 
-        return view('character.transfer_character', [
+        return view('character.transfer', [
             'character' => $this->character,
+            'transfer' => CharacterTransfer::active()->where('character_id', $this->character->id)->first(),
+            'cooldown' => Settings::get('transfer_cooldown'),
+            'transfersQueue' => Settings::get('open_transfers_queue'),
+            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
         ]);
     }
     
     public function postTransfer(Request $request, CharacterManager $service, $slug)
     {
         if(!Auth::check()) abort(404);
-
-        $isMod = Auth::user()->hasPower('manage_characters');
-        $isOwner = ($this->character->user_id == Auth::user()->id);
-        if(!$isMod && !$isOwner) abort(404);
         
-        if($service->updateCharacterProfile($request->only(['name', 'text', 'is_gift_art_allowed', 'is_trading', 'alert_user']), $this->character, Auth::user(), !$isOwner)) {
-            flash('Profile edited successfully.')->success();
+        if($service->createTransfer($request->only(['recipient_id']), $this->character, Auth::user())) {
+            flash('Transfer created successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+    
+    public function postCancelTransfer(Request $request, CharacterManager $service, $slug, $id)
+    {
+        if(!Auth::check()) abort(404);
+        
+        if($service->cancelTransfer(['transfer_id' => $id], Auth::user())) {
+            flash('Transfer cancelled.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

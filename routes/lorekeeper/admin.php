@@ -177,6 +177,11 @@ Route::group(['prefix' => 'masterlist', 'namespace' => 'Characters', 'middleware
     Route::post('create-character', 'CharacterController@postCreateCharacter');
     
     Route::get('get-number', 'CharacterController@getPullNumber');
+    
+    Route::get('transfers/{type}', 'CharacterController@getTransferQueue');
+    Route::get('transfer/{id}', 'CharacterController@getTransferInfo');
+    Route::get('transfer/act/{id}/{type}', 'CharacterController@getTransferModal');
+    Route::post('transfer/{id}', 'CharacterController@postTransferQueue');
 });
 Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware' => 'power:manage_inventories'], function() {
     Route::post('{slug}/transfer', 'CharacterController@postCurrencyTransfer');
@@ -223,4 +228,24 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware'
     Route::post('{slug}/delete', 'CharacterController@postCharacterDelete');
     
     Route::post('{slug}/settings', 'CharacterController@postCharacterSettings');
+    
+    Route::post('{slug}/transfer', 'CharacterController@postTransfer');
+});
+
+# RAFFLES
+Route::group(['prefix' => 'raffles', 'middleware' => 'power:manage_raffles'], function() {
+    Route::get('/', 'RaffleController@getRaffleIndex');
+    Route::get('edit/group/{id?}', 'RaffleController@getCreateEditRaffleGroup');
+    Route::post('edit/group/{id?}', 'RaffleController@postCreateEditRaffleGroup');
+    Route::get('edit/raffle/{id?}', 'RaffleController@getCreateEditRaffle');
+    Route::post('edit/raffle/{id?}', 'RaffleController@postCreateEditRaffle');
+
+    Route::get('view/{id}', 'RaffleController@getRaffleTickets');
+    Route::post('view/ticket/{id}', 'RaffleController@postCreateRaffleTickets');
+    Route::post('view/ticket/delete/{id}', 'RaffleController@postDeleteRaffleTicket');
+    
+    Route::get('roll/raffle/{id}', 'RaffleController@getRollRaffle');
+    Route::post('roll/raffle/{id}', 'RaffleController@postRollRaffle');
+    Route::get('roll/group/{id}', 'RaffleController@getRollRaffleGroup');
+    Route::post('roll/group/{id}', 'RaffleController@postRollRaffleGroup');
 });

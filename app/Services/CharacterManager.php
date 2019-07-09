@@ -8,12 +8,14 @@ use DB;
 use Config;
 use Image;
 use Notifications;
+use Settings;
 
 use App\Models\User\User;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterCategory;
 use App\Models\Character\CharacterFeature;
 use App\Models\Character\CharacterImage;
+use App\Models\Character\CharacterTransfer;
 use App\Models\User\UserCharacterLog;
 
 class CharacterManager extends Service
@@ -522,6 +524,31 @@ class CharacterManager extends Service
         }
         return $this->rollbackReturn(false);
     }
+    
+    public function sortCharacters($data, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            $ids = array_reverse(explode(',', $data['sort'])); 
+            $characters = Character::whereIn('id', $ids)->where('user_id', $user->id)->where('is_visible', 1)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $ids).')'))->get();
+            
+            if(count($characters) != count($ids)) throw new \Exception("Invalid character included in sorting order.");
+
+            $count = 0;
+            foreach($characters as $character)
+            {
+                $character->sort = $count;
+                $character->save();
+                $count++;
+            }
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
 
     public function updateCharacterStats($data, $character, $user)
     {
@@ -700,5 +727,256 @@ class CharacterManager extends Service
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
+    }
+    
+    public function createTransfer($data, $character, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            if($user->id != $character->user_id) throw new \Exception("You do not own this character.");
+            if(!$character->is_sellable && !$character->is_tradeable && !$character->is_giftable) throw new \Exception("This character is not transferrable.");
+            if($character->transferrable_at && $character->transferrable_at->isFuture()) throw new \Exception("This character is still on transfer cooldown and cannot be transferred.");
+            if(CharacterTransfer::active()->where('character_id', $character->id)->exists()) throw new \Exception("This character is in an active trade.");
+            
+            $recipient = User::find($data['recipient_id']);
+            if(!$recipient) throw new \Exception("Invalid user selected.");
+            
+            CharacterTransfer::create([
+                'character_id' => $character->id, 
+                'sender_id' => $user->id, 
+                'recipient_id' => $recipient->id, 
+                'status' => 'Pending',
+
+                // if the queue is closed, all transfers are auto-approved
+                'is_approved' => !Settings::get('open_transfers_queue') 
+            ]);
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+    
+    public function adminTransfer($data, $character, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            $recipient = User::find($data['recipient_id']);
+            if(!$recipient) throw new \Exception("Invalid user selected.");
+            if($character->user_id == $recipient->id) throw new \Exception("Cannot transfer a character to the same user.");
+
+            // If the character is in an active transfer, cancel it
+            $transfer = CharacterTransfer::active()->where('character_id', $character->id)->first();
+            if($transfer) {
+                $transfer->status = 'Canceled';
+                $transfer->reason = 'Transfer canceled by '.$user->displayName.' in order to transfer character to another user';
+                $transfer->save();
+            }
+
+            $sender = $character->user;
+            
+            $this->moveCharacter($character, $recipient, 'Transferred by ' . $user->displayName . (isset($data['reason']) ? ': ' . $data['reason'] : ''), isset($data['cooldown']) ? $data['cooldown'] : -1);
+
+            // Add notifications for the old and new owners
+            Notifications::create('CHARACTER_SENT', $sender, [
+                'character_name' => $character->slug,
+                'character_slug' => $character->slug,
+                'sender_name' => $user->name,
+                'sender_url' => $user->url,
+                'recipient_name' => $recipient->name,
+                'recipient_url' => $recipient->url,
+            ]);
+            Notifications::create('CHARACTER_RECEIVED', $recipient, [
+                'character_name' => $character->slug,
+                'character_slug' => $character->slug,
+                'sender_name' => $user->name,
+                'sender_url' => $user->url,
+            ]);
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    public function processTransfer($data, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            $transfer = CharacterTransfer::where('id', $data['transfer_id'])->active()->where('recipient_id', $user->id)->first();
+            if(!$transfer) throw new \Exception("Invalid transfer selected.");
+
+            if($data['action'] == 'Accept') {
+                $cooldown = Settings::get('transfer_cooldown');
+
+                $transfer->status = 'Accepted';
+
+                // Process the character move if the transfer has already been approved
+                if ($transfer->is_approved) {
+                    //check the cooldown saved
+                    if(isset($transfer->data['cooldown'])) $cooldown = $transfer->data['cooldown'];
+                    $this->moveCharacter($transfer->character, $transfer->recipient, 'User Transfer', $cooldown);
+                    if(!Settings::get('open_transfers_queue'))
+                        $transfer->data = json_encode([
+                            'cooldown' => $cooldown,
+                            'staff_id' => null
+                        ]);
+
+                    // Notify sender of the successful transfer
+                    Notifications::create('CHARACTER_TRANSFER_ACCEPTED', $transfer->sender, [
+                        'character_name' => $transfer->character->slug,
+                        'character_url' => $transfer->character->url,
+                        'sender_name' => $transfer->recipient->name,
+                        'sender_url' => $transfer->recipient->url,
+                    ]);
+                }
+            }
+            else {
+                $transfer->status = 'Rejected';
+                $transfer->data = json_encode([
+                    'staff_id' => null
+                ]);
+
+                // Notify sender that transfer has been rejected
+                Notifications::create('CHARACTER_TRANSFER_REJECTED', $transfer->sender, [
+                    'character_name' => $transfer->character->slug,
+                    'character_url' => $transfer->character->url,
+                    'sender_name' => $transfer->recipient->name,
+                    'sender_url' => $transfer->recipient->url,
+                ]);
+            }
+            $transfer->save();
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    public function cancelTransfer($data, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            $transfer = CharacterTransfer::where('id', $data['transfer_id'])->active()->where('sender_id', $user->id)->first();
+            if(!$transfer) throw new \Exception("Invalid transfer selected.");
+
+            $transfer->status = 'Canceled';
+            $transfer->save();
+            
+            // Notify recipient of the cancelled transfer
+            Notifications::create('CHARACTER_TRANSFER_CANCELED', $transfer->recipient, [
+                'character_name' => $transfer->character->slug,
+                'character_url' => $transfer->character->url,
+                'sender_name' => $transfer->sender->name,
+                'sender_url' => $transfer->sender->url,
+            ]);
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+    
+    public function processTransferQueue($data, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            $transfer = CharacterTransfer::where('id', $data['transfer_id'])->active()->first();
+            if(!$transfer) throw new \Exception("Invalid transfer selected.");
+            
+            if($data['action'] == 'Approve') {
+                $transfer->is_approved = 1;
+                $transfer->data = json_encode([
+                    'staff_id' => $user->id,
+                    'cooldown' => isset($data['cooldown']) ? $data['cooldown'] : Settings::get('transfer_cooldown')
+                ]);
+
+                // Process the character move if the recipient has already accepted the transfer
+                if($transfer->status == 'Accepted') {
+                    $this->moveCharacter($transfer->character, $transfer->recipient, 'User Transfer', isset($data['cooldown']) ? $data['cooldown'] : -1);
+
+                    // Notify both parties of the successful transfer
+                    Notifications::create('CHARACTER_TRANSFER_APPROVED', $transfer->sender, [
+                        'character_name' => $transfer->character->slug,
+                        'character_url' => $transfer->character->url,
+                        'sender_name' => $user->name,
+                        'sender_url' => $user->url,
+                    ]);
+                    Notifications::create('CHARACTER_TRANSFER_APPROVED', $transfer->recipient, [
+                        'character_name' => $transfer->character->slug,
+                        'character_url' => $transfer->character->url,
+                        'sender_name' => $user->name,
+                        'sender_url' => $user->url,
+                    ]);
+
+                }
+            }
+            else {
+                $transfer->status = 'Rejected';
+                $transfer->reason = isset($data['reason']) ? $data['reason'] : null;
+                $transfer->data = json_encode([
+                    'staff_id' => $user->id
+                ]);
+
+                // Notify both parties that the request was denied
+                Notifications::create('CHARACTER_TRANSFER_DENIED', $transfer->sender, [
+                    'character_name' => $transfer->character->slug,
+                    'character_url' => $transfer->character->url,
+                    'sender_name' => $user->name,
+                    'sender_url' => $user->url,
+                ]);
+                Notifications::create('CHARACTER_TRANSFER_DENIED', $transfer->recipient, [
+                    'character_name' => $transfer->character->slug,
+                    'character_url' => $transfer->character->url,
+                    'sender_name' => $user->name,
+                    'sender_url' => $user->url,
+                ]);
+            }
+            $transfer->save();
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    private function moveCharacter($character, $recipient, $data, $cooldown = -1)
+    {
+        $sender = $character->user;
+
+        // Update character counts
+        $character->user->settings->character_count--;
+        $character->user->settings->save();
+
+        $recipient->settings->character_count++;
+        $recipient->settings->is_fto = 0;
+        $recipient->settings->save();
+
+        // Update character owner, sort order and cooldown
+        $character->sort = 0;
+        $character->user_id = $recipient->id;
+        if ($cooldown < 0) {
+            // Add the default amount from settings
+            $cooldown = Settings::get('transfer_cooldown');
+        }
+        if($cooldown > 0) {
+            if ($character->transferrable_at && $character->transferrable_at->isFuture())
+                $character->transferrable_at->addDays($cooldown);
+            else $character->transferrable_at = Carbon::now()->addDays($cooldown);
+        }
+        $character->save();
+
+        // Add a log for the ownership change
+        $this->createLog($sender->id, $recipient->id, $recipient->alias, $character->id, 'Character Transferred', $data, 'user');
     }
 }

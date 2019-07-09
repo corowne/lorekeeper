@@ -110,6 +110,10 @@ return [
             [
                 'name' => 'Create Character',
                 'url' => 'admin/masterlist/create-character'
+            ],
+            [
+                'name' => 'Character Transfers',
+                'url' => 'admin/masterlist/transfers/incoming'
             ]
         ]
     ],

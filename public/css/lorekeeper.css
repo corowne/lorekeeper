@@ -351,3 +351,26 @@ tr.outflow {
 .image-nav .nav-item a.active {
     border: 5px solid #ddd;
 }
+
+/* TRANSFERS *************************************************************************************/
+
+.transfer-row {
+    display: flex;
+    align-items: stretch;
+}
+.transfer-info {
+    flex-grow: 1;
+}
+.transfer-info .card-body {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+}
+.transfer-info-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+.transfer-info-content .transfer-info-body {
+    flex-grow: 1;
+}

@@ -80,8 +80,54 @@ return [
     // IMAGE_UPLOAD
     11 => [
         'message' => 'A new image for {character_name} was uploaded by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Character</a>)',
-        'url' => 'character/{character_slug}/profile'
+        'url' => 'character/{character_slug}/images'
     ],
 
+    // CHARACTER_TRANSFER_RECEIVED
+    12 => [
+        'message' => 'You have received a transfer for <a href="{character_url}">{character_name}</a> from <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Transfers</a>)',
+        'url' => 'characters/transfers/incoming'
+    ],
 
+    // CHARACTER_TRANSFER_REJECTED
+    13 => [
+        'message' => 'Your transfer request for <a href="{character_url}">{character_name}</a> was rejected by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Transfers</a>)',
+        'url' => 'characters/transfers/completed'
+    ],
+
+    // CHARACTER_TRANSFER_CANCELED
+    14 => [
+        'message' => 'The transfer for <a href="{character_url}">{character_name}</a> was canceled by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Transfers</a>)',
+        'url' => 'characters/transfers/completed'
+    ],
+
+    // CHARACTER_TRANSFER_DENIED
+    15 => [
+        'message' => 'Your transfer request for <a href="{character_url}">{character_name}</a> was denied by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Transfers</a>)',
+        'url' => 'characters/transfers/completed'
+    ],
+
+    // CHARACTER_TRANSFER_ACCEPTED
+    16 => [
+        'message' => 'Your transfer request for <a href="{character_url}">{character_name}</a> was accepted by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Transfers</a>)',
+        'url' => 'characters/transfers/completed'
+    ],
+
+    // CHARACTER_TRANSFER_APPROVED
+    17 => [
+        'message' => 'The transfer for <a href="{character_url}">{character_name}</a> was approved by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Transfers</a>)',
+        'url' => 'characters/transfers/completed'
+    ],
+
+    // CHARACTER_SENT
+    18 => [
+        'message' => '{character_name} was transferred to <a href="{recipient_url}">{recipient_name}</a> by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Character</a>)',
+        'url' => 'character/{character_slug}'
+    ],
+
+    // CHARACTER_RECEIVED
+    19 => [
+        'message' => '{character_name} was transferred to you by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Character</a>)',
+        'url' => 'character/{character_slug}'
+    ],
 ];

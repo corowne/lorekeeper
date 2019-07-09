@@ -51,7 +51,7 @@ class CharacterImageController extends Controller
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
             return redirect()->back();
         }
-        return redirect()->to($character->url.'/images');
+        return redirect()->to($this->character->url.'/images');
     }
 
     /**

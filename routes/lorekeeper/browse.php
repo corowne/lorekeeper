@@ -62,6 +62,7 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() 
     
     Route::get('{slug}/transfer', 'CharacterController@getTransfer');
     Route::post('{slug}/transfer', 'CharacterController@postTransfer');
+    Route::post('{slug}/transfer/{id}/cancel', 'CharacterController@postCancelTransfer');
 });
 
 /**************************************************************************************************
@@ -85,3 +86,11 @@ Route::group(['prefix' => 'world'], function() {
     Site Pages
 **************************************************************************************************/
 Route::get('info/{key}', 'PageController@getPage');
+
+/**************************************************************************************************
+    Raffles
+**************************************************************************************************/
+Route::group(['prefix' => 'raffles'], function () {
+    Route::get('/', 'RaffleController@getRaffleIndex');
+    Route::get('view/{id}', 'RaffleController@getRaffleTickets');
+});

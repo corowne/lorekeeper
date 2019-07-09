@@ -29,7 +29,7 @@ class Character extends Model
         'owner_alias', 'number', 'slug', 'description', 'parsed_description', 
         'is_sellable', 'is_tradeable', 'is_giftable',
         'sale_value', 'transferrable_at', 'is_visible',
-        'is_gift_art_allowed', 'is_trading'
+        'is_gift_art_allowed', 'is_trading', 'sort'
     ];
     protected $table = 'characters';
     public $timestamps = true;

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use Auth;
 use Config;
+use Settings;
 
 use App\Models\Character\Character;
 use App\Models\Character\CharacterCategory;
@@ -13,6 +14,7 @@ use App\Models\Rarity;
 use App\Models\User\User;
 use App\Models\Species;
 use App\Models\Feature\Feature;
+use App\Models\Character\CharacterTransfer;
 
 use App\Services\CharacterManager;
 use App\Services\CurrencyManager;
@@ -170,10 +172,79 @@ class CharacterController extends Controller
 
     public function postCharacterDelete(Request $request, CharacterManager $service, $slug)
     {
-        //$request->validate(Character::$createRules);
-        if ($service->deleteCharacter($character, Auth::user())) {
+        $this->character = Character::where('slug', $slug)->first();
+        if(!$this->character) abort(404);
+
+        if ($service->deleteCharacter($this->character, Auth::user())) {
             flash('Character deleted successfully.')->success();
             return redirect()->to($character->url);
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    
+    public function postTransfer(Request $request, CharacterManager $service, $slug)
+    {
+        $this->character = Character::where('slug', $slug)->first();
+        if(!$this->character) abort(404);
+        
+        if($service->adminTransfer($request->only(['recipient_id', 'cooldown', 'reason']), $this->character, Auth::user())) {
+            flash('Character transferred successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Show the character transfer queue.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getTransferQueue($type)
+    {
+        $transfers = CharacterTransfer::query();
+        $user = Auth::user();
+
+        if($type == 'completed') $transfers->completed();
+        else if ($type == 'incoming') $transfers->active()->where('is_approved', 0);
+        else abort(404);
+
+        return view('admin.masterlist.character_transfers', [
+            'transfers' => $transfers->orderBy('id', 'DESC')->paginate(20),
+            'transfersQueue' => Settings::get('open_transfers_queue'),
+        ]);
+    }
+    
+    /**
+     * Show the character transfer action modal.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getTransferModal($id, $action)
+    {
+        if($action != 'approve' && $action != 'reject') abort(404);
+        $transfer = CharacterTransfer::where('id', $id)->active()->first();
+        if(!$transfer) abort(404);
+
+        return view('admin.masterlist._'.$action.'_modal', [
+            'transfer' => $transfer,
+            'cooldown' => Settings::get('transfer_cooldown')
+        ]);
+    }
+    
+    public function postTransferQueue(Request $request, CharacterManager $service, $id)
+    {
+        if(!Auth::check()) abort(404);
+
+        $action = $request->get('action');
+        
+        if($service->processTransferQueue($request->only(['action', 'cooldown', 'reason']) + ['transfer_id' => $id], Auth::user())) {
+            flash('Transfer ' . strtolower($action) . 'ed.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

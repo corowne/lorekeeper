@@ -32,7 +32,7 @@
 
 <script>
     $(document).ready(function() {
-        $('#useCropper').bootstrapToggle();
+        //$('#useCropper').bootstrapToggle();
 
         // Cropper ////////////////////////////////////////////////////////////////////////////////////
 

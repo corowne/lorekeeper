@@ -20,7 +20,7 @@
     </thead>
     <tbody>
         @foreach($logs as $log)
-            {!! $log->displayRow($user) !!}
+            {!! $log->displayRow($user, true) !!}
         @endforeach
     </tbody>
 </table>

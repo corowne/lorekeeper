@@ -69,5 +69,13 @@ class Notification extends Model
     const CHARACTER_CURRENCY_GRANT        = 8;
     const CHARACTER_CURRENCY_REMOVAL      = 9;
     const CHARACTER_PROFILE_EDIT          = 10;
-    CONST IMAGE_UPLOAD                    = 11;
+    const IMAGE_UPLOAD                    = 11;
+    const CHARACTER_TRANSFER_RECEIVED     = 12;
+    const CHARACTER_TRANSFER_REJECTED     = 13;
+    const CHARACTER_TRANSFER_CANCELED     = 14;
+    const CHARACTER_TRANSFER_DENIED       = 15;
+    const CHARACTER_TRANSFER_ACCEPTED     = 16;
+    const CHARACTER_TRANSFER_APPROVED     = 17;
+    const CHARACTER_SENT                  = 18;
+    const CHARACTER_RECEIVED              = 19;
 }

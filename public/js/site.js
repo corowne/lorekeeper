@@ -8,6 +8,7 @@ function loadModal(url, title) {
         }
         else {
             $('#modal [data-toggle=tooltip]').tooltip({html: true});
+            $('#modal [data-toggle=toggle]').bootstrapToggle();
             $('#modal .cp').colorpicker();
         }
     });
