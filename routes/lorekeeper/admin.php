@@ -96,7 +96,6 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('items/create', 'ItemController@postCreateEditItem');
     Route::post('items/edit/{id?}', 'ItemController@postCreateEditItem');
     Route::post('items/delete/{id}', 'ItemController@postDeleteItem');
-    Route::post('items/sort', 'ItemController@postSortItem');
     
     # FEATURES (TRAITS)
     Route::get('trait-categories', 'FeatureController@getIndex');
@@ -115,7 +114,6 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('traits/create', 'FeatureController@postCreateEditFeature');
     Route::post('traits/edit/{id?}', 'FeatureController@postCreateEditFeature');
     Route::post('traits/delete/{id}', 'FeatureController@postDeleteFeature');
-    Route::post('traits/sort', 'FeatureController@postSortFeature');
 
     # CHARACTER CATEGORIES
     Route::get('character-categories', 'CharacterCategoryController@getIndex');
@@ -127,6 +125,33 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('character-categories/delete/{id}', 'CharacterCategoryController@postDeleteCharacterCategory');
     Route::post('character-categories/sort', 'CharacterCategoryController@postSortCharacterCategory');
     
+    # LOOT TABLES
+    Route::get('loot-tables', 'LootTableController@getIndex');
+    Route::get('loot-tables/create', 'LootTableController@getCreateLootTable');
+    Route::get('loot-tables/edit/{id}', 'LootTableController@getEditLootTable');
+    Route::get('loot-tables/delete/{id}', 'LootTableController@getDeleteLootTable');
+    Route::get('loot-tables/roll/{id}', 'LootTableController@getRollLootTable');
+    Route::post('loot-tables/create', 'LootTableController@postCreateEditLootTable');
+    Route::post('loot-tables/edit/{id?}', 'LootTableController@postCreateEditLootTable');
+    Route::post('loot-tables/delete/{id}', 'LootTableController@postDeleteLootTable');
+    
+    # PROMPTS
+    Route::get('prompt-categories', 'PromptController@getIndex');
+    Route::get('prompt-categories/create', 'PromptController@getCreatePromptCategory');
+    Route::get('prompt-categories/edit/{id}', 'PromptController@getEditPromptCategory');
+    Route::get('prompt-categories/delete/{id}', 'PromptController@getDeletePromptCategory');
+    Route::post('prompt-categories/create', 'PromptController@postCreateEditPromptCategory');
+    Route::post('prompt-categories/edit/{id?}', 'PromptController@postCreateEditPromptCategory');
+    Route::post('prompt-categories/delete/{id}', 'PromptController@postDeletePromptCategory');
+    Route::post('prompt-categories/sort', 'PromptController@postSortPromptCategory');
+    
+    Route::get('prompts', 'PromptController@getPromptIndex');
+    Route::get('prompts/create', 'PromptController@getCreatePrompt');
+    Route::get('prompts/edit/{id}', 'PromptController@getEditPrompt');
+    Route::get('prompts/delete/{id}', 'PromptController@getDeletePrompt');
+    Route::post('prompts/create', 'PromptController@postCreateEditPrompt');
+    Route::post('prompts/edit/{id?}', 'PromptController@postCreateEditPrompt');
+    Route::post('prompts/delete/{id}', 'PromptController@postDeletePrompt');
 });
 
 

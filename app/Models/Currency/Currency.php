@@ -91,4 +91,14 @@ class Currency extends Model
     {
         return url('world/currencies?name='.$this->name);
     }
+    
+    public function getDisplayNameAttribute()
+    {
+        return '<a href="'.$this->url.'" class="display-currency">'.$this->name.'</a>';
+    }
+
+    public function getAssetTypeAttribute()
+    {
+        return 'currencies';
+    }
 }

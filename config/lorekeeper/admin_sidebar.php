@@ -87,16 +87,24 @@ return [
                 'url' => 'admin/data/items'
             ],
             [
-                'name' => 'Currencies',
-                'url' => 'admin/data/currencies'
+                'name' => 'Prompt Categories',
+                'url' => 'admin/data/prompt-categories'
             ],
             [
                 'name' => 'Prompts',
-                'url' => 'admin/prompts'
+                'url' => 'admin/data/prompts'
             ],
             [
                 'name' => 'Character Categories',
                 'url' => 'admin/data/character-categories'
+            ],
+            [
+                'name' => 'Currencies',
+                'url' => 'admin/data/currencies'
+            ],
+            [
+                'name' => 'Loot Tables',
+                'url' => 'admin/data/loot-tables'
             ],
         ]
     ],

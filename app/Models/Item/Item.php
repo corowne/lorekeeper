@@ -62,7 +62,7 @@ class Item extends Model
     
     public function getDisplayNameAttribute()
     {
-        return '<a href="'.$this->url.'" class="display-category">'.$this->name.'</a>';
+        return '<a href="'.$this->url.'" class="display-item">'.$this->name.'</a>';
     }
 
     public function getImageDirectoryAttribute()
@@ -89,5 +89,10 @@ class Item extends Model
     public function getUrlAttribute()
     {
         return url('world/items?name='.$this->name);
+    }
+
+    public function getAssetTypeAttribute()
+    {
+        return 'items';
     }
 }
