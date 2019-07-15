@@ -64,12 +64,12 @@ function parseUsers($text, &$users) {
     $users = [];
     $count = preg_match_all('/\B@([A-Za-z0-9_-]+)/', $text, $matches);
     if($count) {
-        $matches = array_unique($matches);
+        $matches = array_unique($matches[1]);
         foreach($matches as $match) {
             $user = \App\Models\User\User::where('name', $match)->first();
             if($user) {
                 $users[] = $user;
-                $text = preg_replace('\B@'.$match.'\b', $user->displayName, $text);
+                $text = preg_replace('/\B@'.$match.'/', $user->displayName, $text);
             }
         }
     }
@@ -82,12 +82,12 @@ function parseCharacters($text, &$characters) {
     $characters = [];
     $count = preg_match_all('/\[character=([^\[\]&<>?"\']+)\]/', $text, $matches);
     if($count) {
-        $matches = array_unique($matches);
+        $matches = array_unique($matches[1]);
         foreach($matches as $match) {
             $character = \App\Models\Character\Character::where('slug', $match)->first();
             if($character) {
                 $characters[] = $character;
-                $text = preg_replace('[character='.$match.']', $character->displayName, $text);
+                $text = preg_replace('/\[character='.$match.'\]/', $character->displayName, $text);
             }
         }
     }

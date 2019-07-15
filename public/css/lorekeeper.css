@@ -222,7 +222,7 @@ main > .row {
     font-family: Roboto Condensed, serif;
 }
 
-.display-user {
+.display-user, .display-character {
     font-weight: bold;
 }
 

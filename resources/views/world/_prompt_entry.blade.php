@@ -17,8 +17,8 @@
             <div class="text-right"><a data-toggle="collapse" href="#prompt-{{ $prompt->id }}" class="text-primary"><strong>Show details...</strong></a></div>
             <div class="collapse" id="prompt-{{ $prompt->id }}">
                 <h4>Details</h4>
-                @if($prompt->description)
-                    {!! $prompt->description !!}
+                @if($prompt->parsed_description)
+                    {!! $prompt->parsed_description !!}
                 @else 
                     <p>No further details.</p>
                 @endif
