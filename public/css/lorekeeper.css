@@ -354,23 +354,23 @@ tr.outflow {
 
 /* TRANSFERS *************************************************************************************/
 
-.transfer-row {
+.transfer-row, .submission-character-row {
     display: flex;
     align-items: stretch;
 }
-.transfer-info {
+.transfer-info, .submission-character-info {
     flex-grow: 1;
 }
-.transfer-info .card-body {
+.transfer-info .card-body, .submission-character-info .card-body {
     display: flex;
     align-items: stretch;
     flex-direction: column;
 }
-.transfer-info-content {
+.transfer-info-content, .submission-character-info-content {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
 }
-.transfer-info-content .transfer-info-body {
+.transfer-info-content .transfer-info-body, .submission-character-info-content .submission-character-info-body {
     flex-grow: 1;
 }

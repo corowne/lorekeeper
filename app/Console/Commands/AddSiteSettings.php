@@ -78,5 +78,18 @@ class AddSiteSettings extends Command
         }
         else $this->line("Skipped: open_transfers_queue");
         
+        if(!DB::table('site_settings')->where('key', 'prompt_reward_editing')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'prompt_reward_editing',
+                    'value' => 0,
+                    'description' => '0: Only mods can edit default prompt rewards for a submission, 1: Users can modify rewards at time of submission.'
+                ]
+
+            ]);
+            $this->line("Added: prompt_reward_editing / Default: 0");
+        }
+        else $this->line("Skipped: prompt_reward_editing");
+        
     }
 }

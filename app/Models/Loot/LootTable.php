@@ -71,4 +71,9 @@ class LootTable extends Model
         return $rewards;
     }
 
+    public function getAssetTypeAttribute()
+    {
+        return 'loot_tables';
+    }
+
 }

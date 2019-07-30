@@ -20,7 +20,7 @@
                         </a>
 
                         <div class="dropdown-menu" aria-labelledby="inventoryDropdown">
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{{ url('characters') }}">
                                 My Characters
                             </a>
                             <a class="dropdown-item" href="{{ url('inventory') }}">
@@ -28,6 +28,9 @@
                             </a>
                             <a class="dropdown-item" href="{{ url('bank') }}">
                                 Bank
+                            </a>
+                            <a class="dropdown-item" href="{{ url('characters/transfers/incoming') }}">
+                                Transfers
                             </a>
                             <a class="dropdown-item" href="#">
                                 Trades
@@ -92,6 +95,21 @@
                             <a class="nav-link btn btn-secondary btn-sm" href="{{ url('notifications') }}"><span class="fas fa-envelope"></span> {{ Auth::user()->notifications_unread }}</a>
                         </li>
                     @endif
+                    
+                    <li class="nav-item dropdown">
+                        <a id="browseDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                            Submit
+                        </a>
+
+                        <div class="dropdown-menu" aria-labelledby="browseDropdown">
+                            <a class="dropdown-item" href="{{ url('submissions/new') }}">
+                                Submit Prompt
+                            </a>
+                            <a class="dropdown-item" href="{{ url('#') }}">
+                                Submit Claim
+                            </a>
+                        </div>
+                    </li>
                     
                     <li class="nav-item dropdown">
                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="{{ Auth::user()->url }}" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>

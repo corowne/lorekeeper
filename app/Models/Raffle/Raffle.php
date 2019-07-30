@@ -30,4 +30,9 @@ class Raffle extends Model
     {
         return ($this->group_id ? '[' . $this->group->name . '] ' : '') . $this->name;
     }
+
+    public function getAssetTypeAttribute()
+    {
+        return 'raffle_tickets';
+    }
 }

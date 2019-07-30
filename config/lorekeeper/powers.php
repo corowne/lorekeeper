@@ -42,6 +42,10 @@ return [
     'manage_raffles' => [
         'name' => 'Manage Raffles',
         'description' => 'Allow rank to create/edit raffles, add/remove tickets for users and roll raffles.'
+    ],
+    'manage_submissions' => [
+        'name' => 'Manage Submissions',
+        'description' => 'Allow rank to view the submissions queue, edit rewards attached to a submission and approve/reject them.'
     ]
 
 
