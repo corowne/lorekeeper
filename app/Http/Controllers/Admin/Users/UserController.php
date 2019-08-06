@@ -136,7 +136,7 @@ class UserController extends Controller
 
         return view('admin.users.user_update_log', [
             'user' => $user,
-            'logs' => UserUpdateLog::where('user_id', $user->id)->orderBy('created_at', 'DESC')->paginate(50)
+            'logs' => UserUpdateLog::where('user_id', $user->id)->orderBy('id', 'DESC')->paginate(50)
         ]);
     }
 }

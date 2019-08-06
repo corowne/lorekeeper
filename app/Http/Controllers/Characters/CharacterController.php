@@ -188,17 +188,17 @@ class CharacterController extends Controller
     }
 
     
+    
     /**
-     * Show a user's profile.
+     * Show a character's submissions.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUserItemLogs($name)
+    public function getCharacterSubmissions($name)
     {
-        $user = $this->user;
-        return view('user.item_logs', [
-            'user' => $this->user,
-            'logs' => $this->user->getItemLogs(0)
+        return view('character.submission_logs', [
+            'character' => $this->character,
+            'logs' => $this->character->getSubmissions()
         ]);
     }
 

@@ -274,3 +274,10 @@ Route::group(['prefix' => 'raffles', 'middleware' => 'power:manage_raffles'], fu
     Route::get('roll/group/{id}', 'RaffleController@getRollRaffleGroup');
     Route::post('roll/group/{id}', 'RaffleController@postRollRaffleGroup');
 });
+
+# SUBMISSIONS
+Route::group(['prefix' => 'submissions', 'middleware' => 'power:manage_submissions'], function() {
+    Route::get('/{status}', 'SubmissionController@getSubmissionIndex')->where('status', 'pending|approved|rejected');
+    Route::get('edit/{id}', 'SubmissionController@getSubmission');
+    Route::post('edit/{id}/{action}', 'SubmissionController@postSubmission')->where('action', 'approve|reject');
+});

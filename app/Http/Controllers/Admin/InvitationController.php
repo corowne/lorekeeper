@@ -20,7 +20,7 @@ class InvitationController extends Controller
     public function getIndex()
     {
         return view('admin.invitations.invitations', [
-            'invitations' => Invitation::orderBy('created_at', 'DESC')->paginate(20)
+            'invitations' => Invitation::orderBy('id', 'DESC')->paginate(20)
         ]);
     }
 

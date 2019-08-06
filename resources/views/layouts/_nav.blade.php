@@ -32,8 +32,8 @@
                             <a class="dropdown-item" href="{{ url('characters/transfers/incoming') }}">
                                 Transfers
                             </a>
-                            <a class="dropdown-item" href="#">
-                                Trades
+                            <a class="dropdown-item" href="{{ url('submissions') }}">
+                                Prompt Submissions
                             </a>
                         </div>
                     </li>

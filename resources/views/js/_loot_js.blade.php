@@ -5,7 +5,9 @@ $( document ).ready(function() {
     var $lootRow = $('#lootRow').find('.loot-row');
     var $itemSelect = $('#lootRowData').find('.item-select');
     var $currencySelect = $('#lootRowData').find('.currency-select');
-    var $tableSelect = $('#lootRowData').find('.table-select');
+    @if($showLootTables)
+        var $tableSelect = $('#lootRowData').find('.table-select');
+    @endif
 
     $('#lootTableBody .selectize').selectize();
 
@@ -24,7 +26,9 @@ $( document ).ready(function() {
         var $clone = null;
         if(val == 'Item') $clone = $itemSelect.clone();
         else if (val == 'Currency') $clone = $currencySelect.clone();
-        else if (val == 'LootTable') $clone = $tableSelect.clone();
+        @if($showLootTables)
+            else if (val == 'LootTable') $clone = $tableSelect.clone();
+        @endif
 
         $cell.html('');
         $cell.append($clone);
@@ -38,7 +42,9 @@ $( document ).ready(function() {
             var $clone = null;
             if(val == 'Item') $clone = $itemSelect.clone();
             else if (val == 'Currency') $clone = $currencySelect.clone();
-            else if (val == 'LootTable') $clone = $tableSelect.clone();
+            @if($showLootTables)
+                else if (val == 'LootTable') $clone = $tableSelect.clone();
+            @endif
 
             $cell.html('');
             $cell.append($clone);

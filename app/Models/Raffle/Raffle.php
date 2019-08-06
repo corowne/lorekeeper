@@ -35,4 +35,14 @@ class Raffle extends Model
     {
         return 'raffle_tickets';
     }
+
+    public function getDisplayNameAttribute()
+    {
+        return $this->displayName();
+    }
+
+    public function displayName($asReward = true)
+    {
+        return '<a href="'.$this->url.'" class="display-raffle">'.$this->name.($asReward ? ' (Raffle Ticket)' : '').'</a>';
+    }
 }

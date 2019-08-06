@@ -46,6 +46,15 @@ return [
             ],
         ]
     ],
+    'Queues' => [
+        'power' => 'manage_submissions',
+        'links' => [
+            [
+                'name' => 'Prompt Submissions',
+                'url' => 'admin/submissions/pending'
+            ],
+        ]
+    ],
     'Grants' => [
         'power' => 'edit_inventories',
         'links' => [

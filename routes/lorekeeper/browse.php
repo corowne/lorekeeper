@@ -41,6 +41,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'Users'], function() {
     Route::get('{name}/currency-logs', 'UserController@getUserCurrencyLogs');
     Route::get('{name}/item-logs', 'UserController@getUserItemLogs');
     Route::get('{name}/ownership', 'UserController@getUserOwnershipLogs');
+    Route::get('{name}/submissions', 'UserController@getUserSubmissions');
 });
 
 /**************************************************************************************************
@@ -56,6 +57,7 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() 
     Route::get('{slug}/currency-logs', 'CharacterController@getCharacterCurrencyLogs');
     Route::get('{slug}/ownership', 'CharacterController@getCharacterOwnershipLogs');
     Route::get('{slug}/change-log', 'CharacterController@getCharacterLogs');
+    Route::get('{slug}/submissions', 'CharacterController@getCharacterSubmissions');
 
     Route::get('{slug}/profile/edit', 'CharacterController@getEditCharacterProfile');
     Route::post('{slug}/profile/edit', 'CharacterController@postEditCharacterProfile');
@@ -95,4 +97,11 @@ Route::get('info/{key}', 'PageController@getPage');
 Route::group(['prefix' => 'raffles'], function () {
     Route::get('/', 'RaffleController@getRaffleIndex');
     Route::get('view/{id}', 'RaffleController@getRaffleTickets');
+});
+
+/**************************************************************************************************
+    Submissions
+**************************************************************************************************/
+Route::group(['prefix' => 'submissions', 'namespace' => 'Users'], function() {
+    Route::get('view/{id}', 'SubmissionController@getSubmission');
 });

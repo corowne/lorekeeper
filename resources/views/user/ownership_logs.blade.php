@@ -3,7 +3,7 @@
 @section('profile-title') {{ $user->name }}'s Character History @endsection
 
 @section('profile-content')
-{!! breadcrumbs(['Users' => 'users', $user->name => $user->url, 'Inventory' => $user->url . '/inventory', 'Logs' => $user->url.'/ownership']) !!}
+{!! breadcrumbs(['Users' => 'users', $user->name => $user->url, 'Logs' => $user->url.'/ownership']) !!}
 
 <h1>
     {!! $user->displayName !!}'s Character History

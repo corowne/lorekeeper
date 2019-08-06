@@ -8,6 +8,7 @@ use DB;
 use Auth;
 use App\Models\User\User;
 use App\Models\Character\Character;
+use App\Models\Item\Item;
 use App\Models\Currency\Currency;
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
@@ -53,8 +54,11 @@ class SubmissionController extends Controller
      */
     public function getSubmission($id)
     {
+        $submission = Submission::viewable(Auth::user())->where('id', $id)->first();
+        if(!$submission) abort(404);
         return view('home.submission', [
-            'submission' => Submission::viewable(Auth::user())->where('id', $id)->first()
+            'submission' => $submission,
+            'user' => $submission->user
         ]);
     }
 
@@ -68,7 +72,9 @@ class SubmissionController extends Controller
         return view('home.create_submission', [
             'submission' => new Submission,
             'prompts' => Prompt::active()->sortAlphabetical()->pluck('name', 'id')->toArray(),
-            'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id')
+            'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
+            'items' => Item::orderBy('name')->pluck('name', 'id'),
+            'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
         ]);
     }
 
@@ -105,7 +111,7 @@ class SubmissionController extends Controller
     public function postNewSubmission(Request $request, SubmissionManager $service)
     {
         $request->validate(Submission::$createRules);
-        if($service->createSubmission($request->only(['url', 'prompt_id', 'comments', 'slug', 'quantity', 'currency_id']), Auth::user())) {
+        if($service->createSubmission($request->only(['url', 'prompt_id', 'comments', 'slug', 'character_quantity', 'character_currency_id', 'rewardable_type', 'rewardable_id', 'quantity']), Auth::user())) {
             flash('Prompt submitted successfully.')->success();
         }
         else {

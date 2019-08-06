@@ -130,4 +130,16 @@ return [
         'message' => '{character_name} was transferred to you by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Character</a>)',
         'url' => 'character/{character_slug}'
     ],
+
+    // SUBMISSION_APPROVED
+    20 => [
+        'message' => 'Your submission (#{submission_id}) was approved by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Submission</a>)',
+        'url' => 'submissions/view/{submission_id}'
+    ],
+
+    // SUBMISSION_REJECTED
+    21 => [
+        'message' => 'Your submission (#{submission_id}) was rejected by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Submission</a>)',
+        'url' => 'submissions/view/{submission_id}'
+    ],
 ];

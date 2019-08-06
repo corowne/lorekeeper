@@ -78,4 +78,6 @@ class Notification extends Model
     const CHARACTER_TRANSFER_APPROVED     = 17;
     const CHARACTER_SENT                  = 18;
     const CHARACTER_RECEIVED              = 19;
+    const SUBMISSION_APPROVED             = 20;
+    const SUBMISSION_REJECTED             = 21;
 }

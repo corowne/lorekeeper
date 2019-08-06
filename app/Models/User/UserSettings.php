@@ -13,7 +13,7 @@ class UserSettings extends Model
      * @var array
      */
     protected $fillable = [
-        'is_fto', 'character_count', 'myo_slot_count',
+        'is_fto', 'character_count', 'myo_slot_count', 'submission_count'
     ];
     public $primaryKey = 'user_id';
     protected $table = 'user_settings';

@@ -12,6 +12,8 @@ use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
 use App\Models\Item\ItemLog;
 use App\Models\User\UserCharacterLog;
+use App\Models\Submission\Submission;
+use App\Models\Submission\SubmissionCharacter;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -169,10 +171,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $user = $this;
         $query = CurrencyLog::where(function($query) use ($user) {
-            $query->where('sender_type', 'User')->where('sender_id', $user->id)->where('log_type', '!=', 'Staff Grant');
+            $query->where('sender_type', 'User')->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Prompt Rewards']);
         })->orWhere(function($query) use ($user) {
             $query->where('recipient_type', 'User')->where('recipient_id', $user->id)->where('log_type', '!=', 'Staff Removal');
-        })->orderBy('created_at', 'DESC');
+        })->orderBy('id', 'DESC');
         if($limit) return $query->take($limit)->get();
         else return $query->paginate(30);
     }
@@ -184,7 +186,7 @@ class User extends Authenticatable implements MustVerifyEmail
             $query->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Staff Removal']);
         })->orWhere(function($query) use ($user) {
             $query->where('recipient_id', $user->id);
-        })->orderBy('created_at', 'DESC');
+        })->orderBy('id', 'DESC');
         if($limit) return $query->take($limit)->get();
         else return $query->paginate(30);
     }
@@ -214,7 +216,12 @@ class User extends Authenticatable implements MustVerifyEmail
             $query->where('sender_id', $user->id)->where('log_type', '!=', 'Character Created');
         })->orWhere(function($query) use ($user) {
             $query->where('recipient_id', $user->id);
-        })->orderBy('created_at', 'DESC');
+        })->orderBy('id', 'DESC');
         return $query->paginate(30);
+    }
+
+    public function getSubmissions()
+    {
+        return Submission::where('status', 'Approved')->where('user_id', $this->id)->orderBy('id', 'DESC')->paginate(30);
     }
 }

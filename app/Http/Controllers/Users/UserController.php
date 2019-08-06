@@ -142,4 +142,19 @@ class UserController extends Controller
         ]);
     }
 
+    
+    
+    /**
+     * Show a user's submissions.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserSubmissions($name)
+    {
+        return view('user.submission_logs', [
+            'user' => $this->user,
+            'logs' => $this->user->getSubmissions()
+        ]);
+    }
+
 }

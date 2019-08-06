@@ -6,24 +6,28 @@ function getAssetKeys($isCharacter = false)
     else return ['currencies'];
 }
 
-function getAssetModelString($type)
+function getAssetModelString($type, $namespaced = true)
 {
     switch($type)
     {
         case 'items':
-            return '\App\Models\Item\Item';
+            if($namespaced) return '\App\Models\Item\Item';
+            else return 'Item';
             break;
         
         case 'currencies':
-            return '\App\Models\Currency\Currency';
+            if($namespaced) return '\App\Models\Currency\Currency';
+            else return 'Currency';
             break;
             
         case 'raffle_tickets':
-            return '\App\Models\Raffle\Raffle';
+            if($namespaced) return '\App\Models\Raffle\Raffle';
+            else return 'Raffle';
             break;
 
         case 'loot_tables':
-            return '\App\Models\Loot\LootTable';
+            if($namespaced) return '\App\Models\Loot\LootTable';
+            else return 'LootTable';
             break;
     }
     return null;
@@ -89,4 +93,57 @@ function parseAssetData($array)
         }
     }
     return $assets;
+}
+
+// Distributes the assets in an array to the given recipient.
+// Loot tables will be rolled before distribution.
+function fillUserAssets($assets, $sender, $recipient, $logType, $data)
+{
+    // Roll on any loot tables
+    if(isset($assets['loot_tables']))
+    {
+        foreach($assets['loot_tables'] as $table)
+        {
+            $assets = mergeAssetsArrays($assets, $table['asset']->roll($table['quantity']));
+        }
+        unset($assets['loot_tables']);
+    }
+
+    foreach($assets as $key => $contents)
+    {
+        if($key == 'items' && count($contents))
+        {
+            $service = new \App\Services\InventoryManager;
+            foreach($contents as $asset)
+                if(!$service->creditItem($sender, $recipient, $logType, $data, $asset['asset'], $asset['quantity'])) return false;
+        }
+        elseif($key == 'currencies' && count($contents))
+        {
+            $service = new \App\Services\CurrencyManager;
+            foreach($contents as $asset)
+                if(!$service->creditCurrency($sender, $recipient, $logType, $data['data'], $asset['asset'], $asset['quantity'])) return false;
+        }
+        elseif($key == 'raffle_tickets' && count($contents))
+        {
+            $service = new \App\Services\RaffleManager;
+            foreach($contents as $asset)
+                if(!$service->addTicket($recipient, $asset['asset'], $asset['quantity'])) return false;
+        }
+    }
+    return $assets;
+}
+
+// Distributes the assets in an array to the given character.
+function fillCharacterAssets($assets, $sender, $recipient, $logType, $data)
+{
+    foreach($assets as $key => $contents)
+    {
+        if($key == 'currencies' && count($contents))
+        {
+            $service = new \App\Services\CurrencyManager;
+            foreach($contents as $asset)
+                if(!$service->creditCurrency($sender, $recipient, $logType, $data['data'], $asset['asset'], $asset['quantity'])) return false;
+        }
+    }
+    return true;
 }

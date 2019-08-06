@@ -13,6 +13,8 @@ use App\Models\Character\CharacterCategory;
 use App\Models\Character\CharacterCurrency;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
+use App\Models\Submission\Submission;
+use App\Models\Submission\SubmissionCharacter;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Character extends Model
@@ -180,25 +182,40 @@ class Character extends Model
             $query->where('sender_type', 'Character')->where('sender_id', $character->id)->where('log_type', '!=', 'Staff Grant');
         })->orWhere(function($query) use ($character) {
             $query->where('recipient_type', 'Character')->where('recipient_id', $character->id)->where('log_type', '!=', 'Staff Removal');
-        })->orderBy('created_at', 'DESC');
+        })->orderBy('id', 'DESC');
         if($limit) return $query->take($limit)->get();
         else return $query->paginate(30);
     }
 
     public function getOwnershipLogs()
     {
-        $query = UserCharacterLog::where('character_id', $this->id)->orderBy('created_at', 'DESC');
+        $query = UserCharacterLog::where('character_id', $this->id)->orderBy('id', 'DESC');
         return $query->paginate(30);
     }
 
     public function getCharacterLogs()
     {
-        $query = CharacterLog::where('character_id', $this->id)->orderBy('created_at', 'DESC');
+        $query = CharacterLog::where('character_id', $this->id)->orderBy('id', 'DESC');
         return $query->paginate(30);
     }
 
     public function getLogTypeAttribute()
     {
         return 'Character';
+    }
+
+    public function getSubmissions()
+    {
+        return Submission::where('status', 'Approved')->whereIn('id', SubmissionCharacter::where('character_id', $this->id)->pluck('submission_id')->toArray())->paginate(30);
+
+        // Untested
+        //$character = $this;
+        //return Submission::where('status', 'Approved')->with(['characters' => function($query) use ($character) {
+        //    $query->where('submission_characters.character_id', 1);
+        //}])  
+        //->whereHas('characters', function($query) use ($character) {
+        //    $query->where('submission_characters.character_id', 1);
+        //});  
+        //return Submission::where('status', 'Approved')->where('user_id', $this->id)->orderBy('id', 'DESC')->paginate(30);
     }
 }

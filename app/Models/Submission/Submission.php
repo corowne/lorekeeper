@@ -63,9 +63,10 @@ class Submission extends Model
 
     public function scopeViewable($query, $user)
     {
-        if($user->hasPower('manage_submissions')) return $query;
+        if($user && $user->hasPower('manage_submissions')) return $query;
         return $query->where(function($query) use ($user) {
-            $query->where('user_id', $user->id)->orWhere('status', 'Approved');
+            if($user) $query->where('user_id', $user->id)->orWhere('status', 'Approved');
+            else $query->where('status', 'Approved');
         });
     }
     
@@ -77,5 +78,29 @@ class Submission extends Model
     public function getViewUrlAttribute()
     {
         return url('submissions/view/'.$this->id);
+    }
+
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/submissions/edit/'.$this->id);
+    }
+
+    public function getRewardsAttribute()
+    {
+        $assets = parseAssetData($this->data);
+        $rewards = [];
+        foreach($assets as $type => $a)
+        {
+            $class = getAssetModelString($type, false);
+            foreach($a as $id => $asset)
+            {
+                $rewards[] = (object)[
+                    'rewardable_type' => $class,
+                    'rewardable_id' => $id,
+                    'quantity' => $asset['quantity']
+                ];
+            }
+        }
+        return $rewards;
     }
 }
