@@ -1,4 +1,4 @@
-@extends('character.layout')
+@extends('character.layout', ['isMyo' => $character->is_myo_slot])
 
 @section('profile-title') {{ $character->fullName }}'s Profile @endsection
 
@@ -31,7 +31,7 @@
     <div class="card mb-3">
         @if($character->is_trading || $character->is_gift_art_allowed)
             <ul class="list-group list-group-flush">
-                @if($character->is_gift_art_allowed)
+                @if($character->is_gift_art_allowed && !$character->is_myo_slot)
                     <li class="list-group-item"><h5 class="mb-0"><i class="text-success far fa-circle fa-fw mr-2"></i> Gift art is allowed</h5></li>
                 @endif
                 @if($character->is_trading)

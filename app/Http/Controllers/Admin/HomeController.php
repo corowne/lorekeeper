@@ -18,7 +18,8 @@ class HomeController extends Controller
     public function getIndex()
     {
         return view('admin.index', [
-            'submissionCount' => Submission::where('status', 'Pending')->count()
+            'submissionCount' => Submission::where('status', 'Pending')->whereNotNull('prompt_id')->count(),
+            'claimCount' => Submission::where('status', 'Pending')->whereNull('prompt_id')->count()
         ]);
     }
 }

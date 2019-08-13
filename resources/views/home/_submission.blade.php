@@ -1,5 +1,7 @@
 <tr>
-    <td>{!! $submission->prompt->displayName !!}</td>
+    @if($submission->prompt_id)
+        <td>{!! $submission->prompt->displayName !!}</td>
+    @endif
     <td><a href="{{ $submission->url }}">{{ $submission->url }}</a></td>
     <td>{{ format_date($submission->created_at) }}</td>
     <td>

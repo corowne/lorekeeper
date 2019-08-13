@@ -6,7 +6,7 @@
 @endsection
 
 @section('sidebar')
-    @include('character._sidebar')
+    @include('character.'.($isMyo ? 'myo.' : '').'_sidebar')
 @endsection
 
 @section('content')

@@ -105,5 +105,19 @@ class CharacterController extends Controller
         }
         return redirect()->back();
     }
+    
+    /**
+     * Show the user's MYO slots.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getMyos()
+    {
+        $slots = Auth::user()->myoSlots()->get();
+
+        return view('home.myos', [
+            'slots' => $slots,
+        ]);
+    }
 
 }

@@ -182,38 +182,39 @@ abstract class Service {
     // 2. Given new image, want to upload it to new location.
     //    (old image may or may not exist)
     // 3. Nothing happens (no changes required)
-    public function handleImage($image, $dir, $name, $oldName = null)
+    public function handleImage($image, $dir, $name, $oldName = null, $copy = false)
     {
         if(!$oldName && !$image) return true;
 
         if(!$image)
         {
             // Check if we're moving an old image, and move it if it does.
-            if($oldName) { return $this->moveImage($dir, $name, $oldName); }
+            if($oldName) { return $this->moveImage($dir, $name, $oldName, $copy); }
         }
         else
         {
             // Don't want to leave a lot of random images lying around,
             // so move the old image first if it exists.
-            if($oldName) { $this->moveImage($dir, $name, $oldName); }
+            if($oldName) { $this->moveImage($dir, $name, $oldName, $copy); }
             
             // Then overwrite the old image.
-            return $this->saveImage($image, $dir, $name);
+            return $this->saveImage($image, $dir, $name, $copy);
         }
 
         return false;
     }
 
     // Moves an old image within the same directory.
-    private function moveImage($dir, $name, $oldName)
+    private function moveImage($dir, $name, $oldName, $copy = false)
     {
-        File::move($dir . '/' . $oldName, $dir . '/' . $name);
+        if($copy) File::copy($dir . '/' . $oldName, $dir . '/' . $name);
+        else File::move($dir . '/' . $oldName, $dir . '/' . $name);
         return true;
     }
 
     // Moves an uploaded image into a directory, checking if it exists.
-    private function saveImage($image, $dir, $name)
-    {
+    private function saveImage($image, $dir, $name, $copy = false)
+    { 
         if(!file_exists($dir))
         {
             // Create the directory.
@@ -223,8 +224,10 @@ abstract class Service {
             }
             chmod($dir, 0755);
         }
-        File::move($image, $dir . '/' . $name);
+        if($copy) File::copy($image, $dir . '/' . $name);
+        else File::move($image, $dir . '/' . $name);
         chmod($dir . '/' . $name, 0755);
+        
         return true;
     }
 

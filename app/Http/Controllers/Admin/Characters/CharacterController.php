@@ -35,7 +35,8 @@ class CharacterController extends Controller
             'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
             'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray()
+            'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
+            'isMyo' => false
         ]);
     }
     
@@ -245,6 +246,58 @@ class CharacterController extends Controller
         
         if($service->processTransferQueue($request->only(['action', 'cooldown', 'reason']) + ['transfer_id' => $id], Auth::user())) {
             flash('Transfer ' . strtolower($action) . 'ed.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+    
+
+    /**
+     * Show a list of all existing MYO slots.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getMyoIndex()
+    {
+        return view('admin.masterlist.myo_index', [
+            'slots' => Character::myo(1)->orderBy('id', 'DESC')->paginate(30),
+        ]);
+    }
+
+    /**
+     * Show the create MYO slot page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCreateMyo()
+    {
+        return view('admin.masterlist.create_character', [
+            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
+            'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
+            'isMyo' => true
+        ]);
+    }
+
+    public function postCreateMyo(Request $request, CharacterManager $service)
+    {
+        $request->validate(Character::$myoRules);
+        $data = $request->only([
+            'user_id', 'owner_alias', 'name',
+            'description', 'is_visible', 'is_giftable', 'is_tradeable', 'is_sellable',
+            'sale_value', 'transferrable_at', 'use_cropper',
+            'x0', 'x1', 'y0', 'y1',
+            'designer_alias', 'designer_url',
+            'artist_alias', 'artist_url',
+            'species_id', 'rarity_id', 'feature_id', 'feature_data',
+            'image', 'thumbnail'
+        ]);
+        if ($character = $service->createCharacter($data, Auth::user(), true)) {
+            flash('MYO slot created successfully.')->success();
+            return redirect()->to($character->url);
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

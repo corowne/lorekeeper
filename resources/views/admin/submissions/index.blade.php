@@ -1,23 +1,27 @@
 @extends('admin.layout')
 
-@section('admin-title') Prompt Queue @endsection
+@section('admin-title') {{ $isClaims ? 'Claim' : 'Prompt' }} Queue @endsection
 
 @section('admin-content')
-{!! breadcrumbs(['Admin Panel' => 'admin', 'Prompt Queue' => 'admin/submissions/pending']) !!}
+@if($isClaims)
+    {!! breadcrumbs(['Admin Panel' => 'admin', 'Claim Queue' => 'admin/claims/pending']) !!}
+@else
+    {!! breadcrumbs(['Admin Panel' => 'admin', 'Prompt Queue' => 'admin/submissions/pending']) !!}
+@endif
 
 <h1>
-    Prompt Queue
+    Claim Queue
 </h1>
 
 <ul class="nav nav-tabs mb-3">
   <li class="nav-item">
-    <a class="nav-link {{ set_active('admin/submissions/pending*') }}" href="{{ url('admin/submissions/pending') }}">Pending</a>
+    <a class="nav-link {{ set_active('admin/'.($isClaims ? 'claims' : 'submissions').'/pending*') }}" href="{{ url('admin/'.($isClaims ? 'claims' : 'submissions').'/pending') }}">Pending</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link {{ set_active('admin/submissions/approved*') }}" href="{{ url('admin/submissions/approved') }}">Approved</a>
+    <a class="nav-link {{ set_active('admin/'.($isClaims ? 'claims' : 'submissions').'/approved*') }}" href="{{ url('admin/'.($isClaims ? 'claims' : 'submissions').'/approved') }}">Approved</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link {{ set_active('admin/submissions/rejected*') }}" href="{{ url('admin/submissions/rejected') }}">Rejected</a>
+    <a class="nav-link {{ set_active('admin/'.($isClaims ? 'claims' : 'submissions').'/rejected*') }}" href="{{ url('admin/'.($isClaims ? 'claims' : 'submissions').'/rejected') }}">Rejected</a>
   </li>
 </ul>
 
@@ -27,7 +31,9 @@
         <table class="table table-sm">
             <thead>
                 <tr>
-                    <th width="30%">Prompt</th>
+                    @if(!$isClaims)
+                        <th width="30%">Prompt</th>
+                    @endif
                     <th width="30%">Link</th>
                     <th width="20%">Submitted</th>
                     <th>Status</th>
@@ -37,7 +43,9 @@
             <tbody>
                 @foreach($submissions as $submission)
                     <tr>
-                        <td>{!! $submission->prompt->displayName !!}</td>
+                        @if(!$isClaims)
+                            <td>{!! $submission->prompt->displayName !!}</td>
+                        @endif
                         <td><a href="{{ $submission->url }}">{{ $submission->url }}</a></td>
                         <td>{{ format_date($submission->created_at) }}</td>
                         <td>

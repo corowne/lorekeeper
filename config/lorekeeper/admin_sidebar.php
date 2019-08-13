@@ -129,6 +129,10 @@ return [
                 'url' => 'admin/masterlist/create-character'
             ],
             [
+                'name' => 'Create MYO Slot',
+                'url' => 'admin/masterlist/create-myo'
+            ],
+            [
                 'name' => 'Character Transfers',
                 'url' => 'admin/masterlist/transfers/incoming'
             ]

@@ -105,7 +105,7 @@
                             <a class="dropdown-item" href="{{ url('submissions/new') }}">
                                 Submit Prompt
                             </a>
-                            <a class="dropdown-item" href="{{ url('#') }}">
+                            <a class="dropdown-item" href="{{ url('claims/new') }}">
                                 Submit Claim
                             </a>
                         </div>

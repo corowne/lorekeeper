@@ -78,18 +78,31 @@ class AddSiteSettings extends Command
         }
         else $this->line("Skipped: open_transfers_queue");
         
-        if(!DB::table('site_settings')->where('key', 'prompt_reward_editing')->exists()) {
+        if(!DB::table('site_settings')->where('key', 'is_prompts_open')->exists()) {
             DB::table('site_settings')->insert([
                 [
-                    'key' => 'prompt_reward_editing',
-                    'value' => 0,
-                    'description' => '0: Only mods can edit default prompt rewards for a submission, 1: Users can modify rewards at time of submission.'
+                    'key' => 'is_prompts_open',
+                    'value' => 1,
+                    'description' => '0: New prompt submissions cannot be made (mods can work on the queue still), 1: Prompts are submittable.'
                 ]
 
             ]);
-            $this->line("Added: prompt_reward_editing / Default: 0");
+            $this->line("Added: is_prompts_open / Default: 1");
         }
-        else $this->line("Skipped: prompt_reward_editing");
+        else $this->line("Skipped: is_prompts_open");
+        
+        if(!DB::table('site_settings')->where('key', 'is_claims_open')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'is_claims_open',
+                    'value' => 1,
+                    'description' => '0: New claims cannot be made (mods can work on the queue still), 1: Claims are submittable.'
+                ]
+
+            ]);
+            $this->line("Added: is_claims_open / Default: 1");
+        }
+        else $this->line("Skipped: is_claims_open");
         
     }
 }

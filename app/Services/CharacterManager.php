@@ -30,13 +30,13 @@ class CharacterManager extends Service
         // or next in category, and retrieve the highest number
         if(Config::get('lorekeeper.settings.character_pull_number') == 'all')
         {
-            $character = Character::orderBy('number', 'DESC')->first();
+            $character = Character::myo(0)->orderBy('number', 'DESC')->first();
             if($character) $number = ltrim($character->number, 0);
             if(!strlen($number)) $number = '0';
         }
         else if (Config::get('lorekeeper.settings.character_pull_number') == 'category' && $categoryId)
         {
-            $character = Character::where('character_category_id', $categoryId)->orderBy('number', 'DESC')->first();
+            $character = Character::myo(0)->where('character_category_id', $categoryId)->orderBy('number', 'DESC')->first();
             if($character) $number = ltrim($character->number, 0);
             if(!strlen($number)) $number = '0';
         }
@@ -46,7 +46,7 @@ class CharacterManager extends Service
         return $result;
     }
 
-    public function createCharacter($data, $user)
+    public function createCharacter($data, $user, $isMyo = false)
     {
         DB::beginTransaction();
 
@@ -67,11 +67,12 @@ class CharacterManager extends Service
             }
 
             // Create character
-            $character = $this->handleCharacter($data);
+            $character = $this->handleCharacter($data, $isMyo);
             if(!$character) throw new \Exception("Error happened while trying to create character.");
 
             // Create character image
-            $image = $this->handleCharacterImage($data, $character);
+            $data['is_valid'] = true; // New image of new characters are always valid
+            $image = $this->handleCharacterImage($data, $character, $isMyo);
             if(!$image) throw new \Exception("Error happened while trying to create image.");
             
             // Update the character's image ID
@@ -80,25 +81,31 @@ class CharacterManager extends Service
             
             // Add a log for the character
             // This logs all the updates made to the character
-            $this->createLog($user->id, $recipientId, $alias, $character->id, 'Character Created', 'Initial upload', 'character');
+            $this->createLog($user->id, $recipientId, $alias, $character->id, $isMyo ? 'MYO Slot Created' : 'Character Created', 'Initial upload', 'character');
 
             // Add a log for the user
             // This logs ownership of the character
-            $this->createLog($user->id, $recipientId, $alias, $character->id, 'Character Created', 'Initial upload', 'user');
+            $this->createLog($user->id, $recipientId, $alias, $character->id, $isMyo ? 'MYO Slot Created' : 'Character Created', 'Initial upload', 'user');
 
             // Update the user's FTO status and character count
             if($recipient) {
-                $recipient->settings->is_fto = 0;
-                $recipient->settings->character_count++;
+                if(!$isMyo) {
+                    $recipient->settings->is_fto = 0; // MYO slots don't affect the FTO status - YMMV
+                    $recipient->settings->character_count++;
+                }
+                else $recipient->settings->myo_slot_count++;
                 $recipient->settings->save();
             }
 
+
             // If the recipient has an account, send them a notification
             if($recipient && $user->id != $recipient->id) {
-                Notifications::create('CHARACTER_UPLOAD', $recipient, [
+                Notifications::create($isMyo ? 'MYO_GRANT' : 'CHARACTER_UPLOAD', $recipient, [
                     'character_url' => $character->url,
-                    'character_slug' => $character->slug,
-                ]);
+                ] + ($isMyo ? 
+                    ['name' => $character->name] :
+                    ['character_slug' => $character->slug]
+                ));
             }
 
             return $this->commitReturn($character);
@@ -108,14 +115,21 @@ class CharacterManager extends Service
         return $this->rollbackReturn(false);
     }
 
-    private function handleCharacter($data)
+    private function handleCharacter($data, $isMyo = false)
     {
         try {
+            if($isMyo)
+            {
+                $data['character_category_id'] = null;
+                $data['number'] = null;
+                $data['slug'] = null;
+            }
+
             $characterData = array_only($data, [
                 'character_category_id', 'rarity_id', 'user_id',
                 'number', 'slug', 'description',
                 'sale_value', 'transferrable_at', 'is_visible'
-            ]);
+            ] + ($isMyo ? ['name'] : []));
             $characterData['owner_alias'] = isset($characterData['user_id']) ? null : $data['owner_alias'];
             $characterData['is_sellable'] = isset($data['is_sellable']);
             $characterData['is_tradeable'] = isset($data['is_tradeable']);
@@ -125,6 +139,7 @@ class CharacterManager extends Service
             $characterData['is_gift_art_allowed'] = 0;
             $characterData['is_trading'] = 0;
             $characterData['parsed_description'] = parse($data['description']);
+            if($isMyo) $characterData['is_myo_slot'] = 1;
             
             $character = Character::create($characterData);
 
@@ -138,21 +153,37 @@ class CharacterManager extends Service
         return false;
     }
 
-    private function handleCharacterImage($data, $character)
+    private function handleCharacterImage($data, $character, $isMyo = false)
     {
         try {
+            if($isMyo)
+            {
+                $data['species_id'] = (isset($data['species_id']) && $data['species_id']) ? $data['species_id'] : null;
+                $data['rarity_id'] = (isset($data['rarity_id']) && $data['rarity_id']) ? $data['rarity_id'] : null;
+                
+
+                // Use default images for MYO slots without an image provided
+                if(!isset($data['image']))
+                {
+                    $data['image'] = asset('images/myo.png');
+                    $data['thumbnail'] = asset('images/myo-th.png');
+                    $data['extension'] = 'png';
+                    $data['default_image'] = true;
+                    unset($data['use_cropper']);
+                }
+            }
             $imageData = array_only($data, [
                 'species_id', 'rarity_id', 'use_cropper', 
                 'x0', 'x1', 'y0', 'y1',
             ]);
-            $imageData['use_cropper'] = isset($data['use_cropper']);
+            $imageData['use_cropper'] = isset($data['use_cropper']) ;
             $imageData['description'] = isset($data['image_description']) ? $data['image_description'] : null;
             $imageData['parsed_description'] = parse($imageData['description']);
             $imageData['hash'] = randomString(10);
             $imageData['sort'] = 0;
             $imageData['is_valid'] = isset($data['is_valid']);
             $imageData['is_visible'] = isset($data['is_visible']);
-            $imageData['extension'] = $data['image']->getClientOriginalExtension();
+            $imageData['extension'] = isset($data['extension']) ? $data['extension'] : $data['image']->getClientOriginalExtension();
             $imageData['character_id'] = $character->id;
 
             $image = CharacterImage::create($imageData);
@@ -178,12 +209,12 @@ class CharacterManager extends Service
             }
 
             // Save image
-            $this->handleImage($data['image'], $image->imageDirectory, $image->imageFileName);
+            $this->handleImage($data['image'], $image->imageDirectory, $image->imageFileName, null, isset($data['default_image']));
             
             // Save thumbnail
             if(isset($data['use_cropper'])) $this->cropThumbnail($data['image'], array_only($data, ['x0','x1','y0','y1']), $image);
-            else $this->handleImage($data['thumbnail'], $image->thumbnailDirectory, $image->thumbnailFileName);
-
+            else $this->handleImage($data['thumbnail'], $image->imageDirectory, $image->thumbnailFileName, null, isset($data['default_image']));
+            
             // Attach features
             foreach($data['feature_id'] as $key => $featureId) {
                 if($featureId) {
@@ -531,7 +562,7 @@ class CharacterManager extends Service
 
         try {
             $ids = array_reverse(explode(',', $data['sort'])); 
-            $characters = Character::whereIn('id', $ids)->where('user_id', $user->id)->where('is_visible', 1)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $ids).')'))->get();
+            $characters = Character::myo(0)->whereIn('id', $ids)->where('user_id', $user->id)->where('is_visible', 1)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $ids).')'))->get();
             
             if(count($characters) != count($ids)) throw new \Exception("Invalid character included in sorting order.");
 
@@ -955,11 +986,15 @@ class CharacterManager extends Service
         $sender = $character->user;
 
         // Update character counts
-        $character->user->settings->character_count--;
+        if($character->is_myo_slot) $character->user->settings->myo_slot_count--;
+        else $character->user->settings->character_count--;
         $character->user->settings->save();
 
-        $recipient->settings->character_count++;
-        $recipient->settings->is_fto = 0;
+        if($character->is_myo_slot) $recipient->settings->myo_slot_count++;
+        else {
+            $recipient->settings->character_count++;
+            $recipient->settings->is_fto = 0;
+        }
         $recipient->settings->save();
 
         // Update character owner, sort order and cooldown
@@ -977,6 +1012,6 @@ class CharacterManager extends Service
         $character->save();
 
         // Add a log for the ownership change
-        $this->createLog($sender->id, $recipient->id, $recipient->alias, $character->id, 'Character Transferred', $data, 'user');
+        $this->createLog($sender->id, $recipient->id, $recipient->alias, $character->id, $character->is_myo_slot ? 'MYO Slot Transferred' : 'Character Transferred', $data, 'user');
     }
 }

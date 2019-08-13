@@ -64,7 +64,12 @@ class User extends Authenticatable implements MustVerifyEmail
     
     public function characters() 
     {
-        return $this->hasMany('App\Models\Character\Character')->orderBy('sort', 'DESC');
+        return $this->hasMany('App\Models\Character\Character')->where('is_myo_slot', 0)->orderBy('sort', 'DESC');
+    }
+    
+    public function myoSlots() 
+    {
+        return $this->hasMany('App\Models\Character\Character')->where('is_myo_slot', 1)->orderBy('id', 'DESC');
     }
     
     public function rank() 

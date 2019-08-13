@@ -1,24 +1,31 @@
 @extends('admin.layout')
 
-@section('admin-title') Create Character @endsection
+@section('admin-title') Create {{ $isMyo ? 'MYO Slot' : 'Character' }} @endsection
 
 @section('admin-content')
-{!! breadcrumbs(['Admin Panel' => 'admin', 'Create Character' => 'admin/masterlist/create-character']) !!}
+{!! breadcrumbs(['Admin Panel' => 'admin', 'Create '.($isMyo ? 'MYO Slot' : 'Character') => 'admin/masterlist/create-'.($isMyo ? 'myo' : 'character')]) !!}
 
-<h1>Create Character</h1>
+<h1>Create {{ $isMyo ? 'MYO Slot' : 'Character' }}</h1>
 
-@if(!count($categories))
+@if(!$isMyo && !count($categories))
 
     <div class="alert alert-danger">Creating characters requires at least one <a href="{{ url('admin/data/character-categories') }}">character category</a> to be created first, as character categories are used to generate the character code.</div>
 
 @else 
 
-    {!! Form::open(['url' => 'admin/masterlist/create-character', 'files' => true]) !!}
+    {!! Form::open(['url' => 'admin/masterlist/create-'.($isMyo ? 'myo' : 'character'), 'files' => true]) !!}
 
     <h3>Basic Information</h3>
 
+    @if($isMyo)
+        <div class="form-group">
+            {!! Form::label('Name') !!} {!! add_help('Enter a descriptive name for the type of character this slot can create, e.g. Rare MYO Slot. This will be listed on the MYO slot masterlist.') !!}
+            {!! Form::text('name', old('name'), ['class' => 'form-control']) !!}
+        </div>
+    @endif
+
     <div class="alert alert-info">
-        Fill in either of the owner fields - you can select a user from the list if they have registered for the site, or enter their deviantART username if they don't have an account. If the owner registers an account later and links their dA account, characters with their dA alias listed will automatically be credited to their site account. If both fields are filled, the alias field will be ignored.
+        Fill in either of the owner fields - you can select a user from the list if they have registered for the site, or enter their deviantART username if they don't have an account. If the owner registers an account later and links their dA account, {{ $isMyo ? 'MYO slot' : 'character' }}s with their dA alias listed will automatically be credited to their site account. If both fields are filled, the alias field will be ignored.
     </div>
 
     <div class="row">
@@ -36,51 +43,58 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                {!! Form::label('Character Category') !!}
-                <select name="character_category_id" id="category" class="form-control" placeholder="Select Category">
-                    <option value="" data-code="">Select Category</option>
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}" data-code="{{ $category->code }}" {{ old('character_category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }} ({{ $category->code }})</option>
-                    @endforeach
-                </select>
+    @if(!$isMyo)
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    {!! Form::label('Character Category') !!}
+                    <select name="character_category_id" id="category" class="form-control" placeholder="Select Category">
+                        <option value="" data-code="">Select Category</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" data-code="{{ $category->code }}" {{ old('character_category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }} ({{ $category->code }})</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                {!! Form::label('Number') !!} {!! add_help('This number helps to identify the character and should preferably be unique either within the category, or among all characters.') !!}
-                <div class="d-flex">
-                    {!! Form::text('number', old('number'), ['class' => 'form-control mr-2', 'id' => 'number']) !!}
-                    <a href="#" id="pull-number" class="btn btn-primary" data-toggle="tooltip" title="This will find the highest number assigned to a character currently and add 1 to it. It can be adjusted to pull the highest number in the category or the highest overall number - this setting is in the code.">Pull Next Number</a> 
+            <div class="col-md-6">
+                <div class="form-group">
+                    {!! Form::label('Number') !!} {!! add_help('This number helps to identify the character and should preferably be unique either within the category, or among all characters.') !!}
+                    <div class="d-flex">
+                        {!! Form::text('number', old('number'), ['class' => 'form-control mr-2', 'id' => 'number']) !!}
+                        <a href="#" id="pull-number" class="btn btn-primary" data-toggle="tooltip" title="This will find the highest number assigned to a character currently and add 1 to it. It can be adjusted to pull the highest number in the category or the highest overall number - this setting is in the code.">Pull Next Number</a> 
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+
+        <div class="form-group">
+            {!! Form::label('Character Code') !!} {!! add_help('This code identifies the character itself. You don\'t have to use the automatically generated code, but this must be unique among all characters (as it\'s used to generate the character\'s page URL).') !!}
+            {!! Form::text('slug', old('slug'), ['class' => 'form-control', 'id' => 'code']) !!}
+        </div>
+    @endif
 
     <div class="form-group">
-        {!! Form::label('Character Code') !!} {!! add_help('This code identifies the character itself. You don\'t have to use the automatically generated code, but this must be unique among all characters (as it\'s used to generate the character\'s page URL).') !!}
-        {!! Form::text('slug', old('slug'), ['class' => 'form-control', 'id' => 'code']) !!}
-    </div>
-
-    <div class="form-group">
-        {!! Form::label('Description (Optional)') !!} {!! add_help('This section is for making additional notes about the character and is separate from the character\'s profile (this is not editable by the user).') !!}
+        {!! Form::label('Description (Optional)') !!} 
+        @if($isMyo)
+            {!! add_help('This section is for making additional notes about the MYO slot. If there are restrictions for the character that can be created by this slot that cannot be expressed with the options below, use this section to describe them.') !!}
+        @else
+            {!! add_help('This section is for making additional notes about the character and is separate from the character\'s profile (this is not editable by the user).') !!}
+        @endif
         {!! Form::textarea('description', old('description'), ['class' => 'form-control wysiwyg']) !!}
     </div>
 
     <div class="form-group">
         {!! Form::checkbox('is_visible', 1, old('is_visible'), ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-        {!! Form::label('is_visible', 'Is Visible', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Turn this off to hide the character. Only mods with the Manage Masterlist power (that\'s you!) can view it - the owner will also not be able to see the character\'s page.') !!}
+        {!! Form::label('is_visible', 'Is Visible', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Turn this off to hide the '.($isMyo ? 'MYO slot' : 'character').'. Only mods with the Manage Masterlist power (that\'s you!) can view it - the owner will also not be able to see the '.($isMyo ? 'MYO slot' : 'character').'\'s page.') !!}
     </div>
 
     <h3>Transfer Information</h3>
 
     <div class="alert alert-info">
-        These are displayed on the character's profile, but don't have any effect on site functionality except for the following: 
+        These are displayed on the {{ $isMyo ? 'MYO slot' : 'character' }}'s profile, but don't have any effect on site functionality except for the following: 
         <ul>
-            <li>If all switches are off, the character cannot be transferred by the user (directly or through trades).</li>
-            <li>If a transfer cooldown is set, the character also cannot be transferred by the user (directly or through trades) until the cooldown is up.</li>
+            <li>If all switches are off, the {{ $isMyo ? 'MYO slot' : 'character' }} cannot be transferred by the user (directly or through trades).</li>
+            <li>If a transfer cooldown is set, the {{ $isMyo ? 'MYO slot' : 'character' }} also cannot be transferred by the user (directly or through trades) until the cooldown is up.</li>
         </ul>
     </div>
     <div class="form-group">
@@ -97,7 +111,7 @@
     </div>
     <div class="card mb-3" id="resellOptions">
         <div class="card-body">
-            {!! Form::label('Resale Value') !!} {!! add_help('This value is publicly displayed on the character\'s page.') !!}
+            {!! Form::label('Resale Value') !!} {!! add_help('This value is publicly displayed on the '.($isMyo ? 'MYO slot' : 'character').'\'s page.') !!}
             {!! Form::text('sale_value', old('sale_value'), ['class' => 'form-control']) !!}
         </div>
     </div>
@@ -109,7 +123,12 @@
     <h3>Image Upload</h3>
 
     <div class="form-group">
-        {!! Form::label('Character Image') !!} {!! add_help('This is the full masterlist image. Note that the image is not protected in any way, so take precautions to avoid art/design theft.') !!}
+        {!! Form::label('Image') !!} 
+        @if($isMyo)
+            {!! add_help('This is a cover image for the MYO slot. If left blank, a default image will be used.') !!}
+        @else 
+            {!! add_help('This is the full masterlist image. Note that the image is not protected in any way, so take precautions to avoid art/design theft.') !!}
+        @endif
         <div>{!! Form::file('image', ['id' => 'mainImage']) !!}</div>
     </div>
     <div class="form-group">
@@ -166,26 +185,27 @@
             <a href="#" class="add-artist btn btn-link mb-2" data-toggle="tooltip" title="Add another artist">+</a>
         </div>
     </div>
-
-    <div class="form-group">
-        {!! Form::label('Image Notes (Optional)') !!} {!! add_help('This section is for making additional notes about the image.') !!}
-        {!! Form::textarea('image_description', old('image_description'), ['class' => 'form-control wysiwyg']) !!}
-    </div>
+    @if(!$isMyo)
+        <div class="form-group">
+            {!! Form::label('Image Notes (Optional)') !!} {!! add_help('This section is for making additional notes about the image.') !!}
+            {!! Form::textarea('image_description', old('image_description'), ['class' => 'form-control wysiwyg']) !!}
+        </div>
+    @endif
     
     <h3>Traits</h3>
 
     <div class="form-group">
-        {!! Form::label('Species') !!}
+        {!! Form::label('Species') !!} @if($isMyo) {!! add_help('This will lock the slot into a particular species. Leave it blank if you would like to give the user a choice.') !!} @endif
         {!! Form::select('species_id', $specieses, old('species_id'), ['class' => 'form-control', 'id' => 'species']) !!}
     </div>
 
     <div class="form-group">
-        {!! Form::label('Character Rarity') !!}
+        {!! Form::label('Character Rarity') !!} @if($isMyo) {!! add_help('This will lock the slot into a particular rarity - the user will not be able to select traits above this rarity. Leave it blank if you would like to give the user more choices.') !!} @endif
         {!! Form::select('rarity_id', $rarities, old('rarity_id'), ['class' => 'form-control']) !!}
     </div>
 
     <div class="form-group">
-        {!! Form::label('Traits') !!}
+        {!! Form::label('Traits') !!} @if($isMyo) {!! add_help('These traits will be listed as required traits for the slot. The user will still be able to add on more traits, but not be able to remove these. This is allowed to conflict with the rarity above; you may add traits above the character\'s specified rarity.') !!} @endif
         <div id="featureList">
         </div>
         <div><a href="#" class="btn btn-primary" id="add-feature">Add Trait</a></div>
@@ -215,39 +235,43 @@ $( document ).ready(function() {
         timeFormat: 'HH:mm:ss',
     });
 
-    // Code generation ////////////////////////////////////////////////////////////////////////////
+    @if(!$isMyo)
 
-    var codeFormat = "{{ Config::get('lorekeeper.settings.character_codes') }}";
-    var $code = $('#code');
-    var $number = $('#number');
-    var $category = $('#category');
+        // Code generation ////////////////////////////////////////////////////////////////////////////
 
-    $number.on('keypress', function() {
-        updateCode();
-    });
-    $category.on('change', function() {
-        updateCode();
-    });
+        var codeFormat = "{{ Config::get('lorekeeper.settings.character_codes') }}";
+        var $code = $('#code');
+        var $number = $('#number');
+        var $category = $('#category');
 
-    function updateCode() {
-        var str = codeFormat;
-        str = str.replace('{category}', $category.find(':selected').data('code'));
-        str = str.replace('{number}', $number.val());
-        $code.val(str);
-    }
-
-    // Pull number ////////////////////////////////////////////////////////////////////////////////
-
-    var $pullNumber = $('#pull-number');
-    $pullNumber.on('click', function(e) {
-        e.preventDefault();
-        $pullNumber.prop('disabled', true);
-        $.get( "{{ url('admin/masterlist/get-number') }}?category=" + $category.val(), function( data ) {
-            $number.val( data );
-            $pullNumber.prop('disabled', false);
+        $number.on('keypress', function() {
             updateCode();
         });
-    });
+        $category.on('change', function() {
+            updateCode();
+        });
+
+        function updateCode() {
+            var str = codeFormat;
+            str = str.replace('{category}', $category.find(':selected').data('code'));
+            str = str.replace('{number}', $number.val());
+            $code.val(str);
+        }
+
+        // Pull number ////////////////////////////////////////////////////////////////////////////////
+
+        var $pullNumber = $('#pull-number');
+        $pullNumber.on('click', function(e) {
+            e.preventDefault();
+            $pullNumber.prop('disabled', true);
+            $.get( "{{ url('admin/masterlist/get-number') }}?category=" + $category.val(), function( data ) {
+                $number.val( data );
+                $pullNumber.prop('disabled', false);
+                updateCode();
+            });
+        });
+
+    @endif
 
 
     // Resell options /////////////////////////////////////////////////////////////////////////////

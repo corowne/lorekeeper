@@ -21,7 +21,7 @@ use App\Models\Prompt\Prompt;
 
 class SubmissionManager extends Service
 {
-    public function createSubmission($data, $user)
+    public function createSubmission($data, $user, $isClaim = false)
     {
         DB::beginTransaction();
 
@@ -29,31 +29,39 @@ class SubmissionManager extends Service
             // 1. check that the prompt can be submitted at this time
             // 2. check that the characters selected exist (are visible too)
             // 3. check that the currencies selected can be attached to characters
-            $prompt = Prompt::active()->where('id', $data['prompt_id'])->with('rewards')->first();
-            if(!$prompt) throw new \Exception("Invalid prompt selected.");
+            if(!$isClaim && !Settings::get('is_prompts_open')) throw new \Exception("The prompt queue is closed for submissions.");
+            else if($isClaim && !Settings::get('is_claims_open')) throw new \Exception("The claim queue is closed for submissions.");
+            if(!$isClaim && !isset($data['prompt_id'])) throw new \Exception("Please select a prompt.");
+            if(!$isClaim) {
+                $prompt = Prompt::active()->where('id', $data['prompt_id'])->with('rewards')->first();
+                if(!$prompt) throw new \Exception("Invalid prompt selected.");
+            }
+            else $prompt = null;
 
             // The character identification comes in both the slug field and as character IDs
             // that key the reward ID/quantity arrays. 
             // We'll need to match characters to the rewards for them.
             // First, check if the characters are accessible to begin with.
-            $characters = Character::visible()->whereIn('slug', $data['slug'])->get();
+            $characters = Character::myo(0)->visible()->whereIn('slug', $data['slug'])->get();
             if(count($characters) != count($data['slug'])) throw new \Exception("One or more of the selected characters do not exist.");
 
             // Get a list of rewards, then create the submission itself
             $promptRewards = createAssetsArray();
-            foreach($prompt->rewards as $reward) 
+            if(!$isClaim) 
             {
-                addAsset($promptRewards, $reward->reward, $reward->quantity);
+                foreach($prompt->rewards as $reward) 
+                {
+                    addAsset($promptRewards, $reward->reward, $reward->quantity);
+                }
             }
             $promptRewards = mergeAssetsArrays($promptRewards, $this->processRewards($data, false));
             $submission = Submission::create([
                 'user_id' => $user->id,
-                'prompt_id' => $prompt->id,
                 'url' => $data['url'],
                 'status' => 'Pending',
                 'comments' => $data['comments'],
                 'data' => json_encode(getDataReadyAssets($promptRewards)) // list of rewards
-            ]);
+            ] + ($isClaim ? [] : ['prompt_id' => $prompt->id,]));
 
             // Retrieve all currency IDs for characters
             $currencyIds = [];
@@ -152,7 +160,7 @@ class SubmissionManager extends Service
                 'status' => 'Rejected'
             ]);
 
-            Notifications::create('SUBMISSION_REJECTED', $submission->user, [
+            Notifications::create($submission->id ? 'SUBMISSION_REJECTED' : 'CLAIM_REJECTED', $submission->user, [
                 'staff_url' => $user->url,
                 'staff_name' => $user->name,
                 'submission_id' => $submission->id,
@@ -180,16 +188,16 @@ class SubmissionManager extends Service
             // that key the reward ID/quantity arrays. 
             // We'll need to match characters to the rewards for them.
             // First, check if the characters are accessible to begin with.
-            $characters = Character::visible()->whereIn('slug', $data['slug'])->get();
+            $characters = Character::myo(0)->visible()->whereIn('slug', $data['slug'])->get();
             if(count($characters) != count($data['slug'])) throw new \Exception("One or more of the selected characters do not exist.");
 
             // Get the updated set of rewards
             $rewards = $this->processRewards($data, false, true);
 
             // Logging data
-            $promptLogType = 'Prompt Rewards';
+            $promptLogType = $submission->prompt_id ? 'Prompt Rewards' : 'Claim Rewards';
             $promptData = [
-                'data' => 'Received rewards for submission (<a href="'.$submission->viewUrl.'">#'.$submission->id.'</a>)'
+                'data' => 'Received rewards for '.($submission->prompt_id ? 'submission' : 'claim').' (<a href="'.$submission->viewUrl.'">#'.$submission->id.'</a>)'
             ];
 
             // Distribute user rewards
@@ -220,9 +228,11 @@ class SubmissionManager extends Service
                 ]);
             }
 
-            // Increment user submission count
-            $user->settings->submission_count++;
-            $user->settings->save();
+            // Increment user submission count if it's a prompt
+            if($submission->prompt_id) {
+                $user->settings->submission_count++;
+                $user->settings->save();
+            }
 
             // Finally, set: 
             // 1. staff ID
@@ -234,7 +244,7 @@ class SubmissionManager extends Service
                 'data' => json_encode(getDataReadyAssets($rewards))
             ]);
 
-            Notifications::create('SUBMISSION_APPROVED', $submission->user, [
+            Notifications::create($submission->prompt_id ? 'SUBMISSION_APPROVED' : 'CLAIM_APPROVED', $submission->user, [
                 'staff_url' => $user->url,
                 'staff_name' => $user->name,
                 'submission_id' => $submission->id,

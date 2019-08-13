@@ -35,6 +35,7 @@ Route::get('/users', 'BrowseController@getUsers');
 Route::group(['prefix' => 'user', 'namespace' => 'Users'], function() {
     Route::get('{name}', 'UserController@getUser');
     Route::get('{name}/characters', 'UserController@getUserCharacters');
+    Route::get('{name}/myos', 'UserController@getUserMyoSlots');
     Route::get('{name}/inventory', 'UserController@getUserInventory');
     Route::get('{name}/bank', 'UserController@getUserBank');
     
@@ -48,6 +49,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'Users'], function() {
     Characters
 **************************************************************************************************/
 Route::get('/masterlist', 'BrowseController@getCharacters');
+Route::get('/myos', 'BrowseController@getMyos');
 Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() {
     Route::get('{slug}', 'CharacterController@getCharacter');
     Route::get('{slug}/profile', 'CharacterController@getCharacterProfile');
@@ -66,6 +68,20 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() 
     Route::post('{slug}/transfer', 'CharacterController@postTransfer');
     Route::post('{slug}/transfer/{id}/cancel', 'CharacterController@postCancelTransfer');
 });
+Route::group(['prefix' => 'myo', 'namespace' => 'Characters'], function() {
+    Route::get('{id}', 'MyoController@getCharacter');
+    Route::get('{id}/profile', 'MyoController@getCharacterProfile');
+    Route::get('{id}/ownership', 'MyoController@getCharacterOwnershipLogs');
+    Route::get('{id}/change-log', 'MyoController@getCharacterLogs');
+
+    Route::get('{id}/profile/edit', 'MyoController@getEditCharacterProfile');
+    Route::post('{id}/profile/edit', 'MyoController@postEditCharacterProfile');
+    
+    Route::get('{id}/transfer', 'MyoController@getTransfer');
+    Route::post('{id}/transfer', 'MyoController@postTransfer');
+    Route::post('{id}/transfer/{id2}/cancel', 'MyoController@postCancelTransfer');
+});
+
 
 /**************************************************************************************************
     World
@@ -104,4 +120,7 @@ Route::group(['prefix' => 'raffles'], function () {
 **************************************************************************************************/
 Route::group(['prefix' => 'submissions', 'namespace' => 'Users'], function() {
     Route::get('view/{id}', 'SubmissionController@getSubmission');
+});
+Route::group(['prefix' => 'claims', 'namespace' => 'Users'], function() {
+    Route::get('view/{id}', 'SubmissionController@getClaim');
 });

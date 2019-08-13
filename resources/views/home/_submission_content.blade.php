@@ -1,5 +1,5 @@
 <h1>
-    Submission (#{{ $submission->id }})
+    {{ $submission->prompt_id ? 'Submission' : 'Claim' }} (#{{ $submission->id }})
     <span class="float-right badge badge-{{ $submission->status == 'Pending' ? 'secondary' : ($submission->status == 'Approved' ? 'success' : 'danger') }}">{{ $submission->status }}</span>
 </h1>
 
@@ -8,10 +8,12 @@
         <div class="col-md-2 col-4"><h5>User</h5></div>
         <div class="col-md-10 col-8">{!! $submission->user->displayName !!}</div>
     </div>
-    <div class="row">
-        <div class="col-md-2 col-4"><h5>Prompt</h5></div>
-        <div class="col-md-10 col-8">{!! $submission->prompt->displayName !!}</div>
-    </div>
+    @if($submission->prompt_id)
+        <div class="row">
+            <div class="col-md-2 col-4"><h5>Prompt</h5></div>
+            <div class="col-md-10 col-8">{!! $submission->prompt->displayName !!}</div>
+        </div>
+    @endif
     <div class="row">
         <div class="col-md-2 col-4"><h5>URL</h5></div>
         <div class="col-md-10 col-8"><a href="{{ $submission->url }}">{{ $submission->url }}</a></div>

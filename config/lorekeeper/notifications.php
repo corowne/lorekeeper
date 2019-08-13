@@ -142,4 +142,22 @@ return [
         'message' => 'Your submission (#{submission_id}) was rejected by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Submission</a>)',
         'url' => 'submissions/view/{submission_id}'
     ],
+
+    // CLAIM_APPROVED
+    22 => [
+        'message' => 'Your claim (#{submission_id}) was approved by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Claim</a>)',
+        'url' => 'submissions/view/{submission_id}'
+    ],
+
+    // CLAIM_REJECTED
+    23 => [
+        'message' => 'Your claim (#{submission_id}) was rejected by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Claim</a>)',
+        'url' => 'submissions/view/{submission_id}'
+    ],
+
+    // MYO_GRANT
+    24 => [
+        'message' => 'A new MYO slot (<a href="{character_url}">{name}</a>) has been created for you. (<a href="{url}">View MYO Slots</a>)',
+        'url' => 'myos'
+    ],
 ];

@@ -1,4 +1,4 @@
-@extends('character.layout')
+@extends('character.layout', ['isMyo' => $character->is_myo_slot])
 
 @section('profile-title') Editing {{ $character->fullName }}'s Profile @endsection
 
@@ -14,20 +14,24 @@
 @endif
 
 {!! Form::open(['url' => $character->url . '/profile/edit']) !!}
-<div class="form-group">
-    {!! Form::label('name', 'Name') !!}
-    {!! Form::text('name', $character->name, ['class' => 'form-control']) !!}
-</div>
+@if(!$character->is_myo_slot)
+    <div class="form-group">
+        {!! Form::label('name', 'Name') !!}
+        {!! Form::text('name', $character->name, ['class' => 'form-control']) !!}
+    </div>
+@endif
 <div class="form-group">
     {!! Form::label('text', 'Profile Content') !!}
     {!! Form::textarea('text', $character->profile->text, ['class' => 'wysiwyg form-control']) !!}
 </div>
 
 @if($character->user_id == Auth::user()->id)
-    <div class="form-group">
-        {!! Form::checkbox('is_gift_art_allowed', 1, $character->is_gift_art_allowed, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-        {!! Form::label('is_gift_art_allowed', 'Allow Gift Art', ['class' => 'form-check-label ml-3']) !!} {!! add_help('This will place the character on the list of characters that can be drawn for gift art. This does not have any other functionality, but allow users looking for characters to draw to find your character easily.') !!}
-    </div>
+    @if(!$character->is_myo_slot)
+        <div class="form-group">
+            {!! Form::checkbox('is_gift_art_allowed', 1, $character->is_gift_art_allowed, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+            {!! Form::label('is_gift_art_allowed', 'Allow Gift Art', ['class' => 'form-check-label ml-3']) !!} {!! add_help('This will place the character on the list of characters that can be drawn for gift art. This does not have any other functionality, but allow users looking for characters to draw to find your character easily.') !!}
+        </div>
+    @endif
     <div class="form-group">
         {!! Form::checkbox('is_trading', 1, $character->is_trading, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
         {!! Form::label('is_trading', 'Up For Trade', ['class' => 'form-check-label ml-3']) !!} {!! add_help('This will place the character on the list of characters that are currently up for trade. This does not have any other functionality, but allow users looking for trades to find your character easily.') !!}

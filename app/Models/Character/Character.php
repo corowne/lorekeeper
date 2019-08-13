@@ -31,7 +31,8 @@ class Character extends Model
         'owner_alias', 'number', 'slug', 'description', 'parsed_description', 
         'is_sellable', 'is_tradeable', 'is_giftable',
         'sale_value', 'transferrable_at', 'is_visible',
-        'is_gift_art_allowed', 'is_trading', 'sort'
+        'is_gift_art_allowed', 'is_trading', 'sort',
+        'is_myo_slot', 'name'
     ];
     protected $table = 'characters';
     public $timestamps = true;
@@ -55,6 +56,17 @@ class Character extends Model
         'slug' => 'required',
         'description' => 'nullable',
         'sale_value' => 'nullable',
+    ];
+    
+    public static $myoRules = [
+        'rarity_id' => 'nullable',
+        'user_id' => 'nullable',
+        'number' => 'required',
+        'slug' => 'required|unique:characters,slug',
+        'description' => 'nullable',
+        'sale_value' => 'nullable',
+        'image' => 'required|mimes:jpeg,gif,png|max:20000',
+        'thumbnail' => 'nullable|mimes:jpeg,gif,png|max:20000',
     ];
     
     public function user() 
@@ -82,6 +94,11 @@ class Character extends Model
         return $this->hasOne('App\Models\Character\CharacterProfile', 'character_id');
     }
 
+    public function scopeMyo($query, $isMyo = false)
+    {
+        return $query->where('is_myo_slot', $isMyo);
+    }
+
     public function scopeVisible($query)
     {
         return $query->where('is_visible', 1);
@@ -98,6 +115,11 @@ class Character extends Model
         else return '<a href="https://www.deviantart.com/'.$this->owner_alias.'">'.$this->owner_alias.'@dA</a>';
     }
 
+    public function getSlugAttribute()
+    {
+        if($this->is_myo_slot) return $this->name;
+        else return $this->attributes['slug'];
+    }
     
     public function getDisplayNameAttribute()
     {
@@ -106,7 +128,8 @@ class Character extends Model
 
     public function getFullNameAttribute()
     {
-        return $this->slug . ($this->name ? ': '.$this->name : '');
+        if($this->is_myo_slot) return $this->name;
+        else return $this->slug . ($this->name ? ': '.$this->name : '');
     }
 
     public function getImageDirectoryAttribute()
@@ -132,7 +155,8 @@ class Character extends Model
 
     public function getUrlAttribute()
     {
-        return url('character/'.$this->slug);
+        if($this->is_myo_slot) return url('myo/'.$this->id);
+        else return url('character/'.$this->slug);
     }
 
     public function updateOwner()

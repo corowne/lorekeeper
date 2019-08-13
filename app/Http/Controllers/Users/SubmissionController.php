@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use DB;
 use Auth;
+use Settings;
 use App\Models\User\User;
 use App\Models\Character\Character;
 use App\Models\Item\Item;
@@ -36,7 +37,7 @@ class SubmissionController extends Controller
      */
     public function getIndex(Request $request)
     {
-        $submissions = Submission::where('user_id', Auth::user()->id);
+        $submissions = Submission::where('user_id', Auth::user()->id)->whereNotNull('prompt_id');
         $type = $request->get('type');
         if(!$type) $type = 'Pending';
         
@@ -44,6 +45,7 @@ class SubmissionController extends Controller
 
         return view('home.submissions', [
             'submissions' => $submissions->orderBy('id', 'DESC')->paginate(20),
+            'isClaims' => false
         ]);
     }
     
@@ -54,7 +56,7 @@ class SubmissionController extends Controller
      */
     public function getSubmission($id)
     {
-        $submission = Submission::viewable(Auth::user())->where('id', $id)->first();
+        $submission = Submission::viewable(Auth::user())->where('id', $id)->whereNotNull('prompt_id')->first();
         if(!$submission) abort(404);
         return view('home.submission', [
             'submission' => $submission,
@@ -69,13 +71,17 @@ class SubmissionController extends Controller
      */
     public function getNewSubmission(Request $request)
     {
+        $closed = !Settings::get('is_prompts_open');
         return view('home.create_submission', [
+            'closed' => $closed,
+            'isClaim' => false
+        ] + ($closed ? [] : [
             'submission' => new Submission,
             'prompts' => Prompt::active()->sortAlphabetical()->pluck('name', 'id')->toArray(),
             'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
             'items' => Item::orderBy('name')->pluck('name', 'id'),
-            'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
-        ]);
+            'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id')
+        ]));
     }
 
     /**
@@ -118,6 +124,73 @@ class SubmissionController extends Controller
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
         return redirect()->to('submissions');
+    }
+
+    
+
+    /**
+     * Show the user's claim log.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getClaimsIndex(Request $request)
+    {
+        $submissions = Submission::where('user_id', Auth::user()->id)->whereNull('prompt_id');
+        $type = $request->get('type');
+        if(!$type) $type = 'Pending';
+        
+        $submissions = $submissions->where('status', ucfirst($type));
+
+        return view('home.submissions', [
+            'submissions' => $submissions->orderBy('id', 'DESC')->paginate(20),
+            'isClaims' => true
+        ]);
+    }
+    
+    /**
+     * Show the claim page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getClaim($id)
+    {
+        $submission = Submission::viewable(Auth::user())->where('id', $id)->whereNull('prompt_id')->first();
+        if(!$submission) abort(404);
+        return view('home.submission', [
+            'submission' => $submission,
+            'user' => $submission->user
+        ]);
+    }
+    
+    /**
+     * Show the submit claim page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getNewClaim(Request $request)
+    {
+        $closed = !Settings::get('is_claims_open');
+        return view('home.create_submission', [
+            'closed' => $closed,
+            'isClaim' => false
+        ] + ($closed ? [] : [
+            'submission' => new Submission,
+            'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
+            'items' => Item::orderBy('name')->pluck('name', 'id'),
+            'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id')
+        ]));
+    }
+    
+    public function postNewClaim(Request $request, SubmissionManager $service)
+    {
+        $request->validate(Submission::$createRules);
+        if($service->createSubmission($request->only(['url', 'comments', 'slug', 'character_quantity', 'character_currency_id', 'rewardable_type', 'rewardable_id', 'quantity']), Auth::user(), true)) {
+            flash('Claim submitted successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->to('claims');
     }
 
 }

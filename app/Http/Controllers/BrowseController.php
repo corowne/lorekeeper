@@ -12,7 +12,6 @@ use App\Models\Character\Character;
 use App\Models\Species;
 use App\Models\Rarity;
 
-
 class BrowseController extends Controller
 {
     /**
@@ -43,7 +42,7 @@ class BrowseController extends Controller
      */
     public function getCharacters(Request $request)
     {
-        $query = Character::query();
+        $query = Character::myo(0);
         
         if($request->get('name')) $query->where(function($query) use ($request) {
             $query->where('characters.name', 'LIKE', '%' . $request->get('name') . '%')->orWhere('characters.slug', 'LIKE', '%' . $request->get('name') . '%');
@@ -53,6 +52,32 @@ class BrowseController extends Controller
 
         return view('browse.masterlist', [  
             'characters' => $query->orderBy('characters.id', 'DESC')->paginate(24),
+            'specieses' => [0 => 'Any Species'] + Species::orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'rarities' => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
+        ]);
+    }
+
+    
+    /**
+     * Show the MYO slot masterlist.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getMyos(Request $request)
+    {
+        $query = Character::myo(1);
+        
+        if($request->get('name')) {
+            $users = User::where('users.name', 'LIKE', '%' . $request->get('name') . '%')->orWhere('users.alias', 'LIKE', '%' . $request->get('name') . '%')->pluck('id')->toArray();
+            $query->where(function($query) use ($request, $users) {
+                $query->where('characters.name', 'LIKE', '%' . $request->get('name') . '%')->orWhere('characters.owner_alias', 'LIKE', '%' . $request->get('name') . '%')->orWhereIn('characters.user_id', $users);
+            });
+        }
+        //if($request->get('species_id')) $query->where('species_id', $request->get('species_id'));
+        if($request->get('rarity_id')) $query->where('rarity_id', $request->get('rarity_id'));
+
+        return view('browse.myo_masterlist', [  
+            'slots' => $query->orderBy('characters.id', 'DESC')->paginate(30),
             'specieses' => [0 => 'Any Species'] + Species::orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities' => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);

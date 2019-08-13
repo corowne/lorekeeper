@@ -80,4 +80,7 @@ class Notification extends Model
     const CHARACTER_RECEIVED              = 19;
     const SUBMISSION_APPROVED             = 20;
     const SUBMISSION_REJECTED             = 21;
+    const CLAIM_APPROVED                  = 22;
+    const CLAIM_REJECTED                  = 23;
+    const MYO_GRANT                       = 24;
 }

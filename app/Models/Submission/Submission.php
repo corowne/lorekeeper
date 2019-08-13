@@ -77,12 +77,12 @@ class Submission extends Model
 
     public function getViewUrlAttribute()
     {
-        return url('submissions/view/'.$this->id);
+        return url(($this->prompt_id ? 'submissions' : 'claims') . '/view/'.$this->id);
     }
 
     public function getAdminUrlAttribute()
     {
-        return url('admin/submissions/edit/'.$this->id);
+        return url('admin/' . ($this->prompt_id ? 'submissions' : 'claims') . '/edit/'.$this->id);
     }
 
     public function getRewardsAttribute()

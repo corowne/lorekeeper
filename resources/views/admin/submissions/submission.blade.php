@@ -1,14 +1,18 @@
 @extends('home.layout')
 
-@section('home-title') Submission (#{{ $submission->id }}) @endsection
+@section('home-title') {{ $submission->prompt_id ? 'Submission' : 'Claim' }} (#{{ $submission->id }}) @endsection
 
 @section('home-content')
-{!! breadcrumbs(['Admin Panel' => 'admin', 'Prompt Queue' => 'admin/submissions/pending', 'Submission (#' . $submission->id . ')' => $submission->viewUrl]) !!}
+@if($submission->prompt_id)
+    {!! breadcrumbs(['Admin Panel' => 'admin', 'Prompt Queue' => 'admin/submissions/pending', 'Submission (#' . $submission->id . ')' => $submission->viewUrl]) !!}
+@else 
+    {!! breadcrumbs(['Admin Panel' => 'admin', 'Claim Queue' => 'admin/claims/pending', 'Claim (#' . $submission->id . ')' => $submission->viewUrl]) !!}
+@endif
 
 @if($submission->status == 'Pending')
 
     <h1>
-        Submission (#{{ $submission->id }})
+        {{ $submission->prompt_id ? 'Submission' : 'Claim' }} (#{{ $submission->id }})
         <span class="float-right badge badge-{{ $submission->status == 'Pending' ? 'secondary' : ($submission->status == 'Approved' ? 'success' : 'danger') }}">{{ $submission->status }}</span>
     </h1>
 
@@ -17,10 +21,12 @@
             <div class="col-md-2 col-4"><h5>User</h5></div>
             <div class="col-md-10 col-8">{!! $submission->user->displayName !!}</div>
         </div>
-        <div class="row">
-            <div class="col-md-2 col-4"><h5>Prompt</h5></div>
-            <div class="col-md-10 col-8">{!! $submission->prompt->displayName !!}</div>
-        </div>
+        @if($submission->prompt_id)
+            <div class="row">
+                <div class="col-md-2 col-4"><h5>Prompt</h5></div>
+                <div class="col-md-10 col-8">{!! $submission->prompt->displayName !!}</div>
+            </div>
+        @endif
         <div class="row">
             <div class="col-md-2 col-4"><h5>URL</h5></div>
             <div class="col-md-10 col-8"><a href="{{ $submission->url }}">{{ $submission->url }}</a></div>
@@ -41,9 +47,11 @@
 
         <h2>Rewards</h2>
         @include('widgets._loot_select', ['loots' => $submission->rewards, 'showLootTables' => true])
-        <div class="mb-3">
-            @include('home._prompt', ['prompt' => $submission->prompt, 'staffView' => true])
-        </div>
+        @if($submission->prompt_id)
+            <div class="mb-3">
+                @include('home._prompt', ['prompt' => $submission->prompt, 'staffView' => true])
+            </div>
+        @endif
 
         <h2>Characters</h2>
         <div id="characters" class="mb-3">
@@ -121,7 +129,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <p>This will approve the submission and distribute the above rewards to the user.</p>
+                    <p>This will approve the {{ $submission->prompt_id ? 'submission' : 'claim' }} and distribute the above rewards to the user.</p>
                     <div class="text-right">
                         <a href="#" id="approvalSubmit" class="btn btn-success">Approve</a>
                     </div>
@@ -133,7 +141,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <p>This will reject the submission. Enter an optional comment below to explain why the submission was rejected.</p>
+                    <p>This will reject the {{ $submission->prompt_id ? 'submission' : 'claim' }}. Enter an optional comment below to explain why the {{ $submission->prompt_id ? 'submission' : 'claim' }} was rejected.</p>
                     <div class="form-group">
                         {!! Form::label('staff_comments', 'Staff Comments') !!}
                         {!! Form::textarea('', null, ['class' => 'form-control', 'id' =>  'modalStaffComments']) !!}
@@ -146,7 +154,7 @@
         </div>
     </div>
 @else
-    <div class="alert alert-danger">This submission has already been processed.</div>
+    <div class="alert alert-danger">This {{ $submission->prompt_id ? 'submission' : 'claim' }} has already been processed.</div>
     @include('home._submission_content', ['submission' => $submission])
 @endif
 
