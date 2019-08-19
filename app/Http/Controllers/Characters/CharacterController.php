@@ -10,6 +10,9 @@ use Route;
 use Settings;
 use App\Models\User\User;
 use App\Models\Character\Character;
+use App\Models\Species;
+use App\Models\Rarity;
+use App\Models\Feature\Feature;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
 use App\Models\User\UserCurrency;
@@ -245,6 +248,20 @@ class CharacterController extends Controller
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
         return redirect()->back();
+    }
+    
+
+    public function getCharacterApproval($slug)
+    {
+        if(!Auth::check() || $this->character->user_id != Auth::user()->id) abort(404);
+
+        return view('character.update_form', [
+            'character' => $this->character,
+            'queueOpen' => Settings::get('is_design_updates_open'),
+            'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
+        ]);
     }
 
 }

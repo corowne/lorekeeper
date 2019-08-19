@@ -3,7 +3,7 @@
 @section('profile-title') Transferring {{ $character->fullName }} @endsection
 
 @section('profile-content')
-{!! breadcrumbs(['Masterlist' => 'masterlist', $character->fullName => $character->url, 'Transfer' => $character->url . '/transfer']) !!}
+{!! breadcrumbs([($character->is_myo_slot ? 'MYO Slot Masterlist' : 'Character Masterlist') => ($character->is_myo_slot ? 'myos' : 'masterlist'), $character->fullName => $character->url, 'Transfer' => $character->url . '/transfer']) !!}
 
 @include('character._header', ['character' => $character])
 
@@ -57,7 +57,7 @@
         You are editing this character as a staff member.
     </div>
     <p>This will transfer the character automatically, without requiring the recipient to confirm the transfer. You may also transfer a character that is marked non-transferrable, or still under cooldown. Both the old and new owners will be notified of the transfer.</p>
-    {!! Form::open(['url' => 'admin/character/' . $character->slug . '/transfer']) !!}
+    {!! Form::open(['url' => $character->is_myo_slot ? 'admin/myo/'.$character->id.'/transfer' : 'admin/character/' . $character->slug . '/transfer']) !!}
     <div class="form-group">
         {!! Form::label('recipient_id', 'Recipient') !!}
         {!! Form::select('recipient_id', $userOptions, old('recipient_id'), ['class' => 'form-control selectize', 'placeholder' => 'Select User']) !!}

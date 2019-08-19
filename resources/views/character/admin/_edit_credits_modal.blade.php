@@ -15,6 +15,15 @@
                     >+</a>
                 </div>
             @endforeach
+            @if(!count($image->designers))
+                <div class="mb-2 d-flex">
+                    {!! Form::text('designer_alias[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Designer Alias']) !!}
+                    {!! Form::text('designer_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Designer URL']) !!}
+                    
+                    <a href="#" class="add-designer btn btn-link" data-toggle="tooltip" title="Add another designer"
+                    >+</a>
+                </div>
+            @endif
         </div>
         <div class="designer-row hide mb-2">
             {!! Form::text('designer_alias[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Designer Alias']) !!}
@@ -37,6 +46,14 @@
                     >+</a>
                 </div>
             @endforeach
+            @if(!count($image->artists))
+                <div class="mb-2 d-flex">
+                    {!! Form::text('artist_alias[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Artist Alias']) !!}
+                    {!! Form::text('artist_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Artist URL']) !!}
+                    <a href="#" class="add-artist btn btn-link" data-toggle="tooltip" title="Add another artist"
+                    >+</a>
+                </div>
+            @endif
         </div>
         <div class="artist-row hide mb-2">
             {!! Form::text('artist_alias[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Artist Alias']) !!}

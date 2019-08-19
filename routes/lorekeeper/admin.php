@@ -259,6 +259,25 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware'
     
     Route::post('{slug}/transfer', 'CharacterController@postTransfer');
 });
+// Might rewrite these parts eventually so there's less code duplication... 
+Route::group(['prefix' => 'myo', 'namespace' => 'Characters', 'middleware' => 'power:manage_characters'], function() {
+    # CHARACTER
+    Route::get('{id}/stats', 'CharacterController@getEditMyoStats');
+    Route::post('{id}/stats', 'CharacterController@postEditMyoStats');
+
+    Route::get('{id}/description', 'CharacterController@getEditMyoDescription');
+    Route::post('{id}/description', 'CharacterController@postEditMyoDescription');
+
+    Route::get('{id}/profile', 'CharacterController@getEditMyoProfile');
+    Route::post('{id}/profile', 'CharacterController@postEditMyoProfile');
+
+    Route::get('{id}/delete', 'CharacterController@getMyoDelete');
+    Route::post('{id}/delete', 'CharacterController@postMyoDelete');
+    
+    Route::post('{id}/settings', 'CharacterController@postMyoSettings');
+    
+    Route::post('{id}/transfer', 'CharacterController@postMyoTransfer');
+});
 
 # RAFFLES
 Route::group(['prefix' => 'raffles', 'middleware' => 'power:manage_raffles'], function() {

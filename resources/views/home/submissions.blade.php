@@ -14,7 +14,7 @@
 </h1>
 
 <div class="text-right">
-    @if($isClaims)
+    @if(!$isClaims)
         <a href="{{ url('submissions/new') }}" class="btn btn-success">New Submission</a>
     @else 
         <a href="{{ url('claims/new') }}" class="btn btn-success">New Claim</a>

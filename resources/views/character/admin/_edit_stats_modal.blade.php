@@ -1,23 +1,29 @@
-{!! Form::open(['url' => 'admin/character/'.$character->slug.'/stats']) !!}
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                {!! Form::label('Character Category') !!}
-                {!! Form::select('character_category_id', $categories, $character->category->id, ['class' => 'form-control']) !!}
+{!! Form::open(['url' => $isMyo ? 'admin/myo/'.$character->id.'/stats' : 'admin/character/'.$character->slug.'/stats']) !!}
+    @if($isMyo)
+        <div class="form-group">
+            {!! Form::label('Name') !!}
+            {!! Form::text('name', $character->name, ['class' => 'form-control']) !!}
+        </div>
+    @else
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    {!! Form::label('Character Category') !!}
+                    {!! Form::select('character_category_id', $categories, $character->category->id, ['class' => 'form-control']) !!}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    {!! Form::label('Number') !!} {!! add_help('This number helps to identify the character and should preferably be unique either within the category, or among all characters.') !!}
+                    {!! Form::text('number', $number, ['class' => 'form-control mr-2', 'id' => 'number']) !!}
+                </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                {!! Form::label('Number') !!} {!! add_help('This number helps to identify the character and should preferably be unique either within the category, or among all characters.') !!}
-                {!! Form::text('number', $number, ['class' => 'form-control mr-2', 'id' => 'number']) !!}
-            </div>
+        <div class="form-group">
+            {!! Form::label('Character Code') !!} {!! add_help('This code identifies the character itself. This must be unique among all characters (as it\'s used to generate the character\'s page URL).') !!}
+            {!! Form::text('slug', $character->slug, ['class' => 'form-control', 'id' => 'code']) !!}
         </div>
-    </div>
-
-    <div class="form-group">
-        {!! Form::label('Character Code') !!} {!! add_help('This code identifies the character itself. This must be unique among all characters (as it\'s used to generate the character\'s page URL).') !!}
-        {!! Form::text('slug', $character->slug, ['class' => 'form-control', 'id' => 'code']) !!}
-    </div>
+    @endif
 
     <div class="form-group">
         {!! Form::checkbox('is_visible', 1, $character->is_visible, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}

@@ -30,15 +30,15 @@
         });
         $('.edit-stats').on('click', function(e) {
             e.preventDefault();
-            loadModal("{{ url('admin/character/') }}/"+$(this).data('slug')+"/stats", 'Edit Character Stats');
+            loadModal("{{ url($character->is_myo_slot ? 'admin/myo/' : 'admin/character/') }}/"+$(this).data('{{ $character->is_myo_slot ? 'id' : 'slug' }}')+"/stats", 'Edit Character Stats');
         });
         $('.edit-description').on('click', function(e) {
             e.preventDefault();
-            loadModal("{{ url('admin/character/') }}/"+$(this).data('slug')+"/description", 'Edit Description');
+            loadModal("{{ url($character->is_myo_slot ? 'admin/myo/' : 'admin/character/') }}/"+$(this).data('{{ $character->is_myo_slot ? 'id' : 'slug' }}')+"/description", 'Edit Description');
         });
         $('.delete-character').on('click', function(e) {
             e.preventDefault();
-            loadModal("{{ url('admin/character/') }}/"+$(this).data('slug')+"/delete", 'Delete Character');
+            loadModal("{{ url($character->is_myo_slot ? 'admin/myo/' : 'admin/character/') }}/"+$(this).data('{{ $character->is_myo_slot ? 'id' : 'slug' }}')+"/delete", 'Delete Character');
         });
 
     });

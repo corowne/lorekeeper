@@ -1,9 +1,9 @@
-@extends('character.layout', ['isMyo' => $character->is_myo_slot])
+@extends('character.layout', ['isMyo' => true])
 
 @section('profile-title') {{ $character->fullName }} @endsection
 
 @section('profile-content')
-{!! breadcrumbs([($character->is_myo_slot ? 'MYO Slot Masterlist' : 'Character Masterlist') => ($character->is_myo_slot ? 'myos' : 'masterlist'), $character->fullName => $character->url]) !!}
+{!! breadcrumbs(['Masterlist' => 'masterlist', $character->fullName => $character->url]) !!}
 
 @include('character._header', ['character' => $character])
 
@@ -29,7 +29,7 @@
             </li>
             @if(Auth::check() && Auth::user()->hasPower('manage_masterlist'))
                 <li class="nav-item">
-                    <a class="nav-link" id="settingsTab" data-toggle="tab" href="#settings-{{ $character->slug }}" role="tab"><i class="fas fa-cog"></i></a>
+                    <a class="nav-link" id="settingsTab" data-toggle="tab" href="#settings-all" role="tab"><i class="fas fa-cog"></i></a>
                 </li>
             @endif
         </ul>
@@ -42,7 +42,7 @@
             @include('character._tab_notes', ['character' => $character])
         </div>
         @if(Auth::check() && Auth::user()->hasPower('manage_masterlist'))
-            <div class="tab-pane fade" id="settings-{{ $character->slug }}">
+            <div class="tab-pane fade" id="settings-all">
                 {!! Form::open(['url' => $character->is_myo_slot ? 'admin/myo/'.$character->id.'/settings' : 'admin/character/'.$character->slug.'/settings']) !!}
                     <div class="form-group">
                         {!! Form::checkbox('is_visible', 1, $character->is_visible, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
@@ -54,7 +54,7 @@
                 {!! Form::close() !!}
                 <hr />
                 <div class="text-right">
-                    <a href="#" class="btn btn-outline-danger btn-sm delete-character" data-slug="{{ $character->slug }}">Delete</a>
+                    <a href="#" class="btn btn-outline-danger btn-sm delete-character" data-id="{{ $character->id }}">Delete</a>
                 </div>
             </div>
         @endif
@@ -64,5 +64,5 @@
 @endsection
 
 @section('scripts')
-    @include('character._image_js', ['character' => $character])
+    @include('character._image_js')
 @endsection

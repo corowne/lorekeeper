@@ -23,17 +23,31 @@
                             <a class="dropdown-item" href="{{ url('characters') }}">
                                 My Characters
                             </a>
+                            <a class="dropdown-item" href="{{ url('characters/myos') }}">
+                                My MYO Slots
+                            </a>
                             <a class="dropdown-item" href="{{ url('inventory') }}">
                                 Inventory
                             </a>
                             <a class="dropdown-item" href="{{ url('bank') }}">
                                 Bank
                             </a>
-                            <a class="dropdown-item" href="{{ url('characters/transfers/incoming') }}">
-                                Transfers
-                            </a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a id="queueDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                            Activity
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="queueDropdown">
                             <a class="dropdown-item" href="{{ url('submissions') }}">
                                 Prompt Submissions
+                            </a>
+                            <a class="dropdown-item" href="{{ url('claims') }}">
+                                Claims
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ url('characters/transfers/incoming') }}">
+                                Character Transfers
                             </a>
                         </div>
                     </li>
@@ -47,8 +61,11 @@
                         <a class="dropdown-item" href="{{ url('users') }}">
                             Users
                         </a>
-                        <a class="dropdown-item" href="{{ url('characters') }}">
-                            Characters
+                        <a class="dropdown-item" href="{{ url('masterlist') }}">
+                            Character Masterlist
+                        </a>
+                        <a class="dropdown-item" href="{{ url('myos') }}">
+                            MYO Slot Masterlist
                         </a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ url('raffles') }}">

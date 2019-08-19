@@ -3,7 +3,7 @@
 @section('profile-title') {{ $character->fullName }}'s Prompt Submissions @endsection
 
 @section('profile-content')
-{!! breadcrumbs(['Masterlist' => 'masterlist', $character->fullName => $character->url, 'Prompt Submissions' => $character->url.'/submissions']) !!}
+{!! breadcrumbs([($character->is_myo_slot ? 'MYO Slot Masterlist' : 'Character Masterlist') => ($character->is_myo_slot ? 'myos' : 'masterlist'), $character->fullName => $character->url, 'Prompt Submissions' => $character->url.'/submissions']) !!}
 
 @include('character._header', ['character' => $character])
 

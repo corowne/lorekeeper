@@ -9,27 +9,17 @@
     MYO Slots
 </h1>
 
-<p>This is a list of MYO slots you own. Click the name of a slot to view details about it. MYO slots are non-transferrable and can be submitted for approval from their respective pages.</p>
-
-<table class="table table-sm">
-    <thead>
-        <tr>
-            <th>Slot Name</th>
-            <th>Rarity</th>
-            <th>Species</th>
-            <th>Created</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($slots as $slot)
-            <tr>
-                <td><a href="{{ $slot->viewUrl }}">{{ $slot->name }}</a></td>
-                <td>{!! $slot->rarityId ? $slot->rarity->displayName : 'None' !!}</td>
-                <td>{!! $slot->speciesId ? $slot->species->displayName : 'None' !!}</td>
-                <td>{{ format_date($slot->created_at) }}</td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
-
+<p>This is a list of MYO slots you own - click on a slot to view details about it. MYO slots can be submitted for design approval from their respective pages.</p>
+<div class="row">
+    @foreach($slots as $slot)
+        <div class="col-md-3 col-6 text-center mb-2">
+            <div>
+                <a href="{{ $slot->url }}"><img src="{{ $slot->image->thumbnailUrl }}" class="img-thumbnail" /></a>
+            </div>
+            <div class="mt-1 h5">
+                {!! $slot->displayName !!}
+            </div>
+        </div>
+    @endforeach
+</div>
 @endsection

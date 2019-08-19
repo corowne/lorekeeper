@@ -3,7 +3,7 @@
 @section('profile-title') {{ $character->fullName }}'s Images @endsection
 
 @section('profile-content')
-{!! breadcrumbs(['Masterlist' => 'masterlist', $character->fullName => $character->url]) !!}
+{!! breadcrumbs([($character->is_myo_slot ? 'MYO Slot Masterlist' : 'Character Masterlist') => ($character->is_myo_slot ? 'myos' : 'masterlist'), $character->fullName => $character->url, 'Images' => $character->url . '/images']) !!}
 
 @include('character._header', ['character' => $character])
 

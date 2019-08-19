@@ -172,7 +172,7 @@ class SubmissionController extends Controller
         $closed = !Settings::get('is_claims_open');
         return view('home.create_submission', [
             'closed' => $closed,
-            'isClaim' => false
+            'isClaim' => true
         ] + ($closed ? [] : [
             'submission' => new Submission,
             'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),

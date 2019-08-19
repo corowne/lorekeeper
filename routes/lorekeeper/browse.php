@@ -67,6 +67,8 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() 
     Route::get('{slug}/transfer', 'CharacterController@getTransfer');
     Route::post('{slug}/transfer', 'CharacterController@postTransfer');
     Route::post('{slug}/transfer/{id}/cancel', 'CharacterController@postCancelTransfer');
+    
+    Route::get('{slug}/approval', 'CharacterController@getCharacterApproval');
 });
 Route::group(['prefix' => 'myo', 'namespace' => 'Characters'], function() {
     Route::get('{id}', 'MyoController@getCharacter');
@@ -80,6 +82,8 @@ Route::group(['prefix' => 'myo', 'namespace' => 'Characters'], function() {
     Route::get('{id}/transfer', 'MyoController@getTransfer');
     Route::post('{id}/transfer', 'MyoController@postTransfer');
     Route::post('{id}/transfer/{id2}/cancel', 'MyoController@postCancelTransfer');
+    
+    Route::get('{id}/approval', 'MyoController@getCharacterApproval');
 });
 
 

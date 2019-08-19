@@ -3,7 +3,7 @@
 @section('profile-title') Editing {{ $character->fullName }}'s Profile @endsection
 
 @section('profile-content')
-{!! breadcrumbs(['Masterlist' => 'masterlist', $character->fullName => $character->url, 'Editing Profile' => $character->url . '/profile/edit']) !!}
+{!! breadcrumbs([($character->is_myo_slot ? 'MYO Slot Masterlist' : 'Character Masterlist') => ($character->is_myo_slot ? 'myos' : 'masterlist'), $character->fullName => $character->url, 'Editing Profile' => $character->url . '/profile/edit']) !!}
 
 @include('character._header', ['character' => $character])
 
@@ -32,10 +32,14 @@
             {!! Form::label('is_gift_art_allowed', 'Allow Gift Art', ['class' => 'form-check-label ml-3']) !!} {!! add_help('This will place the character on the list of characters that can be drawn for gift art. This does not have any other functionality, but allow users looking for characters to draw to find your character easily.') !!}
         </div>
     @endif
-    <div class="form-group">
-        {!! Form::checkbox('is_trading', 1, $character->is_trading, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-        {!! Form::label('is_trading', 'Up For Trade', ['class' => 'form-check-label ml-3']) !!} {!! add_help('This will place the character on the list of characters that are currently up for trade. This does not have any other functionality, but allow users looking for trades to find your character easily.') !!}
-    </div>
+    @if($character->is_tradeable ||  $character->is_sellable)
+        <div class="form-group disabled">
+            {!! Form::checkbox('is_trading', 1, $character->is_trading, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+            {!! Form::label('is_trading', 'Up For Trade', ['class' => 'form-check-label ml-3']) !!} {!! add_help('This will place the character on the list of characters that are currently up for trade. This does not have any other functionality, but allow users looking for trades to find your character easily.') !!}
+        </div>
+    @else 
+        <div class="alert alert-secondary">Cannot be set to "Up for Trade" as character cannot be traded or sold.</div>
+    @endif
 @endif
 @if($character->user_id != Auth::user()->id)
     <div class="form-group">

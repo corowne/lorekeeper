@@ -31,6 +31,8 @@ Route::group(['prefix' => 'characters', 'namespace' => 'Users'], function() {
 
     Route::get('transfers/{type}', 'CharacterController@getTransfers');
     Route::post('transfer/act/{id}', 'CharacterController@postHandleTransfer');
+    
+    Route::get('myos', 'CharacterController@getMyos');
 });
 
 Route::group(['prefix' => 'bank', 'namespace' => 'Users'], function() {
@@ -44,4 +46,10 @@ Route::group(['prefix' => 'submissions', 'namespace' => 'Users'], function() {
     Route::get('new/character/{slug}', 'SubmissionController@getCharacterInfo');
     Route::get('new/prompt/{id}', 'SubmissionController@getPromptInfo');
     Route::post('new', 'SubmissionController@postNewSubmission');
+});
+
+Route::group(['prefix' => 'claims', 'namespace' => 'Users'], function() {
+    Route::get('/', 'SubmissionController@getClaimsIndex');
+    Route::get('new', 'SubmissionController@getNewClaim');
+    Route::post('new', 'SubmissionController@postNewClaim');
 });

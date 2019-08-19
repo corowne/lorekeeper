@@ -3,7 +3,7 @@
 @section('profile-title') {{ $character->fullName }}'s Ownership History @endsection
 
 @section('profile-content')
-{!! breadcrumbs(['Masterlist' => 'masterlist', $character->fullName => $character->url, 'Ownership History' => $character->url.'/ownership']) !!}
+{!! breadcrumbs([($character->is_myo_slot ? 'MYO Slot Masterlist' : 'Character Masterlist') => ($character->is_myo_slot ? 'myos' : 'masterlist'), $character->fullName => $character->url, 'Ownership History' => $character->url.'/ownership']) !!}
 
 @include('character._header', ['character' => $character])
 

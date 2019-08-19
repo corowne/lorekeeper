@@ -61,11 +61,12 @@ class Character extends Model
     public static $myoRules = [
         'rarity_id' => 'nullable',
         'user_id' => 'nullable',
-        'number' => 'required',
-        'slug' => 'required|unique:characters,slug',
+        'number' => 'nullable',
+        'slug' => 'nullable',
         'description' => 'nullable',
         'sale_value' => 'nullable',
-        'image' => 'required|mimes:jpeg,gif,png|max:20000',
+        'name' => 'required',
+        'image' => 'nullable|mimes:jpeg,gif,png|max:20000',
         'thumbnail' => 'nullable|mimes:jpeg,gif,png|max:20000',
     ];
     

@@ -83,7 +83,19 @@ class CharacterController extends Controller
             'character' => $this->character,
             'categories' => CharacterCategory::orderBy('sort')->pluck('name', 'id')->toArray(),
             'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
-            'number' => format_masterlist_number($this->character->number, Config::get('lorekeeper.settings.character_number_digits'))
+            'number' => format_masterlist_number($this->character->number, Config::get('lorekeeper.settings.character_number_digits')),
+            'isMyo' => false
+        ]);
+    }
+    public function getEditMyoStats($id)
+    {
+        $this->character = Character::where('is_myo_slot', 1)->where('id', $id)->first();
+        if(!$this->character) abort(404);
+
+        return view('character.admin._edit_stats_modal', [
+            'character' => $this->character,
+            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
+            'isMyo' => true
         ]);
     }
 
@@ -96,6 +108,25 @@ class CharacterController extends Controller
             'transferrable_at'
         ]);
         $this->character = Character::where('slug', $slug)->first();
+        if(!$this->character) abort(404);
+        if ($service->updateCharacterStats($data, $this->character, Auth::user())) {
+            flash('Character stats updated successfully.')->success();
+            return redirect()->to($this->character->url);
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+    public function postEditMyoStats(Request $request, CharacterManager $service, $id)
+    {
+        $request->validate(Character::$myoRules);
+        $data = $request->only([
+            'name',
+            'is_giftable', 'is_tradeable', 'is_sellable', 'sale_value',
+            'transferrable_at'
+        ]);
+        $this->character = Character::where('is_myo_slot', 1)->where('id', $id)->first();
         if(!$this->character) abort(404);
         if ($service->updateCharacterStats($data, $this->character, Auth::user())) {
             flash('Character stats updated successfully.')->success();
@@ -119,6 +150,17 @@ class CharacterController extends Controller
         
         return view('character.admin._edit_description_modal', [
             'character' => $this->character,
+            'isMyo' => false
+        ]);
+    }
+    public function getEditMyoDescription($id)
+    {
+        $this->character = Character::where('is_myo_slot', 1)->where('id', $id)->first();
+        if(!$this->character) abort(404);
+        
+        return view('character.admin._edit_description_modal', [
+            'character' => $this->character,
+            'isMyo' => true
         ]);
     }
 
@@ -128,6 +170,23 @@ class CharacterController extends Controller
             'description'
         ]);
         $this->character = Character::where('slug', $slug)->first();
+        if(!$this->character) abort(404);
+        if ($service->updateCharacterDescription($data, $this->character, Auth::user())) {
+            flash('Character description updated successfully.')->success();
+            return redirect()->to($this->character->url);
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    public function postEditMyoDescription(Request $request, CharacterManager $service, $id)
+    {
+        $data = $request->only([
+            'description'
+        ]);
+        $this->character = Character::where('is_myo_slot', 1)->where('id', $id)->first();
         if(!$this->character) abort(404);
         if ($service->updateCharacterDescription($data, $this->character, Auth::user())) {
             flash('Character description updated successfully.')->success();
@@ -156,6 +215,23 @@ class CharacterController extends Controller
         return redirect()->back();
     }
 
+    public function postMyoSettings(Request $request, CharacterManager $service, $id)
+    {
+        $data = $request->only([
+            'is_visible'
+        ]);
+        $this->character = Character::where('is_myo_slot', 1)->where('id', $id)->first();
+        if(!$this->character) abort(404);
+        if ($service->updateCharacterSettings($data, $this->character, Auth::user())) {
+            flash('Character settings updated successfully.')->success();
+            return redirect()->to($this->character->url);
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
     /**
      * Show the delete character modal.
      *
@@ -168,6 +244,17 @@ class CharacterController extends Controller
 
         return view('character.admin._delete_character_modal', [
             'character' => $this->character,
+            'isMyo' => false
+        ]);
+    }
+    public function getMyoDelete($id)
+    {
+        $this->character = Character::where('is_myo_slot', 1)->where('id', $id)->first();
+        if(!$this->character) abort(404);
+
+        return view('character.admin._delete_character_modal', [
+            'character' => $this->character,
+            'isMyo' => true
         ]);
     }
 
@@ -185,11 +272,39 @@ class CharacterController extends Controller
         }
         return redirect()->back();
     }
+    
+    public function postMyoDelete(Request $request, CharacterManager $service, $id)
+    {
+        $this->character = Character::where('is_myo_slot', 1)->where('id', $id)->first();
+        if(!$this->character) abort(404);
+
+        if ($service->deleteCharacter($this->character, Auth::user())) {
+            flash('Character deleted successfully.')->success();
+            return redirect()->to($character->url);
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
 
     
     public function postTransfer(Request $request, CharacterManager $service, $slug)
     {
         $this->character = Character::where('slug', $slug)->first();
+        if(!$this->character) abort(404);
+        
+        if($service->adminTransfer($request->only(['recipient_id', 'cooldown', 'reason']), $this->character, Auth::user())) {
+            flash('Character transferred successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+    public function postMyoTransfer(Request $request, CharacterManager $service, $id)
+    {
+        $this->character = Character::where('is_myo_slot', 1)->where('id', $id)->first();
         if(!$this->character) abort(404);
         
         if($service->adminTransfer($request->only(['recipient_id', 'cooldown', 'reason']), $this->character, Auth::user())) {

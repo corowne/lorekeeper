@@ -129,7 +129,9 @@ class CharacterManager extends Service
                 'character_category_id', 'rarity_id', 'user_id',
                 'number', 'slug', 'description',
                 'sale_value', 'transferrable_at', 'is_visible'
-            ] + ($isMyo ? ['name'] : []));
+            ]);
+            
+            $characterData['name'] = ($isMyo && isset($data['name'])) ? $data['name'] : null;
             $characterData['owner_alias'] = isset($characterData['user_id']) ? null : $data['owner_alias'];
             $characterData['is_sellable'] = isset($data['is_sellable']);
             $characterData['is_tradeable'] = isset($data['is_tradeable']);
@@ -313,8 +315,8 @@ class CharacterManager extends Service
             // Log old features
             $old = [];
             $old['features'] = $this->generateFeatureList($image);
-            $old['species'] = $image->species->displayName;
-            $old['rarity'] = $image->rarity->displayName;
+            $old['species'] = $image->species_id ? $image->species->displayName : null;
+            $old['rarity'] = $image->rarity_id ? $image->rarity->displayName : null;
 
             // Clear old features
             $image->features()->delete();
@@ -333,8 +335,8 @@ class CharacterManager extends Service
 
             $new = [];
             $new['features'] = $this->generateFeatureList($image);
-            $new['species'] = $image->species->displayName;
-            $new['rarity'] = $image->rarity->displayName;
+            $new['species'] = $image->species_id ? $image->species->displayName : null;
+            $new['rarity'] = $image->rarity_id ? $image->rarity->displayName : null;
             
             // Add a log for the character
             // This logs all the updates made to the character
@@ -586,7 +588,7 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
-            if(Character::where('slug', $data['slug'])->where('id', '!=', $character->id)->exists()) throw new \Exception("Character code must be unique.");
+            if(!$character->is_myo_slot && Character::where('slug', $data['slug'])->where('id', '!=', $character->id)->exists()) throw new \Exception("Character code must be unique.");
 
             $characterData = array_only($data, [
                 'character_category_id', 
@@ -597,25 +599,35 @@ class CharacterManager extends Service
             $characterData['is_giftable'] = isset($data['is_giftable']);
             $characterData['sale_value'] = isset($data['sale_value']) ? $data['sale_value'] : 0;
             $characterData['transferrable_at'] = isset($data['transferrable_at']) ? $data['transferrable_at'] : null;
+            if($character->is_myo_slot) $characterData['name'] = (isset($data['name']) && $data['name']) ? $data['name'] : null; 
 
             // Needs to be cleaned up
             $result = [];
             $old = [];
             $new = [];
-            if($characterData['character_category_id'] != $character->character_category_id) {
-                $result[] = 'character category';
-                $old['character_category'] = $character->category->displayName;
-                $new['character_category'] = CharacterCategory::find($characterData['character_category_id'])->displayName;
+            if(!$character->is_myo_slot) {
+                if($characterData['character_category_id'] != $character->character_category_id) {
+                    $result[] = 'character category';
+                    $old['character_category'] = $character->category->displayName;
+                    $new['character_category'] = CharacterCategory::find($characterData['character_category_id'])->displayName;
+                }
+                if($characterData['number'] != $character->number) {
+                    $result[] = 'character number';
+                    $old['number'] = $character->number;
+                    $new['number'] = $characterData['number'];
+                }
+                if($characterData['slug'] != $character->number) {
+                    $result[] = 'character code';
+                    $old['slug'] = $character->slug;
+                    $new['slug'] = $characterData['slug'];
+                }
             }
-            if($characterData['number'] != $character->number) {
-                $result[] = 'character number';
-                $old['number'] = $character->number;
-                $new['number'] = $characterData['number'];
-            }
-            if($characterData['slug'] != $character->number) {
-                $result[] = 'character code';
-                $old['slug'] = $character->slug;
-                $new['slug'] = $characterData['slug'];
+            else {
+                if($characterData['name'] != $character->name) {
+                    $result[] = 'name';
+                    $old['name'] = $character->name;
+                    $new['name'] = $characterData['name'];
+                }
             }
             if($characterData['is_sellable'] != $character->is_sellable) {
                 $result[] = 'sellable status';
@@ -720,7 +732,7 @@ class CharacterManager extends Service
             }
 
             // Update the character's profile
-            $character->name = $data['name'];
+            if(!$character->is_myo_slot) $character->name = $data['name'];
             $character->save();
 
             $character->profile->text = $data['text'];
@@ -749,9 +761,13 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            $user->settings->{$character->is_myo_slot ? 'myo_slot_count' : 'character_count'}--;
+            $user->settings->save();
+
             // Delete character
             // This is a soft delete, so the character still kind of exists
             $character->delete();
+
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 

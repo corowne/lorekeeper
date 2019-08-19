@@ -3,7 +3,7 @@
 @section('profile-title') {{ $character->fullName }}'s Currency Logs @endsection
 
 @section('profile-content')
-{!! breadcrumbs(['Masterlist' => 'masterlist', $character->fullName => $character->url, $character->fullName."'s Bank" => $character->url.'/bank', 'Logs' => $character->url.'/currency-logs']) !!}
+{!! breadcrumbs([($character->is_myo_slot ? 'MYO Slot Masterlist' : 'Character Masterlist') => ($character->is_myo_slot ? 'myos' : 'masterlist'), $character->fullName => $character->url, "Bank" => $character->url.'/bank', 'Logs' => $character->url.'/currency-logs']) !!}
 
 @include('character._header', ['character' => $character])
 

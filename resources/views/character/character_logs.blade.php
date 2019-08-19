@@ -3,7 +3,7 @@
 @section('profile-title') {{ $character->fullName }}'s Change Log @endsection
 
 @section('profile-content')
-{!! breadcrumbs(['Masterlist' => 'masterlist', $character->fullName => $character->url, 'Change Log' => $character->url.'/change-log']) !!}
+{!! breadcrumbs([($character->is_myo_slot ? 'MYO Slot Masterlist' : 'Character Masterlist') => ($character->is_myo_slot ? 'myos' : 'masterlist'), $character->fullName => $character->url, 'Change Log' => $character->url.'/change-log']) !!}
 
 @include('character._header', ['character' => $character])
 
