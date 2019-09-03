@@ -68,7 +68,7 @@ class CharacterImage extends Model
     {
         $ids = FeatureCategory::orderBy('sort', 'DESC')->pluck('id')->toArray();
 
-        return $this->hasMany('App\Models\Character\CharacterFeature', 'character_image_id')->join('features', 'features.id', '=', 'character_features.feature_id')->orderByRaw(DB::raw('FIELD(features.feature_category_id, '.implode(',', $ids).')'));
+        return $this->hasMany('App\Models\Character\CharacterFeature', 'character_image_id')->where('character_features.character_type', 'Character')->join('features', 'features.id', '=', 'character_features.feature_id')->orderByRaw(DB::raw('FIELD(features.feature_category_id, '.implode(',', $ids).')'));
     }
     
     public function creators() 
@@ -78,12 +78,12 @@ class CharacterImage extends Model
     
     public function designers() 
     {
-        return $this->hasMany('App\Models\Character\CharacterImageCreator', 'character_image_id')->where('type', 'Designer');
+        return $this->hasMany('App\Models\Character\CharacterImageCreator', 'character_image_id')->where('type', 'Designer')->where('character_type', 'Character');
     }
     
     public function artists() 
     {
-        return $this->hasMany('App\Models\Character\CharacterImageCreator', 'character_image_id')->where('type', 'Artist');
+        return $this->hasMany('App\Models\Character\CharacterImageCreator', 'character_image_id')->where('type', 'Artist')->where('character_type', 'Character');
     }
 
     public function scopeGuest($query)

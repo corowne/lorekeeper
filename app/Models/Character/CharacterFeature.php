@@ -16,7 +16,7 @@ class CharacterFeature extends Model
      * @var array
      */
     protected $fillable = [
-        'character_image_id', 'feature_id', 'data',
+        'character_image_id', 'feature_id', 'data', 'character_type'
     ];
     protected $table = 'character_features';    
     

@@ -23,6 +23,8 @@ Route::group(['prefix' => 'inventory', 'namespace' => 'Users'], function() {
     Route::get('/', 'InventoryController@getIndex');
     Route::post('transfer/{id}', 'InventoryController@postTransfer');
     Route::post('delete/{id}', 'InventoryController@postDelete');
+
+    Route::get('selector', 'InventoryController@getSelector');
 });
 
 Route::group(['prefix' => 'characters', 'namespace' => 'Users'], function() {
@@ -52,4 +54,24 @@ Route::group(['prefix' => 'claims', 'namespace' => 'Users'], function() {
     Route::get('/', 'SubmissionController@getClaimsIndex');
     Route::get('new', 'SubmissionController@getNewClaim');
     Route::post('new', 'SubmissionController@postNewClaim');
+});
+
+Route::group(['prefix' => 'designs', 'namespace' => 'Characters'], function() {
+    Route::get('/', 'DesignController@getDesignUpdateIndex');
+    Route::get('{id}', 'DesignController@getDesignUpdate');
+
+    Route::get('{id}/comments', 'DesignController@getComments');
+    Route::post('{id}/comments', 'DesignController@postComments');
+
+    Route::get('{id}/image', 'DesignController@getImage');
+    Route::post('{id}/image', 'DesignController@postImage');
+
+    Route::get('{id}/addons', 'DesignController@getAddons');
+    Route::post('{id}/addons', 'DesignController@postAddons');
+
+    Route::get('{id}/traits', 'DesignController@getFeatures');
+    Route::post('{id}/traits', 'DesignController@postFeatures');
+    
+    Route::post('{id}/submit', 'DesignController@postSubmit');
+    Route::post('{id}/delete', 'DesignController@postDelete');
 });

@@ -161,6 +161,7 @@ class CurrencyManager extends Service
         DB::beginTransaction();
 
         try {
+            if(is_numeric($currency)) $currency = Currency::find($currency);
             if($recipient->logType == 'User') {
                 $record = UserCurrency::where('user_id', $recipient->id)->where('currency_id', $currency->id)->first();
                 if($record) {

@@ -42,7 +42,7 @@
     <div class="card-body">
         {!! Form::label('Thumbnail Image') !!} {!! add_help('This image is shown on the masterlist page.') !!}
         <div>{!! Form::file('thumbnail') !!}</div>
-        <div class="text-muted">Recommended size: 200px x 200px</div>
+        <div class="text-muted">Recommended size: {{ Config::get('lorekeeper.settings.masterlist_thumbnails.width') }}px x {{ Config::get('lorekeeper.settings.masterlist_thumbnails.height') }}px</div>
     </div>
 </div>
 <p class="alert alert-info">

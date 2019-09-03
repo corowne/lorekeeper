@@ -79,7 +79,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function items()
     {
-        return $this->belongsToMany('App\Models\Item\Item', 'user_items')->withPivot('data', 'updated_at', 'id')->whereNull('user_items.deleted_at');
+        return $this->belongsToMany('App\Models\Item\Item', 'user_items')->withPivot('data', 'updated_at', 'id')->whereNull('user_items.deleted_at')->whereNull('user_items.holding_type');
     }
 
     public function canEditRank($rank)
@@ -165,6 +165,11 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return $currencies;
+    }
+
+    public function getCurrencySelect()
+    {
+        return UserCurrency::where('user_id', $this->id)->leftJoin('currencies', 'user_currencies.currency_id', '=', 'currencies.id')->orderBy('currencies.sort_user', 'DESC')->get()->pluck('name_with_quantity', 'currency_id')->toArray();
     }
 
     public function getLogTypeAttribute()

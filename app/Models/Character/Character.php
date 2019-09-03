@@ -95,6 +95,11 @@ class Character extends Model
         return $this->hasOne('App\Models\Character\CharacterProfile', 'character_id');
     }
 
+    public function designUpdate() 
+    {
+        return $this->hasMany('App\Models\Character\CharacterDesignUpdate', 'character_id');
+    }
+
     public function scopeMyo($query, $isMyo = false)
     {
         return $query->where('is_myo_slot', $isMyo);
@@ -198,6 +203,11 @@ class Character extends Model
         }
 
         return $currencies;
+    }
+
+    public function getCurrencySelect()
+    {
+        return CharacterCurrency::where('character_id', $this->id)->leftJoin('currencies', 'character_currencies.currency_id', '=', 'currencies.id')->orderBy('currencies.sort_character', 'DESC')->get()->pluck('name_with_quantity', 'currency_id')->toArray();
     }
 
     public function getCurrencyLogs($limit = 10)

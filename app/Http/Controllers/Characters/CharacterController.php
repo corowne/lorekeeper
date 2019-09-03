@@ -36,7 +36,7 @@ class CharacterController extends Controller
         $this->middleware(function ($request, $next) {
             $slug = Route::current()->parameter('slug');
             $query = Character::myo(0)->where('slug', $slug);
-            if(!(Auth::check() && Auth::user()->hasPower('manage_masterlist'))) $query->where('is_visible', 1);
+            if(!(Auth::check() && Auth::user()->hasPower('manage_characters'))) $query->where('is_visible', 1);
             $this->character = $query->first();
             if(!$this->character) abort(404);
 
@@ -258,10 +258,22 @@ class CharacterController extends Controller
         return view('character.update_form', [
             'character' => $this->character,
             'queueOpen' => Settings::get('is_design_updates_open'),
-            'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
+            'request' => $this->character->designUpdate()->active()->first()
         ]);
+    }
+
+    public function postCharacterApproval($slug, CharacterManager $service)
+    {
+        if(!Auth::check() || $this->character->user_id != Auth::user()->id) abort(404);
+
+        if($request = $service->createDesignUpdateRequest($this->character, Auth::user())) {
+            flash('Successfully created new design update request draft.')->success();
+            return redirect()->to($request->url);
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
     }
 
 }

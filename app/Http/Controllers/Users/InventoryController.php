@@ -40,12 +40,13 @@ class InventoryController extends Controller
         ]);
     }
 
-    public function getStack($id)
+    public function getStack(Request $request, $id)
     {
         return view('home._inventory_stack', [
             'stack' => $stack = UserItem::where('id', $id)->with('item')->first(),
             'user' => Auth::user(),
             'userOptions' => ['' => 'Select User'] + User::where('id', '!=', $stack ? $stack->user_id : 0)->orderBy('name')->get()->pluck('verified_name', 'id')->toArray(),
+            'readOnly' => $request->get('read_only')
         ]);
     }
     
@@ -69,6 +70,13 @@ class InventoryController extends Controller
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
         return redirect()->back();
+    }
+
+    public function getSelector($id)
+    {
+        return view('widgets._inventory_select', [
+            'user' => Auth::user(),
+        ]);
     }
 
 }

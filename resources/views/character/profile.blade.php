@@ -14,7 +14,7 @@
 </div>
 
 {{-- Bio --}}
-@if(Auth::check() && ($character->user_id == Auth::user()->id || Auth::user()->hasPower('manage_masterlist')))
+@if(Auth::check() && ($character->user_id == Auth::user()->id || Auth::user()->hasPower('manage_characters')))
     <div class="text-right mb-2">
         <a href="{{ $character->url . '/profile/edit' }}" class="btn btn-outline-info btn-sm"><i class="fas fa-cog"></i> Edit Profile</a>
     </div>

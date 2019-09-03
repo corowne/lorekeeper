@@ -27,4 +27,9 @@ class CharacterCurrency extends Model
     {
         return $this->belongsTo('App\Models\Currency\Currency');
     }
+
+    public function getNameWithQuantityAttribute()
+    {
+        return $this->currency->name . ' [Owned: ' . $this->quantity . ']';
+    }
 }

@@ -374,3 +374,33 @@ tr.outflow {
 .transfer-info-content .transfer-info-body, .submission-character-info-content .submission-character-info-body {
     flex-grow: 1;
 }
+
+.collapse-toggle {
+    position: relative;
+}
+.collapse-toggle:after {
+    display: block;
+    content: '';
+    border: 0.3rem solid rgba(0,0,0,0.5);
+    border-color: transparent transparent transparent rgba(0,0,0,0.5);
+    position: absolute;
+    right: -0.85rem;
+    top: 0.45rem;
+    transform: rotateZ(90deg)translateX(0.25rem);
+}
+.collapse-toggle.collapsed:after {
+    transform: none;
+}
+.user-items .inventory-item {
+    padding: 10px;
+}
+.user-items .inventory-stack {
+    cursor: pointer;
+}
+.user-items .inventory-item img {
+    max-width: 100%;
+}
+.user-items .category-selected .inventory-item {
+    background-color: rgba(0,0,0,0.05);
+    border-radius: .25rem;
+}

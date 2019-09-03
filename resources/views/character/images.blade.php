@@ -24,7 +24,7 @@
 
 <h3>
     Images
-    @if(Auth::check() && Auth::user()->hasPower('manage_masterlist'))
+    @if(Auth::check() && Auth::user()->hasPower('manage_characters'))
         <a href="{{ url('admin/character/'.$character->slug.'/image') }}" class="float-right btn btn-outline-info btn-sm"><i class="fas fa-plus"></i> Add Image</a>
     @endif
 </h3>

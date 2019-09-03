@@ -10,13 +10,21 @@ use Image;
 use Notifications;
 use Settings;
 
+use App\Services\CurrencyManager;
+
 use App\Models\User\User;
+use App\Models\User\UserItem;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterCategory;
 use App\Models\Character\CharacterFeature;
 use App\Models\Character\CharacterImage;
 use App\Models\Character\CharacterTransfer;
+use App\Models\Character\CharacterDesignUpdate;
 use App\Models\User\UserCharacterLog;
+use App\Models\Species;
+use App\Models\Rarity;
+use App\Models\Currency\Currency;
+use App\Models\Feature\Feature;
 
 class CharacterManager extends Service
 {
@@ -1029,5 +1037,382 @@ class CharacterManager extends Service
 
         // Add a log for the ownership change
         $this->createLog($sender->id, $recipient->id, $recipient->alias, $character->id, $character->is_myo_slot ? 'MYO Slot Transferred' : 'Character Transferred', $data, 'user');
+    }
+
+    public function createDesignUpdateRequest($character, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            if($character->user_id != $user->id) throw new \Exception("You do not own this character.");
+            if(CharacterDesignUpdate::where('character_id', $character->id)->active()->exists()) throw new \Exception("This ".($character->is_myo_slot ? 'MYO slot' : 'character')." already has an existing request. Please update that one, or delete it before creating a new one.");
+
+            $data = [
+                'user_id' => $user->id,
+                'character_id' => $character->id,
+                'status' => 'Draft',
+                'hash' => randomString(10),
+                
+                // Set some data based on the character's existing stats
+                'rarity_id' => $character->image->rarity_id,
+                'species_id' => $character->image->species_id
+            ];
+
+
+            $request = CharacterDesignUpdate::create($data);
+            foreach($character->image->features as $feature)
+            {
+                $request->features()->create([
+                    'character_image_id' => $request->id, 
+                    'character_type' => 'Update', 
+                    'feature_id' => $feature->feature_id,
+                    'data' => $feature->data
+                ]);
+            }
+
+            return $this->commitReturn($request);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    public function saveRequestComment($data, $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            // Update the comments section
+            $request->comments = (isset($data['comments']) && $data['comments']) ? $data['comments'] : null;
+            $request->has_comments = 1;
+            $request->save();
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    public function saveRequestImage($data, $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            // Require an image to be uploaded the first time, but if an image already exists, allow user to update the other details
+            if(!isset($data['image']) && !file_exists($request->imagePath . '/' . $request->imageFileName)) throw new \Exception("Please upload a valid image.");
+
+            // Require a thumbnail to be uploaded the first time as well
+            if(!file_exists($request->thumbnailPath . '/' . $request->thumbnailFileName)) {
+                // If the crop dimensions are invalid... 
+                // The crop function resizes the thumbnail to fit, so we only need to check that it's not null
+                if(isset($data['use_cropper']) && ($data['x0'] === null || $data['x1'] === null || $data['y0'] === null || $data['y1'] === null)) throw new \Exception('Invalid crop dimensions specified.');
+                if(!isset($data['use_cropper']) && !isset($data['thumbnail'])) throw new \Exception("Please upload a valid thumbnail or use the image cropper.");
+            }
+            $imageData = [];
+            if(isset($data['use_cropper'])) {
+                $imageData = array_only($data, [
+                    'use_cropper', 
+                    'x0', 'x1', 'y0', 'y1',
+                ]);
+                $imageData['use_cropper'] = isset($data['use_cropper']);
+            }
+            $imageData['extension'] = isset($data['extension']) ? $data['extension'] : $data['image']->getClientOriginalExtension();
+            $imageData['has_image'] = true;
+            $request->update($imageData);
+
+            $request->designers()->delete();
+            $request->artists()->delete();
+
+            // Attach artists/designers
+            foreach($data['designer_alias'] as $key => $alias) {
+                if($alias || $data['designer_url'][$key])
+                    DB::table('character_image_creators')->insert([
+                        'character_image_id' => $request->id,
+                        'type' => 'Designer',
+                        'character_type' => 'Update',
+                        'url' => $data['designer_url'][$key],
+                        'alias' => $alias
+                    ]);
+            }
+            foreach($data['artist_alias'] as $key => $alias) {
+                if($alias || $data['artist_url'][$key])
+                    DB::table('character_image_creators')->insert([
+                        'character_image_id' => $request->id,
+                        'type' => 'Artist',
+                        'character_type' => 'Update',
+                        'url' => $data['artist_url'][$key],
+                        'alias' => $alias
+                    ]);
+            }
+
+            // Save image
+            if(isset($data['image'])) $this->handleImage($data['image'], $request->imageDirectory, $request->imageFileName, null, isset($data['default_image']));
+            
+            // Save thumbnail
+            if(isset($data['image']) && isset($data['use_cropper'])) $this->cropThumbnail($data['image'], array_only($data, ['x0','x1','y0','y1']), $request);
+            else if(isset($data['thumbnail'])) $this->handleImage($data['thumbnail'], $request->imageDirectory, $request->thumbnailFileName);
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    public function saveRequestAddons($data, $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            //dd($data);
+
+            // First return any item stacks associated with this request
+            DB::table('user_items')->where('holding_type', 'Update')->where('holding_id', $request->id)->update(['holding_id' => null, 'holding_type' => null]);
+
+            // Also return any currency associated with this request
+            // This is stored in the data attribute
+            $currencyManager = new CurrencyManager;
+            $requestData = $request->data;
+            if(isset($requestData['user']) && isset($requestData['user']['currencies'])) {
+                foreach($requestData['user']['currencies'] as $currencyId=>$quantity) {
+                    $currencyManager->creditCurrency(null, $request->user, null, null, $currencyId, $quantity);
+                }
+            }
+            if(isset($requestData['character']) && isset($requestData['character']['currencies'])) {
+                foreach($requestData['character']['currencies'] as $currencyId=>$quantity) {
+                    $currencyManager->creditCurrency(null, $request->character, null, null, $currencyId, $quantity);
+                }
+            }
+
+            $userAssets = createAssetsArray();
+            $characterAssets = createAssetsArray(true);
+
+            // Attach items. Technically, the user doesn't lose ownership of the item - we're just adding an additional holding field.
+            // We're also not going to add logs as this might add unnecessary fluff to the logs and the items still belong to the user. 
+            // Perhaps later I'll add a way to locate items that are being held by updates/trades. 
+            if(isset($data['stack_id'])) {
+                foreach($data['stack_id'] as $stackId) {
+                    $stack = UserItem::with('item')->where('id', $stackId)->first();
+                    if(!$stack || $stack->user_id != $request->user_id) throw new \Exception("Invalid item selected.");
+                    $stack->holding_type = 'Update';
+                    $stack->holding_id = $request->id;
+                    $stack->save();
+
+                    //addAsset($userAssets, $stack->item, 1);
+                }
+            }
+
+            // Attach currencies.
+            if(isset($data['currency_id'])) {
+                foreach($data['currency_id'] as $holderKey=>$currencyIds) {
+                    $holder = explode('-', $holderKey);
+                    $holderType = $holder[0];
+                    $holderId = $holder[1];
+
+                    // The holder can be obtained from the request, but for sanity's sake we're going to perform a check
+                    $holder = ($holderType == 'user' ? User::find($holderId) : Character::find($holderId));
+                    if ($holderType == 'user' && $holder->id != $request->user_id) throw new \Exception("Error attaching currencies to this request. (1)");
+                    else if ($holderType == 'character' && $holder->id != $request->character_id) throw new \Exception("Error attaching currencies to this request. (2)");
+
+                    foreach($currencyIds as $key=>$currencyId) {
+                        $currency = Currency::find($currencyId);
+                        if(!$currency) throw new \Exception("Invalid currency selected.");
+                        if(!$currencyManager->debitCurrency($holder, null, null, null, $currency, $data['currency_quantity'][$holderKey][$key])) throw new \Exception("Invalid currency/quantity selected.");
+
+                        if($holderType == 'user') addAsset($userAssets, $currency, $data['currency_quantity'][$holderKey][$key]);
+                        else addAsset($characterAssets, $currency, $data['currency_quantity'][$holderKey][$key]);
+                        
+                    }
+                }
+            }
+
+            $request->has_addons = 1;
+            $request->data = json_encode([
+                'user' => array_only(getDataReadyAssets($userAssets), ['currencies']),
+                'character' => array_only(getDataReadyAssets($characterAssets), ['currencies']),
+                'stacks' => isset($data['stack_id']) ? $data['stack_id'] : []
+            ]);
+            $request->save();
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            dd($e->getMessage());
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    public function saveRequestFeatures($data, $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            if(!($request->character->is_myo_slot && $request->character->image->species_id) && !isset($data['species_id'])) throw new \Exception("Please select a species.");
+            if(!($request->character->is_myo_slot && $request->character->image->rarity_id) && !isset($data['rarity_id'])) throw new \Exception("Please select a rarity.");
+
+            $rarity = ($request->character->is_myo_slot && $request->character->image->rarity_id) ? $request->character->image->rarity : Rarity::find($data['rarity_id']);
+            $species = ($request->character->is_myo_slot && $request->character->image->species_id) ? $request->character->image->species : Species::find($data['species_id']);
+            if(!$rarity) throw new \Exception("Invalid rarity selected.");
+            if(!$species) throw new \Exception("Invalid species selected.");
+
+            // Clear old features
+            $request->features()->delete();
+
+            // Attach features
+
+            // If this is a MYO and traits have been set, add those traits first as compulsory features.
+            if($request->character->is_myo_slot)
+            {
+                foreach($request->character->image->features as $feature)
+                {
+                    CharacterFeature::create(['character_image_id' => $request->id, 'feature_id' => $feature->feature_id, 'data' => $feature->data, 'character_type' => 'Update']);
+                }
+            }
+
+            $features = Feature::whereIn('id', $data['feature_id'])->with('rarity')->get()->keyBy('id');
+
+            foreach($data['feature_id'] as $key => $featureId) {
+                if(!$featureId) continue;
+                
+                // Skip the feature if the rarity is too high.
+                // Comment out this check if rarities should have more berth for traits choice.
+                if($features[$featureId]->rarity->sort > $rarity->sort) continue; 
+
+                // Skip the feature if it's not the correct species.
+                if($features[$featureId]->species_id && $features[$featureId]->species_id != $species->id) continue;
+
+                $feature = CharacterFeature::create(['character_image_id' => $request->id, 'feature_id' => $featureId, 'data' => $data['feature_data'][$key], 'character_type' => 'Update']);
+            }
+
+            // Update other stats
+            $request->species_id = $species->id;
+            $request->rarity_id = $rarity->id;
+            $request->has_features = 1;
+            $request->save();
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    public function submitRequest($request)
+    {
+        DB::beginTransaction();
+
+        try {
+            // We've done validation and all section by section,
+            // so it's safe to simply set the status to Pending here
+            $request->status = 'Pending';
+            $request->save();
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    public function approveRequest($data, $request, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            
+
+            // Remove any added items/currency
+
+            // Create a new image with the request data
+            // Staff may upload a new thumbnail, so check for that
+
+            // Shift the image credits over to the new image
+
+            // Shift the image features over to the new image
+
+            // Move the image file to the new image
+
+            // If this is a MYO slot, optionally delete the old image
+            // Uncomment these lines to delete the image
+
+            // Set character data, such as cooldown time, resell cost and terms etc.
+            // since those might be updated with the new design update
+
+            // If this is for a MYO, set user's FTO status and the MYO status of the slot
+
+            // Set status to approved
+
+            // Notify the user
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    public function rejectRequest($data, $request, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+
+            // This hard rejects the request - items/currency are returned to user
+            // and the user will need to open a new request to resubmit.
+            // Use when rejecting a request the user shouldn't have submitted at all.
+
+            // Return all added items/currency
+
+            // Set staff comment, status
+
+            // Notify the user
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    public function cancelRequest($data, $request, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            // Soft removes the request from the queue - 
+            // it preserves all the data entered, but allows the staff member
+            // to add a comment to it. Status is returned to Draft status.
+            // Use when rejecting a request that just requires minor modifications to approve.
+
+            // Set staff comment and status
+
+            // Notify the user
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    public function deleteRequest($data, $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            // Deletes the request entirely, including images and etc.
+            // This returns any attached items/currency
+            // Characters with an open draft request cannot be transferred (due to attached items/currency),
+            // so this is necessary to transfer a character
+
+            // Return all added items/currency
+
+            // Delete uploaded images
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
     }
 }

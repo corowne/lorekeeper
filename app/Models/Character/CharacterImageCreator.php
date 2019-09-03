@@ -17,7 +17,7 @@ class CharacterImageCreator extends Model
      * @var array
      */
     protected $fillable = [
-        'character_image_id', 'type', 'url', 'alias'
+        'character_image_id', 'type', 'url', 'alias', 'character_type'
     ];
     protected $table = 'character_image_creators';
     public $timestamps = true;

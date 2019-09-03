@@ -33,7 +33,7 @@ class MyoController extends Controller
         $this->middleware(function ($request, $next) {
             $id = Route::current()->parameter('id');
             $query = Character::myo(1)->where('id', $id);
-            if(!(Auth::check() && Auth::user()->hasPower('manage_masterlist'))) $query->where('is_visible', 1);
+            if(!(Auth::check() && Auth::user()->hasPower('manage_characters'))) $query->where('is_visible', 1);
             $this->character = $query->first();
             if(!$this->character) abort(404);
 
@@ -179,5 +179,32 @@ class MyoController extends Controller
         }
         return redirect()->back();
     }
+    
+
+    public function getCharacterApproval($id)
+    {
+        if(!Auth::check() || $this->character->user_id != Auth::user()->id) abort(404);
+
+        return view('character.update_form', [
+            'character' => $this->character,
+            'queueOpen' => Settings::get('is_design_updates_open'),
+            'request' => $this->character->designUpdate()->active()->first()
+        ]);
+    }
+
+    public function postCharacterApproval($id, CharacterManager $service)
+    {
+        if(!Auth::check() || $this->character->user_id != Auth::user()->id) abort(404);
+
+        if($request = $service->createDesignUpdateRequest($this->character, Auth::user())) {
+            flash('Successfully created new MYO slot approval draft.')->success();
+            return redirect()->to($request->url);
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
 
 }

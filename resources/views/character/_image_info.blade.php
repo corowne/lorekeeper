@@ -12,7 +12,7 @@
                 <li class="nav-item">
                     <a class="nav-link" id="creditsTab-{{ $image->id }}" data-toggle="tab" href="#credits-{{ $image->id }}" role="tab">Credits</a>
                 </li>
-                @if(Auth::check() && Auth::user()->hasPower('manage_masterlist'))
+                @if(Auth::check() && Auth::user()->hasPower('manage_characters'))
                     <li class="nav-item">
                         <a class="nav-link" id="settingsTab-{{ $image->id }}" data-toggle="tab" href="#settings-{{ $image->id }}" role="tab"><i class="fas fa-cog"></i></a>
                     </li>
@@ -44,7 +44,7 @@
                     <div><h5>Traits</h5></div>
                     <div>
                         @foreach($image->features as $feature)
-                            <div>@if($feature->feature->character_category_id) <strong>{!! $feature->feature->category->displayName !!}:</strong> @endif {!! $feature->feature->displayName !!} @if($feature->data) ({{ $feature->data }}) @endif</div> 
+                            <div>@if($feature->feature->feature_category_id) <strong>{!! $feature->feature->category->displayName !!}:</strong> @endif {!! $feature->feature->displayName !!} @if($feature->data) ({{ $feature->data }}) @endif</div> 
                         @endforeach
                     </div>
                 </div>    
@@ -55,7 +55,7 @@
                     <strong>Last Edited:</strong> {{ format_date($image->updated_at) }}
                 </div>
                 
-                @if(Auth::check() && Auth::user()->hasPower('manage_masterlist'))
+                @if(Auth::check() && Auth::user()->hasPower('manage_characters'))
                     <div class="mt-3">
                         <a href="#" class="btn btn-outline-info btn-sm edit-features" data-id="{{ $image->id }}"><i class="fas fa-cog"></i> Edit</a>
                     </div>
@@ -70,7 +70,7 @@
                     <div>No additional notes given.</div>
                 @endif
                 
-                @if(Auth::check() && Auth::user()->hasPower('manage_masterlist'))
+                @if(Auth::check() && Auth::user()->hasPower('manage_characters'))
                     <div class="mt-3">
                         <a href="#" class="btn btn-outline-info btn-sm edit-notes" data-id="{{ $image->id }}"><i class="fas fa-cog"></i> Edit</a>
                     </div>
@@ -97,14 +97,14 @@
                     </div>
                 </div>
                 
-                @if(Auth::check() && Auth::user()->hasPower('manage_masterlist'))
+                @if(Auth::check() && Auth::user()->hasPower('manage_characters'))
                     <div class="mt-3">
                         <a href="#" class="btn btn-outline-info btn-sm edit-credits" data-id="{{ $image->id }}"><i class="fas fa-cog"></i> Edit</a>
                     </div>
                 @endif
             </div>
             
-            @if(Auth::check() && Auth::user()->hasPower('manage_masterlist'))
+            @if(Auth::check() && Auth::user()->hasPower('manage_characters'))
                 <div class="tab-pane fade" id="settings-{{ $image->id }}">
                     {!! Form::open(['url' => 'admin/character/image/'.$image->id.'/settings']) !!}
                         <div class="form-group">
