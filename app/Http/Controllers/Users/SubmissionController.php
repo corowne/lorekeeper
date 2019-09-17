@@ -44,7 +44,7 @@ class SubmissionController extends Controller
         $submissions = $submissions->where('status', ucfirst($type));
 
         return view('home.submissions', [
-            'submissions' => $submissions->orderBy('id', 'DESC')->paginate(20),
+            'submissions' => $submissions->orderBy('id', 'DESC')->paginate(20)->appends($request->query()),
             'isClaims' => false
         ]);
     }
@@ -142,7 +142,7 @@ class SubmissionController extends Controller
         $submissions = $submissions->where('status', ucfirst($type));
 
         return view('home.submissions', [
-            'submissions' => $submissions->orderBy('id', 'DESC')->paginate(20),
+            'submissions' => $submissions->orderBy('id', 'DESC')->paginate(20)->appends($request->query()),
             'isClaims' => true
         ]);
     }

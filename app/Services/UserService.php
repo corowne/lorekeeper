@@ -2,6 +2,8 @@
 
 use App\Services\Service;
 
+use DB;
+
 use App\Models\User\User;
 use App\Models\Rank\Rank;
 use Illuminate\Support\Facades\Hash;
@@ -23,6 +25,9 @@ class UserService extends Service
         $user->settings()->create([
             'user_id' => $user->id,
         ]);
+        $user->profile()->create([
+            'user_id' => $user->id
+        ]);
 
         return $user;
     }
@@ -34,6 +39,36 @@ class UserService extends Service
         if($user) $user->update($data);
 
         return $user;
+    }
+
+    public function updatePassword($data, $user)
+    {
+
+        DB::beginTransaction();
+
+        try {
+            if(!Hash::check($data['old_password'], $user->password)) throw new \Exception("Please enter your old password.");
+            if(Hash::make($data['new_password']) == $user->password) throw new \Exception("Please enter a different password.");
+
+            $user->password = Hash::make($data['new_password']);
+            $user->save();
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    public function updateEmail($data, $user)
+    {
+        $user->email = $data['email'];
+        $user->email_verified_at = null;
+        $user->save();
+
+        $user->sendEmailVerificationNotification();
+
+        return true;
     }
     
 }

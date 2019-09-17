@@ -160,4 +160,22 @@ return [
         'message' => 'A new MYO slot (<a href="{character_url}">{name}</a>) has been created for you. (<a href="{url}">View MYO Slots</a>)',
         'url' => 'myos'
     ],
+
+    // DESIGN_APPROVED
+    25 => [
+        'message' => 'The <a href="{design_url}">design update</a> for <a href="{character_url}">{name}</a> has been approved. (<a href="{url}">View Design Approvals</a>)',
+        'url' => 'designs/approved'
+    ],
+
+    // DESIGN_REJECTED
+    26 => [
+        'message' => 'The <a href="{design_url}">design update</a> for <a href="{character_url}">{name}</a> has been rejected. (<a href="{url}">View Design Approvals</a>)',
+        'url' => 'designs/rejected'
+    ],
+
+    // DESIGN_CANCELED
+    27 => [
+        'message' => 'The <a href="{design_url}">design update</a> for <a href="{character_url}">{name}</a> has been canceled. (<a href="{url}">View Design Approvals</a>)',
+        'url' => 'designs'
+    ],
 ];

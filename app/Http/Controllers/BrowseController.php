@@ -29,7 +29,7 @@ class BrowseController extends Controller
         if($request->get('rank_id')) $query->where('rank_id', $request->get('rank_id'));
 
         return view('browse.users', [  
-            'users' => $query->orderBy('ranks.sort', 'DESC')->orderBy('name')->paginate(30),
+            'users' => $query->orderBy('ranks.sort', 'DESC')->orderBy('name')->paginate(30)->appends($request->query()),
             'ranks' => [0 => 'Any Rank'] + Rank::orderBy('ranks.sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
@@ -51,7 +51,7 @@ class BrowseController extends Controller
         if($request->get('rarity_id')) $query->where('rarity_id', $request->get('rarity_id'));
 
         return view('browse.masterlist', [  
-            'characters' => $query->orderBy('characters.id', 'DESC')->paginate(24),
+            'characters' => $query->orderBy('characters.id', 'DESC')->paginate(24)->appends($request->query()),
             'specieses' => [0 => 'Any Species'] + Species::orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities' => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
@@ -77,7 +77,7 @@ class BrowseController extends Controller
         if($request->get('rarity_id')) $query->where('rarity_id', $request->get('rarity_id'));
 
         return view('browse.myo_masterlist', [  
-            'slots' => $query->orderBy('characters.id', 'DESC')->paginate(30),
+            'slots' => $query->orderBy('characters.id', 'DESC')->paginate(30)->appends($request->query()),
             'specieses' => [0 => 'Any Species'] + Species::orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities' => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);

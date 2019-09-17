@@ -38,7 +38,6 @@
                                 </div>
                                 <div>
                                     <a class="inventory-stack inventory-stack-name">{{ $item->item->name }}</a>
-                                    {!! Form::checkbox((isset($fieldName) && $fieldName ? $fieldName : 'stack_id[]'), $item->id, isset($selected) && in_array($item->id, $selected) ? true : false, ['class' => 'inventory-checkbox hide']) !!}
                                 </div>
                                 <div>
                                     <a href="#" class="btn btn-xs btn-outline-info inventory-info">Info</a>

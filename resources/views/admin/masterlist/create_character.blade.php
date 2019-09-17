@@ -226,74 +226,9 @@
 
 @section('scripts')
 @parent
-<script>
-$( document ).ready(function() {
-
-    $('#userSelect').selectize();
-    $( "#datepicker" ).datetimepicker({
-        dateFormat: "yy-mm-dd",
-        timeFormat: 'HH:mm:ss',
-    });
-
-    @if(!$isMyo)
-
-        // Code generation ////////////////////////////////////////////////////////////////////////////
-
-        var codeFormat = "{{ Config::get('lorekeeper.settings.character_codes') }}";
-        var $code = $('#code');
-        var $number = $('#number');
-        var $category = $('#category');
-
-        $number.on('keypress', function() {
-            updateCode();
-        });
-        $category.on('change', function() {
-            updateCode();
-        });
-
-        function updateCode() {
-            var str = codeFormat;
-            str = str.replace('{category}', $category.find(':selected').data('code'));
-            str = str.replace('{number}', $number.val());
-            $code.val(str);
-        }
-
-        // Pull number ////////////////////////////////////////////////////////////////////////////////
-
-        var $pullNumber = $('#pull-number');
-        $pullNumber.on('click', function(e) {
-            e.preventDefault();
-            $pullNumber.prop('disabled', true);
-            $.get( "{{ url('admin/masterlist/get-number') }}?category=" + $category.val(), function( data ) {
-                $number.val( data );
-                $pullNumber.prop('disabled', false);
-                updateCode();
-            });
-        });
-
-    @endif
-
-
-    // Resell options /////////////////////////////////////////////////////////////////////////////
-
-    var $resellable = $('#resellable');
-    var $resellOptions = $('#resellOptions');
-
-    var resellable = $resellable.is(':checked');
-
-    updateOptions();
-
-    $resellable.on('change', function(e) {
-        resellable = $resellable.is(':checked');
-
-        updateOptions();
-    });
-
-    function updateOptions() {
-        if(resellable) $resellOptions.removeClass('hide');
-        else $resellOptions.addClass('hide');
-    }
-});
-</script>
+@include('widgets._character_create_options_js')
 @include('widgets._image_upload_js')
+@if(!$isMyo)
+    @include('widgets._character_code_js')
+@endif
 @endsection

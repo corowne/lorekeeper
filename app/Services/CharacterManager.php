@@ -9,6 +9,7 @@ use Config;
 use Image;
 use Notifications;
 use Settings;
+use File;
 
 use App\Services\CurrencyManager;
 
@@ -222,7 +223,7 @@ class CharacterManager extends Service
             $this->handleImage($data['image'], $image->imageDirectory, $image->imageFileName, null, isset($data['default_image']));
             
             // Save thumbnail
-            if(isset($data['use_cropper'])) $this->cropThumbnail($data['image'], array_only($data, ['x0','x1','y0','y1']), $image);
+            if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image);
             else $this->handleImage($data['thumbnail'], $image->imageDirectory, $image->thumbnailFileName, null, isset($data['default_image']));
             
             // Attach features
@@ -240,7 +241,7 @@ class CharacterManager extends Service
 
     }
 
-    private function cropThumbnail($image, $points, $characterImage)
+    private function cropThumbnail($points, $characterImage)
     {
         $cropWidth = $points['x1'] - $points['x0'];
         $cropHeight = $points['y1'] - $points['y0'];
@@ -448,7 +449,7 @@ class CharacterManager extends Service
             $this->handleImage($data['image'], $image->imageDirectory, $image->imageFileName);
             
             // Save thumbnail
-            if(isset($data['use_cropper'])) $this->cropThumbnail($data['image'], array_only($data, ['x0','x1','y0','y1']), $image);
+            if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image);
             else $this->handleImage($data['thumbnail'], $image->thumbnailDirectory, $image->thumbnailFileName);
             
             // Add a log for the character
@@ -1060,14 +1061,22 @@ class CharacterManager extends Service
 
 
             $request = CharacterDesignUpdate::create($data);
-            foreach($character->image->features as $feature)
+
+            // If the character is not a MYO slot, make a copy of the previous image's traits
+            // as presumably, we will not want to make major modifications to them.
+            // This is skipped for MYO slots as it complicates things later on - we don't want
+            // users to edit compulsory traits, so we'll only add them when the design is approved.
+            if(!$character->is_myo_slot)
             {
-                $request->features()->create([
-                    'character_image_id' => $request->id, 
-                    'character_type' => 'Update', 
-                    'feature_id' => $feature->feature_id,
-                    'data' => $feature->data
-                ]);
+                foreach($character->image->features as $feature)
+                {
+                    $request->features()->create([
+                        'character_image_id' => $request->id, 
+                        'character_type' => 'Update', 
+                        'feature_id' => $feature->feature_id,
+                        'data' => $feature->data
+                    ]);
+                }
             }
 
             return $this->commitReturn($request);
@@ -1094,7 +1103,7 @@ class CharacterManager extends Service
         return $this->rollbackReturn(false);
     }
 
-    public function saveRequestImage($data, $request)
+    public function saveRequestImage($data, $request, $isAdmin = false)
     {
         DB::beginTransaction();
 
@@ -1106,20 +1115,26 @@ class CharacterManager extends Service
             if(!file_exists($request->thumbnailPath . '/' . $request->thumbnailFileName)) {
                 // If the crop dimensions are invalid... 
                 // The crop function resizes the thumbnail to fit, so we only need to check that it's not null
-                if(isset($data['use_cropper']) && ($data['x0'] === null || $data['x1'] === null || $data['y0'] === null || $data['y1'] === null)) throw new \Exception('Invalid crop dimensions specified.');
-                if(!isset($data['use_cropper']) && !isset($data['thumbnail'])) throw new \Exception("Please upload a valid thumbnail or use the image cropper.");
+                if(!$isAdmin || ($isAdmin && isset($data['modify_thumbnail']))) {
+                    if(isset($data['use_cropper']) && ($data['x0'] === null || $data['x1'] === null || $data['y0'] === null || $data['y1'] === null)) throw new \Exception('Invalid crop dimensions specified.');
+                    if(!isset($data['use_cropper']) && !isset($data['thumbnail'])) throw new \Exception("Please upload a valid thumbnail or use the image cropper.");
+                }
             }
-            $imageData = [];
-            if(isset($data['use_cropper'])) {
-                $imageData = array_only($data, [
-                    'use_cropper', 
-                    'x0', 'x1', 'y0', 'y1',
-                ]);
-                $imageData['use_cropper'] = isset($data['use_cropper']);
+            if(!$isAdmin || ($isAdmin && isset($data['modify_thumbnail']))) {
+                $imageData = [];
+                if(isset($data['use_cropper'])) {
+                    $imageData = array_only($data, [
+                        'use_cropper', 
+                        'x0', 'x1', 'y0', 'y1',
+                    ]);
+                    $imageData['use_cropper'] = isset($data['use_cropper']);
+                }
+                if(!$isAdmin) {
+                    $imageData['extension'] = isset($data['extension']) ? $data['extension'] : $data['image']->getClientOriginalExtension();
+                    $imageData['has_image'] = true;
+                }
+                $request->update($imageData);
             }
-            $imageData['extension'] = isset($data['extension']) ? $data['extension'] : $data['image']->getClientOriginalExtension();
-            $imageData['has_image'] = true;
-            $request->update($imageData);
 
             $request->designers()->delete();
             $request->artists()->delete();
@@ -1147,11 +1162,15 @@ class CharacterManager extends Service
             }
 
             // Save image
-            if(isset($data['image'])) $this->handleImage($data['image'], $request->imageDirectory, $request->imageFileName, null, isset($data['default_image']));
+            if(!$isAdmin && isset($data['image'])) $this->handleImage($data['image'], $request->imageDirectory, $request->imageFileName, null, isset($data['default_image']));
             
             // Save thumbnail
-            if(isset($data['image']) && isset($data['use_cropper'])) $this->cropThumbnail($data['image'], array_only($data, ['x0','x1','y0','y1']), $request);
-            else if(isset($data['thumbnail'])) $this->handleImage($data['thumbnail'], $request->imageDirectory, $request->thumbnailFileName);
+            if(!$isAdmin || ($isAdmin && isset($data['modify_thumbnail']))) {
+                if(isset($data['use_cropper'])) 
+                    $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $request);
+                else if(isset($data['thumbnail'])) 
+                    $this->handleImage($data['thumbnail'], $request->imageDirectory, $request->thumbnailFileName);
+            }
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
@@ -1237,7 +1256,6 @@ class CharacterManager extends Service
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
-            dd($e->getMessage());
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -1260,15 +1278,7 @@ class CharacterManager extends Service
             $request->features()->delete();
 
             // Attach features
-
-            // If this is a MYO and traits have been set, add those traits first as compulsory features.
-            if($request->character->is_myo_slot)
-            {
-                foreach($request->character->image->features as $feature)
-                {
-                    CharacterFeature::create(['character_image_id' => $request->id, 'feature_id' => $feature->feature_id, 'data' => $feature->data, 'character_type' => 'Update']);
-                }
-            }
+            // We'll do the compulsory ones at the time of approval.
 
             $features = Feature::whereIn('id', $data['feature_id'])->with('rarity')->get()->keyBy('id');
 
@@ -1303,9 +1313,12 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            if($request->status != 'Draft') throw new \Exception("This request cannot be resubmitted to the queue.");
+
             // We've done validation and all section by section,
             // so it's safe to simply set the status to Pending here
             $request->status = 'Pending';
+            if(!$request->submitted_at) $request->submitted_at = Carbon::now();
             $request->save();
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
@@ -1319,30 +1332,102 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
-            
+            if($request->status != 'Pending') throw new \Exception("This request cannot be processed.");
+            if(!isset($data['character_category_id'])) throw new \Exception("Please select a character category.");
+            if(!isset($data['number'])) throw new \Exception("Please enter a character number.");
+            if(!isset($data['slug']) || Character::where('slug', $data['slug'])->where('id', '!=', $request->character_id)->exists()) throw new \Exception("Please enter a unique character code.");
 
             // Remove any added items/currency
+            // Currency has already been removed, so no action required
+            UserItem::where('holding_type', 'Update')->where('holding_id', $request->id)->delete();
 
             // Create a new image with the request data
-            // Staff may upload a new thumbnail, so check for that
+            $image = CharacterImage::create([
+                'character_id' => $request->character_id,
+                'is_visible' => 1,
+                'hash' => $request->hash,
+                'extension' => $request->extension,
+                'use_cropper' => $request->use_cropper,
+                'x0' => $request->x0,
+                'x1' => $request->x1,
+                'y0' => $request->y0,
+                'y1' => $request->y1,
+                'species_id' => $request->species_id,
+                'rarity_id' => $request->rarity_id,
+                'sort' => 0,
+            ]);
 
             // Shift the image credits over to the new image
+            $request->designers()->update(['character_type' => 'Character', 'character_image_id' => $image->id]);
+            $request->artists()->update(['character_type' => 'Character', 'character_image_id' => $image->id]);
 
+            // Add the compulsory features
+            if($request->character->is_myo_slot)
+            {
+                foreach($request->character->image->features as $feature)
+                {
+                    CharacterFeature::create(['character_image_id' => $image->id, 'feature_id' => $feature->feature_id, 'data' => $feature->data, 'character_type' => 'Character']);
+                }
+            }
+            
             // Shift the image features over to the new image
+            $request->rawFeatures()->update(['character_image_id' => $image->id, 'character_type' => 'Character']);
 
             // Move the image file to the new image
+            File::move($request->imagePath . '/' . $request->imageFileName, $image->imagePath . '/' . $image->imageFileName);
+            File::move($request->thumbnailPath . '/' . $request->thumbnailFileName, $image->thumbnailPath . '/' . $image->thumbnailFileName);
 
-            // If this is a MYO slot, optionally delete the old image
-            // Uncomment these lines to delete the image
-
-            // Set character data, such as cooldown time, resell cost and terms etc.
+            // Set character data and other info such as cooldown time, resell cost and terms etc.
             // since those might be updated with the new design update
+            if(isset($data['transferrable_at'])) $request->character->transferrable_at = $data['transferrable_at'];
+            $request->character->character_category_id = $data['character_category_id'];
+            $request->character->number = $data['number'];
+            $request->character->slug = $data['slug'];
+            $request->character->rarity_id = $request->rarity_id;
 
+            $request->character->description = $data['description'];
+            $request->character->parsed_description = parse($data['description']);
+
+            $request->character->is_sellable = isset($data['is_sellable']);
+            $request->character->is_tradeable = isset($data['is_tradeable']);
+            $request->character->is_giftable = isset($data['is_giftable']);
+            $request->character->sale_value = isset($data['sale_value']) ? $data['sale_value'] : 0;
+
+            // Invalidate old image if desired
+            if(isset($data['invalidate_old'])) 
+            {
+                $request->character->image->is_valid = 0;
+                $request->character->image->save();
+            }
+
+            // Set new image if desired
+            if(isset($data['set_active'])) 
+            {
+                $request->character->character_image_id = $image->id;
+            }
+            
             // If this is for a MYO, set user's FTO status and the MYO status of the slot
+            if($request->character->is_myo_slot)
+            {
+                $request->character->is_myo_slot = 0;
+                $request->user->settings->is_fto = 0;
+                $request->user->settings->myo_slot_count--;
+                $request->user->settings->character_count++;
+                $request->user->settings->save();
+            }
+            $request->character->save();
 
             // Set status to approved
+            $request->staff_id = $user->id;
+            $request->status = 'Approved';
+            $request->save();
 
             // Notify the user
+            Notifications::create('DESIGN_APPROVED', $user, [
+                'design_url' => $request->url,
+                'character_url' => $request->character->url,
+                'name' => $request->character->fullName
+            ]);
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
@@ -1356,16 +1441,45 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            if($request->status != 'Pending') throw new \Exception("This request cannot be processed.");
 
             // This hard rejects the request - items/currency are returned to user
             // and the user will need to open a new request to resubmit.
             // Use when rejecting a request the user shouldn't have submitted at all.
 
             // Return all added items/currency
+            UserItem::where('holding_type', 'Update')->where('holding_id', $request->id)->update(['holding_type' => null, 'holding_id' => null]);
+            $requestData = $request->data;
+            $currencyManager = new CurrencyManager;
+            if(isset($requestData['user']['currencies']) && $requestData['user']['currencies'])
+            {
+                foreach($data['user']['currencies'] as $currencyId=>$quantity) {
+                    $currency = Currency::find($currencyId);
+                    if(!$currency) throw new \Exception("Cannot return an invalid currency. (".$currencyId.")");
+                    if(!$currencyManager->creditCurrency(null, $request->user, null, null, $currency, $quantity)) throw new \Exception("Could not return currency to user. (".$currencyId.")");                    
+                }
+            }
+            if(isset($requestData['character']['currencies']) && $requestData['character']['currencies'])
+            {
+                foreach($requestData['character']['currencies'] as $currencyId=>$quantity) {
+                    $currency = Currency::find($currencyId);
+                    if(!$currency) throw new \Exception("Cannot return an invalid currency. (".$currencyId.")");
+                    if(!$currencyManager->creditCurrency(null, $request->character, null, null, $currency, $quantity)) throw new \Exception("Could not return currency to character. (".$currencyId.")");                    
+                }
+            }
 
-            // Set staff comment, status
+            // Set staff comment and status
+            $request->staff_id = $user->id;
+            $request->staff_comments = isset($data['staff_comments']) ? $data['staff_comments'] : null;
+            $request->status = 'Rejected';
+            $request->save();
 
             // Notify the user
+            Notifications::create('DESIGN_REJECTED', $user, [
+                'design_url' => $request->url,
+                'character_url' => $request->character->url,
+                'name' => $request->character->fullName
+            ]);
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
@@ -1379,14 +1493,26 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            if($request->status != 'Pending') throw new \Exception("This request cannot be processed.");
+
             // Soft removes the request from the queue - 
             // it preserves all the data entered, but allows the staff member
             // to add a comment to it. Status is returned to Draft status.
             // Use when rejecting a request that just requires minor modifications to approve.
 
             // Set staff comment and status
+            $request->staff_id = $user->id;
+            $request->staff_comments = isset($data['staff_comments']) ? $data['staff_comments'] : null;
+            $request->status = 'Draft';
+            if(!isset($data['preserve_queue'])) $request->submitted_at = null;
+            $request->save();
 
             // Notify the user
+            Notifications::create('DESIGN_CANCELED', $request->user, [
+                'design_url' => $request->url,
+                'character_url' => $request->character->url,
+                'name' => $request->character->fullName
+            ]);
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
@@ -1400,14 +1526,14 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            if($request->status != 'Pending') throw new \Exception("This request cannot be processed.");
+
             // Deletes the request entirely, including images and etc.
             // This returns any attached items/currency
             // Characters with an open draft request cannot be transferred (due to attached items/currency),
             // so this is necessary to transfer a character
 
             // Return all added items/currency
-
-            // Delete uploaded images
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 

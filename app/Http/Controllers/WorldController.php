@@ -39,7 +39,7 @@ class WorldController extends Controller
         $name = $request->get('name');
         if($name) $query->where('name', 'LIKE', '%'.$name.'%')->orWhere('abbreviation', 'LIKE', '%'.$name.'%');
         return view('world.currencies', [  
-            'currencies' => $query->orderBy('name')->paginate(20),
+            'currencies' => $query->orderBy('name')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -54,7 +54,7 @@ class WorldController extends Controller
         $name = $request->get('name');
         if($name) $query->where('name', 'LIKE', '%'.$name.'%');
         return view('world.rarities', [  
-            'rarities' => $query->orderBy('sort', 'DESC')->paginate(20),
+            'rarities' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -69,7 +69,7 @@ class WorldController extends Controller
         $name = $request->get('name');
         if($name) $query->where('name', 'LIKE', '%'.$name.'%');
         return view('world.specieses', [  
-            'specieses' => $query->orderBy('sort', 'DESC')->paginate(20),
+            'specieses' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
     
@@ -84,7 +84,7 @@ class WorldController extends Controller
         $name = $request->get('name');
         if($name) $query->where('name', 'LIKE', '%'.$name.'%');
         return view('world.item_categories', [  
-            'categories' => $query->orderBy('sort', 'DESC')->paginate(20),
+            'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
     
@@ -99,7 +99,7 @@ class WorldController extends Controller
         $name = $request->get('name');
         if($name) $query->where('name', 'LIKE', '%'.$name.'%');
         return view('world.feature_categories', [  
-            'categories' => $query->orderBy('sort', 'DESC')->paginate(20),
+            'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
     
@@ -153,7 +153,7 @@ class WorldController extends Controller
         else $query->sortCategory();
 
         return view('world.features', [
-            'features' => $query->paginate(20),
+            'features' => $query->paginate(20)->appends($request->query()),
             'rarities' => ['none' => 'Any Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['none' => 'Any Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'categories' => ['none' => 'Any Category'] + FeatureCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
@@ -197,7 +197,7 @@ class WorldController extends Controller
         else $query->sortCategory();
 
         return view('world.items', [
-            'items' => $query->paginate(20),
+            'items' => $query->paginate(20)->appends($request->query()),
             'categories' => ['none' => 'Any Category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
@@ -215,7 +215,7 @@ class WorldController extends Controller
         $name = $request->get('name');
         if($name) $query->where('name', 'LIKE', '%'.$name.'%')->orWhere('code', 'LIKE', '%'.$name.'%');
         return view('world.character_categories', [  
-            'categories' => $query->orderBy('sort', 'DESC')->paginate(20),
+            'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
     
@@ -231,7 +231,7 @@ class WorldController extends Controller
         $name = $request->get('name');
         if($name) $query->where('name', 'LIKE', '%'.$name.'%');
         return view('world.prompt_categories', [  
-            'categories' => $query->orderBy('sort', 'DESC')->paginate(20),
+            'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -284,7 +284,7 @@ class WorldController extends Controller
         else $query->sortCategory();
 
         return view('world.prompts', [
-            'prompts' => $query->paginate(20),
+            'prompts' => $query->paginate(20)->appends($request->query()),
             'categories' => ['none' => 'Any Category'] + PromptCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }

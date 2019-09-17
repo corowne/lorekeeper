@@ -3,9 +3,14 @@
     <span class="float-right badge badge-{{ ($request->status == 'Draft' || $request->status == 'Pending') ? 'secondary' : ($request->status == 'Approved' ? 'success' : 'danger') }}">{{ $request->status }}
 </h1>
 
-
-
-
+@if(isset($request->staff_id))
+    @if($request->staff_comments && ($request->user_id == Auth::user()->id || Auth::user()->hasPower('manage_submissions')))
+        <h5 class="text-danger">Staff Comments ({!! $request->staff->displayName !!})</h5>
+        <div class="card border-danger mb-3"><div class="card-body">{!! nl2br(htmlentities($request->staff_comments)) !!}</div></div>
+    @else
+        <p>No staff comment was provided.</p>
+    @endif
+@endif
 
 <ul class="nav nav-tabs mb-3">
     <li class="nav-item">

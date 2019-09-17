@@ -35,10 +35,15 @@ class DesignController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getDesignUpdateIndex($id)
+    public function getDesignUpdateIndex($type = null)
     {
-        return view('character.myo.character', [
-            'character' => $this->character,
+        $requests = CharacterDesignUpdate::where('user_id', Auth::user()->id);
+        if(!$type) $type = 'draft';
+        $requests->where('status', ucfirst($type));
+
+        return view('character.design.index', [
+            'requests' => $requests->orderBy('id', 'DESC')->paginate(20),
+            'status' => $type
         ]);
     }
 
@@ -103,10 +108,10 @@ class DesignController extends Controller
     {
         $r = CharacterDesignUpdate::find($id);
         if(!$r) abort(404);
-        if($r->user_id != Auth::user()->id) abort(404);
+        if($r->user_id != Auth::user()->id && !Auth::user()->hasPower('manage_characters')) abort(404);
         $request->validate(CharacterDesignUpdate::$imageRules);
         
-        if($service->saveRequestImage($request->all(), $r)) {
+        if($service->saveRequestImage($request->all(), $r, Auth::user()->hasPower('manage_characters'))) {
             flash('Request edited successfully.')->success();
         }
         else {
@@ -124,14 +129,18 @@ class DesignController extends Controller
     {
         $r = CharacterDesignUpdate::find($id);
         if(!$r || ($r->user_id != Auth::user()->id && !Auth::user()->hasPower('manage_characters'))) abort(404);
-        return view('character.design.addons', [
-            'request' => $r,
-            'categories' => ItemCategory::orderBy('sort', 'DESC')->get(),
-            'inventory' => UserItem::with('item')->whereNull('deleted_at')->where('user_id', Auth::user()->id)->where(function($query) use ($id) {
+        if($r->status == 'Draft' && $r->user_id == Auth::user()->id) 
+            $inventory = UserItem::with('item')->whereNull('deleted_at')->where('user_id', Auth::user()->id)->where(function($query) use ($id) {
                 $query->whereNull('holding_id')->orWhere(function($query) use ($id) {
                     $query->where('holding_type', 'Update')->where('holding_id', $id);
                 });
-            })->get()
+            })->get();
+        else 
+            $inventory = UserItem::with('item')->whereNull('deleted_at')->where('user_id', Auth::user()->id)->where('holding_id', $id)->where('holding_type', 'Update')->get();
+        return view('character.design.addons', [
+            'request' => $r,
+            'categories' => ItemCategory::orderBy('sort', 'DESC')->get(),
+            'inventory' => $inventory
         ]);
     }
     
@@ -182,6 +191,19 @@ class DesignController extends Controller
         return redirect()->back();
     }
     
+    /**
+     * Show the design update request submission confirmation modal.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getConfirm($id)
+    {
+        $r = CharacterDesignUpdate::find($id);
+        if(!$r || ($r->user_id != Auth::user()->id && !Auth::user()->hasPower('manage_characters'))) abort(404);
+        return view('character.design._confirm_modal', [
+            'request' => $r
+        ]);
+    }
     
     public function postSubmit(CharacterManager $service, $id)
     {

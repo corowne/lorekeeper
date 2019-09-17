@@ -11,45 +11,72 @@
     <p>
         This request has not been submitted to the approval queue yet. 
         @if($request->user_id == Auth::user()->id)
-        Staff members are able to view this page when provided with a direct link. Click on any of the tabs to edit the section.
+            Staff members are able to view this page when provided with a direct link. Click on any of the tabs to edit the section.
         @else 
             As a staff member with the ability to edit the masterlist, you can view the details of the request by clicking the tabs.
         @endif
     </p>
     @if($request->user_id == Auth::user()->id)
         @if($request->isComplete)
-            {!! Form::open(['url' => 'designs/'.$request.'/submit', 'id' => 'submitForm', 'class' => 'text-right']) !!}
-                {!! Form::submit('Submit Request', ['class' => 'btn btn-primary']) !!}
-            {!! Form::close() !!}
+            <div class="text-right"><a href="#" class="btn btn-outline-primary submit-button">Submit Request</a></div>
         @else
             <p class="text-danger">Not all sections have been completed yet. Please visit the necessary tab(s) and click Save to update them, even if no modifications to the information are needed.</p>
             <div class="text-right">
-                <button class="btn btn-primary" disabled>Submit Request</button>
+                <button class="btn btn-outline-primary" disabled>Submit Request</button>
             </div>
         @endif
     @endif
 @elseif($request->status == 'Pending')
     <p>
         This request is in the approval queue. 
-        @if($request->user_id == Auth::user()->id)
+        @if(!Auth::user()->hasPower('manage_characters'))
             Please wait for it to be processed.
         @else 
-            As a staff member with the ability to edit the masterlist, you can view the details of the request, but cannot edit the contents directly. 
-            <br /><strong class="text-secondary">Cancelling</strong> the request returns it to its draft status, allowing the user to make further edits. 
-            <br /><strong class="text-success">Approving</strong> the request creates the update. 
-            <br /><strong class="text-danger">Rejecting</strong> the update returns any attached items and the user may not edit it any more.
+            As a staff member with the ability to edit the masterlist, you can view the details of the request, but can only edit certain parts of it.
         @endif
     </p>
+    @if(Auth::user()->hasPower('manage_characters'))
+        <div class="card mb-3">
+            <div class="card-body">
+                <a href="#" class="btn btn-outline-secondary process-button btn-sm float-right" data-action="cancel">Cancel</a>
+                <strong class="text-secondary">Cancelling</strong> the request returns it to its draft status, allowing the user to make further edits.
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-body">
+                <a href="#" class="btn btn-outline-success process-button btn-sm float-right" data-action="approve">Approve</a>
+                <strong class="text-success">Approving</strong> the request creates the update.
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <a href="#" class="btn btn-outline-danger process-button btn-sm float-right" data-action="reject">Reject</a>
+                <strong class="text-danger">Rejecting</strong> the update returns any attached items and the user may not edit it any more.
+            </div>
+        </div>
+    @endif
 @elseif($request->status == 'Approved')
     <p>This request has been approved. The data is preserved as a record of this submission.</p>
-@else
-    <p>This request was rejected by {!! $request->staff->displayName !!}.</p>
-    @if($request->staff_comments && ($request->user_id == Auth::user()->id || Auth::user()->hasPower('manage_submissions')))
-        <h5 class="text-danger">Staff Comments</h5>
-        <div class="card border-danger mb-3"><div class="card-body">{!! nl2br(htmlentities($request->staff_comments)) !!}</div></div>
-    @else
-        <p>No rejection comment was provided.</p>
-    @endif
 @endif
 
+@endsection
+
+@section('scripts')
+<script>
+$(document).ready(function() {
+    @if($request->user_id == Auth::user()->id && $request->status == 'Draft')
+        $('.submit-button').on('click', function(e) {
+            e.preventDefault();
+            loadModal("{{ url('designs/'.$request->id.'/confirm/') }}", 'Confirm Submission');
+        });
+    @endif
+
+    @if(Auth::user()->hasPower('manage_characters'))
+        $('.process-button').on('click', function(e) {
+            e.preventDefault();
+            loadModal("{{ url('admin/designs/edit/'.$request->id) }}/" + $(this).data('action'), 'Confirm Action');
+        });
+    @endif
+});
+</script>
 @endsection

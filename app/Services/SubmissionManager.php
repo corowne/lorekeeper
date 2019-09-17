@@ -42,8 +42,11 @@ class SubmissionManager extends Service
             // that key the reward ID/quantity arrays. 
             // We'll need to match characters to the rewards for them.
             // First, check if the characters are accessible to begin with.
-            $characters = Character::myo(0)->visible()->whereIn('slug', $data['slug'])->get();
-            if(count($characters) != count($data['slug'])) throw new \Exception("One or more of the selected characters do not exist.");
+            if(isset($data['slug'])) {
+                $characters = Character::myo(0)->visible()->whereIn('slug', $data['slug'])->get();
+                if(count($characters) != count($data['slug'])) throw new \Exception("One or more of the selected characters do not exist.");
+            }
+            else $characters = [];
 
             // Get a list of rewards, then create the submission itself
             $promptRewards = createAssetsArray();
@@ -65,9 +68,11 @@ class SubmissionManager extends Service
 
             // Retrieve all currency IDs for characters
             $currencyIds = [];
-            foreach($data['character_currency_id'] as $c)
-            {
-                foreach($c as $currencyId) $currencyIds[] = $currencyId;
+            if(isset($data['character_currency_id'])) {
+                foreach($data['character_currency_id'] as $c)
+                {
+                    foreach($c as $currencyId) $currencyIds[] = $currencyId;
+                }
             }
             array_unique($currencyIds);
             $currencies = Currency::whereIn('id', $currencyIds)->where('is_character_owned', 1)->get()->keyBy('id');
@@ -89,7 +94,6 @@ class SubmissionManager extends Service
 
             return $this->commitReturn($submission);
         } catch(\Exception $e) { 
-            dd($e->getMessage());
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -188,8 +192,11 @@ class SubmissionManager extends Service
             // that key the reward ID/quantity arrays. 
             // We'll need to match characters to the rewards for them.
             // First, check if the characters are accessible to begin with.
-            $characters = Character::myo(0)->visible()->whereIn('slug', $data['slug'])->get();
-            if(count($characters) != count($data['slug'])) throw new \Exception("One or more of the selected characters do not exist.");
+            if(isset($data['slug'])) {
+                $characters = Character::myo(0)->visible()->whereIn('slug', $data['slug'])->get();
+                if(count($characters) != count($data['slug'])) throw new \Exception("One or more of the selected characters do not exist.");
+            }
+            else $characters = [];
 
             // Get the updated set of rewards
             $rewards = $this->processRewards($data, false, true);
@@ -205,8 +212,10 @@ class SubmissionManager extends Service
             
             // Retrieve all currency IDs for characters
             $currencyIds = [];
-            foreach($data['character_currency_id'] as $c)
-                foreach($c as $currencyId) $currencyIds[] = $currencyId;
+            if(isset($data['character_currency_id'])) {
+                foreach($data['character_currency_id'] as $c)
+                    foreach($c as $currencyId) $currencyIds[] = $currencyId;
+            }
             array_unique($currencyIds);
             $currencies = Currency::whereIn('id', $currencyIds)->where('is_character_owned', 1)->get()->keyBy('id');
 
@@ -252,7 +261,6 @@ class SubmissionManager extends Service
 
             return $this->commitReturn($submission);
         } catch(\Exception $e) { 
-            dd($e->getMessage());
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);

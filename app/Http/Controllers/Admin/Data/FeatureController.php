@@ -135,7 +135,7 @@ class FeatureController extends Controller
         if(isset($data['name'])) 
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
         return view('admin.features.features', [
-            'features' => $query->paginate(20),
+            'features' => $query->paginate(20)->appends($request->query()),
             'rarities' => ['none' => 'Any Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['none' => 'Any Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'categories' => ['none' => 'Any Category'] + FeatureCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()

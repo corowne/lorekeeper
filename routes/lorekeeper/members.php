@@ -17,6 +17,9 @@ Route::group(['prefix' => 'notifications', 'namespace' => 'Users'], function() {
 
 Route::group(['prefix' => 'account', 'namespace' => 'Users'], function() {
     Route::get('settings', 'AccountController@getSettings');
+    Route::post('profile', 'AccountController@postProfile');
+    Route::post('password', 'AccountController@postPassword');
+    Route::post('email', 'AccountController@postEmail');
 });
 
 Route::group(['prefix' => 'inventory', 'namespace' => 'Users'], function() {
@@ -57,7 +60,7 @@ Route::group(['prefix' => 'claims', 'namespace' => 'Users'], function() {
 });
 
 Route::group(['prefix' => 'designs', 'namespace' => 'Characters'], function() {
-    Route::get('/', 'DesignController@getDesignUpdateIndex');
+    Route::get('{type?}', 'DesignController@getDesignUpdateIndex')->where('type', 'pending|approved|rejected');
     Route::get('{id}', 'DesignController@getDesignUpdate');
 
     Route::get('{id}/comments', 'DesignController@getComments');
@@ -72,6 +75,7 @@ Route::group(['prefix' => 'designs', 'namespace' => 'Characters'], function() {
     Route::get('{id}/traits', 'DesignController@getFeatures');
     Route::post('{id}/traits', 'DesignController@postFeatures');
     
+    Route::get('{id}/confirm', 'DesignController@getConfirm');
     Route::post('{id}/submit', 'DesignController@postSubmit');
     Route::post('{id}/delete', 'DesignController@postDelete');
 });

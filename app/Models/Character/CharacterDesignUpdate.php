@@ -23,10 +23,12 @@ class CharacterDesignupdate extends Model
         'comments', 'staff_comments', 'data', 'extension',
         'use_cropper', 'x0', 'x1', 'y0', 'y1',
         'hash', 'species_id', 'rarity_id', 
-        'has_comments', 'has_image', 'has_addons', 'has_features'
+        'has_comments', 'has_image', 'has_addons', 'has_features',
+        'submitted_at'
     ];
     protected $table = 'design_updates';
     public $timestamps = true;
+    public $dates = ['submitted_at'];
     
     public static $imageRules = [
         'image' => 'nullable|mimes:jpeg,gif,png',
@@ -66,6 +68,11 @@ class CharacterDesignupdate extends Model
 
         return $this->hasMany('App\Models\Character\CharacterFeature', 'character_image_id')->where('character_features.character_type', 'Update')->join('features', 'features.id', '=', 'character_features.feature_id')->orderByRaw(DB::raw('FIELD(features.feature_category_id, '.implode(',', $ids).')'));
     }
+
+    public function rawFeatures() 
+    {
+        return $this->hasMany('App\Models\Character\CharacterFeature', 'character_image_id')->where('character_features.character_type', 'Update');
+    }
     
     public function designers() 
     {
@@ -75,6 +82,16 @@ class CharacterDesignupdate extends Model
     public function artists() 
     {
         return $this->hasMany('App\Models\Character\CharacterImageCreator', 'character_image_id')->where('type', 'Artist')->where('character_type', 'Update');
+    }
+
+    public function scopeMyos($query)
+    {
+        $query->join('characters', 'design_updates.character_id', 'characters.id')->where('characters.is_myo_slot', 1);
+    }
+
+    public function scopeCharacters($query)
+    {
+        $query->join('characters', 'design_updates.character_id', 'characters.id')->where('characters.is_myo_slot', 0);
     }
 
     public function getDataAttribute()

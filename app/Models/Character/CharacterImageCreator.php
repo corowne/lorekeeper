@@ -20,7 +20,7 @@ class CharacterImageCreator extends Model
         'character_image_id', 'type', 'url', 'alias', 'character_type'
     ];
     protected $table = 'character_image_creators';
-    public $timestamps = true;
+    public $timestamps = false;
     
     
     public function image() 

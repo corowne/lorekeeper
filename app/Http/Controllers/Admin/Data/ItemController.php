@@ -130,7 +130,7 @@ class ItemController extends Controller
         if(isset($data['name'])) 
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
         return view('admin.items.items', [
-            'items' => $query->paginate(20),
+            'items' => $query->paginate(20)->appends($request->query()),
             'categories' => ['none' => 'Any Category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }

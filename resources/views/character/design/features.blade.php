@@ -34,14 +34,24 @@
         <div class="form-group">
             {!! Form::label('Traits') !!} 
             <div id="featureList">
+                {{-- Add in the compulsory traits for MYO slots --}}
+                @if($request->character->is_myo_slot && $request->character->image->features)
+                    @foreach($request->character->image->features as $feature)
+                        <div class="mb-2 d-flex align-items-center">
+                            {!! Form::text('', $feature->name, ['class' => 'form-control mr-2', 'disabled']) !!}
+                            {!! Form::text('', $feature->data, ['class' => 'form-control mr-2', 'disabled']) !!}
+                            <div>{!! add_help('This trait is required.') !!}</div>
+                        </div>
+                    @endforeach
+                @endif
+
+                {{-- Add in the ones that currently exist --}}
                 @if($request->features)
                     @foreach($request->features as $feature)
                         <div class="mb-2 d-flex">
-                            {!! Form::select('feature_id[]', $features, $feature->feature_id, ['class' => 'form-control mr-2 feature-select', 'placeholder' => 'Select Trait', $request->character->is_myo_slot ? 'disabled' : '']) !!}
-                            {!! Form::text('feature_data[]', $feature->data, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)', $request->character->is_myo_slot ? 'disabled' : '']) !!}
-                            @if(!$request->character->is_myo_slot)
-                                <a href="#" class="remove-feature btn btn-danger mb-2">×</a>
-                            @endif
+                            {!! Form::select('feature_id[]', $features, $feature->feature_id, ['class' => 'form-control mr-2 feature-select', 'placeholder' => 'Select Trait']) !!}
+                            {!! Form::text('feature_data[]', $feature->data, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}
+                            <a href="#" class="remove-feature btn btn-danger mb-2">×</a>
                         </div>
                     @endforeach
                 @endif
@@ -70,6 +80,11 @@
     </div>
     <h5>Traits</h5>
     <div>
+        @if($request->character->is_myo_slot && $request->character->image->features)
+            @foreach($request->character->image->features as $feature)
+                <div>@if($feature->feature->feature_category_id) <strong>{!! $feature->feature->category->displayName !!}:</strong> @endif {!! $feature->feature->displayName !!} @if($feature->data) ({{ $feature->data }}) @endif <span class="text-danger">*Required</span></div> 
+            @endforeach
+        @endif
         @foreach($request->features as $feature)
             <div>@if($feature->feature->feature_category_id) <strong>{!! $feature->feature->category->displayName !!}:</strong> @endif {!! $feature->feature->displayName !!} @if($feature->data) ({{ $feature->data }}) @endif</div> 
         @endforeach

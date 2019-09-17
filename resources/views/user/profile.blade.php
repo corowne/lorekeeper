@@ -29,9 +29,7 @@
 
 <div class="card mb-3">
     <div class="card-body">
-
-        Custom user profile content goes here.
-
+        {!! $user->profile->parsed_text !!}
     </div>
 </div>
 

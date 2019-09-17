@@ -53,6 +53,10 @@ return [
                 'name' => 'Prompt Submissions',
                 'url' => 'admin/submissions/pending'
             ],
+            [
+                'name' => 'Claim Submissions',
+                'url' => 'admin/claims/pending'
+            ],
         ]
     ],
     'Grants' => [
@@ -135,7 +139,15 @@ return [
             [
                 'name' => 'Character Transfers',
                 'url' => 'admin/masterlist/transfers/incoming'
-            ]
+            ],
+            [
+                'name' => 'Design Updates',
+                'url' => 'admin/design-approvals/pending'
+            ],
+            [
+                'name' => 'MYO Approvals',
+                'url' => 'admin/myo-approvals/pending'
+            ],
         ]
     ],
     'Raffles' => [

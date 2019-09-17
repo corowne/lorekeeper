@@ -45,6 +45,9 @@
                             <a class="dropdown-item" href="{{ url('claims') }}">
                                 Claims
                             </a>
+                            <a class="dropdown-item" href="{{ url('designs') }}">
+                                Design Approvals
+                            </a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{{ url('characters/transfers/incoming') }}">
                                 Character Transfers

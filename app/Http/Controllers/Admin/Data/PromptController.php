@@ -133,7 +133,7 @@ class PromptController extends Controller
         if(isset($data['name'])) 
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
         return view('admin.prompts.prompts', [
-            'prompts' => $query->paginate(20),
+            'prompts' => $query->paginate(20)->appends($request->query()),
             'categories' => ['none' => 'Any Category'] + PromptCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }

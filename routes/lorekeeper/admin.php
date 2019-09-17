@@ -299,14 +299,21 @@ Route::group(['prefix' => 'raffles', 'middleware' => 'power:manage_raffles'], fu
 
 # SUBMISSIONS
 Route::group(['prefix' => 'submissions', 'middleware' => 'power:manage_submissions'], function() {
-    Route::get('/{status}', 'SubmissionController@getSubmissionIndex')->where('status', 'pending|approved|rejected');
+    Route::get('/{status}', 'SubmissionController@getSubmissionIndex')->where('status', 'pending|accepted|rejected');
     Route::get('edit/{id}', 'SubmissionController@getSubmission');
     Route::post('edit/{id}/{action}', 'SubmissionController@postSubmission')->where('action', 'approve|reject');
 });
 
 # CLAIMS
 Route::group(['prefix' => 'claims', 'middleware' => 'power:manage_submissions'], function() {
-    Route::get('/{status}', 'SubmissionController@getClaimIndex')->where('status', 'pending|approved|rejected');
+    Route::get('/{status}', 'SubmissionController@getClaimIndex')->where('status', 'pending|accepted|rejected');
     Route::get('edit/{id}', 'SubmissionController@getClaim');
     Route::post('edit/{id}/{action}', 'SubmissionController@postSubmission')->where('action', 'approve|reject');
 });
+
+# DESIGN APPROVALS
+Route::group(['prefix' => 'designs', 'middleware' => 'power:manage_characters'], function() {
+    Route::get('edit/{id}/{action}', 'DesignController@getDesignConfirmation')->where('action', 'cancel|approve|reject');
+    Route::post('edit/{id}/{action}', 'DesignController@postDesign')->where('action', 'cancel|approve|reject');
+});
+Route::get('{type}/{status}', 'DesignController@getDesignIndex')->where('type', 'myo-approvals|design-approvals')->where('status', 'pending|approved|rejected');

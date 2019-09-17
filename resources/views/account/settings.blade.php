@@ -7,11 +7,24 @@
 
 <h1>Settings</h1>
 
+<h3>Profile</h3>
+
+{!! Form::open(['url' => 'account/profile']) !!}
+    <div class="form-group">
+        {!! Form::label('text', 'Profile Text') !!}
+        {!! Form::textarea('text', Auth::user()->profile->text, ['class' => 'form-control wysiwyg']) !!}
+    </div>
+    <div class="text-right">
+        {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
+    </div>
+{!! Form::close() !!}
+
+
 <h3>Email Address</h3>
 
 <p>Changing your email address will require you to re-verify your email address.</p>
 
-{!! Form::open(['url' => 'user/email']) !!}
+{!! Form::open(['url' => 'account/email']) !!}
     <div class="form-group row">
         <label class="col-md-2 col-form-label">Email Address</label>
         <div class="col-md-10">
@@ -25,11 +38,11 @@
 
 <h3>Change Password</h3>
 
-{!! Form::open(['url' => 'user/password']) !!}
+{!! Form::open(['url' => 'account/password']) !!}
     <div class="form-group row">
         <label class="col-md-2 col-form-label">Old Password</label>
         <div class="col-md-10">
-            {!! Form::password('password', ['class' => 'form-control']) !!}
+            {!! Form::password('old_password', ['class' => 'form-control']) !!}
         </div>
     </div>
     <div class="form-group row">
