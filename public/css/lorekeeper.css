@@ -404,3 +404,11 @@ tr.outflow {
     background-color: rgba(0,0,0,0.05);
     border-radius: .25rem;
 }
+
+/* SHOPS *************************************************************************************/
+.shops-row img {
+    max-width: 100%;
+}
+.shops-row .shop-name a {
+    font-weight: bold;
+}

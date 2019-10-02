@@ -108,6 +108,12 @@ Route::group(['prefix' => 'world'], function() {
     Route::get('character-categories', 'WorldController@getCharacterCategories');
 });
 
+Route::group(['prefix' => 'shops'], function() {
+    Route::get('/', 'ShopController@getIndex');
+    Route::get('history', 'ShopController@getPurchaseHistory');
+    Route::get('{id}', 'ShopController@getShop');
+});
+
 /**************************************************************************************************
     Site Pages
 **************************************************************************************************/

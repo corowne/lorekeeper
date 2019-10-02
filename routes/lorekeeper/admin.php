@@ -97,6 +97,17 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('items/edit/{id?}', 'ItemController@postCreateEditItem');
     Route::post('items/delete/{id}', 'ItemController@postDeleteItem');
     
+    # SHOPS
+    Route::get('shops', 'ShopController@getIndex');
+    Route::get('shops/create', 'ShopController@getCreateShop');
+    Route::get('shops/edit/{id}', 'ShopController@getEditShop');
+    Route::get('shops/delete/{id}', 'ShopController@getDeleteShop');
+    Route::post('shops/create', 'ShopController@postCreateEditShop');
+    Route::post('shops/edit/{id?}', 'ShopController@postCreateEditShop');
+    Route::post('shops/stock/{id}', 'ShopController@postEditShopStock');
+    Route::post('shops/delete/{id}', 'ShopController@postDeleteShop');
+    Route::post('shops/sort', 'ShopController@postSortShop');
+    
     # FEATURES (TRAITS)
     Route::get('trait-categories', 'FeatureController@getIndex');
     Route::get('trait-categories/create', 'FeatureController@getCreateFeatureCategory');

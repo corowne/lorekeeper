@@ -100,6 +100,10 @@ return [
                 'url' => 'admin/data/items'
             ],
             [
+                'name' => 'Shops',
+                'url' => 'admin/data/shops'
+            ],
+            [
                 'name' => 'Prompt Categories',
                 'url' => 'admin/data/prompt-categories'
             ],
