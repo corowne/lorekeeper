@@ -29,6 +29,7 @@
                             </div>
                             <div>
                                 <a href="#" class="inventory-stack inventory-stack-name"><strong>{{ $item->name }}</strong></a>
+                                <div><strong>Cost: </strong> {!! $currencies[$item->pivot->currency_id]->display($item->pivot->cost) !!}</div>
                                 @if($item->pivot->is_limited_stock) <div>Stock: {{ $item->pivot->quantity }}</div> @endif
                                 @if($item->pivot->purchase_limit) <div class="text-danger">Max {{ $item->pivot->purchase_limit }} per user</div> @endif
                             </div>
@@ -40,4 +41,17 @@
     </div>
 @endforeach
 
+@endsection
+
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        $('.inventory-item').on('click', function(e) {
+            e.preventDefault();
+            
+            loadModal("{{ url('shops/'.$shop->id) }}/" + $(this).data('id'), 'Purchase Item');
+        });
+    });
+
+</script>
 @endsection

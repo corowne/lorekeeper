@@ -12,13 +12,13 @@
                 @if(isset($stack->data['notes']))
                     <li class="list-group-item">
                         <h5 class="card-title">Notes</h5>
-                        <div>{{ $stack->data['notes'] }}</div>
+                        <div>{!! $stack->data['notes'] !!}</div>
                     </li>
                 @endif
                 @if(isset($stack->data['data']))
                     <li class="list-group-item">
                         <h5 class="card-title">Source</h5>
-                        <div>{{ $stack->data['data'] }}</div>
+                        <div>{!! $stack->data['data'] !!}</div>
                     </li>
                 @endif
             </ul>

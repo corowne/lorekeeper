@@ -1405,6 +1405,10 @@ class CharacterManager extends Service
             {
                 $request->character->character_image_id = $image->id;
             }
+
+            // Add a log for the character and user
+            $this->createLog($user->id, $request->character->user_id, $request->character->user->alias, $request->character->id, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', '[#'.$image->id.']', 'character');
+            $this->createLog($user->id, $request->character->user_id, $request->character->user->alias, $request->character->id, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', '[#'.$image->id.']', 'user');
             
             // If this is for a MYO, set user's FTO status and the MYO status of the slot
             if($request->character->is_myo_slot)

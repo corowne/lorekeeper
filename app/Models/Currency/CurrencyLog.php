@@ -38,15 +38,4 @@ class CurrencyLog extends Model
         return $this->belongsTo('App\Models\Currency\Currency');
     }
 
-    public function displayRow($owner) 
-    {
-        $ret = '<tr class="'.(($this->recipient_id == $owner->id && $this->recipient_type == $owner->logType) ? 'inflow' : 'outflow').'">';
-        $ret .= '<td>'.$this->sender->displayName.'</td>';
-        $ret .= '<td>'.$this->recipient->displayName.'</td>';
-        $ret .= '<td>'.(($this->recipient_id == $owner->id && $this->recipient_type == $owner->logType) ? '+' : '-').' '.$this->currency->display(abs($this->quantity)).'</td>';
-        $ret .= '<td>'.$this->log.'</td>';
-        $ret .= '<td>'.format_date($this->created_at).'</td>';
-        return $ret . '</tr>';
-    }
-
 }

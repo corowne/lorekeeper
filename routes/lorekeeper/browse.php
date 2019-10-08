@@ -110,8 +110,8 @@ Route::group(['prefix' => 'world'], function() {
 
 Route::group(['prefix' => 'shops'], function() {
     Route::get('/', 'ShopController@getIndex');
-    Route::get('history', 'ShopController@getPurchaseHistory');
-    Route::get('{id}', 'ShopController@getShop');
+    Route::get('{id}', 'ShopController@getShop')->where(['id' => '[0-9]+']);
+    Route::get('{id}/{stockId}', 'ShopController@getShopStock')->where(['id' => '[0-9]+', 'stockId' => '[0-9]+']);
 });
 
 /**************************************************************************************************

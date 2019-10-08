@@ -18,7 +18,7 @@
     </thead>
     <tbody>
         @foreach($logs as $log)
-            {!! $log->displayRow($character) !!}
+            @include('character._character_log_row', ['log' => $log, 'character' => $character])
         @endforeach
     </tbody>
 </table>

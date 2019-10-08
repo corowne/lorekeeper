@@ -45,7 +45,7 @@
     </thead>
     <tbody>
         @foreach($logs as $log)
-            {!! $log->displayRow($user) !!}
+            @include('user._item_log_row', ['log' => $log, 'user' => $user])
         @endforeach
     </tbody>
 </table>

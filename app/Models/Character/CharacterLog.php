@@ -41,15 +41,6 @@ class CharacterLog extends Model
         else return '---';
     }
 
-    public function displayRow($user) 
-    {
-        $ret = '<tr class="inflow">';
-        $ret .= '<td>'.($this->sender ? $this->sender->displayName : '').'</td>';
-        $ret .= '<td>'.$this->log.'</td>';
-        $ret .= '<td>'.format_date($this->created_at).'</td>';
-        return $ret . '</tr>';
-    }
-
     public function getChangedDataAttribute()
     {
         return json_decode($this->change_log, true);

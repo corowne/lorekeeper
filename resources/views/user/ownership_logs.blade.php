@@ -20,7 +20,7 @@
     </thead>
     <tbody>
         @foreach($logs as $log)
-            {!! $log->displayRow($user, true) !!}
+            @include('user._ownership_log_row', ['log' => $log, 'user' => $user, 'showCharacter' => true])
         @endforeach
     </tbody>
 </table>

@@ -182,7 +182,9 @@ class CurrencyManager extends Service
                     $record = CharacterCurrency::create(['character_id' => $recipient->id, 'currency_id' => $currency->id, 'quantity' => $quantity]);
                 }
             }
-            if($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, $recipient->id, $recipient->logType, $type, $data, $currency->id, $quantity)) throw new \Exception("Failed to create log.");
+            if($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, 
+            $recipient ? $recipient->id : null, $recipient ? $recipient->logType : null, 
+            $type, $data, $currency->id, $quantity)) throw new \Exception("Failed to create log.");
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
@@ -211,7 +213,9 @@ class CurrencyManager extends Service
                 DB::table('character_currencies')->where('character_id', $sender->id)->where('currency_id', $currency->id)->update(['quantity' => $record->quantity - $quantity]);
             }
 
-            if($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, $recipient->id, $recipient->logType, $type, $data, $currency->id, $quantity)) throw new \Exception("Failed to create log.");
+            if($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, 
+            $recipient ? $recipient->id : null, $recipient ? $recipient->logType : null, 
+            $type, $data, $currency->id, $quantity)) throw new \Exception("Failed to create log.");
 
             return $this->commitReturn($currency);
         } catch(\Exception $e) { 

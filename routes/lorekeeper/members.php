@@ -79,3 +79,8 @@ Route::group(['prefix' => 'designs', 'namespace' => 'Characters'], function() {
     Route::post('{id}/submit', 'DesignController@postSubmit');
     Route::post('{id}/delete', 'DesignController@postDelete');
 });
+
+Route::group(['prefix' => 'shops'], function() {
+    Route::post('buy', 'ShopController@postBuy');
+    Route::get('history', 'ShopController@getPurchaseHistory');
+});

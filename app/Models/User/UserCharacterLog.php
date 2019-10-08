@@ -39,16 +39,4 @@ class UserCharacterLog extends Model
         return '<a href="http://www.deviantart.com/'.$this->recipient_alias.'">'.$this->recipient_alias.'@dA</a>';
     }
 
-    public function displayRow($user, $showCharacter = false) 
-    {
-        $ret = '<tr class="'.(($this->recipient_id == $user->id || $this->recipient_alias == $user->alias) ? 'inflow' : 'outflow').'">';
-        $ret .= '<td>'.($this->sender ? $this->sender->displayName : '').'</td>';
-        $ret .= '<td>'.($this->recipient ? $this->recipient->displayName : $this->displayRecipientAlias).'</td>';
-        if($showCharacter) 
-            $ret .= '<td><a href="'.$this->character->url.'">'.$this->character->slug.'</a></td>';
-        $ret .= '<td>'.$this->log.'</td>';
-        $ret .= '<td>'.format_date($this->created_at).'</td>';
-        return $ret . '</tr>';
-    }
-
 }

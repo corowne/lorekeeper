@@ -35,15 +35,4 @@ class ItemLog extends Model
         return $this->belongsTo('App\Models\Item\Item');
     }
 
-    public function displayRow($user) 
-    {
-        $ret = '<tr class="'.($this->recipient_id == $user->id ? 'inflow' : 'outflow').'">';
-        $ret .= '<td>'.($this->sender ? $this->sender->displayName : '').'</td>';
-        $ret .= '<td>'.($this->recipient ? $this->recipient->displayName : '').'</td>';
-        $ret .= '<td><a href="'.$this->item->searchUrl.'">'.$this->item->name.'</a> (×'.$this->quantity.')</td>';
-        $ret .= '<td>'.$this->log.'</td>';
-        $ret .= '<td>'.format_date($this->created_at).'</td>';
-        return $ret . '</tr>';
-    }
-
 }
