@@ -18,7 +18,7 @@ class AddMyoSlots extends Migration
             $table->boolean('is_myo_slot')->default(0);
 
             // MYO slots won't have these filled
-            $table->integer('rarity_id')->unsigned()->nullable()->change();
+            $table->integer('rarity_id')->unsigned()->nullable();
             $table->integer('character_category_id')->unsigned()->nullable()->change();
             $table->integer('number')->unsigned()->nullable()->change();
             $table->string('slug')->nullable()->change();
