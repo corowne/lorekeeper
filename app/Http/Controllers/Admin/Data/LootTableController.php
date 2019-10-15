@@ -16,8 +16,17 @@ use App\Http\Controllers\Controller;
 
 class LootTableController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Admin / Loot Table Controller
+    |--------------------------------------------------------------------------
+    |
+    | Handles creation/editing of loot tables.
+    |
+    */
+
     /**
-     * Show the loot table index.
+     * Shows the loot table index.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -29,7 +38,7 @@ class LootTableController extends Controller
     }
     
     /**
-     * Show the create loot table page.
+     * Shows the create loot table page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -44,8 +53,9 @@ class LootTableController extends Controller
     }
     
     /**
-     * Show the edit loot table page.
+     * Shows the edit loot table page.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getEditLootTable($id)
@@ -60,6 +70,14 @@ class LootTableController extends Controller
         ]);
     }
 
+    /**
+     * Creates or edits a loot table.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\LootService  $service
+     * @param  int|null                  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postCreateEditLootTable(Request $request, LootService $service, $id = null)
     {
         $id ? $request->validate(LootTable::$updateRules) : $request->validate(LootTable::$createRules);
@@ -80,8 +98,9 @@ class LootTableController extends Controller
     }
     
     /**
-     * Get the loot table deletion modal.
+     * Gets the loot table deletion modal.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getDeleteLootTable($id)
@@ -92,6 +111,14 @@ class LootTableController extends Controller
         ]);
     }
 
+    /**
+     * Deletes an item category.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\LootService  $service
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postDeleteLootTable(Request $request, LootService $service, $id)
     {
         if($id && $service->deleteLootTable(LootTable::find($id))) {
@@ -104,8 +131,11 @@ class LootTableController extends Controller
     }
     
     /**
-     * Get the loot table test roll modal.
+     * Gets the loot table test roll modal.
      *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\LootService  $service
+     * @param  int                       $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getRollLootTable(Request $request, LootService $service, $id)

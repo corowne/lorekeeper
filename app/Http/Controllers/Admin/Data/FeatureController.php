@@ -17,8 +17,24 @@ use App\Http\Controllers\Controller;
 
 class FeatureController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Admin / Feature Controller
+    |--------------------------------------------------------------------------
+    |
+    | Handles creation/editing of character feature categories and features 
+    | (AKA traits, which is a reserved keyword in PHP and thus can't be used).
+    |
+    */
+
+    /**********************************************************************************************
+    
+        FEATURE CATEGORIES
+
+    **********************************************************************************************/
+
     /**
-     * Show the feature category index.
+     * Shows the feature category index.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -30,7 +46,7 @@ class FeatureController extends Controller
     }
     
     /**
-     * Show the create feature category page.
+     * Shows the create feature category page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -42,8 +58,9 @@ class FeatureController extends Controller
     }
     
     /**
-     * Show the edit feature category page.
+     * Shows the edit feature category page.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getEditFeatureCategory($id)
@@ -55,6 +72,14 @@ class FeatureController extends Controller
         ]);
     }
 
+    /**
+     * Creates or edits a feature category.
+     *
+     * @param  \Illuminate\Http\Request     $request
+     * @param  App\Services\FeatureService  $service
+     * @param  int|null                     $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postCreateEditFeatureCategory(Request $request, FeatureService $service, $id = null)
     {
         $id ? $request->validate(FeatureCategory::$updateRules) : $request->validate(FeatureCategory::$createRules);
@@ -75,8 +100,9 @@ class FeatureController extends Controller
     }
     
     /**
-     * Get the feature category deletion modal.
+     * Gets the feature category deletion modal.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getDeleteFeatureCategory($id)
@@ -87,6 +113,14 @@ class FeatureController extends Controller
         ]);
     }
 
+    /**
+     * Creates or edits a feature category.
+     *
+     * @param  \Illuminate\Http\Request     $request
+     * @param  App\Services\FeatureService  $service
+     * @param  int|null                     $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postDeleteFeatureCategory(Request $request, FeatureService $service, $id)
     {
         if($id && $service->deleteFeatureCategory(FeatureCategory::find($id))) {
@@ -98,6 +132,13 @@ class FeatureController extends Controller
         return redirect()->to('admin/data/trait-categories');
     }
 
+    /**
+     * Sorts feature categories.
+     *
+     * @param  \Illuminate\Http\Request     $request
+     * @param  App\Services\FeatureService  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postSortFeatureCategory(Request $request, FeatureService $service)
     {
         if($service->sortFeatureCategory($request->get('sort'))) {
@@ -111,15 +152,14 @@ class FeatureController extends Controller
 
     /**********************************************************************************************
     
-        FEATURES/TRAITS
-        These are the same thing, but "trait" is a reserved keyword in PHP,
-        so these are named "features" instead.
+        FEATURES
 
     **********************************************************************************************/
 
     /**
-     * Show the feature category index.
+     * Shows the feature index.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getFeatureIndex(Request $request)
@@ -143,7 +183,7 @@ class FeatureController extends Controller
     }
     
     /**
-     * Show the create feature page.
+     * Shows the create feature page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -158,8 +198,9 @@ class FeatureController extends Controller
     }
     
     /**
-     * Show the edit feature page.
+     * Shows the edit feature page.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getEditFeature($id)
@@ -174,6 +215,14 @@ class FeatureController extends Controller
         ]);
     }
 
+    /**
+     * Creates or edits a feature.
+     *
+     * @param  \Illuminate\Http\Request     $request
+     * @param  App\Services\FeatureService  $service
+     * @param  int|null                     $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postCreateEditFeature(Request $request, FeatureService $service, $id = null)
     {
         $id ? $request->validate(Feature::$updateRules) : $request->validate(Feature::$createRules);
@@ -194,8 +243,9 @@ class FeatureController extends Controller
     }
     
     /**
-     * Get the feature deletion modal.
+     * Gets the feature deletion modal.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getDeleteFeature($id)
@@ -206,6 +256,15 @@ class FeatureController extends Controller
         ]);
     }
 
+
+    /**
+     * Deletes a feature.
+     *
+     * @param  \Illuminate\Http\Request     $request
+     * @param  App\Services\FeatureService  $service
+     * @param  int                          $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postDeleteFeature(Request $request, FeatureService $service, $id)
     {
         if($id && $service->deleteFeature(Feature::find($id))) {

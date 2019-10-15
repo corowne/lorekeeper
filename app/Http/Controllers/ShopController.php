@@ -18,8 +18,17 @@ use App\Models\Item\ItemCategory;
 
 class ShopController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Shop Controller
+    |--------------------------------------------------------------------------
+    |
+    | Handles viewing the shop index, shops and purchasing from shops.
+    |
+    */
+
     /**
-     * Show the shop index.
+     * Shows the shop index.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -30,6 +39,12 @@ class ShopController extends Controller
             ]);
     }
     
+    /**
+     * Shows a shop.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
     public function getShop($id)
     {
         $shop = Shop::where('id', $id)->where('is_active', 1)->first();
@@ -43,6 +58,14 @@ class ShopController extends Controller
         ]);
     }
 
+    /**
+     * Gets the shop stock modal.
+     *
+     * @param  App\Services\ShopManager  $service
+     * @param  int                       $id
+     * @param  int                       $stockId
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
     public function getShopStock(ShopManager $service, $id, $stockId)
     {
         $shop = Shop::where('id', $id)->where('is_active', 1)->first();
@@ -54,6 +77,13 @@ class ShopController extends Controller
         ]);
     }
 
+    /**
+     * Buys an item from a shop.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\ShopManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postBuy(Request $request, ShopManager $service)
     {
         $request->validate(ShopLog::$createRules);
@@ -67,7 +97,7 @@ class ShopController extends Controller
     }
 
     /**
-     * Show the user's purchase history.
+     * Shows the user's purchase history.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */

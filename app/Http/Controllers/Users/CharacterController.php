@@ -23,17 +23,17 @@ use App\Http\Controllers\Controller;
 
 class CharacterController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
+    /*
+    |--------------------------------------------------------------------------
+    | Character Controller
+    |--------------------------------------------------------------------------
+    |
+    | Handles displaying of the user's characters and transfers.
+    |
+    */
 
     /**
-     * Show the user's characters.
+     * Shows the user's characters.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -45,7 +45,28 @@ class CharacterController extends Controller
             'characters' => $characters,
         ]);
     }
+    
+    /**
+     * Shows the user's MYO slots.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getMyos()
+    {
+        $slots = Auth::user()->myoSlots()->get();
 
+        return view('home.myos', [
+            'slots' => $slots,
+        ]);
+    }
+
+    /**
+     * Sorts the user's characters.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\CharacterManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postSortCharacters(Request $request, CharacterManager $service)
     {
         if ($service->sortCharacters($request->only(['sort']), Auth::user())) {
@@ -59,8 +80,9 @@ class CharacterController extends Controller
     }
 
     /**
-     * Show the user's transfers.
+     * Shows the user's transfers.
      *
+     * @param  string  $type
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getTransfers($type = 'incoming')
@@ -88,6 +110,14 @@ class CharacterController extends Controller
         ]);
     }
     
+    /**
+     * Transfers one of the user's own characters.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\CharacterManager  $service
+     * @param  int                            $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postHandleTransfer(Request $request, CharacterManager $service, $id)
     {
         if(!Auth::check()) abort(404);
@@ -105,19 +135,4 @@ class CharacterController extends Controller
         }
         return redirect()->back();
     }
-    
-    /**
-     * Show the user's MYO slots.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function getMyos()
-    {
-        $slots = Auth::user()->myoSlots()->get();
-
-        return view('home.myos', [
-            'slots' => $slots,
-        ]);
-    }
-
 }

@@ -14,8 +14,17 @@ use App\Http\Controllers\Controller;
 
 class CharacterCategoryController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Admin / Character Category Controller
+    |--------------------------------------------------------------------------
+    |
+    | Handles creation/editing of character categories.
+    |
+    */
+
     /**
-     * Show the character category index.
+     * Shows the character category index.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -27,7 +36,7 @@ class CharacterCategoryController extends Controller
     }
     
     /**
-     * Show the create character category page.
+     * Shows the create character category page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -39,8 +48,9 @@ class CharacterCategoryController extends Controller
     }
     
     /**
-     * Show the edit character category page.
+     * Shows the edit character category page.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getEditCharacterCategory($id)
@@ -52,6 +62,14 @@ class CharacterCategoryController extends Controller
         ]);
     }
 
+    /**
+     * Creates or edits a character category.
+     *
+     * @param  \Illuminate\Http\Request               $request
+     * @param  App\Services\CharacterCategoryService  $service
+     * @param  int|null                               $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postCreateEditCharacterCategory(Request $request, CharacterCategoryService $service, $id = null)
     {
         $id ? $request->validate(CharacterCategory::$updateRules) : $request->validate(CharacterCategory::$createRules);
@@ -72,8 +90,9 @@ class CharacterCategoryController extends Controller
     }
     
     /**
-     * Get the character category deletion modal.
+     * Gets the character category deletion modal.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getDeleteCharacterCategory($id)
@@ -84,6 +103,14 @@ class CharacterCategoryController extends Controller
         ]);
     }
 
+    /**
+     * Deletes a character category.
+     *
+     * @param  \Illuminate\Http\Request               $request
+     * @param  App\Services\CharacterCategoryService  $service
+     * @param  int                                    $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postDeleteCharacterCategory(Request $request, CharacterCategoryService $service, $id)
     {
         if($id && $service->deleteCharacterCategory(CharacterCategory::find($id))) {
@@ -95,8 +122,13 @@ class CharacterCategoryController extends Controller
         return redirect()->to('admin/data/character-categories');
     }
 
-    
-
+    /**
+     * Sorts character categories.
+     *
+     * @param  \Illuminate\Http\Request               $request
+     * @param  App\Services\CharacterCategoryService  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postSortCharacterCategory(Request $request, CharacterCategoryService $service)
     {
         if($service->sortCharacterCategory($request->get('sort'))) {

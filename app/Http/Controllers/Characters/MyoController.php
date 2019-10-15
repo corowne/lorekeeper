@@ -23,6 +23,15 @@ use App\Http\Controllers\Controller;
 
 class MyoController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | MYO Slot Controller
+    |--------------------------------------------------------------------------
+    |
+    | Handles displaying and acting on an MYO slot.
+    |
+    */
+
     /**
      * Create a new controller instance.
      *
@@ -43,8 +52,9 @@ class MyoController extends Controller
     }
 
     /**
-     * Show a character's masterlist entry.
+     * Shows an MYO slot's masterlist entry.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCharacter($id)
@@ -55,8 +65,9 @@ class MyoController extends Controller
     }
 
     /**
-     * Show a character's profile.
+     * Shows an MYO slot's profile.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCharacterProfile($id)
@@ -66,6 +77,12 @@ class MyoController extends Controller
         ]);
     }
 
+    /**
+     * Shows an MYO slot's edit profile page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
     public function getEditCharacterProfile($id)
     {
         if(!Auth::check()) abort(404);
@@ -79,6 +96,14 @@ class MyoController extends Controller
         ]);
     }
     
+    /**
+     * Edits an MYO slot's profile.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\CharacterManager  $service
+     * @param  int                            $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postEditCharacterProfile(Request $request, CharacterManager $service, $id)
     {
         if(!Auth::check()) abort(404);
@@ -97,8 +122,9 @@ class MyoController extends Controller
     }
     
     /**
-     * Show a character's ownership logs.
+     * Shows an MYO slot's ownership logs.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCharacterOwnershipLogs($id)
@@ -110,8 +136,9 @@ class MyoController extends Controller
     }
     
     /**
-     * Show a character's ownership logs.
+     * Shows an MYO slot's ownership logs.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCharacterLogs($id)
@@ -123,8 +150,9 @@ class MyoController extends Controller
     }
     
     /**
-     * Show a character's submissions.
+     * Shows an MYO slot's submissions.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCharacterSubmissions($id)
@@ -135,8 +163,12 @@ class MyoController extends Controller
         ]);
     }
 
-    
-
+    /**
+     * Shows an MYO slot's transfer page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
     public function getTransfer($id)
     {
         if(!Auth::check()) abort(404);
@@ -150,10 +182,18 @@ class MyoController extends Controller
             'transfer' => CharacterTransfer::active()->where('character_id', $this->character->id)->first(),
             'cooldown' => Settings::get('transfer_cooldown'),
             'transfersQueue' => Settings::get('open_transfers_queue'),
-            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
+            'userOptions' => User::visible()->orderBy('name')->pluck('name', 'id')->toArray(),
         ]);
     }
     
+    /**
+     * Opens a transfer request for an MYO slot.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\CharacterManager  $service
+     * @param  int                            $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postTransfer(Request $request, CharacterManager $service, $id)
     {
         if(!Auth::check()) abort(404);
@@ -167,6 +207,15 @@ class MyoController extends Controller
         return redirect()->back();
     }
     
+    /**
+     * Cancels a transfer request for an MYO slot.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\CharacterManager  $service
+     * @param  int                            $id
+     * @param  int                            $id2
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postCancelTransfer(Request $request, CharacterManager $service, $id, $id2)
     {
         if(!Auth::check()) abort(404);
@@ -180,7 +229,12 @@ class MyoController extends Controller
         return redirect()->back();
     }
     
-
+    /**
+     * Shows an MYO slot's approval page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
     public function getCharacterApproval($id)
     {
         if(!Auth::check() || $this->character->user_id != Auth::user()->id) abort(404);
@@ -192,7 +246,14 @@ class MyoController extends Controller
         ]);
     }
 
-    public function postCharacterApproval($id, CharacterManager $service)
+    /**
+     * Opens a new design approval request for an MYO slot.
+     *
+     * @param  App\Services\CharacterManager  $service
+     * @param  int                            $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postCharacterApproval(CharacterManager $service, $id)
     {
         if(!Auth::check() || $this->character->user_id != Auth::user()->id) abort(404);
 
@@ -205,6 +266,4 @@ class MyoController extends Controller
         }
         return redirect()->back();
     }
-
-
 }

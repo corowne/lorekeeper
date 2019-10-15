@@ -11,8 +11,17 @@ use App\Services\DeviantArtService;
 
 class HomeController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Home Controller
+    |--------------------------------------------------------------------------
+    |
+    | Displays the homepage and page for linking a user's deviantART account.
+    |
+    */
+
     /**
-     * Show the application dashboard.
+     * Shows the homepage.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -22,11 +31,13 @@ class HomeController extends Controller
     }
 
     /**
-     * Show the dA account linking page.
+     * Shows the dA account linking page.
      *
+     * @param  \Illuminate\Http\Request        $request
+     * @param  App\Services\DeviantArtService  $deviantart
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getLink(DeviantArtService $deviantart, Request $request)
+    public function getLink(Request $request, DeviantArtService $deviantart)
     {
         // If the user already has a username associated with their account, redirect them
         if(Auth::check() && Auth::user()->hasAlias) redirect()->to('home');

@@ -17,20 +17,30 @@ use App\Models\Prompt\Prompt;
 
 class WorldController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | World Controller
+    |--------------------------------------------------------------------------
+    |
+    | Displays information about the world, as entered in the admin panel.
+    | Pages displayed by this controller form the site's encyclopedia.
+    |
+    */
+
     /**
-     * Show the index page.
+     * Shows the index page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getIndex()
     {
-        return view('world.index', [  
-        ]);
+        return view('world.index');
     }
 
     /**
-     * Show the currency page.
+     * Shows the currency page.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCurrencies(Request $request)
@@ -44,8 +54,9 @@ class WorldController extends Controller
     }
 
     /**
-     * Show the rarity page.
+     * Shows the rarity page.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getRarities(Request $request)
@@ -59,8 +70,9 @@ class WorldController extends Controller
     }
 
     /**
-     * Show the species page.
+     * Shows the species page.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getSpecieses(Request $request)
@@ -74,8 +86,9 @@ class WorldController extends Controller
     }
     
     /**
-     * Show the item categories page.
+     * Shows the item categories page.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getItemCategories(Request $request)
@@ -89,8 +102,9 @@ class WorldController extends Controller
     }
     
     /**
-     * Show the trait categories page.
+     * Shows the trait categories page.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getFeatureCategories(Request $request)
@@ -104,8 +118,9 @@ class WorldController extends Controller
     }
     
     /**
-     * Show the traits page.
+     * Shows the traits page.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getFeatures(Request $request)
@@ -161,8 +176,9 @@ class WorldController extends Controller
     }
 
     /**
-     * Show the items page.
+     * Shows the items page.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getItems(Request $request)
@@ -202,11 +218,10 @@ class WorldController extends Controller
         ]);
     }
 
-    
-    
     /**
-     * Show the character categories page.
+     * Shows the character categories page.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCharacterCategories(Request $request)
@@ -219,10 +234,10 @@ class WorldController extends Controller
         ]);
     }
     
-    
     /**
-     * Show the prompt categories page.
+     * Shows the prompt categories page.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getPromptCategories(Request $request)
@@ -236,8 +251,9 @@ class WorldController extends Controller
     }
 
     /**
-     * Show the prompts page.
+     * Shows the prompts page.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getPrompts(Request $request)

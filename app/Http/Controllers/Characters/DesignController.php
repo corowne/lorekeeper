@@ -20,19 +20,11 @@ use App\Services\CharacterManager;
 use App\Http\Controllers\Controller;
 
 class DesignController extends Controller
-{
+{    
     /**
-     * Create a new controller instance.
+     * Shows the index of character design update submissions.
      *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
-    
-    /**
-     * Show the index of character design update submissions.
-     *
+     * @param  string  $type
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getDesignUpdateIndex($type = null)
@@ -48,8 +40,9 @@ class DesignController extends Controller
     }
 
     /**
-     * Show a design update request.
+     * Shows a design update request.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getDesignUpdate($id)
@@ -62,8 +55,9 @@ class DesignController extends Controller
     }
 
     /**
-     * Show a design update request's comments section.
+     * Shows a design update request's comments section.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getComments($id)
@@ -74,7 +68,15 @@ class DesignController extends Controller
             'request' => $r
         ]);
     }
-    
+
+    /**
+     * Edits a design update request's comments section.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\CharacterManager  $service
+     * @param  int                            $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postComments(Request $request, CharacterManager $service, $id)
     {
         $r = CharacterDesignUpdate::find($id);
@@ -91,8 +93,9 @@ class DesignController extends Controller
     }
 
     /**
-     * Show a design update request's image section.
+     * Shows a design update request's image section.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getImage($id)
@@ -104,6 +107,14 @@ class DesignController extends Controller
         ]);
     }
     
+    /**
+     * Edits a design update request's image upload section.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\CharacterManager  $service
+     * @param  int                            $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postImage(Request $request, CharacterManager $service, $id)
     {
         $r = CharacterDesignUpdate::find($id);
@@ -121,8 +132,9 @@ class DesignController extends Controller
     }
     
     /**
-     * Show a design update request's addons section.
+     * Shows a design update request's addons section.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getAddons($id)
@@ -143,7 +155,15 @@ class DesignController extends Controller
             'inventory' => $inventory
         ]);
     }
-    
+
+    /**
+     * Edits a design update request's addons section.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\CharacterManager  $service
+     * @param  int                            $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postAddons(Request $request, CharacterManager $service, $id)
     {
         $r = CharacterDesignUpdate::find($id);
@@ -160,8 +180,9 @@ class DesignController extends Controller
     }
 
     /**
-     * Show a design update request's traits section.
+     * Shows a design update request's features section.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getFeatures($id)
@@ -175,7 +196,15 @@ class DesignController extends Controller
             'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(), // if MYO slot and rarity_id is set, only pull lower rarities
         ]);
     }
-    
+
+    /**
+     * Edits a design update request's features section.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\CharacterManager  $service
+     * @param  int                            $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postFeatures(Request $request, CharacterManager $service, $id)
     {
         $r = CharacterDesignUpdate::find($id);
@@ -192,8 +221,9 @@ class DesignController extends Controller
     }
     
     /**
-     * Show the design update request submission confirmation modal.
+     * Shows the design update request submission confirmation modal.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getConfirm($id)
@@ -204,7 +234,15 @@ class DesignController extends Controller
             'request' => $r
         ]);
     }
-    
+
+    /**
+     * Submits a design update request for approval.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\CharacterManager  $service
+     * @param  int                            $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postSubmit(CharacterManager $service, $id)
     {
         $r = CharacterDesignUpdate::find($id);
@@ -219,5 +257,4 @@ class DesignController extends Controller
         }
         return redirect()->back();
     }
-
 }

@@ -21,6 +21,15 @@ use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | User Controller
+    |--------------------------------------------------------------------------
+    |
+    | Displays user profile pages.
+    |
+    */
+
     /**
      * Create a new controller instance.
      *
@@ -36,8 +45,9 @@ class UserController extends Controller
     }
 
     /**
-     * Show a user's profile.
+     * Shows a user's profile.
      *
+     * @param  string  $name
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getUser($name)
@@ -49,8 +59,9 @@ class UserController extends Controller
     }
     
     /**
-     * Show a user's characters.
+     * Shows a user's characters.
      *
+     * @param  string  $name
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getUserCharacters($name)
@@ -62,8 +73,9 @@ class UserController extends Controller
     }
     
     /**
-     * Show a user's inventory.
+     * Shows a user's inventory.
      *
+     * @param  string  $name
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getUserInventory($name)
@@ -78,10 +90,10 @@ class UserController extends Controller
         ]);
     }
 
-    
     /**
-     * Show a user's profile.
+     * Shows a user's profile.
      *
+     * @param  string  $name
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getUserBank($name)
@@ -97,10 +109,10 @@ class UserController extends Controller
         ] : []));
     }
 
-    
     /**
-     * Show a user's currency logs.
+     * Shows a user's currency logs.
      *
+     * @param  string  $name
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getUserCurrencyLogs($name)
@@ -112,10 +124,10 @@ class UserController extends Controller
         ]);
     }
 
-    
     /**
-     * Show a user's item logs.
+     * Shows a user's item logs.
      *
+     * @param  string  $name
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getUserItemLogs($name)
@@ -127,11 +139,10 @@ class UserController extends Controller
         ]);
     }
 
-    
-    
     /**
-     * Show a user's character ownership logs.
+     * Shows a user's character ownership logs.
      *
+     * @param  string  $name
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getUserOwnershipLogs($name)
@@ -142,11 +153,10 @@ class UserController extends Controller
         ]);
     }
 
-    
-    
     /**
-     * Show a user's submissions.
+     * Shows a user's submissions.
      *
+     * @param  string  $name
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getUserSubmissions($name)
@@ -156,5 +166,4 @@ class UserController extends Controller
             'logs' => $this->user->getSubmissions()
         ]);
     }
-
 }

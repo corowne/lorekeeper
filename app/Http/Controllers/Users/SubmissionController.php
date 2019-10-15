@@ -21,18 +21,25 @@ use App\Http\Controllers\Controller;
 
 class SubmissionController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
+    /*
+    |--------------------------------------------------------------------------
+    | Submission Controller
+    |--------------------------------------------------------------------------
+    |
+    | Handles prompt submissions and claims for the user.
+    |
+    */
+
+    /**********************************************************************************************
+    
+        PROMPT SUBMISSIONS
+
+    **********************************************************************************************/
 
     /**
-     * Show the user's submission log.
+     * Shows the user's submission log.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getIndex(Request $request)
@@ -50,8 +57,9 @@ class SubmissionController extends Controller
     }
     
     /**
-     * Show the submission page.
+     * Shows the submission page.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getSubmission($id)
@@ -65,8 +73,9 @@ class SubmissionController extends Controller
     }
 
     /**
-     * Show the submit page.
+     * Shows the submit page.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getNewSubmission(Request $request)
@@ -85,8 +94,9 @@ class SubmissionController extends Controller
     }
 
     /**
-     * Show character information.
+     * Shows character information.
      *
+     * @param  string  $slug
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCharacterInfo($slug)
@@ -99,8 +109,9 @@ class SubmissionController extends Controller
     }
 
     /**
-     * Show prompt information.
+     * Shows prompt information.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getPromptInfo($id)
@@ -114,6 +125,13 @@ class SubmissionController extends Controller
         ]);
     }
     
+    /**
+     * Creates a new submission.
+     *
+     * @param  \Illuminate\Http\Request        $request
+     * @param  App\Services\SubmissionManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postNewSubmission(Request $request, SubmissionManager $service)
     {
         $request->validate(Submission::$createRules);
@@ -126,11 +144,16 @@ class SubmissionController extends Controller
         return redirect()->to('submissions');
     }
 
+    /**********************************************************************************************
     
+        CLAIMS
+
+    **********************************************************************************************/
 
     /**
-     * Show the user's claim log.
+     * Shows the user's claim log.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getClaimsIndex(Request $request)
@@ -148,8 +171,9 @@ class SubmissionController extends Controller
     }
     
     /**
-     * Show the claim page.
+     * Shows the claim page.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getClaim($id)
@@ -163,8 +187,9 @@ class SubmissionController extends Controller
     }
     
     /**
-     * Show the submit claim page.
+     * Shows the submit claim page.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getNewClaim(Request $request)
@@ -181,6 +206,13 @@ class SubmissionController extends Controller
         ]));
     }
     
+    /**
+     * Creates a new claim.
+     *
+     * @param  \Illuminate\Http\Request        $request
+     * @param  App\Services\SubmissionManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postNewClaim(Request $request, SubmissionManager $service)
     {
         $request->validate(Submission::$createRules);
@@ -192,5 +224,4 @@ class SubmissionController extends Controller
         }
         return redirect()->to('claims');
     }
-
 }

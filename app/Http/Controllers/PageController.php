@@ -11,9 +11,19 @@ use App\Models\SitePage;
 
 class PageController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Page Controller
+    |--------------------------------------------------------------------------
+    |
+    | Displays site pages, editable from the admin panel.
+    |
+    */
+
     /**
-     * Show the page with the given key.
+     * Shows the page with the given key.
      *
+     * @param  string  $key
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getPage($key)

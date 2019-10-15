@@ -18,8 +18,17 @@ use App\Http\Controllers\Controller;
 
 class PromptController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Admin / Prompt Controller
+    |--------------------------------------------------------------------------
+    |
+    | Handles creation/editing of prompt categories and prompts.
+    |
+    */
+
     /**
-     * Show the prompt category index.
+     * Shows the prompt category index.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -31,7 +40,7 @@ class PromptController extends Controller
     }
     
     /**
-     * Show the create prompt category page.
+     * Shows the create prompt category page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -43,8 +52,9 @@ class PromptController extends Controller
     }
     
     /**
-     * Show the edit prompt category page.
+     * Shows the edit prompt category page.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getEditPromptCategory($id)
@@ -56,6 +66,14 @@ class PromptController extends Controller
         ]);
     }
 
+    /**
+     * Creates or edits a prompt category.
+     *
+     * @param  \Illuminate\Http\Request    $request
+     * @param  App\Services\PromptService  $service
+     * @param  int|null                    $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postCreateEditPromptCategory(Request $request, PromptService $service, $id = null)
     {
         $id ? $request->validate(PromptCategory::$updateRules) : $request->validate(PromptCategory::$createRules);
@@ -76,8 +94,9 @@ class PromptController extends Controller
     }
     
     /**
-     * Get the prompt category deletion modal.
+     * Gets the prompt category deletion modal.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getDeletePromptCategory($id)
@@ -88,6 +107,14 @@ class PromptController extends Controller
         ]);
     }
 
+    /**
+     * Deletes a prompt category.
+     *
+     * @param  \Illuminate\Http\Request    $request
+     * @param  App\Services\PromptService  $service
+     * @param  int                         $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postDeletePromptCategory(Request $request, PromptService $service, $id)
     {
         if($id && $service->deletePromptCategory(PromptCategory::find($id))) {
@@ -99,8 +126,13 @@ class PromptController extends Controller
         return redirect()->to('admin/data/prompt-categories');
     }
 
-    
-
+    /**
+     * Sorts prompt categories.
+     *
+     * @param  \Illuminate\Http\Request    $request
+     * @param  App\Services\PromptService  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postSortPromptCategory(Request $request, PromptService $service)
     {
         if($service->sortPromptCategory($request->get('sort'))) {
@@ -120,8 +152,9 @@ class PromptController extends Controller
     **********************************************************************************************/
 
     /**
-     * Show the prompt category index.
+     * Shows the prompt category index.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getPromptIndex(Request $request)
@@ -139,7 +172,7 @@ class PromptController extends Controller
     }
     
     /**
-     * Show the create prompt page.
+     * Shows the create prompt page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -155,8 +188,9 @@ class PromptController extends Controller
     }
     
     /**
-     * Show the edit prompt page.
+     * Shows the edit prompt page.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getEditPrompt($id)
@@ -172,6 +206,14 @@ class PromptController extends Controller
         ]);
     }
 
+    /**
+     * Creates or edits a prompt.
+     *
+     * @param  \Illuminate\Http\Request    $request
+     * @param  App\Services\PromptService  $service
+     * @param  int|null                    $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postCreateEditPrompt(Request $request, PromptService $service, $id = null)
     {
         $id ? $request->validate(Prompt::$updateRules) : $request->validate(Prompt::$createRules);
@@ -192,8 +234,9 @@ class PromptController extends Controller
     }
     
     /**
-     * Get the prompt deletion modal.
+     * Gets the prompt deletion modal.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getDeletePrompt($id)
@@ -204,6 +247,14 @@ class PromptController extends Controller
         ]);
     }
 
+    /**
+     * Deletes a prompt.
+     *
+     * @param  \Illuminate\Http\Request    $request
+     * @param  App\Services\PromptService  $service
+     * @param  int                         $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postDeletePrompt(Request $request, PromptService $service, $id)
     {
         if($id && $service->deletePrompt(Prompt::find($id))) {

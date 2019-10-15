@@ -17,8 +17,17 @@ use App\Http\Controllers\Controller;
 
 class ShopController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Admin / Shop Controller
+    |--------------------------------------------------------------------------
+    |
+    | Handles creation/editing of shops and shop stock.
+    |
+    */
+
     /**
-     * Show the shop index.
+     * Shows the shop index.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -30,7 +39,7 @@ class ShopController extends Controller
     }
     
     /**
-     * Show the create shop page.
+     * Shows the create shop page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -42,8 +51,9 @@ class ShopController extends Controller
     }
     
     /**
-     * Show the edit shop page.
+     * Shows the edit shop page.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getEditShop($id)
@@ -57,6 +67,14 @@ class ShopController extends Controller
         ]);
     }
 
+    /**
+     * Creates or edits a shop.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\ShopService  $service
+     * @param  int|null                  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postCreateEditShop(Request $request, ShopService $service, $id = null)
     {
         $id ? $request->validate(Shop::$updateRules) : $request->validate(Shop::$createRules);
@@ -76,6 +94,14 @@ class ShopController extends Controller
         return redirect()->back();
     }
 
+    /**
+     * Edits a shop's stock.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\ShopService  $service
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postEditShopStock(Request $request, ShopService $service, $id)
     {
         $data = $request->only([
@@ -92,8 +118,9 @@ class ShopController extends Controller
     }
     
     /**
-     * Get the shop deletion modal.
+     * Gets the shop deletion modal.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getDeleteShop($id)
@@ -104,6 +131,14 @@ class ShopController extends Controller
         ]);
     }
 
+    /**
+     * Deletes a shop.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\ShopService  $service
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postDeleteShop(Request $request, ShopService $service, $id)
     {
         if($id && $service->deleteShop(Shop::find($id))) {
@@ -115,8 +150,13 @@ class ShopController extends Controller
         return redirect()->to('admin/data/shops');
     }
 
-    
-
+    /**
+     * Sorts shops.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\ShopService  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postSortShop(Request $request, ShopService $service)
     {
         if($service->sortShop($request->get('sort'))) {

@@ -11,8 +11,17 @@ use App\Models\News;
 
 class NewsController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | News Controller
+    |--------------------------------------------------------------------------
+    |
+    | Displays news posts and updates the user's news read status.
+    |
+    */
+
     /**
-     * Show the news index.
+     * Shows the news index.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -23,8 +32,10 @@ class NewsController extends Controller
     }
     
     /**
-     * Show a news post.
+     * Shows a news post.
      *
+     * @param  int          $id
+     * @param  string|null  $slug
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getNews($id, $slug = null)

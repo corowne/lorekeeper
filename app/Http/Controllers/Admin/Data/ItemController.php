@@ -15,8 +15,23 @@ use App\Http\Controllers\Controller;
 
 class ItemController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Admin / Item Controller
+    |--------------------------------------------------------------------------
+    |
+    | Handles creation/editing of item categories and items.
+    |
+    */
+
+    /**********************************************************************************************
+    
+        ITEM CATEGORIES
+
+    **********************************************************************************************/
+
     /**
-     * Show the item category index.
+     * Shows the item category index.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -28,7 +43,7 @@ class ItemController extends Controller
     }
     
     /**
-     * Show the create item category page.
+     * Shows the create item category page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -40,8 +55,9 @@ class ItemController extends Controller
     }
     
     /**
-     * Show the edit item category page.
+     * Shows the edit item category page.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getEditItemCategory($id)
@@ -53,6 +69,14 @@ class ItemController extends Controller
         ]);
     }
 
+    /**
+     * Creates or edits an item category.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\ItemService  $service
+     * @param  int|null                  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postCreateEditItemCategory(Request $request, ItemService $service, $id = null)
     {
         $id ? $request->validate(ItemCategory::$updateRules) : $request->validate(ItemCategory::$createRules);
@@ -73,8 +97,9 @@ class ItemController extends Controller
     }
     
     /**
-     * Get the item category deletion modal.
+     * Gets the item category deletion modal.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getDeleteItemCategory($id)
@@ -85,6 +110,14 @@ class ItemController extends Controller
         ]);
     }
 
+    /**
+     * Deletes an item category.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\ItemService  $service
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postDeleteItemCategory(Request $request, ItemService $service, $id)
     {
         if($id && $service->deleteItemCategory(ItemCategory::find($id))) {
@@ -96,8 +129,13 @@ class ItemController extends Controller
         return redirect()->to('admin/data/item-categories');
     }
 
-    
-
+    /**
+     * Sorts item categories.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\ItemService  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postSortItemCategory(Request $request, ItemService $service)
     {
         if($service->sortItemCategory($request->get('sort'))) {
@@ -117,8 +155,9 @@ class ItemController extends Controller
     **********************************************************************************************/
 
     /**
-     * Show the item category index.
+     * Shows the item index.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getItemIndex(Request $request)
@@ -136,7 +175,7 @@ class ItemController extends Controller
     }
     
     /**
-     * Show the create item page.
+     * Shows the create item page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -149,8 +188,9 @@ class ItemController extends Controller
     }
     
     /**
-     * Show the edit item page.
+     * Shows the edit item page.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getEditItem($id)
@@ -163,6 +203,14 @@ class ItemController extends Controller
         ]);
     }
 
+    /**
+     * Creates or edits an item.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\ItemService  $service
+     * @param  int|null                  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postCreateEditItem(Request $request, ItemService $service, $id = null)
     {
         $id ? $request->validate(Item::$updateRules) : $request->validate(Item::$createRules);
@@ -183,8 +231,9 @@ class ItemController extends Controller
     }
     
     /**
-     * Get the item deletion modal.
+     * Gets the item deletion modal.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getDeleteItem($id)
@@ -195,6 +244,14 @@ class ItemController extends Controller
         ]);
     }
 
+    /**
+     * Creates or edits an item.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\ItemService  $service
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postDeleteItem(Request $request, ItemService $service, $id)
     {
         if($id && $service->deleteItem(Item::find($id))) {

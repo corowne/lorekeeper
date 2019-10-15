@@ -14,8 +14,17 @@ use App\Http\Controllers\Controller;
 
 class SpeciesController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Admin / Species Controller
+    |--------------------------------------------------------------------------
+    |
+    | Handles creation/editing of character species.
+    |
+    */
+
     /**
-     * Show the species index.
+     * Shows the species index.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -27,7 +36,7 @@ class SpeciesController extends Controller
     }
     
     /**
-     * Show the create species page.
+     * Shows the create species page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -39,8 +48,9 @@ class SpeciesController extends Controller
     }
     
     /**
-     * Show the edit species page.
+     * Shows the edit species page.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getEditSpecies($id)
@@ -52,6 +62,14 @@ class SpeciesController extends Controller
         ]);
     }
 
+    /**
+     * Creates or edits a species.
+     *
+     * @param  \Illuminate\Http\Request     $request
+     * @param  App\Services\SpeciesService  $service
+     * @param  int|null                     $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postCreateEditSpecies(Request $request, SpeciesService $service, $id = null)
     {
         $id ? $request->validate(Species::$updateRules) : $request->validate(Species::$createRules);
@@ -72,8 +90,9 @@ class SpeciesController extends Controller
     }
     
     /**
-     * Get the species deletion modal.
+     * Gets the species deletion modal.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getDeleteSpecies($id)
@@ -84,6 +103,14 @@ class SpeciesController extends Controller
         ]);
     }
 
+    /**
+     * Deletes a species.
+     *
+     * @param  \Illuminate\Http\Request     $request
+     * @param  App\Services\SpeciesService  $service
+     * @param  int                          $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postDeleteSpecies(Request $request, SpeciesService $service, $id)
     {
         if($id && $service->deleteSpecies(Species::find($id))) {
@@ -95,8 +122,13 @@ class SpeciesController extends Controller
         return redirect()->to('admin/data/species');
     }
 
-    
-
+    /**
+     * Sorts species.
+     *
+     * @param  \Illuminate\Http\Request     $request
+     * @param  App\Services\SpeciesService  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postSortSpecies(Request $request, SpeciesService $service)
     {
         if($service->sortSpecies($request->get('sort'))) {

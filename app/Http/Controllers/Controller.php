@@ -12,11 +12,9 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     /**
-     * Create a new controller instance.
+     * Creates a new controller instance.
      *
      * @return void
      */
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 }

@@ -26,6 +26,15 @@ use App\Http\Controllers\Controller;
 
 class CharacterController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Character Controller
+    |--------------------------------------------------------------------------
+    |
+    | Handles displaying and acting on a character.
+    |
+    */
+
     /**
      * Create a new controller instance.
      *
@@ -46,8 +55,9 @@ class CharacterController extends Controller
     }
 
     /**
-     * Show a character's masterlist entry.
+     * Shows a character's masterlist entry.
      *
+     * @param  string  $slug
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCharacter($slug)
@@ -58,8 +68,9 @@ class CharacterController extends Controller
     }
 
     /**
-     * Show a character's profile.
+     * Shows a character's profile.
      *
+     * @param  string  $slug
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCharacterProfile($slug)
@@ -69,6 +80,12 @@ class CharacterController extends Controller
         ]);
     }
 
+    /**
+     * Shows a character's edit profile page.
+     *
+     * @param  string  $slug
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
     public function getEditCharacterProfile($slug)
     {
         if(!Auth::check()) abort(404);
@@ -82,6 +99,14 @@ class CharacterController extends Controller
         ]);
     }
     
+    /**
+     * Edits a character's profile.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\CharacterManager  $service
+     * @param  string                         $slug
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postEditCharacterProfile(Request $request, CharacterManager $service, $slug)
     {
         if(!Auth::check()) abort(404);
@@ -100,8 +125,9 @@ class CharacterController extends Controller
     }
 
     /**
-     * Show a character's images.
+     * Shows a character's images.
      *
+     * @param  string  $slug
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCharacterImages($slug)
@@ -111,10 +137,10 @@ class CharacterController extends Controller
         ]);
     }
 
-    
     /**
-     * Show a character's bank.
+     * Shows a character's bank.
      *
+     * @param  string  $slug
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCharacterBank($slug)
@@ -133,6 +159,14 @@ class CharacterController extends Controller
         ] : []));
     }
     
+    /**
+     * Transfers currency between the user and character.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\CharacterManager  $service
+     * @param  string                         $slug
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postCurrencyTransfer(Request $request, CurrencyManager $service, $slug)
     {
         if(!Auth::check()) abort(404);
@@ -150,10 +184,10 @@ class CharacterController extends Controller
         return redirect()->back();
     }
 
-    
     /**
-     * Show a character's currency logs.
+     * Shows a character's currency logs.
      *
+     * @param  string  $slug
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCharacterCurrencyLogs($slug)
@@ -165,8 +199,9 @@ class CharacterController extends Controller
     }
     
     /**
-     * Show a character's ownership logs.
+     * Shows a character's ownership logs.
      *
+     * @param  string  $slug
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCharacterOwnershipLogs($slug)
@@ -178,8 +213,9 @@ class CharacterController extends Controller
     }
     
     /**
-     * Show a character's ownership logs.
+     * Shows a character's ownership logs.
      *
+     * @param  string  $slug
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCharacterLogs($slug)
@@ -190,14 +226,12 @@ class CharacterController extends Controller
         ]);
     }
 
-    
-    
     /**
-     * Show a character's submissions.
+     * Shows a character's submissions.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCharacterSubmissions($name)
+    public function getCharacterSubmissions($slug)
     {
         return view('character.submission_logs', [
             'character' => $this->character,
@@ -205,8 +239,12 @@ class CharacterController extends Controller
         ]);
     }
 
-    
-
+    /**
+     * Shows a character's transfer page.
+     *
+     * @param  string  $slug
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
     public function getTransfer($slug)
     {
         if(!Auth::check()) abort(404);
@@ -220,10 +258,18 @@ class CharacterController extends Controller
             'transfer' => CharacterTransfer::active()->where('character_id', $this->character->id)->first(),
             'cooldown' => Settings::get('transfer_cooldown'),
             'transfersQueue' => Settings::get('open_transfers_queue'),
-            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
+            'userOptions' => User::visible()->orderBy('name')->pluck('name', 'id')->toArray(),
         ]);
     }
     
+    /**
+     * Opens a transfer request for a character.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\CharacterManager  $service
+     * @param  string                         $slug
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postTransfer(Request $request, CharacterManager $service, $slug)
     {
         if(!Auth::check()) abort(404);
@@ -237,6 +283,15 @@ class CharacterController extends Controller
         return redirect()->back();
     }
     
+    /**
+     * Cancels a transfer request for a character.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\CharacterManager  $service
+     * @param  string                         $slug
+     * @param  int                            $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postCancelTransfer(Request $request, CharacterManager $service, $slug, $id)
     {
         if(!Auth::check()) abort(404);
@@ -250,7 +305,12 @@ class CharacterController extends Controller
         return redirect()->back();
     }
     
-
+    /**
+     * Shows a character's design update approval page.
+     *
+     * @param  string  $slug
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
     public function getCharacterApproval($slug)
     {
         if(!Auth::check() || $this->character->user_id != Auth::user()->id) abort(404);
@@ -262,6 +322,13 @@ class CharacterController extends Controller
         ]);
     }
 
+    /**
+     * Opens a new design update approval request for a character.
+     *
+     * @param  App\Services\CharacterManager  $service
+     * @param  string                         $slug
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postCharacterApproval($slug, CharacterManager $service)
     {
         if(!Auth::check() || $this->character->user_id != Auth::user()->id) abort(404);
@@ -275,5 +342,4 @@ class CharacterController extends Controller
         }
         return redirect()->back();
     }
-
 }
