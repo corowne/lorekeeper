@@ -18,6 +18,9 @@ class CheckAlias
         if (is_null($request->user()->alias)) {
             return redirect('/link');
         }
+        if($request->user()->is_banned) {
+            return redirect('/banned');
+        }
 
         return $next($request);
     }

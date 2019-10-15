@@ -51,6 +51,6 @@ class ShopLog extends Model
 
     public function getItemDataAttribute()
     {
-        return 'Purchased from '.$this->shop->name.' by '.($this->character_id ? $this->character->code . ' (owned by ' . $this->user->name . ')' : $this->user->displayName) . ' for ' . $this->cost . ' ' . $this->currency->name . '.';
+        return 'Purchased from '.$this->shop->name.' by '.($this->character_id ? $this->character->slug . ' (owned by ' . $this->user->name . ')' : $this->user->displayName) . ' for ' . $this->cost . ' ' . $this->currency->name . '.';
     }
 }

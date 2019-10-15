@@ -797,6 +797,7 @@ class CharacterManager extends Service
             
             $recipient = User::find($data['recipient_id']);
             if(!$recipient) throw new \Exception("Invalid user selected.");
+            if($recipient->is_banned) throw new \Exception("Cannot transfer character to a banned member.");
             
             CharacterTransfer::create([
                 'character_id' => $character->id, 
@@ -946,7 +947,8 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
-            $transfer = CharacterTransfer::where('id', $data['transfer_id'])->active()->first();
+            if(isset($data['transfer_id'])) $transfer = CharacterTransfer::where('id', $data['transfer_id'])->active()->first();
+            else $transfer = $data['transfer'];
             if(!$transfer) throw new \Exception("Invalid transfer selected.");
             
             if($data['action'] == 'Approve') {
@@ -1440,12 +1442,12 @@ class CharacterManager extends Service
         return $this->rollbackReturn(false);
     }
 
-    public function rejectRequest($data, $request, $user)
+    public function rejectRequest($data, $request, $user, $forceReject = false)
     {
         DB::beginTransaction();
 
         try {
-            if($request->status != 'Pending') throw new \Exception("This request cannot be processed.");
+            if(!$forceReject && $request->status != 'Pending') throw new \Exception("This request cannot be processed.");
 
             // This hard rejects the request - items/currency are returned to user
             // and the user will need to open a new request to resubmit.
@@ -1457,7 +1459,7 @@ class CharacterManager extends Service
             $currencyManager = new CurrencyManager;
             if(isset($requestData['user']['currencies']) && $requestData['user']['currencies'])
             {
-                foreach($data['user']['currencies'] as $currencyId=>$quantity) {
+                foreach($requestData['user']['currencies'] as $currencyId=>$quantity) {
                     $currency = Currency::find($currencyId);
                     if(!$currency) throw new \Exception("Cannot return an invalid currency. (".$currencyId.")");
                     if(!$currencyManager->creditCurrency(null, $request->user, null, null, $currency, $quantity)) throw new \Exception("Could not return currency to user. (".$currencyId.")");                    

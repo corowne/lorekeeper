@@ -4,7 +4,12 @@
 
 @section('content')
 {!! breadcrumbs(['Users' => 'users']) !!}
-<h1>User Index</h1>
+<h1>
+    User Index
+    @if($blacklistLink)
+        <a href="{{ url('blacklist') }}" class="btn btn-dark float-right">Blacklist</a>
+    @endif
+</h1>
 
 <div>
     {!! Form::open(['method' => 'GET', 'class' => 'form-inline justify-content-end']) !!}

@@ -22,6 +22,11 @@ Route::group(['prefix' => 'users', 'namespace' => 'Users'], function() {
         Route::post('{name}/alias', 'UserController@postUserAlias');
         Route::post('{name}/account', 'UserController@postUserAccount');
         Route::get('{name}/updates', 'UserController@getUserUpdates');
+        Route::get('{name}/ban', 'UserController@getBan');
+        Route::get('{name}/ban-confirm', 'UserController@getBanConfirmation');
+        Route::post('{name}/ban', 'UserController@postBan');
+        Route::get('{name}/unban-confirm', 'UserController@getUnbanConfirmation');
+        Route::post('{name}/unban', 'UserController@postUnban');
     });
 
     # RANKS

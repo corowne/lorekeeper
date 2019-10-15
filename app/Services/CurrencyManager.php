@@ -109,6 +109,7 @@ class CurrencyManager extends Service
         try {
             if(!$recipient) throw new \Exception("Invalid recipient selected.");
             if($recipient->logType == 'User' && !$recipient->hasAlias) throw new \Exception("Cannot transfer currency to a non-verified member.");
+            if($recipient->logType == 'User' && $recipient->is_banned) throw new \Exception("Cannot transfer currency to a banned member.");
             if(!$currency) throw new \Exception("Invalid currency selected.");
             if($quantity <= 0) throw new \Exception("Invalid quantity entered.");
 

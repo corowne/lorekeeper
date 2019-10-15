@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Users;
 
 use Auth;
-use Illuminate\Http\Request;
 
+use Illuminate\Http\Request;
 use App\Models\Notification;
 
 use App\Services\UserService;
@@ -13,26 +13,44 @@ use App\Http\Controllers\Controller;
 
 class AccountController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Account Controller
+    |--------------------------------------------------------------------------
+    |
+    | Handles the user's account management.
+    |
+    */
+
     /**
-     * Create a new controller instance.
+     * Shows the banned page, or redirects the user to the home page if they aren't banned.
      *
-     * @return void
+     * @return \Illuminate\Contracts\Support\Renderable|\Illuminate\Http\RedirectResponse
      */
-    public function __construct()
+    public function getBanned()
     {
+        if(Auth::user()->is_banned)
+            return view('account.banned');
+        else 
+            return redirect()->to('/');
     }
 
     /**
-     * Show the user settings page.
+     * Shows the user settings page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getSettings()
     {
-        return view('account.settings', [
-        ]);
+        return view('account.settings');
     }
     
+    /**
+     * Edits the user's profile.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postProfile(Request $request)
     {
         Auth::user()->profile->update([
@@ -43,6 +61,13 @@ class AccountController extends Controller
         return redirect()->back();
     }
     
+    /**
+     * Changes the user's password.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\UserService  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postPassword(Request $request, UserService $service)
     {
         $request->validate( [
@@ -58,6 +83,13 @@ class AccountController extends Controller
         return redirect()->back();
     }
     
+    /**
+     * Changes the user's email address and sends a verification email.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\UserService  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postEmail(Request $request, UserService $service)
     {
         $request->validate( [
@@ -73,7 +105,7 @@ class AccountController extends Controller
     }
 
     /**
-     * Show the notifications page.
+     * Shows the notifications page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -89,6 +121,11 @@ class AccountController extends Controller
         ]);
     }
     
+    /**
+     * Deletes a notification and returns a response.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function getDeleteNotification($id)
     {
         $notification = Notification::where('id', $id)->where('user_id', Auth::user()->id)->first();
@@ -96,6 +133,11 @@ class AccountController extends Controller
         return response(200);
     }
 
+    /**
+     * Deletes all of the user's notifications.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postClearNotifications()
     {
         Auth::user()->notifications()->delete();

@@ -26,7 +26,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread'
+        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned'
     ];
 
     /**
@@ -88,6 +88,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany('App\Models\Item\Item', 'user_items')->withPivot('data', 'updated_at', 'id')->whereNull('user_items.deleted_at')->whereNull('user_items.holding_type');
     }
 
+    public function scopeVisible($query)
+    {
+        return $query->where('is_banned', 0);
+    }
+
     public function canEditRank($rank)
     {
         return $this->rank->canEditRank($rank);
@@ -141,7 +146,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getDisplayNameAttribute()
     {
-        return '<a href="'.$this->url.'" class="display-user" '.($this->rank->color ? 'style="color: #'.$this->rank->color.';"' : '').'>'.$this->name.'</a>';
+        return ($this->is_banned ? '<strike>' : '') . '<a href="'.$this->url.'" class="display-user" '.($this->rank->color ? 'style="color: #'.$this->rank->color.';"' : '').'>'.$this->name.'</a>' . ($this->is_banned ? '</strike>' : '');
     }
 
     public function getDisplayAliasAttribute()

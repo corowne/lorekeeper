@@ -5,6 +5,10 @@
 @section('profile-content')
 {!! breadcrumbs(['Users' => 'users', $user->name => $user->url]) !!}
 
+@if($user->is_banned)
+    <div class="alert alert-danger">This user has been banned.</div>
+@endif
+
 <h1>
     {!! $user->displayName !!}
 

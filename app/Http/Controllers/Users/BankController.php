@@ -16,16 +16,17 @@ use App\Http\Controllers\Controller;
 
 class BankController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Bank Controller
+    |--------------------------------------------------------------------------
+    |
+    | Handles displaying of the user's bank.
+    |
+    */
+
     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
-    /**
-     * Show the user's bank page.
+     * Shows the user's bank page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -33,14 +34,21 @@ class BankController extends Controller
     {
         return view('home.bank', [
             'currencyOptions' => Currency::where('allow_user_to_user', 1)->where('is_user_owned', 1)->whereIn('id', UserCurrency::where('user_id', Auth::user()->id)->pluck('currency_id')->toArray())->orderBy('sort_user', 'DESC')->pluck('name', 'id')->toArray(),
-            'userOptions' => User::where('id', '!=', Auth::user()->id)->orderBy('name')->pluck('name', 'id')->toArray()
+            'userOptions' => User::visible()->where('id', '!=', Auth::user()->id)->orderBy('name')->pluck('name', 'id')->toArray()
 
         ]);
     }
     
+    /**
+     * Transfers currency from the user to another.
+     *
+     * @param  \Illuminate\Http\Request      $request
+     * @param  App\Services\CurrencyManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postTransfer(Request $request, CurrencyManager $service)
     {
-        if($service->transferCurrency(Auth::user(), User::find($request->get('user_id')), Currency::where('allow_user_to_user', 1)->where('id', $request->get('currency_id'))->first(), $request->get('quantity'))) {
+        if($service->transferCurrency(Auth::user(), User::visible()->where('id', $request->get('user_id'))->first(), Currency::where('allow_user_to_user', 1)->where('id', $request->get('currency_id'))->first(), $request->get('quantity'))) {
             flash('Currency transferred successfully.')->success();
         }
         else {
@@ -48,5 +56,4 @@ class BankController extends Controller
         }
         return redirect()->back();
     }
-
 }

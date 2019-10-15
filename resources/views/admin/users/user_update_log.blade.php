@@ -13,6 +13,9 @@
   <li class="nav-item">
     <a class="nav-link active" href="{{ url('admin/users/'.$user->name.'/updates') }}">Account Updates</a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url('admin/users/'.$user->name.'/ban') }}">Ban</a>
+  </li>
 </ul>
 
 <h3>Account Updates</h3>

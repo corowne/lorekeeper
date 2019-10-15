@@ -9,6 +9,10 @@
 |
 */
 
+/**************************************************************************************************
+    Users
+**************************************************************************************************/
+
 Route::group(['prefix' => 'notifications', 'namespace' => 'Users'], function() {
     Route::get('/', 'AccountController@getNotifications');
     Route::get('delete/{id}', 'AccountController@getDeleteNotification');
@@ -45,6 +49,36 @@ Route::group(['prefix' => 'bank', 'namespace' => 'Users'], function() {
     Route::post('transfer', 'BankController@postTransfer');
 });
 
+/**************************************************************************************************
+    Characters
+**************************************************************************************************/
+Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() {
+    Route::get('{slug}/profile/edit', 'CharacterController@getEditCharacterProfile');
+    Route::post('{slug}/profile/edit', 'CharacterController@postEditCharacterProfile');
+    
+    Route::get('{slug}/transfer', 'CharacterController@getTransfer');
+    Route::post('{slug}/transfer', 'CharacterController@postTransfer');
+    Route::post('{slug}/transfer/{id}/cancel', 'CharacterController@postCancelTransfer');
+    
+    Route::post('{slug}/approval', 'CharacterController@postCharacterApproval');
+    Route::get('{slug}/approval', 'CharacterController@getCharacterApproval');
+});
+Route::group(['prefix' => 'myo', 'namespace' => 'Characters'], function() {
+    Route::get('{id}/profile/edit', 'MyoController@getEditCharacterProfile');
+    Route::post('{id}/profile/edit', 'MyoController@postEditCharacterProfile');
+    
+    Route::get('{id}/transfer', 'MyoController@getTransfer');
+    Route::post('{id}/transfer', 'MyoController@postTransfer');
+    Route::post('{id}/transfer/{id2}/cancel', 'MyoController@postCancelTransfer');
+    
+    Route::post('{id}/approval', 'MyoController@postCharacterApproval');
+    Route::get('{id}/approval', 'MyoController@getCharacterApproval');
+});
+
+/**************************************************************************************************
+    Submissions
+**************************************************************************************************/
+
 Route::group(['prefix' => 'submissions', 'namespace' => 'Users'], function() {
     Route::get('/', 'SubmissionController@getIndex');
     Route::get('new', 'SubmissionController@getNewSubmission');
@@ -79,6 +113,10 @@ Route::group(['prefix' => 'designs', 'namespace' => 'Characters'], function() {
     Route::post('{id}/submit', 'DesignController@postSubmit');
     Route::post('{id}/delete', 'DesignController@postDelete');
 });
+
+/**************************************************************************************************
+    Shops
+**************************************************************************************************/
 
 Route::group(['prefix' => 'shops'], function() {
     Route::post('buy', 'ShopController@postBuy');

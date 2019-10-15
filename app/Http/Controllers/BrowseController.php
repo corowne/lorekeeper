@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use Auth;
+use Settings;
 use App\Models\User\User;
 use App\Models\Rank\Rank;
 
@@ -14,14 +15,24 @@ use App\Models\Rarity;
 
 class BrowseController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Browse Controller
+    |--------------------------------------------------------------------------
+    |
+    | Displays lists of users and characters.
+    |
+    */
+
     /**
-     * Show the user list.
+     * Shows the user list.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getUsers(Request $request)
     {
-        $query = User::join('ranks','users.rank_id', '=', 'ranks.id')->select('ranks.name AS rank_name', 'users.*');
+        $query = User::visible()->join('ranks','users.rank_id', '=', 'ranks.id')->select('ranks.name AS rank_name', 'users.*');
         
         if($request->get('name')) $query->where(function($query) use ($request) {
             $query->where('users.name', 'LIKE', '%' . $request->get('name') . '%')->orWhere('users.alias', 'LIKE', '%' . $request->get('name') . '%');
@@ -31,13 +42,46 @@ class BrowseController extends Controller
         return view('browse.users', [  
             'users' => $query->orderBy('ranks.sort', 'DESC')->orderBy('name')->paginate(30)->appends($request->query()),
             'ranks' => [0 => 'Any Rank'] + Rank::orderBy('ranks.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'blacklistLink' => Settings::get('blacklist_link')
         ]);
     }
 
-    
     /**
-     * Show the character masterlist.
+     * Shows the user blacklist.
      *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getBlacklist(Request $request)
+    {
+        $canView = false;
+        $key = Settings::get('blacklist_key');
+
+        // First, check the display settings for the blacklist...
+        $privacy = Settings::get('blacklist_privacy');
+        if ( $privacy == 3 ||
+            (Auth::check() &&
+            ($privacy == 2 ||
+            ($privacy == 1 && Auth::user()->isStaff) ||
+            ($privacy == 0 && Auth::user()->isAdmin))))
+        {
+            // Next, check if the blacklist requires a key
+            $canView = true;
+            if($key != '0' && ($request->get('key') != $key)) $canView = false;
+
+        }
+        return view('browse.blacklist', [ 
+            'canView' => $canView, 
+            'privacy' => $privacy,
+            'key' => $key,
+            'users' => $canView ? User::where('is_banned', 1)->orderBy('users.name')->paginate(30)->appends($request->query()) : null,
+        ]);
+    }
+
+    /**
+     * Shows the character masterlist.
+     *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCharacters(Request $request)
@@ -57,10 +101,10 @@ class BrowseController extends Controller
         ]);
     }
 
-    
     /**
-     * Show the MYO slot masterlist.
+     * Shows the MYO slot masterlist.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getMyos(Request $request)

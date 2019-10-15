@@ -34,7 +34,7 @@
     <tbody>
         @foreach($users as $user)
             <tr>
-                <td><a href="{{ $user->adminUrl }}">{{ $user->name }}</a></td>
+                <td><a href="{{ $user->adminUrl }}">{!! $user->is_banned ? '<strike>' : '' !!}{{ $user->name }}{!! $user->is_banned ? '</strike>' : '' !!}</a></td>
                 <td>{!! $user->displayAlias !!}</td>
                 <td>{!! $user->rank->displayName !!}</td>
                 <td>{{ format_date($user->created_at) }}</td>

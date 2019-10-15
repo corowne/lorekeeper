@@ -56,6 +56,7 @@ class InventoryManager extends Service
             if($stack->user_id == $recipient->id) throw new \Exception("Cannot send an item to the item's owner.");
             if(!$recipient) throw new \Exception("Invalid recipient selected.");
             if(!$recipient->hasAlias) throw new \Exception("Cannot transfer items to a non-verified member.");
+            if($recipient->is_banned) throw new \Exception("Cannot transfer items to a banned member.");
             if((!$stack->item->allow_transfer || isset($stack->data['disallow_transfer'])) && !$sender->hasPower('edit_inventories')) throw new \Exception("This item cannot be transferred.");
 
             $oldUser = $stack->user;

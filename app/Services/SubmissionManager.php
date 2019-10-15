@@ -151,7 +151,9 @@ class SubmissionManager extends Service
         try {
             // 1. check that the submission exists
             // 2. check that the submission is pending
-            $submission = Submission::where('status', 'Pending')->where('id', $data['id'])->first();
+            if(!isset($data['submission'])) $submission = Submission::where('status', 'Pending')->where('id', $data['id'])->first();
+            elseif($data['submission']->status == 'Pending') $submission = $data['submission'];
+            else $submission = null;
             if(!$submission) throw new \Exception("Invalid submission.");
 
             // The only things we need to set are: 

@@ -131,6 +131,45 @@ class AddSiteSettings extends Command
             $this->info("Added:   is_design_updates_open / Default: 1");
         }
         else $this->line("Skipped: is_design_updates_open");
+        
+        if(!DB::table('site_settings')->where('key', 'blacklist_privacy')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'blacklist_privacy',
+                    'value' => 0,
+                    'description' => 'Who can view the blacklist? 0: Admin only, 1: Staff only, 2: Members only, 3: Public.'
+                ]
+
+            ]);
+            $this->info("Added:   blacklist_privacy / Default: 0");
+        }
+        else $this->line("Skipped: blacklist_privacy");
+        
+        if(!DB::table('site_settings')->where('key', 'blacklist_link')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'blacklist_link',
+                    'value' => 0,
+                    'description' => '0: No link to the blacklist is displayed anywhere, 1: Link to the blacklist is shown on the user list.'
+                ]
+
+            ]);
+            $this->info("Added:   blacklist_link / Default: 0");
+        }
+        else $this->line("Skipped: blacklist_link");
+        
+        if(!DB::table('site_settings')->where('key', 'blacklist_key')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'blacklist_key',
+                    'value' => 0,
+                    'description' => 'Optional key to view the blacklist. Enter "0" to not require one.'
+                ]
+
+            ]);
+            $this->info("Added:   blacklist_key / Default: 0");
+        }
+        else $this->line("Skipped: blacklist_key");
 
         $this->line("\nSite settings up to date!");
         

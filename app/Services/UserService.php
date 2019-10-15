@@ -3,10 +3,18 @@
 use App\Services\Service;
 
 use DB;
+use Carbon\Carbon;
 
 use App\Models\User\User;
 use App\Models\Rank\Rank;
+use App\Models\Character\CharacterTransfer;
+use App\Models\Character\CharacterDesignUpdate;
+use App\Models\Submission\Submission;
+use App\Models\User\UserUpdateLog;
 use Illuminate\Support\Facades\Hash;
+
+use App\Services\SubmissionManager;
+use App\Services\CharacterManager;
 
 class UserService extends Service
 {
@@ -69,6 +77,79 @@ class UserService extends Service
         $user->sendEmailVerificationNotification();
 
         return true;
+    }
+
+    public function ban($data, $user, $staff)
+    {
+        DB::beginTransaction();
+
+        try {
+            if(!$user->is_banned) {
+                // New ban (not just editing the reason), clear all their engagements
+
+                // 1. Character transfers
+                $characterManager = new CharacterManager;
+                $transfers = CharacterTransfer::where(function($query) use ($user) {
+                    $query->where('sender_id', $user->id)->orWhere('recipient_id', $user->id);
+                })->where('status', 'Pending')->get();
+                foreach($transfers as $transfer)
+                    $characterManager->processTransferQueue(['transfer' => $transfer, 'action' => 'Reject', 'reason' => ($transfer->sender_id == $user->id ? 'Sender' : 'Recipient') . ' has been banned from site activity.'], $staff);
+
+                // 2. Submissions and claims
+                $submissionManager = new SubmissionManager;
+                $submissions = Submission::where('user_id', $user->id)->where('status', 'Pending')->get();
+                foreach($submissions as $submission)
+                    $submissionManager->rejectSubmission(['submission' => $submission, 'staff_comments' => 'User has been banned from site activity.']);
+
+                // 3. Design approvals
+                $requests = CharacterDesignUpdate::where('user_id', $user->id)->where(function($query) {
+                    $query->where('status', 'Pending')->orWhere('status', 'Draft');
+                })->get();
+                foreach($requests as $request)
+                    $characterManager->rejectRequest(['staff_comments' => 'User has been banned from site activity.'], $request, $staff, true);
+
+                UserUpdateLog::create(['staff_id' => $staff->id, 'user_id' => $user->id, 'data' => json_encode(['is_banned' => 'Yes', 'ban_reason' => isset($data['ban_reason']) ? $data['ban_reason'] : null]), 'type' => 'Ban']);
+
+                $user->settings->banned_at = Carbon::now();
+
+                $user->is_banned = 1;
+                $user->rank_id = Rank::orderBy('sort')->first()->id;
+                $user->save();
+            }
+            else {
+                UserUpdateLog::create(['staff_id' => $staff->id, 'user_id' => $user->id, 'data' => json_encode(['ban_reason' => isset($data['ban_reason']) ? $data['ban_reason'] : null]), 'type' => 'Ban Update']);
+            }
+
+            $user->settings->ban_reason = isset($data['ban_reason']) && $data['ban_reason'] ? $data['ban_reason'] : null;
+            $user->settings->save();
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    public function unban($user, $staff)
+    {
+        DB::beginTransaction();
+
+        try {
+            if($user->is_banned) {
+                $user->is_banned = 0;
+                $user->save();
+                
+                $user->settings->ban_reason = null;
+                $user->settings->banned_at = null;
+                $user->settings->save();
+                UserUpdateLog::create(['staff_id' => $staff->id, 'user_id' => $user->id, 'data' => json_encode(['is_banned' => 'No']), 'type' => 'Unban']);
+            }
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
     }
     
 }

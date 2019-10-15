@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Admin\Users;
 
+use DB;
+use Auth;
+
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -9,8 +12,7 @@ use App\Models\User\User;
 use App\Models\Rank\Rank;
 use App\Models\User\UserUpdateLog;
 
-use DB;
-use Auth;
+use App\Services\UserService;
 
 use App\Http\Controllers\Controller;
 
@@ -138,5 +140,91 @@ class UserController extends Controller
             'user' => $user,
             'logs' => UserUpdateLog::where('user_id', $user->id)->orderBy('id', 'DESC')->paginate(50)
         ]);
+    }
+    
+    /**
+     * Show a user's ban page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getBan($name)
+    {
+        $user = User::where('name', $name)->first();
+
+        if(!$user) abort(404);
+
+        return view('admin.users.user_ban', [
+            'user' => $user
+        ]);
+    }
+    
+    /**
+     * Show a user's ban confirmation page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getBanConfirmation($name)
+    {
+        $user = User::where('name', $name)->first();
+
+        if(!$user) abort(404);
+
+        return view('admin.users._user_ban_confirmation', [
+            'user' => $user
+        ]);
+    }
+    
+    public function postBan(Request $request, UserService $service, $name)
+    {
+        $user = User::where('name', $name)->with('settings')->first();
+        $wasBanned = $user->is_banned;
+        if(!$user) {
+            flash('Invalid user.')->error();
+        }
+        else if (!Auth::user()->canEditRank($user->rank)) {
+            flash('You cannot edit the information of a user that has a higher rank than yourself.')->error();
+        }
+        else if($service->ban(['ban_reason' => $request->get('ban_reason')], $user, Auth::user())) {
+            flash($wasBanned ? 'User ban reason edited successfully.' : 'User banned successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+    
+    /**
+     * Show a user's unban confirmation page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUnbanConfirmation($name)
+    {
+        $user = User::where('name', $name)->with('settings')->first();
+
+        if(!$user) abort(404);
+
+        return view('admin.users._user_unban_confirmation', [
+            'user' => $user
+        ]);
+    }
+    
+    public function postUnban(Request $request, UserService $service, $name)
+    {
+        $user = User::where('name', $name)->first();
+        
+        if(!$user) {
+            flash('Invalid user.')->error();
+        }
+        else if (!Auth::user()->canEditRank($user->rank)) {
+            flash('You cannot edit the information of a user that has a higher rank than yourself.')->error();
+        }
+        else if($service->unban($user, Auth::user())) {
+            flash('User unbanned successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
     }
 }
