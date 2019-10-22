@@ -52,25 +52,38 @@
     </div>
 @endif
 
-@if($request->status == 'Draft' && $request->user_id == Auth::user()->id)
-    <p>Select the image you would like to use on the masterlist and an optional thumbnail. Please only upload images that you are allowed to use AND are able to credit to the artist! Note that while staff members cannot edit your uploaded image, they may choose to recrop or upload a different thumbnail.</p>
+@if(($request->status == 'Draft' && $request->user_id == Auth::user()->id) || ($request->status == 'Pending' && Auth::user()->hasPower('manage_characters')))
+    @if($request->status == 'Draft' && $request->user_id == Auth::user()->id)
+        <p>Select the image you would like to use on the masterlist and an optional thumbnail. Please only upload images that you are allowed to use AND are able to credit to the artist! Note that while staff members cannot edit your uploaded image, they may choose to recrop or upload a different thumbnail.</p>
+    @else 
+        <p>As a staff member, you may modify the thumbnail of the uploaded image and/or the credits, but not the image itself. If you have recropped the thumbnail, you may need to hard refresh to see the new one.</p>
+    @endif
     {!! Form::open(['url' => 'designs/'.$request->id.'/image', 'files' => true]) !!}
-        <div class="form-group">
-            {!! Form::label('Image') !!} {!! add_help('This is the image that will be used on the masterlist. Note that the image is not protected in any way, so take precautions to avoid art/design theft.') !!}
-            <div>{!! Form::file('image', ['id' => 'mainImage']) !!}</div>
-        </div>
+        @if($request->status == 'Draft' && $request->user_id == Auth::user()->id)
+            <div class="form-group">
+                {!! Form::label('Image') !!} {!! add_help('This is the image that will be used on the masterlist. Note that the image is not protected in any way, so take precautions to avoid art/design theft.') !!}
+                <div>{!! Form::file('image', ['id' => 'mainImage']) !!}</div>
+            </div>
+        @else 
+            <div class="form-group">
+                {!! Form::checkbox('modify_thumbnail', 1, 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+                {!! Form::label('modify_thumbnail', 'Modify Thumbnail', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Toggle this option to modify the thumbnail, otherwise only the credits will be saved.') !!}
+            </div>
+        @endif
         <div class="form-group">
             {!! Form::checkbox('use_cropper', 1, 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'useCropper']) !!}
             {!! Form::label('use_cropper', 'Use Image Cropper', ['class' => 'form-check-label ml-3']) !!} {!! add_help('A thumbnail is required for the upload (used for the masterlist). You can use the image cropper (crop dimensions can be adjusted in the site code), or upload a custom thumbnail.') !!}
         </div>
         <div class="card mb-3" id="thumbnailCrop">
             <div class="card-body">
-                <div id="cropSelect">Select an image to use the thumbnail cropper.</div>
-                <img src="#" id="cropper" class="hide" />
-                {!! Form::hidden('x0', null, ['id' => 'cropX0']) !!}
-                {!! Form::hidden('x1', null, ['id' => 'cropX1']) !!}
-                {!! Form::hidden('y0', null, ['id' => 'cropY0']) !!}
-                {!! Form::hidden('y1', null, ['id' => 'cropY1']) !!}
+                @if($request->status == 'Draft' && $request->user_id == Auth::user()->id)
+                    <div id="cropSelect">Select an image to use the thumbnail cropper.</div>
+                @endif
+                <img src="#" id="cropper" class="hide" {{ ($request->status == 'Pending' && Auth::user()->hasPower('manage_characters')) ? 'data-url='.$request->imageUrl : '' }} />
+                {!! Form::hidden('x0', $request->x0, ['id' => 'cropX0']) !!}
+                {!! Form::hidden('x1', $request->x1, ['id' => 'cropX1']) !!}
+                {!! Form::hidden('y0', $request->y0, ['id' => 'cropY0']) !!}
+                {!! Form::hidden('y1', $request->y1, ['id' => 'cropY1']) !!}
             </div>
         </div>
         <div class="card mb-3" id="thumbnailUpload">
@@ -152,5 +165,5 @@
 @endsection
 
 @section('scripts')
-@include('widgets._image_upload_js')
+@include('widgets._image_upload_js', ['useUploaded' => ($request->status == 'Pending' && Auth::user()->hasPower('manage_characters'))])
 @endsection

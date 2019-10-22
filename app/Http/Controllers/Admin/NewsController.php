@@ -14,7 +14,7 @@ use App\Http\Controllers\Controller;
 class NewsController extends Controller
 {
     /**
-     * Show the news index.
+     * Shows the news index.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -26,7 +26,7 @@ class NewsController extends Controller
     }
     
     /**
-     * Show the create news page. 
+     * Shows the create news page. 
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -38,8 +38,9 @@ class NewsController extends Controller
     }
     
     /**
-     * Show the edit news page.
+     * Shows the edit news page.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getEditNews($id)
@@ -51,6 +52,14 @@ class NewsController extends Controller
         ]);
     }
 
+    /**
+     * Creates or edits a news page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\NewsService  $service
+     * @param  int|null                  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postCreateEditNews(Request $request, NewsService $service, $id = null)
     {
         $id ? $request->validate(News::$updateRules) : $request->validate(News::$createRules);
@@ -71,8 +80,9 @@ class NewsController extends Controller
     }
     
     /**
-     * Get the news deletion modal.
+     * Gets the news deletion modal.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getDeleteNews($id)
@@ -83,6 +93,14 @@ class NewsController extends Controller
         ]);
     }
 
+    /**
+     * Deletes a news page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\NewsService  $service
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postDeleteNews(Request $request, NewsService $service, $id)
     {
         if($id && $service->deleteNews(News::find($id))) {

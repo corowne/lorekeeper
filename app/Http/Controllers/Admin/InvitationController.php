@@ -13,7 +13,7 @@ use App\Http\Controllers\Controller;
 class InvitationController extends Controller
 {
     /**
-     * Show the settings index.
+     * Shows the invitation key index.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -24,6 +24,12 @@ class InvitationController extends Controller
         ]);
     }
 
+    /**
+     * Generates a new invitation key.
+     *
+     * @param  App\Services\InvitationService  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postGenerateKey(InvitationService $service)
     {
         if($service->generateInvitation(Auth::user())) {
@@ -35,6 +41,13 @@ class InvitationController extends Controller
         return redirect()->back();
     }
 
+    /**
+     * Generates a new invitation key.
+     *
+     * @param  App\Services\InvitationService  $service
+     * @param  int                             $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postDeleteKey(InvitationService $service, $id)
     {
         $invitation = Invitation::find($id);
@@ -46,5 +59,4 @@ class InvitationController extends Controller
         }
         return redirect()->back();
     }
-
 }

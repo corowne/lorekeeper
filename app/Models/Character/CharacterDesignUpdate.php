@@ -86,12 +86,12 @@ class CharacterDesignupdate extends Model
 
     public function scopeMyos($query)
     {
-        $query->join('characters', 'design_updates.character_id', 'characters.id')->where('characters.is_myo_slot', 1);
+        $query->select('design_updates.*')->join('characters', 'design_updates.character_id', 'characters.id')->where('characters.is_myo_slot', 1);
     }
 
     public function scopeCharacters($query)
     {
-        $query->join('characters', 'design_updates.character_id', 'characters.id')->where('characters.is_myo_slot', 0);
+        $query->select('design_updates.*')->join('characters', 'design_updates.character_id', 'characters.id')->where('characters.is_myo_slot', 0);
     }
 
     public function getDataAttribute()

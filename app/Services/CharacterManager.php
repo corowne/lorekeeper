@@ -256,7 +256,6 @@ class CharacterManager extends Service
 
         // Save the thumbnail
         $image->save($characterImage->thumbnailPath . '/' . $characterImage->thumbnailFileName);
-        
     }
 
     public function createLog($senderId, $recipientId, $recipientAlias, $characterId, $type, $data, $logType, $isUpdate = false, $oldData = null, $newData = null)
@@ -1008,7 +1007,7 @@ class CharacterManager extends Service
         return $this->rollbackReturn(false);
     }
 
-    private function moveCharacter($character, $recipient, $data, $cooldown = -1)
+    public function moveCharacter($character, $recipient, $data, $cooldown = -1, $logType = null)
     {
         $sender = $character->user;
 
@@ -1039,7 +1038,7 @@ class CharacterManager extends Service
         $character->save();
 
         // Add a log for the ownership change
-        $this->createLog($sender->id, $recipient->id, $recipient->alias, $character->id, $character->is_myo_slot ? 'MYO Slot Transferred' : 'Character Transferred', $data, 'user');
+        $this->createLog($sender->id, $recipient->id, $recipient->alias, $character->id, $logType ? $logType : ($character->is_myo_slot ? 'MYO Slot Transferred' : 'Character Transferred'), $data, 'user');
     }
 
     public function createDesignUpdateRequest($character, $user)
@@ -1111,7 +1110,7 @@ class CharacterManager extends Service
 
         try {
             // Require an image to be uploaded the first time, but if an image already exists, allow user to update the other details
-            if(!isset($data['image']) && !file_exists($request->imagePath . '/' . $request->imageFileName)) throw new \Exception("Please upload a valid image.");
+            if(!$isAdmin && !isset($data['image']) && !file_exists($request->imagePath . '/' . $request->imageFileName)) throw new \Exception("Please upload a valid image.");
 
             // Require a thumbnail to be uploaded the first time as well
             if(!file_exists($request->thumbnailPath . '/' . $request->thumbnailFileName)) {
@@ -1168,7 +1167,7 @@ class CharacterManager extends Service
             
             // Save thumbnail
             if(!$isAdmin || ($isAdmin && isset($data['modify_thumbnail']))) {
-                if(isset($data['use_cropper'])) 
+                if(isset($data['use_cropper']))
                     $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $request);
                 else if(isset($data['thumbnail'])) 
                     $this->handleImage($data['thumbnail'], $request->imageDirectory, $request->thumbnailFileName);

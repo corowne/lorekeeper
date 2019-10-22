@@ -18,6 +18,9 @@ class DesignController extends Controller
     /**
      * Show the design index page.
      *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $type
+     * @param  string                    $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getDesignIndex(Request $request, $type, $status)

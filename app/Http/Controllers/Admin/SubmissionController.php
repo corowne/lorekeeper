@@ -18,8 +18,9 @@ use App\Http\Controllers\Controller;
 class SubmissionController extends Controller
 {
     /**
-     * Show the submission index page.
+     * Shows the submission index page.
      *
+     * @param  string  $status
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getSubmissionIndex($status)
@@ -31,8 +32,9 @@ class SubmissionController extends Controller
     }
     
     /**
-     * Show the submission detail page.
+     * Shows the submission detail page.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getSubmission($id)
@@ -48,27 +50,12 @@ class SubmissionController extends Controller
             'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
             'count' => Submission::where('prompt_id', $id)->where('status', 'Approved')->where('user_id', $submission->user_id)->count()
         ] : []));
-    }
-
-    public function postSubmission($id, $action, Request $request, SubmissionManager $service)
-    {
-        $data = $request->only(['slug',  'character_quantity', 'character_currency_id', 'rewardable_type', 'rewardable_id', 'quantity' ]);
-        if($action == 'reject' && $service->rejectSubmission($request->only(['staff_comments']) + ['id' => $id], Auth::user())) {
-            flash('Submission rejected successfully.')->success();
-        }
-        elseif($action == 'approve' && $service->approveSubmission($data + ['id' => $id], Auth::user())) {
-            flash('Submission approved successfully.')->success();
-        }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
-        return redirect()->back();
-    }
-    
+    }    
     
     /**
-     * Show the claim index page.
+     * Shows the claim index page.
      *
+     * @param  string  $status
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getClaimIndex($status)
@@ -80,8 +67,9 @@ class SubmissionController extends Controller
     }
     
     /**
-     * Show the claim detail page.
+     * Shows the claim detail page.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getClaim($id)
@@ -99,4 +87,27 @@ class SubmissionController extends Controller
         ] : []));
     }
 
+    /**
+     * Creates a new submission.
+     *
+     * @param  \Illuminate\Http\Request        $request
+     * @param  App\Services\SubmissionManager  $service
+     * @param  int                             $id
+     * @param  string                          $action
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postSubmission(Request $request, SubmissionManager $service, $id, $action)
+    {
+        $data = $request->only(['slug',  'character_quantity', 'character_currency_id', 'rewardable_type', 'rewardable_id', 'quantity' ]);
+        if($action == 'reject' && $service->rejectSubmission($request->only(['staff_comments']) + ['id' => $id], Auth::user())) {
+            flash('Submission rejected successfully.')->success();
+        }
+        elseif($action == 'approve' && $service->approveSubmission($data + ['id' => $id], Auth::user())) {
+            flash('Submission approved successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
 }

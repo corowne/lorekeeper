@@ -12,7 +12,7 @@ use App\Http\Controllers\Controller;
 class HomeController extends Controller
 {
     /**
-     * Show the application dashboard.
+     * Show the admin dashboard.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */

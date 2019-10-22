@@ -14,7 +14,7 @@ use App\Http\Controllers\Controller;
 class PageController extends Controller
 {
     /**
-     * Show the page index.
+     * Shows the page index.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -26,7 +26,7 @@ class PageController extends Controller
     }
     
     /**
-     * Show the create page page. 
+     * Shows the create page page. 
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -38,8 +38,9 @@ class PageController extends Controller
     }
     
     /**
-     * Show the edit page page.
+     * Shows the edit page page.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getEditPage($id)
@@ -51,6 +52,14 @@ class PageController extends Controller
         ]);
     }
 
+    /**
+     * Creates or edits a page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\PageService  $service
+     * @param  int|null                  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postCreateEditPage(Request $request, PageService $service, $id = null)
     {
         $id ? $request->validate(SitePage::$updateRules) : $request->validate(SitePage::$createRules);
@@ -71,8 +80,9 @@ class PageController extends Controller
     }
     
     /**
-     * Get the page deletion modal.
+     * Gets the page deletion modal.
      *
+     * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getDeletePage($id)
@@ -83,6 +93,14 @@ class PageController extends Controller
         ]);
     }
 
+    /**
+     * Deletes a page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\PageService  $service
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postDeletePage(Request $request, PageService $service, $id)
     {
         if($id && $service->deletePage(SitePage::find($id))) {

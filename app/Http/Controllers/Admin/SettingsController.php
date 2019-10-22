@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 class SettingsController extends Controller
 {
     /**
-     * Show the settings index.
+     * Shows the settings index.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -21,6 +21,13 @@ class SettingsController extends Controller
         ]);
     }
 
+    /**
+     * Edits a setting.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  string                         $key
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postEditSetting(Request $request, $key)
     {
         if(DB::table('site_settings')->where('key', $key)->update(['value' => $request->get('value')])) {
