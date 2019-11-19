@@ -263,6 +263,11 @@ main > .row {
     max-width: 100%;
 }
 
+.btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 /* NOTIFICATIONS *********************************************************************************/
 
 .notifications-table .unread, .notifications-table .unread td {
@@ -329,10 +334,10 @@ tr.outflow {
 .inventory-category .inventory-body .inventory-item img {
     max-width: 100%;
 }
-.inventory-stack-name {
+.inventory-stack-name, .inventory-character-name {
     color: rgba(0,0,0,0.7);
 }
-.inventory-stack-name:hover {
+.inventory-stack-name:hover, .inventory-character-name:hover {
     color: inherit;
     text-decoration: none;
 }
@@ -387,16 +392,20 @@ tr.outflow {
 .collapse-toggle.collapsed:after {
     transform: none;
 }
-.user-items .inventory-item {
+.user-items .inventory-item, .user-characters .character-item {
     padding: 10px;
 }
-.user-items .inventory-stack {
+.user-items .inventory-stack, .user-characters .character-stack {
     cursor: pointer;
 }
-.user-items .inventory-item img {
+.user-items .inventory-item img, .user-characters .character-item img {
     max-width: 100%;
 }
-.user-items .category-selected .inventory-item {
+.user-characters .character-item.disabled, .user-characters .character-item.disabled .character-stack  {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.user-items .category-selected .inventory-item, .user-characters .category-selected .character-item {
     background-color: rgba(0,0,0,0.05);
     border-radius: .25rem;
 }
@@ -407,4 +416,9 @@ tr.outflow {
 }
 .shops-row .shop-name a {
     font-weight: bold;
+}
+
+/* TRADES ************************************************************************************/
+.trade-offer .currency-item {
+    background-color: transparent;
 }

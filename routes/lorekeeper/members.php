@@ -49,6 +49,20 @@ Route::group(['prefix' => 'bank', 'namespace' => 'Users'], function() {
     Route::post('transfer', 'BankController@postTransfer');
 });
 
+Route::group(['prefix' => 'trades', 'namespace' => 'Users'], function() {
+    Route::get('{status}', 'TradeController@getIndex')->where('status', 'open|pending|completed|rejected|canceled');
+    Route::get('create', 'TradeController@getCreateTrade');
+    Route::get('{id}/edit', 'TradeController@getEditTrade')->where('id', '[0-9]+');
+    Route::post('create', 'TradeController@postCreateTrade');
+    Route::post('{id}/edit', 'TradeController@postEditTrade')->where('id', '[0-9]+');
+    Route::get('{id}', 'TradeController@getTrade')->where('id', '[0-9]+');
+    
+    Route::get('{id}/confirm-offer', 'TradeController@getConfirmOffer');
+    Route::post('{id}/confirm-offer', 'TradeController@postConfirmOffer');
+    Route::get('{id}/confirm-trade', 'TradeController@getConfirmTrade');
+    Route::post('{id}/confirm-trade', 'TradeController@postConfirmTrade');
+});
+
 /**************************************************************************************************
     Characters
 **************************************************************************************************/

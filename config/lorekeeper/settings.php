@@ -73,4 +73,16 @@ return [
         'width' => 200,
         'height' => 200
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Trade Asset Limit
+    |--------------------------------------------------------------------------
+    |
+    | This is an arbitrary upper limit on how many things (items, currencies,
+    | characters) a trade can contain. While this can potentially be higher,
+    | there are limits on data storage, so raising this is not recommended.
+    |
+    */
+    'trade_asset_limit' => 20
 ];

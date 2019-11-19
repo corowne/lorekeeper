@@ -31,7 +31,7 @@
         function refreshCategory() {
             var display = $userItemCategory.val();
             $('.user-item').addClass('hide');
-            $('.category-' + display).removeClass('hide');
+            $('.user-items .category-' + display).removeClass('hide');
         }
     });
 </script>

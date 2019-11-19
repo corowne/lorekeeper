@@ -178,4 +178,40 @@ return [
         'message' => 'The <a href="{design_url}">design update</a> for <a href="{character_url}">{name}</a> has been canceled. (<a href="{url}">View Design Approvals</a>)',
         'url' => 'designs'
     ],
+
+    // TRADE_RECEIVED
+    28 => [
+        'message' => 'You have received a new trade from <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Trade</a>)',
+        'url' => 'trades/{trade_id}'
+    ],
+
+    // TRADE_UPDATE
+    29 => [
+        'message' => '<a href="{sender_url}">{sender_name}</a> has updated their half of a trade. (<a href="{url}">View Trade</a>)',
+        'url' => 'trades/{trade_id}'
+    ],
+
+    // TRADE_CANCELED
+    30 => [
+        'message' => '<a href="{sender_url}">{sender_name}</a> has canceled a trade. (<a href="{url}">View Trade</a>)',
+        'url' => 'trades/{trade_id}'
+    ],
+
+    // TRADE_COMPLETED
+    31 => [
+        'message' => 'A trade has been completed. (<a href="{url}">View Trade</a>)',
+        'url' => 'trades/{trade_id}'
+    ],
+
+    // TRADE_REJECTED
+    32 => [
+        'message' => 'A trade has been rejected. (<a href="{url}">View Trade</a>)',
+        'url' => 'trades/{trade_id}'
+    ],
+
+    // TRADE_CONFIRMED
+    33 => [
+        'message' => 'A trade has been confirmed and placed in the character transfer queue to be reviewed. (<a href="{url}">View Trade</a>)',
+        'url' => 'trades/{trade_id}'
+    ],
 ];

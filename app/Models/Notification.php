@@ -86,4 +86,9 @@ class Notification extends Model
     const DESIGN_APPROVED                 = 25;
     const DESIGN_REJECTED                 = 26;
     const DESIGN_CANCELED                 = 27;
+    const TRADE_RECEIVED                  = 28;
+    const TRADE_UPDATE                    = 29;
+    const TRADE_CANCELED                  = 30;
+    const TRADE_COMPLETED                 = 31;
+    const TRADE_REJECTED                  = 32;
 }

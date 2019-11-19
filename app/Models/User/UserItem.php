@@ -41,4 +41,9 @@ class UserItem extends Model
         if(!isset($this->data['disallow_transfer']) && $this->item->allow_transfer) return true;
         return false;
     }
+
+    public function getAssetTypeAttribute()
+    {
+        return 'user_items';
+    }
 }

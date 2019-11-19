@@ -32,11 +32,14 @@ class Character extends Model
         'is_sellable', 'is_tradeable', 'is_giftable',
         'sale_value', 'transferrable_at', 'is_visible',
         'is_gift_art_allowed', 'is_trading', 'sort',
-        'is_myo_slot', 'name'
+        'is_myo_slot', 'name', 'trade_id'
     ];
     protected $table = 'characters';
     public $timestamps = true;
     public $dates = ['transferrable_at'];
+    public $appends = [
+        'is_available'
+    ];
     
     public static $createRules = [
         'character_category_id' => 'required',
@@ -114,6 +117,13 @@ class Character extends Model
     {
         return $query->where('is_trading', 1);
     }
+
+    public function getIsAvailableAttribute()
+    {
+        if($this->designUpdate()->active()->exists()) return false;
+        if($this->trade_id) return false;
+        return true;
+    }
     
     public function getDisplayOwnerAttribute()
     {
@@ -163,6 +173,11 @@ class Character extends Model
     {
         if($this->is_myo_slot) return url('myo/'.$this->id);
         else return url('character/'.$this->slug);
+    }
+
+    public function getAssetTypeAttribute()
+    {
+        return 'characters';
     }
 
     public function updateOwner()

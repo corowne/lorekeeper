@@ -1213,7 +1213,7 @@ class CharacterManager extends Service
             // Perhaps later I'll add a way to locate items that are being held by updates/trades. 
             if(isset($data['stack_id'])) {
                 foreach($data['stack_id'] as $stackId) {
-                    $stack = UserItem::with('item')->where('id', $stackId)->first();
+                    $stack = UserItem::with('item')->where('id', $stackId)->whereNull('holding_type')->first();
                     if(!$stack || $stack->user_id != $request->user_id) throw new \Exception("Invalid item selected.");
                     $stack->holding_type = 'Update';
                     $stack->holding_id = $request->id;

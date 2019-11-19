@@ -2,7 +2,7 @@
 
 function getAssetKeys($isCharacter = false)
 {
-    if(!$isCharacter) return ['items', 'currencies', 'raffle_tickets', 'loot_tables'];
+    if(!$isCharacter) return ['items', 'currencies', 'raffle_tickets', 'loot_tables', 'user_items', 'characters'];
     else return ['currencies'];
 }
 
@@ -28,6 +28,16 @@ function getAssetModelString($type, $namespaced = true)
         case 'loot_tables':
             if($namespaced) return '\App\Models\Loot\LootTable';
             else return 'LootTable';
+            break;
+            
+        case 'user_items':
+            if($namespaced) return '\App\Models\User\UserItem';
+            else return 'UserItem';
+            break;
+            
+        case 'characters':
+            if($namespaced) return '\App\Models\Character\Character';
+            else return 'Character';
             break;
     }
     return null;
@@ -128,6 +138,18 @@ function fillUserAssets($assets, $sender, $recipient, $logType, $data)
             $service = new \App\Services\RaffleManager;
             foreach($contents as $asset)
                 if(!$service->addTicket($recipient, $asset['asset'], $asset['quantity'])) return false;
+        }
+        elseif($key == 'user_items' && count($contents))
+        {
+            $service = new \App\Services\InventoryManager;
+            foreach($contents as $asset)
+                if(!$service->moveStack($sender, $recipient, $logType, $data, $asset['asset'])) return false;
+        }
+        elseif($key == 'characters' && count($contents))
+        {
+            $service = new \App\Services\CharacterManager;
+            foreach($contents as $asset)
+                if(!$service->moveCharacter($asset['asset'], $recipient, $data, $asset['quantity'], $logType)) return false;
         }
     }
     return $assets;
