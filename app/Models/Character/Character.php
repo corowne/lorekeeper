@@ -11,6 +11,7 @@ use App\Models\Character\Character;
 use App\Models\User\UserCharacterLog;
 use App\Models\Character\CharacterCategory;
 use App\Models\Character\CharacterCurrency;
+use App\Models\Character\CharacterTransfer;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
 use App\Models\Submission\Submission;
@@ -102,6 +103,11 @@ class Character extends Model
     {
         return $this->hasMany('App\Models\Character\CharacterDesignUpdate', 'character_id');
     }
+    
+    public function trade() 
+    {
+        return $this->belongsTo('App\Models\Trade', 'trade_id');
+    }
 
     public function scopeMyo($query, $isMyo = false)
     {
@@ -122,6 +128,7 @@ class Character extends Model
     {
         if($this->designUpdate()->active()->exists()) return false;
         if($this->trade_id) return false;
+        if(CharacterTransfer::active()->where('character_id', $this->id)->exists()) return false;
         return true;
     }
     

@@ -13,7 +13,7 @@
         </thead>
         <tbody id="{{ strtolower($owner->logType) }}Body-{{ $owner->id }}">
             @if($selected)
-                <?php $currencySelect = $owner->getCurrencySelect(); ?>
+                <?php $currencySelect = $owner->getCurrencySelect(isset($isTransferrable) ? $isTransferrable : false); ?>
                 @foreach($selected as $currencyId=>$quantity)
                     <tr class="bank-row">
                         <td>{!! Form::select('currency_id['.strtolower($owner->logType).'-'.$owner->id.'][]', $currencySelect, $currencyId, ['class' => 'form-control selectize', 'placeholder' => 'Select Currency']) !!}</td>

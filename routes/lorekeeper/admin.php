@@ -223,6 +223,11 @@ Route::group(['prefix' => 'masterlist', 'namespace' => 'Characters', 'middleware
     Route::get('transfer/{id}', 'CharacterController@getTransferInfo');
     Route::get('transfer/act/{id}/{type}', 'CharacterController@getTransferModal');
     Route::post('transfer/{id}', 'CharacterController@postTransferQueue');
+    
+    Route::get('trades/{type}', 'CharacterController@getTradeQueue');
+    Route::get('trade/{id}', 'CharacterController@getTradeInfo');
+    Route::get('trade/act/{id}/{type}', 'CharacterController@getTradeModal');
+    Route::post('trade/{id}', 'CharacterController@postTradeQueue');
 
     Route::get('create-myo', 'CharacterController@getCreateMyo');
     Route::post('create-myo', 'CharacterController@postCreateMyo');
@@ -315,14 +320,16 @@ Route::group(['prefix' => 'raffles', 'middleware' => 'power:manage_raffles'], fu
 
 # SUBMISSIONS
 Route::group(['prefix' => 'submissions', 'middleware' => 'power:manage_submissions'], function() {
-    Route::get('/{status}', 'SubmissionController@getSubmissionIndex')->where('status', 'pending|accepted|rejected');
+    Route::get('/', 'SubmissionController@getSubmissionIndex');
+    Route::get('/{status}', 'SubmissionController@getSubmissionIndex')->where('status', 'pending|approved|rejected');
     Route::get('edit/{id}', 'SubmissionController@getSubmission');
     Route::post('edit/{id}/{action}', 'SubmissionController@postSubmission')->where('action', 'approve|reject');
 });
 
 # CLAIMS
 Route::group(['prefix' => 'claims', 'middleware' => 'power:manage_submissions'], function() {
-    Route::get('/{status}', 'SubmissionController@getClaimIndex')->where('status', 'pending|accepted|rejected');
+    Route::get('/', 'SubmissionController@getClaimIndex');
+    Route::get('/{status}', 'SubmissionController@getClaimIndex')->where('status', 'pending|approved|rejected');
     Route::get('edit/{id}', 'SubmissionController@getClaim');
     Route::post('edit/{id}/{action}', 'SubmissionController@postSubmission')->where('action', 'approve|reject');
 });

@@ -205,7 +205,7 @@ return [
 
     // TRADE_REJECTED
     32 => [
-        'message' => 'A trade has been rejected. (<a href="{url}">View Trade</a>)',
+        'message' => 'A trade has been rejected from the character transfer queue. (<a href="{url}">View Trade</a>)',
         'url' => 'trades/{trade_id}'
     ],
 

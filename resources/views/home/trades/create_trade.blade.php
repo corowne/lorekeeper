@@ -25,14 +25,14 @@
     </div>
     @include('widgets._inventory_select', ['user' => Auth::user(), 'inventory' => $inventory, 'categories' => $categories, 'selected' => null])
     @include('widgets._my_character_select', ['readOnly' => true, 'categories' => $characterCategories])
-    @include('widgets._bank_select', ['owner' => Auth::user(), 'selected' => null])
+    @include('widgets._bank_select', ['owner' => Auth::user(), 'selected' => null, 'isTransferrable' => true])
     <div class="text-right">{!! Form::submit('Create Trade', ['class' => 'btn btn-primary']) !!}</div>
 {!! Form::close() !!}
 
 @endsection
 @section('scripts')
     @parent
-    @include('widgets._bank_select_row', ['owners' => [Auth::user()]])
+    @include('widgets._bank_select_row', ['owners' => [Auth::user()], 'isTransferrable' => true])
     @include('widgets._bank_select_js', [])
     @include('widgets._inventory_select_js', ['readOnly' => true])
     @include('widgets._my_character_select_js', ['readOnly' => true])

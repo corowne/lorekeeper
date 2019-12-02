@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Hash;
 
 use App\Services\SubmissionManager;
 use App\Services\CharacterManager;
+use App\Services\TradeManager;
 
 class UserService extends Service
 {
@@ -107,6 +108,16 @@ class UserService extends Service
                 })->get();
                 foreach($requests as $request)
                     $characterManager->rejectRequest(['staff_comments' => 'User has been banned from site activity.'], $request, $staff, true);
+
+                // 4. Trades
+                $tradeManager = new TradeManager;
+                $trades = Trade::where(function($query) {
+                    $query->where('status', 'Open')->orWhere('status', 'Pending');
+                })->where(function($query) use ($user) {
+                    $query->where('sender_id', $user->id)->where('recipient_id', $user->id);
+                })->get();
+                foreach($trades as $trade)
+                    $tradeManager->rejectTrade(['trade' => $trade, 'reason' => 'User has been banned from site activity.'], $staff);
 
                 UserUpdateLog::create(['staff_id' => $staff->id, 'user_id' => $user->id, 'data' => json_encode(['is_banned' => 'Yes', 'ban_reason' => isset($data['ban_reason']) ? $data['ban_reason'] : null]), 'type' => 'Ban']);
 

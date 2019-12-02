@@ -13,6 +13,7 @@ use Settings;
 use App\Models\User\User;
 use App\Models\User\UserItem;
 use App\Models\Character\Character;
+use App\Models\Character\CharacterTransfer;
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
 use App\Models\Currency\Currency;
@@ -29,6 +30,7 @@ class TradeManager extends Service
 
         try {
             if(!isset($data['recipient_id'])) throw new \Exception("Please select a recipient.");
+            if($data['recipient_id'] == $user->id) throw new \Exception("Cannot start a trade with yourself.");
             $recipient = User::find($data['recipient_id']);
             if($recipient->is_banned) throw new \Exception("The recipient is a banned user and cannot receive a trade.");
 
@@ -49,8 +51,8 @@ class TradeManager extends Service
 
                 // send a notification
                 Notifications::create('TRADE_RECEIVED', $recipient, [
-                    'sender_url' => $sender->url,
-                    'sender_name' => $sender->name,
+                    'sender_url' => $user->url,
+                    'sender_name' => $user->name,
                     'trade_id' => $trade->id
                 ]);
 
@@ -157,9 +159,10 @@ class TradeManager extends Service
                     $character = Character::where('id', $characterId)->where('user_id', $user->id)->first();
                     if(!$character) throw new \Exception("Invalid character selected.");
                     if(!$character->is_sellable && !$character->is_tradeable && !$character->is_giftable) throw new \Exception("One or more of the selected characters cannot be transferred.");
+                    if(CharacterTransfer::active()->where('character_id', $character->id)->exists()) throw new \Exception("One or more of the selected characters is already pending a character transfer.");
                     if($character->trade_id) throw new \Exception("One or more of the selected characters is already in a trade.");
                     if($character->designUpdate()->active()->exists()) throw new \Exception("One or more of the selected characters has an active design update. Please wait for it to be processed, or delete it.");
-                    if($character->transferrable_at->isFuture()) throw new \Exception("One or more of the selected characters is still on transfer cooldown and cannot be transferred.");
+                    if($character->transferrable_at && $character->transferrable_at->isFuture()) throw new \Exception("One or more of the selected characters is still on transfer cooldown and cannot be transferred.");
 
                     $character->trade_id = $trade->id;
                     $character->save();
@@ -196,6 +199,9 @@ class TradeManager extends Service
                     'sender_name' => $user->name,
                     'trade_id' => $trade->id
                 ]);
+                $trade->status = 'Canceled';
+                $trade->save();
+
                 return $this->commitReturn($trade);
             }
             else throw new \Exception("Failed to cancel trade.");
@@ -277,7 +283,7 @@ class TradeManager extends Service
             else $trade->is_recipient_trade_confirmed = 1;
 
             if($trade->is_sender_trade_confirmed && $trade->is_recipient_trade_confirmed) {
-                if(!(Config::get('open_transfers_queue') && (isset($trade->data['sender']['characters'])|| isset($trade->data['recipient']['characters'])))) {
+                if(!(Settings::get('open_transfers_queue') && (isset($trade->data['sender']['characters']) || isset($trade->data['recipient']['characters'])))) {
                     // Distribute the trade attachments
                     $this->creditAttachments($trade);
     
@@ -304,11 +310,20 @@ class TradeManager extends Service
                     ]);
                 }
             }
+            else {
+                    
+                // Notify the other user
+                Notifications::create('TRADE_UPDATE', $user->id == $trade->sender_id ? $trade->recipient : $trade->sender, [
+                    'sender_url' => $user->url,
+                    'sender_name' => $user->name,
+                    'trade_id' => $trade->id
+                ]);
+
+            }
             $trade->save();
 
             return $this->commitReturn($trade);
         } catch(\Exception $e) { 
-            dd($e->getMessage());
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -321,13 +336,25 @@ class TradeManager extends Service
         try {
             // 1. check that the trade exists
             // 2. check that the trade is open
-            if(!isset($data['trade'])) $submission = Trade::where('status', 'Open')->where('id', $data['id'])->where('is_sender_confirmed', 1)->where('is_recipient_confirmed', 1)->first();
-            elseif($data['trade']->status == 'Pending') $trade = $data['trade'];
-            else $trade = null;
+            if(!isset($data['trade'])) $trade = Trade::where('status', 'Pending')->where('id', $data['id'])->first();
+            else $trade = $data['trade'];
             if(!$trade) throw new \Exception("Invalid trade.");
             
+            if($this->creditAttachments($trade, $data)) {
+                Notifications::create('TRADE_COMPLETED', $trade->sender, [
+                    'trade_id' => $trade->id
+                ]);
+                Notifications::create('TRADE_COMPLETED', $trade->recipient, [
+                    'trade_id' => $trade->id
+                ]);
 
-            return $this->commitReturn($trade);
+                $trade->status = 'Completed';
+                $trade->staff_id = $user->id;
+                $trade->save();
+
+                return $this->commitReturn($trade);
+            }
+            else throw new \Exception("Failed to credit trade attachments.");
         } catch(\Exception $e) { 
             $this->setError('error', $e->getMessage());
         }
@@ -339,23 +366,27 @@ class TradeManager extends Service
         DB::beginTransaction();
 
         try {
+
+            if(!isset($data['trade'])) $trade = Trade::where('status', 'Pending')->where('id', $data['id'])->first();
+            else $trade = $data['trade'];
+            if(!$trade) throw new \Exception("Invalid trade.");
             
+            if($this->returnAttachments($trade)) {
+                Notifications::create('TRADE_REJECTED', $trade->sender, [
+                    'trade_id' => $trade->id
+                ]);
+                Notifications::create('TRADE_REJECTED', $trade->recipient, [
+                    'trade_id' => $trade->id
+                ]);
 
-            return $this->commitReturn($trade);
-        } catch(\Exception $e) { 
-            $this->setError('error', $e->getMessage());
-        }
-        return $this->rollbackReturn(false);
-    }
+                $trade->reason = isset($data['reason']) ? $data['reason'] : '';
+                $trade->status = 'Rejected';
+                $trade->staff_id = $user->id;
+                $trade->save();
 
-    private function clearTrade($trade)
-    {
-        DB::beginTransaction();
-
-        try {
-            // Returns all attached assets to their owners
-
-            return $this->commitReturn($trade);
+                return $this->commitReturn($trade);
+            }
+            else throw new \Exception("Failed to return trade attachments.");
         } catch(\Exception $e) { 
             $this->setError('error', $e->getMessage());
         }
@@ -396,11 +427,12 @@ class TradeManager extends Service
             $inventoryManager = new InventoryManager;
 
             // Get all items
-            $stacks = UserItem::where('holding_type', 'Trade')->where('holding_id', $trade->id)->where('user_id', $trade->sender_id)->get();
-            foreach($stacks as $stack) $inventoryManager->moveStack($trade->sender, $trade->recipient, 'Trade', ['data' => 'Received in trade (<a href="'.$trade->url.'">#'.$trade->id.'</a>).'], $stack);
+            $senderStacks = UserItem::where('holding_type', 'Trade')->where('holding_id', $trade->id)->where('user_id', $trade->sender_id)->get();
+            $recipientStacks = UserItem::where('holding_type', 'Trade')->where('holding_id', $trade->id)->where('user_id', $trade->recipient_id)->get();
             
-            $stacks = UserItem::where('holding_type', 'Trade')->where('holding_id', $trade->id)->where('user_id', $trade->recipient_id)->get();
-            foreach($stacks as $stack) $inventoryManager->moveStack($trade->recipient, $trade->sender, 'Trade', ['data' => 'Received in trade (<a href="'.$trade->url.'">#'.$trade->id.').'], $stack);
+            foreach($senderStacks as $stack) $inventoryManager->moveStack($trade->sender, $trade->recipient, 'Trade', ['data' => 'Received in trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]'], $stack);
+        
+            foreach($recipientStacks as $stack) $inventoryManager->moveStack($trade->recipient, $trade->sender, 'Trade', ['data' => 'Received in trade [<a href="'.$trade->url.'">#'.$trade->id.']'], $stack);
 
             UserItem::where('holding_type', 'Trade')->where('holding_id', $trade->id)->update(['holding_type' => null, 'holding_id' => null]);
 
@@ -410,11 +442,12 @@ class TradeManager extends Service
             $cooldowns = isset($data['cooldowns']) ? $data['cooldowns'] : [];
             $defaultCooldown = Settings::get('transfer_cooldown');
 
-            $characters = Character::where('user_id', $trade->sender_id)->where('trade_id', $trade->id)->get();
-            foreach($characters as $character) $characterManager->moveCharacter($character, $trade->recipient, '<a href="'.$trade->url.'">#'.$trade->id.'</a>', isset($cooldowns[$character->id]) ? $cooldowns[$character->id] : $defaultCooldown, 'Trade');
+            $senderCharacters = Character::where('user_id', $trade->sender_id)->where('trade_id', $trade->id)->get();
+            $recipientCharacters = Character::where('user_id', $trade->recipient_id)->where('trade_id', $trade->id)->get();
+
+            foreach($senderCharacters as $character) $characterManager->moveCharacter($character, $trade->recipient, 'Trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]', isset($cooldowns[$character->id]) ? $cooldowns[$character->id] : $defaultCooldown, 'Transferred in trade');
             
-            $characters = Character::where('user_id', $trade->recipient_id)->where('trade_id', $trade->id)->get();
-            foreach($characters as $character) $characterManager->moveCharacter($character, $trade->sender, '<a href="'.$trade->url.'">#'.$trade->id.'</a>', isset($cooldowns[$character->id]) ? $cooldowns[$character->id] : $defaultCooldown, 'Trade');
+            foreach($recipientCharacters as $character) $characterManager->moveCharacter($character, $trade->sender, 'Trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]', isset($cooldowns[$character->id]) ? $cooldowns[$character->id] : $defaultCooldown, 'Transferred in trade');
 
             Character::where('trade_id', $trade->id)->update(['trade_id' => null]);
 
@@ -422,11 +455,12 @@ class TradeManager extends Service
             $tradeData = $trade->data;
             $currencyManager = new CurrencyManager;
             foreach(['sender', 'recipient'] as $type) {
+                $recipientType = ($type == 'sender') ? 'recipient' : 'sender';
                 if(isset($tradeData[$type]['currencies'])) {
                     foreach($tradeData[$type]['currencies'] as $currencyId => $quantity) {
                         $currency = Currency::find($currencyId);
                         if(!$currency) throw new \Exception("Cannot credit an invalid currency. (".$currencyId.")");
-                        if(!$currencyManager->creditCurrency(null, $trade->{$type}, 'Trade', 'Received in trade (<a href="'.$trade->url.'">#'.$trade->id.').', $currency, $quantity)) throw new \Exception("Could not credit currency. (".$currencyId.")");                    
+                        if(!$currencyManager->creditCurrency($trade->{$type}, $trade->{$recipientType}, 'Trade', 'Received in trade [<a href="'.$trade->url.'">#'.$trade->id.']', $currency, $quantity)) throw new \Exception("Could not credit currency. (".$currencyId.")");                    
                     }
                 }
             }

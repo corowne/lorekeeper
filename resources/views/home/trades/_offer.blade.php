@@ -11,9 +11,9 @@
         @else
             @if($trade->{'is_'.$type.'_confirmed'})
                 @if($trade->{'is_'.$type.'_trade_confirmed'})
-                    <small class="text-success">{!! add_help($user->name.' has reviewed your offer and confirmed the trade.') !!} Confirmed</small>
+                    <small class="text-success">{!! add_help($user->name.' has reviewed your offer and confirmed the trade.') !!} Trade Confirmed</small>
                 @else
-                    <small class="text-primary">{!! add_help('This offer has been confirmed.') !!} Confirmed</small>
+                    <small class="text-primary">{!! add_help('This offer has been confirmed.') !!} Offer Confirmed</small>
                 @endif
             @else
                 <small class="text-muted">{!! add_help('This offer has yet to be confirmed.') !!} Pending</small>

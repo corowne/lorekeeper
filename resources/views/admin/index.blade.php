@@ -75,5 +75,24 @@
             </div>
         </div>
     </div>
+    @if($openTransfersQueue)
+        <div class="col-sm-6">        
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Character Transfers @if($transferCount + $tradeCount)<span class="badge badge-primary">{{ $transferCount + $tradeCount }}</span>@endif</h5>
+                    <p class="card-text">
+                        @if($transferCount + $tradeCount)
+                            {{ $transferCount + $tradeCount }} character transfer{{$transferCount + $tradeCount == 1 ? '' : 's' }} and/or trade{{$transferCount + $tradeCount == 1 ? '' : 's' }} awaiting processing.
+                        @else 
+                            The character transfer/trade queue is clear. Hooray!
+                        @endif
+                    </p>
+                    <div class="text-right">
+                        <a href="{{ url('admin/masterlist/transfers/incoming') }}" class="card-link">View Queue <span class="fas fa-caret-right ml-1"></span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>
 @endsection

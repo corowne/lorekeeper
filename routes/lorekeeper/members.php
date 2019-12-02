@@ -61,6 +61,8 @@ Route::group(['prefix' => 'trades', 'namespace' => 'Users'], function() {
     Route::post('{id}/confirm-offer', 'TradeController@postConfirmOffer');
     Route::get('{id}/confirm-trade', 'TradeController@getConfirmTrade');
     Route::post('{id}/confirm-trade', 'TradeController@postConfirmTrade');
+    Route::get('{id}/cancel-trade', 'TradeController@getCancelTrade');
+    Route::post('{id}/cancel-trade', 'TradeController@postCancelTrade');
 });
 
 /**************************************************************************************************

@@ -91,4 +91,5 @@ class Notification extends Model
     const TRADE_CANCELED                  = 30;
     const TRADE_COMPLETED                 = 31;
     const TRADE_REJECTED                  = 32;
+    const TRADE_CONFIRMED                 = 33;
 }

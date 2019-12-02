@@ -6,7 +6,7 @@
             </p>
             {!! Form::open(['url' => 'trades/'.$trade->id.'/confirm-trade']) !!}
                 <div class="text-right">
-                    {!! Form::submit('Confirm', ['class' => 'btn btn-primary')]) !!}
+                    {!! Form::submit('Confirm', ['class' => 'btn btn-primary']) !!}
                 </div>
             {!! Form::close() !!}
         @else 

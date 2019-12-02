@@ -174,7 +174,6 @@ class SubmissionManager extends Service
 
             return $this->commitReturn($submission);
         } catch(\Exception $e) { 
-            dd($e->getMessage());
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);

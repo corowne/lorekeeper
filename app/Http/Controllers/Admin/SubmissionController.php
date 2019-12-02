@@ -23,10 +23,10 @@ class SubmissionController extends Controller
      * @param  string  $status
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getSubmissionIndex($status)
+    public function getSubmissionIndex($status = null)
     {
         return view('admin.submissions.index', [
-            'submissions' => Submission::where('status', ucfirst($status))->whereNotNull('prompt_id')->orderBy('id', 'DESC')->paginate(30),
+            'submissions' => Submission::where('status', $status ? ucfirst($status) : 'Pending')->whereNotNull('prompt_id')->orderBy('id', 'DESC')->paginate(30),
             'isClaims' => false
         ]);
     }
@@ -58,10 +58,10 @@ class SubmissionController extends Controller
      * @param  string  $status
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getClaimIndex($status)
+    public function getClaimIndex($status = null)
     {
         return view('admin.submissions.index', [
-            'submissions' => Submission::where('status', ucfirst($status))->whereNull('prompt_id')->orderBy('id', 'DESC')->paginate(30),
+            'submissions' => Submission::where('status', $status ? ucfirst($status) : 'Pending')->whereNull('prompt_id')->orderBy('id', 'DESC')->paginate(30),
             'isClaims' => true
         ]);
     }

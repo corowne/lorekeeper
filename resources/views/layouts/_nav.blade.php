@@ -52,6 +52,9 @@
                             <a class="dropdown-item" href="{{ url('characters/transfers/incoming') }}">
                                 Character Transfers
                             </a>
+                            <a class="dropdown-item" href="{{ url('trades/open') }}">
+                                Trades
+                            </a>
                         </div>
                     </li>
                 @endif

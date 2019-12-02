@@ -792,7 +792,8 @@ class CharacterManager extends Service
             if($user->id != $character->user_id) throw new \Exception("You do not own this character.");
             if(!$character->is_sellable && !$character->is_tradeable && !$character->is_giftable) throw new \Exception("This character is not transferrable.");
             if($character->transferrable_at && $character->transferrable_at->isFuture()) throw new \Exception("This character is still on transfer cooldown and cannot be transferred.");
-            if(CharacterTransfer::active()->where('character_id', $character->id)->exists()) throw new \Exception("This character is in an active trade.");
+            if(CharacterTransfer::active()->where('character_id', $character->id)->exists()) throw new \Exception("This character is in an active transfer.");
+            if($character->trade_id) throw new \Exception("This character is in an active trade.");
             
             $recipient = User::find($data['recipient_id']);
             if(!$recipient) throw new \Exception("Invalid user selected.");

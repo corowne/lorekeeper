@@ -15,9 +15,11 @@ use App\Models\User\User;
 use App\Models\Species;
 use App\Models\Feature\Feature;
 use App\Models\Character\CharacterTransfer;
+use App\Models\Trade;
 
 use App\Services\CharacterManager;
 use App\Services\CurrencyManager;
+use App\Services\TradeManager;
 
 use App\Http\Controllers\Controller;
 
@@ -504,9 +506,14 @@ class CharacterController extends Controller
         else if ($type == 'incoming') $transfers->active()->where('is_approved', 0);
         else abort(404);
 
+        $openTransfersQueue = Settings::get('open_transfers_queue');
+
         return view('admin.masterlist.character_transfers', [
             'transfers' => $transfers->orderBy('id', 'DESC')->paginate(20),
             'transfersQueue' => Settings::get('open_transfers_queue'),
+            'openTransfersQueue' => $openTransfersQueue,
+            'transferCount' => $openTransfersQueue ? CharacterTransfer::active()->where('is_approved', 0)->count() : 0,
+            'tradeCount' => $openTransfersQueue ? Trade::where('status', 'Pending')->count() : 0
         ]);
     }
     
@@ -525,7 +532,7 @@ class CharacterController extends Controller
 
         return view('admin.masterlist._'.$action.'_modal', [
             'transfer' => $transfer,
-            'cooldown' => Settings::get('transfer_cooldown')
+            'cooldown' => Settings::get('transfer_cooldown'),
         ]);
     }
     
@@ -545,6 +552,76 @@ class CharacterController extends Controller
         
         if($service->processTransferQueue($request->only(['action', 'cooldown', 'reason']) + ['transfer_id' => $id], Auth::user())) {
             flash('Transfer ' . strtolower($action) . 'ed.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Shows the character trade queue.
+     *
+     * @param  string  $type
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getTradeQueue($type)
+    {
+        $trades = Trade::query();
+        $user = Auth::user();
+
+        if($type == 'completed') $trades->completed();
+        else if ($type == 'incoming') $trades->where('status', 'Pending');
+        else abort(404);
+
+        $openTransfersQueue = Settings::get('open_transfers_queue');
+        
+        return view('admin.masterlist.character_trades', [
+            'trades' => $trades->orderBy('id', 'DESC')->paginate(20),
+            'tradesQueue' => Settings::get('open_transfers_queue'),
+            'openTransfersQueue' => $openTransfersQueue,
+            'transferCount' => $openTransfersQueue ? CharacterTransfer::active()->where('is_approved', 0)->count() : 0,
+            'tradeCount' => $openTransfersQueue ? Trade::where('status', 'Pending')->count() : 0
+        ]);
+    }
+    
+    /**
+     * Shows the character trade action modal.
+     *
+     * @param  int     $id
+     * @param  string  $action
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getTradeModal($id, $action)
+    {
+        if($action != 'approve' && $action != 'reject') abort(404);
+        $trade = Trade::where('id', $id)->first();
+        if(!$trade) abort(404);
+
+        return view('admin.masterlist._'.$action.'_trade_modal', [
+            'trade' => $trade,
+            'cooldown' => Settings::get('transfer_cooldown'),
+        ]);
+    }
+    
+    /**
+     * Acts on a trade in the trade queue.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\CharacterManager  $service
+     * @param  int                            $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postTradeQueue(Request $request, TradeManager $service, $id)
+    {
+        if(!Auth::check()) abort(404);
+
+        $action = strtolower($request->get('action'));
+        if($action == 'approve' && $service->approveTrade($request->only(['action', 'cooldowns']) + ['id' => $id], Auth::user())) {
+            flash('Trade approved.')->success();
+        }
+        else if($action == 'reject' && $service->rejectTrade($request->only(['action', 'reason']) + ['id' => $id], Auth::user())) {
+            flash('Trade rejected.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

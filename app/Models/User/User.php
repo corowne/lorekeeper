@@ -178,9 +178,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $currencies;
     }
 
-    public function getCurrencySelect()
+    public function getCurrencySelect($isTransferrable = false)
     {
-        return UserCurrency::where('user_id', $this->id)->leftJoin('currencies', 'user_currencies.currency_id', '=', 'currencies.id')->orderBy('currencies.sort_user', 'DESC')->get()->pluck('name_with_quantity', 'currency_id')->toArray();
+        $query = UserCurrency::query()->where('user_id', $this->id)->leftJoin('currencies', 'user_currencies.currency_id', '=', 'currencies.id')->orderBy('currencies.sort_user', 'DESC');
+        if($isTransferrable) $query->where('currencies.allow_user_to_user', 1);
+        return $query->get()->pluck('name_with_quantity', 'currency_id')->toArray();
     }
 
     public function getLogTypeAttribute()

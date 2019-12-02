@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Config;
 use Settings;
+
+use App\Models\Character\Character;
+
 use App\Models\Model;
 
 class Trade extends Model
@@ -31,6 +34,11 @@ class Trade extends Model
         return $this->belongsTo('App\Models\User\User', 'recipient_id');
     }
 
+    public function staff() 
+    {
+        return $this->belongsTo('App\Models\User\User', 'staff_id');
+    }
+
     public function getIsActiveAttribute()
     {
         if($this->status == 'Pending') return true;
@@ -56,6 +64,16 @@ class Trade extends Model
     public function getUrlAttribute()
     {
         return url('trades/'.$this->id);
+    }
+
+    public function scopeCompleted($query)
+    {
+        return $query->where('status', 'Completed')->orWhere('status', 'Rejected');
+    }
+
+    public function getCharacterData()
+    {
+        return Character::whereIn('id', array_merge($this->getCharacters($this->sender), $this->getCharacters($this->recipient)))->get();
     }
 
     public function getInventory($user)

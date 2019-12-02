@@ -55,14 +55,10 @@ class TradeController extends Controller
     public function getTrade($id)
     {
         
-        $query = Trade::where('id', $id);
+        $trade = Trade::find($id);
         
-        if(!Auth::user()->hasPower('manage_characters'))
-            $query->where(function($query) {
-                $query->where('recipient_id', Auth::user()->id)->orWhere('sender_id', Auth::user()->id);
-            });
-
-        $trade = $query->first();
+        if($trade->status != 'Completed' && !Auth::user()->hasPower('manage_characters') && !($trade->sender_id == Auth::user()->id || $trade->recipient_id == Auth::user()->id))   $trade = null;
+        
         if(!$trade) abort(404);
         return view('home.trades.trade', [
             'trade' => $trade,

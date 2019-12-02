@@ -51,11 +51,11 @@ return [
         'links' => [
             [
                 'name' => 'Prompt Submissions',
-                'url' => 'admin/submissions/pending'
+                'url' => 'admin/submissions'
             ],
             [
                 'name' => 'Claim Submissions',
-                'url' => 'admin/claims/pending'
+                'url' => 'admin/claims'
             ],
         ]
     ],
@@ -143,6 +143,10 @@ return [
             [
                 'name' => 'Character Transfers',
                 'url' => 'admin/masterlist/transfers/incoming'
+            ],
+            [
+                'name' => 'Character Trades',
+                'url' => 'admin/masterlist/trades/incoming'
             ],
             [
                 'name' => 'Design Updates',
