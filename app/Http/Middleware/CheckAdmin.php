@@ -7,7 +7,7 @@ use Closure;
 class CheckAdmin
 {
     /**
-     * Handle an incoming request.
+     * Redirect non-admins to the home page.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next

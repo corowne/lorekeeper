@@ -15,10 +15,37 @@ class UserSettings extends Model
     protected $fillable = [
         'is_fto', 'character_count', 'myo_slot_count', 'submission_count', 'banned_at', 'ban_reason'
     ];
+
+    /**
+     * The primary key of the model.
+     *
+     * @var string
+     */
     public $primaryKey = 'user_id';
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = 'user_settings';
+
+    /**
+     * Dates on the model to convert to Carbon instances.
+     *
+     * @var array
+     */
     protected $dates = ['banned_at'];
 
+    /**********************************************************************************************
+    
+        RELATIONS
+
+    **********************************************************************************************/
+    
+    /**
+     * Get the user this set of settings belongs to.
+     */
     public function user() 
     {
         return $this->belongsTo('App\Models\User\User');

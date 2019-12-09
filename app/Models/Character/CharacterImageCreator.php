@@ -19,15 +19,46 @@ class CharacterImageCreator extends Model
     protected $fillable = [
         'character_image_id', 'type', 'url', 'alias', 'character_type'
     ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = 'character_image_creators';
+
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
     public $timestamps = false;
     
+    /**********************************************************************************************
     
+        RELATIONS
+
+    **********************************************************************************************/
+    
+    /**
+     * Get the image associated with this record.
+     */
     public function image() 
     {
         return $this->belongsTo('App\Models\Character\CharacterImage', 'character_image_id');
     }
+
+    /**********************************************************************************************
     
+        OTHER FUNCTIONS
+
+    **********************************************************************************************/
+
+    /**
+     * Displays a link using the creator's URL.
+     * 
+     * @return string
+     */
     public function displayLink()
     {
         if ($this->url)

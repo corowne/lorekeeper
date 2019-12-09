@@ -15,5 +15,11 @@ class RankPower extends Model
     protected $fillable = [
         'rank_id', 'power'
     ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = 'rank_powers';
 }

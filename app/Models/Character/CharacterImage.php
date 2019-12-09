@@ -25,9 +25,26 @@ class CharacterImage extends Model
         'description', 'parsed_description',
         'is_valid', 
     ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = 'character_images';
+
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
     public $timestamps = true;
     
+    /**
+     * Validation rules for image creation.
+     *
+     * @var array
+     */
     public static $createRules = [
         'species_id' => 'required',
         'rarity_id' => 'required',
@@ -35,6 +52,11 @@ class CharacterImage extends Model
         'thumbnail' => 'nullable|mimes:jpeg,gif,png|max:20000',
     ];
     
+    /**
+     * Validation rules for image updating.
+     *
+     * @var array
+     */
     public static $updateRules = [
         'character_id' => 'required',
         'user_id' => 'required',
@@ -43,27 +65,47 @@ class CharacterImage extends Model
         'description' => 'nullable',
     ];
     
+    /**********************************************************************************************
     
+        RELATIONS
+
+    **********************************************************************************************/
+    
+    /**
+     * Get the character associated with the image.
+     */
     public function character() 
     {
         return $this->belongsTo('App\Models\Character\Character', 'character_id');
     }
     
+    /**
+     * Get the user who owned the character at the time of image creation.
+     */
     public function user() 
     {
         return $this->belongsTo('App\Models\User\User', 'user_id');
     }
     
+    /**
+     * Get the species of the character image.
+     */
     public function species() 
     {
         return $this->belongsTo('App\Models\Species', 'species_id');
     }
     
+    /**
+     * Get the rarity of the character image.
+     */
     public function rarity() 
     {
         return $this->belongsTo('App\Models\Rarity', 'rarity_id');
     }
 
+    /**
+     * Get the features (traits) attached to the character image, ordered by display order.
+     */
     public function features() 
     {
         $ids = FeatureCategory::orderBy('sort', 'DESC')->pluck('id')->toArray();
@@ -71,73 +113,131 @@ class CharacterImage extends Model
         return $this->hasMany('App\Models\Character\CharacterFeature', 'character_image_id')->where('character_features.character_type', 'Character')->join('features', 'features.id', '=', 'character_features.feature_id')->orderByRaw(DB::raw('FIELD(features.feature_category_id, '.implode(',', $ids).')'));
     }
     
+    /**
+     * Get the designers/artists attached to the character image.
+     */
     public function creators() 
     {
         return $this->hasMany('App\Models\Character\CharacterImageCreator', 'character_image_id');
     }
     
+    /**
+     * Get the designers attached to the character image.
+     */
     public function designers() 
     {
         return $this->hasMany('App\Models\Character\CharacterImageCreator', 'character_image_id')->where('type', 'Designer')->where('character_type', 'Character');
     }
     
+    /**
+     * Get the artists attached to the character image.
+     */
     public function artists() 
     {
         return $this->hasMany('App\Models\Character\CharacterImageCreator', 'character_image_id')->where('type', 'Artist')->where('character_type', 'Character');
     }
 
+    /**********************************************************************************************
+    
+        SCOPES
+
+    **********************************************************************************************/
+
+    /**
+     * Scope a query to only include images visible to guests and regular logged-in users.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeGuest($query)
     {
         return $query->where('is_visible', 1)->orderBy('sort')->orderBy('id', 'DESC');
     }
 
+    /**
+     * Scope a query to include images visible to staff with the required viewing powers.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeMod($query)
     {
         return $query->orderBy('sort')->orderBy('id', 'DESC');
     }
-    
-    public function getDisplayNameAttribute()
-    {
-        return '<a href="'.$this->url.'" class="display-character">'.$this->name.'</a>';
-    }
 
+    /**********************************************************************************************
+    
+        ACCESSORS
+
+    **********************************************************************************************/
+
+    /**
+     * Gets the file directory containing the model's image.
+     *
+     * @return string
+     */
     public function getImageDirectoryAttribute()
     {
         return 'images/characters/'.floor($this->id / 1000);
     }
 
+    /**
+     * Gets the file name of the model's image.
+     *
+     * @return string
+     */
     public function getImageFileNameAttribute()
     {
         return $this->id . '_'.$this->hash.'.'.$this->extension;
     }
 
+    /**
+     * Gets the path to the file directory containing the model's image.
+     *
+     * @return string
+     */
     public function getImagePathAttribute()
     {
         return public_path($this->imageDirectory);
     }
     
+    /**
+     * Gets the URL of the model's image.
+     *
+     * @return string
+     */
     public function getImageUrlAttribute()
     {
         return asset($this->imageDirectory . '/' . $this->imageFileName);
     }
 
+    /**
+     * Gets the file name of the model's thumbnail image.
+     *
+     * @return string
+     */
     public function getThumbnailFileNameAttribute()
     {
         return $this->id . '_'.$this->hash.'_th.'.$this->extension;
     }
 
+    /**
+     * Gets the path to the file directory containing the model's thumbnail image.
+     *
+     * @return string
+     */
     public function getThumbnailPathAttribute()
     {
         return $this->imagePath;
     }
     
+    /**
+     * Gets the URL of the model's thumbnail image.
+     *
+     * @return string
+     */
     public function getThumbnailUrlAttribute()
     {
         return asset($this->imageDirectory . '/' . $this->thumbnailFileName);
-    }
-
-    public function getUrlAttribute()
-    {
-        return url('masterlist/'.$this->slug);
     }
 }

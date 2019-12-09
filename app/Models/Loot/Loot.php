@@ -15,8 +15,19 @@ class Loot extends Model
     protected $fillable = [
         'loot_table_id', 'rewardable_type', 'rewardable_id', 'quantity', 'weight'
     ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = 'loots';
     
+    /**
+     * Validation rules for creation.
+     *
+     * @var array
+     */
     public static $createRules = [
         'rewardable_type' => 'required',
         'rewardable_id' => 'required',
@@ -24,13 +35,27 @@ class Loot extends Model
         'weight' => 'required|integer|min:1',
     ];
     
+    /**
+     * Validation rules for updating.
+     *
+     * @var array
+     */
     public static $updateRules = [
         'rewardable_type' => 'required',
         'rewardable_id' => 'required',
         'quantity' => 'required|integer|min:1',
         'weight' => 'required|integer|min:1',
     ];
+
+    /**********************************************************************************************
     
+        RELATIONS
+
+    **********************************************************************************************/
+    
+    /**
+     * Get the reward attached to the loot entry.
+     */
     public function reward() 
     {
         switch ($this->rewardable_type)

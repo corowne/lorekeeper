@@ -18,20 +18,33 @@ class CharacterFeature extends Model
     protected $fillable = [
         'character_image_id', 'feature_id', 'data', 'character_type'
     ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = 'character_features';    
     
+    /**********************************************************************************************
+    
+        RELATIONS
+
+    **********************************************************************************************/
+
+    /**
+     * Get the image associated with this record.
+     */
     public function image() 
     {
         return $this->belongsTo('App\Models\Character\CharacterImage', 'character_image_id');
     }
     
+    /**
+     * Get the feature (character trait) associated with this record.
+     */
     public function feature() 
     {
         return $this->belongsTo('App\Models\Feature\Feature', 'feature_id');
     }
-    
-    //public function getDataAttribute()
-    //{
-    //    return json_decode($this->attributes['data'], true);
-    //}
 }

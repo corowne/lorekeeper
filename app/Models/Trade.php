@@ -21,24 +21,73 @@ class Trade extends Model
         'status', 'is_sender_confirmed', 'is_recipient_confirmed', 'is_sender_trade_confirmed', 'is_recipient_trade_confirmed',
         'is_approved', 'reason', 'data'
     ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = 'trades';
+
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
     public $timestamps = true;
 
+    /**********************************************************************************************
+    
+        RELATIONS
+
+    **********************************************************************************************/
+
+    /**
+     * Get the user who initiated the trade.
+     */
     public function sender() 
     {
         return $this->belongsTo('App\Models\User\User', 'sender_id');
     }
 
+    /**
+     * Get the user who received the trade.
+     */
     public function recipient() 
     {
         return $this->belongsTo('App\Models\User\User', 'recipient_id');
     }
 
+    /**
+     * Get the staff member who approved the character transfer.
+     */
     public function staff() 
     {
         return $this->belongsTo('App\Models\User\User', 'staff_id');
     }
 
+    /**********************************************************************************************
+    
+        SCOPES
+
+    **********************************************************************************************/
+
+    public function scopeCompleted($query)
+    {
+        return $query->where('status', 'Completed')->orWhere('status', 'Rejected');
+    }
+
+    /**********************************************************************************************
+    
+        ACCESSORS
+
+    **********************************************************************************************/
+
+    /**
+     * Check if the trade is active.
+     *
+     * @return bool
+     */
     public function getIsActiveAttribute()
     {
         if($this->status == 'Pending') return true;
@@ -50,32 +99,59 @@ class Trade extends Model
         return false;
     }
 
+    /**
+     * Check if the trade can be confirmed.
+     *
+     * @return bool
+     */
     public function getIsConfirmableAttribute()
     {
         if($this->is_sender_confirmed && $this->is_recipient_confirmed) return true;
         return false;
     }
 
+    /**
+     * Get the data attribute as an associative array.
+     *
+     * @return array
+     */
     public function getDataAttribute()
     {
         return json_decode($this->attributes['data'], true);
     }
 
+    /**
+     * Gets the URL of the trade.
+     *
+     * @return string
+     */
     public function getUrlAttribute()
     {
         return url('trades/'.$this->id);
     }
 
-    public function scopeCompleted($query)
-    {
-        return $query->where('status', 'Completed')->orWhere('status', 'Rejected');
-    }
+    /**********************************************************************************************
+    
+        OTHER FUNCTIONS
 
+    **********************************************************************************************/
+    
+    /**
+     * Gets all characters involved in the trade.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public function getCharacterData()
     {
         return Character::whereIn('id', array_merge($this->getCharacters($this->sender), $this->getCharacters($this->recipient)))->get();
     }
 
+    /**
+     * Gets the inventory of the given user for selection.
+     *
+     * @param  \App\Models\User\User $user
+     * @return array
+     */
     public function getInventory($user)
     {
         $type = $this->sender_id == $user->id ? 'sender' : 'recipient';
@@ -84,6 +160,12 @@ class Trade extends Model
         return $inventory;
     }
 
+    /**
+     * Gets the characters of the given user for selection.
+     *
+     * @param  \App\Models\User\User $user
+     * @return array
+     */
     public function getCharacters($user)
     {
         $type = $this->sender_id == $user->id ? 'sender' : 'recipient';
@@ -92,6 +174,12 @@ class Trade extends Model
         return $characters;
     }
 
+    /**
+     * Gets the currencies of the given user for selection.
+     *
+     * @param  \App\Models\User\User $user
+     * @return array
+     */
     public function getCurrencies($user)
     {
         $type = $this->sender_id == $user->id ? 'sender' : 'recipient';

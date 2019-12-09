@@ -19,9 +19,26 @@ class Prompt extends Model
         'prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active',
         'start_at', 'end_at', 'hide_before_start', 'hide_after_end'
     ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = 'prompts';
+
+    /**
+     * Dates on the model to convert to Carbon instances.
+     *
+     * @var array
+     */
     public $dates = ['start_at', 'end_at'];
     
+    /**
+     * Validation rules for character creation.
+     *
+     * @var array
+     */
     public static $createRules = [
         'prompt_category_id' => 'nullable',
         'name' => 'required|unique:prompts|between:3,25',
@@ -29,24 +46,52 @@ class Prompt extends Model
         'description' => 'nullable',
     ];
     
+    /**
+     * Validation rules for character updating.
+     *
+     * @var array
+     */
     public static $updateRules = [
         'prompt_category_id' => 'nullable',
         'name' => 'required|between:3,25',
         'summary' => 'nullable',
         'description' => 'nullable',
     ];
+
+    /**********************************************************************************************
     
+        RELATIONS
+
+    **********************************************************************************************/
     
+    /**
+     * Get the category the prompt belongs to.
+     */
     public function category() 
     {
         return $this->belongsTo('App\Models\Prompt\PromptCategory', 'prompt_category_id');
     }
     
+    /**
+     * Get the rewards attached to this prompt.
+     */
     public function rewards() 
     {
         return $this->hasMany('App\Models\Prompt\PromptReward', 'prompt_id');
     }
 
+    /**********************************************************************************************
+    
+        SCOPES
+
+    **********************************************************************************************/
+
+    /**
+     * Scope a query to only include active prompts.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeActive($query)
     {
         return $query->where('is_active', 1)
@@ -62,47 +107,107 @@ class Prompt extends Model
         
     }
 
+    /**
+     * Scope a query to sort prompts in alphabetical order.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  bool                                   $reverse
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeSortAlphabetical($query, $reverse = false)
     {
         return $query->orderBy('name', $reverse ? 'DESC' : 'ASC');
     }
 
+    /**
+     * Scope a query to sort prompts in category order.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeSortCategory($query)
     {
         $ids = PromptCategory::orderBy('sort', 'DESC')->pluck('id')->toArray();
         return $query->orderByRaw(DB::raw('FIELD(prompt_category_id, '.implode(',', $ids).')'));
     }
 
+    /**
+     * Scope a query to sort features by newest first.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeSortNewest($query)
     {
         return $query->orderBy('id', 'DESC');
     }
 
+    /**
+     * Scope a query to sort features oldest first.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeSortOldest($query)
     {
         return $query->orderBy('id');
     }
 
+    /**
+     * Scope a query to sort prompts by start date.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  bool                                   $reverse
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeSortStart($query, $reverse = false)
     {
         return $query->orderBy('start_at', $reverse ? 'DESC' : 'ASC');
     }
-    
+
+    /**
+     * Scope a query to sort prompts by end date.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  bool                                   $reverse
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeSortEnd($query, $reverse = false)
     {
         return $query->orderBy('end_at', $reverse ? 'DESC' : 'ASC');
     }
+
+    /**********************************************************************************************
     
+        ACCESSORS
+
+    **********************************************************************************************/
+    
+    /**
+     * Displays the model's name, linked to its encyclopedia page.
+     *
+     * @return string
+     */
     public function getDisplayNameAttribute()
     {
         return '<a href="'.$this->url.'" class="display-prompt">'.$this->name.'</a>';
     }
 
+    /**
+     * Gets the URL of the model's encyclopedia page.
+     *
+     * @return string
+     */
     public function getUrlAttribute()
     {
         return url('world/prompts?name='.$this->name);
     }
 
+    /**
+     * Gets the prompt's asset type for asset management.
+     *
+     * @return string
+     */
     public function getAssetTypeAttribute()
     {
         return 'prompts';

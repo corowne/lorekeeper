@@ -15,22 +15,56 @@ class UserCurrency extends Model
     protected $fillable = [
         'quantity', 'user_id', 'currency_id'
     ];
+    
+    /**
+     * Accessors to append to the model.
+     *
+     * @var array
+     */
     protected $appends = [
         'name_with_quantity'
     ];
-    //public $primaryKey = 'user_id';
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = 'user_currencies';
 
+    /**********************************************************************************************
+    
+        RELATIONS
+
+    **********************************************************************************************/
+
+    /**
+     * Get the user who owns the currency.
+     */
     public function user() 
     {
         return $this->belongsTo('App\Models\User\User');
     }
-    
+
+    /**
+     * Get the currency associated with this record.
+     */
     public function currency() 
     {
         return $this->belongsTo('App\Models\Currency\Currency');
     }
 
+    /**********************************************************************************************
+    
+        ACCESSORS
+
+    **********************************************************************************************/
+
+    /**
+     * Displays the currency's name and owned quantity.
+     *
+     * @return string
+     */
     public function getNameWithQuantityAttribute()
     {
         return $this->currency->name . ' [Owned: ' . $this->quantity . ']';

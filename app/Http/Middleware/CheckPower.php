@@ -7,7 +7,7 @@ use Closure;
 class CheckPower
 {
     /**
-     * Handle an incoming request.
+     * Check if the user has the power to access the current page.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
