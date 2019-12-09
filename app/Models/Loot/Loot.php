@@ -37,13 +37,13 @@ class Loot extends Model
         {
             case 'Item':
                 return $this->belongsTo('App\Models\Item\Item', 'rewardable_id');
-                break;
             case 'Currency':
                 return $this->belongsTo('App\Models\Currency\Currency', 'rewardable_id');
-                break;
             case 'LootTable':
                 return $this->belongsTo('App\Models\Loot\LootTable', 'rewardable_id');
-                break;
+            case 'None':
+                // Laravel requires a relationship instance to be returned (cannot return null), so returning one that doesn't exist here.
+                return $this->belongsTo('App\Models\Loot\Loot', 'rewardable_id', 'loot_table_id')->whereNull('loot_table_id');
         }
         return null;
     }

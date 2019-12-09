@@ -10,6 +10,7 @@ $( document ).ready(function() {
     @endif
 
     $('#lootTableBody .selectize').selectize();
+    attachRemoveListener($('#lootTableBody .remove-loot-button'));
 
     $('#addLoot').on('click', function(e) {
         e.preventDefault();

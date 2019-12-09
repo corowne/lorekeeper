@@ -27,7 +27,7 @@
                 <tr class="sort-item" data-id="{{ $table->id }}">
                     <td>#{{ $table->id }}</td>
                     <td>{{ $table->name }}</td>
-                    <td>{{ $table->display_name }}</td>
+                    <td>{!! $table->display_name !!}</td>
                     <td class="text-right">
                         <a href="{{ url('admin/data/loot-tables/edit/'.$table->id) }}" class="btn btn-primary">Edit</a>
                     </td>

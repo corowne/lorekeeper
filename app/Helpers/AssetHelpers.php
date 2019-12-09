@@ -62,6 +62,7 @@ function mergeAssetsArrays($first, $second)
 
 function addAsset(&$array, $asset, $quantity = 1)
 {
+    if(!$asset) return;
     if(isset($array[$asset->assetType][$asset->id])) $array[$asset->assetType][$asset->id]['quantity'] += $quantity;
     else $array[$asset->assetType][$asset->id] = ['asset' => $asset, 'quantity' => $quantity];
 }

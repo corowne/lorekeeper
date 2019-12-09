@@ -10,13 +10,16 @@
         @foreach($results as $result)
             @foreach($result as $type)
                 @if(count($type))
-                    <tr>
-                        <td>{{ $count++ }}</td>
-                        <td>{!! $type[0]['asset']->displayName !!}</td>
-                        <td>{{ $type[0]['quantity'] }}</td>
-                    </tr>
+                    @foreach($type as $t)
+                        <tr>
+                            <td>{{ $count++ }}</td>
+                            <td>{!! $t['asset']->displayName !!}</td>
+                            <td>{{ $t['quantity'] }}</td>
+                        </tr>
+                    @endforeach
                 @endif
             @endforeach
         @endforeach
     </tbody>
 </table>
+<p>Note: "None" results are not shown in this table.</p>

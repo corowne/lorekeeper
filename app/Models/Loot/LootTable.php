@@ -47,14 +47,15 @@ class LootTable extends Model
 
         for($i = 0; $i < $quantity; $i++)
         {
-            $roll = mt_rand(0, $totalWeight - 1);
+            $roll = mt_rand(0, $totalWeight - 1); 
             $result = null;
             $prev = null;
             $count = 0;
             foreach($loot as $l)
-            {
+            { 
                 if($roll > $count) $count += $l->weight;
-                else 
+
+                if($roll < $count)
                 {
                     $result = $l;
                     break;
@@ -63,11 +64,12 @@ class LootTable extends Model
             }
             if(!$result) $result = $prev;
 
-            // If this is chained to another loot table, roll on that table
-            if($result->rewardable_type == 'LootTable') $rewards = mergeAssetsArrays($rewards, $result->reward->roll($result->quantity));
-            else addAsset($rewards, $result->reward, $result->quantity);
+            if($result) {
+                // If this is chained to another loot table, roll on that table
+                if($result->rewardable_type == 'LootTable') $rewards = mergeAssetsArrays($rewards, $result->reward->roll($result->quantity));
+                else addAsset($rewards, $result->reward, $result->quantity);
+            }
         }
-
         return $rewards;
     }
 
