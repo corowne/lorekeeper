@@ -8,7 +8,7 @@
     <div class="col-md-6">
         <div class="card mb-4">
             <div class="card-body text-center">
-                <img src="{{ asset('images/profile.png') }}" />
+                <img src="{{ asset('images/account.png') }}" />
                 <h5 class="card-title">Account</h5>
             </div>
             <ul class="list-group list-group-flush">

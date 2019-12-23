@@ -45,16 +45,21 @@
     <link href="{{ asset('css/jquery-ui-timepicker-addon.css') }}" rel="stylesheet">
     <link href="{{ asset('css/croppie.css') }}" rel="stylesheet">
     <link href="{{ asset('css/selectize.bootstrap4.css') }}" rel="stylesheet">
+    
+    @if(file_exists(public_path(). '/css/custom.css'))
+        <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+    @endif
 </head>
 <body>
     <div id="app">
         <div class="site-header-image" id="header" style="background-image: url('{{ asset('images/header.png') }}');"></div>
         @include('layouts._nav')
+        <div class="site-mobile-header bg-secondary"><a href="#" class="btn btn-sm btn-outline-light" id="mobileMenuButton">Menu <i class="fas fa-caret-right ml-1"></i></a></div>
 
         <main class="container-fluid">
             <div class="row">
             
-                <div class="sidebar col-lg-2">
+                <div class="sidebar col-lg-2" id="sidebar">
                     @yield('sidebar')
                 </div>
                 <div class="main-content col-lg-8 p-4">
@@ -110,6 +115,17 @@
                         '{{ asset('css/app.css') }}',
                         '{{ asset('css/lorekeeper.css') }}'
                     ]
+                });
+                var $mobileMenuButton = $('#mobileMenuButton');
+                var $sidebar = $('#sidebar');
+                $('#mobileMenuButton').on('click', function(e) {
+                    e.preventDefault();
+                    $sidebar.toggleClass('active');
+                });
+
+                $('.inventory-log-stack').on('click', function(e) {
+                    e.preventDefault();
+                    loadModal("{{ url('items') }}/" + $(this).data('id') + "?read_only=1", $(this).data('name'));
                 });
             });
         </script>

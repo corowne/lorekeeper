@@ -30,6 +30,7 @@ Route::group(['prefix' => 'inventory', 'namespace' => 'Users'], function() {
     Route::get('/', 'InventoryController@getIndex');
     Route::post('transfer/{id}', 'InventoryController@postTransfer');
     Route::post('delete/{id}', 'InventoryController@postDelete');
+    Route::post('act/{id}/{tag}', 'InventoryController@postAct');
 
     Route::get('selector', 'InventoryController@getSelector');
 });

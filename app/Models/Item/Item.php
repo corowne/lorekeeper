@@ -63,6 +63,14 @@ class Item extends Model
         return $this->belongsTo('App\Models\Item\ItemCategory', 'item_category_id');
     }
 
+    /**
+     * Get the item's tags.
+     */
+    public function tags() 
+    {
+        return $this->hasMany('App\Models\Item\ItemTag', 'item_id');
+    }
+
     /**********************************************************************************************
     
         SCOPES
@@ -190,5 +198,31 @@ class Item extends Model
     public function getAssetTypeAttribute()
     {
         return 'items';
+    }
+
+    /**********************************************************************************************
+    
+        OTHER FUNCTIONS
+
+    **********************************************************************************************/
+
+    /**
+     * Checks if the item has a particular tag.
+     *
+     * @return bool
+     */
+    public function hasTag($tag)
+    {
+        return $this->tags()->where('tag', $tag)->where('is_active', 1)->exists();
+    }
+
+    /**
+     * Gets a particular tag attached to the item.
+     *
+     * @return \App\Models\Item\ItemTag
+     */
+    public function tag($tag)
+    {
+        return $this->tags()->where('tag', $tag)->where('is_active', 1)->first();
     }
 }

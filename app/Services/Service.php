@@ -219,7 +219,7 @@ abstract class Service {
         {
             // Create the directory.
             if (!mkdir($dir, 0755, true)) {
-                $this->setError('Failed to create image directory.');
+                $this->setError('error', 'Failed to create image directory.');
                 return false;
             }
             chmod($dir, 0755);

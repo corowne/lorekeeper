@@ -9,12 +9,26 @@ use App\Models\Character\CharacterCategory;
 
 class CharacterCategoryService extends Service
 {
-    public function createCharacterCategory($data, $user)
+    /*
+    |--------------------------------------------------------------------------
+    | Character Category Service
+    |--------------------------------------------------------------------------
+    |
+    | Handles the creation and editing of character categories.
+    |
+    */
+
+    /**
+     * Create a category.
+     *
+     * @param  array  $data
+     * @return \App\Models\Character\CharacterCategory|bool
+     */
+    public function createCharacterCategory($data)
     {
         DB::beginTransaction();
 
         try {
-
             $data = $this->populateCategoryData($data);
 
             $image = null;
@@ -35,13 +49,19 @@ class CharacterCategoryService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
-    public function updateCharacterCategory($category, $data, $user)
+
+    /**
+     * Update a category.
+     *
+     * @param  \App\Models\Character\CharacterCategory  $category
+     * @param  array                                    $data
+     * @return \App\Models\Character\CharacterCategory|bool
+     */
+    public function updateCharacterCategory($category, $data)
     {
         DB::beginTransaction();
 
         try {
-            // More specific validation
             if(CharacterCategory::where('name', $data['name'])->where('id', '!=', $category->id)->exists()) throw new \Exception("The name has already been taken.");
             if(CharacterCategory::where('code', $data['code'])->where('id', '!=', $category->id)->exists()) throw new \Exception("The code has already been taken.");
 
@@ -65,6 +85,13 @@ class CharacterCategoryService extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Handle category data.
+     *
+     * @param  array                                    $data
+     * @param  \App\Models\Character\CharacterCategory  $category
+     * @return array
+     */
     private function populateCategoryData($data, $category = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
@@ -81,7 +108,13 @@ class CharacterCategoryService extends Service
 
         return $data;
     }
-    
+
+    /**
+     * Delete a category.
+     *
+     * @param  \App\Models\Character\CharacterCategory  $category
+     * @return bool
+     */
     public function deleteCharacterCategory($category)
     {
         DB::beginTransaction();
@@ -99,7 +132,13 @@ class CharacterCategoryService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Sorts category order.
+     *
+     * @param  array                  $data
+     * @return bool
+     */
     public function sortCharacterCategory($data)
     {
         DB::beginTransaction();

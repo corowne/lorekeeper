@@ -50,11 +50,14 @@ class InventoryController extends Controller
      */
     public function getStack(Request $request, $id)
     {
+        $stack = UserItem::withTrashed()->where('id', $id)->with('item')->first();
+        $readOnly = $request->get('read_only') ? : ((Auth::check() && $stack && !$stack->deleted_at && ($stack->user_id == Auth::user()->id || Auth::user()->hasPower('edit_inventories'))) ? 0 : 1);
+
         return view('home._inventory_stack', [
-            'stack' => $stack = UserItem::where('id', $id)->with('item')->first(),
+            'stack' => $stack,
             'user' => Auth::user(),
             'userOptions' => ['' => 'Select User'] + User::visible()->where('id', '!=', $stack ? $stack->user_id : 0)->orderBy('name')->get()->pluck('verified_name', 'id')->toArray(),
-            'readOnly' => $request->get('read_only')
+            'readOnly' => $readOnly
         ]);
     }
     
@@ -107,5 +110,27 @@ class InventoryController extends Controller
         return view('widgets._inventory_select', [
             'user' => Auth::user(),
         ]);
+    }
+    
+    /**
+     * Acts on an item based on the item's tag.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\InventoryManager  $service
+     * @param  int                            $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postAct(Request $request, $id, $tag)
+    {
+        $stack = UserItem::where('id', $id)->first();
+        $service = $stack->item->hasTag($tag) ? $stack->item->tag($tag)->service : null;
+        if($service && $service->act($stack, Auth::user(), $request->all())) {
+            flash('Item used successfully.')->success();
+        }
+        else if(!$stack->item->hasTag($tag)) flash('Invalid action selected.')->error();
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
     }
 }

@@ -7,7 +7,7 @@
 
 <h1>{{ $item->id ? 'Edit' : 'Create' }} Item
     @if($item->id)
-        <a href="#" class="btn btn-danger float-right delete-item-button">Delete Item</a>
+        <a href="#" class="btn btn-outline-danger float-right delete-item-button">Delete Item</a>
     @endif
 </h1>
 
@@ -41,7 +41,6 @@
     {!! Form::textarea('description', $item->description, ['class' => 'form-control wysiwyg']) !!}
 </div>
 
-
 {!! Form::checkbox('allow_transfer', 1, $item->id ? $item->allow_transfer : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
 {!! Form::label('allow_transfer', 'Allow User → User Transfer', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is off, users will not be able to transfer this item to other users. Non-account-bound items can be account-bound when granted to users directly.') !!}
 
@@ -52,6 +51,32 @@
 {!! Form::close() !!}
 
 @if($item->id)
+    <h3>Item Tags</h3>
+    <p>Item tags indicate extra functionality for the item. Click on the edit button to edit the specific item tag's data.</p>
+    @if(count($item->tags))
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Tag</th>
+                    <th>Active?</th>
+                    <th></th>
+                </tr>
+            </thead>
+            @foreach($item->tags as $tag)
+                <tr>
+                    <td>{!! $tag->displayTag !!}</td>
+                    <td class="{{ $tag->is_active ? 'text-success' : 'text-danger' }}">{{ $tag->is_active ? 'Yes' : 'No' }}</td>
+                    <td class="text-right"><a href="{{ url('admin/data/items/tag/'.$item->id.'/'.$tag->tag) }}" class="btn btn-outline-primary">Edit</a></td>
+                </tr>
+            @endforeach
+        </table>
+    @else 
+        <p>No item tags attached to this item.</p> 
+    @endif
+    <div class="text-right">
+        <a href="{{ url('admin/data/items/tag/'.$item->id) }}" class="btn btn-outline-primary">Add a Tag</a>
+    </div>
+    
     <h3>Preview</h3>
     <div class="card mb-3">
         <div class="card-body">

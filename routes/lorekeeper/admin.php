@@ -43,11 +43,33 @@ Route::group(['prefix' => 'users', 'namespace' => 'Users'], function() {
 });
 
 # SETTINGS
-Route::group(['prefix' => 'invitations', 'middleware' => 'power:edit_user_info'], function() {
+Route::group(['prefix' => 'invitations', 'middleware' => 'power:edit_site_settings'], function() {
     Route::get('/', 'InvitationController@getIndex');
 
     Route::post('create', 'InvitationController@postGenerateKey');
     Route::post('delete/{id}', 'InvitationController@postDeleteKey');
+});
+
+# FILE MANAGER
+Route::group(['prefix' => 'files', 'middleware' => 'power:edit_site_settings'], function() {
+    Route::get('/{folder?}', 'FileController@getIndex');
+
+    Route::post('upload', 'FileController@postUploadFile');
+    Route::post('move', 'FileController@postMoveFile');
+    Route::post('rename', 'FileController@postRenameFile');
+    Route::post('delete', 'FileController@postDeleteFile');
+    Route::post('folder/create', 'FileController@postCreateFolder');
+    Route::post('folder/delete', 'FileController@postDeleteFolder');
+    Route::post('folder/rename', 'FileController@postRenameFolder');
+});
+
+# SITE IMAGES
+Route::group(['prefix' => 'images', 'middleware' => 'power:edit_site_settings'], function() {
+    Route::get('/', 'FileController@getSiteImages');
+
+    Route::post('upload/css', 'FileController@postUploadCss');
+    Route::post('upload', 'FileController@postUploadImage');
+    Route::post('reset', 'FileController@postResetFile');
 });
 
 # DATA
@@ -101,6 +123,13 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('items/create', 'ItemController@postCreateEditItem');
     Route::post('items/edit/{id?}', 'ItemController@postCreateEditItem');
     Route::post('items/delete/{id}', 'ItemController@postDeleteItem');
+
+    Route::get('items/delete-tag/{id}/{tag}', 'ItemController@getDeleteItemTag');
+    Route::post('items/delete-tag/{id}/{tag}', 'ItemController@postDeleteItemTag');
+    Route::get('items/tag/{id}/{tag}', 'ItemController@getEditItemTag');
+    Route::post('items/tag/{id}/{tag}', 'ItemController@postEditItemTag');
+    Route::get('items/tag/{id}', 'ItemController@getAddItemTag');
+    Route::post('items/tag/{id}', 'ItemController@postAddItemTag');
     
     # SHOPS
     Route::get('shops', 'ShopController@getIndex');

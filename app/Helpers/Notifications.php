@@ -6,6 +6,24 @@ use DB;
 use App\Models\Notification;
 
 class Notifications {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Notifications
+    |--------------------------------------------------------------------------
+    |
+    | Creates user notifications.
+    |
+    */
+
+    /**
+     * Creates a new notification.
+     *
+     * @param  string                 $type
+     * @param  \App\Models\User\User  $user
+     * @param  array                  $data
+     * @return bool
+     */
     public function create($type, $user, $data)
     {
         DB::beginTransaction();

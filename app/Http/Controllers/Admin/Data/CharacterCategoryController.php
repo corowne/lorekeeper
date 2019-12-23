@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Admin\Data;
 
 use Illuminate\Http\Request;
 
-use Auth;
-
 use App\Models\Character\CharacterCategory;
 
 use App\Services\CharacterCategoryService;
@@ -76,10 +74,10 @@ class CharacterCategoryController extends Controller
         $data = $request->only([
             'code', 'name', 'description', 'image', 'remove_image'
         ]);
-        if($id && $service->updateCharacterCategory(CharacterCategory::find($id), $data, Auth::user())) {
+        if($id && $service->updateCharacterCategory(CharacterCategory::find($id), $data)) {
             flash('Category updated successfully.')->success();
         }
-        else if (!$id && $category = $service->createCharacterCategory($data, Auth::user())) {
+        else if (!$id && $category = $service->createCharacterCategory($data)) {
             flash('Category created successfully.')->success();
             return redirect()->to('admin/data/character-categories/edit/'.$category->id);
         }

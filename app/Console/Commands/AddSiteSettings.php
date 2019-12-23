@@ -39,6 +39,10 @@ class AddSiteSettings extends Command
      */
     public function handle()
     {
+        $this->info('*********************');
+        $this->info('* ADD SITE SETTINGS *');
+        $this->info('*********************'."\n");
+
         $this->line("Adding site settings...existing entries will be skipped.\n");
 
         if(!DB::table('site_settings')->where('key', 'is_registration_open')->exists()) {

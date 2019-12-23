@@ -1,15 +1,41 @@
 <?php
 
-function set_active($path, $class = 'active') {
-    
-    return call_user_func_array('Request::is', (array)$path) ? $class : '';
+/*
+|--------------------------------------------------------------------------
+| Helpers
+|--------------------------------------------------------------------------
+|
+| Miscellaneous helper functions, primarily used for formatting.
+|
+*/
 
+/**
+ * Returns class name if the current URL corresponds to the given path.
+ *
+ * @param  string  $path
+ * @param  string  $class
+ * @return string
+ */
+function set_active($path, $class = 'active') {
+    return call_user_func_array('Request::is', (array)$path) ? $class : '';
 }
 
+/**
+ * Adds a help icon with a tooltip.
+ *
+ * @param  string  $text
+ * @return string
+ */
 function add_help($text) {
     return '<i class="fas fa-question-circle help-icon" data-toggle="tooltip" title="'.$text.'"></i>';
 }
 
+/**
+ * Uses the given array to generate breadcrumb links.
+ *
+ * @param  array  $links
+ * @return string
+ */
 function breadcrumbs($links) {
     $ret = '<nav><ol class="breadcrumb">';
     $count = 0;
@@ -34,14 +60,34 @@ function breadcrumbs($links) {
     return $ret;
 }
 
+/**
+ * Formats the timestamp to a standard format.
+ *
+ * @param  \Illuminate\Support\Carbon\Carbon  $timestamp
+ * @return string
+ */
 function format_date($timestamp) {
     return $timestamp->format('j F Y, H:i:s e');
 }
 
+/**
+ * Formats a number to fit the number of digits given, 
+ * for generating masterlist numbers.
+ *
+ * @param  \Illuminate\Support\Carbon\Carbon  $timestamp
+ * @return string
+ */
 function format_masterlist_number($number, $digits) {
     return sprintf('%0'.$digits.'d', $number);
 }
 
+/**
+ * Parses a piece of user-entered text for HTML output and optionally gets pings.
+ *
+ * @param  string  $text
+ * @param  array   $pings
+ * @return string
+ */
 function parse($text, &$pings = null) {
     if(!$text) return null;
 
@@ -59,6 +105,14 @@ function parse($text, &$pings = null) {
     return $text;
 }
 
+/**
+ * Parses a piece of user-entered text to match user mentions
+ * and replace with a link.
+ *
+ * @param  string  $text
+ * @param  mixed   $users
+ * @return string
+ */
 function parseUsers($text, &$users) {
     $matches = null;
     $users = [];
@@ -77,6 +131,14 @@ function parseUsers($text, &$users) {
     return $text;
 }
 
+/**
+ * Parses a piece of user-entered text to match character mentions
+ * and replace with a link.
+ *
+ * @param  string  $text
+ * @param  mixed   $characters
+ * @return string
+ */
 function parseCharacters($text, &$characters) {
     $matches = null;
     $characters = [];
@@ -95,6 +157,12 @@ function parseCharacters($text, &$characters) {
     return $text;
 }
 
+/**
+ * Generates a string of random characters of the specified length.
+ *
+ * @param  int  $characters
+ * @return string
+ */
 function randomString($characters)
 {
     $src = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

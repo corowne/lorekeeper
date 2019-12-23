@@ -7,6 +7,7 @@ use Config;
 
 use App\Models\Item\ItemCategory;
 use App\Models\Item\Item;
+use App\Models\Item\ItemTag;
 
 class ItemService extends Service
 {
@@ -123,7 +124,6 @@ class ItemService extends Service
         }
         return $this->rollbackReturn(false);
     }
-
     
     /**********************************************************************************************
      
@@ -221,6 +221,86 @@ class ItemService extends Service
             
             if($item->has_image) $this->deleteImage($item->ImagePath, $item->ImageFileName); 
             $item->delete();
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+    
+    /**********************************************************************************************
+     
+        ITEM TAGS
+
+    **********************************************************************************************/
+
+    public function getItemTags()
+    {
+        $tags = Config::get('lorekeeper.item_tags');
+        $result = [];
+        foreach($tags as $tag => $tagData)
+            $result[$tag] = $tagData['name'];
+
+        return $result;
+    }
+
+    public function addItemTag($item, $tag)
+    {
+        DB::beginTransaction();
+
+        try {
+            if(!$item) throw new \Exception("Invalid item selected.");
+            if($item->tags()->where('tag', $tag)->exists()) throw new \Exception("This item already has this tag attached to it.");
+            
+            $tag = ItemTag::create([
+                'item_id' => $item->id,
+                'tag' => $tag
+            ]);
+
+            return $this->commitReturn($tag);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    public function editItemTag($item, $tag, $data)
+    {
+        DB::beginTransaction();
+
+        try {
+            if(!$item) throw new \Exception("Invalid item selected.");
+            if(!$item->tags()->where('tag', $tag)->exists()) throw new \Exception("This item does not have this tag attached to it.");
+            
+            $tag = $item->tags()->where('tag', $tag)->first();
+
+            $service = $tag->service;
+            if(!$service->updateData($tag, $data)) {
+                $this->setErrors($service->errors());
+                throw new \Exception('sdlfk');
+            }
+
+            // Update the tag's active setting
+            $tag->is_active = isset($data['is_active']);
+            $tag->save();
+
+            return $this->commitReturn($tag);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    public function deleteItemTag($item, $tag)
+    {
+        DB::beginTransaction();
+
+        try {
+            if(!$item) throw new \Exception("Invalid item selected.");
+            if(!$item->tags()->where('tag', $tag)->exists()) throw new \Exception("This item does not have this tag attached to it.");
+            
+            $item->tags()->where('tag', $tag)->delete();
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 

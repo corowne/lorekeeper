@@ -3,7 +3,16 @@
 @else
     <div class="text-center">
         <div class="mb-1"><a href="{{ $stack->item->url }}"><img src="{{ $stack->item->imageUrl }}" /></a></div>
-        <div><a href="{{ $stack->item->url }}">{{ $stack->item->name }}</a></div>
+        <div @if(count($stack->item->tags)) class="mb-1" @endif><a href="{{ $stack->item->url }}">{{ $stack->item->name }}</a></div>
+        @if(count($stack->item->tags))
+            <div>
+                @foreach($stack->item->tags as $tag)
+                    @if($tag->is_active)
+                        {!! $tag->displayTag !!}
+                    @endif
+                @endforeach
+            </div>
+        @endif
     </div>
     
     @if(isset($stack->data['notes']) || isset($stack->data['data']))
@@ -28,6 +37,13 @@
     @if($user && !$readOnly && ($stack->user_id == $user->id || $user->hasPower('edit_inventories')))
         <div class="card mt-3">
             <ul class="list-group list-group-flush">
+                @if(count($stack->item->tags))
+                    @foreach($stack->item->tags as $tag)
+                        @if(View::exists('inventory._'.$tag->tag))
+                            @include('inventory._'.$tag->tag, ['stack' => $stack, 'tag' => $tag])
+                        @endif
+                    @endforeach
+                @endif
                 @if($stack->isTransferrable || $user->hasPower('edit_inventories'))
                     <li class="list-group-item">
                         <a class="card-title h5 collapse-title"  data-toggle="collapse" href="#transferForm">@if($stack->user_id != $user->id) [ADMIN] @endif Transfer Item</a>

@@ -8,6 +8,7 @@ use Auth;
 
 use App\Models\Item\ItemCategory;
 use App\Models\Item\Item;
+use App\Models\Item\ItemTag;
 
 use App\Services\ItemService;
 
@@ -147,7 +148,6 @@ class ItemController extends Controller
         return redirect()->back();
     }
 
-
     /**********************************************************************************************
     
         ITEMS
@@ -238,7 +238,7 @@ class ItemController extends Controller
      */
     public function getDeleteItem($id)
     {
-        $category = Item::find($id);
+        $item = Item::find($id);
         return view('admin.items._delete_item', [
             'item' => $item,
         ]);
@@ -261,5 +261,125 @@ class ItemController extends Controller
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
         return redirect()->to('admin/data/items');
+    }
+
+    /**********************************************************************************************
+    
+        ITEM TAGS
+
+    **********************************************************************************************/
+
+    /**
+     * Gets the tag addition page.
+     *
+     * @param  App\Services\ItemService  $service
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getAddItemTag(ItemService $service, $id)
+    {
+        $item = Item::find($id);
+        return view('admin.items.add_tag', [
+            'item' => $item,
+            'tags' => array_diff($service->getItemTags(), $item->tags()->pluck('tag')->toArray())
+        ]);
+    }
+
+    /**
+     * Adds a tag to an item.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\ItemService  $service
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postAddItemTag(Request $request, ItemService $service, $id)
+    {
+        $item = Item::find($id);
+        $tag = $request->get('tag');
+        if($tag = $service->addItemTag($item, $tag)) {
+            flash('Tag added successfully.')->success();
+            return redirect()->to($tag->adminUrl);
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Gets the tag editing page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getEditItemTag(ItemService $service, $id, $tag)
+    {
+        $item = Item::find($id);
+        $tag = $item->tags()->where('tag', $tag)->first();
+        if(!$item || !$tag) abort(404);
+        return view('admin.items.edit_tag', [
+            'item' => $item,
+            'tag' => $tag
+        ] + $tag->getEditData());
+    }
+
+    /**
+     * Edits tag data for an item.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\ItemService  $service
+     * @param  int                       $id
+     * @param  string                    $tag
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postEditItemTag(Request $request, ItemService $service, $id, $tag)
+    {
+        $item = Item::find($id);
+        if($service->editItemTag($item, $tag, $request->all())) {
+            flash('Tag edited successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+    
+    /**
+     * Gets the item tag deletion modal.
+     *
+     * @param  int  $id
+     * @param  string                    $tag
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getDeleteItemTag($id, $tag)
+    {
+        $item = Item::find($id);
+        $tag = $item->tags()->where('tag', $tag)->first();
+        return view('admin.items._delete_item_tag', [
+            'item' => $item,
+            'tag' => $tag
+        ]);
+    }
+
+    /**
+     * Deletes a tag from an item.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\ItemService  $service
+     * @param  int                       $id
+     * @param  string                    $tag
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postDeleteItemTag(Request $request, ItemService $service, $id, $tag)
+    {
+        $item = Item::find($id);
+        if($service->deleteItemTag($item, $tag)) {
+            flash('Tag deleted successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->to('admin/data/items/edit/'.$item->id);
     }
 }

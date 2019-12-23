@@ -1,11 +1,36 @@
 <?php
 
+/*
+|--------------------------------------------------------------------------
+| Asset Helpers
+|--------------------------------------------------------------------------
+|
+| These are used to manage asset arrays, which are used in keeping
+| track of/distributing rewards.
+|
+*/
+
+/**
+ * Gets the asset keys for an array depending on whether the
+ * assets being managed are owned by a user or character. 
+ *
+ * @param  bool  $isCharacter
+ * @return array
+ */
 function getAssetKeys($isCharacter = false)
 {
     if(!$isCharacter) return ['items', 'currencies', 'raffle_tickets', 'loot_tables', 'user_items', 'characters'];
     else return ['currencies'];
 }
 
+/**
+ * Gets the model name for an asset type.
+ * The asset type has to correspond to one of the asset keys above. 
+ *
+ * @param  string  $type
+ * @param  bool    $namespaced
+ * @return string
+ */
 function getAssetModelString($type, $namespaced = true)
 {
     switch($type)
@@ -43,6 +68,12 @@ function getAssetModelString($type, $namespaced = true)
     return null;
 }
 
+/**
+ * Initialises a new blank assets array, keyed by the asset type.
+ *
+ * @param  bool  $isCharacter
+ * @return array
+ */
 function createAssetsArray($isCharacter = false)
 {
     $keys = getAssetKeys($isCharacter);
@@ -51,6 +82,13 @@ function createAssetsArray($isCharacter = false)
     return $assets;
 }
 
+/**
+ * Merges 2 asset arrays.
+ *
+ * @param  array  $first
+ * @param  array  $second
+ * @return array
+ */
 function mergeAssetsArrays($first, $second)
 {
     $keys = getAssetKeys();
@@ -60,6 +98,14 @@ function mergeAssetsArrays($first, $second)
     return $first;
 }
 
+/**
+ * Adds an asset to the given array.
+ * If the asset already exists, it adds to the quantity.
+ *
+ * @param  array  $array
+ * @param  mixed  $asset
+ * @param  int    $quantity
+ */
 function addAsset(&$array, $asset, $quantity = 1)
 {
     if(!$asset) return;
@@ -67,8 +113,15 @@ function addAsset(&$array, $asset, $quantity = 1)
     else $array[$asset->assetType][$asset->id] = ['asset' => $asset, 'quantity' => $quantity];
 }
 
-// Get a clean version of the asset array to store in DB,
-// where each asset is listed in [id => quantity] format
+/**
+ * Get a clean version of the asset array to store in the database,
+ * where each asset is listed in [id => quantity] format.
+ * json_encode this and store in the data attribute.
+ *
+ * @param  array  $array
+ * @param  bool   $isCharacter
+ * @return array
+ */
 function getDataReadyAssets($array, $isCharacter = false)
 {
     $result = [];
@@ -83,8 +136,14 @@ function getDataReadyAssets($array, $isCharacter = false)
     return $result;
 }
 
-// Retrieves the data associated with an asset array,
-// basically reverses the above function
+/**
+ * Retrieves the data associated with an asset array,
+ * basically reversing the above function.
+ * Use the data attribute after json_decode()ing it.
+ *
+ * @param  array  $array
+ * @return array
+ */
 function parseAssetData($array)
 {
     $assets = createAssetsArray();
@@ -106,8 +165,17 @@ function parseAssetData($array)
     return $assets;
 }
 
-// Distributes the assets in an array to the given recipient.
-// Loot tables will be rolled before distribution.
+/**
+ * Distributes the assets in an assets array to the given recipient (user).
+ * Loot tables will be rolled before distribution.
+ *
+ * @param  array                  $assets
+ * @param  \App\Models\User\User  $sender
+ * @param  \App\Models\User\User  $recipient
+ * @param  string                 $logType
+ * @param  string                 $data
+ * @return array
+ */
 function fillUserAssets($assets, $sender, $recipient, $logType, $data)
 {
     // Roll on any loot tables
@@ -156,7 +224,17 @@ function fillUserAssets($assets, $sender, $recipient, $logType, $data)
     return $assets;
 }
 
-// Distributes the assets in an array to the given character.
+/**
+ * Distributes the assets in an assets array to the given recipient (character).
+ * Loot tables will be rolled before distribution.
+ *
+ * @param  array                            $assets
+ * @param  \App\Models\User\User            $sender
+ * @param  \App\Models\Character\Character  $recipient
+ * @param  string                           $logType
+ * @param  string                           $data
+ * @return array
+ */
 function fillCharacterAssets($assets, $sender, $recipient, $logType, $data)
 {
     foreach($assets as $key => $contents)
