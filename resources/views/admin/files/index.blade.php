@@ -42,7 +42,7 @@
         @foreach($files as $file)
             <tr>
                 <td>
-                    <a href="{{ asset('files/'.$file) }}">{{ $file }}</a>
+                    <a href="{{ asset('files/'.($folder ? $folder.'/' : '').$file) }}">{{ $file }}</a>
                 </td>
                 <td class="text-right">
                     <a href="#" class="btn btn-outline-primary btn-sm move-file" data-name="{{ $file }}" data-folder="{{ $folder }}">Move</a>
