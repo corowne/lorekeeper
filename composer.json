@@ -9,7 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.1.3",
-        "chillerlan/php-oauth-deviantart": "^2.0",
+        "chillerlan/php-oauth-providers": "1.0.0",
         "doctrine/dbal": "^2.9",
         "ezyang/htmlpurifier": "^4.10",
         "fideloper/proxy": "^4.0",

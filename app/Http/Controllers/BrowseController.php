@@ -86,12 +86,20 @@ class BrowseController extends Controller
      */
     public function getCharacters(Request $request)
     {
-        $query = Character::myo(0);
+        $query = Character::with('image')->myo(0);
         
         if($request->get('name')) $query->where(function($query) use ($request) {
             $query->where('characters.name', 'LIKE', '%' . $request->get('name') . '%')->orWhere('characters.slug', 'LIKE', '%' . $request->get('name') . '%');
         });
-        //if($request->get('species_id')) $query->where('species_id', $request->get('species_id'));
+        // For feature and species searches, we're only searching by the current image of the character.
+        if($request->get('feature_id')) {
+            $imageIds = DB::table('character_features')->where('feature_id', $request->get('feature_id'))->pluck('character_image_id');
+            $query->whereIn('character_image_id', array_unique($imageIds));
+        }
+        if($request->get('species_id')) {
+            $imageIds = DB::table('character_images')->where('species_id', $request->get('species_id'))->pluck('id');
+            $query->whereIn('character_image_id', $imageIds);
+        }
         if($request->get('rarity_id')) $query->where('rarity_id', $request->get('rarity_id'));
 
         return view('browse.masterlist', [  

@@ -4,88 +4,48 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "89f51e7d6a39991eefd50175530b2025",
+    "content-hash": "f42ac4ee94c705844ce740685f169fe3",
     "packages": [
         {
-            "name": "chillerlan/php-dotenv",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/chillerlan/php-dotenv.git",
-                "reference": "f7bb3ce71ebe970812fae0e12c3b2c0e3ba5c006"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/chillerlan/php-dotenv/zipball/f7bb3ce71ebe970812fae0e12c3b2c0e3ba5c006",
-                "reference": "f7bb3ce71ebe970812fae0e12c3b2c0e3ba5c006",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.2"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^7.3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "chillerlan\\DotEnv\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "smiley",
-                    "email": "smiley@chillerlan.net",
-                    "homepage": "https://github.com/codemasher"
-                }
-            ],
-            "description": "A simple .env loader - PHP 7.2+",
-            "homepage": "https://github.com/chillerlan/php-dotenv",
-            "keywords": [
-                "PHP7",
-                "dotenv",
-                "helper",
-                "trait"
-            ],
-            "time": "2018-09-07T03:59:25+00:00"
-        },
-        {
             "name": "chillerlan/php-httpinterface",
-            "version": "3.0.1",
+            "version": "4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/chillerlan/php-httpinterface.git",
-                "reference": "88d2fe7ab317821ee43867939ff8af7240faa267"
+                "reference": "c60772c50a4152dcd7a170e324ac0364f3ecadb2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/chillerlan/php-httpinterface/zipball/88d2fe7ab317821ee43867939ff8af7240faa267",
-                "reference": "88d2fe7ab317821ee43867939ff8af7240faa267",
+                "url": "https://api.github.com/repos/chillerlan/php-httpinterface/zipball/c60772c50a4152dcd7a170e324ac0364f3ecadb2",
+                "reference": "c60772c50a4152dcd7a170e324ac0364f3ecadb2",
                 "shasum": ""
             },
             "require": {
-                "chillerlan/php-settings-container": "^1.0",
+                "chillerlan/php-settings-container": "^1.2",
+                "ext-curl": "*",
                 "ext-json": "*",
+                "ext-simplexml": "*",
+                "ext-zlib": "*",
                 "fig/http-message-util": "^1.1",
                 "php": "^7.2",
                 "psr/http-client": "^1.0",
                 "psr/http-factory": "^1.0",
                 "psr/http-message": "^1.0",
-                "psr/log": "^1.0"
+                "psr/http-server-handler": "^1.0",
+                "psr/http-server-middleware": "^1.0",
+                "psr/log": "^1.1"
             },
             "provide": {
-                "chillerlan/php-httpinterface": "2.0",
                 "psr/http-client-implementation": "1.0",
                 "psr/http-factory-implementation": "1.0",
-                "psr/http-message-implementation": "1.0"
+                "psr/http-message-implementation": "1.0",
+                "psr/http-server-handler-implementation": "1.0",
+                "psr/http-server-middleware-implementation": "1.0"
             },
             "require-dev": {
-                "guzzlehttp/psr7": "^1.5",
-                "phpunit/phpunit": "^7.5"
+                "guzzlehttp/psr7": "^1.6",
+                "http-interop/http-factory-tests": "^0.6",
+                "phpunit/phpunit": "^8.4"
             },
             "type": "library",
             "autoload": {
@@ -110,34 +70,36 @@
             "description": "A http PSR-7/17/18 client/interface for PHP7.2+",
             "keywords": [
                 "client",
+                "factory",
+                "handler",
                 "http",
+                "message",
+                "psr-15",
                 "psr-17",
                 "psr-18",
                 "psr-7"
             ],
-            "time": "2019-02-25T02:53:28+00:00"
+            "time": "2019-11-10T21:41:59+00:00"
         },
         {
             "name": "chillerlan/php-magic-apiclient",
-            "version": "2.0.1",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/chillerlan/php-magic-apiclient.git",
-                "reference": "93c3d49b4ef8a9250b5d3b41e52e9d6bec905a24"
+                "reference": "47d72a263be61c527e04d1c4b1e350434fd267ed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/chillerlan/php-magic-apiclient/zipball/93c3d49b4ef8a9250b5d3b41e52e9d6bec905a24",
-                "reference": "93c3d49b4ef8a9250b5d3b41e52e9d6bec905a24",
+                "url": "https://api.github.com/repos/chillerlan/php-magic-apiclient/zipball/47d72a263be61c527e04d1c4b1e350434fd267ed",
+                "reference": "47d72a263be61c527e04d1c4b1e350434fd267ed",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2"
-            },
-            "require-dev": {
-                "chillerlan/php-httpinterface": "^3.0",
-                "phpunit/phpunit": "^7.5",
-                "psr/log": "^1.0"
+                "chillerlan/php-settings-container": "^1.2",
+                "ext-json": "*",
+                "php": "^7.2",
+                "psr/http-message": "^1.0"
             },
             "type": "library",
             "autoload": {
@@ -164,34 +126,36 @@
                 "http",
                 "magic"
             ],
-            "time": "2019-02-23T20:54:42+00:00"
+            "time": "2019-11-10T17:35:46+00:00"
         },
         {
             "name": "chillerlan/php-oauth-core",
-            "version": "2.1.1",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/chillerlan/php-oauth-core.git",
-                "reference": "a48c8e2fa5a0d09346349bfc4d947b8a48400811"
+                "reference": "7d89f48db82fce872676a9cbc21578e35bdadd97"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/chillerlan/php-oauth-core/zipball/a48c8e2fa5a0d09346349bfc4d947b8a48400811",
-                "reference": "a48c8e2fa5a0d09346349bfc4d947b8a48400811",
+                "url": "https://api.github.com/repos/chillerlan/php-oauth-core/zipball/7d89f48db82fce872676a9cbc21578e35bdadd97",
+                "reference": "7d89f48db82fce872676a9cbc21578e35bdadd97",
                 "shasum": ""
             },
             "require": {
-                "chillerlan/php-dotenv": "^1.0",
-                "chillerlan/php-httpinterface": "^3.0.1",
-                "chillerlan/php-magic-apiclient": "^2.0",
-                "chillerlan/php-settings-container": "^1.0",
+                "chillerlan/php-httpinterface": "^4.0",
+                "chillerlan/php-magic-apiclient": "^3.0",
+                "chillerlan/php-settings-container": "^1.2",
                 "ext-json": "*",
+                "ext-simplexml": "*",
                 "php": "^7.2",
-                "psr/log": "^1.0"
+                "psr/http-client": "^1.0",
+                "psr/http-message": "^1.0",
+                "psr/log": "^1.1"
             },
             "require-dev": {
-                "chillerlan/php-log": "^3.0",
-                "phpunit/phpunit": "^8.0"
+                "chillerlan/php-dotenv": "^1.0",
+                "phpunit/phpunit": "^8.3"
             },
             "type": "library",
             "autoload": {
@@ -220,37 +184,46 @@
                 "oauth2",
                 "psr-17",
                 "psr-18",
-                "psr-7"
+                "psr-7",
+                "rfc5849",
+                "rfc6749"
             ],
-            "time": "2019-03-08T09:41:03+00:00"
+            "time": "2019-11-11T12:38:02+00:00"
         },
         {
-            "name": "chillerlan/php-oauth-deviantart",
-            "version": "2.0.1",
+            "name": "chillerlan/php-oauth-providers",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/chillerlan/php-oauth-deviantart.git",
-                "reference": "69f2cffed17b5736ec855125549fc8a58666ab55"
+                "url": "https://github.com/chillerlan/php-oauth-providers.git",
+                "reference": "f1893952e9772c606e42fe55c3ab3c3bdc14166f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/chillerlan/php-oauth-deviantart/zipball/69f2cffed17b5736ec855125549fc8a58666ab55",
-                "reference": "69f2cffed17b5736ec855125549fc8a58666ab55",
+                "url": "https://api.github.com/repos/chillerlan/php-oauth-providers/zipball/f1893952e9772c606e42fe55c3ab3c3bdc14166f",
+                "reference": "f1893952e9772c606e42fe55c3ab3c3bdc14166f",
                 "shasum": ""
             },
             "require": {
-                "chillerlan/php-oauth-core": "^2.1",
-                "php": "^7.2"
+                "chillerlan/php-oauth-core": "^3.0",
+                "ext-json": "*",
+                "ext-simplexml": "*",
+                "php": "^7.2",
+                "psr/http-client": "^1.0",
+                "psr/http-message": "^1.0"
             },
             "require-dev": {
-                "chillerlan/php-log": "^3.0",
-                "phpunit/phpunit": "^8.0"
+                "chillerlan/php-dotenv": "^1.0",
+                "phpunit/phpunit": "^8.4"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "chillerlan\\OAuth\\Providers\\DeviantArt\\": "src/"
-                }
+                    "chillerlan\\OAuth\\Providers\\": "src/"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -263,32 +236,70 @@
                     "homepage": "https://github.com/codemasher"
                 }
             ],
-            "description": "A PHP 7.2+ client for the DeviantArt API.",
-            "homepage": "https://github.com/chillerlan/php-oauth-deviantart",
+            "description": "OAuth 1/2 Provider implementations for chillerlan/php-oauth-core. PHP 7.2+",
+            "homepage": "https://github.com/chillerlan/php-oauth-providers",
             "keywords": [
+                "Deezer",
+                "OpenStreetMap",
+                "amazon",
                 "api",
+                "battlenet",
+                "bigcartel",
+                "bitbucket",
                 "client",
                 "deviantart",
+                "discogs",
+                "discord",
+                "flickr",
+                "foursquare",
+                "github",
+                "gitlab",
+                "gitter",
+                "google",
+                "guildwars2",
+                "imgur",
+                "instagram",
+                "lastfm",
+                "mailchimp",
+                "mastodon",
+                "microsoft",
+                "mixcloud",
+                "musicbrainz",
+                "npr",
                 "oauth",
                 "oauth2",
+                "opencaching",
+                "patreon",
+                "paypal",
                 "psr-17",
                 "psr-18",
-                "psr-7"
+                "psr-7",
+                "rfc5849",
+                "rfc6749",
+                "slack",
+                "soundcloud",
+                "spotify",
+                "stripe",
+                "tumblr",
+                "twitch",
+                "twitter",
+                "vimeo",
+                "wordpress"
             ],
-            "time": "2019-03-01T21:42:51+00:00"
+            "time": "2019-11-11T20:52:24+00:00"
         },
         {
             "name": "chillerlan/php-settings-container",
-            "version": "1.0.2",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/chillerlan/php-settings-container.git",
-                "reference": "d7a555304a3e687db1de1b8b0a6b4196ba9957da"
+                "reference": "b9b0431dffd74102ee92348a63b4c33fc8ba639b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/chillerlan/php-settings-container/zipball/d7a555304a3e687db1de1b8b0a6b4196ba9957da",
-                "reference": "d7a555304a3e687db1de1b8b0a6b4196ba9957da",
+                "url": "https://api.github.com/repos/chillerlan/php-settings-container/zipball/b9b0431dffd74102ee92348a63b4c33fc8ba639b",
+                "reference": "b9b0431dffd74102ee92348a63b4c33fc8ba639b",
                 "shasum": ""
             },
             "require": {
@@ -296,7 +307,7 @@
                 "php": "^7.2"
             },
             "require-dev": {
-                "phpunit/phpunit": "^8.0"
+                "phpunit/phpunit": "^8.3"
             },
             "type": "library",
             "autoload": {
@@ -323,7 +334,7 @@
                 "container",
                 "helper"
             ],
-            "time": "2019-03-01T15:54:49+00:00"
+            "time": "2019-09-10T00:09:44+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -2099,16 +2110,16 @@
         },
         {
             "name": "psr/http-factory",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/http-factory.git",
-                "reference": "378bfe27931ecc54ff824a20d6f6bfc303bbd04c"
+                "reference": "12ac7fcd07e5b077433f5f2bee95b3a771bf61be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/http-factory/zipball/378bfe27931ecc54ff824a20d6f6bfc303bbd04c",
-                "reference": "378bfe27931ecc54ff824a20d6f6bfc303bbd04c",
+                "url": "https://api.github.com/repos/php-fig/http-factory/zipball/12ac7fcd07e5b077433f5f2bee95b3a771bf61be",
+                "reference": "12ac7fcd07e5b077433f5f2bee95b3a771bf61be",
                 "shasum": ""
             },
             "require": {
@@ -2147,7 +2158,7 @@
                 "request",
                 "response"
             ],
-            "time": "2018-07-30T21:54:04+00:00"
+            "time": "2019-04-30T12:38:16+00:00"
         },
         {
             "name": "psr/http-message",
@@ -2200,17 +2211,123 @@
             "time": "2016-08-06T14:39:51+00:00"
         },
         {
-            "name": "psr/log",
-            "version": "1.1.0",
+            "name": "psr/http-server-handler",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/php-fig/log.git",
-                "reference": "6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd"
+                "url": "https://github.com/php-fig/http-server-handler.git",
+                "reference": "aff2f80e33b7f026ec96bb42f63242dc50ffcae7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd",
-                "reference": "6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd",
+                "url": "https://api.github.com/repos/php-fig/http-server-handler/zipball/aff2f80e33b7f026ec96bb42f63242dc50ffcae7",
+                "reference": "aff2f80e33b7f026ec96bb42f63242dc50ffcae7",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0",
+                "psr/http-message": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Server\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP server-side request handler",
+            "keywords": [
+                "handler",
+                "http",
+                "http-interop",
+                "psr",
+                "psr-15",
+                "psr-7",
+                "request",
+                "response",
+                "server"
+            ],
+            "time": "2018-10-30T16:46:14+00:00"
+        },
+        {
+            "name": "psr/http-server-middleware",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-server-middleware.git",
+                "reference": "2296f45510945530b9dceb8bcedb5cb84d40c5f5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-server-middleware/zipball/2296f45510945530b9dceb8bcedb5cb84d40c5f5",
+                "reference": "2296f45510945530b9dceb8bcedb5cb84d40c5f5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0",
+                "psr/http-message": "^1.0",
+                "psr/http-server-handler": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Server\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP server-side middleware",
+            "keywords": [
+                "http",
+                "http-interop",
+                "middleware",
+                "psr",
+                "psr-15",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "time": "2018-10-30T17:12:04+00:00"
+        },
+        {
+            "name": "psr/log",
+            "version": "1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/log.git",
+                "reference": "446d54b4cb6bf489fc9d75f55843658e6f25d801"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/446d54b4cb6bf489fc9d75f55843658e6f25d801",
+                "reference": "446d54b4cb6bf489fc9d75f55843658e6f25d801",
                 "shasum": ""
             },
             "require": {
@@ -2219,7 +2336,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-master": "1.1.x-dev"
                 }
             },
             "autoload": {
@@ -2244,7 +2361,7 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2018-11-20T15:27:04+00:00"
+            "time": "2019-11-01T11:05:21+00:00"
         },
         {
             "name": "psr/simple-cache",

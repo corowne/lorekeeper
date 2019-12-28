@@ -238,6 +238,6 @@ class Feature extends Model
      */
     public function getSearchUrlAttribute()
     {
-        return url('characters?feature_id='.$this->id);
+        return url('masterlist?feature_id='.$this->id);
     }
 }
