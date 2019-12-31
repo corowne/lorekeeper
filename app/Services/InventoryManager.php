@@ -13,6 +13,22 @@ use App\Models\User\UserItem;
 
 class InventoryManager extends Service
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Inventory Manager
+    |--------------------------------------------------------------------------
+    |
+    | Handles modification of user-owned items.
+    |
+    */
+
+    /**
+     * Grants an item to multiple users.
+     *
+     * @param  array                 $data
+     * @param  \App\Models\User\User $staff
+     * @return bool
+     */
     public function grantItems($data, $staff)
     {
         DB::beginTransaction();
@@ -45,6 +61,14 @@ class InventoryManager extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Transfers an item stack between users.
+     *
+     * @param  \App\Models\User\User      $sender
+     * @param  \App\Models\User\User      $recipient
+     * @param  \App\Models\User\UserItem  $stack
+     * @return bool
+     */
     public function transferStack($sender, $recipient, $stack)
     {
         DB::beginTransaction();
@@ -83,6 +107,13 @@ class InventoryManager extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Deletes an item stack.
+     *
+     * @param  \App\Models\User\User      $user
+     * @param  \App\Models\User\UserItem  $stack
+     * @return bool
+     */
     public function deleteStack($user, $stack)
     {
         DB::beginTransaction();
@@ -109,6 +140,17 @@ class InventoryManager extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Credits an item to a user.
+     *
+     * @param  \App\Models\User\User  $sender
+     * @param  \App\Models\User\User  $recipient
+     * @param  string                 $type 
+     * @param  array                  $data
+     * @param  \App\Models\Item\Item  $item
+     * @param  int                    $quantity
+     * @return bool
+     */
     public function creditItem($sender, $recipient, $type, $data, $item, $quantity)
     {
         DB::beginTransaction();
@@ -124,6 +166,16 @@ class InventoryManager extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Moves an item stack from one user to another.
+     *
+     * @param  \App\Models\User\User      $sender
+     * @param  \App\Models\User\User      $recipient
+     * @param  string                     $type 
+     * @param  array                      $data
+     * @param  \App\Models\User\UserItem  $item
+     * @return bool
+     */
     public function moveStack($sender, $recipient, $type, $data, $stack)
     {
         DB::beginTransaction();
@@ -141,6 +193,15 @@ class InventoryManager extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Debits an item from a user.
+     *
+     * @param  \App\Models\User\User      $user
+     * @param  string                     $type 
+     * @param  array                      $data
+     * @param  \App\Models\Item\UserItem  $stack
+     * @return bool
+     */
     public function debitStack($user, $type, $data, $stack)
     {
         DB::beginTransaction();
@@ -156,7 +217,18 @@ class InventoryManager extends Service
         }
         return $this->rollbackReturn(false);
     }
-
+    
+    /**
+     * Creates an inventory log.
+     *
+     * @param  int     $senderId
+     * @param  int     $recipientId
+     * @param  int     $stackId
+     * @param  string  $type 
+     * @param  string  $data
+     * @param  int     $quantity
+     * @return  int
+     */
     public function createLog($senderId, $recipientId, $stackId, $type, $data, $itemId, $quantity)
     {
         return DB::table('user_items_log')->insert(

@@ -12,6 +12,15 @@ use App\Models\Loot\LootTable;
 
 class BoxService extends Service
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Box Service
+    |--------------------------------------------------------------------------
+    |
+    | Handles the editing and usage of box type items.
+    |
+    */
+
     /**
      * Retrieves any data that should be used in the item tag editing form.
      *

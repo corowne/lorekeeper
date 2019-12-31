@@ -14,6 +14,22 @@ use App\Models\Character\CharacterCurrency;
 
 class CurrencyManager extends Service
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Currency Service
+    |--------------------------------------------------------------------------
+    |
+    | Handles the modification of currencies owned by users and characters.
+    |
+    */
+
+    /**
+     * Admin function for granting currency to multiple users.
+     *
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $staff
+     * @return  bool
+     */
     public function grantUserCurrencies($data, $staff)
     {
         DB::beginTransaction();
@@ -58,6 +74,15 @@ class CurrencyManager extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Admin function for granting currency to a character.
+     * Removes currency if the quantity given is less than 0.
+     *
+     * @param  array                            $data
+     * @param  \App\Models\Character\Character  $staff
+     * @param  \App\Models\User\User            $staff
+     * @return  bool
+     */
     public function grantCharacterCurrencies($data, $character, $staff)
     {
         DB::beginTransaction();
@@ -100,8 +125,16 @@ class CurrencyManager extends Service
         }
         return $this->rollbackReturn(false);
     }
-
-    // NOTE: currently only transfers between users.
+    
+    /**
+     * Transfers currency between users.
+     *
+     * @param  \App\Models\User\User          $sender
+     * @param  \App\Models\User\User          $recipient
+     * @param  \App\Models\Currency\Currency  $currency
+     * @param  int                            $quantity
+     * @return  bool
+     */
     public function transferCurrency($sender, $recipient, $currency, $quantity)
     {
         DB::beginTransaction();
@@ -132,7 +165,16 @@ class CurrencyManager extends Service
         }
         return $this->rollbackReturn(false);
     }
-
+    
+    /**
+     * Transfers currency between a user and character.
+     *
+     * @param  \App\Models\User\User|\App\Models\Character\Character  $sender
+     * @param  \App\Models\User\User|\App\Models\Character\Character  $recipient
+     * @param  \App\Models\Currency\Currency                          $currency
+     * @param  int                                                    $quantity
+     * @return  bool
+     */
     public function transferCharacterCurrency($sender, $recipient, $currency, $quantity)
     {
         DB::beginTransaction();
@@ -140,6 +182,7 @@ class CurrencyManager extends Service
         try {
             if(!$recipient) throw new \Exception("Invalid recipient selected.");
             if(!$sender) throw new \Exception("Invalid sender selected.");
+            if($recipient->logType == 'Character' && $sender->logType == 'Character') throw new \Exception("Cannot transfer currencies between characters.");
             if($recipient->logType == 'Character' && !$sender->hasPower('edit_inventories') && !$recipient->is_visible) throw new \Exception("Invalid character selected.");
             if(!$currency) throw new \Exception("Invalid currency selected.");
             if($quantity <= 0) throw new \Exception("Invalid quantity entered.");
@@ -156,7 +199,18 @@ class CurrencyManager extends Service
         }
         return $this->rollbackReturn(false);
     }
-
+    
+    /**
+     * Credits currency to a user or character.
+     *
+     * @param  \App\Models\User\User|\App\Models\Character\Character  $sender
+     * @param  \App\Models\User\User|\App\Models\Character\Character  $recipient
+     * @param  string                                                 $type 
+     * @param  string                                                 $data
+     * @param  \App\Models\Currency\Currency                          $currency
+     * @param  int                                                    $quantity
+     * @return  bool
+     */
     public function creditCurrency($sender, $recipient, $type, $data, $currency, $quantity)
     {
         DB::beginTransaction();
@@ -193,7 +247,18 @@ class CurrencyManager extends Service
         }
         return $this->rollbackReturn(false);
     }
-
+    
+    /**
+     * Debits currency from a user or character.
+     *
+     * @param  \App\Models\User\User|\App\Models\Character\Character  $sender
+     * @param  \App\Models\User\User|\App\Models\Character\Character  $recipient
+     * @param  string                                                 $type 
+     * @param  string                                                 $data
+     * @param  \App\Models\Currency\Currency                          $currency
+     * @param  int                                                    $quantity
+     * @return  bool
+     */
     public function debitCurrency($sender, $recipient, $type, $data, $currency, $quantity)
     {
         DB::beginTransaction();
@@ -218,13 +283,26 @@ class CurrencyManager extends Service
             $recipient ? $recipient->id : null, $recipient ? $recipient->logType : null, 
             $type, $data, $currency->id, $quantity)) throw new \Exception("Failed to create log.");
 
-            return $this->commitReturn($currency);
+            return $this->commitReturn(true);
         } catch(\Exception $e) { 
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
-
+    
+    /**
+     * Creates a currency log.
+     *
+     * @param  int     $senderId
+     * @param  string  $senderType
+     * @param  int     $recipientId
+     * @param  string  $recipientType
+     * @param  string  $type 
+     * @param  string  $data
+     * @param  int     $currencyId
+     * @param  int     $quantity
+     * @return  int
+     */
     public function createLog($senderId, $senderType, $recipientId, $recipientType, $type, $data, $currencyId, $quantity)
     {
         return DB::table('currencies_log')->insert(

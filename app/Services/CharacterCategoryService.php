@@ -88,8 +88,8 @@ class CharacterCategoryService extends Service
     /**
      * Handle category data.
      *
-     * @param  array                                    $data
-     * @param  \App\Models\Character\CharacterCategory  $category
+     * @param  array                                         $data
+     * @param  \App\Models\Character\CharacterCategory|null  $category
      * @return array
      */
     private function populateCategoryData($data, $category = null)
@@ -136,7 +136,7 @@ class CharacterCategoryService extends Service
     /**
      * Sorts category order.
      *
-     * @param  array                  $data
+     * @param  array  $data
      * @return bool
      */
     public function sortCharacterCategory($data)

@@ -10,7 +10,22 @@ use App\Models\User\UserCurrency;
 
 class CurrencyService extends Service
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Currency Service
+    |--------------------------------------------------------------------------
+    |
+    | Handles the creation and editing of currency.
+    |
+    */
 
+    /**
+     * Creates a new currency.
+     *
+     * @param  array                  $data 
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\Currency\Currency
+     */
     public function createCurrency($data, $user)
     {
         DB::beginTransaction();
@@ -47,7 +62,15 @@ class CurrencyService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Updates a currency.
+     *
+     * @param  \App\Models\Currency\Currency  $currency
+     * @param  array                          $data 
+     * @param  \App\Models\User\User          $user
+     * @return bool|\App\Models\Currency\Currency
+     */
     public function updateCurrency($currency, $data, $user)
     {
         DB::beginTransaction();
@@ -85,6 +108,13 @@ class CurrencyService extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Processes user input for creating/updating a currency.
+     *
+     * @param  array                          $data 
+     * @param  \App\Models\Currency\Currency  $currency
+     * @return array
+     */
     private function populateData($data, $currency = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
@@ -132,6 +162,12 @@ class CurrencyService extends Service
         return $data;
     }
     
+    /**
+     * Deletes a currency.
+     *
+     * @param  \App\Models\Currency\Currency  $currency
+     * @return bool
+     */
     public function deleteCurrency($currency)
     {
         DB::beginTransaction();
@@ -154,6 +190,13 @@ class CurrencyService extends Service
         return $this->rollbackReturn(false);
     }
     
+    /**
+     * Sorts currency order.
+     *
+     * @param  array   $data
+     * @param  string  $type
+     * @return bool
+     */
     public function sortCurrency($data, $type)
     {
         DB::beginTransaction();

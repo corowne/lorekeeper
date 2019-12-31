@@ -11,11 +11,28 @@ use App\Models\Species;
 
 class FeatureService extends Service
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Feature Service
+    |--------------------------------------------------------------------------
+    |
+    | Handles the creation and editing of feature categories and features.
+    |
+    */
+
     /**********************************************************************************************
      
         FEATURE CATEGORIES
 
     **********************************************************************************************/
+
+    /**
+     * Create a category.
+     *
+     * @param  array                 $data
+     * @param  \App\Models\User\User $user
+     * @return \App\Models\Feature\FeatureCategory|bool
+     */
     public function createFeatureCategory($data, $user)
     {
         DB::beginTransaction();
@@ -41,7 +58,15 @@ class FeatureService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Update a category.
+     *
+     * @param  \App\Models\Feature\FeatureCategory  $category
+     * @param  array                                $data
+     * @param  \App\Models\User\User                $user
+     * @return \App\Models\Feature\FeatureCategory|bool
+     */
     public function updateFeatureCategory($category, $data, $user)
     {
         DB::beginTransaction();
@@ -70,6 +95,13 @@ class FeatureService extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Handle category data.
+     *
+     * @param  array                                     $data
+     * @param  \App\Models\Feature\FeatureCategory|null  $category
+     * @return array
+     */
     private function populateCategoryData($data, $category = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
@@ -86,7 +118,13 @@ class FeatureService extends Service
 
         return $data;
     }
-    
+
+    /**
+     * Delete a category.
+     *
+     * @param  \App\Models\Feature\FeatureCategory  $category
+     * @return bool
+     */
     public function deleteFeatureCategory($category)
     {
         DB::beginTransaction();
@@ -104,7 +142,13 @@ class FeatureService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Sorts category order.
+     *
+     * @param  array  $data
+     * @return bool
+     */
     public function sortFeatureCategory($data)
     {
         DB::beginTransaction();

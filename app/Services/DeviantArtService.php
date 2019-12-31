@@ -13,6 +13,18 @@ use chillerlan\DotEnv\DotEnv;
 
 class DeviantArtService extends Service
 {
+    /*
+    |--------------------------------------------------------------------------
+    | deviantART Service
+    |--------------------------------------------------------------------------
+    |
+    | Handles connection to deviantART to verify a user's identity.
+    |
+    */
+
+    /**
+     * Setting up for using the deviantART API.
+     */
     public function beforeConstruct() {
         /** @var \chillerlan\OAuth\Providers\DeviantArt\DeviantArt $deviantart */
         $this->deviantart  = null;
@@ -59,7 +71,9 @@ class DeviantArtService extends Service
     }
     
     /**
-     * Get the Auth URL for dA
+     * Get the Auth URL for dA.
+     * 
+     * @return string
      */
     public function getAuthURL() {
         return $this->deviantart->getAuthURL(null, $this->scopes);
@@ -67,6 +81,9 @@ class DeviantArtService extends Service
 
     /**
      * Get the access token
+     * 
+     * @param  string  $code 
+     * @param  string  $state 
      */
     public function getAccessToken($code, $state) {
         
@@ -77,6 +94,8 @@ class DeviantArtService extends Service
 
     /**
      * Link the user's deviantART name to their account
+     * 
+     * @param  \App\Models\User\User  $user
      */
     public function linkUser($user) {
         $data = Psr7\get_json($this->deviantart->whoami());

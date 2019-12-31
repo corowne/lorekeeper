@@ -7,6 +7,21 @@ use Config;
 
 class FileManager extends Service
 {
+    /*
+    |--------------------------------------------------------------------------
+    | File Manager
+    |--------------------------------------------------------------------------
+    |
+    | Handles uploading and manipulation of files.
+    |
+    */
+
+    /**
+     * Creates a directory.
+     *
+     * @param  string  $dir
+     * @return bool
+     */
     public function createDirectory($dir) 
     {
         if(file_exists($dir)) $this->setError('Folder already exists.');
@@ -21,6 +36,12 @@ class FileManager extends Service
         return true;
     }
 
+    /**
+     * Deletes a directory if it exists and doesn't contain files.
+     *
+     * @param  string  $dir
+     * @return bool
+     */
     public function deleteDirectory($dir) 
     {
         if(!file_exists($dir)) {
@@ -35,7 +56,15 @@ class FileManager extends Service
         rmdir($dir);
         return true;
     }
-
+    
+    /**
+     * Renames a directory.
+     *
+     * @param  string  $dir
+     * @param  string  $oldName 
+     * @param  string  $newName
+     * @return bool
+     */
     public function renameDirectory($dir, $oldName, $newName) 
     {
         if(!file_exists($dir . '/' . $oldName)) {
@@ -50,7 +79,16 @@ class FileManager extends Service
         rename($dir . '/' . $oldName, $dir . '/' . $newName);
         return true;
     }
-
+    
+    /**
+     * Uploads a file.
+     *
+     * @param  array   $file
+     * @param  string  $dir
+     * @param  string  $name
+     * @param  bool    $isFileManager
+     * @return bool
+     */
     public function uploadFile($file, $dir, $name, $isFileManager = true)
     {
         $directory = public_path(). ($isFileManager ? '/files'.($dir ? '/'.$dir : '') : '/images');
@@ -63,7 +101,13 @@ class FileManager extends Service
         
         return true;
     }
-
+    
+    /**
+     * Uploads a custom CSS file.
+     *
+     * @param  array  $file
+     * @return bool
+     */
     public function uploadCss($file)
     {
         File::move($file, public_path() . '/css/custom.css');
@@ -71,7 +115,13 @@ class FileManager extends Service
         
         return true;
     }
-
+    
+    /**
+     * Deletes a file.
+     *
+     * @param  string  $path
+     * @return bool
+     */
     public function deleteFile($path)
     {
         if(!file_exists($path)) {
@@ -81,7 +131,15 @@ class FileManager extends Service
         unlink($path);
         return true;
     }
-
+    
+    /**
+     * Moves a file.
+     *
+     * @param  string  $oldDir
+     * @param  string  $newDir
+     * @param  string  $name
+     * @return bool
+     */
     public function moveFile($oldDir, $newDir, $name)
     {
         if(!file_exists($oldDir . '/' . $name)) {
@@ -95,7 +153,15 @@ class FileManager extends Service
         rename($oldDir . '/' . $name, $newDir . '/' . $name);
         return true;
     }
-
+    
+    /**
+     * Renames a file.
+     *
+     * @param  string  $dir
+     * @param  string  $oldName
+     * @param  string  $newName
+     * @return bool
+     */
     public function renameFile($dir, $oldName, $newName)
     {
         if(!file_exists($dir . '/' . $oldName)) {
