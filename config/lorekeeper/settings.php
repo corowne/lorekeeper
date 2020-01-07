@@ -17,6 +17,18 @@ return [
     
     /*
     |--------------------------------------------------------------------------
+    | Site Name
+    |--------------------------------------------------------------------------
+    |
+    | This differs from the app name in that it is allowed to contain spaces
+    | (APP_NAME in .env cannot take spaces). This will be displayed on the
+    | site wherever the name needs to be displayed.
+    |
+    */
+    'site_name' => 'Lorekeeper',
+    
+    /*
+    |--------------------------------------------------------------------------
     | Character Codes
     |--------------------------------------------------------------------------
     |

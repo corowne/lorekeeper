@@ -15,6 +15,7 @@ class AddSecureTrades extends Migration
     {
         //
         Schema::create('trades', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->enum('status', ['Open', 'Pending', 'Completed', 'Rejected', 'Canceled'])->default('Open');
 

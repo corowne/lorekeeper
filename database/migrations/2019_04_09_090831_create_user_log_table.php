@@ -26,6 +26,7 @@ class CreateUserLogTable extends Migration
         //    something sketchy with multiple accounts, old logs
         //    might help confirm their identity.
         Schema::create('user_update_log', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->timestamps();
 

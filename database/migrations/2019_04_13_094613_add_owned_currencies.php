@@ -15,6 +15,7 @@ class AddOwnedCurrencies extends Migration
     {
         //
         Schema::create('user_currencies', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->integer('user_id')->unsigned();
             $table->integer('currency_id')->unsigned();
             $table->integer('quantity')->unsigned()->default(0);
@@ -26,6 +27,7 @@ class AddOwnedCurrencies extends Migration
             $table->foreign('currency_id')->references('id')->on('currencies');
         });
         Schema::create('character_currencies', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->integer('character_id')->unsigned();
             $table->integer('currency_id')->unsigned();
             $table->integer('quantity')->unsigned()->default(0);

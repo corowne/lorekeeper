@@ -7,7 +7,21 @@ use App\Models\Invitation;
 
 class InvitationService extends Service
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Invitation Service
+    |--------------------------------------------------------------------------
+    |
+    | Handles creation and usage of site registration invitation codes.
+    |
+    */
 
+    /**
+     * Generates an invitation code, saving the user who generated it.
+     *
+     * @param  \App\Models\User\User $user
+     * @return \App\Models\Invitation|bool
+     */
     public function generateInvitation($user)
     {
         DB::beginTransaction();
@@ -24,7 +38,13 @@ class InvitationService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Marks an invitation code as used, saving the user who used it.
+     *
+     * @param  \App\Models\User\User $user
+     * @return \App\Models\Invitation|bool
+     */
     public function useInvitation($invitation, $user)
     {
         DB::beginTransaction();
@@ -42,7 +62,13 @@ class InvitationService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Deletes an unused invitation code.
+     *
+     * @param  \App\Models\Invitation $invitation
+     * @return bool
+     */
     public function deleteInvitation($invitation)
     {
         DB::beginTransaction();
@@ -59,11 +85,13 @@ class InvitationService extends Service
         return $this->rollbackReturn(false);
     }
     
+    /**
+     * Generates a string for an invitation code.
+     *
+     * @return string
+     */
     private function generateCode()
     {
-        $src = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        $code = '';
-        for ($i = 0; $i < 10; $i++) $code .= $src[mt_rand(0, strlen($src) - 1)];
-        return $code;
+        return randomString(10);
     }
 }

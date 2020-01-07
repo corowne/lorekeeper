@@ -128,6 +128,8 @@ Route::group(['prefix' => 'designs', 'namespace' => 'Characters'], function() {
     
     Route::get('{id}/confirm', 'DesignController@getConfirm');
     Route::post('{id}/submit', 'DesignController@postSubmit');
+    
+    Route::get('{id}/delete', 'DesignController@getDelete');
     Route::post('{id}/delete', 'DesignController@postDelete');
 });
 

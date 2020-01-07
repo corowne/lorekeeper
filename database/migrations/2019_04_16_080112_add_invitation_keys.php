@@ -15,6 +15,7 @@ class AddInvitationKeys extends Migration
     {
         //
         Schema::create('invitations', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             //
             $table->increments('id');
             $table->string('code', 10)->unique();

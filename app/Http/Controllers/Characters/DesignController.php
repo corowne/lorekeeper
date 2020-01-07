@@ -122,7 +122,8 @@ class DesignController extends Controller
         if($r->user_id != Auth::user()->id && !Auth::user()->hasPower('manage_characters')) abort(404);
         $request->validate(CharacterDesignUpdate::$imageRules);
         
-        if($service->saveRequestImage($request->all(), $r, Auth::user()->hasPower('manage_characters'))) {
+        $useAdmin = ($r->status != 'Draft' || $r->user_id != Auth::user()->id) && Auth::user()->hasPower('manage_characters');
+        if($service->saveRequestImage($request->all(), $r, $useAdmin)) {
             flash('Request edited successfully.')->success();
         }
         else {
@@ -238,7 +239,6 @@ class DesignController extends Controller
     /**
      * Submits a design update request for approval.
      *
-     * @param  \Illuminate\Http\Request       $request
      * @param  App\Services\CharacterManager  $service
      * @param  int                            $id
      * @return \Illuminate\Http\RedirectResponse
@@ -256,5 +256,42 @@ class DesignController extends Controller
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
         return redirect()->back();
+    }
+    
+    /**
+     * Shows the design update request deletion confirmation modal.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getDelete($id)
+    {
+        $r = CharacterDesignUpdate::find($id);
+        if(!$r || ($r->user_id != Auth::user()->id && !Auth::user()->hasPower('manage_characters'))) abort(404);
+        return view('character.design._delete_modal', [
+            'request' => $r
+        ]);
+    }
+
+    /**
+     * Deletes a design update request.
+     *
+     * @param  App\Services\CharacterManager  $service
+     * @param  int                            $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postDelete(CharacterManager $service, $id)
+    {
+        $r = CharacterDesignUpdate::find($id);
+        if(!$r) abort(404);
+        if($r->user_id != Auth::user()->id) abort(404);
+        
+        if($service->deleteRequest($r)) {
+            flash('Request deleted successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->to('designs');
     }
 }

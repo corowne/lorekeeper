@@ -54,6 +54,8 @@ class PageService extends Service
         DB::beginTransaction();
 
         try {
+            if(Config::get('lorekeeper.text_pages.').$page->key) throw new \Exception("You cannot delete this page.");
+
             $page->delete();
 
             return $this->commitReturn(true);

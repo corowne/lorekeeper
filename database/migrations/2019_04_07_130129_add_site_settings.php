@@ -15,12 +15,14 @@ class AddSiteSettings extends Migration
     {
         // 
         Schema::create('site_settings', function(Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->string('key', 50)->unique()->primary();
             $table->string('value');
             $table->string('description', 1024);
         });
         
         Schema::create('site_pages', function(Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('key', 30)->unique();
             $table->string('title', 50);

@@ -14,11 +14,13 @@ class CreateRaffles extends Migration
     public function up()
     {
         Schema::create('raffle_groups', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('name');
             $table->boolean('is_active');
         });
         Schema::create('raffles', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
 
             $table->string('name');
@@ -31,6 +33,7 @@ class CreateRaffles extends Migration
             $table->timestamp('rolled_at')->nullable()->default(null);
         });
         Schema::create('raffle_tickets', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
 
             $table->integer('user_id')->unsigned()->nullable()->default(null);

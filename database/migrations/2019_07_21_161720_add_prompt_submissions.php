@@ -15,6 +15,7 @@ class AddPromptSubmissions extends Migration
     {
         //
         Schema::create('submissions', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->integer('prompt_id')->unsigned()->index();
 
@@ -33,6 +34,7 @@ class AddPromptSubmissions extends Migration
             $table->timestamps();
         });
         Schema::create('submission_characters', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->integer('submission_id')->unsigned()->index();
             $table->integer('character_id')->unsigned()->index();
@@ -41,6 +43,7 @@ class AddPromptSubmissions extends Migration
         });
         
         Schema::create('claims', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
 
             $table->integer('user_id')->unsigned()->index();
@@ -57,6 +60,7 @@ class AddPromptSubmissions extends Migration
             $table->timestamps();
         });
         Schema::create('claim_characters', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->integer('claim_id')->unsigned()->index();
             $table->integer('character_id')->unsigned()->index();

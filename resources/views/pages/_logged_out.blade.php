@@ -1,2 +1,2 @@
-<h1>{{ config('app.name', 'Lorekeeper') }}</h1>
-<p>Welcome to {{ config('app.name', 'Lorekeeper') }}! <a href="{{ url('register') }}">Create an account</a> to participate, or <a href="{{ url('register') }}">log in</a> if you already have an account.</p>
+<h1>{{ config('lorekeeper.settings.site_name', 'Lorekeeper') }}</h1>
+{!! $about->parsed_text !!}

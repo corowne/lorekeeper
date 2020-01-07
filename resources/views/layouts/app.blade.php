@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Lorekeeper') }} - @yield('title')</title>
+    <title>{{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} - @yield('title')</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
@@ -104,6 +104,7 @@
                     selector: '.wysiwyg',
                     height: 500,
                     menubar: false,
+                    convert_urls: false,
                     plugins: [
                         'advlist autolink lists link image charmap print preview anchor',
                         'searchreplace visualblocks code fullscreen',

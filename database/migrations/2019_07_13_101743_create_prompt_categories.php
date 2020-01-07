@@ -15,6 +15,7 @@ class CreatePromptCategories extends Migration
     {
         // Prompt categories are for neatly categorising prompts, e.g. regular prompts and event-specific prompts
         Schema::create('prompt_categories', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             
             $table->string('name');

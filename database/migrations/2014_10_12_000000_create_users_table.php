@@ -15,6 +15,7 @@ class CreateUsersTable extends Migration
     {
         // Create user ranks and powers
         Schema::create('ranks', function(Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('name');
             $table->string('description', 512)->nullable();
@@ -22,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('color', 6)->nullable();
         });
         Schema::create('rank_powers', function(Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->integer('rank_id')->unsigned();
             $table->string('power')->index(); // Power IDs are defined in a config file
 
@@ -32,6 +34,7 @@ class CreateUsersTable extends Migration
         // Create user tables
         // Running with the default Laravel users table here.
         Schema::create('users', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('name')->index()->unique();
             $table->string('alias')->nullable()->index();
@@ -48,6 +51,7 @@ class CreateUsersTable extends Migration
             $table->foreign('rank_id')->references('id')->on('ranks');
         });
         Schema::create('user_settings', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->integer('user_id')->unsigned();
             $table->boolean('is_fto')->default(1);
             $table->integer('character_count')->unsigned()->default(0);
@@ -58,6 +62,7 @@ class CreateUsersTable extends Migration
 
         // Notifications
         Schema::create('notifications', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->integer('user_id')->unsigned();
 

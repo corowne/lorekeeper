@@ -59,6 +59,7 @@ class FixInventoryTables extends Migration
         Schema::rename('currencies_log', 'banks_log');
 
         Schema::create('banks', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->integer('user_id')->unsigned()->nullable();
             $table->integer('character_id')->unsigned()->nullable();

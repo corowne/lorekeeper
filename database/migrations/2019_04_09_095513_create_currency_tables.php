@@ -14,6 +14,7 @@ class CreateCurrencyTables extends Migration
     public function up()
     {
         Schema::create('currencies', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
 
             $table->boolean('is_user_owned')->default(0);
@@ -49,6 +50,7 @@ class CreateCurrencyTables extends Migration
         });
 
         Schema::create('banks', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->integer('user_id')->unsigned()->nullable();
             $table->integer('character_id')->unsigned()->nullable();
@@ -62,6 +64,7 @@ class CreateCurrencyTables extends Migration
         });
         
         Schema::create('banks_log', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
 
             $table->integer('sender_id')->unsigned()->nullable()->default(null);

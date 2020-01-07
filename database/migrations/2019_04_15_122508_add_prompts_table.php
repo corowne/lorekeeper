@@ -17,6 +17,7 @@ class AddPromptsTable extends Migration
         // Prompts can have a start and end time, so event-only prompts can be
         // made and future prompts can be queued.
         Schema::create('prompts', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('name', 64);
 

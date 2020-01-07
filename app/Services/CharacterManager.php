@@ -12,6 +12,7 @@ use Settings;
 use File;
 
 use App\Services\CurrencyManager;
+use App\Services\InventoryManager;
 
 use App\Models\User\User;
 use App\Models\User\UserItem;
@@ -1288,6 +1289,7 @@ class CharacterManager extends Service
         try {
             if($character->user_id != $user->id) throw new \Exception("You do not own this character.");
             if(CharacterDesignUpdate::where('character_id', $character->id)->active()->exists()) throw new \Exception("This ".($character->is_myo_slot ? 'MYO slot' : 'character')." already has an existing request. Please update that one, or delete it before creating a new one.");
+            if(!$character->isAvailable) throw new \Exception("This ".($character->is_myo_slot ? 'MYO slot' : 'character')." is currently in an open trade or transfer. Please cancel the trade or transfer before creating a design update.");
 
             $data = [
                 'user_id' => $user->id,
@@ -1623,7 +1625,38 @@ class CharacterManager extends Service
 
             // Remove any added items/currency
             // Currency has already been removed, so no action required
+            // However logs need to be added for each of these
+            $requestData = $request->data;
+            $inventoryManager = new InventoryManager;
+            $stacks = UserItem::where('holding_type', 'Update')->where('holding_id', $request->id)->get();
+            foreach($stacks as $stack) {
+                if(!$inventoryManager->createLog($request->user_id, null, $stack->id, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', 'Item used in ' . ($request->character->is_myo_slot ? 'MYO design approval' : 'character design update') . ' (<a href="'.$request->url.'">#'.$request->id.'</a>)', $stack->item_id, $stack->count)) throw new \Exception("Failed to create log for item stack.");
+            }
             UserItem::where('holding_type', 'Update')->where('holding_id', $request->id)->delete();
+
+            $currencyManager = new CurrencyManager;
+            if(isset($requestData['user']['currencies']) && $requestData['user']['currencies'])
+            {
+                foreach($requestData['user']['currencies'] as $currencyId=>$quantity) {
+                    $currency = Currency::find($currencyId);
+                    if(!$currencyManager->createLog($request->user_id, 'User', null, null, 
+                    $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', 
+                    'Used in ' . ($request->character->is_myo_slot ? 'MYO design approval' : 'character design update') . ' (<a href="'.$request->url.'">#'.$request->id.'</a>)', 
+                    $currencyId, $quantity)) 
+                        throw new \Exception("Failed to create log for user currency.");
+                }
+            }
+            if(isset($requestData['character']['currencies']) && $requestData['character']['currencies'])
+            {
+                foreach($requestData['character']['currencies'] as $currencyId=>$quantity) {
+                    $currency = Currency::find($currencyId);
+                    if(!$currencyManager->createLog($request->character_id, 'Character', null, null, 
+                    $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', 
+                    'Used in ' . ($request->character->is_myo_slot ? 'MYO design approval' : 'character design update') . ' (<a href="'.$request->url.'">#'.$request->id.'</a>)', 
+                    $currencyId, $quantity)) 
+                        throw new \Exception("Failed to create log for character currency.");
+                }
+            }
 
             // Create a new image with the request data
             $image = CharacterImage::create([
@@ -1831,16 +1864,15 @@ class CharacterManager extends Service
     /**
      * Deletes a character design update request.
      *
-     * @param  array                                        $data
      * @param  \App\Models\Character\CharacterDesignUpdate  $request
      * @return  bool
      */
-    public function deleteRequest($data, $request)
+    public function deleteRequest($request)
     {
         DB::beginTransaction();
 
         try {
-            if($request->status != 'Pending') throw new \Exception("This request cannot be processed.");
+            if($request->status != 'Draft') throw new \Exception("This request cannot be processed.");
 
             // Deletes the request entirely, including images and etc.
             // This returns any attached items/currency
@@ -1848,6 +1880,28 @@ class CharacterManager extends Service
             // so this is necessary to transfer a character
 
             // Return all added items/currency
+            UserItem::where('holding_type', 'Update')->where('holding_id', $request->id)->update(['holding_type' => null, 'holding_id' => null]);
+            $requestData = $request->data;
+            $currencyManager = new CurrencyManager;
+            if(isset($requestData['user']['currencies']) && $requestData['user']['currencies'])
+            {
+                foreach($requestData['user']['currencies'] as $currencyId=>$quantity) {
+                    $currency = Currency::find($currencyId);
+                    if(!$currency) throw new \Exception("Cannot return an invalid currency. (".$currencyId.")");
+                    if(!$currencyManager->creditCurrency(null, $request->user, null, null, $currency, $quantity)) throw new \Exception("Could not return currency to user. (".$currencyId.")");                    
+                }
+            }
+            if(isset($requestData['character']['currencies']) && $requestData['character']['currencies'])
+            {
+                foreach($requestData['character']['currencies'] as $currencyId=>$quantity) {
+                    $currency = Currency::find($currencyId);
+                    if(!$currency) throw new \Exception("Cannot return an invalid currency. (".$currencyId.")");
+                    if(!$currencyManager->creditCurrency(null, $request->character, null, null, $currency, $quantity)) throw new \Exception("Could not return currency to character. (".$currencyId.")");                    
+                }
+            }
+
+            // Delete the request
+            $request->delete();
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 

@@ -7,6 +7,8 @@ use Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use App\Models\SitePage;
+
 use App\Services\DeviantArtService;
 
 class HomeController extends Controller
@@ -27,7 +29,9 @@ class HomeController extends Controller
      */
     public function getIndex()
     {
-        return view('welcome');
+        return view('welcome', [
+            'about' => SitePage::where('key', 'about')->first()
+        ]);
     }
 
     /**

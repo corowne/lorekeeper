@@ -11,11 +11,28 @@ use App\Models\Item\ItemTag;
 
 class ItemService extends Service
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Item Service
+    |--------------------------------------------------------------------------
+    |
+    | Handles the creation and editing of item categories and items.
+    |
+    */
+
     /**********************************************************************************************
      
         ITEM CATEGORIES
 
     **********************************************************************************************/
+
+    /**
+     * Create a category.
+     *
+     * @param  array                 $data
+     * @param  \App\Models\User\User $user
+     * @return \App\Models\Item\ItemCategory|bool
+     */
     public function createItemCategory($data, $user)
     {
         DB::beginTransaction();
@@ -42,7 +59,15 @@ class ItemService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Update a category.
+     *
+     * @param  \App\Models\Item\ItemCategory  $category
+     * @param  array                          $data
+     * @param  \App\Models\User\User          $user
+     * @return \App\Models\Item\ItemCategory|bool
+     */
     public function updateItemCategory($category, $data, $user)
     {
         DB::beginTransaction();
@@ -71,6 +96,13 @@ class ItemService extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Handle category data.
+     *
+     * @param  array                               $data
+     * @param  \App\Models\Item\ItemCategory|null  $category
+     * @return array
+     */
     private function populateCategoryData($data, $category = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
@@ -87,7 +119,13 @@ class ItemService extends Service
 
         return $data;
     }
-    
+
+    /**
+     * Delete a category.
+     *
+     * @param  \App\Models\Item\ItemCategory  $category
+     * @return bool
+     */
     public function deleteItemCategory($category)
     {
         DB::beginTransaction();
@@ -105,7 +143,13 @@ class ItemService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Sorts category order.
+     *
+     * @param  array  $data
+     * @return bool
+     */
     public function sortItemCategory($data)
     {
         DB::beginTransaction();
@@ -131,6 +175,13 @@ class ItemService extends Service
 
     **********************************************************************************************/
 
+    /**
+     * Creates a new item.
+     *
+     * @param  array                  $data 
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\Item\Item
+     */
     public function createItem($data, $user)
     {
         DB::beginTransaction();
@@ -160,7 +211,15 @@ class ItemService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Updates an item.
+     *
+     * @param  \App\Models\Item\Item  $item
+     * @param  array                  $data 
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\Item\Item
+     */
     public function updateItem($item, $data, $user)
     {
         DB::beginTransaction();
@@ -192,6 +251,13 @@ class ItemService extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Processes user input for creating/updating an item.
+     *
+     * @param  array                  $data 
+     * @param  \App\Models\Item\Item  $item
+     * @return array
+     */
     private function populateData($data, $item = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
@@ -211,6 +277,12 @@ class ItemService extends Service
         return $data;
     }
     
+    /**
+     * Deletes an item.
+     *
+     * @param  \App\Models\Item\Item  $item
+     * @return bool
+     */
     public function deleteItem($item)
     {
         DB::beginTransaction();
@@ -234,7 +306,12 @@ class ItemService extends Service
         ITEM TAGS
 
     **********************************************************************************************/
-
+    
+    /**
+     * Gets a list of item tags for selection.
+     *
+     * @return array
+     */
     public function getItemTags()
     {
         $tags = Config::get('lorekeeper.item_tags');
@@ -244,7 +321,14 @@ class ItemService extends Service
 
         return $result;
     }
-
+    
+    /**
+     * Adds an item tag to an item.
+     *
+     * @param  \App\Models\Item\Item  $item
+     * @param  string                 $tag
+     * @return string|bool
+     */
     public function addItemTag($item, $tag)
     {
         DB::beginTransaction();
@@ -264,7 +348,15 @@ class ItemService extends Service
         }
         return $this->rollbackReturn(false);
     }
-
+    
+    /**
+     * Edits the data associated with an item tag on an item.
+     *
+     * @param  \App\Models\Item\Item  $item
+     * @param  string                 $tag
+     * @param  array                  $data
+     * @return string|bool
+     */
     public function editItemTag($item, $tag, $data)
     {
         DB::beginTransaction();
@@ -291,7 +383,14 @@ class ItemService extends Service
         }
         return $this->rollbackReturn(false);
     }
-
+    
+    /**
+     * Removes an item tag from an item.
+     *
+     * @param  \App\Models\Item\Item  $item
+     * @param  string                 $tag
+     * @return string|bool
+     */
     public function deleteItemTag($item, $tag)
     {
         DB::beginTransaction();

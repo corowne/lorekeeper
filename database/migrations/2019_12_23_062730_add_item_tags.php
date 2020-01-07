@@ -16,6 +16,7 @@ class AddItemTags extends Migration
         // This table tags items with a tag type and data.
         // Handlers can be implemented for different tag types.
         Schema::create('item_tags', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
 
             $table->integer('item_id')->unsigned();

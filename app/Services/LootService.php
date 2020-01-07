@@ -10,6 +10,21 @@ use App\Models\Loot\Loot;
 
 class LootService extends Service
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Loot Service
+    |--------------------------------------------------------------------------
+    |
+    | Handles the creation and editing of loot tables.
+    |
+    */
+
+    /**
+     * Creates a loot table.
+     *
+     * @param  array  $data
+     * @return bool|\App\Models\Loot\LootTable
+     */
     public function createLootTable($data)
     {
         DB::beginTransaction();
@@ -35,7 +50,14 @@ class LootService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Updates a loot table.
+     *
+     * @param  \App\Models\Loot\LootTable  $table
+     * @param  array                       $data 
+     * @return bool|\App\Models\Loot\LootTable
+     */
     public function updateLootTable($table, $data)
     {
         DB::beginTransaction();
@@ -62,6 +84,12 @@ class LootService extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Handles the creation of loot for a loot table.
+     *
+     * @param  \App\Models\Loot\LootTable  $table
+     * @param  array                       $data 
+     */
     private function populateLootTable($table, $data)
     {
         // Clear the old loot...
@@ -78,7 +106,13 @@ class LootService extends Service
             ]);
         }
     }
-    
+
+    /**
+     * Deletes a loot table.
+     *
+     * @param  \App\Models\Loot\LootTable  $table
+     * @return bool
+     */
     public function deleteLootTable($table)
     {
         DB::beginTransaction();

@@ -78,6 +78,17 @@
             </div>
         @endif
 
+        <div class="form-group row">
+            <div class="col-md-6 offset-md-4">
+                <div class="form-check">
+                    <label class="form-check-label">
+                        {!! Form::checkbox('agreement', 1, false, ['class' => 'form-check-input']) !!}
+                        I have read and agree to the <a href="{{ url('info/terms') }}">Terms of Service</a> and <a href="{{ url('info/privacy') }}">Privacy Policy</a>.
+                    </label>
+                </div>
+            </div>
+        </div>
+
         <div class="form-group row mb-0">
             <div class="col-md-6 offset-md-4">
                 <button type="submit" class="btn btn-primary">

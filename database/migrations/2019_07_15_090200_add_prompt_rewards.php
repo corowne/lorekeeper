@@ -15,6 +15,7 @@ class AddPromptRewards extends Migration
     {
         //
         Schema::create('prompt_rewards', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->integer('prompt_id')->unsigned()->default(0);
             $table->string('rewardable_type');
             $table->integer('rewardable_id')->unsigned();

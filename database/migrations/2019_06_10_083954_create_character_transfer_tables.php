@@ -14,6 +14,7 @@ class CreateCharacterTransferTables extends Migration
     public function up()
     {
         Schema::create('character_transfers', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
 
             $table->integer('character_id')->unsigned();

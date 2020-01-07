@@ -14,6 +14,7 @@ class CreateLootTables extends Migration
     public function up()
     {
         Schema::create('loot_tables', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('name');
             $table->string('display_name');
@@ -21,6 +22,7 @@ class CreateLootTables extends Migration
 
         // I know this doesn't pluralise this way but 
         Schema::create('loots', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->integer('loot_table_id')->unsigned();
             $table->string('rewardable_type');
             $table->integer('rewardable_id')->unsigned();

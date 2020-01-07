@@ -15,6 +15,7 @@ class AddDesignUpdates extends Migration
     {
         //
         Schema::create('design_updates', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->integer('character_id')->unsigned()->index();
             $table->enum('status', ['Draft', 'Pending', 'Accepted', 'Rejected'])->default('Draft');

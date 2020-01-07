@@ -18,10 +18,14 @@
     </p>
     @if($request->user_id == Auth::user()->id)
         @if($request->isComplete)
-            <div class="text-right"><a href="#" class="btn btn-outline-primary submit-button">Submit Request</a></div>
+            <div class="text-right">
+                <button class="btn btn-outline-danger delete-button">Delete Request</button> 
+                <a href="#" class="btn btn-outline-primary submit-button">Submit Request</a>
+            </div>
         @else
             <p class="text-danger">Not all sections have been completed yet. Please visit the necessary tab(s) and click Save to update them, even if no modifications to the information are needed.</p>
             <div class="text-right">
+                <button class="btn btn-outline-danger delete-button">Delete Request</button>  
                 <button class="btn btn-outline-primary" disabled>Submit Request</button>
             </div>
         @endif
@@ -68,6 +72,10 @@ $(document).ready(function() {
         $('.submit-button').on('click', function(e) {
             e.preventDefault();
             loadModal("{{ url('designs/'.$request->id.'/confirm/') }}", 'Confirm Submission');
+        });
+        $('.delete-button').on('click', function(e) {
+            e.preventDefault();
+            loadModal("{{ url('designs/'.$request->id.'/delete/') }}", 'Delete Submission');
         });
     @endif
 

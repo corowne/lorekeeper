@@ -39,7 +39,7 @@ function add_help($text) {
 function breadcrumbs($links) {
     $ret = '<nav><ol class="breadcrumb">';
     $count = 0;
-    $ret .= '<li class="breadcrumb-item"><a href="'.url('/').'">'.config('app.name', 'Lorekeeper').'</a></li>';
+    $ret .= '<li class="breadcrumb-item"><a href="'.url('/').'">'.config('lorekeeper.settings.site_name', 'Lorekeeper').'</a></li>';
     foreach($links as $key => $link) {
         $isLast = ($count == count($links) - 1);
 

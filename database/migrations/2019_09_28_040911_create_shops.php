@@ -14,6 +14,7 @@ class CreateShops extends Migration
     public function up()
     {
         Schema::create('shops', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('name');
             $table->boolean('has_image')->default(0);
@@ -25,6 +26,7 @@ class CreateShops extends Migration
             $table->boolean('is_active')->default(1);
         });
         Schema::create('shop_stock', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->integer('shop_id')->unsigned()->index();
             $table->integer('item_id')->unsigned();
@@ -47,6 +49,7 @@ class CreateShops extends Migration
             $table->integer('sort')->unsigned()->default(0);
         });
         Schema::create('shop_log', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->integer('shop_id')->unsigned()->index();
             $table->integer('user_id')->unsigned()->index();
