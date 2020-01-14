@@ -10,7 +10,22 @@ use App\Models\News;
 
 class NewsService extends Service
 {
+    /*
+    |--------------------------------------------------------------------------
+    | News Service
+    |--------------------------------------------------------------------------
+    |
+    | Handles the creation and editing of news posts.
+    |
+    */
 
+    /**
+     * Creates a news post.
+     *
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\News
+     */
     public function createNews($data, $user)
     {
         DB::beginTransaction();
@@ -30,7 +45,15 @@ class NewsService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Updates a news post.
+     *
+     * @param  \App\Models\News       $news
+     * @param  array                  $data 
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\News
+     */
     public function updateNews($news, $data, $user)
     {
         DB::beginTransaction();
@@ -51,7 +74,13 @@ class NewsService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Deletes a news post.
+     *
+     * @param  \App\Models\News  $news
+     * @return bool
+     */
     public function deleteNews($news)
     {
         DB::beginTransaction();
@@ -66,6 +95,12 @@ class NewsService extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Updates queued news posts to be visible and alert users when
+     * they should be posted.
+     *
+     * @return bool
+     */
     public function updateQueue()
     {
         $count = News::shouldBeVisible()->count();
@@ -84,6 +119,12 @@ class NewsService extends Service
         }
     }
 
+    /**
+     * Updates the unread news flag for all users so that
+     * the new news notification is displayed.
+     *
+     * @return bool
+     */
     private function alertUsers()
     {
         User::query()->update(['is_news_unread' => 1]);

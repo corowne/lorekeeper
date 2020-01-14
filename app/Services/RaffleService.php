@@ -7,9 +7,23 @@ use App\Services\Service;
 use App\Models\Raffle\RaffleGroup;
 use App\Models\Raffle\Raffle;
 
-// handles admin side raffle creation
-class RaffleService  extends Service {
+class RaffleService  extends Service 
+{
+    /*
+    |--------------------------------------------------------------------------
+    | Raffle Service
+    |--------------------------------------------------------------------------
+    |
+    | Handles creation and modification of raffles.
+    |
+    */
 
+    /**
+     * Creates a raffle.
+     *
+     * @param  array  $data
+     * @return \App\Models\Raffle\Raffle
+     */
     public function createRaffle($data)
     {
         DB::beginTransaction();
@@ -19,6 +33,13 @@ class RaffleService  extends Service {
         return $raffle;
     }
 
+    /**
+     * Updates a raffle. 
+     *
+     * @param  array                     $data
+     * @param  \App\Models\Raffle\Raffle $raffle
+     * @return \App\Models\Raffle\Raffle
+     */
     public function updateRaffle($data, $raffle) 
     {
         DB::beginTransaction();
@@ -26,8 +47,29 @@ class RaffleService  extends Service {
         $raffle->update(array_only($data, ['name', 'is_active', 'winner_count', 'group_id', 'order']));
         DB::commit();
         return $raffle;
+    }    
+
+    /**
+     * Deletes a raffle. 
+     *
+     * @param  \App\Models\Raffle\Raffle $raffle
+     * @return bool
+     */
+    public function deleteRaffle($raffle) 
+    {
+        DB::beginTransaction();
+        foreach($raffle->tickets as $ticket) $ticket->delete();
+        $raffle->delete();
+        DB::commit();
+        return true;
     }   
 
+    /**
+     * Creates a raffle group.
+     *
+     * @param  array  $data
+     * @return \App\Models\Raffle\RaffleGroup
+     */
     public function createRaffleGroup($data)
     {
         DB::beginTransaction();
@@ -37,6 +79,13 @@ class RaffleService  extends Service {
         return $group;
     }
 
+    /**
+     * Updates a raffle group. 
+     *
+     * @param  array                          $data
+     * @param  \App\Models\Raffle\RaffleGroup $raffle
+     * @return \App\Models\Raffle\Raffle
+     */
     public function updateRaffleGroup($data, $group) 
     {
         DB::beginTransaction();
@@ -44,18 +93,20 @@ class RaffleService  extends Service {
         $group->update(array_only($data, ['name', 'is_active']));
         DB::commit();
         return $group;
-    }   
+    }  
 
-    public function deleteRaffle($raffle) 
-    {
-        foreach($raffle->tickets as $ticket) $ticket->delete();
-        $raffle->delete();
-        return true;
-    }   
+    /**
+     * Deletes a raffle group. 
+     *
+     * @param  \App\Models\Raffle\RaffleGroup $raffle
+     * @return bool
+     */
     public function deleteRaffleGroup($group) 
     {
+        DB::beginTransaction();
         foreach($group->raffles as $raffle) $raffle->update(['group_id' => null]);
         $group->delete();
+        DB::commit();
         return true;
     }   
 }

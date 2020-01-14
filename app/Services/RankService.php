@@ -11,11 +11,24 @@ use App\Models\Rank\RankPower;
 
 class RankService extends Service
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Rank Service
+    |--------------------------------------------------------------------------
+    |
+    | Handles creation and modification of user ranks.
+    |
+    */
 
+    /**
+     * Creates a user rank.
+     *
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $user
+     * @return bool
+     */
     public function createRank($data, $user)
     {
-        // name, description, sort, colour
-
         DB::beginTransaction();
 
         try {
@@ -50,7 +63,15 @@ class RankService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Updates a user rank.
+     *
+     * @param  \App\Models\Rank\Rank  $rank
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $user
+     * @return bool
+     */
     public function updateRank($rank, $data, $user)
     {
         DB::beginTransaction();
@@ -84,7 +105,14 @@ class RankService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Deletes a user rank.
+     *
+     * @param  \App\Models\Rank\Rank  $rank
+     * @param  \App\Models\User\User  $user
+     * @return bool
+     */
     public function deleteRank($rank, $user)
     {
         DB::beginTransaction();
@@ -102,11 +130,16 @@ class RankService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Sorts user ranks.
+     *
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $user
+     * @return bool
+     */
     public function sortRanks($data, $user)
     {
-        // name, description, sort, colour
-
         DB::beginTransaction();
 
         try {

@@ -9,7 +9,22 @@ use App\Models\Rarity;
 
 class RarityService extends Service
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Rarity Service
+    |--------------------------------------------------------------------------
+    |
+    | Handles the creation and editing of rarities.
+    |
+    */
 
+    /**
+     * Creates a new rarity.
+     *
+     * @param  array                  $data 
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\Rarity
+     */
     public function createRarity($data, $user)
     {
         DB::beginTransaction();
@@ -35,7 +50,15 @@ class RarityService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Updates a rarity.
+     *
+     * @param  \App\Models\Rarity     $rarity
+     * @param  array                  $data 
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\Rarity
+     */
     public function updateRarity($rarity, $data, $user)
     {
         DB::beginTransaction();
@@ -64,6 +87,13 @@ class RarityService extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Processes user input for creating/updating a rarity.
+     *
+     * @param  array               $data 
+     * @param  \App\Models\Rarity  $rarity
+     * @return array
+     */
     private function populateData($data, $rarity = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
@@ -83,15 +113,17 @@ class RarityService extends Service
         return $data;
     }
     
+    /**
+     * Deletes a rarity.
+     *
+     * @param  \App\Models\Rarity  $rarity
+     * @return bool
+     */
     public function deleteRarity($rarity)
     {
         DB::beginTransaction();
 
-        try {
-            // Check first if the rarity is currently in use
-            //if(Character::where('rarity_id', $rarity->id)->exists()) throw new \Exception("A character with this rarity exists. Please change its rarity first.");
-            //if(Feature::where('rarity_id', $rarity->id)->exists()) throw new \Exception("A character with this rarity exists. Please change its rarity first.");
-            
+        try {            
             if($rarity->has_image) $this->deleteImage($rarity->rarityImagePath, $rarity->rarityImageFileName); 
             $rarity->delete();
 
@@ -101,7 +133,13 @@ class RarityService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Sorts rarity order.
+     *
+     * @param  array  $data
+     * @return bool
+     */
     public function sortRarity($data)
     {
         DB::beginTransaction();

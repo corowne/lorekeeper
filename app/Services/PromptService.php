@@ -11,11 +11,28 @@ use App\Models\Prompt\PromptReward;
 
 class PromptService extends Service
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Prompt Service
+    |--------------------------------------------------------------------------
+    |
+    | Handles the creation and editing of prompt categories and prompts.
+    |
+    */
+
     /**********************************************************************************************
      
         PROMPT CATEGORIES
 
     **********************************************************************************************/
+
+    /**
+     * Create a category.
+     *
+     * @param  array                 $data
+     * @param  \App\Models\User\User $user
+     * @return \App\Models\Prompt\PromptCategory|bool
+     */
     public function createPromptCategory($data, $user)
     {
         DB::beginTransaction();
@@ -42,7 +59,15 @@ class PromptService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Update a category.
+     *
+     * @param  \App\Models\Prompt\PromptCategory  $category
+     * @param  array                              $data
+     * @param  \App\Models\User\User              $user
+     * @return \App\Models\Prompt\PromptCategory|bool
+     */
     public function updatePromptCategory($category, $data, $user)
     {
         DB::beginTransaction();
@@ -71,6 +96,13 @@ class PromptService extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Handle category data.
+     *
+     * @param  array                                   $data
+     * @param  \App\Models\Prompt\PromptCategory|null  $category
+     * @return array
+     */
     private function populateCategoryData($data, $category = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
@@ -87,7 +119,13 @@ class PromptService extends Service
 
         return $data;
     }
-    
+
+    /**
+     * Delete a category.
+     *
+     * @param  \App\Models\Prompt\PromptCategory  $category
+     * @return bool
+     */
     public function deletePromptCategory($category)
     {
         DB::beginTransaction();
@@ -105,7 +143,13 @@ class PromptService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Sorts category order.
+     *
+     * @param  array  $data
+     * @return bool
+     */
     public function sortPromptCategory($data)
     {
         DB::beginTransaction();
@@ -125,13 +169,19 @@ class PromptService extends Service
         return $this->rollbackReturn(false);
     }
 
-    
     /**********************************************************************************************
      
         PROMPTS
 
     **********************************************************************************************/
 
+    /**
+     * Creates a new prompt.
+     *
+     * @param  array                  $data 
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\Prompt\Prompt
+     */
     public function createPrompt($data, $user)
     {
         DB::beginTransaction();
@@ -153,7 +203,15 @@ class PromptService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Updates a prompt.
+     *
+     * @param  \App\Models\Prompt\Prompt  $prompt
+     * @param  array                      $data 
+     * @param  \App\Models\User\User      $user
+     * @return bool|\App\Models\Prompt\Prompt
+     */
     public function updatePrompt($prompt, $data, $user)
     {
         DB::beginTransaction();
@@ -178,6 +236,13 @@ class PromptService extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Processes user input for creating/updating a prompt.
+     *
+     * @param  array                      $data 
+     * @param  \App\Models\Prompt\Prompt  $prompt
+     * @return array
+     */
     private function populateData($data, $prompt = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
@@ -189,7 +254,13 @@ class PromptService extends Service
         return $data;
     }
 
-    private function populateRewards($prompt, $data)
+    /**
+     * Processes user input for creating/updating prompt rewards.
+     *
+     * @param  array                      $data 
+     * @param  \App\Models\Prompt\Prompt  $prompt
+     */
+    private function populateRewards($data, $prompt)
     {
         // Clear the old rewards...
         $prompt->rewards()->delete();
@@ -205,13 +276,17 @@ class PromptService extends Service
         }
     }
     
+    /**
+     * Deletes a prompt.
+     *
+     * @param  \App\Models\Prompt\Prompt  $prompt
+     * @return bool
+     */
     public function deletePrompt($prompt)
     {
         DB::beginTransaction();
 
         try {
-            // Check first if there are submissions under the prompt
-             
             $prompt->rewards()->delete();
             $prompt->delete();
 

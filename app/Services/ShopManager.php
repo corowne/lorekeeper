@@ -12,6 +12,22 @@ use App\Models\Shop\ShopLog;
 
 class ShopManager extends Service
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Shop Manager
+    |--------------------------------------------------------------------------
+    |
+    | Handles purchasing of items from shops.
+    |
+    */
+
+    /**
+     * Buys an item from a shop.
+     *
+     * @param  array                 $data
+     * @param  \App\Models\User\User $user
+     * @return bool|App\Models\Shop\Shop
+     */
     public function buyStock($data, $user)
     {
         DB::beginTransaction();
@@ -86,7 +102,14 @@ class ShopManager extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Checks if the purchase limit for an item from a shop has been reached.
+     *
+     * @param  \App\Models\Shop\ShopStock  $shopStock
+     * @param  \App\Models\User\User      $user
+     * @return bool
+     */
     public function checkPurchaseLimitReached($shopStock, $user)
     {
         if($shopStock->purchase_limit > 0)

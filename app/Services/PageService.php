@@ -9,7 +9,22 @@ use App\Models\SitePage;
 
 class PageService extends Service
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Page Service
+    |--------------------------------------------------------------------------
+    |
+    | Handles the creation and editing of site pages.
+    |
+    */
 
+    /**
+     * Creates a site page.
+     *
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\SitePage
+     */
     public function createPage($data, $user)
     {
         DB::beginTransaction();
@@ -27,7 +42,15 @@ class PageService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Updates a site page.
+     *
+     * @param  \App\Models\SitePage   $news
+     * @param  array                  $data 
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\SitePage
+     */
     public function updatePage($page, $data, $user)
     {
         DB::beginTransaction();
@@ -48,12 +71,19 @@ class PageService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Deletes a site page.
+     *
+     * @param  \App\Models\SitePage  $news
+     * @return bool
+     */
     public function deletePage($page)
     {
         DB::beginTransaction();
 
         try {
+            // Specific pages such as the TOS/privacy policy cannot be deleted from the admin panel.
             if(Config::get('lorekeeper.text_pages.').$page->key) throw new \Exception("You cannot delete this page.");
 
             $page->delete();

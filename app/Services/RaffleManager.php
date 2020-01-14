@@ -8,10 +8,26 @@ use App\Models\Raffle\Raffle;
 use App\Models\Raffle\RaffleTicket;
 use App\Models\User\User;
 
-// handles tickets
+class RaffleManager extends Service 
+{
+    /*
+    |--------------------------------------------------------------------------
+    | Raffle Manager
+    |--------------------------------------------------------------------------
+    |
+    | Handles creation and modification of raffle ticket data.
+    |
+    */
 
-class RaffleManager extends Service {
-
+    /**
+     * Adds tickets to a raffle. 
+     * One ticket is added per name in $names, which is a
+     * string containing comma-separated names.
+     *
+     * @param  \App\Models\Raffle\Raffle $raffle
+     * @param  string                    $names
+     * @return int
+     */
     public function addTickets($raffle, $names)
     {
         $names = explode(',', $names);
@@ -28,6 +44,14 @@ class RaffleManager extends Service {
         return $count;
     }
 
+    /**
+     * Adds one or more tickets to a single user for a raffle.
+     *
+     * @param  \App\Models\User\User     $user
+     * @param  \App\Models\Raffle\Raffle $raffle
+     * @param  int                       $count
+     * @return int
+     */
     public function addTicket($user, $raffle, $count = 1)
     {
         if (!$user) return 0;
@@ -43,6 +67,12 @@ class RaffleManager extends Service {
         return 0;
     }
 
+    /**
+     * Removes a single ticket.
+     *
+     * @param  \App\Models\Raffle\RaffleTicket $ticket
+     * @return bool
+     */
     public function removeTicket($ticket)
     {
         if (!$ticket) return null;
@@ -53,6 +83,15 @@ class RaffleManager extends Service {
         return false;
     }
 
+    /**
+     * Rolls a raffle group consecutively.
+     * If the $updateGroup flag is true, winners will be removed
+     * from other raffles in the group.
+     *
+     * @param  \App\Models\Raffle\RaffleGroup $raffleGroup
+     * @param  bool                           $updateGroup
+     * @return bool
+     */
     public function rollRaffleGroup($raffleGroup, $updateGroup = true)
     {
         if(!$raffleGroup) return null;
@@ -71,6 +110,15 @@ class RaffleManager extends Service {
         return true;
     }
 
+    /**
+     * Rolls a single raffle and marks it as completed.
+     * If the $updateGroup flag is true, winners will be removed
+     * from other raffles in the group.
+     *
+     * @param  \App\Models\Raffle\Raffle $raffle
+     * @param  bool                      $updateGroup
+     * @return bool
+     */
     public function rollRaffle($raffle, $updateGroup = false) 
     {
         if(!$raffle) return null;
@@ -96,6 +144,12 @@ class RaffleManager extends Service {
         return false;
     }
 
+    /**
+     * Rolls the winners of a raffle.
+     *
+     * @param  \App\Models\Raffle\Raffle $raffle
+     * @return array
+     */
     private function rollWinners($raffle)
     {
         $ticketPool = $raffle->tickets;
@@ -135,6 +189,14 @@ class RaffleManager extends Service {
         return $winners;
     }
 
+    /**
+     * Rolls the winners of a raffle.
+     *
+     * @param  array                          $winners
+     * @param  \App\Models\Raffle\RaffleGroup $raffleGroup
+     * @param  \App\Models\Raffle\Raffle      $raffle
+     * @return bool
+     */
     private function afterRoll($winners, $raffleGroup, $raffle)
     {
         // remove any tickets from winners in raffles in the group that aren't completed
