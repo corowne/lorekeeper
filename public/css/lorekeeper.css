@@ -263,6 +263,10 @@ main > .row {
     color: rgba(0,0,0,.3);
 }
 
+.mce-content-body {
+    padding: 20px;
+}
+
 /**************************************************************************************************
     
     Content
@@ -337,6 +341,29 @@ main > .row {
     cursor: not-allowed;
 }
 
+.spoiler {
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    background: transparent;
+    margin-top: 0px;
+  }
+  .spoiler-toggle {
+    font-weight: bold;
+    background-color: #f5f5f5;
+    cursor: pointer;
+    padding: .3rem 1.25rem;
+    font-size: .9rem;
+    font-family: Roboto Condensed, serif;
+    color: inherit;
+    text-transform: uppercase;
+  }
+  .spoiler-text {
+    padding: .75rem 1.25rem;
+    border-top: 1px solid rgba(0,0,0,0.1);
+  }
+  
+
 /* NOTIFICATIONS *********************************************************************************/
 
 .notifications-table .unread, .notifications-table .unread td {
@@ -356,6 +383,19 @@ main > .row {
     opacity: 0.5;
 }
 
+.masterlist-search-field {
+    display: inline-block;
+    align-items: center;
+    margin-right: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+.masterlist-search-field label {
+    margin-bottom: 0px;
+    margin-right: 10px;
+}
+.masterlist-search-field input[type=text], .masterlist-search-field select {
+    width: 300px;
+}
 
 /* ADMIN ****************************************************************************************/
 

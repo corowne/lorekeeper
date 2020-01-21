@@ -107,15 +107,16 @@
                     convert_urls: false,
                     plugins: [
                         'advlist autolink lists link image charmap print preview anchor',
-                        'searchreplace visualblocks code fullscreen',
+                        'searchreplace visualblocks code fullscreen spoiler',
                         'insertdatetime media table paste code help wordcount'
                     ],
-                    toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | code',
+                    toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | spoiler-add spoiler-remove | removeformat | code',
                     content_css: [
-                        '//www.tiny.cloud/css/codepen.min.css',
                         '{{ asset('css/app.css') }}',
                         '{{ asset('css/lorekeeper.css') }}'
-                    ]
+                    ],
+                    spoiler_caption: 'Toggle Spoiler',
+                    target_list: false
                 });
                 var $mobileMenuButton = $('#mobileMenuButton');
                 var $sidebar = $('#sidebar');
@@ -128,7 +129,12 @@
                     e.preventDefault();
                     loadModal("{{ url('items') }}/" + $(this).data('id') + "?read_only=1", $(this).data('name'));
                 });
-            });
+
+                $('.spoiler-text').hide();
+                    $('.spoiler-toggle').click(function(){
+                        $(this).next().toggle();
+                    });
+                });
         </script>
     </div>
 </body>

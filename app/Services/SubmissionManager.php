@@ -21,6 +21,23 @@ use App\Models\Prompt\Prompt;
 
 class SubmissionManager extends Service
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Submission Manager
+    |--------------------------------------------------------------------------
+    |
+    | Handles creation and modification of submission data.
+    |
+    */
+
+    /**
+     * Creates a new submission.
+     *
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $user
+     * @param  bool                   $isClaim
+     * @return mixed
+     */
     public function createSubmission($data, $user, $isClaim = false)
     {
         DB::beginTransaction();
@@ -99,6 +116,14 @@ class SubmissionManager extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Processes reward data into a format that can be used for distribution.
+     *
+     * @param  array $data
+     * @param  bool  $isCharacter
+     * @param  bool  $isStaff
+     * @return array
+     */
     private function processRewards($data, $isCharacter, $isStaff = false)
     {
         if($isCharacter)
@@ -144,6 +169,13 @@ class SubmissionManager extends Service
         }
     }
 
+    /**
+     * Rejects a submission.
+     *
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $user
+     * @return mixed
+     */
     public function rejectSubmission($data, $user)
     {
         DB::beginTransaction();
@@ -179,6 +211,13 @@ class SubmissionManager extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Approves a submission.
+     *
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $user
+     * @return mixed
+     */
     public function approveSubmission($data, $user)
     {
         DB::beginTransaction();

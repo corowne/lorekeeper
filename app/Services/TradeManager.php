@@ -24,6 +24,22 @@ use App\Models\Trade;
 
 class TradeManager extends Service
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Trade Manager
+    |--------------------------------------------------------------------------
+    |
+    | Handles creation and modification of trade data.
+    |
+    */
+
+    /**
+     * Creates a new trade.
+     *
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\Trade
+     */
     public function createTrade($data, $user)
     {
         DB::beginTransaction();
@@ -64,7 +80,14 @@ class TradeManager extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Edits a user's side of a trade.
+     *
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\Trade
+     */
     public function editTrade($data, $user)
     {
         DB::beginTransaction();
@@ -94,6 +117,14 @@ class TradeManager extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Handles modification of assets on the user's side of a trade.
+     *
+     * @param  \App\Models\Trade      $trade 
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $user
+     * @return bool|array
+     */
     private function handleTradeAssets($trade, $data, $user)
     {
         DB::beginTransaction();
@@ -180,7 +211,14 @@ class TradeManager extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Cancels a trade.
+     *
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\Trade
+     */
     public function cancelTrade($data, $user)
     {
         DB::beginTransaction();
@@ -210,7 +248,14 @@ class TradeManager extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Confirms the user's offer.
+     *
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\Trade
+     */
     public function confirmOffer($data, $user)
     {
         DB::beginTransaction();
@@ -266,6 +311,13 @@ class TradeManager extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Confirms the trade for a user.
+     *
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\Trade
+     */
     public function confirmTrade($data, $user)
     {
         DB::beginTransaction();
@@ -328,7 +380,14 @@ class TradeManager extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Approves a trade in the admin panel.
+     *
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\Trade
+     */
     public function approveTrade($data, $user)
     {
         DB::beginTransaction();
@@ -360,7 +419,14 @@ class TradeManager extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Rejects a trade in the admin panel.
+     *
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\Trade
+     */
     public function rejectTrade($data, $user)
     {
         DB::beginTransaction();
@@ -393,6 +459,12 @@ class TradeManager extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Returns trade attachments to their owners.
+     *
+     * @param  \App\Models\Trade  $trade
+     * @return bool
+     */
     private function returnAttachments($trade)
     {
         DB::beginTransaction();
@@ -419,6 +491,13 @@ class TradeManager extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Credits trade attachments to their new owners.
+     *
+     * @param  \App\Models\Trade  $trade
+     * @param  array              $data
+     * @return bool
+     */
     private function creditAttachments($trade, $data = [])
     {
         DB::beginTransaction();

@@ -10,11 +10,28 @@ use App\Models\Shop\ShopStock;
 
 class ShopService extends Service
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Shop Service
+    |--------------------------------------------------------------------------
+    |
+    | Handles the creation and editing of shops and shop stock.
+    |
+    */
+
     /**********************************************************************************************
      
         SHOPS
 
     **********************************************************************************************/
+    
+    /**
+     * Creates a new shop.
+     *
+     * @param  array                  $data 
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\Shop\Shop
+     */
     public function createShop($data, $user)
     {
         DB::beginTransaction();
@@ -42,6 +59,14 @@ class ShopService extends Service
         return $this->rollbackReturn(false);
     }
     
+    /**
+     * Updates a shop.
+     *
+     * @param  \App\Models\Shop\Shop  $shop
+     * @param  array                  $data 
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\Shop\Shop
+     */
     public function updateShop($shop, $data, $user)
     {
         DB::beginTransaction();
@@ -70,6 +95,14 @@ class ShopService extends Service
         return $this->rollbackReturn(false);
     }
     
+    /**
+     * Updates shop stock.
+     *
+     * @param  \App\Models\Shop\Shop  $shop
+     * @param  array                  $data 
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\Shop\Shop
+     */
     public function updateShopStock($shop, $data, $user)
     {
         DB::beginTransaction();
@@ -77,8 +110,6 @@ class ShopService extends Service
         try {
             // Clear the existing shop stock
             $shop->stock()->delete();
-
-            //dd($data);
 
             foreach($data['item_id'] as $key => $itemId)
             {
@@ -102,6 +133,13 @@ class ShopService extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Processes user input for creating/updating a shop.
+     *
+     * @param  array                  $data 
+     * @param  \App\Models\Shop\Shop  $shop
+     * @return array
+     */
     private function populateShopData($data, $shop = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
@@ -120,15 +158,19 @@ class ShopService extends Service
         return $data;
     }
     
+    /**
+     * Deletes a shop.
+     *
+     * @param  \App\Models\Shop\Shop  $shop
+     * @return bool
+     */
     public function deleteShop($shop)
     {
         DB::beginTransaction();
 
         try {
-            // Check first if the shop is currently in use
-            //if(ShopStock::where('shop_id', $shop->id)->exists()) throw new \Exception("The shop contains some items. Please remove them before deleting the shop.");
-            
             // Delete shop stock
+            $shop->stock()->delete();
 
             if($shop->has_image) $this->deleteImage($shop->shopImagePath, $shop->shopImageFileName); 
             $shop->delete();
@@ -139,7 +181,13 @@ class ShopService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Sorts shop order.
+     *
+     * @param  array  $data
+     * @return bool
+     */
     public function sortShop($data)
     {
         DB::beginTransaction();

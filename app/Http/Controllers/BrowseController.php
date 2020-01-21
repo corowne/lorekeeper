@@ -11,8 +11,10 @@ use App\Models\User\User;
 use App\Models\Rank\Rank;
 
 use App\Models\Character\Character;
+use App\Models\Character\CharacterCategory;
 use App\Models\Species;
 use App\Models\Rarity;
+use App\Models\Feature\Feature;
 
 class BrowseController extends Controller
 {
@@ -102,11 +104,33 @@ class BrowseController extends Controller
             $query->whereIn('character_image_id', $imageIds);
         }
         if($request->get('rarity_id')) $query->where('rarity_id', $request->get('rarity_id'));
+        if($request->get('character_category_id')) $query->where('character_category_id', $request->get('character_category_id'));
+        
+        if($request->get('sale_value_min')) $query->where('sale_value', '>=', $request->get('sale_value_min'));
+        if($request->get('sale_value_max')) $query->where('sale_value', '<=', $request->get('sale_value_max'));
+
+        if($request->get('is_trading')) $query->where('is_trading', 1);
+        if($request->get('is_gift_art_allowed')) $query->where('is_gift_art_allowed', 1);
+        if($request->get('is_sellable')) $query->where('is_sellable', 1);
+        if($request->get('is_tradeable')) $query->where('is_tradeable', 1);
+        if($request->get('is_giftable')) $query->where('is_giftable', 1);
+
+        /*
+        TODO:
+        username
+        artist
+        designer
+        feature_id - search multiple features
+        search_images
+        sort = ['id_desc' => 'Newest First', 'id_asc' => 'Oldest First', 'sale_value_desc' => 'Highest Sale Value', 'sale_value_asc' => 'Lowest Sale Value']
+        */
 
         return view('browse.masterlist', [  
             'characters' => $query->orderBy('characters.id', 'DESC')->paginate(24)->appends($request->query()),
+            'categories' => [0 => 'Any Category'] + CharacterCategory::orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => [0 => 'Any Species'] + Species::orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities' => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'features' => Feature::orderBy('features.name')->pluck('name', 'id')->toArray()
         ]);
     }
 

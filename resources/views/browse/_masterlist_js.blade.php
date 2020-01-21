@@ -44,5 +44,30 @@
                 window.localStorage.setItem('lorekeeper_masterlist_view', 'list');
             }
         }
+
+        var $featureBody = $('#featureBody');
+        var $featureSelect = $('#featureContent .feature-block');
+        var $addFeatureButton = $('.add-feature-button');
+        
+        // handle the ones that were already there
+        var $existingFeatures = $('#featureBody .feature-block');
+        $existingFeatures.find('.selectize').selectize();
+        addRemoveListener($existingFeatures);
+
+        $addFeatureButton.on('click', function(e) {
+            e.preventDefault();
+            var $clone = $featureSelect.clone();
+            $featureBody.append($clone);
+            $clone.find('.selectize').selectize();
+            addRemoveListener($clone);
+        });
+
+        function addRemoveListener($node)
+        {
+            $node.find('.feature-remove').on('click', function(e) {
+                e.preventDefault();
+                $(this).parent().parent().parent().remove();
+            });
+        }
     });
 </script>

@@ -9,7 +9,22 @@ use App\Models\Species;
 
 class SpeciesService extends Service
 {
-
+    /*
+    |--------------------------------------------------------------------------
+    | Species Service
+    |--------------------------------------------------------------------------
+    |
+    | Handles the creation and editing of character species.
+    |
+    */
+    
+    /**
+     * Creates a new species.
+     *
+     * @param  array                  $data 
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\Species
+     */
     public function createSpecies($data, $user)
     {
         DB::beginTransaction();
@@ -36,6 +51,14 @@ class SpeciesService extends Service
         return $this->rollbackReturn(false);
     }
     
+    /**
+     * Updates a species.
+     *
+     * @param  \App\Models\Species    $species
+     * @param  array                  $data 
+     * @param  \App\Models\User\User  $user
+     * @return bool|\App\Models\Species
+     */
     public function updateSpecies($species, $data, $user)
     {
         DB::beginTransaction();
@@ -64,6 +87,13 @@ class SpeciesService extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Processes user input for creating/updating a species.
+     *
+     * @param  array                $data 
+     * @param  \App\Models\Species  $shop
+     * @return array
+     */
     private function populateData($data, $species = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
@@ -81,6 +111,12 @@ class SpeciesService extends Service
         return $data;
     }
     
+    /**
+     * Deletes a species.
+     *
+     * @param  \App\Models\Species  $species
+     * @return bool
+     */
     public function deleteSpecies($species)
     {
         DB::beginTransaction();
@@ -98,7 +134,13 @@ class SpeciesService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
+    /**
+     * Sorts species order.
+     *
+     * @param  array  $data
+     * @return bool
+     */
     public function sortSpecies($data)
     {
         DB::beginTransaction();
