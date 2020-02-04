@@ -15,20 +15,22 @@
         <div class="text-right mb-3"><a href="#advancedSearch" class="btn btn-sm btn-outline-info" data-toggle="collapse">Show Advanced Search Options <i class="fas fa-caret-down"></i></a></div>
         <div class="card bg-light mb-3 collapse" id="advancedSearch">
             <div class="card-body masterlist-advanced-search">
-                <div class="masterlist-search-field">
-                    {!! Form::label('character_category_id', 'Category: ') !!}
-                    {!! Form::select('character_category_id', $categories, Request::get('character_category_id'), ['class' => 'form-control']) !!}
-                </div>
+                @if(!$isMyo)
+                    <div class="masterlist-search-field">
+                        {!! Form::label('character_category_id', 'Category: ') !!}
+                        {!! Form::select('character_category_id', $categories, Request::get('character_category_id'), ['class' => 'form-control']) !!}
+                    </div>
+                @endif
                 <div class="masterlist-search-field">
                     {!! Form::label('username', 'Owner Name: ') !!}
                     {!! Form::text('username', Request::get('username'), ['class' => 'form-control']) !!}
                 </div>
                 <div class="masterlist-search-field">
-                    {!! Form::label('artist', 'Artist Name: ') !!}
+                    {!! Form::label('artist', 'Artist Alias: ') !!}
                     {!! Form::text('artist', Request::get('artist'), ['class' => 'form-control']) !!}
                 </div>
                 <div class="masterlist-search-field">
-                    {!! Form::label('designer', 'Designer Name: ') !!}
+                    {!! Form::label('designer', 'Designer Alias: ') !!}
                     {!! Form::text('designer', Request::get('designer'), ['class' => 'form-control']) !!}
                 </div>
                 <hr />
@@ -44,9 +46,11 @@
                 <div class="masterlist-search-field">
                     {!! Form::checkbox('is_trading', 1, Request::get('is_trading'), ['class' => 'form-check-input',  'data-toggle' => 'toggle', 'data-on' => 'Open For Trade', 'data-off' => 'Any Trading Status', 'data-width' => '200', 'data-height' => '46']) !!}
                 </div>
-                <div class="masterlist-search-field">
-                    {!! Form::checkbox('is_gift_art_allowed', 1, Request::get('is_gift_art_allowed'), ['class' => 'form-check-input',  'data-toggle' => 'toggle', 'data-on' => 'Open For Gift Art', 'data-off' => 'Any Gift Art Status', 'data-width' => '195', 'data-height' => '46']) !!}
-                </div>
+                @if(!$isMyo)
+                    <div class="masterlist-search-field">
+                        {!! Form::checkbox('is_gift_art_allowed', 1, Request::get('is_gift_art_allowed'), ['class' => 'form-check-input',  'data-toggle' => 'toggle', 'data-on' => 'Open For Gift Art', 'data-off' => 'Any Gift Art Status', 'data-width' => '195', 'data-height' => '46']) !!}
+                    </div>
+                @endif
                 <br />
                 <div class="masterlist-search-field">
                     {!! Form::checkbox('is_sellable', 1, Request::get('is_sellable'), ['class' => 'form-check-input',  'data-toggle' => 'toggle', 'data-on' => 'Can Be Sold', 'data-off' => 'Any Sellable Status', 'data-width' => '204', 'data-height' => '46']) !!}
@@ -86,7 +90,7 @@
         <div class="form-inline justify-content-end mb-3">
             <div class="form-group mr-3">
                 {!! Form::label('sort', 'Sort: ', ['class' => 'mr-2']) !!}
-                {!! Form::select('sort', ['id_desc' => 'Newest First', 'id_asc' => 'Oldest First', 'sale_value_desc' => 'Highest Sale Value', 'sale_value_asc' => 'Lowest Sale Value'], null, ['class' => 'form-control']) !!}
+                {!! Form::select('sort', ['id_desc' => 'Newest First', 'id_asc' => 'Oldest First', 'sale_value_desc' => 'Highest Sale Value', 'sale_value_asc' => 'Lowest Sale Value'], Request::get('sort'), ['class' => 'form-control']) !!}
             </div>
             {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
         </div>

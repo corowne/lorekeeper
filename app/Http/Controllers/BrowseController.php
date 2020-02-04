@@ -11,6 +11,7 @@ use App\Models\User\User;
 use App\Models\Rank\Rank;
 
 use App\Models\Character\Character;
+use App\Models\Character\CharacterImage;
 use App\Models\Character\CharacterCategory;
 use App\Models\Species;
 use App\Models\Rarity;
@@ -89,20 +90,17 @@ class BrowseController extends Controller
      */
     public function getCharacters(Request $request)
     {
-        $query = Character::with('image')->myo(0);
+        $query = Character::with('image.features')->myo(0);
+
+        $imageQuery = CharacterImage::query();
+        if(!Auth::user()->hasPower('manage_characters')) {
+            $query->visible();
+            $imageQuery->guest();
+        }
         
         if($request->get('name')) $query->where(function($query) use ($request) {
             $query->where('characters.name', 'LIKE', '%' . $request->get('name') . '%')->orWhere('characters.slug', 'LIKE', '%' . $request->get('name') . '%');
         });
-        // For feature and species searches, we're only searching by the current image of the character.
-        if($request->get('feature_id')) {
-            $imageIds = DB::table('character_features')->where('feature_id', $request->get('feature_id'))->pluck('character_image_id')->toArray();
-            $query->whereIn('character_image_id', array_unique($imageIds));
-        }
-        if($request->get('species_id')) {
-            $imageIds = DB::table('character_images')->where('species_id', $request->get('species_id'))->pluck('id')->toArray();
-            $query->whereIn('character_image_id', $imageIds);
-        }
         if($request->get('rarity_id')) $query->where('rarity_id', $request->get('rarity_id'));
         if($request->get('character_category_id')) $query->where('character_category_id', $request->get('character_category_id'));
         
@@ -115,18 +113,62 @@ class BrowseController extends Controller
         if($request->get('is_tradeable')) $query->where('is_tradeable', 1);
         if($request->get('is_giftable')) $query->where('is_giftable', 1);
 
-        /*
-        TODO:
-        username
-        artist
-        designer
-        feature_id - search multiple features
-        search_images
-        sort = ['id_desc' => 'Newest First', 'id_asc' => 'Oldest First', 'sale_value_desc' => 'Highest Sale Value', 'sale_value_asc' => 'Lowest Sale Value']
-        */
+        if($request->get('username')) {
+            $name = $request->get('username');
+            $owners = User::where('name', 'LIKE', '%' . $name . '%')->orWhere('alias', 'LIKE', '%' . $name . '%')->pluck('id')->toArray();
+            $query->where(function($query) use ($owners, $name) {
+                $query->whereIn('user_id', $owners)->orWhere('owner_alias', 'LIKE', '%' . $name . '%');
+            });
+        }
+
+        // Search only main images
+        if(!$request->get('search_images')) {
+            $imageQuery->whereIn('id', $query->pluck('character_image_id')->toArray());
+        }
+
+        // Searching on image properties
+        if($request->get('species_id')) $imageQuery->where('species_id', $request->get('species_id'));
+        if($request->get('feature_id')) {
+            $featureIds = $request->get('feature_id');
+            foreach($featureIds as $featureId) {
+                $imageQuery->whereHas('features', function($query) use ($featureId) {
+                    $query->where('feature_id', $featureId);
+                });
+            }
+        }
+        if($request->get('artists')) {
+            $artistName = $request->get('artists');
+            $imageQuery->whereHas('artists', function($query) use ($artistName) {
+                $query->where('alias', $artistName);
+            });
+        }
+        if($request->get('designers')) {
+            $designerName = $request->get('designers');
+            $imageQuery->whereHas('designers', function($query) use ($designerName) {
+                $query->where('alias', $designerName);
+            });
+        }
+
+        $query->whereIn('id', $imageQuery->pluck('character_id')->toArray());
+
+        switch($request->get('sort')) {
+            case 'id_desc':
+                $query->orderBy('characters.id', 'DESC');
+                break;
+            case 'id_asc':
+                $query->orderBy('characters.id', 'ASC');
+                break;
+            case 'sale_value_desc':
+                $query->orderBy('characters.sale_value', 'DESC');
+                break;
+            case 'sale_value_asc':
+                $query->orderBy('characters.sale_value', 'ASC');
+                break;
+        }
 
         return view('browse.masterlist', [  
-            'characters' => $query->orderBy('characters.id', 'DESC')->paginate(24)->appends($request->query()),
+            'isMyo' => false,
+            'characters' => $query->paginate(24)->appends($request->query()),
             'categories' => [0 => 'Any Category'] + CharacterCategory::orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => [0 => 'Any Species'] + Species::orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities' => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
@@ -143,20 +185,85 @@ class BrowseController extends Controller
     public function getMyos(Request $request)
     {
         $query = Character::myo(1);
+
+        $imageQuery = CharacterImage::query();
+        if(!Auth::user()->hasPower('manage_characters')) {
+            $query->visible();
+            $imageQuery->guest();
+        }
         
-        if($request->get('name')) {
-            $users = User::where('users.name', 'LIKE', '%' . $request->get('name') . '%')->orWhere('users.alias', 'LIKE', '%' . $request->get('name') . '%')->pluck('id')->toArray();
-            $query->where(function($query) use ($request, $users) {
-                $query->where('characters.name', 'LIKE', '%' . $request->get('name') . '%')->orWhere('characters.owner_alias', 'LIKE', '%' . $request->get('name') . '%')->orWhereIn('characters.user_id', $users);
+        if($request->get('name')) $query->where(function($query) use ($request) {
+            $query->where('characters.name', 'LIKE', '%' . $request->get('name') . '%')->orWhere('characters.slug', 'LIKE', '%' . $request->get('name') . '%');
+        });
+        if($request->get('rarity_id')) $query->where('rarity_id', $request->get('rarity_id'));
+        
+        if($request->get('sale_value_min')) $query->where('sale_value', '>=', $request->get('sale_value_min'));
+        if($request->get('sale_value_max')) $query->where('sale_value', '<=', $request->get('sale_value_max'));
+
+        if($request->get('is_trading')) $query->where('is_trading', 1);
+        if($request->get('is_sellable')) $query->where('is_sellable', 1);
+        if($request->get('is_tradeable')) $query->where('is_tradeable', 1);
+        if($request->get('is_giftable')) $query->where('is_giftable', 1);
+
+        if($request->get('username')) {
+            $name = $request->get('username');
+            $owners = User::where('name', 'LIKE', '%' . $name . '%')->orWhere('alias', 'LIKE', '%' . $name . '%')->pluck('id')->toArray();
+            $query->where(function($query) use ($owners, $name) {
+                $query->whereIn('user_id', $owners)->orWhere('owner_alias', 'LIKE', '%' . $name . '%');
             });
         }
-        //if($request->get('species_id')) $query->where('species_id', $request->get('species_id'));
-        if($request->get('rarity_id')) $query->where('rarity_id', $request->get('rarity_id'));
+
+        // Search only main images
+        if(!$request->get('search_images')) {
+            $imageQuery->whereIn('id', $query->pluck('character_image_id')->toArray());
+        }
+
+        // Searching on image properties
+        if($request->get('species_id')) $imageQuery->where('species_id', $request->get('species_id'));
+        if($request->get('artists')) {
+            $artistName = $request->get('artists');
+            $imageQuery->whereHas('artists', function($query) use ($artistName) {
+                $query->where('alias', $artistName);
+            });
+        }
+        if($request->get('designers')) {
+            $designerName = $request->get('designers');
+            $imageQuery->whereHas('designers', function($query) use ($designerName) {
+                $query->where('alias', $designerName);
+            });
+        }
+        if($request->get('feature_id')) {
+            $featureIds = $request->get('feature_id');
+            foreach($featureIds as $featureId) {
+                $imageQuery->whereHas('features', function($query) use ($featureId) {
+                    $query->where('feature_id', $featureId);
+                });
+            }
+        }
+
+        $query->whereIn('id', $imageQuery->pluck('character_id')->toArray());
+
+        switch($request->get('sort')) {
+            case 'id_desc':
+                $query->orderBy('characters.id', 'DESC');
+                break;
+            case 'id_asc':
+                $query->orderBy('characters.id', 'ASC');
+                break;
+            case 'sale_value_desc':
+                $query->orderBy('characters.sale_value', 'DESC');
+                break;
+            case 'sale_value_asc':
+                $query->orderBy('characters.sale_value', 'ASC');
+                break;
+        }
 
         return view('browse.myo_masterlist', [  
-            'slots' => $query->orderBy('characters.id', 'DESC')->paginate(30)->appends($request->query()),
+            'isMyo' => true,
+            'slots' => $query->paginate(30)->appends($request->query()),
             'specieses' => [0 => 'Any Species'] + Species::orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities' => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'features' => Feature::orderBy('features.name')->pluck('name', 'id')->toArray()
         ]);
     }
 }
