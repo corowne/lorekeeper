@@ -91,6 +91,9 @@
                         <a class="dropdown-item" href="{{ url('world/prompts') }}">
                             Prompts
                         </a>
+                        <a class="dropdown-item" href="{{ url('world/shops') }}">
+                            Shops
+                        </a>
                     </div>
                 </li>
             </ul>
