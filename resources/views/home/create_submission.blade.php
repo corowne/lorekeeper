@@ -26,7 +26,7 @@
         @if(!$isClaim)
             <div class="form-group">
                 {!! Form::label('prompt_id', 'Prompt') !!}
-                {!! Form::select('prompt_id', $prompts, null, ['class' => 'form-control selectize', 'id' => 'prompt', 'placeholder' => '']) !!}
+                {!! Form::select('prompt_id', $prompts, Request::get('prompt_id'), ['class' => 'form-control selectize', 'id' => 'prompt', 'placeholder' => '']) !!}
             </div>
         @endif
         <div class="form-group">

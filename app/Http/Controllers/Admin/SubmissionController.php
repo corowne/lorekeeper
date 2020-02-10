@@ -6,6 +6,7 @@ use Auth;
 use Config;
 use Illuminate\Http\Request;
 
+use App\Models\Prompt\PromptCategory;
 use App\Models\Submission\Submission;
 use App\Models\Item\Item;
 use App\Models\Currency\Currency;
@@ -23,10 +24,16 @@ class SubmissionController extends Controller
      * @param  string  $status
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getSubmissionIndex($status = null)
+    public function getSubmissionIndex(Request $request, $status = null)
     {
+        $submissions = Submission::with('prompt')->where('status', $status ? ucfirst($status) : 'Pending')->whereNotNull('prompt_id');
+        if($request->get('prompt_category_id')) 
+            $submissions->whereHas('prompt', function($query) use ($request) {
+                $query->where('prompt_category_id', $request->get('prompt_category_id'));
+            });
         return view('admin.submissions.index', [
-            'submissions' => Submission::where('status', $status ? ucfirst($status) : 'Pending')->whereNotNull('prompt_id')->orderBy('id', 'DESC')->paginate(30),
+            'submissions' => $submissions->orderBy('id', 'DESC')->paginate(30)->appends($request->query()),
+            'categories' => ['none' => 'Any Category'] + PromptCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'isClaims' => false
         ]);
     }
