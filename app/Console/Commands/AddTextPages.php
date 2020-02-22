@@ -65,7 +65,7 @@ class AddTextPages extends Command
                 ]);
                 $this->info("Added:   ".$page['title']);
             }
-            else $this->line("Skipped: ".page['title']);
+            else $this->line("Skipped: ".$page['title']);
         }
     }
 }

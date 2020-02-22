@@ -2,14 +2,7 @@
 
 use App\Services\Service;
 use App\Models\User\UserUpdateLog;
-
-use chillerlan\HTTP\Psr7;
-use chillerlan\OAuth\Providers\DeviantArt\DeviantArt;
-
-use chillerlan\OAuth\Core\AccessToken;
-use chillerlan\HTTP\Psr18\CurlClient;
-use chillerlan\OAuth\{OAuthOptions, Storage\SessionStorage};
-use chillerlan\DotEnv\DotEnv;
+use DeviantPHP\DeviantPHP;
 
 class DeviantArtService extends Service
 {
@@ -26,48 +19,24 @@ class DeviantArtService extends Service
      * Setting up for using the deviantART API.
      */
     public function beforeConstruct() {
-        /** @var \chillerlan\OAuth\Providers\DeviantArt\DeviantArt $deviantart */
+
         $this->deviantart  = null;
-        $this->servicename = null;
-        $this->tokenfile   = null;
-    
-        /** @var \chillerlan\Settings\SettingsContainerInterface $options */
-        $this->options = null;
-        /** @var \chillerlan\HTTP\Psr18\HTTPClientInterface $http */
-        $this->http = null;
-        /** @var \chillerlan\OAuth\Storage\OAuthStorageInterface $storage */
-        $this->storage = null;
-
-        $this->options_arr = [
-            // OAuthOptions
-            'key'              => env('DEVIANTART_CLIENT_ID'),
-            'secret'           => env('DEVIANTART_CLIENT_SECRET'),
-            'callbackURL'      => url('link'), 
-            'tokenAutoRefresh' => true,
-            // HTTPOptions
-            'ca_info'          => public_path().'/cacert.pem',
-            'userAgent'        => 'chillerlanPhpOAuth/3.0.0 +https://github.com/codemasher/php-oauth',
-            // log
-            'minLogLevel'      => 'debug',
-        ];
-        /** @var \chillerlan\Settings\SettingsContainerInterface $options */
-        $this->options = new class($this->options_arr) extends OAuthOptions{
-            protected $sleep;
-        };
-        
-        /** @var \chillerlan\HTTP\Psr18\HTTPClientInterface $http */
-        $this->http = new CurlClient($this->options);
-
-        /** @var \chillerlan\OAuth\Storage\OAuthStorageInterface $storage */
-        $this->storage = new SessionStorage;
-
-        $this->deviantart = new DeviantArt($this->http, $this->storage, $this->options, null);
-
         $this->scopes = [
-            DeviantArt::SCOPE_BASIC,
-            DeviantArt::SCOPE_BROWSE,
+            'basic',
+            'user',
         ];
-        $this->servicename = $this->deviantart->serviceName;
+
+        $this->options = [
+            'client_id'      => env('DEVIANTART_CLIENT_ID'),
+            'client_secret'  => env('DEVIANTART_CLIENT_SECRET'),
+            'redirect_uri'   => url('link'), 
+
+            // Scopes are space-separated
+            'scope'         => implode(' ', $this->scopes)
+        ];
+
+        $this->deviantart = new DeviantPHP($this->options);
+
     }
     
     /**
@@ -76,7 +45,7 @@ class DeviantArtService extends Service
      * @return string
      */
     public function getAuthURL() {
-        return $this->deviantart->getAuthURL(null, $this->scopes);
+        return $this->deviantart->createAuthUrl();
     }
 
     /**
@@ -85,11 +54,13 @@ class DeviantArtService extends Service
      * @param  string  $code 
      * @param  string  $state 
      */
-    public function getAccessToken($code, $state) {
-        
-        $token = $this->deviantart->getAccessToken($code, $state);
+    public function getAccessToken($code) {
+
+        $token = $this->deviantart->getAccessToken($code); 
 
         // The token can be saved for continued use, but at the moment it's not needed more than this once.
+
+        return $this->deviantart->getToken();
     }
 
     /**
@@ -97,14 +68,15 @@ class DeviantArtService extends Service
      * 
      * @param  \App\Models\User\User  $user
      */
-    public function linkUser($user) {
-        $data = Psr7\get_json($this->deviantart->whoami());
+    public function linkUser($user, $accessToken, $refreshToken) {
+        $this->deviantart->setToken($accessToken, $refreshToken);
+        $data = $this->deviantart->getUser();
 
         // Save the user's username
         // Also consider: save the user's dA join date
-        $user->alias = $data->username;
+        $user->alias = $data['username'];
         $user->save();
         
-        UserUpdateLog::create(['user_id' => $user->id, 'data' => json_encode(['alias' => $data->username]), 'type' => 'Alias Added']);
+        UserUpdateLog::create(['user_id' => $user->id, 'data' => json_encode(['alias' => $data['username']]), 'type' => 'Alias Added']);
     }
 }

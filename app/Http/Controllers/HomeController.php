@@ -54,14 +54,14 @@ class HomeController extends Controller
             //header('Location: '.$deviantart->getAuthURL());
         }
         // Step 3: receive the access token
-        elseif($request->get('code') && $request->get('state')){
-            $deviantart->getAccessToken( $request->get('code'),$request->get('state'));
-            return redirect()->to(url()->current().'?granted=DeviantArt');
+        elseif($request->get('code')){
+            $token = $deviantart->getAccessToken( $request->get('code')); 
+            return redirect()->to(url()->current().'?access_token='.$token['access_token'].'&refresh_token='.$token['refresh_token']);
             //header('Location: ?granted='.$servicename);
         }
         // Step 4: verify the token and use the API
-        elseif($request->get('granted') === 'DeviantArt'){
-            $deviantart->linkUser(Auth::user());
+        elseif($request->get('access_token') && $request->get('refresh_token')){
+            $deviantart->linkUser(Auth::user(), $request->get('access_token'), $request->get('refresh_token'));
             flash('deviantART account has been linked successfully.')->success();
             Auth::user()->updateCharacters();
             return redirect()->to('/');
