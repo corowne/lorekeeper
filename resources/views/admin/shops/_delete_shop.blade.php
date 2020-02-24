@@ -1,4 +1,4 @@
-@if($category)
+@if($shop)
     {!! Form::open(['url' => 'admin/data/shops/delete/'.$shop->id]) !!}
 
     <p>You are about to delete the shop <strong>{{ $shop->name }}</strong>. This is not reversible. If you would like to hide the shop from users, you can set it as inactive from the shop settings page.</p>

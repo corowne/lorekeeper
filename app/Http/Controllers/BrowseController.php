@@ -93,7 +93,7 @@ class BrowseController extends Controller
         $query = Character::with('image.features')->myo(0);
 
         $imageQuery = CharacterImage::query();
-        if(!Auth::user()->hasPower('manage_characters')) {
+        if(!Auth::check() || !Auth::user()->hasPower('manage_characters')) {
             $query->visible();
             $imageQuery->guest();
         }
@@ -187,7 +187,7 @@ class BrowseController extends Controller
         $query = Character::myo(1);
 
         $imageQuery = CharacterImage::query();
-        if(!Auth::user()->hasPower('manage_characters')) {
+        if(!Auth::check() || !Auth::user()->hasPower('manage_characters')) {
             $query->visible();
             $imageQuery->guest();
         }

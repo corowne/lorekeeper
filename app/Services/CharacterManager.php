@@ -957,8 +957,10 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
-            $user->settings->{$character->is_myo_slot ? 'myo_slot_count' : 'character_count'}--;
-            $user->settings->save();
+            if($character->user_id) {
+                $character->user->settings->{$character->is_myo_slot ? 'myo_slot_count' : 'character_count'}--;
+                $character->user->settings->save();
+            }
 
             // Delete character
             // This is a soft delete, so the character still kind of exists

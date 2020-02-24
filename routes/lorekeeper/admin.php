@@ -238,7 +238,6 @@ Route::group(['prefix' => 'grants', 'namespace' => 'Users', 'middleware' => 'pow
 
     Route::get('items', 'GrantController@getItems');
     Route::post('items', 'GrantController@postItems');
-    
 });
 
 # MASTERLIST
@@ -262,7 +261,7 @@ Route::group(['prefix' => 'masterlist', 'namespace' => 'Characters', 'middleware
     Route::post('create-myo', 'CharacterController@postCreateMyo');
 });
 Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware' => 'power:manage_inventories'], function() {
-    Route::post('{slug}/transfer', 'CharacterController@postCurrencyTransfer');
+    Route::post('{slug}/grant', 'GrantController@postCharacterCurrency');
 });
 Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware' => 'power:manage_characters'], function() {
 

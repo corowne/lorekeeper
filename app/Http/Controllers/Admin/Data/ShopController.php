@@ -126,7 +126,7 @@ class ShopController extends Controller
     public function getDeleteShop($id)
     {
         $shop = Shop::find($id);
-        return view('admin.items._delete_shop', [
+        return view('admin.shops._delete_shop', [
             'shop' => $shop,
         ]);
     }

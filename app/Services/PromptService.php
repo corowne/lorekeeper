@@ -195,7 +195,7 @@ class PromptService extends Service
 
             $prompt = Prompt::create(array_only($data, ['prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active', 'start_at', 'end_at', 'hide_before_start', 'hide_after_end']));
 
-            $this->populateRewards($prompt, array_only($data, ['rewardable_type', 'rewardable_id', 'quantity']));
+            $this->populateRewards(array_only($data, ['rewardable_type', 'rewardable_id', 'quantity']), $prompt);
 
             return $this->commitReturn($prompt);
         } catch(\Exception $e) { 
@@ -227,7 +227,7 @@ class PromptService extends Service
 
             $prompt->update(array_only($data, ['prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active', 'start_at', 'end_at', 'hide_before_start', 'hide_after_end']));
 
-            $this->populateRewards($prompt, array_only($data, ['rewardable_type', 'rewardable_id', 'quantity']));
+            $this->populateRewards(array_only($data, ['rewardable_type', 'rewardable_id', 'quantity']), $prompt);
 
             return $this->commitReturn($prompt);
         } catch(\Exception $e) { 
@@ -265,14 +265,16 @@ class PromptService extends Service
         // Clear the old rewards...
         $prompt->rewards()->delete();
 
-        foreach($data['rewardable_type'] as $key => $type)
-        {
-            PromptReward::create([
-                'prompt_id'       => $prompt->id,
-                'rewardable_type' => $type,
-                'rewardable_id'   => $data['rewardable_id'][$key],
-                'quantity'        => $data['quantity'][$key],
-            ]);
+        if(isset($data['rewardable_type'])) {
+            foreach($data['rewardable_type'] as $key => $type)
+            {
+                PromptReward::create([
+                    'prompt_id'       => $prompt->id,
+                    'rewardable_type' => $type,
+                    'rewardable_id'   => $data['rewardable_id'][$key],
+                    'quantity'        => $data['quantity'][$key],
+                ]);
+            }
         }
     }
     

@@ -28,6 +28,13 @@ class GrantController extends Controller
         ]);
     }
 
+    /**
+     * Grants or removes currency from multiple users.
+     *
+     * @param  \Illuminate\Http\Request      $request
+     * @param  App\Services\CurrencyManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postUserCurrency(Request $request, CurrencyManager $service)
     {
         $data = $request->only(['names', 'currency_id', 'quantity', 'data']);
@@ -52,6 +59,13 @@ class GrantController extends Controller
         ]);
     }
 
+    /**
+     * Grants or removes items from multiple users.
+     *
+     * @param  \Illuminate\Http\Request        $request
+     * @param  App\Services\InvenntoryManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postItems(Request $request, InventoryManager $service)
     {
         $data = $request->only(['names', 'item_id', 'quantity', 'data', 'disallow_transfer', 'notes']);

@@ -289,7 +289,7 @@ class ItemService extends Service
 
         try {
             // Check first if the item is currently owned
-            if(DB::table('inventory')->where('item_id', $item->id)->exists()) throw new \Exception("At least one user currently owns this item. Please remove the item(s) before deleting it.");
+            if(DB::table('user_items')->where('item_id', $item->id)->exists()) throw new \Exception("At least one user currently owns this item. Please remove the item(s) before deleting it.");
             
             if($item->has_image) $this->deleteImage($item->ImagePath, $item->ImageFileName); 
             $item->delete();

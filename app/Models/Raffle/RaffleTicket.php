@@ -65,7 +65,7 @@ class RaffleTicket extends Model
      */
     public function scopeWinners($query)
     {
-        $q->whereNotNull('position')->orderBy('position');
+        $query->whereNotNull('position')->orderBy('position');
     }
 
     /**********************************************************************************************
