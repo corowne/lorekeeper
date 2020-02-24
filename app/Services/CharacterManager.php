@@ -84,6 +84,9 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            if(!(isset($data['user_id']) && $data['user_id']) && !(isset($data['owner_alias']) && $data['owner_alias'])) 
+                throw new \Exception("Please select an owner.");
+
             // Get owner info
             $recipient = null;
             $recipientId = null;
@@ -163,6 +166,8 @@ class CharacterManager extends Service
                 $data['character_category_id'] = null;
                 $data['number'] = null;
                 $data['slug'] = null;
+                $data['species_id'] = isset($data['species_id']) && $data['species_id'] ? $data['species_id'] : null;
+                $data['rarity_id'] = isset($data['rarity_id']) && $data['rarity_id'] ? $data['rarity_id'] : null;
             }
 
             $characterData = array_only($data, [
