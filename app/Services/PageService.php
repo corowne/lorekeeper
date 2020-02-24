@@ -57,7 +57,7 @@ class PageService extends Service
 
         try {
             // More specific validation
-            if(Page::where('key', $data['key'])->where('id', '!=', $page->id)->exists()) throw new \Exception("The key has already been taken.");
+            if(SitePage::where('key', $data['key'])->where('id', '!=', $page->id)->exists()) throw new \Exception("The key has already been taken.");
 
             if(isset($data['text']) && $data['text']) $data['parsed_text'] = parse($data['text']);
             $data['user_id'] = $user->id;
