@@ -90,9 +90,9 @@ class BrowseController extends Controller
      */
     public function getCharacters(Request $request)
     {
-        $query = Character::with('image.features')->myo(0);
+        $query = Character::with('user.rank')->with('image.features')->with('rarity')->with('image.species')->myo(0);
 
-        $imageQuery = CharacterImage::query();
+        $imageQuery = CharacterImage::with('features')->with('rarity')->with('species')->with('features');
         if(!Auth::check() || !Auth::user()->hasPower('manage_characters')) {
             $query->visible();
             $imageQuery->guest();
@@ -184,9 +184,9 @@ class BrowseController extends Controller
      */
     public function getMyos(Request $request)
     {
-        $query = Character::myo(1);
+        $query = Character::with('user.rank')->with('image.features')->with('rarity')->with('image.species')->myo(1);
 
-        $imageQuery = CharacterImage::query();
+        $imageQuery = CharacterImage::with('features')->with('rarity')->with('species')->with('features');
         if(!Auth::check() || !Auth::user()->hasPower('manage_characters')) {
             $query->visible();
             $imageQuery->guest();

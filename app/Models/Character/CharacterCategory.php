@@ -121,6 +121,6 @@ class CharacterCategory extends Model
      */
     public function getSearchUrlAttribute()
     {
-        return url('world/characters?character_category_id='.$this->id);
+        return url('masterlist?character_category_id='.$this->id);
     }
 }

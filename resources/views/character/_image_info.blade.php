@@ -43,7 +43,7 @@
                 <div class="mb-3">
                     <div><h5>Traits</h5></div>
                     <div>
-                        @foreach($image->features as $feature)
+                        @foreach($image->features()->with('feature.category')->get() as $feature)
                             <div>@if($feature->feature->feature_category_id) <strong>{!! $feature->feature->category->displayName !!}:</strong> @endif {!! $feature->feature->displayName !!} @if($feature->data) ({{ $feature->data }}) @endif</div> 
                         @endforeach
                     </div>

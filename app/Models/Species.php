@@ -121,6 +121,6 @@ class Species extends Model
      */
     public function getSearchUrlAttribute()
     {
-        return url('characters?species_id='.$this->id);
+        return url('masterlist?species_id='.$this->id);
     }
 }

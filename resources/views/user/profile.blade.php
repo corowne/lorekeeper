@@ -27,7 +27,7 @@
     </div>
     <div class="row">
         <div class="col-md-2 col-4"><h5>Joined</h5></div>
-        <div class="col-md-10 col-8">{{ format_date($user->created_at) }} ({{ $user->created_at->diffForHumans() }})</div>
+        <div class="col-md-10 col-8">{{ format_date($user->created_at, false) }} ({{ $user->created_at->diffForHumans() }})</div>
     </div>
 </div>
 

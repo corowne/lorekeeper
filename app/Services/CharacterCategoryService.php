@@ -5,6 +5,7 @@ use App\Services\Service;
 use DB;
 use Config;
 
+use App\Models\Character\Character;
 use App\Models\Character\CharacterCategory;
 
 class CharacterCategoryService extends Service

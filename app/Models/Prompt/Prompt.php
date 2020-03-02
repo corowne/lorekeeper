@@ -128,7 +128,7 @@ class Prompt extends Model
     public function scopeSortCategory($query)
     {
         $ids = PromptCategory::orderBy('sort', 'DESC')->pluck('id')->toArray();
-        return $query->orderByRaw(DB::raw('FIELD(prompt_category_id, '.implode(',', $ids).')'));
+        return count($ids) ? $query->orderByRaw(DB::raw('FIELD(prompt_category_id, '.implode(',', $ids).')')) : $query;
     }
 
     /**

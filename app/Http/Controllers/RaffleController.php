@@ -50,7 +50,7 @@ class RaffleController extends Controller
 
         return view('raffles.ticket_index', [
             'raffle' => $raffle,
-            'tickets' => $raffle->tickets()->orderBy('id')->paginate(100),
+            'tickets' => $raffle->tickets()->with('user')->orderBy('id')->paginate(100),
             'count' => $count,
             'userCount' => $userCount, 
             "page" => Request::get('page') ? Request::get('page') - 1 : 0

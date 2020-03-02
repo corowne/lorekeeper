@@ -3,7 +3,7 @@
 @section('admin-title') User Index @stop
 
 @section('admin-content')
-{!! breadcrumbs(['Admin Panel' => 'admin', 'User Index' => 'admin/users', $user->name => 'admin/user/'.$user->name]) !!}
+{!! breadcrumbs(['Admin Panel' => 'admin', 'User Index' => 'admin/users', $user->name => 'admin/users/'.$user->name.'/edit']) !!}
 
 <h1>User: {!! $user->displayName !!}</h1>
 <ul class="nav nav-tabs mb-3">

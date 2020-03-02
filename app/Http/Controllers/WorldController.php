@@ -125,7 +125,7 @@ class WorldController extends Controller
      */
     public function getFeatures(Request $request)
     {
-        $query = Feature::query();
+        $query = Feature::with('category')->with('rarity')->with('species');
         $data = $request->only(['rarity_id', 'feature_category_id', 'species_id', 'name', 'sort']);
         if(isset($data['rarity_id']) && $data['rarity_id'] != 'none') 
             $query->where('rarity_id', $data['rarity_id']);
@@ -183,7 +183,7 @@ class WorldController extends Controller
      */
     public function getItems(Request $request)
     {
-        $query = Item::query();
+        $query = Item::with('category');
         $data = $request->only(['item_category_id', 'name', 'sort']);
         if(isset($data['item_category_id']) && $data['item_category_id'] != 'none') 
             $query->where('item_category_id', $data['item_category_id']);
@@ -258,7 +258,7 @@ class WorldController extends Controller
      */
     public function getPrompts(Request $request)
     {
-        $query = Prompt::active();
+        $query = Prompt::active()->with('category');
         $data = $request->only(['prompt_category_id', 'name', 'sort']);
         if(isset($data['prompt_category_id']) && $data['prompt_category_id'] != 'none') 
             $query->where('prompt_category_id', $data['prompt_category_id']);

@@ -115,10 +115,7 @@ class CharacterTransfer extends Model
     public function getIsActiveAttribute()
     {
         if($this->status == 'Pending') return true;
-
-        if(Settings::get('open_transfers_queue')) {
-            if($this->status == 'Accepted' && $this->is_approved == 0) return true;
-        }
+        if(($this->status == 'Accepted') && $this->is_approved == 0) return true;
 
         return false;
     }

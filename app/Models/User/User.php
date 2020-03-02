@@ -336,10 +336,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getCurrencyLogs($limit = 10)
     {
         $user = $this;
-        $query = CurrencyLog::where(function($query) use ($user) {
-            $query->where('sender_type', 'User')->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Prompt Rewards']);
+        $query = CurrencyLog::with('currency')->where(function($query) use ($user) {
+            $query->with('sender')->where('sender_type', 'User')->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Prompt Rewards']);
         })->orWhere(function($query) use ($user) {
-            $query->where('recipient_type', 'User')->where('recipient_id', $user->id)->where('log_type', '!=', 'Staff Removal');
+            $query->with('recipient')->where('recipient_type', 'User')->where('recipient_id', $user->id)->where('log_type', '!=', 'Staff Removal');
         })->orderBy('id', 'DESC');
         if($limit) return $query->take($limit)->get();
         else return $query->paginate(30);
@@ -354,7 +354,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getItemLogs($limit = 10)
     {
         $user = $this;
-        $query = ItemLog::where(function($query) use ($user) {
+        $query = ItemLog::with('sender')->with('recipient')->with('item')->where(function($query) use ($user) {
             $query->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Staff Removal']);
         })->orWhere(function($query) use ($user) {
             $query->where('recipient_id', $user->id);
@@ -385,7 +385,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getOwnershipLogs()
     {
         $user = $this;
-        $query = UserCharacterLog::where(function($query) use ($user) {
+        $query = UserCharacterLog::with('sender.rank')->with('recipient.rank')->with('character')->where(function($query) use ($user) {
             $query->where('sender_id', $user->id)->where('log_type', '!=', 'Character Created');
         })->orWhere(function($query) use ($user) {
             $query->where('recipient_id', $user->id);
@@ -421,6 +421,6 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getSubmissions()
     {
-        return Submission::where('status', 'Approved')->where('user_id', $this->id)->orderBy('id', 'DESC')->paginate(30);
+        return Submission::with('user')->with('prompt')->where('status', 'Approved')->where('user_id', $this->id)->orderBy('id', 'DESC')->paginate(30);
     }
 }

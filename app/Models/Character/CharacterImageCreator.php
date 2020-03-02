@@ -63,7 +63,7 @@ class CharacterImageCreator extends Model
     {
         if ($this->url)
         {
-            return '<a href="'.$this->url.'" class="display-creator">'.$this->alias ? : $this->url.'</a>';
+            return '<a href="'.$this->url.'" class="display-creator">'. ($this->alias ? : $this->url) .'</a>';
         }
         else if($this->alias)
         {

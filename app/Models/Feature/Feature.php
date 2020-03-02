@@ -113,7 +113,7 @@ class Feature extends Model
     public function scopeSortCategory($query)
     {
         $ids = FeatureCategory::orderBy('sort', 'DESC')->pluck('id')->toArray();
-        return $query->orderByRaw(DB::raw('FIELD(feature_category_id, '.implode(',', $ids).')'));
+        return count($ids) ? $query->orderByRaw(DB::raw('FIELD(feature_category_id, '.implode(',', $ids).')')) : $query;
     }
 
     /**
@@ -126,7 +126,7 @@ class Feature extends Model
     public function scopeSortSpecies($query)
     {
         $ids = Species::orderBy('sort', 'DESC')->pluck('id')->toArray();
-        return $query->orderByRaw(DB::raw('FIELD(species_id, '.implode(',', $ids).')'));
+        return count($ids) ? $query->orderByRaw(DB::raw('FIELD(species_id, '.implode(',', $ids).')')) : $query;
     }
 
     /**
@@ -139,7 +139,7 @@ class Feature extends Model
     public function scopeSortRarity($query, $reverse = false)
     {
         $ids = Rarity::orderBy('sort', $reverse ? 'ASC' : 'DESC')->pluck('id')->toArray();
-        return $query->orderByRaw(DB::raw('FIELD(rarity_id, '.implode(',', $ids).')'));
+        return count($ids) ? $query->orderByRaw(DB::raw('FIELD(rarity_id, '.implode(',', $ids).')')) : $query;
     }
 
     /**
@@ -238,6 +238,6 @@ class Feature extends Model
      */
     public function getSearchUrlAttribute()
     {
-        return url('masterlist?feature_id='.$this->id);
+        return url('masterlist?feature_id[]='.$this->id);
     }
 }

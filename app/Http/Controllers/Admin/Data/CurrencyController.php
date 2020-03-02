@@ -77,7 +77,7 @@ class CurrencyController extends Controller
             'is_user_owned', 'is_character_owned', 
             'name', 'abbreviation', 'description',
             'is_displayed', 'allow_user_to_user', 'allow_user_to_character', 'allow_character_to_user',
-            'icon', 'image'
+            'icon', 'image', 'remove_icon', 'remove_image'
         ]);
         if($id && $service->updateCurrency(Currency::find($id), $data, Auth::user())) {
             flash('Currency updated successfully.')->success();

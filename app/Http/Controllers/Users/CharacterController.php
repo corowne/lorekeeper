@@ -39,7 +39,7 @@ class CharacterController extends Controller
      */
     public function getIndex()
     {
-        $characters = Auth::user()->characters()->visible()->whereNull('trade_id')->get();
+        $characters = Auth::user()->characters()->with('image')->visible()->whereNull('trade_id')->get();
 
         return view('home.characters', [
             'characters' => $characters,
@@ -53,7 +53,7 @@ class CharacterController extends Controller
      */
     public function getMyos()
     {
-        $slots = Auth::user()->myoSlots()->get();
+        $slots = Auth::user()->myoSlots()->with('image')->get();
 
         return view('home.myos', [
             'slots' => $slots,
@@ -87,7 +87,7 @@ class CharacterController extends Controller
      */
     public function getTransfers($type = 'incoming')
     {
-        $transfers = CharacterTransfer::query();
+        $transfers = CharacterTransfer::with('sender.rank')->with('recipient.rank')->with('character.image');
         $user = Auth::user();
 
         switch($type) {

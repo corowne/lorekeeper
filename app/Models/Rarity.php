@@ -131,6 +131,6 @@ class Rarity extends Model
      */
     public function getSearchCharactersUrlAttribute()
     {
-        return url('characters?rarity_id='.$this->id);
+        return url('masterlist?rarity_id='.$this->id);
     }
 }

@@ -143,7 +143,7 @@ class Trade extends Model
      */
     public function getCharacterData()
     {
-        return Character::whereIn('id', array_merge($this->getCharacters($this->sender), $this->getCharacters($this->recipient)))->get();
+        return Character::with('user')->whereIn('id', array_merge($this->getCharacters($this->sender), $this->getCharacters($this->recipient)))->get();
     }
 
     /**

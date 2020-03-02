@@ -426,6 +426,10 @@ class CharacterManager extends Service
             $new['features'] = $this->generateFeatureList($image);
             $new['species'] = $image->species_id ? $image->species->displayName : null;
             $new['rarity'] = $image->rarity_id ? $image->rarity->displayName : null;
+
+            // Character also keeps track of these features
+            $image->character->rarity_id = $image->rarity_id;
+            $image->character->save();
             
             // Add a log for the character
             // This logs all the updates made to the character

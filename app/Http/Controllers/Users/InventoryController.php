@@ -34,9 +34,10 @@ class InventoryController extends Controller
     public function getIndex()
     {
         $categories = ItemCategory::orderBy('sort', 'DESC')->get();
+        $items = count($categories) ? Auth::user()->items()->orderByRaw('FIELD(item_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')->orderBy('name')->orderBy('updated_at')->get()->groupBy('item_category_id') : Auth::user()->items()->orderBy('name')->orderBy('updated_at')->get()->groupBy('item_category_id');
         return view('home.inventory', [
             'categories' => $categories->keyBy('id'),
-            'items' => Auth::user()->items()->orderByRaw('FIELD(item_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')->orderBy('name')->orderBy('updated_at')->get()->groupBy('item_category_id'),
+            'items' => $items,
             'userOptions' => User::visible()->where('id', '!=', Auth::user()->id)->orderBy('name')->pluck('name', 'id')->toArray(),
             'user' => Auth::user()
         ]);

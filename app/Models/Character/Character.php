@@ -172,6 +172,14 @@ class Character extends Model
     {
         return $this->belongsTo('App\Models\Trade', 'trade_id');
     }
+    
+    /**
+     * Get the rarity of this character.
+     */
+    public function rarity() 
+    {
+        return $this->belongsTo('App\Models\Rarity', 'rarity_id');
+    }
 
     /**********************************************************************************************
     
@@ -384,10 +392,10 @@ class Character extends Model
     public function getCurrencyLogs($limit = 10)
     {
         $character = $this;
-        $query = CurrencyLog::where(function($query) use ($character) {
-            $query->where('sender_type', 'Character')->where('sender_id', $character->id)->where('log_type', '!=', 'Staff Grant');
+        $query = CurrencyLog::with('currency')->where(function($query) use ($character) {
+            $query->with('sender.rank')->where('sender_type', 'Character')->where('sender_id', $character->id)->where('log_type', '!=', 'Staff Grant');
         })->orWhere(function($query) use ($character) {
-            $query->where('recipient_type', 'Character')->where('recipient_id', $character->id)->where('log_type', '!=', 'Staff Removal');
+            $query->with('recipient.rank')->where('recipient_type', 'Character')->where('recipient_id', $character->id)->where('log_type', '!=', 'Staff Removal');
         })->orderBy('id', 'DESC');
         if($limit) return $query->take($limit)->get();
         else return $query->paginate(30);
@@ -400,7 +408,7 @@ class Character extends Model
      */
     public function getOwnershipLogs()
     {
-        $query = UserCharacterLog::where('character_id', $this->id)->orderBy('id', 'DESC');
+        $query = UserCharacterLog::with('sender.rank')->with('recipient.rank')->where('character_id', $this->id)->orderBy('id', 'DESC');
         return $query->paginate(30);
     }
 
@@ -411,7 +419,7 @@ class Character extends Model
      */
     public function getCharacterLogs()
     {
-        $query = CharacterLog::where('character_id', $this->id)->orderBy('id', 'DESC');
+        $query = CharacterLog::with('sender.rank')->where('character_id', $this->id)->orderBy('id', 'DESC');
         return $query->paginate(30);
     }
 
@@ -422,7 +430,7 @@ class Character extends Model
      */
     public function getSubmissions()
     {
-        return Submission::where('status', 'Approved')->whereIn('id', SubmissionCharacter::where('character_id', $this->id)->pluck('submission_id')->toArray())->paginate(30);
+        return Submission::with('user.rank')->with('prompt')->where('status', 'Approved')->whereIn('id', SubmissionCharacter::where('character_id', $this->id)->pluck('submission_id')->toArray())->paginate(30);
 
         // Untested
         //$character = $this;

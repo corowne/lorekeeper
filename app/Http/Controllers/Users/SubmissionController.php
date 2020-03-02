@@ -44,7 +44,7 @@ class SubmissionController extends Controller
      */
     public function getIndex(Request $request)
     {
-        $submissions = Submission::where('user_id', Auth::user()->id)->whereNotNull('prompt_id');
+        $submissions = Submission::with('prompt')->where('user_id', Auth::user()->id)->whereNotNull('prompt_id');
         $type = $request->get('type');
         if(!$type) $type = 'Pending';
         

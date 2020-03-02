@@ -136,7 +136,7 @@ class Currency extends Model
      */
     public function getCurrencyIconUrlAttribute()
     {
-        if (!$this->has_image) return null;
+        if (!$this->has_icon) return null;
         return asset($this->imageDirectory . '/' . $this->currencyIconFileName);
     }
 

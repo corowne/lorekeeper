@@ -132,10 +132,6 @@ return [
         'power' => 'manage_characters',
         'links' => [
             [
-                'name' => 'Masterlist',
-                'url' => 'admin/characters'
-            ],
-            [
                 'name' => 'Create Character',
                 'url' => 'admin/masterlist/create-character'
             ],

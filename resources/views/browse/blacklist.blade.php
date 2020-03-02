@@ -7,7 +7,7 @@
 <h1>User Blacklist</h1>
 
 @if(!$canView)
-    @if($key != 0 &&
+    @if($key != '0' &&
         ($privacy == 3 ||
         (Auth::check() &&
         ($privacy == 2 ||

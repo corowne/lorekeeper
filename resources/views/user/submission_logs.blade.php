@@ -1,12 +1,12 @@
 @extends('user.layout')
 
-@section('profile-title') {{ $user->name }}'s Prompt Submissions @endsection
+@section('profile-title') {{ $user->name }}'s Submissions @endsection
 
 @section('profile-content')
-{!! breadcrumbs(['Users' => 'users', $user->name => $user->url, 'Prompt Submissions' => $user->url.'/submissions']) !!}
+{!! breadcrumbs(['Users' => 'users', $user->name => $user->url, 'Submissions' => $user->url.'/submissions']) !!}
 
 <h1>
-    {!! $user->displayName !!}'s Prompt Submissions
+    {!! $user->displayName !!}'s Submissions
 </h1>
 
 {!! $logs->render() !!}
@@ -20,7 +20,7 @@
     <tbody>
         @foreach($logs as $log)
             <tr>
-                <td>{!! $log->prompt->displayName !!}</td>
+                <td>{!! $log->prompt_id ? $log->prompt->displayName : '---' !!}</td>
                 <td><a href="{{ $log->url }}">{{ $log->url }}</a></td>
                 <td>{{ format_date($log->created_at) }}</td>
                 <td class="text-right"><a href="{{ $log->viewUrl }}" class="btn btn-primary btn-sm">Details</a></td>

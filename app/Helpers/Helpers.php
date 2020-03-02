@@ -66,8 +66,8 @@ function breadcrumbs($links) {
  * @param  \Illuminate\Support\Carbon\Carbon  $timestamp
  * @return string
  */
-function format_date($timestamp) {
-    return $timestamp->format('j F Y, H:i:s e');
+function format_date($timestamp, $showTime = true) {
+    return $timestamp->format('j F Y' . ($showTime ? ', H:i:s e' : ''));
 }
 
 /**
