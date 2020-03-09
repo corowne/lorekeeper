@@ -22,6 +22,7 @@ use App\Models\Character\CharacterFeature;
 use App\Models\Character\CharacterImage;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Character\CharacterDesignUpdate;
+use App\Models\Character\CharacterBookmark;
 use App\Models\User\UserCharacterLog;
 use App\Models\Species;
 use App\Models\Rarity;
@@ -380,6 +381,9 @@ class CharacterManager extends Service
                     'character_slug' => $character->slug,
                 ]);
             }
+
+            // Notify bookmarkers
+            $character->notifyBookmarkers('BOOKMARK_IMAGE');
 
             return $this->commitReturn($character);
         } catch(\Exception $e) { 
@@ -919,11 +923,18 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            $notifyTrading = false;
+            $notifyGiftArt = false;
+
             // Allow updating the gift art/trading options if the editing
             // user owns the character
             if(!$isAdmin)
             {
                 if($character->user_id != $user->id) throw new \Exception("You cannot edit this character.");
+
+                if($character->is_trading != isset($data['is_trading'])) $notifyTrading = true;
+                if($character->is_gift_art_allowed != isset($data['is_gift_art_allowed'])) $notifyGiftArt = true;
+
                 $character->is_gift_art_allowed = isset($data['is_gift_art_allowed']);
                 $character->is_trading = isset($data['is_trading']);
                 $character->save();
@@ -946,6 +957,9 @@ class CharacterManager extends Service
                     'sender_name' => $user->name
                 ]);
             }
+
+            if($notifyTrading) $character->notifyBookmarkers('BOOKMARK_TRADING');
+            if($notifyGiftArt) $character->notifyBookmarkers('BOOKMARK_GIFTS');
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
@@ -970,6 +984,9 @@ class CharacterManager extends Service
                 $character->user->settings->{$character->is_myo_slot ? 'myo_slot_count' : 'character_count'}--;
                 $character->user->settings->save();
             }
+
+            // Delete associated bookmarks
+            CharacterBookmark::where('character_id', $character->id)->delete();
 
             // Delete character
             // This is a soft delete, so the character still kind of exists
@@ -1281,6 +1298,9 @@ class CharacterManager extends Service
             else $character->transferrable_at = Carbon::now()->addDays($cooldown);
         }
         $character->save();
+        
+        // Notify bookmarkers
+        $character->notifyBookmarkers('BOOKMARK_OWNER');
 
         // Add a log for the ownership change
         $this->createLog($sender->id, $recipient->id, $recipient->alias, $character->id, $logType ? $logType : ($character->is_myo_slot ? 'MYO Slot Transferred' : 'Character Transferred'), $data, 'user');
@@ -1760,6 +1780,9 @@ class CharacterManager extends Service
                 'character_url' => $request->character->url,
                 'name' => $request->character->fullName
             ]);
+
+            // Notify bookmarkers
+            $request->character->notifyBookmarkers('BOOKMARK_IMAGE');
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 

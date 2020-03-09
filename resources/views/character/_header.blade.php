@@ -6,6 +6,10 @@
     @endif
 </div> 
 <h1 class="mb-0">
+    @if($character->is_visible && Auth::check() && $character->user_id != Auth::user()->id) 
+        <?php $bookmark = Auth::user()->hasBookmarked($character); ?>
+        <a href="#" class="btn btn-outline-info float-right bookmark-button" data-id="{{ $bookmark ? $bookmark->id : 0 }}" data-character-id="{{ $character->id }}"><i class="fas fa-bookmark"></i> {{ $bookmark ? 'Edit Bookmark' : 'Bookmark' }}</a> 
+    @endif
     @if(!$character->is_visible) <i class="fas fa-eye-slash"></i> @endif {!! $character->displayName !!}
 </h1>
 <div class="mb-3"> 

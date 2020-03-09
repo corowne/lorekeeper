@@ -30,7 +30,7 @@
                         <a href="{{ $page->url }}">{{ $page->title }}</a>
                     </td>
                     <td>{{ $page->key }}</td>
-                    <td>{{ format_date($page->updated_at) }}</td>
+                    <td>{!! format_date($page->updated_at) !!}</td>
                     <td class="text-right">
                         <a href="{{ url('admin/pages/edit/'.$page->id) }}" class="btn btn-primary">Edit</a>
                     </td>

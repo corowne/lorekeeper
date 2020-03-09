@@ -33,8 +33,8 @@
                     <td>{{ $invitation->code }}</td>
                     <td>{!! $invitation->user->displayName !!}</td>
                     <td>@if($invitation->recipient_id) {!! $invitation->recipient->displayName !!} @else --- @endif</td>
-                    <td>{{ format_date($invitation->created_at) }}</td>
-                    <td>@if($invitation->created_at != $invitation->updated_at) {{ format_date($invitation->updated_at) }} @else --- @endif</td>
+                    <td>{!! format_date($invitation->created_at) !!}</td>
+                    <td>@if($invitation->created_at != $invitation->updated_at) {!! format_date($invitation->updated_at) !!} @else --- @endif</td>
                     <td>
                         @if(!$invitation->recipient_id)
                             {!! Form::open(['url' => 'admin/invitations/delete/'.$invitation->id, 'class' => 'text-right']) !!}

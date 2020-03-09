@@ -136,4 +136,9 @@ class Notification extends Model
     const TRADE_COMPLETED                 = 31;
     const TRADE_REJECTED                  = 32;
     const TRADE_CONFIRMED                 = 33;
+    const BOOKMARK_TRADING                = 34;
+    const BOOKMARK_GIFTS                  = 35;
+    const BOOKMARK_OWNER                  = 36;
+    const BOOKMARK_IMAGE                  = 37;
+
 }

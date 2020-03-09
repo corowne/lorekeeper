@@ -6,9 +6,9 @@
                 <h3 class="mb-0 transfer-info-header"><a href="{{ $transfer->character->url }}">{{ $transfer->character->fullName }}</a></h3>
                 <div class="transfer-info-body mb-3">
                     @if(Auth::user()->id == $transfer->recipient_id)
-                        <p>Transfer sent by {!! $transfer->sender->displayName !!}, {{ format_date($transfer->created_at) }}</p>
+                        <p>Transfer sent by {!! $transfer->sender->displayName !!}, {!! format_date($transfer->created_at) !!}</p>
                     @else 
-                        <p>Transfer sent to {!! $transfer->recipient->displayName !!}, {{ format_date($transfer->created_at) }}</p>
+                        <p>Transfer sent to {!! $transfer->recipient->displayName !!}, {!! format_date($transfer->created_at) !!}</p>
                     @endif
                     
                     @if($transfer->isActive && $transfersQueue)

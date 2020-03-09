@@ -5,5 +5,5 @@
         <td>{!! $log->character ? $log->character->displayName : '---' !!}</td>
     @endif
     <td>{!! $log->log !!}</td>
-    <td>{{ format_date($log->created_at) }}</td>
+    <td>{!! format_date($log->created_at) !!}</td>
 </tr>

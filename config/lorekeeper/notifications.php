@@ -214,4 +214,28 @@ return [
         'message' => 'A trade has been confirmed and placed in the character transfer queue to be reviewed. (<a href="{url}">View Trade</a>)',
         'url' => 'trades/{trade_id}'
     ],
+
+    // BOOKMARK_TRADING
+    34 => [
+        'message' => 'A character you have bookmarked (<a href="{character_url}">{character_name}</a>) has had its Open For Trading status changed. (<a href="{url}">View Bookmarks</a>)',
+        'url' => 'account/bookmarks'
+    ],
+
+    // BOOKMARK_GIFTS
+    35 => [
+        'message' => 'A character you have bookmarked (<a href="{character_url}">{character_name}</a>) has had its Gift Art Allowed status changed. (<a href="{url}">View Bookmarks</a>)',
+        'url' => 'account/bookmarks'
+    ],
+
+    // BOOKMARK_OWNER
+    36 => [
+        'message' => 'A character you have bookmarked (<a href="{character_url}">{character_name}</a>) has been transferred to a different owner. (<a href="{url}">View Bookmarks</a>)',
+        'url' => 'account/bookmarks'
+    ],
+
+    // BOOKMARK_IMAGE
+    37 => [
+        'message' => 'A new image has been uploaded for a character you have bookmarked (<a href="{character_url}">{character_name}</a>). (<a href="{url}">View Bookmarks</a>)',
+        'url' => 'account/bookmarks'
+    ],
 ];

@@ -3,5 +3,5 @@
     <td>{!! $log->recipient ? $log->recipient->displayName : '' !!}</td>
     <td>{!! $log->item->displayName !!} (×{!! $log->quantity !!})</td>
     <td>{!! $log->log !!}</td>
-    <td>{{ format_date($log->created_at) }}</td>
+    <td>{!! format_date($log->created_at) !!}</td>
 </tr>

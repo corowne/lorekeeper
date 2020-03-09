@@ -43,6 +43,7 @@
 
 @endsection
 @section('scripts')
+    @parent
     @include('character._image_js')
     <script>
         $( document ).ready(function() {

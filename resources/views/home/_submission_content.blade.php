@@ -20,12 +20,12 @@
     </div>
     <div class="row">
         <div class="col-md-2 col-4"><h5>Submitted</h5></div>
-        <div class="col-md-10 col-8">{{ format_date($submission->created_at) }} ({{ $submission->created_at->diffForHumans() }})</div>
+        <div class="col-md-10 col-8">{!! format_date($submission->created_at) !!} ({{ $submission->created_at->diffForHumans() }})</div>
     </div>
     @if($submission->status != 'Pending')
         <div class="row">
             <div class="col-md-2 col-4"><h5>Processed</h5></div>
-            <div class="col-md-10 col-8">{{ format_date($submission->updated_at) }} ({{ $submission->updated_at->diffForHumans() }}) by {!! $submission->staff->displayName !!}</div>
+            <div class="col-md-10 col-8">{!! format_date($submission->updated_at) !!} ({{ $submission->updated_at->diffForHumans() }}) by {!! $submission->staff->displayName !!}</div>
         </div>
     @endif
 </div>

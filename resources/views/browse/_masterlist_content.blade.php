@@ -151,7 +151,7 @@
                     <td>@if(!$character->is_visible) <i class="fas fa-eye-slash"></i> @endif {!! $character->displayName !!}</td>
                     <td>{!! $character->image->rarity_id ? $character->image->rarity->displayName : 'None' !!}</td>
                     <td>{!! $character->image->species_id ? $character->image->species->displayName : 'None' !!}</td>
-                    <td>{{ format_date($character->created_at) }}</td>
+                    <td>{!! format_date($character->created_at) !!}</td>
                 </tr>
             @endforeach
         </tbody>

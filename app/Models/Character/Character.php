@@ -4,14 +4,16 @@ namespace App\Models\Character;
 
 use Config;
 use DB;
+use Notifications;
 use App\Models\Model;
 
 use App\Models\User\User;
-use App\Models\Character\Character;
 use App\Models\User\UserCharacterLog;
+use App\Models\Character\Character;
 use App\Models\Character\CharacterCategory;
 use App\Models\Character\CharacterCurrency;
 use App\Models\Character\CharacterTransfer;
+use App\Models\Character\CharacterBookmark;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
 use App\Models\Submission\Submission;
@@ -441,5 +443,45 @@ class Character extends Model
         //    $query->where('submission_characters.character_id', 1);
         //});  
         //return Submission::where('status', 'Approved')->where('user_id', $this->id)->orderBy('id', 'DESC')->paginate(30);
+    }
+
+    /**
+     * Notifies character's bookmarkers in case of a change.
+     */
+    public function notifyBookmarkers($type)
+    {
+        // Bookmarkers will not be notified if the character is set to not visible
+        if($this->is_visible) {
+            $column = null;
+            switch($type) {
+                case 'BOOKMARK_TRADING':
+                    $column = 'notify_on_trade_status';
+                    break;
+                case 'BOOKMARK_GIFTS':
+                    $column = 'notify_on_gift_art_status';
+                    break;
+                case 'BOOKMARK_OWNER':
+                    $column = 'notify_on_transfer';
+                    break;
+                case 'BOOKMARK_IMAGE':
+                    $column = 'notify_on_image';
+                    break;
+            }
+
+            // The owner of the character themselves will not be notified, in the case that
+            // they still have a bookmark on the character after it was transferred to them
+            $bookmarkers = CharacterBookmark::where('character_id', $this->id)->where('user_id', '!=', $this->user_id);
+            if($column) $bookmarkers = $bookmarkers->where($column, 1);
+            
+            $bookmarkers = User::whereIn('id', $bookmarkers->pluck('user_id')->toArray())->get();
+
+            // This may have to be redone more efficiently in the case of large numbers of bookmarkers,
+            // but since we're not expecting many users on the site to begin with it should be fine
+            foreach($bookmarkers as $bookmarker)
+                Notifications::create($type, $bookmarker, [
+                    'character_url' => $this->url,
+                    'character_name' => $this->fullName
+                ]);
+        }        
     }
 }

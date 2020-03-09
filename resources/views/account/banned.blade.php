@@ -7,7 +7,7 @@
 
 <h1>Banned</h1>
 
-<p>You are banned from site activities effective {{ format_date(Auth::user()->settings->banned_at) }}. {{ Auth::user()->settings->ban_reason ? 'The following reason was given:' : '' }}</p>
+<p>You are banned from site activities effective {!! format_date(Auth::user()->settings->banned_at) !!}. {{ Auth::user()->settings->ban_reason ? 'The following reason was given:' : '' }}</p>
 
 @if(Auth::user()->settings->ban_reason)
     <div class="alert alert-danger">

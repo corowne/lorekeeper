@@ -36,8 +36,8 @@
                         @endif
                         <a href="{{ $news->url }}">{{ $news->title }}</a>
                     </td>
-                    <td>{{ format_date($news->post_at ? : $news->created_at) }}</td>
-                    <td>{{ format_date($news->updated_at) }}</td>
+                    <td>{!! format_date($news->post_at ? : $news->created_at) !!}</td>
+                    <td>{!! format_date($news->updated_at) !!}</td>
                     <td class="text-right">
                         <a href="{{ url('admin/news/edit/'.$news->id) }}" class="btn btn-primary">Edit</a>
                     </td>

@@ -41,7 +41,7 @@
                 <td>{!! $user->displayName !!}</td>
                 <td>{!! $user->displayAlias !!}</td>
                 <td>{!! $user->rank->displayName !!}</td>
-                <td>{{ format_date($user->created_at) }}</td>
+                <td>{!! format_date($user->created_at, false) !!}</td>
             </tr>
         @endforeach
     </tbody>

@@ -25,7 +25,7 @@
 @if($character->transferrable_at && $character->transferrable_at->isFuture())
     <div class="row">
         <div class="col-lg-3 col-4"><h5>Cooldown</h5></div>
-        <div class="col-lg-9 col-8">Cannot be transferred until {{ format_date($character->transferrable_at) }}</div>
+        <div class="col-lg-9 col-8">Cannot be transferred until {!! format_date($character->transferrable_at) !!}</div>
     </div>
 @endif
 @if(Auth::check() && Auth::user()->hasPower('manage_characters'))

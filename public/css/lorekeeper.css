@@ -347,8 +347,8 @@ main > .row {
     margin-bottom: 1rem;
     background: transparent;
     margin-top: 0px;
-  }
-  .spoiler-toggle {
+}
+.spoiler-toggle {
     font-weight: bold;
     background-color: #f5f5f5;
     cursor: pointer;
@@ -357,12 +357,11 @@ main > .row {
     font-family: Roboto Condensed, serif;
     color: inherit;
     text-transform: uppercase;
-  }
-  .spoiler-text {
+}
+.spoiler-text {
     padding: .75rem 1.25rem;
     border-top: 1px solid rgba(0,0,0,0.1);
-  }
-  
+}
 
 /* NOTIFICATIONS *********************************************************************************/
 
@@ -519,7 +518,7 @@ tr.outflow {
     border-radius: .25rem;
 }
 
-/* SHOPS *************************************************************************************/
+/* SHOPS *****************************************************************************************/
 .shops-row img {
     max-width: 100%;
 }
@@ -527,7 +526,33 @@ tr.outflow {
     font-weight: bold;
 }
 
-/* TRADES ************************************************************************************/
+/* TRADES ****************************************************************************************/
 .trade-offer .currency-item {
     background-color: transparent;
+}
+
+/* BOOKMARKS *************************************************************************************/
+.bookmark-table {
+    min-width: 1000px;
+}
+
+.bookmark-table .bookmark-thumbnail {
+    min-width: 115px;
+    width: 115px;
+}
+
+.bookmark-table .bookmark-info {
+    width: 20%;
+}
+
+.bookmark-table .bookmark-notifications {
+    width: 18%;
+}
+
+.bookmark-table .bookmark-actions {
+    width: 18%;
+}
+
+.bookmark-table .img-thumbnail {
+    width: 100px;
 }

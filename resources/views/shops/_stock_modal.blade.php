@@ -9,6 +9,17 @@
         @if($stock->purchase_limit) <div class="text-danger">Max {{ $stock->purchase_limit }} per user</div> @endif
     </div>
 
+    @if($stock->item->parsed_description)
+        <div class="mb-2">
+            <a data-toggle="collapse" href="#itemDescription" class="h5">Description <i class="fas fa-caret-down"></i></a>
+            <div class="card collapse show mt-1" id="itemDescription">
+                <div class="card-body">
+                    {!! $stock->item->parsed_description !!}
+                </div>
+            </div>
+        </div>
+    @endif
+
     <h5>Purchase</h5>
     @if($stock->is_limited_stock && $stock->quantity == 0)
         <div class="alert alert-warning mb-0">This item is out of stock.</div>

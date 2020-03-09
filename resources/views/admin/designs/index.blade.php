@@ -39,7 +39,7 @@
             <tr>
                 <td>{!! $r->character->displayName !!}</td>
                 <td>{!! $r->user->displayName !!}</td>
-                <td>{{ $r->submitted_at ? format_date($r->submitted_at) : '---' }}</td>
+                <td>{!! $r->submitted_at ? format_date($r->submitted_at) : '---' !!}</td>
                 <td>
                     <span class="badge badge-{{ $r->status == 'Pending' ? 'secondary' : ($r->status == 'Approved' ? 'success' : 'danger') }}">{{ $r->status }}</span>
                 </td>

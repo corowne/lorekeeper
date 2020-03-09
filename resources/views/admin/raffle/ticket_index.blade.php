@@ -18,7 +18,7 @@
         <a class="btn btn-success edit-tickets" href="#" data-id="">Add Tickets</a>
     </div>
 @elseif($raffle->is_active == 2)
-    <p>This raffle is closed. Rolled: {{ format_date($raffle->rolled_at) }}</p>
+    <p>This raffle is closed. Rolled: {!! format_date($raffle->rolled_at) !!}</p>
     <div class="card mb-3">
         <div class="card-header h3">Winner(s)</div>
         <div class="table-responsive">

@@ -15,6 +15,7 @@ use App\Models\Shop\ShopLog;
 use App\Models\User\UserCharacterLog;
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
+use App\Models\Character\CharacterBookmark;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -422,5 +423,16 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getSubmissions()
     {
         return Submission::with('user')->with('prompt')->where('status', 'Approved')->where('user_id', $this->id)->orderBy('id', 'DESC')->paginate(30);
+    }
+
+    /**
+     * Checks if the user has bookmarked a character.
+     * Returns the bookmark if one exists.
+     *
+     * @return \App\Models\Character\CharacterBookmark
+     */
+    public function hasBookmarked($character)
+    {
+        return CharacterBookmark::where('user_id', $this->id)->where('character_id', $character->id)->first();
     }
 }

@@ -1,8 +1,8 @@
-@extends('layouts.app')
+@extends('account.layout')
 
-@section('title') Notifications @endsection
+@section('account-title') Notifications @endsection
 
-@section('content')
+@section('account-content')
 {!! breadcrumbs(['My Account' => Auth::user()->url, 'Notifications' => 'notifications']) !!}
 
 <h1>Notifications</h1>
@@ -26,7 +26,7 @@
         @foreach($notifications as $notification)
             <tr class="{{ $notification->is_unread ? 'unread' : '' }}">
                 <td>{!! $notification->message !!}</td>
-                <td>{{ format_date($notification->created_at) }}</td>
+                <td>{!! format_date($notification->created_at) !!}</td>
                 <td class="text-right"><a href="#" data-id="{{ $notification->id }}" class="clear-notification">×</a></td>
             </tr>
         @endforeach

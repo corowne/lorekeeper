@@ -12,7 +12,7 @@
     @if(!$character->is_sellable && !$character->is_tradeable && !$character->is_giftable)
         <p>This character cannot be transferred.</p>
     @elseif($character->transferrable_at && $character->transferrable_at->isFuture())
-        <p>This character is on transfer cooldown until <strong>{{ format_date($character->transferrable_at) }}</strong> ({{ $character->transferrable_at->diffForHumans() }}). It cannot be transferred until then.</p>
+        <p>This character is on transfer cooldown until <strong>{!! format_date($character->transferrable_at) !!}</strong> ({{ $character->transferrable_at->diffForHumans() }}). It cannot be transferred until then.</p>
     @elseif($transfer)
         <div class="card bg-light mb-3">
             <div class="card-body">
@@ -80,7 +80,8 @@
 
 @endsection
 @section('scripts')
-<script>
-    $('.selectize').selectize();
-</script>
+    @parent
+    <script>
+        $('.selectize').selectize();
+    </script>
 @endsection

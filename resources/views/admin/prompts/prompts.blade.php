@@ -49,10 +49,10 @@
                     </td>
                     <td>{{ $prompt->category ? $prompt->category->name : '' }}</td>
                     <td>
-                        {{ $prompt->start_at ? format_date($prompt->start_at) : '' }}
+                        {!! $prompt->start_at ? format_date($prompt->start_at) : '' !!}
                     </td>
                     <td>
-                        {{ $prompt->end_at ? format_date($prompt->end_at) : '' }}
+                        {!! $prompt->end_at ? format_date($prompt->end_at) : '' !!}
                     </td>
                     <td class="text-right">
                         <a href="{{ url('admin/data/prompts/edit/'.$prompt->id) }}" class="btn btn-primary">Edit</a>

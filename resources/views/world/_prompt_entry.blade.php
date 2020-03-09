@@ -6,10 +6,10 @@
                 <div><strong>Category: </strong>{!! $prompt->category->displayName !!}</div>
             @endif
             @if($prompt->start_at && $prompt->start_at->isFuture())
-                <div><strong>Starts: </strong>{{ format_date($prompt->start_at) }} ({{ $prompt->start_at->diffForHumans() }})</div>
+                <div><strong>Starts: </strong>{!! format_date($prompt->start_at) !!} ({{ $prompt->start_at->diffForHumans() }})</div>
             @endif
             @if($prompt->end_at)
-                <div><strong>Ends: </strong>{{ format_date($prompt->end_at) }} ({{ $prompt->end_at->diffForHumans() }})</div>
+                <div><strong>Ends: </strong>{!! format_date($prompt->end_at) !!} ({{ $prompt->end_at->diffForHumans() }})</div>
             @endif
         </div>
         <div class="world-entry-text">

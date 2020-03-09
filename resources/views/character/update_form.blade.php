@@ -25,36 +25,13 @@
 @else
     <p>You have a {{ $character->is_myo_slot ? 'MYO approval' : 'design update' }} request {{ $request->status == 'Draft' ? 'that has not been submitted' : 'awaiting approval' }}. <a href="{{ $request->url }}">Click here to view {{ $request->status == 'Draft' ? 'and edit ' : '' }}it.</a></p>
 @endif 
-{{--
-@else
-    <p>This form is for submitting this {{ $character->is_myo_slot ? 'MYO slot' : 'character' }} to the {{ $character->is_myo_slot ? 'MYO approval' : 'design update' }} queue. Keeping in mind the allowed traits/stats for your update request, select the desired traits/stats below. You may also select currency and items to spend on this approval - these will be deducted from your account immediately, but refunded to you in case of a rejection.</p>
-    {!! Form::open(['url' => $character->is_myo_slot ? 'myo/'.$character->id.'/approval' : 'character/'.$character->slug.'/approval']) !!}
-    <div class="form-group">
-        {!! Form::label('comments', 'Comments (Optional)') !!} {!! add_help('Enter a comment that will be added onto your '.($character->is_myo_slot ? 'MYO approval' : 'design update').' request - suggestions would be to include calculations or how you intend to use attached items or currency if applicable. Staff will read this comment while reviewing your request.') !!}
-        {!! Form::textarea('comments', null, ['class' => 'form-control']) !!}
-    </div>
-
-    <h3>Image Upload</h3>
-
-    
-
-        <h3>Add-ons</h3>
-        <p>You can select items from your inventory and/or currencies from your bank{{ $character->is_myo_slot ? '' : ' or your character\'s bank' }} to attach to this request. Note that this will consume the items/currency, but will be refunded if the request is rejected. This is entirely optional; please follow any restrictions set by staff regarding restrictions on what you may add to a request.</p>
-
-        <h3>Traits</h3>
-    
-        <div class="text-right">
-            {!! Form::submit('Submit', ['class' => 'btn btn-primary']) !!}
-        </div>
-    {!! Form::close() !!}
-@endif
---}}
 @endsection
 
 @section('scripts')
-@include('widgets._image_upload_js')
-<script>
-    $(document).ready(function(){
-    });
-</script>
+    @parent
+    @include('widgets._image_upload_js')
+    <script>
+        $(document).ready(function(){
+        });
+    </script>
 @endsection

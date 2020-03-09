@@ -141,6 +141,7 @@
 @endsection
 
 @section('scripts')
+@parent
 <script>
     $(document).ready(function(){
         $('.take-button').on('click', function() {

@@ -18,11 +18,11 @@
     </div>
     <div class="row">
         <div class="col-md-2 col-4"><h5>Created</h5></div>
-        <div class="col-md-10 col-8">{{ format_date($trade->created_at) }} ({{ $trade->created_at->diffForHumans() }})</div>
+        <div class="col-md-10 col-8">{!! format_date($trade->created_at) !!} ({{ $trade->created_at->diffForHumans() }})</div>
     </div>
     <div class="row">
         <div class="col-md-2 col-4"><h5>{{ $trade->status == 'Rejected' || ($trade->status == 'Completed' && $trade->staff_id) ? 'Processed' : 'Last Updated' }}</h5></div>
-        <div class="col-md-10 col-8">{{ format_date($trade->updated_at) }} ({{ $trade->updated_at->diffForHumans() }})</div>
+        <div class="col-md-10 col-8">{!! format_date($trade->updated_at) !!} ({{ $trade->updated_at->diffForHumans() }})</div>
     </div>
     <div>
         <div><h5>Sender's Comments</h5></div>

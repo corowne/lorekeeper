@@ -24,6 +24,14 @@ Route::group(['prefix' => 'account', 'namespace' => 'Users'], function() {
     Route::post('profile', 'AccountController@postProfile');
     Route::post('password', 'AccountController@postPassword');
     Route::post('email', 'AccountController@postEmail');
+
+    Route::get('bookmarks', 'BookmarkController@getBookmarks');
+    Route::get('bookmarks/create', 'BookmarkController@getCreateBookmark');
+    Route::get('bookmarks/edit/{id}', 'BookmarkController@getEditBookmark');
+    Route::post('bookmarks/create', 'BookmarkController@postCreateEditBookmark');
+    Route::post('bookmarks/edit/{id}', 'BookmarkController@postCreateEditBookmark');
+    Route::get('bookmarks/delete/{id}', 'BookmarkController@getDeleteBookmark');
+    Route::post('bookmarks/delete/{id}', 'BookmarkController@postDeleteBookmark');
 });
 
 Route::group(['prefix' => 'inventory', 'namespace' => 'Users'], function() {

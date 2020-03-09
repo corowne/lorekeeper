@@ -41,7 +41,7 @@
                         <div><strong>{{ ucfirst(str_replace('_', ' ', $key)) }}: </strong>{{ $value }}</div>
                     @endforeach
                 </td>
-                <td>{{ format_date($log->created_at) }}</td>
+                <td>{!! format_date($log->created_at) !!}</td>
             </tr>
         @endforeach
     </tbody>

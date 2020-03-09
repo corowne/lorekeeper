@@ -64,5 +64,6 @@
 @endsection
 
 @section('scripts')
+    @parent
     @include('character._image_js', ['character' => $character])
 @endsection

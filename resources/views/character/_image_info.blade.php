@@ -49,10 +49,10 @@
                     </div>
                 </div>    
                 <div>
-                    <strong>Uploaded:</strong> {{ format_date($image->created_at) }}
+                    <strong>Uploaded:</strong> {!! format_date($image->created_at) !!}
                 </div>
                 <div>
-                    <strong>Last Edited:</strong> {{ format_date($image->updated_at) }}
+                    <strong>Last Edited:</strong> {!! format_date($image->updated_at) !!}
                 </div>
                 
                 @if(Auth::check() && Auth::user()->hasPower('manage_characters'))

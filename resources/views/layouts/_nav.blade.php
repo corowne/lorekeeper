@@ -149,6 +149,9 @@
                             <a class="dropdown-item" href="{{ url('notifications') }}">
                                 Notifications
                             </a>
+                            <a class="dropdown-item" href="{{ url('account/bookmarks') }}">
+                                Bookmarks
+                            </a>
                             <a class="dropdown-item" href="{{ url('account/settings') }}">
                                 Settings
                             </a>

@@ -1,8 +1,8 @@
-@extends('layouts.app')
+@extends('account.layout')
 
-@section('title') Settings @endsection
+@section('account-title') Settings @endsection
 
-@section('content')
+@section('account-content')
 {!! breadcrumbs(['My Account' => Auth::user()->url, 'Settings' => 'account/settings']) !!}
 
 <h1>Settings</h1>
