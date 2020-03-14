@@ -123,6 +123,8 @@ class InventoryManager extends Service
             if(!$stack) throw new \Exception("Invalid item selected.");
             if($stack->user_id != $user->id && !$user->hasPower('edit_inventories')) throw new \Exception("You do not own this item.");
 
+            $oldUser = $stack->user;
+
             if($this->debitStack($stack->user, ($stack->user_id == $user->id ? 'User Deleted' : 'Staff Deleted'), ['data' => ($stack->user_id != $user->id ? 'Deleted by '.$user->displayName : '')], $stack)) 
             {
                 if($stack->user_id != $user->id) 

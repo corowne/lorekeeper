@@ -59,10 +59,15 @@
         You are editing this character as a staff member.
     </div>
     <p>This will transfer the character automatically, without requiring the recipient to confirm the transfer. You may also transfer a character that is marked non-transferrable, or still under cooldown. Both the old and new owners will be notified of the transfer.</p>
+    <p>Fill in either of the recipient fields - if transferring to an off-site user, leave the recipient field blank and vice versa.</p>
     {!! Form::open(['url' => $character->is_myo_slot ? 'admin/myo/'.$character->id.'/transfer' : 'admin/character/' . $character->slug . '/transfer']) !!}
     <div class="form-group">
         {!! Form::label('recipient_id', 'Recipient') !!}
         {!! Form::select('recipient_id', $userOptions, old('recipient_id'), ['class' => 'form-control selectize', 'placeholder' => 'Select User']) !!}
+    </div>
+    <div class="form-group">
+        {!! Form::label('recipient_alias', 'Recipient Alias') !!}
+        {!! Form::text('recipient_alias', old('recipient_alias'), ['class' => 'form-control']) !!}
     </div>
     <div class="form-group">
         {!! Form::label('cooldown', 'Transfer Cooldown (days)') !!}

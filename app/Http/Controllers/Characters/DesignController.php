@@ -143,13 +143,13 @@ class DesignController extends Controller
         $r = CharacterDesignUpdate::find($id);
         if(!$r || ($r->user_id != Auth::user()->id && !Auth::user()->hasPower('manage_characters'))) abort(404);
         if($r->status == 'Draft' && $r->user_id == Auth::user()->id) 
-            $inventory = UserItem::with('item')->whereNull('deleted_at')->where('user_id', Auth::user()->id)->where(function($query) use ($id) {
+            $inventory = UserItem::with('item')->whereNull('deleted_at')->where('user_id', $r->user_id)->where(function($query) use ($id) {
                 $query->whereNull('holding_id')->orWhere(function($query) use ($id) {
                     $query->where('holding_type', 'Update')->where('holding_id', $id);
                 });
             })->get();
         else 
-            $inventory = UserItem::with('item')->whereNull('deleted_at')->where('user_id', Auth::user()->id)->where('holding_id', $id)->where('holding_type', 'Update')->get();
+            $inventory = UserItem::with('item')->whereNull('deleted_at')->where('user_id', $r->user_id)->where('holding_id', $id)->where('holding_type', 'Update')->get();
         return view('character.design.addons', [
             'request' => $r,
             'categories' => ItemCategory::orderBy('sort', 'DESC')->get(),

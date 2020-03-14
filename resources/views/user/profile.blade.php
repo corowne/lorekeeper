@@ -71,7 +71,7 @@
 </div>
 
 <h2>Characters</h2>
-@foreach($user->characters()->take(4)->get()->chunk(4) as $chunk)
+@foreach($user->characters()->visible()->take(4)->get()->chunk(4) as $chunk)
 <div class="row">
     @foreach($chunk as $character)
         <div class="col-md-3 col-6 text-center">

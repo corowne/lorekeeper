@@ -7,7 +7,7 @@
         var $number = $('#number');
         var $category = $('#category');
 
-        $number.on('keypress', function() {
+        $number.on('keyup', function() {
             updateCode();
         });
         $category.on('change', function() {

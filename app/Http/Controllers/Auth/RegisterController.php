@@ -68,6 +68,7 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'agreement' => ['required', 'accepted'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'code' => ['string', function ($attribute, $value, $fail) {
                     if(!Settings::get('is_registration_open')) {

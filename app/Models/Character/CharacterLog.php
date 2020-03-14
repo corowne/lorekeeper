@@ -13,7 +13,7 @@ class CharacterLog extends Model
      * @var array
      */
     protected $fillable = [
-        'character_id', 'sender_id', 'recipient_id', 'recipient_alias',
+        'character_id', 'sender_id', 'sender_alias', 'recipient_id', 'recipient_alias',
         'log', 'log_type', 'data', 'change_log'
     ];
 
