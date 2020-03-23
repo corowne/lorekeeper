@@ -9,7 +9,8 @@ use Auth;
 use App\Models\Feature\FeatureCategory;
 use App\Models\Feature\Feature;
 use App\Models\Rarity;
-use App\Models\Species;
+use App\Models\Species\Species;
+use App\Models\Species\Subtype;
 
 use App\Services\FeatureService;
 
@@ -172,12 +173,15 @@ class FeatureController extends Controller
             $query->where('feature_category_id', $data['feature_category_id']);
         if(isset($data['species_id']) && $data['species_id'] != 'none') 
             $query->where('species_id', $data['species_id']);
+        if(isset($data['subtype_id']) && $data['subtype_id'] != 'none') 
+            $query->where('subtype_id', $data['subtype_id']);
         if(isset($data['name'])) 
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
         return view('admin.features.features', [
             'features' => $query->paginate(20)->appends($request->query()),
             'rarities' => ['none' => 'Any Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['none' => 'Any Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => ['none' => 'Any Subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'categories' => ['none' => 'Any Category'] + FeatureCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
@@ -193,6 +197,7 @@ class FeatureController extends Controller
             'feature' => new Feature,
             'rarities' => ['none' => 'Select a Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['none' => 'No restriction'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => ['none' => 'No subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'categories' => ['none' => 'No category'] + FeatureCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
@@ -211,6 +216,7 @@ class FeatureController extends Controller
             'feature' => $feature,
             'rarities' => ['none' => 'Select a Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['none' => 'No restriction'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => ['none' => 'No subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'categories' => ['none' => 'No category'] + FeatureCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
@@ -227,7 +233,7 @@ class FeatureController extends Controller
     {
         $id ? $request->validate(Feature::$updateRules) : $request->validate(Feature::$createRules);
         $data = $request->only([
-            'name', 'species_id', 'rarity_id', 'feature_category_id', 'description', 'image', 'remove_image'
+            'name', 'species_id', 'subtype_id', 'rarity_id', 'feature_category_id', 'description', 'image', 'remove_image'
         ]);
         if($id && $service->updateFeature(Feature::find($id), $data, Auth::user())) {
             flash('Trait updated successfully.')->success();

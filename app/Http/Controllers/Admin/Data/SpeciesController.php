@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 
 use Auth;
 
-use App\Models\Species;
+use App\Models\Species\Species;
+use App\Models\Species\Subtype;
 
 use App\Services\SpeciesService;
 
@@ -133,6 +134,125 @@ class SpeciesController extends Controller
     {
         if($service->sortSpecies($request->get('sort'))) {
             flash('Species order updated successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Shows the subtype index.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getSubtypeIndex()
+    {
+        return view('admin.specieses.subtypes', [
+            'subtypes' => Subtype::orderBy('sort', 'DESC')->get()
+        ]);
+    }
+    
+    /**
+     * Shows the create subtype page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCreateSubtype()
+    {
+        return view('admin.specieses.create_edit_subtype', [
+            'subtype' => new Subtype,
+            'specieses' => Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
+        ]);
+    }
+    
+    /**
+     * Shows the edit subtype page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getEditSubtype($id)
+    {
+        $subtype = Subtype::find($id);
+        if(!$subtype) abort(404);
+        return view('admin.specieses.create_edit_subtype', [
+            'subtype' => $subtype,
+            'specieses' => Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
+        ]);
+    }
+
+    /**
+     * Creates or edits a subtype.
+     *
+     * @param  \Illuminate\Http\Request     $request
+     * @param  App\Services\SpeciesService  $service
+     * @param  int|null                     $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postCreateEditSubtype(Request $request, SpeciesService $service, $id = null)
+    {
+        $id ? $request->validate(Subtype::$updateRules) : $request->validate(Subtype::$createRules);
+        $data = $request->only([
+            'species_id', 'name', 'description', 'image', 'remove_image'
+        ]);
+        if($id && $service->updateSubtype(Subtype::find($id), $data, Auth::user())) {
+            flash('Subtype updated successfully.')->success();
+        }
+        else if (!$id && $subtype = $service->createSubtype($data, Auth::user())) {
+            flash('Subtype created successfully.')->success();
+            return redirect()->to('admin/data/subtypes/edit/'.$subtype->id);
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+    
+    /**
+     * Gets the subtype deletion modal.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getDeleteSubtype($id)
+    {
+        $Subtype = Subtype::find($id);
+        return view('admin.specieses._delete_subtype', [
+            'Subtype' => $Subtype,
+        ]);
+    }
+
+    /**
+     * Deletes a subtype.
+     *
+     * @param  \Illuminate\Http\Request     $request
+     * @param  App\Services\SpeciesService  $service
+     * @param  int                          $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postDeleteSubtype(Request $request, SpeciesService $service, $id)
+    {
+        if($id && $service->deleteSubtype(Subtype::find($id))) {
+            flash('Subtype deleted successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->to('admin/data/subtypes');
+    }
+
+    /**
+     * Sorts subtypes.
+     *
+     * @param  \Illuminate\Http\Request     $request
+     * @param  App\Services\SpeciesService  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postSortSubtypes(Request $request, SpeciesService $service)
+    {
+        if($service->sortSubtypes($request->get('sort'))) {
+            flash('Subtype order updated successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

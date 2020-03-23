@@ -43,16 +43,22 @@
 </div>
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="form-group">
             {!! Form::label('Trait Category (Optional)') !!}
             {!! Form::select('feature_category_id', $categories, $feature->feature_category_id, ['class' => 'form-control']) !!}
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="form-group">
             {!! Form::label('Species Restriction (Optional)') !!}
             {!! Form::select('species_id', $specieses, $feature->species_id, ['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            {!! Form::label('Subtype (Optional)') !!} {!! add_help('This is cosmetic and does not limit choice of traits in selections.') !!}
+            {!! Form::select('subtype_id', $subtypes, $feature->subtype_id, ['class' => 'form-control']) !!}
         </div>
     </div>
 </div>
@@ -71,7 +77,7 @@
     <h3>Preview</h3>
     <div class="card mb-3">
         <div class="card-body">
-            @include('world._entry', ['imageUrl' => $feature->imageUrl, 'name' => $feature->displayName, 'description' => $feature->parsed_description, 'searchUrl' => $feature->searchUrl])
+            @include('world._feature_entry', ['feature' => $feature])
         </div>
     </div>
 @endif

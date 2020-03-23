@@ -173,12 +173,18 @@ class CurrencyService extends Service
         DB::beginTransaction();
 
         try {
+            
+            if(DB::table('loots')->where('rewardable_type', 'Currency')->where('rewardable_id', $currency->id)->exists()) throw new \Exception("A loot table currently distributes this currency as a potential reward. Please remove the currency before deleting it.");
+            if(DB::table('prompt_rewards')->where('rewardable_type', 'Currency')->where('rewardable_id', $currency->id)->exists()) throw new \Exception("A prompt currently distributes this currency as a reward. Please remove the currency before deleting it.");
+            if(DB::table('shop_stock')->where('currency_id', $currency->id)->exists()) throw new \Exception("A shop currently requires this currency to purchase an item. Please change the currency before deleting it.");
+
             // This will delete the currency in users' possession as well.
             // The reason this is allowed is that in instances where event currencies
             // are created for temporary use, it would be inconvenient to have to manually
             // remove them from user accounts before deleting the base currency.
             
             UserCurrency::where('currency_id', $currency->id)->delete();
+            CharacterCurrency::where('currency_id', $currency->id)->delete();
             if($currency->has_image) $this->deleteImage($currency->currencyImagePath, $currency->currencyImageFileName); 
             if($currency->has_icon) $this->deleteImage($currency->currencyIconPath, $currency->currencyIconFileName); 
             $currency->delete();

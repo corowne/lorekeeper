@@ -23,6 +23,16 @@
         </div>
 
         <div class="form-group">
+            {!! Form::label('subtype_id', 'Species Subtype') !!}
+            @if($request->character->is_myo_slot && $request->character->image->subtype_id) 
+                <div class="alert alert-secondary">{!! $request->character->image->subtype->displayName !!}</div>
+            @else
+                {!! Form::select('subtype_id', $subtypes, $request->subtype_id, ['class' => 'form-control', 'id' => 'subtype']) !!}
+            @endif
+            
+        </div>
+
+        <div class="form-group">
             {!! Form::label('rarity_id', 'Character Rarity') !!}
             @if($request->character->is_myo_slot && $request->character->image->rarity_id) 
                 <div class="alert alert-secondary">{!! $request->character->image->rarity->displayName !!}</div>

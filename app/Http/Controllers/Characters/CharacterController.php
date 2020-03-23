@@ -10,7 +10,7 @@ use Route;
 use Settings;
 use App\Models\User\User;
 use App\Models\Character\Character;
-use App\Models\Species;
+use App\Models\Species\Species;
 use App\Models\Rarity;
 use App\Models\Feature\Feature;
 use App\Models\Currency\Currency;

@@ -11,7 +11,8 @@ use App\Models\Character\CharacterImage;
 use App\Models\Character\CharacterCategory;
 use App\Models\Rarity;
 use App\Models\User\User;
-use App\Models\Species;
+use App\Models\Species\Species;
+use App\Models\Species\Subtype;
 use App\Models\Feature\Feature;
 
 use App\Services\CharacterManager;
@@ -44,6 +45,7 @@ class CharacterImageController extends Controller
             'character' => $this->character,
             'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => ['0' => 'Select Subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
             'isMyo' => false
         ]);
@@ -60,7 +62,7 @@ class CharacterImageController extends Controller
     public function postNewImage(Request $request, CharacterManager $service, $slug)
     {
         $request->validate(CharacterImage::$createRules);
-        $data = $request->only(['image', 'thumbnail', 'x0', 'x1', 'y0', 'y1', 'use_cropper', 'artist_url', 'artist_alias', 'designer_url', 'designer_alias', 'species_id', 'rarity_id', 'feature_id', 'feature_data', 'is_valid', 'is_visible']);
+        $data = $request->only(['image', 'thumbnail', 'x0', 'x1', 'y0', 'y1', 'use_cropper', 'artist_url', 'artist_alias', 'designer_url', 'designer_alias', 'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data', 'is_valid', 'is_visible']);
         $this->character = Character::where('slug', $slug)->first();
         if(!$this->character) abort(404);
         if($service->createImage($data, $this->character, Auth::user())) {
@@ -68,7 +70,7 @@ class CharacterImageController extends Controller
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-            return redirect()->back();
+            return redirect()->back()->withInput();
         }
         return redirect()->to($this->character->url.'/images');
     }
@@ -85,6 +87,7 @@ class CharacterImageController extends Controller
             'image' => CharacterImage::find($id),
             'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => ['0' => 'Select Subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray()
         ]);
     }
@@ -99,7 +102,7 @@ class CharacterImageController extends Controller
      */
     public function postEditImageFeatures(Request $request, CharacterManager $service, $id)
     {
-        $data = $request->only(['species_id', 'rarity_id', 'feature_id', 'feature_data']);
+        $data = $request->only(['species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data']);
         $image = CharacterImage::find($id);
         if(!$image) abort(404);
         if($service->updateImageFeatures($data, $image, Auth::user())) {
@@ -108,7 +111,7 @@ class CharacterImageController extends Controller
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
-        return redirect()->back();
+        return redirect()->back()->withInput();
     }
 
     /**

@@ -47,7 +47,8 @@
                     @if(!$isClaims)
                         <th width="30%">Prompt</th>
                     @endif
-                    <th width="30%">Link</th>
+                    <th>User</th>
+                    <th width="20%">Link</th>
                     <th width="20%">Submitted</th>
                     <th>Status</th>
                     <th></th>
@@ -59,7 +60,8 @@
                         @if(!$isClaims)
                             <td>{!! $submission->prompt->displayName !!}</td>
                         @endif
-                        <td><a href="{{ $submission->url }}">{{ $submission->url }}</a></td>
+                        <td>{!! $submission->user->displayName !!}</td>
+                        <td class="text-break"><a href="{{ $submission->url }}">{{ $submission->url }}</a></td>
                         <td>{!! format_date($submission->created_at) !!}</td>
                         <td>
                             <span class="badge badge-{{ $submission->status == 'Pending' ? 'secondary' : ($submission->status == 'Approved' ? 'success' : 'danger') }}">{{ $submission->status }}</span>

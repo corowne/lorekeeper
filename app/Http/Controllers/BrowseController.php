@@ -13,7 +13,8 @@ use App\Models\Rank\Rank;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterImage;
 use App\Models\Character\CharacterCategory;
-use App\Models\Species;
+use App\Models\Species\Species;
+use App\Models\Species\Subtype;
 use App\Models\Rarity;
 use App\Models\Feature\Feature;
 
@@ -128,6 +129,7 @@ class BrowseController extends Controller
 
         // Searching on image properties
         if($request->get('species_id')) $imageQuery->where('species_id', $request->get('species_id'));
+        if($request->get('subtype_id')) $imageQuery->where('subtype_id', $request->get('subtype_id'));
         if($request->get('feature_id')) {
             $featureIds = $request->get('feature_id');
             foreach($featureIds as $featureId) {
@@ -171,6 +173,7 @@ class BrowseController extends Controller
             'characters' => $query->paginate(24)->appends($request->query()),
             'categories' => [0 => 'Any Category'] + CharacterCategory::orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => [0 => 'Any Species'] + Species::orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => [0 => 'Any Subtype'] + Subtype::orderBy('subtypes.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities' => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features' => Feature::orderBy('features.name')->pluck('name', 'id')->toArray()
         ]);

@@ -47,7 +47,7 @@
     <h3>Preview</h3>
     <div class="card mb-3">
         <div class="card-body">
-            @include('world._entry', ['imageUrl' => $species->speciesImageUrl, 'name' => $species->displayName, 'description' => $species->parsed_description])
+            @include('world._species_entry', ['species' => $species])
         </div>
     </div>
 @endif

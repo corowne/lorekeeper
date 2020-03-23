@@ -242,7 +242,7 @@ class ItemService extends Service
 
             $item->update($data);
 
-            if ($item) $this->handleImage($image, $item->ImagePath, $item->ImageFileName);
+            if ($item) $this->handleImage($image, $item->imagePath, $item->imageFileName);
 
             return $this->commitReturn($item);
         } catch(\Exception $e) { 
@@ -269,7 +269,7 @@ class ItemService extends Service
             if($item && $item->has_image && $data['remove_image']) 
             { 
                 $data['has_image'] = 0; 
-                $this->deleteImage($item->ImagePath, $item->ImageFileName); 
+                $this->deleteImage($item->imagePath, $item->imageFileName); 
             }
             unset($data['remove_image']);
         }
@@ -288,10 +288,14 @@ class ItemService extends Service
         DB::beginTransaction();
 
         try {
-            // Check first if the item is currently owned
+            // Check first if the item is currently owned or if some other site feature uses it
             if(DB::table('user_items')->where('item_id', $item->id)->exists()) throw new \Exception("At least one user currently owns this item. Please remove the item(s) before deleting it.");
+            if(DB::table('loots')->where('rewardable_type', 'Item')->where('rewardable_id', $item->id)->exists()) throw new \Exception("A loot table currently distributes this item as a potential reward. Please remove the item before deleting it.");
+            if(DB::table('prompt_rewards')->where('rewardable_type', 'Item')->where('rewardable_id', $item->id)->exists()) throw new \Exception("A prompt currently distributes this item as a reward. Please remove the item before deleting it.");
+            if(DB::table('shop_stock')->where('item_id', $item->id)->exists()) throw new \Exception("A shop currently stocks this item. Please remove the item before deleting it.");
             
-            if($item->has_image) $this->deleteImage($item->ImagePath, $item->ImageFileName); 
+            $item->tags()->delete();
+            if($item->has_image) $this->deleteImage($item->imagePath, $item->imageFileName); 
             $item->delete();
 
             return $this->commitReturn(true);

@@ -73,6 +73,20 @@ class UserController extends Controller
     }
     
     /**
+     * Shows a user's MYO slots.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserMyoSlots($name)
+    {
+        return view('user.myo_slots', [
+            'user' => $this->user,
+            'myos' => $this->user->myoSlots()->visible()->get()
+        ]);
+    }
+    
+    /**
      * Shows a user's inventory.
      *
      * @param  string  $name

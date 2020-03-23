@@ -11,7 +11,8 @@ use App\Models\User\User;
 use App\Models\User\UserItem;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterDesignUpdate;
-use App\Models\Species;
+use App\Models\Species\Species;
+use App\Models\Species\Subtype;
 use App\Models\Rarity;
 use App\Models\Feature\Feature;
 use App\Models\Item\ItemCategory;
@@ -193,8 +194,9 @@ class DesignController extends Controller
         return view('character.design.features', [
             'request' => $r,
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => ['0' => 'No Subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(), // if MYO slot and rarity_id is set, only pull lower rarities
+            'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray()
         ]);
     }
 

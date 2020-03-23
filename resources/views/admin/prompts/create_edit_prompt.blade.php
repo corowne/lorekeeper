@@ -21,6 +21,18 @@
 </div>
 
 <div class="form-group">
+    {!! Form::label('World Page Image (Optional)') !!} {!! add_help('This image is used only on the world information pages.') !!}
+    <div>{!! Form::file('image') !!}</div>
+    <div class="text-muted">Recommended size: 100px x 100px</div>
+    @if($prompt->has_image)
+        <div class="form-check">
+            {!! Form::checkbox('remove_image', 1, false, ['class' => 'form-check-input']) !!}
+            {!! Form::label('remove_image', 'Remove current image', ['class' => 'form-check-label']) !!}
+        </div>
+    @endif
+</div>
+
+<div class="form-group">
     {!! Form::label('Prompt Category (Optional)') !!}
     {!! Form::select('prompt_category_id', $categories, $prompt->prompt_category_id, ['class' => 'form-control']) !!}
 </div>

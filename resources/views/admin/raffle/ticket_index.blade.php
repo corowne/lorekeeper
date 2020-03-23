@@ -71,8 +71,8 @@
                     {!! Form::label('names', 'Names (comma-separated, one name per ticket)') !!} {!! add_help('Names will be matched to usernames on the site. If a matching username is not found, it will add a ticket as a deviantART username instead.') !!}
                         {!! Form::textarea('names', '', ['class' => 'form-control']) !!}
                     </div>
-                    <div class="text-center">
-                        {!! Form::submit('Add', ['class' => 'btn btn-secondary']) !!}
+                    <div class="text-right">
+                        {!! Form::submit('Add', ['class' => 'btn btn-primary']) !!}
                     </div>
                 {!! Form::close() !!}
             </div>

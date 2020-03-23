@@ -26,6 +26,10 @@
                 <div class="col-md-2 col-4"><h5>Prompt</h5></div>
                 <div class="col-md-10 col-8">{!! $submission->prompt->displayName !!}</div>
             </div>
+            <div class="row">
+                <div class="col-md-2 col-4"><h5>Previous Submissions</h5></div>
+                <div class="col-md-10 col-8">{{ $count }} {!! add_help('This is the number of times the user has submitted this prompt before and had their submission approved.') !!}</div>
+            </div>
         @endif
         <div class="row">
             <div class="col-md-2 col-4"><h5>URL</h5></div>

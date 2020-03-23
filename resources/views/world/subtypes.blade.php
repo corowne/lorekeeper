@@ -1,10 +1,10 @@
 @extends('world.layout')
 
-@section('title') Species @endsection
+@section('title') Subtypes @endsection
 
 @section('content')
-{!! breadcrumbs(['World' => 'world', 'Species' => 'world/species']) !!}
-<h1>Species</h1>
+{!! breadcrumbs(['World' => 'world', 'Subtypes' => 'world/subtypes']) !!}
+<h1>Subtypes</h1>
 
 <div>
     {!! Form::open(['method' => 'GET', 'class' => 'form-inline justify-content-end']) !!}
@@ -17,16 +17,16 @@
     {!! Form::close() !!}
 </div>
 
-{!! $specieses->render() !!}
-@foreach($specieses as $species)
+{!! $subtypes->render() !!}
+@foreach($subtypes as $subtype)
     <div class="card mb-3">
         <div class="card-body">
-        @include('world._species_entry', ['species' => $species])
+            @include('world._subtype_entry', ['subtype' => $subtype])
         </div>
     </div>
 @endforeach
-{!! $specieses->render() !!}
+{!! $subtypes->render() !!}
 
-<div class="text-center mt-4 small text-muted">{{ $specieses->total() }} result{{ $specieses->total() == 1 ? '' : 's' }} found.</div>
+<div class="text-center mt-4 small text-muted">{{ $subtypes->total() }} result{{ $subtypes->total() == 1 ? '' : 's' }} found.</div>
 
 @endsection

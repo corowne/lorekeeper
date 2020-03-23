@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Species;
 
 use Config;
 use App\Models\Model;
 
-class Species extends Model
+class Subtype extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -13,7 +13,7 @@ class Species extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description'
+        'species_id', 'name', 'sort', 'has_image', 'description', 'parsed_description'
     ];
 
     /**
@@ -21,7 +21,7 @@ class Species extends Model
      *
      * @var string
      */
-    protected $table = 'specieses';
+    protected $table = 'subtypes';
     
     
     /**
@@ -30,7 +30,8 @@ class Species extends Model
      * @var array
      */
     public static $createRules = [
-        'name' => 'required|unique:specieses|between:3,25',
+        'species_id' => 'required',
+        'name' => 'required|between:3,25',
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
@@ -42,16 +43,50 @@ class Species extends Model
      * @var array
      */
     public static $updateRules = [
+        'species_id' => 'required',
         'name' => 'required|between:3,25',
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
+    
+    /**
+     * Accessors to append to the model.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'name_with_species'
+    ];
+
+    /**********************************************************************************************
+    
+        RELATIONS
+
+    **********************************************************************************************/
+    
+    /**
+     * Get the species the subtype belongs to.
+     */
+    public function species() 
+    {
+        return $this->belongsTo('App\Models\Species\Species', 'species_id');
+    }
 
     /**********************************************************************************************
     
         ACCESSORS
 
     **********************************************************************************************/
+
+    /**
+     * Displays the subtype's name and species.
+     *
+     * @return string
+     */
+    public function getNameWithSpeciesAttribute()
+    {
+        return $this->name . ' [' . $this->species->name . ' Subtype]';
+    }
     
     /**
      * Displays the model's name, linked to its encyclopedia page.
@@ -60,7 +95,7 @@ class Species extends Model
      */
     public function getDisplayNameAttribute()
     {
-        return '<a href="'.$this->url.'" class="display-species">'.$this->name.'</a>';
+        return '<a href="'.$this->url.'" class="display-subtype">'.$this->name.'</a>';
     }
 
     /**
@@ -70,7 +105,7 @@ class Species extends Model
      */
     public function getImageDirectoryAttribute()
     {
-        return 'images/data/species';
+        return 'images/data/subtypes';
     }
 
     /**
@@ -78,7 +113,7 @@ class Species extends Model
      *
      * @return string
      */
-    public function getSpeciesImageFileNameAttribute()
+    public function getSubtypeImageFileNameAttribute()
     {
         return $this->id . '-image.png';
     }
@@ -88,7 +123,7 @@ class Species extends Model
      *
      * @return string
      */
-    public function getSpeciesImagePathAttribute()
+    public function getSubtypeImagePathAttribute()
     {
         return public_path($this->imageDirectory);
     }
@@ -98,10 +133,10 @@ class Species extends Model
      *
      * @return string
      */
-    public function getSpeciesImageUrlAttribute()
+    public function getSubtypeImageUrlAttribute()
     {
         if (!$this->has_image) return null;
-        return asset($this->imageDirectory . '/' . $this->speciesImageFileName);
+        return asset($this->imageDirectory . '/' . $this->subtypeImageFileName);
     }
 
     /**
@@ -111,16 +146,16 @@ class Species extends Model
      */
     public function getUrlAttribute()
     {
-        return url('world/species?name='.$this->name);
+        return url('world/subtypes?name='.$this->name);
     }
 
     /**
-     * Gets the URL for a masterlist search of characters of this species.
+     * Gets the URL for a masterlist search of characters of this species subtype.
      *
      * @return string
      */
     public function getSearchUrlAttribute()
     {
-        return url('masterlist?species_id='.$this->id);
+        return url('masterlist?subtype_id='.$this->id);
     }
 }

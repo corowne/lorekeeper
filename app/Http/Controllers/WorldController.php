@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 
 use App\Models\Currency\Currency;
 use App\Models\Rarity;
-use App\Models\Species;
+use App\Models\Species\Species;
+use App\Models\Species\Subtype;
 use App\Models\Item\ItemCategory;
 use App\Models\Item\Item;
 use App\Models\Feature\FeatureCategory;
@@ -81,7 +82,25 @@ class WorldController extends Controller
         $name = $request->get('name');
         if($name) $query->where('name', 'LIKE', '%'.$name.'%');
         return view('world.specieses', [  
-            'specieses' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
+            'specieses' => $query->with(['subtypes' => function($query) {
+                $query->orderBy('sort', 'DESC');
+            }])->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
+        ]);
+    }
+
+    /**
+     * Shows the subtypes page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getSubtypes(Request $request)
+    {
+        $query = Subtype::query();
+        $name = $request->get('name');
+        if($name) $query->where('name', 'LIKE', '%'.$name.'%');
+        return view('world.subtypes', [  
+            'subtypes' => $query->with('species')->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
     

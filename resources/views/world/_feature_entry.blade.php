@@ -8,7 +8,7 @@
             <div><strong>Category:</strong> {!! $feature->category->displayName !!}</div>
         @endif
         @if($feature->species_id)
-            <div><strong>Species:</strong> {!! $feature->species->displayName !!}</div>
+            <div><strong>Species:</strong> {!! $feature->species->displayName !!} @if($feature->subtype_id) ({!! $feature->subtype->displayName !!} subtype) @endif</div>
         @endif
         <div class="world-entry-text parsed-text">
             {!! $feature->parsed_description !!}

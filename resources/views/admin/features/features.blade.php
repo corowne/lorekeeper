@@ -20,6 +20,9 @@
             {!! Form::select('species_id', $specieses, Request::get('species_id'), ['class' => 'form-control']) !!}
         </div>
         <div class="form-group mr-3 mb-3">
+            {!! Form::select('subtype_id', $subtypes, Request::get('subtype_id'), ['class' => 'form-control']) !!}
+        </div>
+        <div class="form-group mr-3 mb-3">
             {!! Form::select('rarity_id', $rarities, Request::get('rarity_id'), ['class' => 'form-control']) !!}
         </div>
         <div class="form-group mr-3 mb-3">
@@ -42,6 +45,7 @@
                 <th>Rarity</th>
                 <th>Category</th>
                 <th>Species</th>
+                <th>Subtype</th>
                 <th></th>
             </tr>
         </thead>
@@ -54,6 +58,7 @@
                     <td>{!! $feature->rarity->displayName !!}</td>
                     <td>{{ $feature->category ? $feature->category->name : '' }}</td>
                     <td>{{ $feature->species ? $feature->species->name : '' }}</td>
+                    <td>{{ $feature->subtype ? $feature->subtype->name : '' }}</td>
                     <td class="text-right">
                         <a href="{{ url('admin/data/traits/edit/'.$feature->id) }}" class="btn btn-primary">Edit</a>
                     </td>

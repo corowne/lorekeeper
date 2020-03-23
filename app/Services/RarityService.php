@@ -6,6 +6,8 @@ use DB;
 use Config;
 
 use App\Models\Rarity;
+use App\Models\Character\Character;
+use App\Models\Character\CharacterImage;
 
 class RarityService extends Service
 {
@@ -123,7 +125,10 @@ class RarityService extends Service
     {
         DB::beginTransaction();
 
-        try {            
+        try {         
+            // Check first if characters with this rarity exist
+            if(CharacterImage::where('rarity_id', $rarity->id)->exists() || Character::where('rarity_id', $rarity->id)->exists()) throw new \Exception("A character or character image with this rarity exists. Please change its rarity first.");
+
             if($rarity->has_image) $this->deleteImage($rarity->rarityImagePath, $rarity->rarityImageFileName); 
             $rarity->delete();
 

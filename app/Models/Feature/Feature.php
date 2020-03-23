@@ -6,7 +6,7 @@ use Config;
 use DB;
 use App\Models\Model;
 use App\Models\Feature\FeatureCategory;
-use App\Models\Species;
+use App\Models\Species\Species;
 use App\Models\Rarity;
 
 class Feature extends Model
@@ -17,7 +17,7 @@ class Feature extends Model
      * @var array
      */
     protected $fillable = [
-        'feature_category_id', 'species_id', 'rarity_id', 'name', 'has_image', 'description', 'parsed_description'
+        'feature_category_id', 'species_id', 'subtype_id', 'rarity_id', 'name', 'has_image', 'description', 'parsed_description'
     ];
 
     /**
@@ -35,6 +35,7 @@ class Feature extends Model
     public static $createRules = [
         'feature_category_id' => 'nullable',
         'species_id' => 'nullable',
+        'subtype_id' => 'nullable',
         'rarity_id' => 'required|exists:rarities,id',
         'name' => 'required|unique:features|between:3,25',
         'description' => 'nullable',
@@ -49,6 +50,7 @@ class Feature extends Model
     public static $updateRules = [
         'feature_category_id' => 'nullable',
         'species_id' => 'nullable',
+        'subtype_id' => 'nullable',
         'rarity_id' => 'required|exists:rarities,id',
         'name' => 'required|between:3,25',
         'description' => 'nullable',
@@ -74,7 +76,15 @@ class Feature extends Model
      */
     public function species() 
     {
-        return $this->belongsTo('App\Models\Species');
+        return $this->belongsTo('App\Models\Species\Species');
+    }
+    
+    /**
+     * Get the subtype the feature belongs to.
+     */
+    public function subtype() 
+    {
+        return $this->belongsTo('App\Models\Species\Subtype');
     }
     
     /**

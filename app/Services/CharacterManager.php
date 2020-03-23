@@ -24,7 +24,8 @@ use App\Models\Character\CharacterTransfer;
 use App\Models\Character\CharacterDesignUpdate;
 use App\Models\Character\CharacterBookmark;
 use App\Models\User\UserCharacterLog;
-use App\Models\Species;
+use App\Models\Species\Species;
+use App\Models\Species\Subtype;
 use App\Models\Rarity;
 use App\Models\Currency\Currency;
 use App\Models\Feature\Feature;
@@ -87,7 +88,18 @@ class CharacterManager extends Service
         try {
             if(!(isset($data['user_id']) && $data['user_id']) && !(isset($data['owner_alias']) && $data['owner_alias'])) 
                 throw new \Exception("Please select an owner.");
-            if(!$isMyo && !(isset($data['rarity_id']) && $data['rarity_id'])) throw new \Exception("Please select a rarity.");
+            if(!$isMyo)
+            {
+                if(!(isset($data['species_id']) && $data['species_id'])) throw new \Exception('Characters require a species.');
+                if(!(isset($data['rarity_id']) && $data['rarity_id'])) throw new \Exception('Characters require a rarity.');
+            }
+            if(isset($data['subtype_id']) && $data['subtype_id'])
+            {
+                $subtype = Subtype::find($data['subtype_id']);
+                if(!(isset($data['species_id']) && $data['species_id'])) throw new \Exception('Species must be selected to select a subtype.');
+                if(!$subtype || $subtype->species_id != $data['species_id']) throw new \Exception('Selected subtype invalid or does not match species.');
+            }
+            else $data['subtype_id'] = null;
 
             // Get owner info
             $recipient = null;
@@ -169,6 +181,7 @@ class CharacterManager extends Service
                 $data['number'] = null;
                 $data['slug'] = null;
                 $data['species_id'] = isset($data['species_id']) && $data['species_id'] ? $data['species_id'] : null;
+                $data['subtype_id'] = isset($data['subtype_id']) && $data['subtype_id'] ? $data['subtype_id'] : null;
                 $data['rarity_id'] = isset($data['rarity_id']) && $data['rarity_id'] ? $data['rarity_id'] : null;
             }
 
@@ -216,6 +229,7 @@ class CharacterManager extends Service
             if($isMyo)
             {
                 $data['species_id'] = (isset($data['species_id']) && $data['species_id']) ? $data['species_id'] : null;
+                $data['subtype_id'] = isset($data['subtype_id']) && $data['subtype_id'] ? $data['subtype_id'] : null;
                 $data['rarity_id'] = (isset($data['rarity_id']) && $data['rarity_id']) ? $data['rarity_id'] : null;
                 
 
@@ -230,7 +244,7 @@ class CharacterManager extends Service
                 }
             }
             $imageData = array_only($data, [
-                'species_id', 'rarity_id', 'use_cropper', 
+                'species_id', 'subtype_id', 'rarity_id', 'use_cropper', 
                 'x0', 'x1', 'y0', 'y1',
             ]);
             $imageData['use_cropper'] = isset($data['use_cropper']) ;
@@ -362,6 +376,19 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            if(!$character->is_myo_slot)
+            {
+                if(!(isset($data['species_id']) && $data['species_id'])) throw new \Exception('Characters require a species.');
+                if(!(isset($data['rarity_id']) && $data['rarity_id'])) throw new \Exception('Characters require a rarity.');
+            }
+            if(isset($data['subtype_id']) && $data['subtype_id'])
+            {
+                $subtype = Subtype::find($data['subtype_id']);
+                if(!(isset($data['species_id']) && $data['species_id'])) throw new \Exception('Species must be selected to select a subtype.');
+                if(!$subtype || $subtype->species_id != $data['species_id']) throw new \Exception('Selected subtype invalid or does not match species.');
+            }
+            else $data['subtype_id'] = null;
+
             $data['is_visible'] = 1;
 
             // Create character image
@@ -407,10 +434,19 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            // Check that the subtype matches
+            if(isset($data['subtype_id']) && $data['subtype_id'])
+            {
+                $subtype = Subtype::find($data['subtype_id']);
+                if(!(isset($data['species_id']) && $data['species_id'])) throw new \Exception('Species must be selected to select a subtype.');
+                if(!$subtype || $subtype->species_id != $data['species_id']) throw new \Exception('Selected subtype invalid or does not match species.');
+            }
+
             // Log old features
             $old = [];
             $old['features'] = $this->generateFeatureList($image);
             $old['species'] = $image->species_id ? $image->species->displayName : null;
+            $old['subtype'] = $image->subtype_id ? $image->subtype->displayName : null;
             $old['rarity'] = $image->rarity_id ? $image->rarity->displayName : null;
 
             // Clear old features
@@ -425,12 +461,14 @@ class CharacterManager extends Service
 
             // Update other stats
             $image->species_id = $data['species_id'];
+            $image->subtype_id = $data['subtype_id'] ?: null;
             $image->rarity_id = $data['rarity_id'];
             $image->save();
 
             $new = [];
             $new['features'] = $this->generateFeatureList($image);
             $new['species'] = $image->species_id ? $image->species->displayName : null;
+            $new['subtype'] = $image->subtype_id ? $image->subtype->displayName : null;
             $new['rarity'] = $image->rarity_id ? $image->rarity->displayName : null;
 
             // Character also keeps track of these features
@@ -1359,7 +1397,8 @@ class CharacterManager extends Service
                 
                 // Set some data based on the character's existing stats
                 'rarity_id' => $character->image->rarity_id,
-                'species_id' => $character->image->species_id
+                'species_id' => $character->image->species_id,
+                'subtype_id' => $character->image->subtype_id
             ];
 
 
@@ -1601,8 +1640,12 @@ class CharacterManager extends Service
 
             $rarity = ($request->character->is_myo_slot && $request->character->image->rarity_id) ? $request->character->image->rarity : Rarity::find($data['rarity_id']);
             $species = ($request->character->is_myo_slot && $request->character->image->species_id) ? $request->character->image->species : Species::find($data['species_id']);
+            if(isset($data['subtype_id']) && $data['subtype_id'])
+                $subtype = ($request->character->is_myo_slot && $request->character->image->subtype_id) ? $request->character->image->subtype : Subtype::find($data['subtype_id']);
+            else $subtype = null;
             if(!$rarity) throw new \Exception("Invalid rarity selected.");
             if(!$species) throw new \Exception("Invalid species selected.");
+            if($subtype && $subtype->species_id != $species->id) throw new \Exception("Subtype does not match the species.");
 
             // Clear old features
             $request->features()->delete();
@@ -1617,7 +1660,7 @@ class CharacterManager extends Service
                 
                 // Skip the feature if the rarity is too high.
                 // Comment out this check if rarities should have more berth for traits choice.
-                if($features[$featureId]->rarity->sort > $rarity->sort) continue; 
+                //if($features[$featureId]->rarity->sort > $rarity->sort) continue; 
 
                 // Skip the feature if it's not the correct species.
                 if($features[$featureId]->species_id && $features[$featureId]->species_id != $species->id) continue;
@@ -1628,6 +1671,7 @@ class CharacterManager extends Service
             // Update other stats
             $request->species_id = $species->id;
             $request->rarity_id = $rarity->id;
+            $request->subtype_id = $subtype ? $subtype->id : null;
             $request->has_features = 1;
             $request->save();
 
@@ -1728,6 +1772,7 @@ class CharacterManager extends Service
                 'y0' => $request->y0,
                 'y1' => $request->y1,
                 'species_id' => $request->species_id,
+                'subtype_id' => $request->subtype_id,
                 'rarity_id' => $request->rarity_id,
                 'sort' => 0,
             ]);

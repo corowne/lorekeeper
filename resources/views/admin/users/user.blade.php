@@ -71,7 +71,7 @@
     <div class="form-group row">
         <label class="col-md-2 col-form-label">Join Date</label>
         <div class="col-md-10">
-            {!! Form::text('created_at', format_date($user->created_at), ['class' => 'form-control', 'disabled']) !!}
+            {!! Form::text('created_at', format_date($user->created_at, false), ['class' => 'form-control', 'disabled']) !!}
         </div>
     </div>
     <div class="form-group row">

@@ -5,6 +5,11 @@
     </div>
 
     <div class="form-group">
+        {!! Form::label('Subtype (Optional)') !!}
+        {!! Form::select('subtype_id', $subtypes, $image->subtype_id, ['class' => 'form-control', 'id' => 'subtype']) !!}
+    </div>
+
+    <div class="form-group">
         {!! Form::label('Character Rarity') !!}
         {!! Form::select('rarity_id', $rarities, $image->rarity_id, ['class' => 'form-control']) !!}
     </div>

@@ -22,6 +22,10 @@
                     </div>
                 @endif
                 <div class="masterlist-search-field">
+                    {!! Form::label('subtype_id', 'Species Subtype: ') !!}
+                    {!! Form::select('subtype_id', $subtypes, Request::get('subtype_id'), ['class' => 'form-control']) !!}
+                </div>
+                <div class="masterlist-search-field">
                     {!! Form::label('username', 'Owner Name: ') !!}
                     {!! Form::text('username', Request::get('username'), ['class' => 'form-control']) !!}
                 </div>

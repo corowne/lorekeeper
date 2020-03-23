@@ -79,12 +79,16 @@ return [
         'power' => 'edit_data',
         'links' => [
             [
-                'name' => 'rarities',
+                'name' => 'Rarities',
                 'url' => 'admin/data/rarities'
             ],
             [
                 'name' => 'Species',
                 'url' => 'admin/data/species'
+            ],
+            [
+                'name' => 'Subtypes',
+                'url' => 'admin/data/subtypes'
             ],
             [
                 'name' => 'Trait Categories',
@@ -183,6 +187,4 @@ return [
             ],
         ]
     ],
-
-
 ];

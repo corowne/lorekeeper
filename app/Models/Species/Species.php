@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\Shop;
+namespace App\Models\Species;
 
 use Config;
 use App\Models\Model;
 
-class Shop extends Model
+class Species extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -13,7 +13,7 @@ class Shop extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_active'
+        'name', 'sort', 'has_image', 'description', 'parsed_description'
     ];
 
     /**
@@ -21,7 +21,8 @@ class Shop extends Model
      *
      * @var string
      */
-    protected $table = 'shops';
+    protected $table = 'specieses';
+    
     
     /**
      * Validation rules for creation.
@@ -29,10 +30,11 @@ class Shop extends Model
      * @var array
      */
     public static $createRules = [
-        'name' => 'required|unique:item_categories|between:3,25',
+        'name' => 'required|unique:specieses|between:3,25',
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
+    
     
     /**
      * Validation rules for updating.
@@ -52,19 +54,11 @@ class Shop extends Model
     **********************************************************************************************/
 
     /**
-     * Get the shop stock.
+     * Get the subtypes for this species.
      */
-    public function stock() 
+    public function subtypes() 
     {
-        return $this->hasMany('App\Models\Shop\ShopStock');
-    }
-    
-    /**
-     * Get the shop stock as items for display purposes.
-     */
-    public function displayStock()
-    {
-        return $this->belongsToMany('App\Models\Item\Item', 'shop_stock')->withPivot('item_id', 'currency_id', 'cost', 'use_user_bank', 'use_character_bank', 'is_limited_stock', 'quantity', 'purchase_limit', 'id');
+        return $this->hasMany('App\Models\Species\Subtype');
     }
 
     /**********************************************************************************************
@@ -74,13 +68,13 @@ class Shop extends Model
     **********************************************************************************************/
     
     /**
-     * Displays the shop's name, linked to its purchase page.
+     * Displays the model's name, linked to its encyclopedia page.
      *
      * @return string
      */
     public function getDisplayNameAttribute()
     {
-        return '<a href="'.$this->url.'" class="display-shop">'.$this->name.'</a>';
+        return '<a href="'.$this->url.'" class="display-species">'.$this->name.'</a>';
     }
 
     /**
@@ -90,7 +84,7 @@ class Shop extends Model
      */
     public function getImageDirectoryAttribute()
     {
-        return 'images/data/shops';
+        return 'images/data/species';
     }
 
     /**
@@ -98,7 +92,7 @@ class Shop extends Model
      *
      * @return string
      */
-    public function getShopImageFileNameAttribute()
+    public function getSpeciesImageFileNameAttribute()
     {
         return $this->id . '-image.png';
     }
@@ -108,7 +102,7 @@ class Shop extends Model
      *
      * @return string
      */
-    public function getShopImagePathAttribute()
+    public function getSpeciesImagePathAttribute()
     {
         return public_path($this->imageDirectory);
     }
@@ -118,10 +112,10 @@ class Shop extends Model
      *
      * @return string
      */
-    public function getShopImageUrlAttribute()
+    public function getSpeciesImageUrlAttribute()
     {
         if (!$this->has_image) return null;
-        return asset($this->imageDirectory . '/' . $this->shopImageFileName);
+        return asset($this->imageDirectory . '/' . $this->speciesImageFileName);
     }
 
     /**
@@ -131,6 +125,16 @@ class Shop extends Model
      */
     public function getUrlAttribute()
     {
-        return url('shops/'.$this->id);
+        return url('world/species?name='.$this->name);
+    }
+
+    /**
+     * Gets the URL for a masterlist search of characters of this species.
+     *
+     * @return string
+     */
+    public function getSearchUrlAttribute()
+    {
+        return url('masterlist?species_id='.$this->id);
     }
 }

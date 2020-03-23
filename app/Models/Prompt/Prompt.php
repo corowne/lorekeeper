@@ -17,7 +17,7 @@ class Prompt extends Model
      */
     protected $fillable = [
         'prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active',
-        'start_at', 'end_at', 'hide_before_start', 'hide_after_end'
+        'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image'
     ];
 
     /**
@@ -44,6 +44,7 @@ class Prompt extends Model
         'name' => 'required|unique:prompts|between:3,25',
         'summary' => 'nullable',
         'description' => 'nullable',
+        'image' => 'mimes:png',
     ];
     
     /**
@@ -56,6 +57,7 @@ class Prompt extends Model
         'name' => 'required|between:3,25',
         'summary' => 'nullable',
         'description' => 'nullable',
+        'image' => 'mimes:png',
     ];
 
     /**********************************************************************************************
@@ -191,6 +193,47 @@ class Prompt extends Model
     public function getDisplayNameAttribute()
     {
         return '<a href="'.$this->url.'" class="display-prompt">'.$this->name.'</a>';
+    }
+
+    /**
+     * Gets the file directory containing the model's image.
+     *
+     * @return string
+     */
+    public function getImageDirectoryAttribute()
+    {
+        return 'images/data/prompts';
+    }
+
+    /**
+     * Gets the file name of the model's image.
+     *
+     * @return string
+     */
+    public function getImageFileNameAttribute()
+    {
+        return $this->id . '-image.png';
+    }
+
+    /**
+     * Gets the path to the file directory containing the model's image.
+     *
+     * @return string
+     */
+    public function getImagePathAttribute()
+    {
+        return public_path($this->imageDirectory);
+    }
+    
+    /**
+     * Gets the URL of the model's image.
+     *
+     * @return string
+     */
+    public function getImageUrlAttribute()
+    {
+        if (!$this->has_image) return null;
+        return asset($this->imageDirectory . '/' . $this->imageFileName);
     }
 
     /**

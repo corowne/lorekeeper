@@ -7,6 +7,7 @@ use Config;
 
 use App\Models\Loot\LootTable;
 use App\Models\Loot\Loot;
+use App\Models\Prompt\PromptReward;
 
 class LootService extends Service
 {
@@ -120,6 +121,8 @@ class LootService extends Service
         try {
             // Check first if the table is currently in use
             // - Prompts
+            // - Box rewards (unfortunately this can't be checked easily)
+            if(PromptReward::where('rewardable_type', 'LootTable')->where('rewardable_id', $table->id)->exists()) throw new \Exception("A prompt uses this table to distribute rewards. Please remove it from the rewards list first.");
             
             $table->loot()->delete();
             $table->delete();

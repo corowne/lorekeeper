@@ -25,11 +25,6 @@
         </div>
     @endif
 
-    <div class="form-group">
-        {!! Form::checkbox('is_visible', 1, $character->is_visible, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-        {!! Form::label('is_visible', 'Is Visible', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Turn this off to hide the character. Only mods with the Manage Masterlist power (that\'s you!) can view it - the owner will also not be able to see the character\'s page.') !!}
-    </div>
-
     <div class="alert alert-info">
         These are displayed on the character's profile, but don't have any effect on site functionality except for the following: 
         <ul>

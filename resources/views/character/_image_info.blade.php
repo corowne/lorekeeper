@@ -35,6 +35,12 @@
                     <div class="col-lg-4 col-md-6 col-4"><h5>Species</h5></div>
                     <div class="col-lg-8 col-md-6 col-8">{!! $image->species_id ? $image->species->displayName : 'None' !!}</div>
                 </div>
+                @if($image->subtype_id)
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-4"><h5>Subtype</h5></div>
+                        <div class="col-lg-8 col-md-6 col-8">{!! $image->subtype_id ? $image->subtype->displayName : 'None' !!}</div>
+                    </div>
+                @endif
                 <div class="row">
                     <div class="col-lg-4 col-md-6 col-4"><h5>Rarity</h5></div>
                     <div class="col-lg-8 col-md-6 col-8">{!! $image->rarity_id ? $image->rarity->displayName : 'None' !!}</div>
@@ -43,9 +49,14 @@
                 <div class="mb-3">
                     <div><h5>Traits</h5></div>
                     <div>
-                        @foreach($image->features()->with('feature.category')->get() as $feature)
-                            <div>@if($feature->feature->feature_category_id) <strong>{!! $feature->feature->category->displayName !!}:</strong> @endif {!! $feature->feature->displayName !!} @if($feature->data) ({{ $feature->data }}) @endif</div> 
-                        @endforeach
+                        <?php $features = $image->features()->with('feature.category')->get(); ?>
+                        @if($features->count())
+                            @foreach($features as $feature)
+                                <div>@if($feature->feature->feature_category_id) <strong>{!! $feature->feature->category->displayName !!}:</strong> @endif {!! $feature->feature->displayName !!} @if($feature->data) ({{ $feature->data }}) @endif</div> 
+                            @endforeach
+                        @else 
+                            <div>No traits listed.</div>
+                        @endif
                     </div>
                 </div>    
                 <div>

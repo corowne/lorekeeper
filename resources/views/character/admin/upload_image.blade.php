@@ -91,12 +91,17 @@ Traits
 
 <div class="form-group">
     {!! Form::label('Species') !!}
-    {!! Form::select('species_id', $specieses, old('species_id'), ['class' => 'form-control', 'id' => 'species']) !!}
+    {!! Form::select('species_id', $specieses, old('species_id') ? : $character->image->species_id, ['class' => 'form-control', 'id' => 'species']) !!}
+</div>
+
+<div class="form-group">
+    {!! Form::label('Subtype (Optional)') !!} 
+    {!! Form::select('subtype_id', $subtypes, old('subtype_id') ? : $character->image->subtype_id, ['class' => 'form-control', 'id' => 'subtype']) !!}
 </div>
 
 <div class="form-group">
     {!! Form::label('Character Rarity') !!}
-    {!! Form::select('rarity_id', $rarities, old('rarity_id'), ['class' => 'form-control']) !!}
+    {!! Form::select('rarity_id', $rarities, old('rarity_id') ? : $character->image->rarity_id, ['class' => 'form-control']) !!}
 </div>
 
 <div class="form-group">

@@ -12,7 +12,8 @@ use App\Models\Character\Character;
 use App\Models\Character\CharacterCategory;
 use App\Models\Rarity;
 use App\Models\User\User;
-use App\Models\Species;
+use App\Models\Species\Species;
+use App\Models\Species\Subtype;
 use App\Models\Feature\Feature;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Trade;
@@ -58,6 +59,7 @@ class CharacterController extends Controller
             'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
             'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => ['0' => 'Select Subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
             'isMyo' => false
         ]);
@@ -74,6 +76,7 @@ class CharacterController extends Controller
             'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
             'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => ['0' => 'Select Subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
             'isMyo' => true
         ]);
@@ -96,7 +99,7 @@ class CharacterController extends Controller
             'x0', 'x1', 'y0', 'y1',
             'designer_alias', 'designer_url',
             'artist_alias', 'artist_url',
-            'species_id', 'rarity_id', 'feature_id', 'feature_data',
+            'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data',
             'image', 'thumbnail', 'image_description'
         ]);
         if ($character = $service->createCharacter($data, Auth::user())) {
@@ -126,7 +129,7 @@ class CharacterController extends Controller
             'x0', 'x1', 'y0', 'y1',
             'designer_alias', 'designer_url',
             'artist_alias', 'artist_url',
-            'species_id', 'rarity_id', 'feature_id', 'feature_data',
+            'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data',
             'image', 'thumbnail'
         ]);
         if ($character = $service->createCharacter($data, Auth::user(), true)) {
@@ -136,7 +139,7 @@ class CharacterController extends Controller
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
-        return redirect()->back();
+        return redirect()->back()->withInput();
     }
 
     /**
@@ -202,7 +205,7 @@ class CharacterController extends Controller
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
-        return redirect()->back();
+        return redirect()->back()->withInput();
     }
 
     /**
@@ -230,7 +233,7 @@ class CharacterController extends Controller
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
-        return redirect()->back();
+        return redirect()->back()->withInput();
     }
 
     /**
@@ -289,7 +292,7 @@ class CharacterController extends Controller
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
-        return redirect()->back();
+        return redirect()->back()->withInput();
     }
 
     /**
@@ -314,7 +317,7 @@ class CharacterController extends Controller
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
-        return redirect()->back();
+        return redirect()->back()->withInput();
     }
 
     /**
@@ -339,7 +342,7 @@ class CharacterController extends Controller
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
-        return redirect()->back();
+        return redirect()->back()->withInput();
     }
 
     /**
@@ -364,7 +367,7 @@ class CharacterController extends Controller
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
-        return redirect()->back();
+        return redirect()->back()->withInput();
     }
 
     /**
