@@ -25,7 +25,7 @@ return [
     | site wherever the name needs to be displayed.
     |
     */
-    'site_name' => 'Alucinor Nova',
+    'site_name' => 'Lorekeeper',
     
     /*
     |--------------------------------------------------------------------------
