@@ -4,6 +4,7 @@ namespace App\Models\Character;
 
 use Config;
 use DB;
+use Carbon\Carbon;
 use Notifications;
 use App\Models\Model;
 
@@ -221,6 +222,21 @@ class Character extends Model
     public function scopeTrading($query)
     {
         return $query->where('is_trading', 1);
+    }
+
+    /**
+     * Scope a query to only include characters that can be traded.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeTradable($query)
+    {
+        return $query->where(function($query) {
+            $query->whereNull('transferrable_at')->orWhere('transferrable_at', '<', Carbon::now());
+        })->where(function($query) {
+          $query->where('is_sellable', 1)->orWhere('is_tradeable', 1)->orWhere('is_giftable', 1);
+        });
     }
 
     /**********************************************************************************************

@@ -4,7 +4,7 @@
     </div>
     <div class="card-body">
         @if($trade->comments)
-            <div>{{ nl2br(htmlentities($trade->comments)) }}</div><hr />
+            <div>{!! nl2br(htmlentities($trade->comments)) !!}</div><hr />
         @endif
         <div class="row">
             <div class="col-md-6">

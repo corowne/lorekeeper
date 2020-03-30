@@ -404,7 +404,7 @@ class CharacterManager extends Service
             $this->createLog($user->id, null, $character->user_id, $character->user->alias, $character->id, 'Character Image Uploaded', '[#'.$image->id.']', 'character');
 
             // If the recipient has an account, send them a notification
-            if($character->user && $user->id != $character->user_id) {
+            if($character->user && $user->id != $character->user_id && $character->is_visible) {
                 Notifications::create('IMAGE_UPLOAD', $character->user, [
                     'character_url' => $character->url,
                     'character_slug' => $character->slug,
@@ -1061,6 +1061,8 @@ class CharacterManager extends Service
             $recipient = User::find($data['recipient_id']);
             if(!$recipient) throw new \Exception("Invalid user selected.");
             if($recipient->is_banned) throw new \Exception("Cannot transfer character to a banned member.");
+
+            $queueOpen = Settings::get('open_transfers_queue');
             
             CharacterTransfer::create([
                 'character_id' => $character->id, 
@@ -1069,8 +1071,16 @@ class CharacterManager extends Service
                 'status' => 'Pending',
 
                 // if the queue is closed, all transfers are auto-approved
-                'is_approved' => !Settings::get('open_transfers_queue') 
+                'is_approved' => !$queueOpen
             ]);
+
+            if(!$queueOpen)
+                Notifications::create('CHARACTER_TRANSFER_RECEIVED', $recipient, [
+                    'character_url' => $character->url,
+                    'character_name' => $character->slug,
+                    'sender_name' => $user->name,
+                    'sender_url' => $user->url
+                ]);
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 

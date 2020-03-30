@@ -4,7 +4,7 @@
     </div>
     <div class="card-body">
         @if($trade->comment)
-        <div>{{ nl2br(htmlentities($trade->comment)) }}</div>
+        <div>{!! nl2br(htmlentities($trade->comment)) !!}</div>
         @endif
         <div class="row">
             <div class="col-md-6">
@@ -26,7 +26,7 @@
                         <a href="#" class="btn btn-outline-danger trade-action-button" data-id="{{ $trade->id }}" data-action="reject">Reject</a>
                     </div>
                 @else 
-                    Currently awaiting mod approval
+                    Currently awaiting staff approval
                 @endif
             @endif
         </div>

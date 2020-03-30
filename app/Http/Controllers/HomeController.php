@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use DB;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -61,10 +62,15 @@ class HomeController extends Controller
         }
         // Step 4: verify the token and use the API
         elseif($request->get('access_token') && $request->get('refresh_token')){
-            $deviantart->linkUser(Auth::user(), $request->get('access_token'), $request->get('refresh_token'));
-            flash('deviantART account has been linked successfully.')->success();
-            Auth::user()->updateCharacters();
-            return redirect()->to('/');
+            if($deviantart->linkUser(Auth::user(), $request->get('access_token'), $request->get('refresh_token'))) {
+                flash('deviantART account has been linked successfully.')->success();
+                Auth::user()->updateCharacters();
+                return redirect()->to('/');
+            }
+            else {
+                foreach($deviantart->errors()->getMessages()['error'] as $error) flash($error)->error();
+                return redirect()->back();
+            }
         }
 
         // Step 1: display a login link

@@ -14,7 +14,7 @@
         });
         $('.characters-select-all').on('click', function(e) {
             e.preventDefault();
-            var $target = $('.user-character:not(.hide)');
+            var $target = $('.user-character:not(.hide):not(.select-disabled)');
             $target.addClass('category-selected');
             $target.find('.character-checkbox').prop('checked', true);
         });

@@ -29,7 +29,7 @@
         <div class="card mb-3">
             <div class="card-body">
                 @if($trade->comments)
-                    {{ nl2br(htmlentities($trade->comments)) }}
+                    {!! nl2br(htmlentities($trade->comments)) !!}
                 @else 
                     No comment given.
                 @endif

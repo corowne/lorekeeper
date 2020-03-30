@@ -21,43 +21,47 @@
         </div>
     @endforeach
 </div>
-
+<?php $canManage = Auth::check() && Auth::user()->hasPower('manage_characters'); ?>
 <h3>
     Images
-    @if(Auth::check() && Auth::user()->hasPower('manage_characters'))
+    @if($canManage)
         <a href="{{ url('admin/character/'.$character->slug.'/image') }}" class="float-right btn btn-outline-info btn-sm"><i class="fas fa-plus"></i> Add Image</a>
     @endif
 </h3>
 
-<ul class="row nav image-nav mb-2" id="sortable">
+<ul class="row nav image-nav mb-2" @if($canManage) id="sortable" @endif>
     @foreach($character->images as $image)
         <li class="col-md-3 col-6 text-center nav-item sort-item" data-id="{{ $image->id }}">
             <a id="thumbnail-{{ $image->id }}" data-toggle="tab" href="#image-{{ $image->id }}" role="tab" class="{{ $image->id == $character->character_image_id ? 'active' : '' }}"><img src="{{ $image->thumbnailUrl }}" class="img-thumbnail" /></a>
         </li>
     @endforeach
 </ul>
-{!! Form::open(['url' => 'admin/character/' . $character->slug . '/images/sort', 'class' => 'text-right']) !!}
-{!! Form::hidden('sort', '', ['id' => 'sortableOrder']) !!}
-{!! Form::submit('Save Order', ['class' => 'btn btn-primary']) !!}
-{!! Form::close() !!}
+@if($canManage)
+    {!! Form::open(['url' => 'admin/character/' . $character->slug . '/images/sort', 'class' => 'text-right']) !!}
+    {!! Form::hidden('sort', '', ['id' => 'sortableOrder']) !!}
+    {!! Form::submit('Save Order', ['class' => 'btn btn-primary']) !!}
+    {!! Form::close() !!}
+@endif
 
 @endsection
 @section('scripts')
     @parent
     @include('character._image_js')
-    <script>
-        $( document ).ready(function() {
-            $( "#sortable" ).sortable({
-                characters: '.sort-item',
-                placeholder: "sortable-placeholder",
-                stop: function( event, ui ) {
-                    $('#sortableOrder').val($(this).sortable("toArray", {attribute:"data-id"}));
-                },
-                create: function() {
-                    $('#sortableOrder').val($(this).sortable("toArray", {attribute:"data-id"}));
-                }
+    @if($canManage)
+        <script>
+            $( document ).ready(function() {
+                $( "#sortable" ).sortable({
+                    characters: '.sort-item',
+                    placeholder: "sortable-placeholder",
+                    stop: function( event, ui ) {
+                        $('#sortableOrder').val($(this).sortable("toArray", {attribute:"data-id"}));
+                    },
+                    create: function() {
+                        $('#sortableOrder').val($(this).sortable("toArray", {attribute:"data-id"}));
+                    }
+                });
+                $( "#sortable" ).disableSelection();
             });
-            $( "#sortable" ).disableSelection();
-        });
-    </script>
+        </script>
+    @endif
 @endsection

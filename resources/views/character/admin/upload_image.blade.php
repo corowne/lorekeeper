@@ -7,14 +7,14 @@
 
 @include('character._header', ['character' => $character])
 
-<p>This will add a new image to the character's gallery. The character's active image will be changed to the new one automatically. If the image is marked as viewable, the owner of the character will be notified of the upload.</p> 
+<p>This will add a new image to the character's gallery. The character's active image will be changed to the new one automatically. If the character is marked as visible, the owner of the character will be notified of the upload.</p> 
 
 {!! Form::open(['url' => 'admin/character/'.$character->slug.'/image', 'files' => true]) !!}
 
-<h3>Visibility</h3>
+<h3>Validity</h3>
 
 <div class="form-group">
-    {!! Form::checkbox('is_valid', 1, 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'useCropper']) !!}
+    {!! Form::checkbox('is_valid', 1, 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
     {!! Form::label('is_valid', 'Is Valid', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is turned off, the image will still be visible, but displayed with a note that the image is not a valid reference.') !!}
 </div>
 

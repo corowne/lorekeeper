@@ -81,7 +81,7 @@ class TradeController extends Controller
             'categories' => ItemCategory::orderBy('sort', 'DESC')->get(),
             'inventory' => $inventory,
             'userOptions' => User::visible()->orderBy('name')->pluck('name', 'id')->toArray(),
-            'characters' => Auth::user()->allCharacters()->visible()->with('designUpdate')->get(),
+            'characters' => Auth::user()->allCharacters()->visible()->tradable()->with('designUpdate')->get(),
             'characterCategories' => CharacterCategory::orderBy('sort', 'DESC')->get(),
         ]);
     }
