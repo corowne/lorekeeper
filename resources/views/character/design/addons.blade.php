@@ -9,7 +9,7 @@
 
 <h2>Add-ons</h2>
 
-@if($request->status == 'Draft' && $request->user_id == Auth::user()->id)
+@if($request->status == 'Draft' && $request->user_id == Auth::user()->id && $request->character)
     <p>Select items and/or currency to add onto your request. These items will be removed from your inventory{{ $request->character->is_myo_slot ? '' : ' and/or character' }} but refunded if removed from the request, the request is rejected, or the request is deleted. If you don't intend to attach any items/currency, click the Save button once to mark this section complete regardless.</p>
     {!! Form::open(['url' => 'designs/'.$request->id.'/addons']) !!}
         @include('widgets._inventory_select', ['user' => Auth::user(), 'inventory' => $inventory, 'categories' => $categories, 'selected' => $request->inventory])
@@ -69,7 +69,7 @@
             </tbody>
         </table>
     @endif 
-    @if(count($request->characterBank))
+    @if($request->character && count($request->characterBank))
         <h3>{!! $request->character->displayName !!}'s Bank</h3>
         <table class="table table-sm mb-3">
             <thead>
