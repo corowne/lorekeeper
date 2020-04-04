@@ -59,9 +59,6 @@ class NewsService extends Service
         DB::beginTransaction();
 
         try {
-            // More specific validation
-            if(News::where('key', $data['key'])->where('id', '!=', $news->id)->exists()) throw new \Exception("The key has already been taken.");
-
             $data['parsed_text'] = parse($data['text']);
             $data['user_id'] = $user->id;
             if(!isset($data['is_visible'])) $data['is_visible'] = 0;

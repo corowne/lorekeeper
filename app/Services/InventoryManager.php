@@ -88,14 +88,14 @@ class InventoryManager extends Service
             {
                 Notifications::create('ITEM_TRANSFER', $recipient, [
                     'item_name' => $stack->item->name,
-                    'item_quantity' => $data['quantity'],
+                    'item_quantity' => 1,
                     'sender_url' => $sender->url,
                     'sender_name' => $sender->name
                 ]);
                 if($stack->user_id != $sender->id) 
                     Notifications::create('FORCED_ITEM_TRANSFER', $oldUser, [
                         'item_name' => $stack->item->name,
-                        'item_quantity' => $data['quantity'],
+                        'item_quantity' => 1,
                         'sender_url' => $sender->url,
                         'sender_name' => $sender->name
                     ]);

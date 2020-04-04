@@ -45,7 +45,7 @@
         <tbody>
             @foreach($requests as $r)
                 <tr>
-                    <td>{!! $r->character->displayName !!}</td>
+                    <td>{!! $r->character ? $r->character->displayName : 'Deleted Character [#'.$r->character_id.']' !!}</td>
                     <td>{!! $r->submitted_at ? format_date($r->submitted_at) : '---' !!}</td>
                     @if($status != 'draft')
                         <td>

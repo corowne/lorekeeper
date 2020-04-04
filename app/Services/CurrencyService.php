@@ -7,6 +7,8 @@ use Config;
 
 use App\Models\Currency\Currency;
 use App\Models\User\UserCurrency;
+use App\Models\Character\CharacterCurrency;
+
 
 class CurrencyService extends Service
 {
