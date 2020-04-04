@@ -1,5 +1,5 @@
 <h1>
-    Request (#{{ $request->id }}): {!! $request->character ? $r->character->displayName : 'Deleted Character [#'.$r->character_id.']' !!}
+    Request (#{{ $request->id }}): {!! $request->character ? $request->character->displayName : 'Deleted Character [#'.$request->character_id.']' !!}
     <span class="float-right badge badge-{{ ($request->status == 'Draft' || $request->status == 'Pending') ? 'secondary' : ($request->status == 'Approved' ? 'success' : 'danger') }}">{{ $request->status }}
 </h1>
 
