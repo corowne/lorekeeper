@@ -217,9 +217,9 @@ class SpeciesController extends Controller
      */
     public function getDeleteSubtype($id)
     {
-        $Subtype = Subtype::find($id);
+        $subtype = Subtype::find($id);
         return view('admin.specieses._delete_subtype', [
-            'Subtype' => $Subtype,
+            'subtype' => $subtype,
         ]);
     }
 

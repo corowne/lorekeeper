@@ -53,7 +53,7 @@
     <div class="card mb-3" id="resellOptions">
         <div class="card-body">
             {!! Form::label('Resale Value') !!} {!! add_help('This value is publicly displayed on the character\'s page.') !!}
-            {!! Form::text('sale_value', old('sale_value'), ['class' => 'form-control']) !!}
+            {!! Form::text('sale_value', $request->character->sale_value, ['class' => 'form-control']) !!}
         </div>
     </div>
     <div class="form-group">

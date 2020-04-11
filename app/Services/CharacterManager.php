@@ -1496,7 +1496,7 @@ class CharacterManager extends Service
                     ]);
                     $imageData['use_cropper'] = isset($data['use_cropper']);
                 }
-                if(!$isAdmin) {
+                if(!$isAdmin && isset($data['image'])) {
                     $imageData['extension'] = isset($data['extension']) ? $data['extension'] : $data['image']->getClientOriginalExtension();
                     $imageData['has_image'] = true;
                 }
@@ -1857,7 +1857,7 @@ class CharacterManager extends Service
             $request->save();
 
             // Notify the user
-            Notifications::create('DESIGN_APPROVED', $user, [
+            Notifications::create('DESIGN_APPROVED', $request->user, [
                 'design_url' => $request->url,
                 'character_url' => $request->character->url,
                 'name' => $request->character->fullName

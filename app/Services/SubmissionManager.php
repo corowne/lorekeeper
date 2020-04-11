@@ -198,7 +198,7 @@ class SubmissionManager extends Service
                 'status' => 'Rejected'
             ]);
 
-            Notifications::create($submission->id ? 'SUBMISSION_REJECTED' : 'CLAIM_REJECTED', $submission->user, [
+            Notifications::create($submission->prompt_id ? 'SUBMISSION_REJECTED' : 'CLAIM_REJECTED', $submission->user, [
                 'staff_url' => $user->url,
                 'staff_name' => $user->name,
                 'submission_id' => $submission->id,

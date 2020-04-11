@@ -146,13 +146,13 @@ return [
     // CLAIM_APPROVED
     22 => [
         'message' => 'Your claim (#{submission_id}) was approved by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Claim</a>)',
-        'url' => 'submissions/view/{submission_id}'
+        'url' => 'claims/view/{submission_id}'
     ],
 
     // CLAIM_REJECTED
     23 => [
         'message' => 'Your claim (#{submission_id}) was rejected by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Claim</a>)',
-        'url' => 'submissions/view/{submission_id}'
+        'url' => 'claims/view/{submission_id}'
     ],
 
     // MYO_GRANT
