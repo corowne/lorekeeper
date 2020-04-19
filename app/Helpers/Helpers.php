@@ -94,6 +94,13 @@ function parse($text, &$pings = null) {
     require_once(base_path().'/vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php');
     
     $config = HTMLPurifier_Config::createDefault();
+    $config->set('Attr.EnableID', true);
+    $config->set('HTML.DefinitionID', 'include');
+    $config->set('HTML.DefinitionRev', 2);
+    if ($def = $config->maybeGetRawHTMLDefinition()) {
+        $def->addElement('include', 'Block', 'Empty', 'Common', array('file*' => 'URI', 'height' => 'Text', 'width' => 'Text'));
+    }
+    
     $purifier = new HTMLPurifier($config);
     $text = $purifier->purify($text);
 

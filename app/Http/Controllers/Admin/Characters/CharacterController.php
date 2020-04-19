@@ -419,7 +419,7 @@ class CharacterController extends Controller
 
         if ($service->deleteCharacter($this->character, Auth::user())) {
             flash('Character deleted successfully.')->success();
-            return redirect()->to($character->url);
+            return redirect()->to('masterlist');
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

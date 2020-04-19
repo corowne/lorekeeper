@@ -86,6 +86,8 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            if(!$isMyo && Character::where('slug', $data['slug'])->exists()) throw new \Exception("Please enter a unique character code.");
+
             if(!(isset($data['user_id']) && $data['user_id']) && !(isset($data['owner_alias']) && $data['owner_alias'])) 
                 throw new \Exception("Please select an owner.");
             if(!$isMyo)

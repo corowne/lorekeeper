@@ -116,6 +116,10 @@ class BrowseController extends Controller
 
         if($request->get('username')) {
             $name = $request->get('username');
+            
+            // Usernames are prevented from containing spaces, but this is to deal with previously made accounts with spaces in names
+            $name = str_replace('%20', ' ', $name);
+
             $owners = User::where('name', 'LIKE', '%' . $name . '%')->orWhere('alias', 'LIKE', '%' . $name . '%')->pluck('id')->toArray();
             $query->where(function($query) use ($owners, $name) {
                 $query->whereIn('user_id', $owners)->orWhere('owner_alias', 'LIKE', '%' . $name . '%');
@@ -138,16 +142,16 @@ class BrowseController extends Controller
                 });
             }
         }
-        if($request->get('artists')) {
-            $artistName = $request->get('artists');
+        if($request->get('artist')) {
+            $artistName = $request->get('artist');
             $imageQuery->whereHas('artists', function($query) use ($artistName) {
-                $query->where('alias', $artistName);
+                $query->where('alias', 'LIKE', '%'.$artistName.'%');
             });
         }
-        if($request->get('designers')) {
-            $designerName = $request->get('designers');
+        if($request->get('designer')) {
+            $designerName = $request->get('designer');
             $imageQuery->whereHas('designers', function($query) use ($designerName) {
-                $query->where('alias', $designerName);
+                $query->where('alias', 'LIKE', '%'.$designerName.'%');
             });
         }
 
@@ -166,6 +170,8 @@ class BrowseController extends Controller
             case 'sale_value_asc':
                 $query->orderBy('characters.sale_value', 'ASC');
                 break;
+            default:
+                $query->orderBy('characters.id', 'DESC');
         }
 
         return view('browse.masterlist', [  
@@ -210,6 +216,10 @@ class BrowseController extends Controller
 
         if($request->get('username')) {
             $name = $request->get('username');
+            
+            // Usernames are prevented from containing spaces, but this is to deal with previously made accounts with spaces in names
+            $name = str_replace('%20', ' ', $name);
+            
             $owners = User::where('name', 'LIKE', '%' . $name . '%')->orWhere('alias', 'LIKE', '%' . $name . '%')->pluck('id')->toArray();
             $query->where(function($query) use ($owners, $name) {
                 $query->whereIn('user_id', $owners)->orWhere('owner_alias', 'LIKE', '%' . $name . '%');

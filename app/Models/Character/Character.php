@@ -77,7 +77,7 @@ class Character extends Model
         'rarity_id' => 'required',
         'user_id' => 'nullable',
         'number' => 'required',
-        'slug' => 'required|unique:characters,slug',
+        'slug' => 'required|alpha_dash',
         'description' => 'nullable',
         'sale_value' => 'nullable',
         'image' => 'required|mimes:jpeg,gif,png|max:20000',

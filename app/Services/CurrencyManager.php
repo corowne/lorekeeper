@@ -38,7 +38,7 @@ class CurrencyManager extends Service
             if($data['quantity'] == 0) throw new \Exception("Please enter a non-zero quantity.");
 
             // Process names
-            $users = User::whereIn('name', explode(',', str_replace(' ', '', $data['names'])))->get();
+            $users = User::whereIn('name', array_map('trim', explode(',', $data['names'])))->get();
             if(!count($users)) throw new \Exception("No valid users found.");
 
             // Process currency
