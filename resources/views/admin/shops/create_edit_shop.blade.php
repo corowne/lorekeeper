@@ -56,8 +56,8 @@
             <a href="#" class="add-stock-button btn btn-outline-primary">Add Stock</a>
         </div>
         <div id="shopStock">
-            @foreach($shop->stock as $stock)
-                @include('admin.shops._stock', ['stock' => $stock])
+            @foreach($shop->stock as $key=>$stock)
+                @include('admin.shops._stock', ['stock' => $stock, 'key' => $key])
             @endforeach
         </div>
         <div class="text-right">
@@ -65,7 +65,7 @@
         </div>
     {!! Form::close() !!}
     <div class="" id="shopStockData">
-        @include('admin.shops._stock', ['stock' => null])
+        @include('admin.shops._stock', ['stock' => null, 'key' => 0])
     </div>
 @endif
 

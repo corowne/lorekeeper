@@ -95,7 +95,7 @@ class CurrencyManager extends Service
             // Process currency
             $currency = Currency::find($data['currency_id']);
             if(!$currency) throw new \Exception("Invalid currency selected.");
-            if(!$currency->is_user_owned) throw new \Exception("This currency cannot be held by characters.");
+            if(!$currency->is_character_owned) throw new \Exception("This currency cannot be held by characters.");
             if($data['quantity'] < 0) {
                 $this->debitCurrency($character, $staff, 'Staff Removal', $data['data'], $currency, -$data['quantity']);
                 Notifications::create('CHARACTER_CURRENCY_REMOVAL', $character->user, [

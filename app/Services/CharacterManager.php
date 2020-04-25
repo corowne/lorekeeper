@@ -17,6 +17,7 @@ use App\Services\InventoryManager;
 use App\Models\User\User;
 use App\Models\User\UserItem;
 use App\Models\Character\Character;
+use App\Models\Character\CharacterCurrency;
 use App\Models\Character\CharacterCategory;
 use App\Models\Character\CharacterFeature;
 use App\Models\Character\CharacterImage;
@@ -643,6 +644,8 @@ class CharacterManager extends Service
         try {
             if($image->character->character_image_id == $image->id) throw new \Exception("Cannot delete a character's active image.");
 
+            $image->features()->delete();
+
             $image->delete();
 
             // Delete the image files
@@ -1025,10 +1028,24 @@ class CharacterManager extends Service
             if($character->user_id) {
                 $character->user->settings->{$character->is_myo_slot ? 'myo_slot_count' : 'character_count'}--;
                 $character->user->settings->save();
-            }
+        }
 
             // Delete associated bookmarks
             CharacterBookmark::where('character_id', $character->id)->delete();
+
+            // Delete associated features and images
+            // Images use soft deletes
+            foreach($character->images as $image) {
+                $image->features()->delete();
+                $image->delete();
+            }
+
+            // Delete associated currencies
+            CharacterCurrency::where('character_id', $character->id)->delete();
+
+            // Delete associated design updates
+            // Design updates use soft deletes
+            CharacterDesignUpdate::where('character_id', $character->id)->delete();
 
             // Delete character
             // This is a soft delete, so the character still kind of exists

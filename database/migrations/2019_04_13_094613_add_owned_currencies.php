@@ -20,7 +20,7 @@ class AddOwnedCurrencies extends Migration
             $table->integer('currency_id')->unsigned();
             $table->integer('quantity')->unsigned()->default(0);
 
-            $table->unique(['user_id', 'currency_id']);
+            //$table->unique(['user_id', 'currency_id']);
             $table->primary(['user_id', 'currency_id']);
 
             $table->foreign('user_id')->references('id')->on('users');
@@ -32,7 +32,7 @@ class AddOwnedCurrencies extends Migration
             $table->integer('currency_id')->unsigned();
             $table->integer('quantity')->unsigned()->default(0);
 
-            $table->unique(['character_id', 'currency_id']);
+            //$table->unique(['character_id', 'currency_id']);
             $table->primary(['character_id', 'currency_id']);
 
             $table->foreign('character_id')->references('id')->on('characters');
