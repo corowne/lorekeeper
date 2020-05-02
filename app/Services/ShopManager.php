@@ -67,7 +67,7 @@ class ShopManager extends Service
                 // - currency must be user-held
                 // - user has enough currency
                 if(!$shopStock->use_user_bank || !$shopStock->currency->is_user_owned) throw new \Exception("You cannot use your user bank to pay for this item.");
-                if(!(new CurrencyManager)->debitCurrency($user, null, 'Shop Purchase', 'Purchased '.$shopStock->item->name.' from '.$shop->name, $shopStock->currency, $shopStock->cost)) throw new \Exception("Not enough currency to make this purchase.");
+                if($shopStock->cost > 0 && !(new CurrencyManager)->debitCurrency($user, null, 'Shop Purchase', 'Purchased '.$shopStock->item->name.' from '.$shop->name, $shopStock->currency, $shopStock->cost)) throw new \Exception("Not enough currency to make this purchase.");
             }
 
             // If the item has a limited quantity, decrease the quantity

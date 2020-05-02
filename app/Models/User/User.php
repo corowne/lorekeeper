@@ -415,14 +415,9 @@ class User extends Authenticatable implements MustVerifyEmail
             'user_id' => $this->id
         ])) {
             $count = $this->characters->count();
-            $myoCount = $this->myoSlots->count();
             if($count || $$myoCount) {
                 if($count) {
                     $this->settings->is_fto = 0;
-                    $this->settings->character_count = $count;
-                }
-                if($myoCount) {
-                    $this->settings->myo_slot_count = $myoCount;
                 }
                 $this->settings->save();
             }

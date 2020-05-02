@@ -13,6 +13,7 @@
 @if(!count($tables))
     <p>No loot tables found.</p>
 @else 
+    {!! $tables->render() !!}
     <table class="table table-sm">
         <thead>
             <tr>
@@ -36,6 +37,7 @@
         </tbody>
 
     </table>
+    {!! $tables->render() !!}   
 @endif
 
 @endsection

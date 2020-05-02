@@ -144,9 +144,7 @@ class CharacterManager extends Service
             if($recipient) {
                 if(!$isMyo) {
                     $recipient->settings->is_fto = 0; // MYO slots don't affect the FTO status - YMMV
-                    $recipient->settings->character_count++;
                 }
-                else $recipient->settings->myo_slot_count++;
                 $recipient->settings->save();
             }
 
@@ -404,8 +402,8 @@ class CharacterManager extends Service
             
             // Add a log for the character
             // This logs all the updates made to the character
-            $this->createLog($user->id, null, $character->user_id, $character->user->alias, $character->id, 'Character Image Uploaded', '[#'.$image->id.']', 'character');
-
+            $this->createLog($user->id, null, $character->user_id, $character->user_id ? $character->user->alias : $character->owner_alias, $character->id, 'Character Image Uploaded', '[#'.$image->id.']', 'character');
+            
             // If the recipient has an account, send them a notification
             if($character->user && $user->id != $character->user_id && $character->is_visible) {
                 Notifications::create('IMAGE_UPLOAD', $character->user, [
@@ -1026,7 +1024,6 @@ class CharacterManager extends Service
 
         try {
             if($character->user_id) {
-                $character->user->settings->{$character->is_myo_slot ? 'myo_slot_count' : 'character_count'}--;
                 $character->user->settings->save();
         }
 
@@ -1355,17 +1352,11 @@ class CharacterManager extends Service
 
         // Update character counts if the sender has an account
         if($sender) {
-            if($character->is_myo_slot) $sender->settings->myo_slot_count--;
-            else $sender->settings->character_count--;
             $sender->settings->save();
         }
 
         if(is_object($recipient)) {
-            if($character->is_myo_slot) $recipient->settings->myo_slot_count++;
-            else {
-                $recipient->settings->character_count++;
-                $recipient->settings->is_fto = 0;
-            }
+            if(!$character->is_myo_slot) $recipient->settings->is_fto = 0;
             $recipient->settings->save();
         }
 
@@ -1864,8 +1855,6 @@ class CharacterManager extends Service
             {
                 $request->character->is_myo_slot = 0;
                 $request->user->settings->is_fto = 0;
-                $request->user->settings->myo_slot_count--;
-                $request->user->settings->character_count++;
                 $request->user->settings->save();
             }
             $request->character->save();

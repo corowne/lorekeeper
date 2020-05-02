@@ -13,7 +13,7 @@ class UserSettings extends Model
      * @var array
      */
     protected $fillable = [
-        'is_fto', 'character_count', 'myo_slot_count', 'submission_count', 'banned_at', 'ban_reason'
+        'is_fto', 'submission_count', 'banned_at', 'ban_reason'
     ];
 
     /**

@@ -357,7 +357,6 @@ class Character extends Model
             $this->save();
 
             $owner->settings->is_fto = 0;
-            $owner->settings->character_count++;
             $owner->settings->save();
         }
     }
