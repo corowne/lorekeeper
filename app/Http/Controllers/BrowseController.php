@@ -158,6 +158,12 @@ class BrowseController extends Controller
         $query->whereIn('id', $imageQuery->pluck('character_id')->toArray());
 
         switch($request->get('sort')) {
+            case 'number_desc':
+                $query->orderBy('characters.number', 'DESC');
+                break;
+            case 'number_asc':
+                $query->orderBy('characters.number', 'ASC');
+                break;
             case 'id_desc':
                 $query->orderBy('characters.id', 'DESC');
                 break;
@@ -171,7 +177,7 @@ class BrowseController extends Controller
                 $query->orderBy('characters.sale_value', 'ASC');
                 break;
             default:
-                $query->orderBy('characters.id', 'DESC');
+                $query->orderBy('characters.number', 'DESC');
         }
 
         return view('browse.masterlist', [  

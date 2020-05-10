@@ -244,7 +244,7 @@ class RaffleController extends Controller
      */
     public function postRollRaffleGroup(RaffleManager $service, $id)
     {
-        if ($service->rollRaffleGroup(Raffle::find($id))) {
+        if ($service->rollRaffleGroup(RaffleGroup::find($id))) {
             flash('Winners rolled!')->success();
             return redirect()->back();
         }
