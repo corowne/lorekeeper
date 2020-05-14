@@ -111,7 +111,7 @@ class LootTable extends Model
             $count = 0;
             foreach($loot as $l)
             { 
-                if($roll > $count) $count += $l->weight;
+                $count += $l->weight;
 
                 if($roll < $count)
                 {

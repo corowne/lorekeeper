@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card mb-3">
     <div class="card-header">
         <h2 class="card-title mb-0">{!! $news->displayName !!}</h2>
         <small>
