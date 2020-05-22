@@ -133,7 +133,11 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <p>This will approve the {{ $submission->prompt_id ? 'submission' : 'claim' }} and distribute the above rewards to the user.</p>
+                    <p>This will approve the {{ $submission->prompt_id ? 'submission' : 'claim' }} and distribute the above rewards to the user. Enter an optional comment below to explain why the {{ $submission->prompt_id ? 'submission' : 'claim' }} was approved.</p>
+					<div class="form-group">
+                        {!! Form::label('staff_comments', 'Staff Comments') !!}
+                        {!! Form::textarea('', null, ['class' => 'form-control', 'id' =>  'modalStaffComments']) !!}
+                    </div>
                     <div class="text-right">
                         <a href="#" id="approvalSubmit" class="btn btn-success">Approve</a>
                     </div>

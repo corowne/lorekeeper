@@ -287,7 +287,9 @@ class SubmissionManager extends Service
             // 1. staff ID
             // 2. status
             // 3. final rewards
+			// 4. Also, staff comments!
             $submission->update([
+			    'staff_comments' => $data['staff_comments'],
                 'staff_id' => $user->id,
                 'status' => 'Approved',
                 'data' => json_encode(getDataReadyAssets($rewards))
