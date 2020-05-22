@@ -32,8 +32,8 @@
 <h2>Comments</h2>
 <div class="card mb-3"><div class="card-body">{!! nl2br(htmlentities($submission->comments)) !!}</div></div>
 @if(Auth::check() && $submission->staff_comments && ($submission->user_id == Auth::user()->id || Auth::user()->hasPower('manage_submissions')))
-    <h5 class="text-danger">Staff Comments</h5>
-    <div class="card border-danger mb-3"><div class="card-body">{!! nl2br(htmlentities($submission->staff_comments)) !!}</div></div>
+    <h2>Staff Comments</h2>
+    <div class="card mb-3"><div class="card-body">{!! nl2br(htmlentities($submission->staff_comments)) !!}</div></div>
 @endif
 
 <h2>Rewards</h2>

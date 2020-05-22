@@ -66,6 +66,10 @@
         <div class="text-right mb-3">
             <a href="#" class="btn btn-outline-info" id="addCharacter">Add Character</a>
         </div>
+		<div class="form-group">
+            {!! Form::label('staff_comments', 'Staff Comments') !!}
+            {!! Form::textarea('', null, ['class' => 'form-control', 'id' =>  'modalStaffComments']) !!}
+        </div>
         {!! Form::hidden('staff_comments', null, ['id' => 'staffComments']) !!}
         <div class="text-right">
             <a href="#" class="btn btn-danger mr-2" id="rejectionButton">Reject</a>
@@ -124,11 +128,6 @@
         </table>
     </div>
     @include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'showLootTables' => false])
-	
-	<div class="form-group">
-                        {!! Form::label('staff_comments', 'Staff Comments') !!}
-                        {!! Form::textarea('', null, ['class' => 'form-control', 'id' =>  'modalStaffComments']) !!}
-    </div>
 
     <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -138,7 +137,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <p>This will approve the {{ $submission->prompt_id ? 'submission' : 'claim' }} and distribute the above rewards to the user. Enter an optional comment below to explain why the {{ $submission->prompt_id ? 'submission' : 'claim' }} was approved.</p>
+                    <p>This will approve the {{ $submission->prompt_id ? 'submission' : 'claim' }} and distribute the above rewards to the user.</p>
                     <div class="text-right">
                         <a href="#" id="approvalSubmit" class="btn btn-success">Approve</a>
                     </div>
@@ -150,7 +149,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <p>This will reject the {{ $submission->prompt_id ? 'submission' : 'claim' }}. Enter an optional comment below to explain why the {{ $submission->prompt_id ? 'submission' : 'claim' }} was rejected.</p>
+                    <p>This will reject the {{ $submission->prompt_id ? 'submission' : 'claim' }}.</p>
                     <div class="text-right">
                         <a href="#" id="rejectionSubmit" class="btn btn-danger">Reject</a>
                     </div>
@@ -203,7 +202,7 @@
 
             $approvalSubmit.on('click', function(e) {
                 e.preventDefault();
-                $staffComments.val('');
+                $staffComments.val($modalStaffComments.val());
                 $submissionForm.attr('action', '{{ url()->current() }}/approve');
                 $submissionForm.submit();
             });

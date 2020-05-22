@@ -284,10 +284,10 @@ class SubmissionManager extends Service
             }
 
             // Finally, set: 
-            // 1. staff ID
-            // 2. status
-            // 3. final rewards
-			// 4. Also, staff comments!
+			// 1. staff comments
+            // 2. staff ID
+            // 3. status
+            // 4. final rewards
             $submission->update([
 			    'staff_comments' => $data['staff_comments'],
                 'staff_id' => $user->id,
