@@ -124,6 +124,11 @@
         </table>
     </div>
     @include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'showLootTables' => false])
+	
+	<div class="form-group">
+                        {!! Form::label('staff_comments', 'Staff Comments') !!}
+                        {!! Form::textarea('', null, ['class' => 'form-control', 'id' =>  'modalStaffComments']) !!}
+    </div>
 
     <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -134,7 +139,6 @@
                 </div>
                 <div class="modal-body">
                     <p>This will approve the {{ $submission->prompt_id ? 'submission' : 'claim' }} and distribute the above rewards to the user. Enter an optional comment below to explain why the {{ $submission->prompt_id ? 'submission' : 'claim' }} was approved.</p>
-					
                     <div class="text-right">
                         <a href="#" id="approvalSubmit" class="btn btn-success">Approve</a>
                     </div>
@@ -147,10 +151,6 @@
                 </div>
                 <div class="modal-body">
                     <p>This will reject the {{ $submission->prompt_id ? 'submission' : 'claim' }}. Enter an optional comment below to explain why the {{ $submission->prompt_id ? 'submission' : 'claim' }} was rejected.</p>
-                    <div class="form-group">
-                        {!! Form::label('staff_comments', 'Staff Comments') !!}
-                        {!! Form::textarea('', null, ['class' => 'form-control', 'id' =>  'modalStaffComments']) !!}
-                    </div>
                     <div class="text-right">
                         <a href="#" id="rejectionSubmit" class="btn btn-danger">Reject</a>
                     </div>
