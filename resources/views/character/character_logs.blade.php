@@ -7,7 +7,7 @@
 
 @include('character._header', ['character' => $character])
 
-<h3>Ownership History</h3>
+<h3>Change Log</h3>
 
 {!! $logs->render() !!}
 <table class="table table-sm">

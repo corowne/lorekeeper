@@ -177,6 +177,12 @@ main > .row {
     padding: 10px 20px;
 }
 
+@media (max-width: 767px) {
+	.site-mobile-header {
+		top: 54px !important;
+	}
+}
+
 @media (max-width: 991px) {
     .site-header-image {
         display: none;
@@ -184,7 +190,7 @@ main > .row {
     .site-mobile-header {
         display: block;
         position: fixed;
-        top: 68px;
+		top: 68px;
         z-index: 2;
         width: 100%;
     }
@@ -239,6 +245,24 @@ main > .row {
         
         box-shadow: none;
     }
+	
+	/*fix for screen being over-wide on mobile*/
+	.row {
+		margin:0; max-width:100%;
+	}
+    
+	.container-fluid {
+		padding:0px;
+	}
+    
+	.site-footer .navbar .navbar-nav {
+		flex-wrap: wrap; justify-content: center;
+	}
+	
+	.timestamp {
+		margin-left: 1rem!important;
+		margin-right: 1rem!important;
+	}
 }
 
 /* Footer */
