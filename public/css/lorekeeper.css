@@ -72,10 +72,6 @@ body {
     flex-direction: column;
     min-height: 100vh;
     background-color: #ddd;
-	background: url('/images/IMG_1794.JPG') fixed;
-	background-position: top left;
-	background-repeat: no-repeat;
-	background-size: cover;
 }
 
 main {
@@ -99,7 +95,7 @@ main > .row {
 .site-header-image {
     /*background-color: #eee;*/
     background-repeat: repeat;
-    /* min-height: 200px; */
+    min-height: 200px;
 }
 
 .navbar .navbar-brand, .navbar .nav-item {
@@ -217,7 +213,7 @@ main > .row {
         padding-left: 0px;
         text-align: left;
         background-color: #ddd;
-        z-index: 3;
+        z-index: 2;
         right: 0px;
         bottom: 0px;
         top: 0px;
