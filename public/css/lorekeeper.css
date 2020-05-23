@@ -191,7 +191,7 @@ main > .row {
         display: block;
         position: fixed;
 		top: 68px;
-        z-index: 2;
+        z-index: 99;
         width: 100%;
     }
 
