@@ -1,12 +1,12 @@
 @extends('home.layout')
 
-@section('home-title') Characters @endsection
+@section('home-title') My Characters @endsection
 
 @section('home-content')
-{!! breadcrumbs(['Characters' => 'characters']) !!}
+{!! breadcrumbs(['My Characters' => 'characters']) !!}
 
 <h1>
-    Characters
+    My Characters
 </h1>
 
 <p>This is a list of characters you own. Drag and drop to rearrange them.</p>
