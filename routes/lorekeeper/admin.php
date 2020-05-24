@@ -268,7 +268,7 @@ Route::group(['prefix' => 'masterlist', 'namespace' => 'Characters', 'middleware
     Route::get('create-myo', 'CharacterController@getCreateMyo');
     Route::post('create-myo', 'CharacterController@postCreateMyo');
 });
-Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware' => 'power:manage_inventories'], function() {
+Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware' => 'power:edit_inventories'], function() {
     Route::post('{slug}/grant', 'GrantController@postCharacterCurrency');
 });
 Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware' => 'power:manage_characters'], function() {

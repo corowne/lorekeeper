@@ -561,7 +561,7 @@ class CharacterManager extends Service
                         'character_image_id' => $image->id,
                         'type' => 'Designer',
                         'url' => $data['designer_url'][$key],
-                        'alias' => $alias
+                        'alias' => trim($alias)
                     ]);
             }
             foreach($data['artist_alias'] as $key => $alias) {
@@ -570,7 +570,7 @@ class CharacterManager extends Service
                         'character_image_id' => $image->id,
                         'type' => 'Artist',
                         'url' => $data['artist_url'][$key],
-                        'alias' => $alias
+                        'alias' => trim($alias)
                     ]);
             }
             
@@ -995,7 +995,7 @@ class CharacterManager extends Service
             $character->profile->parsed_text = parse($data['text']);
             $character->profile->save();
 
-            if($isAdmin && isset($data['alert_user']) && $character->is_visible)
+            if($isAdmin && isset($data['alert_user']) && $character->is_visible && $character->user_id)
             {
                 Notifications::create('CHARACTER_PROFILE_EDIT', $character->user, [
                     'character_name' => $character->name,
@@ -1303,6 +1303,16 @@ class CharacterManager extends Service
                         'sender_url' => $user->url,
                     ]);
                     Notifications::create('CHARACTER_TRANSFER_APPROVED', $transfer->recipient, [
+                        'character_name' => $transfer->character->slug,
+                        'character_url' => $transfer->character->url,
+                        'sender_name' => $user->name,
+                        'sender_url' => $user->url,
+                    ]);
+
+                }
+                else {
+                    // Still pending a response from the recipient
+                    Notifications::create('CHARACTER_TRANSFER_ACCEPTABLE', $transfer->recipient, [
                         'character_name' => $transfer->character->slug,
                         'character_url' => $transfer->character->url,
                         'sender_name' => $user->name,

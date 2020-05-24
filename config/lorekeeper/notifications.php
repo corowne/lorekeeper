@@ -238,4 +238,11 @@ return [
         'message' => 'A new image has been uploaded for a character you have bookmarked (<a href="{character_url}">{character_name}</a>). (<a href="{url}">View Bookmarks</a>)',
         'url' => 'account/bookmarks'
     ],
+
+    // Technically this was acceptable before this point
+    // CHARACTER_TRANSFER_ACCEPTABLE
+    38 => [
+        'message' => 'The transfer for <a href="{character_url}">{character_name}</a> was approved by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Transfers</a>)',
+        'url' => 'characters/transfers/incoming'
+    ],
 ];

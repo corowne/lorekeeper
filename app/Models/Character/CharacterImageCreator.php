@@ -67,7 +67,7 @@ class CharacterImageCreator extends Model
         }
         else if($this->alias)
         {
-            $user = User::where('alias', $this->alias)->first();
+            $user = User::where('alias', trim($this->alias))->first();
             if($user) return $user->displayName;
             else return '<a href="https://www.deviantart.com/'.$this->alias.'">'.$this->alias.'@dA</a>';
         }
