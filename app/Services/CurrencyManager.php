@@ -278,10 +278,10 @@ class CurrencyManager extends Service
                 // Laravel doesn't support composite primary keys, so directly updating the DB row here
                 DB::table('character_currencies')->where('character_id', $sender->id)->where('currency_id', $currency->id)->update(['quantity' => $record->quantity - $quantity]);
             }
-
+            
             if($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, 
             $recipient ? $recipient->id : null, $recipient ? $recipient->logType : null, 
-            $type, $data, $currency->id, $quantity)) throw new \Exception("Failed to create log.");
+            $type, $data, $currency->id, -$quantity)) throw new \Exception("Failed to create log.");
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 

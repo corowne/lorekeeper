@@ -142,6 +142,12 @@ class TradeManager extends Service
                     $currencyManager->creditCurrency(null, $user, null, null, $currencyId, $quantity);
                 }
             }
+            else if(!$isSender && isset($tradeData['recipient']) && isset($tradeData['recipient']['currencies'])) {
+                foreach($tradeData['recipient']['currencies'] as $currencyId=>$quantity) {
+                    $currencyManager->creditCurrency(null, $user, null, null, $currencyId, $quantity);
+                }
+
+            }
 
             // Unattach characters too
             Character::where('trade_id', $trade->id)->where('user_id', $user->id)->update(['trade_id' => null]);

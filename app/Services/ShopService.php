@@ -108,6 +108,11 @@ class ShopService extends Service
         DB::beginTransaction();
 
         try {
+            foreach($data['item_id'] as $key => $itemId)
+            {
+                if(!$data['cost'][$key]) throw new \Exception("One or more of the items is missing a cost.");
+            }
+
             // Clear the existing shop stock
             $shop->stock()->delete();
 
