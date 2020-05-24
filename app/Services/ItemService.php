@@ -340,6 +340,7 @@ class ItemService extends Service
         try {
             if(!$item) throw new \Exception("Invalid item selected.");
             if($item->tags()->where('tag', $tag)->exists()) throw new \Exception("This item already has this tag attached to it.");
+            if(!$tag) throw new \Exception("No tag selected.");
             
             $tag = ItemTag::create([
                 'item_id' => $item->id,
