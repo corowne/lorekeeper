@@ -191,13 +191,13 @@ main > .row {
         display: block;
         position: fixed;
 		top: 68px;
-        z-index: 2;
+        z-index: 4;
         width: 100%;
     }
 
     #headerNav {
         position: fixed;
-        z-index: 4;
+        z-index: 5;
         width: 100%;
     }
 
