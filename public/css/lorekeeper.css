@@ -197,7 +197,7 @@ main > .row {
 
     #headerNav {
         position: fixed;
-        z-index: 3;
+        z-index: 4;
         width: 100%;
     }
 
@@ -213,7 +213,7 @@ main > .row {
         padding-left: 0px;
         text-align: left;
         background-color: #ddd;
-        z-index: 2;
+        z-index: 3;
         right: 0px;
         bottom: 0px;
         top: 0px;
