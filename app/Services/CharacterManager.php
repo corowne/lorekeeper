@@ -370,10 +370,9 @@ class CharacterManager extends Service
      * @param  array                            $data
      * @param  \App\Models\Character\Character  $character
      * @param  \App\Models\User\User            $user
-	 * @param  \App\Models\User\User $staff
      * @return  \App\Models\Character\Character|bool
      */
-    public function createImage($data, $character, $user, $staff)
+    public function createImage($data, $character, $user)
     {
         DB::beginTransaction();
 
@@ -411,8 +410,8 @@ class CharacterManager extends Service
                     'character_url' => $character->url,
                     'character_slug' => $character->slug,
 					'character_name' => $character->name,
-					'sender_url' => $staff->url,
-                    'sender_name' => $staff->name
+					'sender_url' => $user->url,
+                    'sender_name' => $user->name
                 ]);
             }
 
