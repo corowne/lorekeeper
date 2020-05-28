@@ -99,6 +99,8 @@ function parse($text, &$pings = null) {
     $config->set('HTML.DefinitionRev', 2);
     if ($def = $config->maybeGetRawHTMLDefinition()) {
         $def->addElement('include', 'Block', 'Empty', 'Common', array('file*' => 'URI', 'height' => 'Text', 'width' => 'Text'));
+		$def->addAttribute('a', 'data-toggle', 'Enum#collapse');
+		$def->addAttribute('a', 'aria-expanded', 'Enum#true,false');
     }
     
     $purifier = new HTMLPurifier($config);
