@@ -17,8 +17,8 @@ class PromptsController extends Controller
     | Prompts Controller
     |--------------------------------------------------------------------------
     |
-    | Displays 
-    | Pages displayed by this controller form the site's encyclopedia.
+    | Displays information about prompts as entered in the admin panel.
+    | Pages displayed by this controller form the Prompts section of the site.
     |
     */
 
