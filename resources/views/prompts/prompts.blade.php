@@ -41,7 +41,7 @@
 @foreach($prompts as $prompt)
     <div class="card mb-3">
         <div class="card-body">
-            @include('world._prompt_entry', ['prompt' => $prompt])
+            @include('prompts._prompt_entry', ['prompt' => $prompt])
         </div>
     </div>
 @endforeach
