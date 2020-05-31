@@ -4,78 +4,30 @@ Lorekeeper is a framework for managing deviantART-based ARPGs/closed species mas
 
 Demo site: [http://lorekeeper.me/](http://lorekeeper.me/)
 Wiki for users: [http://lorekeeper-arpg.wikidot.com/](http://lorekeeper-arpg.wikidot.com/)
+Original git repository: [https://github.com/corowne/lorekeeper](https://github.com/corowne/lorekeeper)
 
-# Features
+# Info
 
-- Users can create an account which will hold their characters and earnings from participating in the game.
-- Mods can add characters to the masterlist, which can also record updates to a character's design. (Yes, multiple mods can work on the masterlist at the same time.)
-- Characters get a little bio section on their profile that their owners can edit. Personalisation!
-- Users' ownership histories (including whether they are an FTO) and characters' previous owners are tracked.
-- Users can submit art to the submission queue, which mods can approve/reject. This dispenses rewards automagically.
-- Users can spend their hard-earned rewards immediately, without requiring mods to look over their trackers (because it's all been pre-approved).
-- Characters, items and currency can be transferred between users. Plus...secure trading between users for game items/currency/characters on-site is also a thing.
-- Logs for all transfers are kept, so it's easy to check where everything went. 
-- The masterlist is king, so ownership can't be ambiguous, and the current design of a character is always easily accessible.
-- Speaking of which, you can search for characters based on traits, rarity, etc. Also, trait/item/etc. data get their own searchable lists - no need to create additional pages detailing restrictions on how a trait should be drawn/described.
-- Unless you want to, in which case you can add custom pages in HTML without touching the codebase!
-- A raffle roller for consecutive raffles! Mods can add/remove tickets and users who have already won something will be automatically removed from future raffles in the sequence.
-- ...and more! Please refer to the [Wiki](http://lorekeeper-arpg.wikidot.com/) for more information and instructions for usage.
+This fork was set up for the purpose of sharing some of the changes I made. These changes are usually merged to master, but can also be found in their own branches.
 
-# Setup
+## inventory_stacks
 
-Important: For those who are not familiar with web dev, please refer to the [Wiki](http://lorekeeper-arpg.wikidot.com/) for a much more detailed set of instructions!!
+This changes the default inventory in Lorekeeper from displaying each user_item row as a stack of 1, and instead condenses duplicate entries into stacks. This has affected Inventory, Trades, and Design Updates the most, though there could still be remnants of code that still aren't using the new system.
 
-## Obtain a copy of the code
+Once the changes are pulled, the database needs to be updated as well - this can be done with:
 
 ```
-$ git clone https://github.com/corowne/lorekeeper.git
-```
-
-## Configure .env in the directory
-
-```
-$ cp .env.example .env
-```
-
-deviantART client ID and secret are required for this step.
-While obtaining the ID and secret, also add whitelist entries for redirection for your site URL (if being hosted) or localhost (if working locally).
-Add the following to .env, filling them in as required (also fill in the rest of .env where relevant):
-```
-CONTACT_ADDRESS=(contact email address)
-DEVIANTART_ACCOUNT=(username of ARPG group account)
-
-DEVIANTART_CLIENT_ID=(client ID as supplied by deviantART)
-DEVIANTART_CLIENT_SECRET=(client secret as supplied by deviantART)
-DEVIANTART_CALLBACK_URL=/
-```
-
-## Setting up
-
-Composer install:
-```
-$ composer install
-```
-
-Generate app key and run database migrations:
-```
-$ php artisan key:generate 
 $ php artisan migrate
 ```
 
-Add basic site data:
-```
-$ php artisan add-site-settings
-$ php artisan add-text-pages
-$ php artisan copy-default-images
-```
+The migrations will add 2 new columns to user_items: trade_count and update_count, for tracking items held in trades and updates respectively. It will also change the default value of count in user_items to 0.
 
-Finally, set up the admin account for logging in:
-```
-$ php artisan setup-admin-user
-```
+Note that existing data in the database will need to be edited such that duplicate entries (where the item_id, user_id, and data are the same) need to be combined separately.
 
-You will need to send yourself the verification email and then link your dA account as prompted.
+You could just update each row's count column to reflect the total count at that point in time, leaving the duplicate entries alone. I'm unsure if it will break anything, but I don't think so.
 
-## Contact
+You can also delete the duplicate rows once the count column is updated. However, this will probably require deleting the item logs associated with the affected stacks, unless you create your own workaround.
 
-If you have any questions, please feel free to contact me through email: corowne@gmail.com
+I have included some SQL that you can reference in creating a query, but it is unlikely to work out of the box. Alternatively, you can also edit the database manually. Either way, ALWAYS backup your database before making changes.
+
+The migrations do not remove holding_type and holding_id, which are not used in this version of the inventory; these may be left in or removed on your own.
