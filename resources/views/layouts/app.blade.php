@@ -54,7 +54,9 @@
     <div id="app">
         <div class="site-header-image" id="header" style="background-image: url('{{ asset('images/header.png') }}');"></div>
         @include('layouts._nav')
-        <div class="site-mobile-header bg-secondary"><a href="#" class="btn btn-sm btn-outline-light" id="mobileMenuButton">Menu <i class="fas fa-caret-right ml-1"></i></a></div>
+        @if ( View::hasSection('sidebar') )
+			<div class="site-mobile-header bg-secondary"><a href="#" class="btn btn-sm btn-outline-light" id="mobileMenuButton">Menu <i class="fas fa-caret-right ml-1"></i></a></div>
+		@endif
 
         <main class="container-fluid">
             <div class="row">
@@ -83,7 +85,7 @@
 
         
         <div class="modal fade" id="modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <span class="modal-title h5 mb-0"></span>

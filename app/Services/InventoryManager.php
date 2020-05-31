@@ -34,26 +34,42 @@ class InventoryManager extends Service
         DB::beginTransaction();
 
         try {
-            if($data['quantity'] <= 0) throw new \Exception("The quantity must be at least 1.");
-
-            // Process names
-            $users = User::whereIn('name', explode(',', str_replace(' ', '', $data['names'])))->get();
-            if(!count($users)) throw new \Exception("No valid users found.");
-
-            // Process item
-            $item = Item::find($data['item_id']);
-            if(!$item) throw new \Exception("Invalid item selected.");
-
-            foreach($users as $user) {
-                $this->creditItem($staff, $user, 'Staff Grant', array_only($data, ['data', 'disallow_transfer', 'notes']), $item, $data['quantity']);
-                Notifications::create('ITEM_GRANT', $user, [
-                    'item_name' => $item->name,
-                    'item_quantity' => $data['quantity'],
-                    'sender_url' => $staff->url,
-                    'sender_name' => $staff->name
-                ]);
+            foreach($data['quantities'] as $q) {
+                if($q <= 0) throw new \Exception("All quantities must be at least 1.");
             }
 
+            // Process names
+            $users = User::find($data['names']);
+            if(count($users) != count($data['names'])) throw new \Exception("An invalid user was selected.");
+
+            $keyed_quantities = [];
+            array_walk($data['item_ids'], function($id, $key) use(&$keyed_quantities, $data) {
+                if($id != null && !in_array($id, array_keys($keyed_quantities), TRUE)) {
+                    $keyed_quantities[$id] = $data['quantities'][$key];
+                }
+            });
+
+            // Process item
+            $items = Item::find($data['item_ids']);
+            if(!count($items)) throw new \Exception("No valid items found.");
+
+            foreach($users as $user) {
+                foreach($items as $item) {
+                    if($this->creditItem($staff, $user, 'Staff Grant', array_only($data, ['data', 'disallow_transfer', 'notes']), $item, $keyed_quantities[$item->id]))
+                    {
+                        Notifications::create('ITEM_GRANT', $user, [
+                            'item_name' => $item->name,
+                            'item_quantity' => $keyed_quantities[$item->id],
+                            'sender_url' => $staff->url,
+                            'sender_name' => $staff->name
+                        ]);
+                    }
+                    else
+                    {
+                        throw new \Exception("Failed to credit items to ".$user->name.".");
+                    }
+                }
+            }
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
             $this->setError('error', $e->getMessage());
@@ -62,45 +78,50 @@ class InventoryManager extends Service
     }
 
     /**
-     * Transfers an item stack between users.
+     * Transfers items between user stacks.
      *
      * @param  \App\Models\User\User      $sender
      * @param  \App\Models\User\User      $recipient
-     * @param  \App\Models\User\UserItem  $stack
+     * @param  \App\Models\User\UserItem  $stacks
+     * @param  int                        $quantities
      * @return bool
      */
-    public function transferStack($sender, $recipient, $stack)
+    public function transferStack($sender, $recipient, $stacks, $quantities)
     {
         DB::beginTransaction();
 
         try {
-            if(!$sender->hasAlias) throw new \Exception("Your deviantART account must be verified before you can perform this action.");
-            if(!$stack) throw new \Exception("Invalid item selected.");
-            if($stack->user_id != $sender->id && !$sender->hasPower('edit_inventories')) throw new \Exception("You do not own this item.");
-            if($stack->user_id == $recipient->id) throw new \Exception("Cannot send an item to the item's owner.");
-            if(!$recipient) throw new \Exception("Invalid recipient selected.");
-            if(!$recipient->hasAlias) throw new \Exception("Cannot transfer items to a non-verified member.");
-            if($recipient->is_banned) throw new \Exception("Cannot transfer items to a banned member.");
-            if((!$stack->item->allow_transfer || isset($stack->data['disallow_transfer'])) && !$sender->hasPower('edit_inventories')) throw new \Exception("This item cannot be transferred.");
+            foreach($stacks as $key=>$stack) {
+                $quantity = $quantities[$key];
+                if(!$sender->hasAlias) throw new \Exception("Your deviantART account must be verified before you can perform this action.");
+                if(!$stack) throw new \Exception("An invalid item was selected.");
+                if($stack->user_id != $sender->id && !$sender->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected items.");
+                if($stack->user_id == $recipient->id) throw new \Exception("Cannot send items to the item's owner.");
+                if(!$recipient) throw new \Exception("Invalid recipient selected.");
+                if(!$recipient->hasAlias) throw new \Exception("Cannot transfer items to a non-verified member.");
+                if($recipient->is_banned) throw new \Exception("Cannot transfer items to a banned member.");
+                if((!$stack->item->allow_transfer || isset($stack->data['disallow_transfer'])) && !$sender->hasPower('edit_inventories')) throw new \Exception("One of the selected items cannot be transferred.");
+                if($stack->count < $quantity) throw new \Exception("Quantity to transfer exceeds item count.");
 
-            $oldUser = $stack->user;
-            if($this->moveStack($stack->user, $recipient, ($stack->user_id == $sender->id ? 'User Transfer' : 'Staff Transfer'), ['data' => ($stack->user_id != $sender->id ? 'Transferred by '.$sender->displayName : '')], $stack)) 
-            {
-                Notifications::create('ITEM_TRANSFER', $recipient, [
-                    'item_name' => $stack->item->name,
-                    'item_quantity' => 1,
-                    'sender_url' => $sender->url,
-                    'sender_name' => $sender->name
-                ]);
-                if($stack->user_id != $sender->id) 
-                    Notifications::create('FORCED_ITEM_TRANSFER', $oldUser, [
+                $oldUser = $stack->user;
+                if($this->moveStack($stack->user, $recipient, ($stack->user_id == $sender->id ? 'User Transfer' : 'Staff Transfer'), ['data' => ($stack->user_id != $sender->id ? 'Transferred by '.$sender->displayName : '')], $stack, $quantity)) 
+                {
+                    Notifications::create('ITEM_TRANSFER', $recipient, [
                         'item_name' => $stack->item->name,
-                        'item_quantity' => 1,
+                        'item_quantity' => $quantity,
                         'sender_url' => $sender->url,
                         'sender_name' => $sender->name
                     ]);
-                return $this->commitReturn(true);
+                    if($stack->user_id != $sender->id) 
+                        Notifications::create('FORCED_ITEM_TRANSFER', $oldUser, [
+                            'item_name' => $stack->item->name,
+                            'item_quantity' => $quantity,
+                            'sender_url' => $sender->url,
+                            'sender_name' => $sender->name
+                        ]);
+                }
             }
+            return $this->commitReturn(true);
         } catch(\Exception $e) { 
             $this->setError('error', $e->getMessage());
         }
@@ -108,34 +129,39 @@ class InventoryManager extends Service
     }
 
     /**
-     * Deletes an item stack.
+     * Deletes items from stack.
      *
      * @param  \App\Models\User\User      $user
-     * @param  \App\Models\User\UserItem  $stack
+     * @param  \App\Models\User\UserItem  $stacks
+     * @param  int                        $quantities
      * @return bool
      */
-    public function deleteStack($user, $stack)
+    public function deleteStack($user, $stacks, $quantities)
     {
         DB::beginTransaction();
 
         try {
-            if(!$user->hasAlias) throw new \Exception("Your deviantART account must be verified before you can perform this action.");
-            if(!$stack) throw new \Exception("Invalid item selected.");
-            if($stack->user_id != $user->id && !$user->hasPower('edit_inventories')) throw new \Exception("You do not own this item.");
+            foreach($stacks as $key=>$stack) {
+                $quantity = $quantities[$key];
+                if(!$user->hasAlias) throw new \Exception("Your deviantART account must be verified before you can perform this action.");
+                if(!$stack) throw new \Exception("An invalid item was selected.");
+                if($stack->user_id != $user->id && !$user->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected items.");
+                if($stack->count < $quantity) throw new \Exception("Quantity to delete exceeds item count.");
+                
+                $oldUser = $stack->user;
 
-            $oldUser = $stack->user;
-
-            if($this->debitStack($stack->user, ($stack->user_id == $user->id ? 'User Deleted' : 'Staff Deleted'), ['data' => ($stack->user_id != $user->id ? 'Deleted by '.$user->displayName : '')], $stack)) 
-            {
-                if($stack->user_id != $user->id) 
-                    Notifications::create('ITEM_REMOVAL', $oldUser, [
-                        'item_name' => $stack->item->name,
-                        'item_quantity' => 1,
-                        'sender_url' => $user->url,
-                        'sender_name' => $user->name
-                    ]);
-                return $this->commitReturn(true);
+                if($this->debitStack($stack->user, ($stack->user_id == $user->id ? 'User Deleted' : 'Staff Deleted'), ['data' => ($stack->user_id != $user->id ? 'Deleted by '.$user->displayName : '')], $stack, $quantity)) 
+                {
+                    if($stack->user_id != $user->id) 
+                        Notifications::create('ITEM_REMOVAL', $oldUser, [
+                            'item_name' => $stack->item->name,
+                            'item_quantity' => $quantity,
+                            'sender_url' => $user->url,
+                            'sender_name' => $user->name
+                        ]);
+                }
             }
+            return $this->commitReturn(true);
         } catch(\Exception $e) { 
             $this->setError('error', $e->getMessage());
         }
@@ -158,7 +184,19 @@ class InventoryManager extends Service
         DB::beginTransaction();
 
         try {
-            for($i = 0; $i < $quantity; $i++) UserItem::create(['user_id' => $recipient->id, 'item_id' => $item->id, 'data' => json_encode($data)]);
+            $encoded_data = \json_encode($data);
+
+            $recipient_stack = UserItem::where([
+                ['user_id', '=', $recipient->id],
+                ['item_id', '=', $item->id],
+                ['data', '=', $encoded_data]
+            ])->first();
+            
+            if(!$recipient_stack)
+                $recipient_stack = UserItem::create(['user_id' => $recipient->id, 'item_id' => $item->id, 'data' => $encoded_data]);
+            $recipient_stack->count += $quantity;
+            $recipient_stack->save();
+            
             if($type && !$this->createLog($sender ? $sender->id : null, $recipient->id, null, $type, $data['data'], $item->id, $quantity)) throw new \Exception("Failed to create log.");
 
             return $this->commitReturn(true);
@@ -169,7 +207,7 @@ class InventoryManager extends Service
     }
 
     /**
-     * Moves an item stack from one user to another.
+     * Moves items from one user stack to another.
      *
      * @param  \App\Models\User\User      $sender
      * @param  \App\Models\User\User      $recipient
@@ -178,15 +216,26 @@ class InventoryManager extends Service
      * @param  \App\Models\User\UserItem  $item
      * @return bool
      */
-    public function moveStack($sender, $recipient, $type, $data, $stack)
+    public function moveStack($sender, $recipient, $type, $data, $stack, $quantity)
     {
         DB::beginTransaction();
 
         try {
-            $stack->user_id = $recipient->id;
-            $stack->save();
+            $recipient_stack = UserItem::where([
+                ['user_id', '=', $recipient->id],
+                ['item_id', '=', $stack->item_id],
+                ['data', '=', json_encode($stack->data)]
+            ])->first();
 
-            if($type && !$this->createLog($sender ? $sender->id : null, $recipient->id, $stack->id, $type, $data['data'], $stack->item_id, 1)) throw new \Exception("Failed to create log.");
+            if(!$recipient_stack)
+                $recipient_stack = UserItem::create(['user_id' => $recipient->id, 'item_id' => $stack->item_id, 'data' => json_encode($stack->data)]);
+                
+            $stack->count -= $quantity;
+            $recipient_stack->count += $quantity;
+            $stack->save();
+            $recipient_stack->save();
+
+            if($type && !$this->createLog($sender ? $sender->id : null, $recipient->id, $stack->id, $type, $data['data'], $stack->item_id, $quantity)) throw new \Exception("Failed to create log.");
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
@@ -204,14 +253,15 @@ class InventoryManager extends Service
      * @param  \App\Models\Item\UserItem  $stack
      * @return bool
      */
-    public function debitStack($user, $type, $data, $stack)
+    public function debitStack($user, $type, $data, $stack, $quantity)
     {
         DB::beginTransaction();
 
         try {
-            $stack->delete();
+            $stack->count -= $quantity;
+            $stack->save();
 
-            if($type && !$this->createLog($user ? $user->id : null, null, $stack->id, $type, $data['data'], $stack->item_id, 1)) throw new \Exception("Failed to create log.");
+            if($type && !$this->createLog($user ? $user->id : null, null, $stack->id, $type, $data['data'], $stack->item_id, $quantity)) throw new \Exception("Failed to create log.");
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 

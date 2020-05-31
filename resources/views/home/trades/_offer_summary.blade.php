@@ -1,10 +1,15 @@
 @if($data['user_items'])
     <div class="row">
-        @foreach($data['user_items'] as $item)
-            <div class="col-sm-3 col-4 mb-3" title="{{ $item['asset']->item->name }}" data-toggle="tooltip">
+        @foreach($stacks as $stack)
+            <div class="col-sm-3 col-4 mb-3" title="{{ $stack->first()->item->name }}" data-toggle="tooltip">
                 <div class="text-center inventory-item">
                     <div class="mb-1">
-                        <a class="inventory-stack"><img src="{{ $item['asset']->item->imageUrl }}" class="mw-100" /></a>
+                        @if(isset($stack->first()->item->imageUrl))
+                            <a class="inventory-stack"><img src="{{ $stack->first()->item->imageUrl }}" class="mw-100" /></a>
+                        @else
+                            {{ $stack->first()->item->name }}
+                        @endif
+                        x{{ $stack->sum('quantity') }}
                     </div>
                 </div>
             </div>
