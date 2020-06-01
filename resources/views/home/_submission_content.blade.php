@@ -10,7 +10,7 @@
     </div>
     @if($submission->prompt_id)
         <div class="row">
-            <div class="col-md-2 col-4"><h5>Submission Type</h5></div>
+            <div class="col-md-2 col-4"><h5>Prompt</h5></div>
             <div class="col-md-10 col-8">{!! $submission->prompt->displayName !!}</div>
         </div>
     @endif
