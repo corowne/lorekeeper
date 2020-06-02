@@ -189,6 +189,7 @@ class SubmissionManager extends Service
             if(!$submission) throw new \Exception("Invalid submission.");
 			
 			if(isset($data['staff_comments']) && $data['staff_comments']) $data['parsed_staff_comments'] = parse($data['staff_comments']);
+			else $data['parsed_staff_comments'] = null;
 
             // The only things we need to set are: 
             // 1. staff comment
@@ -287,6 +288,7 @@ class SubmissionManager extends Service
             }
 			
 			if(isset($data['staff_comments']) && $data['staff_comments']) $data['parsed_staff_comments'] = parse($data['staff_comments']);
+			else $data['parsed_staff_comments'] = null;
 
             // Finally, set: 
 			// 1. staff comments
