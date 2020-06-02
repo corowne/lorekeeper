@@ -187,6 +187,9 @@ class SubmissionManager extends Service
             elseif($data['submission']->status == 'Pending') $submission = $data['submission'];
             else $submission = null;
             if(!$submission) throw new \Exception("Invalid submission.");
+			
+			if(isset($data['staff_comments']) && $data['staff_comments']) $data['parsed_staff_comments'] = parse($data['staff_comments']);
+			else $data['parsed_staff_comments'] = null;
 
             // The only things we need to set are: 
             // 1. staff comment
@@ -194,6 +197,7 @@ class SubmissionManager extends Service
             // 3. status
             $submission->update([
                 'staff_comments' => $data['staff_comments'],
+				'parsed_staff_comments' => $data['parsed_staff_comments'],
                 'staff_id' => $user->id,
                 'status' => 'Rejected'
             ]);
@@ -282,6 +286,9 @@ class SubmissionManager extends Service
                 $user->settings->submission_count++;
                 $user->settings->save();
             }
+			
+			if(isset($data['staff_comments']) && $data['staff_comments']) $data['parsed_staff_comments'] = parse($data['staff_comments']);
+			else $data['parsed_staff_comments'] = null;
 
             // Finally, set: 
 			// 1. staff comments
@@ -290,6 +297,7 @@ class SubmissionManager extends Service
             // 4. final rewards
             $submission->update([
 			    'staff_comments' => $data['staff_comments'],
+				'parsed_staff_comments' => $data['parsed_staff_comments'],
                 'staff_id' => $user->id,
                 'status' => 'Approved',
                 'data' => json_encode(getDataReadyAssets($rewards))

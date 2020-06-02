@@ -1,5 +1,5 @@
 <ul>
-    <li class="sidebar-header"><a =class="card-link"><a href="{{ url('world') }}">Encyclopedia</a></a></li>
+    <li class="sidebar-header"><a href="{{ url('world') }}" class="card-link">Encyclopedia</a></li>
     <li class="sidebar-section">
         <div class="sidebar-section-header">Characters</div>
         <div class="sidebar-item"><a href="{{ url('world/species') }}" class="{{ set_active('world/species*') }}">Species</a></div>

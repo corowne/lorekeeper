@@ -16,17 +16,20 @@
 <table class="table table-sm">
     <thead>
         <tr>
-            <th>Name</th><th>Displays As</th><th>Attaches To</th>
+            <th>Name</th><th>Displays As</th><th>Attaches To</th><th></th>
         </tr>
     </thead>
     <tbody>
         @foreach($currencies as $currency)
             <tr>
-                <td><a href="{{ url('admin/data/currencies/edit/'.$currency->id) }}">{{ $currency->name }}</a> @if($currency->abbreviation) ({{ $currency->abbreviation }}) @endif</td>
+                <td>{{ $currency->name }} @if($currency->abbreviation) ({{ $currency->abbreviation }}) @endif</td>
                 <td>{!! $currency->display(100) !!}</td>
                 <td>
                     <div>{{ $currency->is_user_owned ? 'User' : '' }}</div>
                     <div>{{ $currency->is_character_owned ? 'Character' : '' }}</div>
+                </td>
+				<td class="text-right">
+                        <a href="{{ url('admin/data/currencies/edit/'.$currency->id) }}" class="btn btn-primary">Edit</a>
                 </td>
             </tr>
         @endforeach

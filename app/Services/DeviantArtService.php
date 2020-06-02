@@ -23,7 +23,6 @@ class DeviantArtService extends Service
 
         $this->deviantart  = null;
         $this->scopes = [
-            'basic',
             'user',
         ];
 
