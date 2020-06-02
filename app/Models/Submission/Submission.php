@@ -16,7 +16,7 @@ class Submission extends Model
      */
     protected $fillable = [
         'prompt_id', 'user_id', 'staff_id', 'url',
-        'comments', 'staff_comments', 
+        'comments', 'staff_comments', 'parsed_staff_comments',
         'status', 'data'
     ];
 

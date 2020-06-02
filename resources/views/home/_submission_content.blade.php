@@ -33,7 +33,13 @@
 <div class="card mb-3"><div class="card-body">{!! nl2br(htmlentities($submission->comments)) !!}</div></div>
 @if(Auth::check() && $submission->staff_comments && ($submission->user_id == Auth::user()->id || Auth::user()->hasPower('manage_submissions')))
     <h2>Staff Comments</h2>
-    <div class="card mb-3"><div class="card-body">{!! nl2br(htmlentities($submission->staff_comments)) !!}</div></div>
+    <div class="card mb-3"><div class="card-body">
+	    @if(isset($submission->parsed_staff_comments))
+            {!! $submission->parsed_staff_comments !!}
+        @else
+            {!! $submission->staff_comments !!}
+        @endif
+		</div></div>
 @endif
 
 <h2>Rewards</h2>
