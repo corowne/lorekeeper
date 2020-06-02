@@ -241,14 +241,14 @@ class CharacterManager extends Service
                     $data['thumbnail'] = asset('images/myo-th.png');
                     $data['extension'] = 'png';
                     $data['default_image'] = true;
-                    unset($data['use_custom_thumb']);
+                    unset($data['use_cropper']);
                 }
             }
             $imageData = array_only($data, [
-                'species_id', 'subtype_id', 'rarity_id', 'use_custom_thumb', 
+                'species_id', 'subtype_id', 'rarity_id', 'use_cropper', 
                 'x0', 'x1', 'y0', 'y1',
             ]);
-            $imageData['use_custom_thumb'] = isset($data['use_custom_thumb']) ;
+            $imageData['use_cropper'] = isset($data['use_cropper']) ;
             $imageData['description'] = isset($data['image_description']) ? $data['image_description'] : null;
             $imageData['parsed_description'] = parse($imageData['description']);
             $imageData['hash'] = randomString(10);
@@ -284,7 +284,7 @@ class CharacterManager extends Service
             $this->handleImage($data['image'], $image->imageDirectory, $image->imageFileName, null, isset($data['default_image']));
             
             // Save thumbnail
-            if(!isset($data['use_custom_thumb'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image);
+            if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image);
             else $this->handleImage($data['thumbnail'], $image->imageDirectory, $image->thumbnailFileName, null, isset($data['default_image']));
             
             // Attach features
@@ -617,7 +617,7 @@ class CharacterManager extends Service
             $this->handleImage($data['image'], $image->imageDirectory, $image->imageFileName);
             
             // Save thumbnail
-            if(!isset($data['use_custom_thumb'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image);
+            if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image);
             else $this->handleImage($data['thumbnail'], $image->thumbnailDirectory, $image->thumbnailFileName);
             
             // Add a log for the character
@@ -1498,35 +1498,29 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
-            // Require an image or ext_url to be uploaded the first time, but if an image or ext_url already exists, allow user to update the other details
-            if(!$isAdmin && !isset($data['image']) && !file_exists($request->imagePath . '/' . $request->imageFileName) && !isset($data['ext_url']) && !isset($request->ext_url)) throw new \Exception("Please upload a valid image or add a dA link.");
+            // Require an image to be uploaded the first time, but if an image already exists, allow user to update the other details
+            if(!$isAdmin && !isset($data['image']) && !file_exists($request->imagePath . '/' . $request->imageFileName)) throw new \Exception("Please upload a valid image.");
 
-            // Require a thumbnail to be uploaded the first time as well, if using image OR using ext_url w/ use_custom_thumb checked
-            if(!file_exists($request->thumbnailPath . '/' . $request->thumbnailFileName) && (!isset($request->ext_url) || (isset($request->ext_url) && isset($data['use_custom_thumb'])))) {
+            // Require a thumbnail to be uploaded the first time as well
+            if(!file_exists($request->thumbnailPath . '/' . $request->thumbnailFileName)) {
                 // If the crop dimensions are invalid... 
                 // The crop function resizes the thumbnail to fit, so we only need to check that it's not null
                 if(!$isAdmin || ($isAdmin && isset($data['modify_thumbnail']))) {
-                    if(!isset($data['use_custom_thumb']) && !isset($request->ext_url) && ($data['x0'] === null || $data['x1'] === null || $data['y0'] === null || $data['y1'] === null)) throw new \Exception('Invalid crop dimensions specified.');
-                    if(isset($data['use_custom_thumb']) && !isset($data['thumbnail'])) throw new \Exception("Please upload a valid thumbnail or use the image cropper.");
+                    if(isset($data['use_cropper']) && ($data['x0'] === null || $data['x1'] === null || $data['y0'] === null || $data['y1'] === null)) throw new \Exception('Invalid crop dimensions specified.');
+                    if(!isset($data['use_cropper']) && !isset($data['thumbnail'])) throw new \Exception("Please upload a valid thumbnail or use the image cropper.");
                 }
             }
             if(!$isAdmin || ($isAdmin && isset($data['modify_thumbnail']))) {
                 $imageData = [];
-                if(!isset($data['use_custom_thumb'])) {
+                if(isset($data['use_cropper'])) {
                     $imageData = array_only($data, [
-                        'use_custom_thumb', 
+                        'use_cropper', 
                         'x0', 'x1', 'y0', 'y1',
                     ]);
+                    $imageData['use_cropper'] = isset($data['use_cropper']);
                 }
-                $imageData['use_custom_thumb'] = isset($data['use_custom_thumb']);
                 if(!$isAdmin && isset($data['image'])) {
                     $imageData['extension'] = isset($data['extension']) ? $data['extension'] : $data['image']->getClientOriginalExtension();
-                    $imageData['ext_url'] = null;
-                    $imageData['has_image'] = true;
-                }
-                else if(!$isAdmin && isset($data['ext_url'])) {
-                    if(isset($data['use_custom_thumb'])) { $imageData['extension'] = isset($data['extension']) ? $data['extension'] : $data['thumbnail']->getClientOriginalExtension(); }
-                    $imageData['ext_url'] = $data['ext_url'];
                     $imageData['has_image'] = true;
                 }
                 $request->update($imageData);
@@ -1562,7 +1556,7 @@ class CharacterManager extends Service
             
             // Save thumbnail
             if(!$isAdmin || ($isAdmin && isset($data['modify_thumbnail']))) {
-                if(!isset($data['use_custom_thumb']) && !isset($request->ext_url))
+                if(isset($data['use_cropper']))
                     $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $request);
                 else if(isset($data['thumbnail'])) 
                     $this->handleImage($data['thumbnail'], $request->imageDirectory, $request->thumbnailFileName);
@@ -1587,21 +1581,13 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
-            $requestData = $request->data;
             // First return any item stacks associated with this request
-            if(isset($requestData['user']) && isset($requestData['user']['user_items'])) {
-                foreach($requestData['user']['user_items'] as $userItemId=>$quantity) {
-                    $userItemRow = UserItem::find($userItemId);
-                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
-                    if($userItemRow->update_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
-                    $userItemRow->update_count -= $quantity;
-                    $userItemRow->save();
-                }
-            }
+            DB::table('user_items')->where('holding_type', 'Update')->where('holding_id', $request->id)->update(['holding_id' => null, 'holding_type' => null]);
 
             // Also return any currency associated with this request
             // This is stored in the data attribute
             $currencyManager = new CurrencyManager;
+            $requestData = $request->data;
             if(isset($requestData['user']) && isset($requestData['user']['currencies'])) {
                 foreach($requestData['user']['currencies'] as $currencyId=>$quantity) {
                     $currencyManager->creditCurrency(null, $request->user, null, null, $currencyId, $quantity);
@@ -1620,13 +1606,14 @@ class CharacterManager extends Service
             // We're also not going to add logs as this might add unnecessary fluff to the logs and the items still belong to the user. 
             // Perhaps later I'll add a way to locate items that are being held by updates/trades. 
             if(isset($data['stack_id'])) {
-                foreach($data['stack_id'] as $key=>$stackId) {
-                    $stack = UserItem::with('item')->find($stackId);
+                foreach($data['stack_id'] as $stackId) {
+                    $stack = UserItem::with('item')->where('id', $stackId)->whereNull('holding_type')->first();
                     if(!$stack || $stack->user_id != $request->user_id) throw new \Exception("Invalid item selected.");
-                    $stack->update_count = $data['stack_quantity'][$key];
+                    $stack->holding_type = 'Update';
+                    $stack->holding_id = $request->id;
                     $stack->save();
 
-                    addAsset($userAssets, $stack, $data['stack_quantity'][$key]);
+                    //addAsset($userAssets, $stack->item, 1);
                 }
             }
 
@@ -1656,8 +1643,9 @@ class CharacterManager extends Service
 
             $request->has_addons = 1;
             $request->data = json_encode([
-                'user' => array_only(getDataReadyAssets($userAssets), ['user_items','currencies']),
-                'character' => array_only(getDataReadyAssets($characterAssets), ['currencies'])
+                'user' => array_only(getDataReadyAssets($userAssets), ['currencies']),
+                'character' => array_only(getDataReadyAssets($characterAssets), ['currencies']),
+                'stacks' => isset($data['stack_id']) ? $data['stack_id'] : []
             ]);
             $request->save();
 
@@ -1775,14 +1763,12 @@ class CharacterManager extends Service
             // However logs need to be added for each of these
             $requestData = $request->data;
             $inventoryManager = new InventoryManager;
-            if(isset($requestData['user']) && isset($requestData['user']['user_items'])) {
-                $stacks = $requestData['user']['user_items'];
-                foreach($stacks as $stackId=>$quantity) {
-                    $stack = UserItem::find($stackId);
-                    $user = User::find($request->user_id);
-                    if(!$inventoryManager->debitStack($user, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', ['data' => 'Item used in ' . ($request->character->is_myo_slot ? 'MYO design approval' : 'Character design update') . ' (<a href="'.$request->url.'">#'.$request->id.'</a>)'], $stack, $quantity)) throw new \Exception("Failed to create log for item stack.");
-                }
+            $stacks = UserItem::where('holding_type', 'Update')->where('holding_id', $request->id)->get();
+            foreach($stacks as $stack) {
+                if(!$inventoryManager->createLog($request->user_id, null, $stack->id, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', 'Item used in ' . ($request->character->is_myo_slot ? 'MYO design approval' : 'character design update') . ' (<a href="'.$request->url.'">#'.$request->id.'</a>)', $stack->item_id, $stack->count)) throw new \Exception("Failed to create log for item stack.");
             }
+            UserItem::where('holding_type', 'Update')->where('holding_id', $request->id)->delete();
+
             $currencyManager = new CurrencyManager;
             if(isset($requestData['user']['currencies']) && $requestData['user']['currencies'])
             {
@@ -1813,7 +1799,7 @@ class CharacterManager extends Service
                 'is_visible' => 1,
                 'hash' => $request->hash,
                 'extension' => $request->extension,
-                'use_custom_thumb' => $request->use_custom_thumb,
+                'use_cropper' => $request->use_cropper,
                 'x0' => $request->x0,
                 'x1' => $request->x1,
                 'y0' => $request->y0,
@@ -1821,7 +1807,6 @@ class CharacterManager extends Service
                 'species_id' => $request->species_id,
                 'subtype_id' => $request->subtype_id,
                 'rarity_id' => $request->rarity_id,
-                'ext_url' => $request->ext_url,
                 'sort' => 0,
             ]);
 
@@ -1842,8 +1827,8 @@ class CharacterManager extends Service
             $request->rawFeatures()->update(['character_image_id' => $image->id, 'character_type' => 'Character']);
 
             // Move the image file to the new image
-            if(!isset($request->ext_url)) File::move($request->imagePath . '/' . $request->imageFileName, $image->imagePath . '/' . $image->imageFileName);
-            if(isset($request->use_custom_thumb)) File::move($request->thumbnailPath . '/' . $request->thumbnailFileName, $image->thumbnailPath . '/' . $image->thumbnailFileName);
+            File::move($request->imagePath . '/' . $request->imageFileName, $image->imagePath . '/' . $image->imageFileName);
+            File::move($request->thumbnailPath . '/' . $request->thumbnailFileName, $image->thumbnailPath . '/' . $image->thumbnailFileName);
 
             // Set character data and other info such as cooldown time, resell cost and terms etc.
             // since those might be updated with the new design update
@@ -1931,18 +1916,9 @@ class CharacterManager extends Service
             // and the user will need to open a new request to resubmit.
             // Use when rejecting a request the user shouldn't have submitted at all.
 
-            $requestData = $request->data;
             // Return all added items/currency
-            if(isset($requestData['user']) && isset($requestData['user']['user_items'])) {
-                foreach($requestData['user']['user_items'] as $userItemId=>$quantity) {
-                    $userItemRow = UserItem::find($userItemId);
-                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
-                    if($userItemRow->update_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
-                    $userItemRow->update_count -= $quantity;
-                    $userItemRow->save();
-                }
-            }
-
+            UserItem::where('holding_type', 'Update')->where('holding_id', $request->id)->update(['holding_type' => null, 'holding_id' => null]);
+            $requestData = $request->data;
             $currencyManager = new CurrencyManager;
             if(isset($requestData['user']['currencies']) && $requestData['user']['currencies'])
             {
@@ -2040,18 +2016,9 @@ class CharacterManager extends Service
             // Characters with an open draft request cannot be transferred (due to attached items/currency),
             // so this is necessary to transfer a character
 
-            $requestData = $request->data;
             // Return all added items/currency
-            if(isset($requestData['user']) && isset($requestData['user']['user_items'])) {
-                foreach($requestData['user']['user_items'] as $userItemId=>$quantity) {
-                    $userItemRow = UserItem::find($userItemId);
-                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
-                    if($userItemRow->update_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
-                    $userItemRow->update_count -= $quantity;
-                    $userItemRow->save();
-                }
-            }
-
+            UserItem::where('holding_type', 'Update')->where('holding_id', $request->id)->update(['holding_type' => null, 'holding_id' => null]);
+            $requestData = $request->data;
             $currencyManager = new CurrencyManager;
             if(isset($requestData['user']['currencies']) && $requestData['user']['currencies'])
             {

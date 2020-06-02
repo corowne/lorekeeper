@@ -33,19 +33,19 @@
                 </thead>
                 <tbody>
                     @foreach($inventory as $itemRow)
-                        <tr id ="itemRow{{ $itemRow->id }}" class="d-flex {{ $itemRow->isTransferrable ? '' : 'accountbound' }} user-item trade-item-row category-all category-{{ $itemRow->item->item_category_id ? : 0 }} {{ isset($selected) && in_array($itemRow->id, array_keys($selected)) ? 'category-selected' : '' }}">
+                        <tr id ="itemRow{{ $itemRow->id }}" class="d-flex {{ $itemRow->isTransferrable ? '' : 'accountbound' }} user-item select-item-row category-all category-{{ $itemRow->item->item_category_id ? : 0 }} {{ isset($selected) && in_array($itemRow->id, array_keys($selected)) ? 'category-selected' : '' }}">
                             <td class="col-1">{!! Form::checkbox((isset($fieldName) && $fieldName ? $fieldName : 'stack_id[]'), $itemRow->id, isset($selected) && in_array($itemRow->id, array_keys($selected)) ? true : false, ['class' => 'inventory-checkbox']) !!}</td>
                             <td class="col-2">@if(isset($itemRow->item->image_url)) <img class="small-icon" src="{{ $itemRow->item->image_url }}"> @endif {!! $itemRow->item->name !!}
                             <td class="col-4">{!! array_key_exists('data', $itemRow->data) ? ($itemRow->data['data'] ? $itemRow->data['data'] : 'N/A') : 'N/A' !!}</td>
                             <td class="col-3">{!! array_key_exists('notes', $itemRow->data) ? ($itemRow->data['notes'] ? $itemRow->data['notes'] : 'N/A') : 'N/A' !!}</td>
                             @if($itemRow->availableQuantity || in_array($itemRow->id, array_keys($selected)))
                                 @if(in_array($itemRow->id, array_keys($selected)))
-                                    <td class="col-2">{!! Form::selectRange('stack_quantity[]', $selected[$itemRow->id], $itemRow->getAvailableTradeQuantity($selected[$itemRow->id]), 1, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;']) !!} /{{ $itemRow->getAvailableTradeQuantity($selected[$itemRow->id]) }} @if($itemRow->holding_type && $itemRow->getOtherHeld($selected[$itemRow->id])) ({{ $itemRow->getOtherHeld($selected[$itemRow->id]) }} held in {{ $itemRow->holding_type }}) @endif</td>
+                                    <td class="col-2">{!! Form::selectRange('stack_quantity[]', $selected[$itemRow->id], $itemRow->getAvailableContextQuantity($selected[$itemRow->id]), 1, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;']) !!} /{{ $itemRow->getAvailableContextQuantity($selected[$itemRow->id]) }} @if($page == 'trade') @if($itemRow->getOthers($selected[$itemRow->id], 0)) {{ $itemRow->getOthers($selected[$itemRow->id], 0) }} @endif @else @if($itemRow->getOthers(0, $selected[$itemRow->id])) {{ $itemRow->getOthers(0, $selected[$itemRow->id]) }} @endif @endif</td>
                                 @else
-                                    <td class="col-2">{!! Form::selectRange('', 1, $itemRow->availableQuantity, 1, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;']) !!} /{{ $itemRow->availableQuantity }} @if($itemRow->holding_type) ({{ $itemRow->holding_count }} held in {{ $itemRow->holding_type }}) @endif</td>
+                                    <td class="col-2">{!! Form::selectRange('', 1, $itemRow->availableQuantity, 1, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;']) !!} /{{ $itemRow->availableQuantity }} @if($itemRow->getOthers()) {{ $itemRow->getOthers() }} @endif</td>
                                 @endif
                             @else
-                                <td class="col-2">{!! Form::selectRange('', 0, 0, 0, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;', 'disabled']) !!} /{{ $itemRow->availableQuantity }} @if($itemRow->holding_type) ({{ $itemRow->holding_count }} held in {{ $itemRow->holding_type }}) @endif</td>
+                                <td class="col-2">{!! Form::selectRange('', 0, 0, 0, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;', 'disabled']) !!} /{{ $itemRow->availableQuantity }} @if($itemRow->getOthers()) {{ $itemRow->getOthers() }} @endif</td>
                             @endif
                         </tr>
                     @endforeach

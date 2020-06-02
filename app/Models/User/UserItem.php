@@ -104,8 +104,7 @@ class UserItem extends Model
     /**
      * Returns string stating amount held elsewhere
      *
-     * @return int
-	 * @return string
+     * @return string
      */
     public function getOthers($tradeCount = 0, $updateCount = 0)
     {
@@ -113,8 +112,7 @@ class UserItem extends Model
     }
 
     /**
-     * Gets the quantity of the stack held in other trades.
-	 * Gets the available quantity based on input context (either trade count or update count)
+     * Gets the available quantity based on input context (either trade count or update count)
      *
      * @return int
      */
