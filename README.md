@@ -12,6 +12,8 @@ This fork was set up for the purpose of sharing some of the changes I made. Thes
 
 ## inventory_stacks
 
+Special thanks to [itinerare](https://github.com/itinerare) for isolating and testing the changes.
+
 This changes the default inventory in Lorekeeper from displaying each user_item row as a stack of 1, and instead condenses duplicate entries into stacks. This has affected Inventory, Trades, and Design Updates the most, though there could still be remnants of code that still aren't using the new system.
 
 Once the changes are pulled, the database needs to be updated as well - this can be done with:
