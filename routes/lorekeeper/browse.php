@@ -118,3 +118,8 @@ Route::group(['prefix' => 'submissions', 'namespace' => 'Users'], function() {
 Route::group(['prefix' => 'claims', 'namespace' => 'Users'], function() {
     Route::get('view/{id}', 'SubmissionController@getClaim');
 });
+
+/**************************************************************************************************
+    Embedded Images
+**************************************************************************************************/
+Route::get('/embed', 'EmbedController@getEmbed');
