@@ -1771,14 +1771,6 @@ class CharacterManager extends Service
             $inventoryManager = new InventoryManager;
             if(isset($requestData['user']) && isset($requestData['user']['user_items'])) {
                 $stacks = $requestData['user']['user_items'];
-                foreach($requestData['user']['user_items'] as $userItemId=>$quantity) {
-                    $userItemRow = UserItem::find($userItemId);
-                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
-                    if($userItemRow->update_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
-                    $userItemRow->update_count -= $quantity;
-                    $userItemRow->save();
-                }
-
                 foreach($stacks as $stackId=>$quantity) {
                     $stack = UserItem::find($stackId);
                     if($userItemRow->update_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
