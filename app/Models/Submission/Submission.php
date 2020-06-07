@@ -150,6 +150,17 @@ class Submission extends Model
     }
 
     /**
+     * Gets the inventory of the user for selection.
+     *
+     * @return array
+     */
+    public function getInventory($user)
+    {
+        return $this->data && isset($this->data['user']['user_items']) ? $this->data['user']['user_items'] : [];
+        return $inventory;
+    }
+
+    /**
      * Get the viewing URL of the submission/claim.
      *
      * @return string
@@ -176,7 +187,7 @@ class Submission extends Model
      */
     public function getRewardsAttribute()
     {
-        $assets = parseAssetData($this->data);
+        $assets = parseAssetData($this->data['rewards']);
         $rewards = [];
         foreach($assets as $type => $a)
         {

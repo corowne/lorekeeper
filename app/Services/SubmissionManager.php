@@ -11,6 +11,7 @@ use Notifications;
 use Settings;
 
 use App\Models\User\User;
+use App\Models\User\UserItem;
 use App\Models\Character\Character;
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
@@ -65,6 +66,32 @@ class SubmissionManager extends Service
             }
             else $characters = [];
 
+            // First return any item stacks associated with this request
+            if(isset($data['user']['user_items'])) {
+                foreach($data['user']['user_items'] as $userItemId=>$quantity) {
+                    $userItemRow = UserItem::find($userItemId);
+                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
+                    if($userItemRow->submission_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
+                    $userItemRow->submission_count -= $quantity;
+                    $userItemRow->save();
+                }
+            }
+
+            $userAssets = createAssetsArray();
+
+            // Attach items. Technically, the user doesn't lose ownership of the item - we're just adding an additional holding field.
+            // We're also not going to add logs as this might add unnecessary fluff to the logs and the items still belong to the user.
+            if(isset($data['stack_id'])) {
+                foreach($data['stack_id'] as $key=>$stackId) {
+                    $stack = UserItem::with('item')->find($stackId);
+                    if(!$stack || $stack->user_id != $user->id) throw new \Exception("Invalid item selected.");
+                    $stack->submission_count += $data['stack_quantity'][$key];
+                    $stack->save();
+
+                    addAsset($userAssets, $stack, $data['stack_quantity'][$key]);
+                }
+            }
+
             // Get a list of rewards, then create the submission itself
             $promptRewards = createAssetsArray();
             if(!$isClaim) 
@@ -80,7 +107,10 @@ class SubmissionManager extends Service
                 'url' => $data['url'],
                 'status' => 'Pending',
                 'comments' => $data['comments'],
-                'data' => json_encode(getDataReadyAssets($promptRewards)) // list of rewards
+                'data' => json_encode([
+                    'user' => array_only(getDataReadyAssets($userAssets), ['user_items']),
+                    'rewards' => getDataReadyAssets($promptRewards)
+                    ]) // list of rewards and addons
             ] + ($isClaim ? [] : ['prompt_id' => $prompt->id,]));
 
             // Retrieve all currency IDs for characters
@@ -187,6 +217,18 @@ class SubmissionManager extends Service
             elseif($data['submission']->status == 'Pending') $submission = $data['submission'];
             else $submission = null;
             if(!$submission) throw new \Exception("Invalid submission.");
+
+            // Return all added items
+            $addonData = $submission->data['user'];
+            if(isset($addonData['user_items'])) {
+                foreach($addonData['user_items'] as $userItemId => $quantity) {
+                    $userItemRow = UserItem::find($userItemId);
+                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
+                    if($userItemRow->submission_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
+                    $userItemRow->submission_count -= $quantity;
+                    $userItemRow->save();
+                }
+            }
 			
 			if(isset($data['staff_comments']) && $data['staff_comments']) $data['parsed_staff_comments'] = parse($data['staff_comments']);
 			else $data['parsed_staff_comments'] = null;
@@ -231,6 +273,26 @@ class SubmissionManager extends Service
             // 2. check that the submission is pending
             $submission = Submission::where('status', 'Pending')->where('id', $data['id'])->first();
             if(!$submission) throw new \Exception("Invalid submission.");
+
+            // Remove any added items, hold counts, and add logs
+            $addonData = $submission->data['user'];
+            $inventoryManager = new InventoryManager;
+            if(isset($addonData['user_items'])) {
+                $stacks = $addonData['user_items'];
+                foreach($addonData['user_items'] as $userItemId => $quantity) {
+                    $userItemRow = UserItem::find($userItemId);
+                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
+                    if($userItemRow->submission_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
+                    $userItemRow->submission_count -= $quantity;
+                    $userItemRow->save();
+                }
+                
+                foreach($stacks as $stackId=>$quantity) {
+                    $stack = UserItem::find($stackId);
+                    $user = User::find($submission->user_id);
+                    if(!$inventoryManager->debitStack($user, $submission->prompt_id ? 'Prompt Approved' : 'Claim Approved', ['data' => 'Item used in ' . ($submission->prompt_id ? 'prompt submission' : 'claim') . ' (<a href="'.$submission->viewUrl.'">#'.$submission->id.'</a>)'], $stack, $quantity)) throw new \Exception("Failed to create log for item stack.");
+                }
+            }
 
             // The character identification comes in both the slug field and as character IDs
             // that key the reward ID/quantity arrays. 
@@ -300,8 +362,12 @@ class SubmissionManager extends Service
 				'parsed_staff_comments' => $data['parsed_staff_comments'],
                 'staff_id' => $user->id,
                 'status' => 'Approved',
-                'data' => json_encode(getDataReadyAssets($rewards))
+                'data' => json_encode([
+                    'user' => $addonData,
+                    'rewards' => getDataReadyAssets($rewards)
+                    ]) // list of rewards
             ]);
+
 
             Notifications::create($submission->prompt_id ? 'SUBMISSION_APPROVED' : 'CLAIM_APPROVED', $submission->user, [
                 'staff_url' => $user->url,

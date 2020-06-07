@@ -72,10 +72,37 @@
         <div class="text-right mb-3">
             <a href="#" class="btn btn-outline-info" id="addCharacter">Add Character</a>
         </div>
+
+        @if($inventory['user_items'])
+        <h2>Add-Ons</h2>
+        <p>These items have been removed from the {{ $submission->prompt_id ? 'submitter' : 'claimant' }}'s inventory and will be refunded if the request is rejected or consumed if it is approved.</p>
+            <table class="table table-sm">
+                <thead class="thead-light">
+                        <tr class="d-flex">
+                            <th class="col-2">Item</th>
+                            <th class="col-4">Source</th>
+                            <th class="col-4">Notes</th>
+                            <th class="col-2">Quantity</th>
+                        </tr>
+                </thead>
+                <tbody>
+                    @foreach($inventory['user_items'] as $itemRow)
+                        <tr class="d-flex">
+                            <td class="col-2">@if(isset($itemsrow[$itemRow['asset']->item_id]->image_url)) <img class="small-icon" src="{{ $itemsrow[$itemRow['asset']->item_id]->image_url }}"> @endif {!! $itemsrow[$itemRow['asset']->item_id]->name !!}
+                            <td class="col-4">{!! array_key_exists('data', $itemRow['asset']->data) ? ($itemRow['asset']->data['data'] ? $itemRow['asset']->data['data'] : 'N/A') : 'N/A' !!}</td>
+                            <td class="col-4">{!! array_key_exists('notes', $itemRow['asset']->data) ? ($itemRow['asset']->data['notes'] ? $itemRow['asset']->data['notes'] : 'N/A') : 'N/A' !!}</td>
+                            <td class="col-2">{!! $itemRow['quantity'] !!}
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
+
 		<div class="form-group">
             {!! Form::label('staff_comments', 'Staff Comments (Optional)') !!}
 			{!! Form::textarea('staff_comments', $submission->staffComments, ['class' => 'form-control wysiwyg']) !!}
         </div>
+
         <div class="text-right">
             <a href="#" class="btn btn-danger mr-2" id="rejectionButton">Reject</a>
             <a href="#" class="btn btn-success" id="approvalButton">Approve</a>
@@ -132,6 +159,7 @@
             </tr>
         </table>
     </div>
+
     @include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'showLootTables' => false])
 
     <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog">
