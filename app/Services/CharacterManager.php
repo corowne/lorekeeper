@@ -1781,6 +1781,8 @@ class CharacterManager extends Service
 
                 foreach($stacks as $stackId=>$quantity) {
                     $stack = UserItem::find($stackId);
+                    if($userItemRow->update_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
+                    $userItemRow->update_count -= $quantity;
                     $user = User::find($request->user_id);
                     if(!$inventoryManager->debitStack($user, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', ['data' => 'Item used in ' . ($request->character->is_myo_slot ? 'MYO design approval' : 'Character design update') . ' (<a href="'.$request->url.'">#'.$request->id.'</a>)'], $stack, $quantity)) throw new \Exception("Failed to create log for item stack.");
                 }
