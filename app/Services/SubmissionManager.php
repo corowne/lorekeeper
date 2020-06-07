@@ -286,6 +286,9 @@ class SubmissionManager extends Service
                     $userItemRow->submission_count -= $quantity;
                     $userItemRow->save();
                 }
+
+                // Workaround for user not being unset after inventory shuffling, preventing proper staff ID assignment
+                $staffId = $user->id;
                 
                 foreach($stacks as $stackId=>$quantity) {
                     $stack = UserItem::find($stackId);
@@ -360,7 +363,7 @@ class SubmissionManager extends Service
             $submission->update([
 			    'staff_comments' => $data['staff_comments'],
 				'parsed_staff_comments' => $data['parsed_staff_comments'],
-                'staff_id' => $user->id,
+                'staff_id' => isset($addonData['user_items']) ? $staffId : $user->id,
                 'status' => 'Approved',
                 'data' => json_encode([
                     'user' => $addonData,
