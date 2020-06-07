@@ -187,7 +187,10 @@ class Submission extends Model
      */
     public function getRewardsAttribute()
     {
+        if(isset($this->data['rewards']))
         $assets = parseAssetData($this->data['rewards']);
+        else
+        $assets = parseAssetData($this->data);
         $rewards = [];
         foreach($assets as $type => $a)
         {

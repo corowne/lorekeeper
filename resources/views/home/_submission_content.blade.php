@@ -51,7 +51,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(parseAssetData($submission->data['rewards']) as $type)
+        @foreach(parseAssetData( isset($submission->data['rewards']) ? $submission->data['rewards'] : $submission->data ) as $type)
             @foreach($type as $asset)
                 <tr>
                     <td>{!! $asset['asset']->displayName !!}</td>
