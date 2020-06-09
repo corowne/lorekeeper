@@ -73,7 +73,7 @@
             <a href="#" class="btn btn-outline-info" id="addCharacter">Add Character</a>
         </div>
 
-        @if($inventory['user_items'])
+        @if(isset($inventory['user_items']))
         <h2>Add-Ons</h2>
         <p>These items have been removed from the {{ $submission->prompt_id ? 'submitter' : 'claimant' }}'s inventory and will be refunded if the request is rejected or consumed if it is approved.</p>
             <table class="table table-sm">
