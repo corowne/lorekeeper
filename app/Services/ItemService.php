@@ -41,6 +41,8 @@ class ItemService extends Service
 
             $data = $this->populateCategoryData($data);
 
+            isset($data['character_limit']) && $data['character_limit'] ? $data['character_limit'] : $data['character_limit'] = 0;
+
             $image = null;
             if(isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
@@ -52,6 +54,8 @@ class ItemService extends Service
             $category = ItemCategory::create($data);
 
             if ($image) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
+
+            dd($category);
 
             return $this->commitReturn($category);
         } catch(\Exception $e) { 
@@ -77,6 +81,8 @@ class ItemService extends Service
             if(ItemCategory::where('name', $data['name'])->where('id', '!=', $category->id)->exists()) throw new \Exception("The name has already been taken.");
 
             $data = $this->populateCategoryData($data, $category);
+
+            isset($data['character_limit']) && $data['character_limit'] ? $data['character_limit'] : $data['character_limit'] = 0;
 
             $image = null;            
             if(isset($data['image']) && $data['image']) {

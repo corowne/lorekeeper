@@ -37,6 +37,19 @@
     {!! Form::textarea('description', $category->description, ['class' => 'form-control wysiwyg']) !!}
 </div>
 
+<div class="card mb-3" id="characterOptions">
+    <div class="card-body">
+        <div class="mb-2">
+            {!! Form::checkbox('is_character_owned', 1, $category->is_character_owned, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'data-on' => 'Allow', 'data-off' => 'Disallow']) !!}
+            {!! Form::label('is_character_owned', 'Can Be Owned by Characters', ['class' => 'form-check-label ml-3']) !!} {!! add_help('This will allow items in this category to be owned by characters.') !!}
+            <div>
+                {!! Form::label('character_limit', 'Character Hold Limit') !!} {!! add_help('This is the maximum amount of items from this category a character can possess. Set to 0 to allow infinite.') !!}
+                {!! Form::text('character_limit', $category ? $category->character_limit : 0, ['class' => 'form-control stock-field', 'data-name' => 'purchase_limit']) !!}
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="text-right">
     {!! Form::submit($category->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
 </div>
