@@ -55,8 +55,6 @@ class ItemService extends Service
 
             if ($image) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
 
-            dd($category);
-
             return $this->commitReturn($category);
         } catch(\Exception $e) { 
             $this->setError('error', $e->getMessage());
