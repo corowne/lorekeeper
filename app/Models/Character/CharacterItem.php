@@ -15,7 +15,7 @@ class CharacterItem extends Model
      * @var array
      */
     protected $fillable = [
-        'data', 'item_id', 'user_id'
+        'data', 'item_id', 'character_id'
     ];
 
     /**
