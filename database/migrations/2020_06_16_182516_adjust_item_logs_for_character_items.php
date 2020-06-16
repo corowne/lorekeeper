@@ -15,6 +15,20 @@ class AdjustItemLogsForCharacterItems extends Migration
     {
         //Drop character item logs table in favor of adjusting existing logs table to suit
         Schema::dropIfExists('character_items_log');
+
+        Schema::rename('user_items_log', 'items_log');
+
+        Schema::table('items_log', function (Blueprint $table) {
+            //Remake foreign keys so that they have guaranteed consistent names
+            $table->foreign('sender_id')->references('id')->on('users');
+            $table->foreign('recipient_id')->references('id')->on('users');
+            $table->foreign('item_id')->references('id')->on('items');
+            $table->foreign('stack_id')->references('id')->on('user_items');
+
+            //Add sender and recipient type. Set default user to account for preexisting rows
+            $table->enum('sender_type', ['User', 'Character'])->nullable()->default('User');
+            $table->enum('recipient_type', ['User', 'Character'])->nullable()->default('User');
+        });
     }
 
     /**
@@ -42,6 +56,14 @@ class AdjustItemLogsForCharacterItems extends Migration
 
             $table->enum('sender_type', ['User', 'Character'])->nullable()->default(null);
             $table->enum('recipient_type', ['User', 'Character'])->nullable()->default(null);
+        });
+
+        Schema::rename('items_log', 'user_items_log');
+
+        Schema::table('user_items_log', function (Blueprint $table) {
+            //There isn't actually undoing the renaming of the keys but we live with that
+            $table->dropColumn('sender_type');
+            $table->dropColumn('recipient_type');
         });
     }
 }
