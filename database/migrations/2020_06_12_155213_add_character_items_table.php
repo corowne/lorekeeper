@@ -48,9 +48,6 @@ class AddCharacterItemsTable extends Migration
 
             $table->foreign('item_id')->references('id')->on('items');
             $table->foreign('stack_id')->references('id')->on('character_items');
-
-            $table->foreign('sender_id')->references('id')->on('users');
-            $table->foreign('recipient_id')->references('id')->on('users');
         });
     }
 
