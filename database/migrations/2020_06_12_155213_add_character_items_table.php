@@ -45,9 +45,6 @@ class AddCharacterItemsTable extends Migration
             $table->string('data', 1024)->nullable(); // Includes information like staff notes, etc.
 
             $table->timestamps();
-
-            $table->foreign('item_id')->references('id')->on('items');
-            $table->foreign('stack_id')->references('id')->on('character_items');
         });
     }
 
