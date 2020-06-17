@@ -19,10 +19,9 @@ class SetItemsLogSenderRecipientDefaultNull extends Migration
         
         Schema::table('items_log', function (Blueprint $table) {
             //Actually drop them this time, please. Also drop the item_id column
-            $table->dropForeign('items_log_sender_id_foreign');
-            $table->dropForeign('items_log_recipient_id_foreign');
-            $table->dropForeign('items_log_item_id_foreign');
-            $table->dropForeign('items_log_stack_id_foreign');
+            $table->dropForeign('inventory_log_sender_id_foreign');
+            $table->dropForeign('inventory_log_recipient_id_foreign');
+            $table->dropForeign('user_items_log_stack_id_foreign');
             $table->dropForeign('inventory_log_item_id_foreign');
         });
     }
