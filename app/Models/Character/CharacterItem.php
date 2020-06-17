@@ -82,6 +82,16 @@ class CharacterItem extends Model
     }
 
     /**
+     * Gets the available quantity of the stack.
+     *
+     * @return int
+     */
+    public function getAvailableQuantityAttribute()
+    {
+        return ($this->count);
+    }
+
+    /**
      * Gets the stack's asset type for asset management.
      *
      * @return string

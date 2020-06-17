@@ -23,6 +23,7 @@ class SetItemsLogSenderRecipientDefaultNull extends Migration
             $table->dropForeign('items_log_recipient_id_foreign');
             $table->dropForeign('items_log_item_id_foreign');
             $table->dropForeign('items_log_stack_id_foreign');
+            $table->dropForeign('inventory_log_item_id_foreign');
         });
     }
 

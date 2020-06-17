@@ -11,6 +11,7 @@ use App\Models\User\UserItem;
 use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
 use App\Models\Item\UserItemLog;
+use App\Models\Character\CharacterItem;
 use App\Services\InventoryManager;
 
 use App\Http\Controllers\Controller;
@@ -76,6 +77,37 @@ class InventoryController extends Controller
             'user' => Auth::user(),
             'userOptions' => ['' => 'Select User'] + User::visible()->where('id', '!=', $first_instance ? $first_instance->user_id : 0)->orderBy('name')->get()->pluck('verified_name', 'id')->toArray(),
             'readOnly' => $readOnly
+        ]);
+    }
+
+    /**
+     * Shows the inventory stack modal, for characters.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterStack(Request $request, $id)
+    {
+        $first_instance = CharacterItem::withTrashed()->where('id', $id)->first();
+        $stack = CharacterItem::where([['character_id', $first_instance->character_id], ['item_id', $first_instance->item_id], ['count', '>', 0]])->get();
+        $item = Item::where('id', $first_instance->item_id)->first();
+
+        $character = $first_instance->character;
+        isset($stack->first()->character->user_id) ?
+        $ownerId = $stack->first()->character->user_id : null;
+
+        $hasPower = Auth::user()->hasPower('edit_inventories');
+        $readOnly = $request->get('read_only') ? : ((Auth::check() && $first_instance && (isset($ownerId) == TRUE || $hasPower == TRUE)) ? 0 : 1);
+
+        return view('character._inventory_stack', [
+            'stack' => $stack,
+            'item' => $item,
+            'user' => Auth::user(),
+            'has_power' => $hasPower,
+            'readOnly' => $readOnly,
+            'character' => $character,
+            'owner_id' => isset($ownerId) ? $ownerId : null,
         ]);
     }
 
