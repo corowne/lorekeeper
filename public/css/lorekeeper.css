@@ -180,6 +180,11 @@ main > .row {
 @media (max-width: 767px) {
 	.site-mobile-header {
 		top: 54px !important;
+    }
+    
+    .timestamp {
+		margin-left: 1rem!important;
+		margin-right: 1rem!important;
 	}
 }
 
@@ -257,11 +262,6 @@ main > .row {
     
 	.site-footer .navbar .navbar-nav {
 		flex-wrap: wrap; justify-content: center;
-	}
-	
-	.timestamp {
-		margin-left: 1rem!important;
-		margin-right: 1rem!important;
 	}
 }
 

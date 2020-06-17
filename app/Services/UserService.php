@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Hash;
 
 use App\Services\SubmissionManager;
 use App\Services\CharacterManager;
-use App\Services\TradeManager;
+use App\Models\Trade;
 
 class UserService extends Service
 {
