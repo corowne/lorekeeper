@@ -4,46 +4,27 @@ Lorekeeper is a framework for managing deviantART-based ARPGs/closed species mas
 
 Demo site: [http://lorekeeper.me/](http://lorekeeper.me/)
 Wiki for users: [http://lorekeeper-arpg.wikidot.com/](http://lorekeeper-arpg.wikidot.com/)
-Original git repository: [https://github.com/corowne/lorekeeper](https://github.com/corowne/lorekeeper)
 
 # Info
 
-This fork was set up for the purpose of sharing some of the changes I made. These changes are usually merged to master, but can also be found in their own branches.
+This is one of several branches I maintain for sharing modifications or projects I've made. For my general fixes branch, see main.
 
-## inventory_stacks
+# character-items
 
-Special thanks to [itinerare](https://github.com/itinerare) for isolating and testing the changes.
+This adds item inventories to characters, as well as management of character items. This includes:
 
-This changes the default inventory in Lorekeeper from displaying each user_item row as a stack of 1, and instead condenses duplicate entries into stacks. This has affected Inventory, Trades, and Design Updates the most, though there could still be remnants of code that still aren't using the new system.
+* Character inventory pages
+* Character inventory logs
+* Granting of items directly to characters
+* Attachment of items to characters (via the inv select widget)
+* A separate inventory stack modal for characters, which handles:
+* Transferal of items back to the owning user
+* Deletion of items direct from character inventory
 
-Once the changes are pulled, the database needs to be updated as well - this can be done with:
+It also changes item logging to handle this by making it akin to currency logging. That is, the existing user_items_log table is renamed to items_log, and has sender and recipient type columns added. Existing log entries are updated in-place and treated as user <-> user.
 
-```
-$ php artisan migrate
-```
+Character items are also held in their own table. Transferring items between user and character maintains source and notes-- which makes for some slightly strange logs, as the source is re-logged (though the log type is clearly labeled as user <-> character depending on the nature of the transfer).
 
-The migrations will add 2 new columns to user_items: trade_count and update_count, for tracking items held in trades and updates respectively. It will also change the default value of count in user_items to 0.
+Items are not automatically available to be held by characters. Doing so is done via item categories; these now have a toggle on their admin panel interface for the purpose. Additionally, limits may be set per category for the number of items a character may hold. By default/if left empty, it is set to 0/infinite. This is also done via the admin panel interface.
 
-Note that existing data in the database will need to be edited such that duplicate entries (where the item_id, user_id, and data are the same) need to be combined separately.
-
-You could just update each row's count column to reflect the total count at that point in time, leaving the duplicate entries alone. I'm unsure if it will break anything, but I don't think so.
-
-You can also delete the duplicate rows once the count column is updated. However, this will probably require deleting the item logs associated with the affected stacks, unless you create your own workaround.
-
-I have included some SQL that you can reference in creating a query, but it is unlikely to work out of the box. Alternatively, you can also edit the database manually. Either way, ALWAYS backup your database before making changes.
-
-The migrations do not remove holding_type and holding_id, which are not used in this version of the inventory; these may be left in or removed on your own.
-
-## embed_service
-
-This adds the EmbedController and EmbedService, which makes use of [oscarotero/Embed](https://github.com/oscarotero/Embed) library.
-
-You will need to install the above library and have at least one of [these PSR-7 libraries](https://github.com/middlewares/awesome-psr15-middlewares#psr-7-implementations). The composer.json has already been updated to include these libraries, so if you don't want to customise, just run `composer update` after pulling the branch.
-
-### How to use
-
-For server-side queries, add the EmbedService to the target file. Create an instance of the service to call getEmbed(), which only takes one argument: an URL. It will return an OEmbed response if it finds one. The library is able to return a variety of different responses, so don't be afraid to read up the documentation and change it to suit your needs!
-
-For client-side queries, you can use jQuery's get() function to query the controller, which will handle the communication between the client and service. The controller also does validation to ensure that the input is actually in a URL format, and is from an accepted domain. 
-Currently, it only accepts dA URLs, but can be have other sites added, or just have that part of the validation removed entirely.
-The controller will also process the response to return only the image URL and thumbnail URL - you can configure these to your needs as necessary. 
+See [here](http://wiki.lorekeeper.me/index.php?title=Extensions:Character_Items) for extended information and instructions!
