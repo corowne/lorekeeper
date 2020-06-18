@@ -114,7 +114,7 @@ class InventoryManager extends Service
             if(!count($items)) throw new \Exception("No valid items found.");
             
             foreach($items as $item) {
-                $this->creditItem($staff, $character, 'Staff Grant', array_only($data, ['data', 'notes']), $item, $keyed_quantities[$item->id]);
+                $this->creditItem($staff, $character, 'Staff Grant', array_only($data, ['data', 'disallow_transfer', 'notes']), $item, $keyed_quantities[$item->id]);
                 if($character->is_visible && $character->user_id) {
                     Notifications::create('CHARACTER_ITEM_GRANT', $character->user, [
                         'item_name' => $item->name,

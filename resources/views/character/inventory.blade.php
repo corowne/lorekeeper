@@ -81,7 +81,7 @@
                 <div class="form-group">
                 {!! Form::open(['url' => 'admin/character/'.$character->slug.'/grant-items']) !!}
 
-                    {!! Form::label('Item(s)') !!} {!! add_help('Must have at least 1 item and Quantity must be at least 1. Note that this does not check if an item can be owned by a character.') !!}
+                    {!! Form::label('Item(s)') !!} {!! add_help('Must have at least 1 item and Quantity must be at least 1.') !!}
                     <div id="itemList">
                         <div class="d-flex mb-2">
                             {!! Form::select('item_ids[]', $itemOptions, null, ['class' => 'form-control mr-2 default item-select', 'placeholder' => 'Select Item']) !!}
@@ -96,6 +96,8 @@
                         <a href="#" class="remove-item btn btn-danger mb-2">×</a>
                     </div>
                     </div>
+
+                    <h5>Additional Data</h5>
 
                     <div class="form-group">
                         {!! Form::label('data', 'Reason (Optional)') !!} {!! add_help('A reason for the grant. This will be noted in the logs and in the inventory description.') !!}
@@ -132,6 +134,7 @@ $( document ).ready(function() {
         var $parent = $(this).parent().parent();
         loadModal("{{ url('items') }}/character/" + $parent.data('id'), $parent.data('name'));
     });
+
     $('.default.item-select').selectize();
         $('#add-item').on('click', function(e) {
             e.preventDefault();
