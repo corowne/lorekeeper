@@ -8,7 +8,7 @@
 
     <h5>Item Variations</h5>
     @if($user && $user->hasPower('edit_inventories'))
-        <p class="alert alert-warning my-2">Note: Your rank allows you to transfer account-bound items.</p>
+        <p class="alert alert-warning my-2">Note: Your rank allows you to transfer character-bound items.</p>
     @endif
     
     {!! Form::open(['url' => 'character/'.$character->slug.'/inventory/edit']) !!}
