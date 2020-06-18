@@ -109,6 +109,11 @@
                         {!! Form::text('notes', null, ['class' => 'form-control', 'maxlength' => 400]) !!}
                     </div>
 
+                    <div class="form-group">
+                        {!! Form::checkbox('disallow_transfer', 1, 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+                        {!! Form::label('disallow_transfer', 'Character-bound', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is on, the character\'s owner will not be able to transfer this item to their inventory. Items that disallow transfers by default will still not be transferrable.') !!}
+                    </div>
+
                     <div class="text-right">
                         {!! Form::submit('Submit', ['class' => 'btn btn-primary']) !!}
                     </div>
