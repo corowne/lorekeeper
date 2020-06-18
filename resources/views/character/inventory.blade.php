@@ -110,7 +110,7 @@
                     </div>
 
                     <div class="form-group">
-                        {!! Form::checkbox('disallow_transfer', 1, 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+                        <input type="checkbox" value="1" name="disallow_transfer">
                         {!! Form::label('disallow_transfer', 'Character-bound', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is on, the character\'s owner will not be able to transfer this item to their inventory. Items that disallow transfers by default will still not be transferrable.') !!}
                     </div>
 
