@@ -158,7 +158,7 @@ class InventoryManager extends Service
                 if($quantity <= 0) throw new \Exception("Invalid quantity entered.");
                 
                 if($recipient->logType == 'Character' && !$stack->item->category->is_character_owned) throw new \Exception("One of the selected items cannot be owned by characters.");
-                if((!$stack->item->allow_transfer || isset($stack->data['disallow_transfer'])) && !$sender->hasPower('edit_inventories')) throw new \Exception("One of the selected items cannot be transferred.");
+                if((!$stack->item->allow_transfer || isset($stack->data['disallow_transfer'])) && !Auth::user()->hasPower('edit_inventories')) throw new \Exception("One of the selected items cannot be transferred.");
                 if($stack->count < $quantity) throw new \Exception("Quantity to transfer exceeds item count.");
 
                 //Check that hold count isn't being exceeded
