@@ -10,9 +10,9 @@
                     <p><strong>Category:</strong> {!! $item->category->name !!}</p>
                 </div>
             @endif
-            @if(isset($item->data['rarity']) && $item->data['rarity'])
+            @if(isset($item->rarity) && $item->rarity)
                 <div class="col">
-                    <p><strong>Rarity:</strong> {!! $item->data['rarity'] !!}</p>
+                    <p><strong>Rarity:</strong> {!! $item->rarity !!}</p>
                 </div>
             @endif
             @if(isset($item->artist) && $item->artist)
@@ -25,22 +25,22 @@
             </div>
         </div>
         <div class="world-entry-text">
-            @if(isset($item->reference_url) && $item->reference_url)  <p><strong>Reference Link:</strong> <a href="{{ $item->reference_url }}">{{ $item->reference_url }}</a></p> @endif
+            @if(isset($item->reference) && $item->reference)  <p><strong>Reference Link:</strong> <a href="{{ $item->reference }}">{{ $item->reference }}</a></p> @endif
             {!! $description !!}
-            @if(isset($item->data['uses']) && $item->data['uses'] || isset($item->data['release']) && $item->data['release'] || isset($item->data['shops']) && $item->data['shops'] || isset($item->data['prompts']) && $item->data['prompts'])
+            @if(isset($item->uses) && $item->uses || isset($item->source) && $item->source || isset($item->shops) && $item->shops || isset($item->prompts) && $item-prompts)
             <div class="text-right"><a data-toggle="collapse" href="#item-{{ $item->id }}" class="text-primary"><strong>Show details...</strong></a></div>
             <div class="collapse" id="item-{{ $item->id }}">
-                @if(isset($item->data['uses']) && $item->data['uses'])  <p><strong>Uses:</strong> {{ $item->data['uses'] }}</p> @endif
-                @if(isset($item->data['release']) && $item->data['release'] || isset($item->data['shops']) && $item->data['shops'] || isset($item->data['prompts']) && $item->data['prompts'])
+                @if(isset($item->uses) && $item->uses)  <p><strong>Uses:</strong> {{ $item->uses }}</p> @endif
+                @if(isset($item->source) && $item->source || isset($item->shops) && $item->shops || isset($item->prompts) && $item->prompts)
                 <h5>Availability</h5>
                 <div class="row">
-                    @if(isset($item->data['release']) && $item->data['release'])
+                    @if(isset($item->source) && $item->source)
                         <div class="col">
                             <p><strong>Original Source:</strong></p> 
-                            <p>{!! $item->data['release'] !!}</p>
+                            <p>{!! $item->source !!}</p>
                         </div>
                     @endif
-                    @if(isset($item->data['shops']) && $item->data['shops'])
+                    @if(isset($item->shops) && $item->shops)
                         <div class="col">
                             <p><strong>Purchaseable At:</strong></p>
                                 <div class="row">
@@ -48,7 +48,7 @@
                                 </div>
                         </div>
                     @endif
-                    @if(isset($item->data['prompts']) && $item->data['prompts'])
+                    @if(isset($item->prompts) && $item->prompts)
                         <div class="col">
                             <p><strong>Drops From:</strong></p>
                                 <div class="row">

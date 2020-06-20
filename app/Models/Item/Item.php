@@ -193,26 +193,6 @@ class Item extends Model
     }
 
     /**
-     * Get the artist of the item's image.
-     * 
-     * @return string
-     */
-    public function getArtistAttribute() 
-    {
-        if(!$this->artist_url && !$this->artist_alias) return null;
-        if ($this->artist_url)
-        {
-            return '<a href="'.$this->artist_url.'" class="display-creator">'. ($this->artist_alias ? : $this->artist_url) .'</a>';
-        }
-        else if($this->artist_alias)
-        {
-            $user = User::where('alias', trim($this->artist_alias))->first();
-            if($user) return $user->displayName;
-            else return '<a href="https://www.deviantart.com/'.$this->artist_alias.'">'.$this->artist_alias.'@dA</a>';
-        }
-    }
-
-    /**
      * Gets the URL of the model's encyclopedia page.
      *
      * @return string
@@ -233,6 +213,36 @@ class Item extends Model
     }
 
     /**
+     * Get the artist of the item's image.
+     * 
+     * @return string
+     */
+    public function getArtistAttribute() 
+    {
+        if(!$this->artist_url && !$this->artist_alias) return null;
+        if ($this->artist_url)
+        {
+            return '<a href="'.$this->artist_url.'" class="display-creator">'. ($this->artist_alias ? : $this->artist_url) .'</a>';
+        }
+        else if($this->artist_alias)
+        {
+            $user = User::where('alias', trim($this->artist_alias))->first();
+            if($user) return $user->displayName;
+            else return '<a href="https://www.deviantart.com/'.$this->artist_alias.'">'.$this->artist_alias.'@dA</a>';
+        }
+    }
+
+    /**
+     * Get the reference url attribute.
+     *
+     * @return string
+     */
+    public function getReferenceAttribute() 
+    {
+        return $this->reference_url;
+    }
+
+    /**
      * Get the data attribute as an associative array.
      *
      * @return array
@@ -241,6 +251,36 @@ class Item extends Model
     {
         if (!$this->id) return null;
         return json_decode($this->attributes['data'], true);
+    }
+
+    /**
+     * Get the rarity attribute.
+     *
+     * @return string
+     */
+    public function getRarityAttribute() 
+    {
+        return $this->data['rarity'];
+    }
+
+    /**
+     * Get the uses attribute.
+     *
+     * @return string
+     */
+    public function getUsesAttribute() 
+    {
+        return $this->data['uses'];
+    }
+
+    /**
+     * Get the source attribute.
+     *
+     * @return string
+     */
+    public function getSourceAttribute() 
+    {
+        return $this->data['release'];
     }
 
     /**
