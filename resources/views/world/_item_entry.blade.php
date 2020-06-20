@@ -30,7 +30,7 @@
             @if(isset($item->data['uses']) && $item->data['uses'] || isset($item->data['release']) && $item->data['release'] || isset($item->data['shops']) && $item->data['shops'] || isset($item->data['prompts']) && $item->data['prompts'])
             <div class="text-right"><a data-toggle="collapse" href="#item-{{ $item->id }}" class="text-primary"><strong>Show details...</strong></a></div>
             <div class="collapse" id="item-{{ $item->id }}">
-                @if(isset($item->data['uses']) && $item->data['uses'])  <p><strong>Uses:</strong> {{ $item->data['uses'] }}</p> @endif
+                @if(isset($item->data['uses']) && $item->data['uses'])  <p><strong>Uses:</strong> {!! $item->data['uses'] !!}</p> @endif
                 @if(isset($item->data['release']) && $item->data['release'] || isset($item->data['shops']) && $item->data['shops'] || isset($item->data['prompts']) && $item->data['prompts'])
                 <h5>Availability</h5>
                 <div class="row">
