@@ -21,7 +21,15 @@
                 </div>
             @endif
             <div class="col-md-6 col-md">
-                <p></p>
+                <div class="row">
+                    @foreach($item->tags as $tag)
+                        @if($tag->is_active)
+                        <div class="col">
+                            {!! $tag->displayTag !!}
+                        </div>
+                        @endif
+                    @endforeach
+                </div>
             </div>
         </div>
         <div class="world-entry-text">
