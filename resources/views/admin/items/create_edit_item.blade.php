@@ -42,7 +42,7 @@
     <div class="col">
         <div class="form-group">
             {!! Form::label('Item Rarity (Optional)') !!} {!! add_help('This should be a number.') !!}
-            {!! Form::text('rarity', $item && $item->data['rarity'] ? $item->data['rarity'] : '', ['class' => 'form-control']) !!}
+            {!! Form::text('rarity', $item && $item->rarity ? $item->rarity : '', ['class' => 'form-control']) !!}
         </div>
     </div>
 </div>
@@ -78,7 +78,7 @@
 
 <div class="form-group">
     {!! Form::label('Uses (Optional)') !!} {!! add_help('A short description of the item\'s use(s). Supports raw HTML if need be, but keep it brief.') !!}
-    {!! Form::text('uses', $item && $item->data['uses'] ? $item->data['uses'] : '', ['class' => 'form-control']) !!}
+    {!! Form::text('uses', $item && $item->uses ? $item->uses : '', ['class' => 'form-control']) !!}
 </div>
 
 <div class="form-group">
@@ -92,19 +92,19 @@
     <div class="col">
         <div class="form-group">
             {!! Form::label('release', 'Source (Optional)') !!} {!! add_help('The original and/or general source of the item. Should be brief.') !!}
-            {!! Form::text('release', $item && $item->data['release'] ? $item->data['release'] : '', ['class' => 'form-control']) !!}
+            {!! Form::text('release', $item && $item->source ? $item->source : '', ['class' => 'form-control']) !!}
         </div>
     </div>
     <div class="col">
         <div class="form-group">
             {!! Form::label('shops[]', 'Purchase Location(s) (Optional)') !!} {!! add_help('You can select up to 10 shops at once.') !!}
-            {!! Form::select('shops[]', $shops, $item && $item->data['shops'] ? $item->data['shops'] : '', ['id' => 'shopsList', 'class' => 'form-control', 'multiple']) !!}
+            {!! Form::select('shops[]', $shops, $item && $item->shops ? $item->shops : '', ['id' => 'shopsList', 'class' => 'form-control', 'multiple']) !!}
         </div>
     </div>
     <div class="col">
         <div class="form-group">
             {!! Form::label('prompts[]', 'Drop Location(s) (Optional)') !!} {!! add_help('You can select up to 10 prompts at once.') !!}
-            {!! Form::select('prompts[]', $prompts, $item && $item->data['prompts'] ? $item->data['prompts'] : '', ['id' => 'promptsList', 'class' => 'form-control', 'multiple']) !!}
+            {!! Form::select('prompts[]', $prompts, $item && $item->prompts ? $item->prompts : '', ['id' => 'promptsList', 'class' => 'form-control', 'multiple']) !!}
         </div>
     </div>
 </div>
