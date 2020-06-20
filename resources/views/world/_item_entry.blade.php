@@ -36,7 +36,7 @@
                 <div class="row">
                     @if(isset($item->data['release']) && $item->data['release'])
                         <div class="col">
-                            <p><strong>Original Source:</strong></p> 
+                            <p><strong>Source:</strong></p> 
                             <p>{!! $item->data['release'] !!}</p>
                         </div>
                     @endif

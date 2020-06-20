@@ -91,7 +91,7 @@
 <div class="row">
     <div class="col">
         <div class="form-group">
-            {!! Form::label('release', 'Original Source (Optional)') !!} {!! add_help('The original source of the item. Should be brief.') !!}
+            {!! Form::label('release', 'Source (Optional)') !!} {!! add_help('The original and/or general source of the item. Should be brief.') !!}
             {!! Form::text('release', $item && $item->data['release'] ? $item->data['release'] : '', ['class' => 'form-control']) !!}
         </div>
     </div>
