@@ -31,9 +31,44 @@
         </div>
     @endif
 </div>
-<div class="form-group">
-    {!! Form::label('Item Category (Optional)') !!}
-    {!! Form::select('item_category_id', $categories, $item->item_category_id, ['class' => 'form-control']) !!}
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            {!! Form::label('Item Category (Optional)') !!}
+            {!! Form::select('item_category_id', $categories, $item->item_category_id, ['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            {!! Form::label('Item Rarity (Optional)') !!} {!! add_help('This should be a number.') !!}
+            {!! Form::text('rarity', $item && $item->data['rarity'] ? $item->data['rarity'] : '', ['class' => 'form-control']) !!}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            {!! Form::label('Reference Link (Optional)') !!} {!! add_help('An optional link to an additional reference') !!}
+            {!! Form::text('reference_url', $item->reference_url, ['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="col">
+    {!! Form::label('Item Artist (Optional)') !!} {!! add_help('Provide the artist\'s dA alias or, failing that, a link. If both are provided, the alias will be used as the display name for the link.') !!}
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    {!! Form::text('artist_alias', $item && $item->artist_alias ? $item->artist_alias : '', ['class' => 'form-control mr-2', 'placeholder' => 'Artist Alias']) !!}
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    {!! Form::text('artist_url', $item && $item->artist_url ? $item->artist_url : '', ['class' => 'form-control mr-2', 'placeholder' => 'Artist URL']) !!}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="form-group">
@@ -41,8 +76,38 @@
     {!! Form::textarea('description', $item->description, ['class' => 'form-control wysiwyg']) !!}
 </div>
 
-{!! Form::checkbox('allow_transfer', 1, $item->id ? $item->allow_transfer : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-{!! Form::label('allow_transfer', 'Allow User → User Transfer', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is off, users will not be able to transfer this item to other users. Non-account-bound items can be account-bound when granted to users directly.') !!}
+<div class="form-group">
+    {!! Form::label('Uses (Optional)') !!} {!! add_help('A short description of the item\'s use(s). Supports raw HTML if need be, but keep it brief.') !!}
+    {!! Form::text('uses', $item && $item->data['uses'] ? $item->data['uses'] : '', ['class' => 'form-control']) !!}
+</div>
+
+<div class="form-group">
+    {!! Form::checkbox('allow_transfer', 1, $item->id ? $item->allow_transfer : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+    {!! Form::label('allow_transfer', 'Allow User → User Transfer', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is off, users will not be able to transfer this item to other users. Non-account-bound items can be account-bound when granted to users directly.') !!}
+</div>
+
+<h3>Availability Information</h3>
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            {!! Form::label('release', 'Original Source (Optional)') !!} {!! add_help('The original source of the item. Should be brief.') !!}
+            {!! Form::text('release', $item && $item->data['release'] ? $item->data['release'] : '', ['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            {!! Form::label('shops[]', 'Purchase Location(s) (Optional)') !!} {!! add_help('You can select up to 10 shops at once.') !!}
+            {!! Form::select('shops[]', $shops, $item && $item->data['shops'] ? $item->data['shops'] : '', ['id' => 'shopsList', 'class' => 'form-control', 'multiple']) !!}
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            {!! Form::label('prompts[]', 'Drop Location(s) (Optional)') !!} {!! add_help('You can select up to 10 prompts at once.') !!}
+            {!! Form::select('prompts[]', $prompts, $item && $item->data['prompts'] ? $item->data['prompts'] : '', ['id' => 'promptsList', 'class' => 'form-control', 'multiple']) !!}
+        </div>
+    </div>
+</div>
 
 <div class="text-right">
     {!! Form::submit($item->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
@@ -80,7 +145,7 @@
     <h3>Preview</h3>
     <div class="card mb-3">
         <div class="card-body">
-            @include('world._entry', ['imageUrl' => $item->imageUrl, 'name' => $item->displayName, 'description' => $item->parsed_description, 'searchUrl' => $item->searchUrl])
+            @include('world._item_entry', ['imageUrl' => $item->imageUrl, 'name' => $item->displayName, 'description' => $item->parsed_description, 'searchUrl' => $item->searchUrl])
         </div>
     </div>
 @endif
@@ -91,6 +156,14 @@
 @parent
 <script>
 $( document ).ready(function() {    
+    $('#shopsList').selectize({
+            maxItems: 10
+        });
+
+    $('#promptsList').selectize({
+        maxItems: 10
+    });
+    
     $('.delete-item-button').on('click', function(e) {
         e.preventDefault();
         loadModal("{{ url('admin/data/items/delete') }}/{{ $item->id }}", 'Delete Item');

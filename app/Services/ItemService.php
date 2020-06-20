@@ -203,6 +203,16 @@ class ItemService extends Service
 
             $item = Item::create($data);
 
+            $item->update([
+                'data' => json_encode([
+                    'rarity' => isset($data['rarity']) && $data['rarity'] ? $data['rarity'] : null,
+                    'uses' => isset($data['uses']) && $data['uses'] ? $data['uses'] : null,
+                    'release' => isset($data['release']) && $data['release'] ? $data['release'] : null,
+                    'shops' => isset($data['shops']) && $data['shops'] ? $data['shops'] : null,
+                    'prompts' => isset($data['prompts']) && $data['prompts'] ? $data['prompts'] : null
+                    ]) // rarity, availability info (original source, purchase locations, drop locations)
+            ]);
+
             if ($image) $this->handleImage($image, $item->imagePath, $item->imageFileName);
 
             return $this->commitReturn($item);
@@ -241,6 +251,16 @@ class ItemService extends Service
             }
 
             $item->update($data);
+
+            $item->update([
+                'data' => json_encode([
+                    'rarity' => isset($data['rarity']) && $data['rarity'] ? $data['rarity'] : null,
+                    'uses' => isset($data['uses']) && $data['uses'] ? $data['uses'] : null,
+                    'release' => isset($data['release']) && $data['release'] ? $data['release'] : null,
+                    'shops' => isset($data['shops']) && $data['shops'] ? $data['shops'] : null,
+                    'prompts' => isset($data['prompts']) && $data['prompts'] ? $data['prompts'] : null
+                    ]) // rarity, availability info (original source, purchase locations, drop locations)
+            ]);
 
             if ($item) $this->handleImage($image, $item->imagePath, $item->imageFileName);
 
