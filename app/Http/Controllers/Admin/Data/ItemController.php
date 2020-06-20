@@ -187,8 +187,8 @@ class ItemController extends Controller
         return view('admin.items.create_edit_item', [
             'item' => new Item,
             'categories' => ['none' => 'No category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'shops' => Shop::orderBy('id')->pluck('name', 'id'),
-            'prompts' => Prompt::orderBy('id')->pluck('name', 'id')
+            'shops' => Shop::where('is_active', 1)->orderBy('id')->pluck('name', 'id'),
+            'prompts' => Prompt::where('is_active', 1)->orderBy('id')->pluck('name', 'id')
         ]);
     }
     
@@ -205,8 +205,8 @@ class ItemController extends Controller
         return view('admin.items.create_edit_item', [
             'item' => $item,
             'categories' => ['none' => 'No category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'shops' => Shop::orderBy('id')->pluck('name', 'id'),
-            'prompts' => Prompt::orderBy('id')->pluck('name', 'id')
+            'shops' => Shop::where('is_active', 1)->orderBy('id')->pluck('name', 'id'),
+            'prompts' => Prompt::where('is_active', 1)->orderBy('id')->pluck('name', 'id')
         ]);
     }
 
