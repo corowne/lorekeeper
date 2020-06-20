@@ -239,6 +239,7 @@ class Item extends Model
      */
     public function getReferenceAttribute() 
     {
+        if (!$this->reference_url) return null;
         return $this->reference_url;
     }
 
@@ -260,6 +261,7 @@ class Item extends Model
      */
     public function getRarityAttribute() 
     {
+        if (!$this->data) return null;
         return $this->data['rarity'];
     }
 
@@ -270,6 +272,7 @@ class Item extends Model
      */
     public function getUsesAttribute() 
     {
+        if (!$this->data) return null;
         return $this->data['uses'];
     }
 
@@ -280,6 +283,7 @@ class Item extends Model
      */
     public function getSourceAttribute() 
     {
+        if (!$this->data) return null;
         return $this->data['release'];
     }
 
@@ -290,6 +294,7 @@ class Item extends Model
      */
     public function getShopsAttribute() 
     {
+        if (!$this->data) return null;
         $itemShops = $this->data['shops'];
         return Shop::whereIn('id', $itemShops)->get();
     }
@@ -301,6 +306,7 @@ class Item extends Model
      */
     public function getPromptsAttribute() 
     {
+        if (!$this->data) return null;
         $itemPrompts = $this->data['prompts'];
         return Prompt::whereIn('id', $itemPrompts)->get();
     }
