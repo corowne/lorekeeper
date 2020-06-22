@@ -172,10 +172,10 @@ class InventoryManager extends Service
 
                 if($recipient->logType == 'Character' && isset($limit) && ($ownedLimitedItems->pluck('count')->sum() >= $limit || $newOwnedLimit > $limit)) throw new \Exception("One of the selected items exceeds the limit characters can own for its category.");
 
+                $this->creditItem($sender, $recipient, $sender->logType == 'User' ? 'User → Character Transfer' : 'Character → User Transfer', $stack->data, $stack->item, $quantity);
+
                 $stack->count -= $quantity;
                 $stack->save();
-
-                $this->creditItem($sender, $recipient, $sender->logType == 'User' ? 'User → Character Transfer' : 'Character → User Transfer', $stack->data, $stack->item, $quantity);
             }
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
