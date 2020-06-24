@@ -16,14 +16,14 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ config('app.url', 'http://localhost') }}">
-    <meta property="og:image" content="{{ asset('images/meta-image.png') }}">
+    <meta property="og:image" content="@if(isset($character) && $character && isset($character->image) && !isset($user) && !isset($user->profile)) {{ $character->image->thumbnailUrl }} @else {{ asset('images/meta-image.png') }} @endif">
     <meta property="og:title" content="{{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} - @yield('title')">
     <meta property="og:description" content="{{ config('lorekeeper.settings.site_desc', 'A Lorekeeper ARPG') }}">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ config('app.url', 'http://localhost') }}">
-    <meta property="twitter:image" content="{{ asset('images/meta-image.png') }}">
+    <meta property="twitter:image" content="@if(isset($character) && $character && isset($character->image) && !isset($user) && !isset($user->profile)) {{ $character->image->thumbnailUrl }} @else {{ asset('images/meta-image.png') }} @endif">
     <meta property="twitter:title" content="{{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} - @yield('title')">
     <meta property="twitter:description" content="{{ config('lorekeeper.settings.site_desc', 'A Lorekeeper ARPG') }}">
 
