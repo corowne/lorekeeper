@@ -288,13 +288,16 @@ class SubmissionManager extends Service
                 }
 
                 // Workaround for user not being unset after inventory shuffling, preventing proper staff ID assignment
-                $staffId = $user->id;
+                $staff = $user;
                 
                 foreach($stacks as $stackId=>$quantity) {
                     $stack = UserItem::find($stackId);
                     $user = User::find($submission->user_id);
                     if(!$inventoryManager->debitStack($user, $submission->prompt_id ? 'Prompt Approved' : 'Claim Approved', ['data' => 'Item used in submission (<a href="'.$submission->viewUrl.'">#'.$submission->id.'</a>)'], $stack, $quantity)) throw new \Exception("Failed to create log for item stack.");
                 }
+
+                // Set user back to the processing staff member, now that addons have been properly processed.
+                $user = $staff;
             }
 
             // The character identification comes in both the slug field and as character IDs
@@ -363,7 +366,7 @@ class SubmissionManager extends Service
             $submission->update([
 			    'staff_comments' => $data['staff_comments'],
 				'parsed_staff_comments' => $data['parsed_staff_comments'],
-                'staff_id' => isset($addonData['user_items']) ? $staffId : $user->id,
+                'staff_id' => $user->id,
                 'status' => 'Approved',
                 'data' => json_encode([
                     'user' => $addonData,
