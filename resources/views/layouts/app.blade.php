@@ -10,7 +10,7 @@
     <title>{{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} - @yield('title')</title>
 
     <!-- Primary Meta Tags -->
-    <meta name="title" content="{{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} - @yield('title')">
+    <meta name="title" content="{{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} -@yield('title')">
     <meta name="description" content="{{ config('lorekeeper.settings.site_desc', 'A Lorekeeper ARPG') }}">
 
     <!-- Open Graph / Facebook -->
