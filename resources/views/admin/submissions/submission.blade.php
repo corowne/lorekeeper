@@ -98,6 +98,26 @@
             </table>
         @endif
 
+        @if(isset($inventory['currencies']))
+            <h3>{!! $submission->user->displayName !!}'s Bank</h3>
+            <table class="table table-sm mb-3">
+                <thead>
+                    <tr>
+                        <th width="70%">Currency</th>
+                        <th width="30%">Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($inventory['currencies'] as $currency)
+                        <tr>
+                            <td>{!! $currency['asset']->name !!}</td>
+                            <td>{{ $currency['quantity'] }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
+
 		<div class="form-group">
             {!! Form::label('staff_comments', 'Staff Comments (Optional)') !!}
 			{!! Form::textarea('staff_comments', $submission->staffComments, ['class' => 'form-control wysiwyg']) !!}

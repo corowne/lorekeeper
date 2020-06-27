@@ -121,7 +121,7 @@
             </table>
 @endif
 
-@if($inventory['currencies'])
+@if(isset($inventory['currencies']))
     <h3>{!! $submission->user->displayName !!}'s Bank</h3>
     <table class="table table-sm mb-3">
         <thead>

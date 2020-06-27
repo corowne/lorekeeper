@@ -246,6 +246,17 @@ class SubmissionManager extends Service
                     $userItemRow->save();
                 }
             }
+
+            // And currencies
+            $currencyManager = new CurrencyManager;
+            if(isset($addonData['currencies']) && $addonData['currencies'])
+            {
+                foreach($addonData['currencies'] as $currencyId=>$quantity) {
+                    $currency = Currency::find($currencyId);
+                    if(!$currency) throw new \Exception("Cannot return an invalid currency. (".$currencyId.")");
+                    if(!$currencyManager->creditCurrency(null, $submission->user, null, null, $currency, $quantity)) throw new \Exception("Could not return currency to user. (".$currencyId.")");                    
+                }
+            }
 			
 			if(isset($data['staff_comments']) && $data['staff_comments']) $data['parsed_staff_comments'] = parse($data['staff_comments']);
 			else $data['parsed_staff_comments'] = null;
@@ -315,6 +326,18 @@ class SubmissionManager extends Service
 
                 // Set user back to the processing staff member, now that addons have been properly processed.
                 $user = $staff;
+            }
+
+            // Log currency removal, etc.
+            $currencyManager = new CurrencyManager;
+            if(isset($addonData['currencies']) && $addonData['currencies'])
+            {
+                foreach($addonData['currencies'] as $currencyId=>$quantity) {
+                    $currency = Currency::find($currencyId);
+                    if(!$currencyManager->createLog($user->id, 'User', null, null, 
+                    $submission->prompt_id ? 'Prompt Approved' : 'Claim Approved', 'Used in ' . ($submission->prompt_id ? 'prompt' : 'claim') . ' (<a href="'.$submission->viewUrl.'">#'.$submission->id.'</a>)', $currencyId, $quantity)) 
+                        throw new \Exception("Failed to create currency log.");
+                }
             }
 
             // The character identification comes in both the slug field and as character IDs
