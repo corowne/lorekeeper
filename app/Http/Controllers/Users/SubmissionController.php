@@ -72,7 +72,6 @@ class SubmissionController extends Controller
         return view('home.submission', [
             'submission' => $submission,
             'user' => $submission->user,
-            'addonData' => isset($submission->data['addon']) ? parseAssetData($submission->data['addon']) : null,
             'categories' => ItemCategory::orderBy('sort', 'DESC')->get(),
             'inventory' => $inventory,
             'itemsrow' => Item::all()->keyBy('id')
@@ -100,8 +99,6 @@ class SubmissionController extends Controller
             'items' => Item::orderBy('name')->pluck('name', 'id'),
             'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
             'inventory' => $inventory,
-            'addonData' => isset($submission->data['addon']) ? parseAssetData($submission->data['addon']) : null,
-            'rewardsData' => isset($submission->data['rewards']) ? parseAssetData($submission->data['rewards']) : null,
             'page' => 'submission'
         ]));
     }
@@ -199,8 +196,7 @@ class SubmissionController extends Controller
             'user' => $submission->user,
             'categories' => ItemCategory::orderBy('sort', 'DESC')->get(),
             'itemsrow' => Item::all()->keyBy('id'),
-            'inventory' => $inventory,
-            'rewardsData' => isset($submission->data['rewards']) ? parseAssetData($submission->data['rewards']) : null
+            'inventory' => $inventory
         ]);
     }
     

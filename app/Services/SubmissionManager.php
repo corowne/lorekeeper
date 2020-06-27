@@ -296,13 +296,25 @@ class SubmissionManager extends Service
             $inventoryManager = new InventoryManager;
             if(isset($addonData['user_items'])) {
                 $stacks = $addonData['user_items'];
-                foreach($stacks as $stackId=>$quantity) {
-                    $stack = UserItem::find($stackId);
+                foreach($addonData['user_items'] as $userItemId => $quantity) {
+                    $userItemRow = UserItem::find($userItemId);
+                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
                     if($userItemRow->submission_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
                     $userItemRow->submission_count -= $quantity;
-                    $user = User::find($submission->user_id);
-                    if(!$inventoryManager->debitStack($user, $submission->prompt_id ? 'Prompt Approved' : 'Claim Approved', ['data' => 'Item used in ' . ($submission->prompt_id ? 'prompt submission' : 'claim') . ' (<a href="'.$submission->viewUrl.'">#'.$submission->id.'</a>)'], $stack, $quantity)) throw new \Exception("Failed to create log for item stack.");
+                    $userItemRow->save();
                 }
+
+                // Workaround for user not being unset after inventory shuffling, preventing proper staff ID assignment
+                $staff = $user;
+                
+                foreach($stacks as $stackId=>$quantity) {
+                    $stack = UserItem::find($stackId);
+                    $user = User::find($submission->user_id);
+                    if(!$inventoryManager->debitStack($user, $submission->prompt_id ? 'Prompt Approved' : 'Claim Approved', ['data' => 'Item used in submission (<a href="'.$submission->viewUrl.'">#'.$submission->id.'</a>)'], $stack, $quantity)) throw new \Exception("Failed to create log for item stack.");
+                }
+
+                // Set user back to the processing staff member, now that addons have been properly processed.
+                $user = $staff;
             }
 
             // The character identification comes in both the slug field and as character IDs
@@ -378,7 +390,6 @@ class SubmissionManager extends Service
                     'rewards' => getDataReadyAssets($rewards)
                     ]) // list of rewards
             ]);
-
 
             Notifications::create($submission->prompt_id ? 'SUBMISSION_APPROVED' : 'CLAIM_APPROVED', $submission->user, [
                 'staff_url' => $user->url,

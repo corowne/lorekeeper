@@ -51,7 +51,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(parseAssetData($submission->data['rewards']) as $type)
+        @foreach(parseAssetData( isset($submission->data['rewards']) ? $submission->data['rewards'] : $submission->data ) as $type)
             @foreach($type as $asset)
                 <tr>
                     <td>{!! $asset['asset']->displayName !!}</td>
@@ -96,7 +96,7 @@
     </div>
 @endforeach
 
-@if($inventory['user_items'])
+@if(isset($inventory['user_items']))
 <h2>Add-Ons</h2>
 <p>These items have been removed from the {{ $submission->prompt_id ? 'submitter' : 'claimant' }}'s inventory and will be refunded if the request is rejected or consumed if it is approved.</p>
             <table class="table table-sm">

@@ -1771,10 +1771,16 @@ class CharacterManager extends Service
             $inventoryManager = new InventoryManager;
             if(isset($requestData['user']) && isset($requestData['user']['user_items'])) {
                 $stacks = $requestData['user']['user_items'];
-                foreach($stacks as $stackId=>$quantity) {
-                    $stack = UserItem::find($stackId);
+                foreach($requestData['user']['user_items'] as $userItemId=>$quantity) {
+                    $userItemRow = UserItem::find($userItemId);
+                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
                     if($userItemRow->update_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
                     $userItemRow->update_count -= $quantity;
+                    $userItemRow->save();
+                }
+
+                foreach($stacks as $stackId=>$quantity) {
+                    $stack = UserItem::find($stackId);
                     $user = User::find($request->user_id);
                     if(!$inventoryManager->debitStack($user, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', ['data' => 'Item used in ' . ($request->character->is_myo_slot ? 'MYO design approval' : 'Character design update') . ' (<a href="'.$request->url.'">#'.$request->id.'</a>)'], $stack, $quantity)) throw new \Exception("Failed to create log for item stack.");
                 }
