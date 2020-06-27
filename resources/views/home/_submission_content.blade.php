@@ -120,3 +120,23 @@
                 </tbody>
             </table>
 @endif
+
+@if($inventory['currencies'])
+    <h3>{!! $submission->user->displayName !!}'s Bank</h3>
+    <table class="table table-sm mb-3">
+        <thead>
+            <tr>
+                <th width="70%">Currency</th>
+                <th width="30%">Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($inventory['currencies'] as $currency)
+                <tr>
+                    <td>{!! $currency['asset']->name !!}</td>
+                    <td>{{ $currency['quantity'] }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+@endif

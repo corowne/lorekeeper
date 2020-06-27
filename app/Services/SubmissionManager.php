@@ -66,14 +66,11 @@ class SubmissionManager extends Service
             }
             else $characters = [];
 
-            // First return any item stacks associated with this request
-            if(isset($data['user']['user_items'])) {
-                foreach($data['user']['user_items'] as $userItemId=>$quantity) {
-                    $userItemRow = UserItem::find($userItemId);
-                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
-                    if($userItemRow->submission_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
-                    $userItemRow->submission_count -= $quantity;
-                    $userItemRow->save();
+            // Return any currency associated with this request
+            $currencyManager = new CurrencyManager;
+            if(isset($requestData['user']) && isset($requestData['user']['currencies'])) {
+                foreach($requestData['user']['currencies'] as $currencyId=>$quantity) {
+                    $currencyManager->creditCurrency(null, $request->user, null, null, $currencyId, $quantity);
                 }
             }
 
@@ -89,6 +86,26 @@ class SubmissionManager extends Service
                     $stack->save();
 
                     addAsset($userAssets, $stack, $data['stack_quantity'][$key]);
+                }
+            }
+
+            // Attach currencies.
+            if(isset($data['currency_id'])) {
+                foreach($data['currency_id'] as $holderKey=>$currencyIds) {
+                    $holder = explode('-', $holderKey);
+                    $holderType = $holder[0];
+                    $holderId = $holder[1];
+
+                    $holder = User::find($holderId);
+
+                    foreach($currencyIds as $key=>$currencyId) {
+                        $currency = Currency::find($currencyId);
+                        if(!$currency) throw new \Exception("Invalid currency selected.");
+                        if(!$currencyManager->debitCurrency($holder, null, null, null, $currency, $data['currency_quantity'][$holderKey][$key])) throw new \Exception("Invalid currency/quantity selected.");
+
+                        addAsset($userAssets, $currency, $data['currency_quantity'][$holderKey][$key]);
+                        
+                    }
                 }
             }
 
@@ -108,7 +125,7 @@ class SubmissionManager extends Service
                 'status' => 'Pending',
                 'comments' => $data['comments'],
                 'data' => json_encode([
-                    'user' => array_only(getDataReadyAssets($userAssets), ['user_items']),
+                    'user' => array_only(getDataReadyAssets($userAssets), ['user_items','currencies']),
                     'rewards' => getDataReadyAssets($promptRewards)
                     ]) // list of rewards and addons
             ] + ($isClaim ? [] : ['prompt_id' => $prompt->id,]));

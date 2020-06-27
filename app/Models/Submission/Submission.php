@@ -161,6 +161,17 @@ class Submission extends Model
     }
 
     /**
+     * Gets the currencies of the given user for selection.
+     *
+     * @param  \App\Models\User\User $user
+     * @return array
+     */
+    public function getCurrencies($user)
+    {
+        return $this->data && isset($this->data['user']) && isset($this->data['user']['currencies']) ? $this->data['user']['currencies'] : [];
+    }
+
+    /**
      * Get the viewing URL of the submission/claim.
      *
      * @return string

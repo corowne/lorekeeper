@@ -68,6 +68,7 @@
         <p>If your {{ $isClaim ? 'claim' : 'submission' }} consumes items, attach them here. Otherwise, this section can be left blank. These items will be removed from your inventory but refunded if your {{ $isClaim ? 'claim' : 'submission' }} is rejected.</p>
         <div id="addons" class="mb-3">
         @include('widgets._inventory_select', ['user' => Auth::user(), 'inventory' => $inventory, 'categories' => $categories, 'selected' => [], 'page' => $page])
+        @include('widgets._bank_select', ['owner' => Auth::user(), 'selected' => null])
         </div>
 
         <div class="text-right">
@@ -103,6 +104,8 @@
     @include('js._loot_js', ['showLootTables' => false])
     @include('js._character_select_js')
     @include('widgets._inventory_select_js', ['readOnly' => true])
+    @include('widgets._bank_select_row', ['owners' => [Auth::user()]])
+    @include('widgets._bank_select_js', [])
 
     <script>
         $(document).ready(function() {
