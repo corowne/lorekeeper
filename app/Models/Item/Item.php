@@ -203,6 +203,16 @@ class Item extends Model
     }
 
     /**
+     * Gets the URL of the individual item's page, by ID.
+     *
+     * @return string
+     */
+    public function getIdUrlAttribute()
+    {
+        return url('world/items/'.$this->id);
+    }
+
+    /**
      * Gets the currency's asset type for asset management.
      *
      * @return string

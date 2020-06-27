@@ -3,7 +3,7 @@
 @else
     <div class="text-center">
         <div class="mb-1"><a href="{{ $stack->item->url }}"><img src="{{ $stack->item->imageUrl }}" /></a></div>
-        <div @if(count($stack->item->tags)) class="mb-1" @endif><a href="{{ $stack->item->url }}">{{ $stack->item->name }}</a></div>
+        <div @if(count($stack->item->tags)) class="mb-1" @endif><a href="{{ $stack->item->idUrl }}">{{ $stack->item->name }}</a></div>
         @if(count($stack->item->tags))
             <div>
                 @foreach($stack->item->tags as $tag)

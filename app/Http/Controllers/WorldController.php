@@ -240,6 +240,28 @@ class WorldController extends Controller
     }
 
     /**
+     * Shows an individual item's page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getItem($id)
+    {
+        $categories = ItemCategory::orderBy('sort', 'DESC')->get();
+        $item = Item::where('id', $id)->first();
+        if(!$item) abort(404);
+
+        return view('world.item_page', [
+            'item' => $item,
+            'imageUrl' => $item->imageUrl, 
+            'name' => $item->displayName, 
+            'description' => $item->parsed_description,
+            'categories' => $categories->keyBy('id'),
+            'shops' => Shop::orderBy('sort', 'DESC')->get()
+        ]);
+    }
+
+    /**
      * Shows the character categories page.
      *
      * @param  \Illuminate\Http\Request  $request
