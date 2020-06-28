@@ -8,7 +8,7 @@
 @if(isset($item->category) && $item->category) <p><strong>Category:</strong> {{ $item->category->name }}</p> @endif
 @if(isset($item->rarity) && $item->rarity) :: <p><strong>Rarity:</strong> {{ $item->rarity }}: {{ $item->rarityName }}</p> @endif
  :: {!! $item->description !!}
-@if(isset($item->uses) && $item->uses)  :: <p><strong>Uses:</strong> {!! $item->uses !!}</p> @endif
+@if(isset($item->uses) && $item->uses) :: <p><strong>Uses:</strong> {!! $item->uses !!}</p> @endif
 @endsection
 
 @section('content')
