@@ -24,7 +24,7 @@
         <div class="d-flex row flex-wrap col-12 mt-1 pt-2 px-0 ubt-top">
           <div class="col-12 col-md-5"><a href="{{ $page->url }}">{{ $page->title }}</a></div>
           <div class="col-3 col-md-3">{{ $page->key }}</div>
-          <div class="col-6 col-md-3">{!! format_date($page->updated_at) !!}</div>
+          <div class="col-6 col-md-3">{!! pretty_date($page->updated_at) !!}</div>
           <div class="col-3 col-md-1 text-right"><a href="{{ url('admin/pages/edit/'.$page->id) }}" class="btn btn-primary py-0 px-2">Edit</a></div>
         </div>
         @endforeach

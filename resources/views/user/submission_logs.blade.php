@@ -23,7 +23,7 @@
       <div class="col-6 col-md-4">
         <span class="ubt-texthide"><a href="{{ $log->url }}">{{ $log->url }}</a></span>
       </div>
-      <div class="col-6 col-md-5">{!! format_date($log->created_at) !!}</div>
+      <div class="col-6 col-md-5">{!! pretty_date($log->created_at) !!}</div>
       <div class="col-6 col-md-1"><a href="{{ $log->viewUrl }}" class="btn btn-primary btn-sm py-0 px-1">Details</a></div>
     </div>
   @endforeach

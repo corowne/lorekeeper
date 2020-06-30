@@ -33,7 +33,7 @@
     <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-top">
       <div class="col-12 col-md-4 ">{!! $r->character ? $r->character->displayName : 'Deleted Character [#'.$r->character_id.']' !!}</div>
       <div class="col-4 col-md-3">{!! $r->user->displayName !!}</div>
-      <div class="col-4 col-md-3">{!! $r->submitted_at ? format_date($r->submitted_at) : '---' !!}</div>
+      <div class="col-4 col-md-3">{!! $r->submitted_at ? pretty_date($r->submitted_at) : '---' !!}</div>
       <div class="col-4 col-md-1"><span class="btn btn-{{ $r->status == 'Pending' ? 'secondary' : ($r->status == 'Approved' ? 'success' : 'danger') }} btn-sm py-0 px-1">{{ $r->status }}</span></div>
       <div class="col-4 col-md-1"><a href="{{ $r->url }}" class="btn btn-primary btn-sm">Details</a></div>
     </div>

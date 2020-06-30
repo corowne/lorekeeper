@@ -6,5 +6,5 @@
   <div class="col-6 col-md-2">{!! $log->recipient ? $log->recipient->displayName : '' !!}</div>
   <div class="col-6 col-md-2">{!! $log->item ? $log->item->displayName : '(Deleted Item)' !!} (×{!! $log->quantity !!})</div>
   <div class="col-6 col-md-4">{!! $log->log !!}</div>
-  <div class="col-6 col-md-2">{!! format_date($log->created_at) !!}</div>
+  <div class="col-6 col-md-2">{!! pretty_date($log->created_at) !!}</div>
 </div>

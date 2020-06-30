@@ -36,7 +36,7 @@
       <div class="col-12 col-md-4 ">{!! $user->displayName !!}</div>
       <div class="col-4 col-md-3">{!! $user->displayAlias !!}</div>
       <div class="col-4 col-md-2">{!! $user->rank->displayName !!}</div>
-      <div class="col-4 col-md-3">{!! format_date($user->created_at) !!}</div>
+      <div class="col-4 col-md-3">{!! pretty_date($user->created_at) !!}</div>
     </div>
     @endforeach
   </div>

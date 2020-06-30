@@ -29,8 +29,8 @@
           <div class="col-6 col-md-2">{{ $invitation->code }}</div>
           <div class="col-6 col-md-2">{!! $invitation->user->displayName !!}</div>
           <div class="col-6 col-md-2">@if($invitation->recipient_id) {!! $invitation->recipient->displayName !!} @else --- @endif</div>
-          <div class="col-6 col-md-2">@if($invitation->created_at != $invitation->updated_at) {!! format_date($invitation->updated_at) !!} @else --- @endif</div>
-          <div class="col-6 col-md-3">{!! format_date($invitation->created_at,false) !!}</div>
+          <div class="col-6 col-md-2">@if($invitation->created_at != $invitation->updated_at) {!! pretty_date($invitation->updated_at) !!} @else --- @endif</div>
+          <div class="col-6 col-md-3">{!! pretty_date($invitation->created_at,false) !!}</div>
           <div class="col-6 col-md-1">
             @if(!$invitation->recipient_id)
               {!! Form::open(['url' => 'admin/invitations/delete/'.$invitation->id]) !!}

@@ -53,7 +53,7 @@
           <div class="col-6 {{ !$isClaims ? 'col-md-3' : 'col-md-4' }}">
             <span class="ubt-texthide"><a href="{{ $submission->url }}">{{ $submission->url }}</a></span>
           </div>
-          <div class="col-6 {{ !$isClaims ? 'col-md-5' : 'col-md-6' }}">{!! format_date($submission->created_at) !!}</div>
+          <div class="col-6 {{ !$isClaims ? 'col-md-5' : 'col-md-6' }}">{!! pretty_date($submission->created_at) !!}</div>
           <div class="col-6 col-md-1 text-right">
             <span class="btn btn-{{ $submission->status == 'Pending' ? 'secondary' : ($submission->status == 'Approved' ? 'success' : 'danger') }} btn-sm py-0 px-1">{{ $submission->status }}</span>
           </div>

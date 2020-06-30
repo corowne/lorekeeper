@@ -32,8 +32,8 @@
               @endif
               <a href="{{ $news->url }}">{{ $news->title }}</a>
           </div>
-          <div class="col-6 col-md-3">{!! format_date($news->post_at ? : $news->created_at) !!}</div>
-          <div class="col-6 col-md-3">{!! format_date($news->updated_at) !!}</div>
+          <div class="col-6 col-md-3">{!! pretty_date($news->post_at ? : $news->created_at) !!}</div>
+          <div class="col-6 col-md-3">{!! pretty_date($news->updated_at) !!}</div>
           <div class="col-12 col-md-1 text-right"><a href="{{ url('admin/news/edit/'.$news->id) }}" class="btn btn-primary py-0 px-2 w-100">Edit</a></div>
         </div>
         @endforeach

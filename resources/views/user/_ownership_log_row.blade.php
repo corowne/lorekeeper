@@ -11,5 +11,5 @@
     @endif
   </div>
   <div class="col-6 col-md-4">{!! $log->log !!}</div>
-  <div class="col-6 col-md-2">{!! format_date($log->created_at) !!}</div>
+  <div class="col-6 col-md-2">{!! pretty_date($log->created_at) !!}</div>
 </div>
