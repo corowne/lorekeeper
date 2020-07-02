@@ -45,27 +45,27 @@
                     <div class="col-lg-4 col-md-6 col-4"><h5>Rarity</h5></div>
                     <div class="col-lg-8 col-md-6 col-8">{!! $image->rarity_id ? $image->rarity->displayName : 'None' !!}</div>
                 </div>
-                
+
                 <div class="mb-3">
                     <div><h5>Traits</h5></div>
                     <div>
                         <?php $features = $image->features()->with('feature.category')->get(); ?>
                         @if($features->count())
                             @foreach($features as $feature)
-                                <div>@if($feature->feature->feature_category_id) <strong>{!! $feature->feature->category->displayName !!}:</strong> @endif {!! $feature->feature->displayName !!} @if($feature->data) ({{ $feature->data }}) @endif</div> 
+                                <div>@if($feature->feature->feature_category_id) <strong>{!! $feature->feature->category->displayName !!}:</strong> @endif {!! $feature->feature->displayName !!} @if($feature->data) ({{ $feature->data }}) @endif</div>
                             @endforeach
-                        @else 
+                        @else
                             <div>No traits listed.</div>
                         @endif
                     </div>
-                </div>    
-                <div>
-                    <strong>Uploaded:</strong> {!! format_date($image->created_at) !!}
                 </div>
                 <div>
-                    <strong>Last Edited:</strong> {!! format_date($image->updated_at) !!}
+                    <strong>Uploaded:</strong> {!! pretty_date($image->created_at) !!}
                 </div>
-                
+                <div>
+                    <strong>Last Edited:</strong> {!! pretty_date($image->updated_at) !!}
+                </div>
+
                 @if(Auth::check() && Auth::user()->hasPower('manage_characters'))
                     <div class="mt-3">
                         <a href="#" class="btn btn-outline-info btn-sm edit-features" data-id="{{ $image->id }}"><i class="fas fa-cog"></i> Edit</a>
@@ -77,7 +77,7 @@
             <div class="tab-pane fade" id="notes-{{ $image->id }}">
                 @if($image->parsed_description)
                     <div class="parsed-text imagenoteseditingparse">{!! $image->parsed_description !!}</div>
-                @else 
+                @else
                     <div class="imagenoteseditingparse">No additional notes given.</div>
                 @endif
 				@if(Auth::check() && Auth::user()->hasPower('manage_characters'))
@@ -89,7 +89,7 @@
 
             {{-- Image credits --}}
             <div class="tab-pane fade" id="credits-{{ $image->id }}">
-                
+
                 <div class="row mb-2">
                     <div class="col-lg-4 col-md-6 col-4"><h5>Design</h5></div>
                     <div class="col-lg-8 col-md-6 col-8">
@@ -106,14 +106,14 @@
                         @endforeach
                     </div>
                 </div>
-                
+
                 @if(Auth::check() && Auth::user()->hasPower('manage_characters'))
                     <div class="mt-3">
                         <a href="#" class="btn btn-outline-info btn-sm edit-credits" data-id="{{ $image->id }}"><i class="fas fa-cog"></i> Edit</a>
                     </div>
                 @endif
             </div>
-            
+
             @if(Auth::check() && Auth::user()->hasPower('manage_characters'))
                 <div class="tab-pane fade" id="settings-{{ $image->id }}">
                     {!! Form::open(['url' => 'admin/character/image/'.$image->id.'/settings']) !!}
