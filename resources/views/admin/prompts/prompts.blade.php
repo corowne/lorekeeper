@@ -50,10 +50,10 @@
           {{ $prompt->category ? $prompt->category->name : '-' }}
         </div>
         <div class="col-4 col-md-2">
-          {!! $prompt->start_at ? format_date($prompt->start_at) : '-' !!}
+          {!! $prompt->start_at ? pretty_date($prompt->start_at) : '-' !!}
         </div>
         <div class="col-4 col-md-2">
-          {!! $prompt->end_at ? format_date($prompt->end_at) : '-' !!}
+          {!! $prompt->end_at ? pretty_date($prompt->end_at) : '-' !!}
         </div>
         <div class="col-3 col-md-1 text-right">
           <a href="{{ url('admin/data/prompts/edit/'.$prompt->id) }}"  class="btn btn-primary py-0 px-2">Edit</a>
