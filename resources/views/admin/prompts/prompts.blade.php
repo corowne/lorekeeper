@@ -19,9 +19,7 @@
         <div class="form-group mr-3 mb-3">
             {!! Form::select('prompt_category_id', $categories, Request::get('name'), ['class' => 'form-control']) !!}
         </div>
-        <div class="form-group mb-3">
-            {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
-        </div>
+        <div class="form-group mb-3">{!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}</div>
     {!! Form::close() !!}
 </div>
 
