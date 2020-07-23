@@ -156,7 +156,6 @@ class Trade extends Model
     {
         $type = $this->sender_id == $user->id ? 'sender' : 'recipient';
         $inventory = $this->data && isset($this->data[$type]) && isset($this->data[$type]['user_items']) ? $this->data[$type]['user_items'] : [];
-        if($inventory) $inventory = array_keys($inventory);
         return $inventory;
     }
 

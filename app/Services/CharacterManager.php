@@ -1581,13 +1581,21 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            $requestData = $request->data;
             // First return any item stacks associated with this request
-            DB::table('user_items')->where('holding_type', 'Update')->where('holding_id', $request->id)->update(['holding_id' => null, 'holding_type' => null]);
+            if(isset($requestData['user']) && isset($requestData['user']['user_items'])) {
+                foreach($requestData['user']['user_items'] as $userItemId=>$quantity) {
+                    $userItemRow = UserItem::find($userItemId);
+                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
+                    if($userItemRow->update_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
+                    $userItemRow->update_count -= $quantity;
+                    $userItemRow->save();
+                }
+            }
 
             // Also return any currency associated with this request
             // This is stored in the data attribute
             $currencyManager = new CurrencyManager;
-            $requestData = $request->data;
             if(isset($requestData['user']) && isset($requestData['user']['currencies'])) {
                 foreach($requestData['user']['currencies'] as $currencyId=>$quantity) {
                     $currencyManager->creditCurrency(null, $request->user, null, null, $currencyId, $quantity);
@@ -1606,14 +1614,13 @@ class CharacterManager extends Service
             // We're also not going to add logs as this might add unnecessary fluff to the logs and the items still belong to the user. 
             // Perhaps later I'll add a way to locate items that are being held by updates/trades. 
             if(isset($data['stack_id'])) {
-                foreach($data['stack_id'] as $stackId) {
-                    $stack = UserItem::with('item')->where('id', $stackId)->whereNull('holding_type')->first();
+                foreach($data['stack_id'] as $key=>$stackId) {
+                    $stack = UserItem::with('item')->find($stackId);
                     if(!$stack || $stack->user_id != $request->user_id) throw new \Exception("Invalid item selected.");
-                    $stack->holding_type = 'Update';
-                    $stack->holding_id = $request->id;
+                    $stack->update_count = $data['stack_quantity'][$key];
                     $stack->save();
 
-                    //addAsset($userAssets, $stack->item, 1);
+                    addAsset($userAssets, $stack, $data['stack_quantity'][$key]);
                 }
             }
 
@@ -1643,9 +1650,8 @@ class CharacterManager extends Service
 
             $request->has_addons = 1;
             $request->data = json_encode([
-                'user' => array_only(getDataReadyAssets($userAssets), ['currencies']),
-                'character' => array_only(getDataReadyAssets($characterAssets), ['currencies']),
-                'stacks' => isset($data['stack_id']) ? $data['stack_id'] : []
+                'user' => array_only(getDataReadyAssets($userAssets), ['user_items','currencies']),
+                'character' => array_only(getDataReadyAssets($characterAssets), ['currencies'])
             ]);
             $request->save();
 
@@ -1763,12 +1769,16 @@ class CharacterManager extends Service
             // However logs need to be added for each of these
             $requestData = $request->data;
             $inventoryManager = new InventoryManager;
-            $stacks = UserItem::where('holding_type', 'Update')->where('holding_id', $request->id)->get();
-            foreach($stacks as $stack) {
-                if(!$inventoryManager->createLog($request->user_id, null, $stack->id, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', 'Item used in ' . ($request->character->is_myo_slot ? 'MYO design approval' : 'character design update') . ' (<a href="'.$request->url.'">#'.$request->id.'</a>)', $stack->item_id, $stack->count)) throw new \Exception("Failed to create log for item stack.");
+            if(isset($requestData['user']) && isset($requestData['user']['user_items'])) {
+                $stacks = $requestData['user']['user_items'];
+                foreach($stacks as $stackId=>$quantity) {
+                    $stack = UserItem::find($stackId);
+                    if($userItemRow->update_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
+                    $userItemRow->update_count -= $quantity;
+                    $user = User::find($request->user_id);
+                    if(!$inventoryManager->debitStack($user, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', ['data' => 'Item used in ' . ($request->character->is_myo_slot ? 'MYO design approval' : 'Character design update') . ' (<a href="'.$request->url.'">#'.$request->id.'</a>)'], $stack, $quantity)) throw new \Exception("Failed to create log for item stack.");
+                }
             }
-            UserItem::where('holding_type', 'Update')->where('holding_id', $request->id)->delete();
-
             $currencyManager = new CurrencyManager;
             if(isset($requestData['user']['currencies']) && $requestData['user']['currencies'])
             {
@@ -1916,9 +1926,18 @@ class CharacterManager extends Service
             // and the user will need to open a new request to resubmit.
             // Use when rejecting a request the user shouldn't have submitted at all.
 
-            // Return all added items/currency
-            UserItem::where('holding_type', 'Update')->where('holding_id', $request->id)->update(['holding_type' => null, 'holding_id' => null]);
             $requestData = $request->data;
+            // Return all added items/currency
+            if(isset($requestData['user']) && isset($requestData['user']['user_items'])) {
+                foreach($requestData['user']['user_items'] as $userItemId=>$quantity) {
+                    $userItemRow = UserItem::find($userItemId);
+                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
+                    if($userItemRow->update_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
+                    $userItemRow->update_count -= $quantity;
+                    $userItemRow->save();
+                }
+            }
+
             $currencyManager = new CurrencyManager;
             if(isset($requestData['user']['currencies']) && $requestData['user']['currencies'])
             {
@@ -2016,9 +2035,18 @@ class CharacterManager extends Service
             // Characters with an open draft request cannot be transferred (due to attached items/currency),
             // so this is necessary to transfer a character
 
-            // Return all added items/currency
-            UserItem::where('holding_type', 'Update')->where('holding_id', $request->id)->update(['holding_type' => null, 'holding_id' => null]);
             $requestData = $request->data;
+            // Return all added items/currency
+            if(isset($requestData['user']) && isset($requestData['user']['user_items'])) {
+                foreach($requestData['user']['user_items'] as $userItemId=>$quantity) {
+                    $userItemRow = UserItem::find($userItemId);
+                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
+                    if($userItemRow->update_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
+                    $userItemRow->update_count -= $quantity;
+                    $userItemRow->save();
+                }
+            }
+
             $currencyManager = new CurrencyManager;
             if(isset($requestData['user']['currencies']) && $requestData['user']['currencies'])
             {
