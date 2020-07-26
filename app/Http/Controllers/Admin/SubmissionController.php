@@ -43,7 +43,7 @@ class SubmissionController extends Controller
                     break;
             }
         } 
-        else $submissions->sortNewest();
+        else $submissions->sortOldest();
         return view('admin.submissions.index', [
             'submissions' => $submissions->paginate(30)->appends($request->query()),
             'categories' => ['none' => 'Any Category'] + PromptCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
@@ -93,7 +93,7 @@ class SubmissionController extends Controller
                     break;
             }
         } 
-        else $submissions->sortNewest();
+        else $submissions->sortOldest();
         return view('admin.submissions.index', [
             'submissions' => $submissions->paginate(30),
             'isClaims' => true
