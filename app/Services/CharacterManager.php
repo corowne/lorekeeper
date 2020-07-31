@@ -1805,7 +1805,7 @@ class CharacterManager extends Service
                 'y0' => $request->y0,
                 'y1' => $request->y1,
                 'species_id' => $request->species_id,
-                'subtype_id' => $request->subtype_id,
+                'subtype_id' => ($request->character->is_myo_slot && isset($request->character->image->subtype_id)) ? $request->character->image->subtype_id : $request->subtype_id,
                 'rarity_id' => $request->rarity_id,
                 'sort' => 0,
             ]);
