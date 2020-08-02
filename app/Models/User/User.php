@@ -17,6 +17,10 @@ use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
 use App\Models\Character\CharacterBookmark;
 
+use App\Models\Character\CharacterDesignUpdate;
+use App\Models\Character\CharacterTransfer;
+use App\Models\Trade;
+
 class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
@@ -65,7 +69,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public $timestamps = true;
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -73,7 +77,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get user settings.
      */
-    public function settings() 
+    public function settings()
     {
         return $this->hasOne('App\Models\User\UserSettings');
     }
@@ -81,7 +85,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get user-editable profile data.
      */
-    public function profile() 
+    public function profile()
     {
         return $this->hasOne('App\Models\User\UserProfile');
     }
@@ -89,43 +93,43 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get the user's notifications.
      */
-    public function notifications() 
+    public function notifications()
     {
         return $this->hasMany('App\Models\Notification');
     }
-    
+
     /**
      * Get all the user's characters, regardless of whether they are full characters of myo slots.
      */
-    public function allCharacters() 
+    public function allCharacters()
     {
         return $this->hasMany('App\Models\Character\Character')->orderBy('sort', 'DESC');
     }
-    
+
     /**
      * Get the user's characters.
      */
-    public function characters() 
+    public function characters()
     {
         return $this->hasMany('App\Models\Character\Character')->where('is_myo_slot', 0)->orderBy('sort', 'DESC');
     }
-    
+
     /**
      * Get the user's MYO slots.
      */
-    public function myoSlots() 
+    public function myoSlots()
     {
         return $this->hasMany('App\Models\Character\Character')->where('is_myo_slot', 1)->orderBy('id', 'DESC');
     }
-    
+
     /**
      * Get the user's rank data.
      */
-    public function rank() 
+    public function rank()
     {
         return $this->belongsTo('App\Models\Rank\Rank');
     }
-    
+
     /**
      * Get the user's items.
      */
@@ -135,7 +139,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -152,7 +156,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -172,7 +176,7 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @return bool
      */
-    public function getHasAliasAttribute() 
+    public function getHasAliasAttribute()
     {
         return !is_null($this->alias);
     }
@@ -204,7 +208,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function hasPower($power)
     {
-        return $this->rank->hasPower($power); 
+        return $this->rank->hasPower($power);
     }
 
     /**
@@ -280,7 +284,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**********************************************************************************************
-    
+
         OTHER FUNCTIONS
 
     **********************************************************************************************/
@@ -444,4 +448,24 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return CharacterBookmark::where('user_id', $this->id)->where('character_id', $character->id)->first();
     }
+
+
+
+    /**
+     * Check if there are any Admin Notifications
+     *
+     * @return int
+     */
+     public function hasAdminNotification($user)
+     {
+       $submissionCount = $user->hasPower('manage_submissions') ? Submission::where('status', 'Pending')->whereNotNull('prompt_id')->count() : 0;
+       $claimCount = $user->hasPower('manage_submissions') ? Submission::where('status', 'Pending')->whereNull('prompt_id')->count() : 0;
+       $designCount = $user->hasPower('manage_characters') ? CharacterDesignUpdate::characters()->where('status', 'Pending')->count() : 0;
+       $myoCount = $user->hasPower('manage_characters') ? CharacterDesignUpdate::myos()->where('status', 'Pending')->count() : 0;
+       $transferCount =  $user->hasPower('manage_characters') ? CharacterTransfer::active()->where('is_approved', 0)->count() : 0;
+       $tradeCount = $user->hasPower('manage_characters') ? Trade::where('status', 'Pending')->count() : 0;
+       $total = $submissionCount + $claimCount + $designCount + $myoCount + $transferCount + $tradeCount;
+       return $total;
+     }
+
 }
