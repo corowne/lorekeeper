@@ -66,14 +66,6 @@ class SubmissionManager extends Service
             }
             else $characters = [];
 
-            // Return any currency associated with this request
-            $currencyManager = new CurrencyManager;
-            if(isset($requestData['user']) && isset($requestData['user']['currencies'])) {
-                foreach($requestData['user']['currencies'] as $currencyId=>$quantity) {
-                    $currencyManager->creditCurrency(null, $request->user, null, null, $currencyId, $quantity);
-                }
-            }
-
             $userAssets = createAssetsArray();
 
             // Attach items. Technically, the user doesn't lose ownership of the item - we're just adding an additional holding field.
