@@ -205,6 +205,15 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('prompts/create', 'PromptController@postCreateEditPrompt');
     Route::post('prompts/edit/{id?}', 'PromptController@postCreateEditPrompt');
     Route::post('prompts/delete/{id}', 'PromptController@postDeletePrompt');
+
+    # SCAVENGER HUNTS
+    Route::get('hunts', 'HuntController@getHuntIndex');
+    Route::get('hunts/create', 'HuntController@getCreateHunt');
+    Route::get('hunts/edit/{id}', 'HuntController@getEditHunt');
+    Route::get('hunts/delete/{id}', 'HuntController@getDeleteHunt');
+    Route::post('hunts/create', 'HuntController@postCreateEditHunt');
+    Route::post('hunts/edit/{id?}', 'HuntController@postCreateEditHunt');
+    Route::post('hunts/delete/{id}', 'HuntController@postDeleteHunt');
 });
 
 

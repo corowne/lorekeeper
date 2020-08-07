@@ -15,8 +15,7 @@ class ScavengerHunt extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'display_name', 'status', 'summary', 'locations', 'is_active',
-        'start_at', 'end_at'
+        'name', 'display_name', 'summary', 'locations', 'start_at', 'end_at'
     ];
 
     /**
@@ -24,7 +23,7 @@ class ScavengerHunt extends Model
      *
      * @var string
      */
-    protected $table = 'hunts';
+    protected $table = 'scavenger_hunts';
 
     /**
      * Dates on the model to convert to Carbon instances.
@@ -85,14 +84,13 @@ class ScavengerHunt extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('is_active', 1)
-            ->where(function($query) {
-                $query->whereNull('start_at')->orWhere('start_at', '<', Carbon::now())->orWhere(function($query) {
-                    $query->where('start_at', '>=', Carbon::now())->where('hide_before_start', 0);
-                });
+        return $query->where(function($query) {
+            $query->whereNull('start_at')->orWhere('start_at', '<', Carbon::now())->orWhere(function($query) {
+                $query->where('start_at', '>=', Carbon::now());
+            });
         })->where(function($query) {
                 $query->whereNull('end_at')->orWhere('end_at', '>', Carbon::now())->orWhere(function($query) {
-                    $query->where('end_at', '<=', Carbon::now())->where('hide_after_end', 0);
+                    $query->where('end_at', '<=', Carbon::now());
                 });
         });
         

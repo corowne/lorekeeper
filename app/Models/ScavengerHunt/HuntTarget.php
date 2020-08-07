@@ -13,7 +13,7 @@ class HuntTarget extends Model
      * @var array
      */
     protected $fillable = [
-        'hunt_id', 'item_id', 'quantity', 'page_id', 'description'
+        'hunt_id', 'target', 'item_id', 'quantity', 'page_id', 'description'
     ];
 
     /**
