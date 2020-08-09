@@ -1427,13 +1427,13 @@ class CharacterManager extends Service
                 'character_id' => $character->id,
                 'status' => 'Draft',
                 'hash' => randomString(10),
+                'update_type' => $character->is_myo_slot ? 'MYO' : 'Character',
                 
                 // Set some data based on the character's existing stats
                 'rarity_id' => $character->image->rarity_id,
                 'species_id' => $character->image->species_id,
                 'subtype_id' => $character->image->subtype_id
             ];
-
 
             $request = CharacterDesignUpdate::create($data);
 
@@ -1728,6 +1728,10 @@ class CharacterManager extends Service
         try {
             if($request->status != 'Draft') throw new \Exception("This request cannot be resubmitted to the queue.");
 
+            // Recheck and set update type, as insurance/in case of pre-existing drafts
+            if($request->character->is_myo_slot) 
+            $request->update_type = 'MYO';
+            else $request->update_type = 'Character';
             // We've done validation and all section by section,
             // so it's safe to simply set the status to Pending here
             $request->status = 'Pending';
@@ -1805,7 +1809,7 @@ class CharacterManager extends Service
                 'y0' => $request->y0,
                 'y1' => $request->y1,
                 'species_id' => $request->species_id,
-                'subtype_id' => $request->subtype_id,
+                'subtype_id' => ($request->character->is_myo_slot && isset($request->character->image->subtype_id)) ? $request->character->image->subtype_id : $request->subtype_id,
                 'rarity_id' => $request->rarity_id,
                 'sort' => 0,
             ]);
@@ -1862,6 +1866,12 @@ class CharacterManager extends Service
             // Add a log for the character and user
             $this->createLog($user->id, null, $request->character->user_id, $request->character->user->alias, $request->character->id, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', '[#'.$image->id.']', 'character');
             $this->createLog($user->id, null, $request->character->user_id, $request->character->user->alias, $request->character->id, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', '[#'.$image->id.']', 'user');
+
+            // Final recheck and setting of update type, as insurance
+            if($request->character->is_myo_slot) 
+            $request->update_type = 'MYO';
+            else $request->update_type = 'Character';
+            $request->save();
             
             // If this is for a MYO, set user's FTO status and the MYO status of the slot
             if($request->character->is_myo_slot)
