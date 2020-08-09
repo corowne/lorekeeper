@@ -36,7 +36,8 @@
 </div>
 
 @if($hunt->id)
-    <div class="form-group">
+    <h4>Locations <a class="small inventory-collapse-toggle collapse-toggle" href="#spoilers" data-toggle="collapse">Show</a></h3>
+    <div class="mb-3 collapse form-group" id="spoilers">
         {!! Form::label('locations', 'Locations (Optional)') !!} {!! add_help('The locations of hunt targets. HTML cannot be used.') !!}
         {!! Form::textarea('locations', $hunt->locations, ['class' => 'form-control']) !!}
     </div>
@@ -65,7 +66,10 @@
 
 @if($hunt->id)
     <h3>Display Link</h3>
-    <p>For convenience, here is the code to display a link to the hunt's user-facing page. Hunt's pages inform users of how many of the hunt's targets they've found, and provide a recap of any clues attached to the found targets. Targets not yet found are not displayed, aside from indicating the total number; the full lineup can thus be indicated (or not) as desired.</p>
+    <p>For convenience, here is the hunt's url as well as the full HTML to display a link to the hunt's user-facing page. Hunt's pages inform users of how many of the hunt's targets they've found, and provide a recap of any clues attached to the found targets. Targets not yet found are not displayed, aside from indicating the total number; the full lineup can thus be indicated (or not) as desired.</p>
+    <div class="alert alert-secondary">
+        {{ $hunt->url }}
+    </div>
     <div class="alert alert-secondary">
         {{ $hunt->displayName }}
     </div>
@@ -73,7 +77,7 @@
 
 @if($hunt->id)
     <h3>Hunt Targets</h3>
-    <p>Hunt targets are items. They are granted to the user on being claimed, and can only be claimed once. Each target is assigned a number, 1-10, per hunt, based on the order they are added to the hunt.</p>
+    <p>Hunt targets are items with a specified quantity. They are granted to the user on being claimed, and can only be claimed once. Each target is assigned a number, 1-10, per hunt, based on the order they are added to the hunt. Targets can be deleted so long as the hunt has not had any participants, as doing so after would break the logs. Users will also be shown the number of targets they have found out of the total, so make sure you have only the number of targets desired before the hunt goes live!</p>
 
     @if(count($hunt->targets) < 10)
     <div class="text-right">
@@ -84,13 +88,13 @@
     @if(count($hunt->targets))
     <div class="row ml-md-2 mb-3">
       <div class="d-flex row flex-wrap col-12 pb-1 px-0 ubt-bottom">
-        <div class="col-md-2 font-weight-bold">Number</div>
+        <div class="col-md-2 font-weight-bold text-center">Target Number</div>
         <div class="col-md font-weight-bold">Item</div>
       </div>
       @foreach($hunt->targets as $target)
         <div class="d-flex row flex-wrap col-12 mt-1 pt-2 px-0 ubt-top">
-            <div class="col-md-2">
-            a
+            <div class="col-md-2 text-center">
+            {{ $hunt->numberedTargets[$target->id] + 1 }}
             </div>
             <div class="col-md text-truncate">
             {!! $target->displayItem !!}

@@ -63,7 +63,7 @@ class ScavengerHunt extends Model
     **********************************************************************************************/
     
     /**
-     * Get the targets attached to this scavenging hunt.
+     * Get the targets attached to this scavenger hunt.
      */
     public function targets() 
     {
@@ -192,7 +192,7 @@ class ScavengerHunt extends Model
     }
 
     /**
-     * Scope a query to only include active hunts.
+     * Check if the hunt is active or not.
      *
      * @return string
      */
@@ -204,4 +204,16 @@ class ScavengerHunt extends Model
             return FALSE;
         
     }
+
+    /**
+     * Get the list of targets attached to this scavenger hunt, keyed to their number within the hunt.
+     * 
+     * @return array
+     */
+    public function getNumberedTargetsAttribute() 
+    {
+        $targets = (array_flip($this->targets->pluck('id')->toArray()));
+        return $targets;
+    }
+
 }

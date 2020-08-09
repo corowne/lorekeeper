@@ -160,6 +160,7 @@ class HuntController extends Controller
     public function getEditHuntTarget(HuntService $service, $id)
     {
         $target = HuntTarget::find($id);
+        if(!$target) abort(404);
         return view('admin.hunts.create_edit_target', [
             'target' => $target,
             'hunt' => ScavengerHunt::find($target->hunt_id),

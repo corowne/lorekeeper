@@ -55,7 +55,7 @@ class HuntTarget extends Model
     /**
      * Get the item attached to the hunt target.
      */
-    public function reward() 
+    public function item() 
     {
         return $this->belongsTo('App\Models\Item\Item', 'item_id');
     }
@@ -73,9 +73,40 @@ class HuntTarget extends Model
      */
     public function getDisplayItemAttribute()
     {
-        $item = Item::find($this->item_id);
-        $image = ($item->imageUrl) ? '<img class="small-icon" src="'.$item->imageUrl.'">' : null;
-        return $image.' '.$item->displayName.' x'.$this->attributes['quantity'];
+        $image = ($this->item->imageUrl) ? '<img class="small-icon" src="'.$this->item->imageUrl.'">' : null;
+        return $image.' '.$this->item->displayName.' x'.$this->attributes['quantity'];
+    }
+
+    /**
+     * Gets the target's public-facing link.
+     *
+     * @return string
+     */
+    public function getUrlAttribute()
+    {
+        return url('hunts/targets/'.$this->page_id);
+    }
+
+    /**
+     * Formats a link for public display of the target.
+     *
+     * @return string
+     */
+    public function getDisplayLinkAttribute()
+    {
+        $image = ($this->item->imageUrl) ? '<img src="'.$this->item->imageUrl.'" alt="'.$this->item->name.'" />' : $this->item->name;
+        return '<a href="'.$this->url.'">'.$image.'</a>';
+    }
+
+    /**
+     * Formats a wiki link for public display of the target.
+     *
+     * @return string
+     */
+    public function getWikiLinkAttribute()
+    {
+        $image = ($this->item->imageUrl) ? $this->item->imageUrl : $this->item->name;
+        return '['.$this->url.' '.$image.']';
     }
 
 }
