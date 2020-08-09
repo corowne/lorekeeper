@@ -25,7 +25,7 @@ class HuntParticipant extends Model
      *
      * @var string
      */
-    protected $table = 'hunt_participants';
+    protected $table = 'scavenger_participants';
 
     /**
      * Dates on the model to convert to Carbon instances.

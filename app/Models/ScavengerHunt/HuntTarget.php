@@ -4,6 +4,7 @@ namespace App\Models\ScavengerHunt;
 
 use Config;
 use App\Models\Model;
+use App\Models\Item\Item;
 
 class HuntTarget extends Model
 {
@@ -21,7 +22,7 @@ class HuntTarget extends Model
      *
      * @var string
      */
-    protected $table = 'hunt_targets';
+    protected $table = 'scavenger_targets';
     
     /**
      * Validation rules for creation.
@@ -58,4 +59,23 @@ class HuntTarget extends Model
     {
         return $this->belongsTo('App\Models\Item\Item', 'item_id');
     }
+
+    /**********************************************************************************************
+    
+        ACCESSORS
+
+    **********************************************************************************************/
+    
+    /**
+     * Displays the target item and its quantity.
+     *
+     * @return string
+     */
+    public function getDisplayItemAttribute()
+    {
+        $item = Item::find($this->item_id);
+        $image = ($item->imageUrl) ? '<img class="small-icon" src="'.$item->imageUrl.'">' : null;
+        return $image.' '.$item->displayName.' x'.$this->attributes['quantity'];
+    }
+
 }

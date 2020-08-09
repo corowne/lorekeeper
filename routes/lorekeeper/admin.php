@@ -214,6 +214,13 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('hunts/create', 'HuntController@postCreateEditHunt');
     Route::post('hunts/edit/{id?}', 'HuntController@postCreateEditHunt');
     Route::post('hunts/delete/{id}', 'HuntController@postDeleteHunt');
+
+    Route::get('hunts/targets/create/{id}', 'HuntController@getCreateHuntTarget');
+    Route::post('hunts/targets/create', 'HuntController@postCreateEditHuntTarget');
+    Route::get('hunts/targets/edit/{id}', 'HuntController@getEditHuntTarget');
+    Route::post('hunts/targets/edit/{id}', 'HuntController@postCreateEditHuntTarget');
+    Route::get('hunts/targets/delete/{id}', 'HuntController@getDeleteHuntTarget');
+    Route::post('hunts/targets/delete/{id}', 'HuntController@postDeleteHuntTarget');
 });
 
 

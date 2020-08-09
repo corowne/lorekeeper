@@ -15,36 +15,39 @@
     <p>No hunts found.</p>
 @else 
     {!! $hunts->render() !!}
-    <table class="table table-sm category-table">
-        <thead>
-            <tr>
-                <th>Active</th>
-                <th>Name</th>
-                <th>Starts</th>
-                <th>Ends</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($hunts as $hunt)
-                <tr class="sort-prompt" data-id="{{ $hunt->id }}">
-                    <td class="text-center">{!! $hunt->isActive ? '<i class="text-success fas fa-check"></i>' : '' !!}</td>
-                    <td>
-                        {{ $hunt->name }}
-                    </td>
-                    <td>
-                        {!! $hunt->start_at ? format_date($hunt->start_at) : '' !!}
-                    </td>
-                    <td>
-                        {!! $hunt->end_at ? format_date($hunt->end_at) : '' !!}
-                    </td>
-                    <td class="text-right">
-                        <a href="{{ url('admin/data/prompts/edit/'.$prompt->id) }}" class="btn btn-primary">Edit</a>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+
+    <div class="row ml-md-2">
+      <div class="d-flex row flex-wrap col-12 pb-1 px-0 ubt-bottom">
+        <div class="col-4 col-md-1 font-weight-bold">Active</div>
+        <div class="col-4 col-md-3 font-weight-bold">Name</div>
+        <div class="col-4 col-md-3 font-weight-bold">Display Name</div>
+        <div class="col-4 col-md-2 font-weight-bold">Starts</div>
+        <div class="col-4 col-md-2 font-weight-bold">Ends</div>
+      </div>
+      @foreach($hunts as $hunt)
+      <div class="d-flex row flex-wrap col-12 mt-1 pt-2 px-0 ubt-top">
+        <div class="col-2 col-md-1">
+          {!! $hunt->isActive ? '<i class="text-success fas fa-check"></i>' : '' !!}
+        </div>
+        <div class="col-5 col-md-3 text-truncate">
+          {{ $hunt->name }}
+        </div>
+        <div class="col-5 col-md-3">
+          {!! $hunt->displayName !!}
+        </div>
+        <div class="col-4 col-md-2">
+          {!! pretty_date($hunt->start_at) !!}
+        </div>
+        <div class="col-4 col-md-2">
+          {!! pretty_date($hunt->end_at) !!}
+        </div>
+        <div class="col-3 col-md-1 text-right">
+          <a href="{{ url('admin/data/hunts/edit/'.$hunt->id) }}"  class="btn btn-primary py-0 px-2">Edit</a>
+        </div>
+      </div>
+      @endforeach
+    </div>
+
     {!! $hunts->render() !!}
 @endif
 

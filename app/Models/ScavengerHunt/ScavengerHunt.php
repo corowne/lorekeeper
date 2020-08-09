@@ -15,7 +15,7 @@ class ScavengerHunt extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'display_name', 'summary', 'locations', 'start_at', 'end_at'
+        'name', 'display_name', 'summary', 'locations', 'clue', 'start_at', 'end_at'
     ];
 
     /**
@@ -38,7 +38,7 @@ class ScavengerHunt extends Model
      * @var array
      */
     public static $createRules = [
-        'name' => 'required|unique:hunts|between:3,50',
+        'name' => 'required|unique:scavenger_hunts|between:3,50',
         'display_name' => 'required|between:3,50',
         'summary' => 'nullable',
         'locations' => 'nullable',
@@ -50,7 +50,7 @@ class ScavengerHunt extends Model
      * @var array
      */
     public static $updateRules = [
-        'name' => 'required|unique:hunts|between:3,50',
+        'name' => 'required|between:3,50',
         'display_name' => 'required|between:3,50',
         'summary' => 'nullable',
         'locations' => 'nullable',
@@ -172,22 +172,36 @@ class ScavengerHunt extends Model
     **********************************************************************************************/
     
     /**
-     * Displays the model's name, linked to its encyclopedia page.
+     * Displays the model's name, linked to its page.
      *
      * @return string
      */
     public function getDisplayNameAttribute()
     {
-        return '<a href="'.$this->url.'" class="display-prompt">'.$this->name.'</a>';
+        return '<a href="'.$this->url.'" class="display-prompt">'.$this->attributes['display_name'].'</a>';
     }
 
     /**
-     * Gets the prompt's asset type for asset management.
+     * Gets the URL of the model's page.
      *
      * @return string
      */
-    public function getAssetTypeAttribute()
+    public function getUrlAttribute()
     {
-        return 'hunts';
+        return url('hunts/'.$this->id);
+    }
+
+    /**
+     * Scope a query to only include active hunts.
+     *
+     * @return string
+     */
+    public function getIsActiveAttribute()
+    {
+        if($this->start_at <= Carbon::now() && $this->end_at >= Carbon::now())
+            return TRUE;
+        else
+            return FALSE;
+        
     }
 }
