@@ -24,7 +24,7 @@ class CharacterDesignupdate extends Model
         'use_cropper', 'x0', 'x1', 'y0', 'y1',
         'hash', 'species_id', 'subtype_id', 'rarity_id', 
         'has_comments', 'has_image', 'has_addons', 'has_features',
-        'submitted_at'
+        'submitted_at', 'update_type'
     ];
 
     /**
@@ -173,7 +173,7 @@ class CharacterDesignupdate extends Model
      */
     public function scopeMyos($query)
     {
-        $query->select('design_updates.*')->join('characters', 'design_updates.character_id', 'characters.id')->where('characters.is_myo_slot', 1);
+        $query->select('design_updates.*')->where('update_type', 'MYO');
     }
 
     /**
@@ -184,7 +184,7 @@ class CharacterDesignupdate extends Model
      */
     public function scopeCharacters($query)
     {
-        $query->select('design_updates.*')->join('characters', 'design_updates.character_id', 'characters.id')->where('characters.is_myo_slot', 0);
+        $query->select('design_updates.*')->where('update_type', 'Character');
     }
 
     /**********************************************************************************************
