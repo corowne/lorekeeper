@@ -1617,7 +1617,7 @@ class CharacterManager extends Service
                 foreach($data['stack_id'] as $key=>$stackId) {
                     $stack = UserItem::with('item')->find($stackId);
                     if(!$stack || $stack->user_id != $request->user_id) throw new \Exception("Invalid item selected.");
-                    $stack->update_count = $data['stack_quantity'][$key];
+                    $stack->update_count += $data['stack_quantity'][$key];
                     $stack->save();
 
                     addAsset($userAssets, $stack, $data['stack_quantity'][$key]);
@@ -1771,24 +1771,18 @@ class CharacterManager extends Service
             $inventoryManager = new InventoryManager;
             if(isset($requestData['user']) && isset($requestData['user']['user_items'])) {
                 $stacks = $requestData['user']['user_items'];
-                foreach($stacks as $stackId=>$quantity) {
-                    $stack = UserItem::find($stackId);
+                foreach($requestData['user']['user_items'] as $userItemId=>$quantity) {
+                    $userItemRow = UserItem::find($userItemId);
+                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
                     if($userItemRow->update_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
                     $userItemRow->update_count -= $quantity;
+                    $userItemRow->save();
+                }
+
+                foreach($stacks as $stackId=>$quantity) {
+                    $stack = UserItem::find($stackId);
                     $user = User::find($request->user_id);
                     if(!$inventoryManager->debitStack($user, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', ['data' => 'Item used in ' . ($request->character->is_myo_slot ? 'MYO design approval' : 'Character design update') . ' (<a href="'.$request->url.'">#'.$request->id.'</a>)'], $stack, $quantity)) throw new \Exception("Failed to create log for item stack.");
-                }
-            }
-            $currencyManager = new CurrencyManager;
-            if(isset($requestData['user']['currencies']) && $requestData['user']['currencies'])
-            {
-                foreach($requestData['user']['currencies'] as $currencyId=>$quantity) {
-                    $currency = Currency::find($currencyId);
-                    if(!$currencyManager->createLog($request->user_id, 'User', null, null, 
-                    $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', 
-                    'Used in ' . ($request->character->is_myo_slot ? 'MYO design approval' : 'character design update') . ' (<a href="'.$request->url.'">#'.$request->id.'</a>)', 
-                    $currencyId, $quantity)) 
-                        throw new \Exception("Failed to create log for user currency.");
                 }
             }
             if(isset($requestData['character']['currencies']) && $requestData['character']['currencies'])
