@@ -4,34 +4,49 @@
         $userItemCategory.on('change', function(e) {
             refreshCategory();
         });
-        $('.inventory-stack').on('click', function(e) {
-            var $parent = $(this).parent().parent().parent();
-            $parent.toggleClass('category-selected');
-            $parent.find('.inventory-checkbox').prop('checked', $parent.hasClass('category-selected'));
-            refreshCategory();
-        });
-        $('.inventory-info').on('click', function(e) {
-            e.preventDefault();
-            var $parent = $(this).parent().parent().parent();
-            loadModal("{{ url('items') }}/" + $parent.data('id') + "?read_only={{ isset($readOnly) && $readOnly ? 1 : 0 }}", $parent.data('name'));
-        });
         $('.inventory-select-all').on('click', function(e) {
             e.preventDefault();
-            var $target = $('.user-item:not(.hide)');
-            $target.addClass('category-selected');
-            $target.find('.inventory-checkbox').prop('checked', true);
+            selectVisible();
         });
         $('.inventory-clear-selection').on('click', function(e) {
             e.preventDefault();
-            var $target = $('.user-item:not(.hide)');
-            $target.removeClass('category-selected');
-            $target.find('.inventory-checkbox').prop('checked', false);
+            deselectVisible();
         });
-
+        $('.inventory-checkbox').on('change', function() {
+            $checkbox = $(this);
+            var rowId = "#itemRow" + $checkbox.val()
+            if($checkbox.is(":checked")) {
+                $(rowId).addClass('category-selected');
+                $(rowId).find('.quantity-select').prop('name', 'stack_quantity[]')
+            }
+            else {
+                $(rowId).removeClass('category-selected');
+                $(rowId).find('.quantity-select').prop('name', '')
+            }
+        });
+        $('#toggle-checks').on('click', function() {
+            ($(this).is(":checked")) ? selectVisible() : deselectVisible();
+        });
+        
         function refreshCategory() {
             var display = $userItemCategory.val();
             $('.user-item').addClass('hide');
             $('.user-items .category-' + display).removeClass('hide');
+            $('#toggle-checks').prop('checked', false);
+        }
+        function selectVisible() {
+            var $target = $('.user-item:not(.hide)');
+            $target.addClass('category-selected');
+            $target.find('.inventory-checkbox').prop('checked', true);
+            $('#toggle-checks').prop('checked', true);
+            $target.find('.quantity-select').prop('name', 'stack_quantity[]');
+        }
+        function deselectVisible() {
+            var $target = $('.user-item:not(.hide)');
+            $target.removeClass('category-selected');
+            $target.find('.inventory-checkbox').prop('checked', false);
+            $('#toggle-checks').prop('checked', false);
+            $target.find('.quantity-select').prop('name', '');
         }
     });
 </script>

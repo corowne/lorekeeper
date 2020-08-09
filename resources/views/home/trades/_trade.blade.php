@@ -22,7 +22,7 @@
                         @endif
                     </span>
                 </h3>
-                @include('home.trades._offer_summary', ['user' => $trade->sender, 'data' => isset($trade->data['sender']) ? parseAssetData($trade->data['sender']) : null, 'trade' => $trade])
+                @include('home.trades._offer_summary', ['user' => $trade->sender, 'data' => isset($trade->data['sender']) ? parseAssetData($trade->data['sender']) : null, 'trade' => $trade, 'stacks' => (isset($stacks[$trade->id]['sender']) ? $stacks[$trade->id]['sender'] : null)])
             </div>
             <div class="col-md-6">
                 <h3 class="card-heading">
@@ -39,7 +39,7 @@
                         @endif
                     </span>
                 </h3>
-                @include('home.trades._offer_summary', ['user' => $trade->recipient, 'data' => isset($trade->data['recipient']) ? parseAssetData($trade->data['recipient']) : null, 'trade' => $trade])
+                @include('home.trades._offer_summary', ['user' => $trade->recipient, 'data' => isset($trade->data['recipient']) ? parseAssetData($trade->data['recipient']) : null, 'trade' => $trade, 'stacks' => (isset($stacks[$trade->id]['recipient']) ? $stacks[$trade->id]['recipient'] : null)])
             </div>
         </div>
         <hr />

@@ -213,7 +213,7 @@ class CharacterDesignupdate extends Model
         // This is for showing the addons page
         // just need to retrieve a list of stack IDs to tell which ones to check
 
-        return $this->data ? $this->data['stacks'] : [];
+        return $this->data && isset($this->data['user']['user_items']) ? $this->data['user']['user_items'] : [];
     }
 
     /**

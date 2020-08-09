@@ -21,25 +21,36 @@
             </div>
         </div>
         <div id="userItems" class="user-items">
-            <div class="row">
-                @foreach($inventory as $item)
-                    <div class="col-lg-2 col-sm-3 col-6 mb-3 user-item category-all category-{{ $item->item->item_category_id ? : 0 }} {{ isset($selected) && in_array($item->id, $selected) ? 'category-selected' : '' }}" data-id="{{ $item->id }}" data-name="{{ $user->name }}'s {{ $item->item->name }}">
-                        <div class="text-center inventory-item">
-                            <div class="mb-1">
-                                <a class="inventory-stack"><img src="{{ $item->item->imageUrl }}" /></a>
-                            </div>
-                            <div>
-                                <a class="inventory-stack inventory-stack-name">{{ $item->item->name }}</a>
-                                {!! Form::checkbox((isset($fieldName) && $fieldName ? $fieldName : 'stack_id[]'), $item->id, isset($selected) && in_array($item->id, $selected) ? true : false, ['class' => 'inventory-checkbox hide']) !!}
-                            </div>
-                            <div>
-                                <a href="#" class="btn btn-xs btn-outline-info inventory-info">Info</a>
-
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+            <table class="table table-sm">
+                <thead class="thead-light">
+                    <tr class="d-flex">
+                        <th class="col-1"><input id="toggle-checks" type="checkbox"></th>
+                        <th class="col-2">Item</th>
+                        <th class="col-4">Source</th>
+                        <th class="col-3">Notes</th>
+                        <th class="col-2">Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($inventory as $itemRow)
+                        <tr id ="itemRow{{ $itemRow->id }}" class="d-flex {{ $itemRow->isTransferrable ? '' : 'accountbound' }} user-item select-item-row category-all category-{{ $itemRow->item->item_category_id ? : 0 }} {{ isset($selected) && in_array($itemRow->id, array_keys($selected)) ? 'category-selected' : '' }}">
+                            <td class="col-1">{!! Form::checkbox((isset($fieldName) && $fieldName ? $fieldName : 'stack_id[]'), $itemRow->id, isset($selected) && in_array($itemRow->id, array_keys($selected)) ? true : false, ['class' => 'inventory-checkbox']) !!}</td>
+                            <td class="col-2">@if(isset($itemRow->item->image_url)) <img class="small-icon" src="{{ $itemRow->item->image_url }}"> @endif {!! $itemRow->item->name !!}
+                            <td class="col-4">{!! array_key_exists('data', $itemRow->data) ? ($itemRow->data['data'] ? $itemRow->data['data'] : 'N/A') : 'N/A' !!}</td>
+                            <td class="col-3">{!! array_key_exists('notes', $itemRow->data) ? ($itemRow->data['notes'] ? $itemRow->data['notes'] : 'N/A') : 'N/A' !!}</td>
+                            @if($itemRow->availableQuantity || in_array($itemRow->id, array_keys($selected)))
+                                @if(in_array($itemRow->id, array_keys($selected)))
+                                    <td class="col-2">{!! Form::selectRange('stack_quantity[]', $selected[$itemRow->id], $itemRow->getAvailableContextQuantity($selected[$itemRow->id]), 1, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;']) !!} /{{ $itemRow->getAvailableContextQuantity($selected[$itemRow->id]) }} @if($page == 'trade') @if($itemRow->getOthers($selected[$itemRow->id], 0)) {{ $itemRow->getOthers($selected[$itemRow->id], 0) }} @endif @else @if($itemRow->getOthers(0, $selected[$itemRow->id])) {{ $itemRow->getOthers(0, $selected[$itemRow->id]) }} @endif @endif</td>
+                                @else
+                                    <td class="col-2">{!! Form::selectRange('', 1, $itemRow->availableQuantity, 1, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;']) !!} /{{ $itemRow->availableQuantity }} @if($itemRow->getOthers()) {{ $itemRow->getOthers() }} @endif</td>
+                                @endif
+                            @else
+                                <td class="col-2">{!! Form::selectRange('', 0, 0, 0, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;', 'disabled']) !!} /{{ $itemRow->availableQuantity }} @if($itemRow->getOthers()) {{ $itemRow->getOthers() }} @endif</td>
+                            @endif
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
