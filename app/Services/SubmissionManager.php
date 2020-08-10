@@ -90,6 +90,7 @@ class SubmissionManager extends Service
 
                     $holder = User::find($holderId);
 
+                    $currencyManager = new CurrencyManager;
                     foreach($currencyIds as $key=>$currencyId) {
                         $currency = Currency::find($currencyId);
                         if(!$currency) throw new \Exception("Invalid currency selected.");
