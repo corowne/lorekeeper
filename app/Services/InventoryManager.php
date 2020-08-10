@@ -417,6 +417,35 @@ class InventoryManager extends Service
     }
 
     /**
+     * Names an item stack.
+     *
+     * @param  \App\Models\User\User|\App\Models\Character\Character          $owner
+     * @param  \App\Models\User\UserItem|\App\Models\Character\CharacterItem  $stacks
+     * @param  int                                                            $quantities
+     * @return bool
+     */
+    public function nameStack($owner, $stacks, $name)
+    {
+        DB::beginTransaction();
+
+        try {
+            foreach($stacks as $key=>$stack) {
+                $user = Auth::user();
+                if(!$user->hasAlias) throw new \Exception("Your deviantART account must be verified before you can perform this action.");
+                if(!$stack) throw new \Exception("An invalid item was selected.");
+                if($stack->character->user_id != $user->id && !$user->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected items.");
+
+                $stack['stack_name'] = $name;
+                $stack->save();
+            }
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
      * Creates an inventory log.
      *
      * @param  int     $senderId

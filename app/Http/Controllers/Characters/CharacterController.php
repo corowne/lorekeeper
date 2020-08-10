@@ -256,6 +256,9 @@ class CharacterController extends Controller
                     foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
                 }
                 break;
+            case 'name':
+                return $this->postName($request, $service);
+                break;
             case 'delete':
                 return $this->postDelete($request, $service);
                 break;
@@ -278,6 +281,24 @@ class CharacterController extends Controller
     {
         if($service->transferCharacterStack($this->character, $this->character->user, CharacterItem::find($request->get('ids')), $request->get('quantities'))) {
             flash('Item transferred successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Names an inventory stack.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\CharacterManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function postName(Request $request, InventoryManager $service)
+    {
+        if($service->nameStack($this->character, CharacterItem::find($request->get('ids')), $request->get('stack_name'))) {
+            flash('Item named successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
