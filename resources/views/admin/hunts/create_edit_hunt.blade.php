@@ -71,7 +71,7 @@
         {{ $hunt->url }}
     </div>
     <div class="alert alert-secondary">
-        {{ $hunt->displayName }}
+        {{ $hunt->displayLink }}
     </div>
 @endif
 
@@ -94,7 +94,7 @@
       @foreach($hunt->targets as $target)
         <div class="d-flex row flex-wrap col-12 mt-1 pt-2 px-0 ubt-top">
             <div class="col-md-2 text-center">
-            {{ $hunt->numberedTargets[$target->id] + 1 }}
+            {{ $target->targetNumber }}
             </div>
             <div class="col-md text-truncate">
             {!! $target->displayItem !!}
@@ -112,7 +112,34 @@
 
 @if($hunt->id)
     <h3>Log</h3>
-    <p>This is the log of claimed targets. It's organized per user, but can be sorted per claim time for each target. No time means a user has not found and claimed a target yet.</p>
+    <p>
+        This is the log of claimed targets. It's organized per user, and claimed targets are represented by a checkmark with the timestamp in the adjacent tooltip.
+    </p>
+
+    @if(count($hunt->participants))
+    <div class="row ml-md-2 mb-3">
+        <div class="d-flex row flex-wrap col-12 pb-1 px-0 ubt-bottom">
+            <div class="col-md-2 font-weight-bold">User</div>
+            @foreach($hunt->targets as $target)
+                <div class="col-md font-weight-bold text-center">Target {{ $target->targetNumber }}</div>
+            @endforeach
+        </div>
+        @foreach($hunt->participants as $participant)
+        <div class="d-flex row flex-wrap col-12 mt-1 pt-2 px-0 ubt-top">
+            <div class="col-md-2">
+            {!! $participant->user->displayName !!}
+            </div>
+            @foreach($hunt->targets as $target)
+                <div class="col-md text-center">
+                    @if(isset($participant[$target->targetField]))
+                        <i class="text-success fas fa-check"></i> {!! add_help($participant[$target->targetField]) !!}
+                    @endif
+                </div>
+            @endforeach
+        </div>
+        @endforeach
+    @endif
+    </div>
 @endif
 
 @endsection

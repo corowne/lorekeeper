@@ -60,12 +60,88 @@ class HuntTarget extends Model
         return $this->belongsTo('App\Models\Item\Item', 'item_id');
     }
 
+    /**
+     * Get the target's parent hunt.
+     */
+    public function hunt() 
+    {
+        return $this->belongsTo('App\Models\ScavengerHunt\ScavengerHunt', 'hunt_id');
+    }
+
     /**********************************************************************************************
     
         ACCESSORS
 
     **********************************************************************************************/
     
+    /**
+     * Gets the target's number within the hunt.
+     *
+     * @return string
+     */
+    public function getTargetNumberAttribute()
+    {
+        return $this->hunt->numberedTargets[$this->id] + 1;
+    }
+
+    /**
+     * Gets the target's field for participant logging.
+     *
+     * @return string
+     */
+    public function getTargetFieldAttribute()
+    {
+        switch($this->targetNumber) {
+            default:
+            flash('Invalid target number.')->error();
+            break;
+        case 1:
+            return 'target_1';
+            break;
+        case 2:
+            return 'target_2';
+            break;
+        case 3:
+            return 'target_3';
+            break;
+        case 4:
+            return 'target_4';
+            break;
+        case 5:
+            return 'target_5';
+            break;
+        case 6:
+            return 'target_6';
+            break;
+        case 7:
+            return 'target_7';
+            break;
+        case 8:
+            return 'target_8';
+            break;
+        case 9:
+            return 'target_9';
+            break;
+        case 10:
+            return 'target_10';
+            break;
+        }
+    }
+
+    /**
+     * Gets if the target has been claimed.
+     *
+     * @return string
+     */
+    public function getIsClaimedAttribute()
+    {
+        $participant = HuntParticipant::where([
+            ['user_id', '=', Auth::user()->id],
+            ['hunt_id', '=', $hunt->id],
+        ])->first();
+        return url('hunts/targets/'.$this->page_id);
+    }
+
     /**
      * Displays the target item and its quantity.
      *
@@ -75,6 +151,17 @@ class HuntTarget extends Model
     {
         $image = ($this->item->imageUrl) ? '<img class="small-icon" src="'.$this->item->imageUrl.'">' : null;
         return $image.' '.$this->item->displayName.' x'.$this->attributes['quantity'];
+    }
+
+    /**
+     * Displays the target item.
+     *
+     * @return string
+     */
+    public function getDisplayItemShortAttribute()
+    {
+        $image = ($this->item->imageUrl) ? '<img class="small-icon" src="'.$this->item->imageUrl.'">' : null;
+        return $image.' '.$this->item->displayName;
     }
 
     /**

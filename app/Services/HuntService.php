@@ -117,6 +117,7 @@ class HuntService extends Service
             if(count(HuntTarget::where('hunt_id',$data['hunt_id'])->pluck('id')) == 10) throw new \Exception ('This hunt already has the maximum number of targets.');
 
             $pageId = randomString(10);
+            if(HuntTarget::where('page_id', $pageId)->exists()) throw new \Exception("Failed to generate a unique page ID. Please try again!");
             
             $target = HuntTarget::create([
                 'item_id' => $data['item_id'],

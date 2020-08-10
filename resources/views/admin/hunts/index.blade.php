@@ -21,8 +21,8 @@
         <div class="col-4 col-md-1 font-weight-bold">Active</div>
         <div class="col-4 col-md-3 font-weight-bold">Name</div>
         <div class="col-4 col-md-3 font-weight-bold">Display Name</div>
-        <div class="col-4 col-md-2 font-weight-bold">Starts</div>
-        <div class="col-4 col-md-2 font-weight-bold">Ends</div>
+        <div class="col-4 col-md-2 font-weight-bold">Start</div>
+        <div class="col-4 col-md-2 font-weight-bold">End</div>
       </div>
       @foreach($hunts as $hunt)
       <div class="d-flex row flex-wrap col-12 mt-1 pt-2 px-0 ubt-top">
@@ -33,7 +33,7 @@
           {{ $hunt->name }}
         </div>
         <div class="col-5 col-md-3">
-          {!! $hunt->displayName !!}
+          {!! $hunt->displayLink !!}
         </div>
         <div class="col-4 col-md-2">
           {!! pretty_date($hunt->start_at) !!}

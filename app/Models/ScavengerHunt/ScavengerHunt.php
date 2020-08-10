@@ -70,6 +70,14 @@ class ScavengerHunt extends Model
         return $this->hasMany('App\Models\ScavengerHunt\HuntTarget', 'hunt_id');
     }
 
+    /**
+     * Get the targets attached to this scavenger hunt.
+     */
+    public function participants() 
+    {
+        return $this->hasMany('App\Models\ScavengerHunt\HuntParticipant', 'hunt_id');
+    }
+
     /**********************************************************************************************
     
         SCOPES
@@ -177,6 +185,16 @@ class ScavengerHunt extends Model
      * @return string
      */
     public function getDisplayNameAttribute()
+    {
+        return $this->attributes['display_name'];
+    }
+    
+    /**
+     * Displays the model's name, linked to its page.
+     *
+     * @return string
+     */
+    public function getDisplayLinkAttribute()
     {
         return '<a href="'.$this->url.'" class="display-prompt">'.$this->attributes['display_name'].'</a>';
     }

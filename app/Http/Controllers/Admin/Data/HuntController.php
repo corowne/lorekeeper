@@ -61,6 +61,7 @@ class HuntController extends Controller
     {
         $hunt = ScavengerHunt::find($id);
         if(!$hunt) abort(404);
+        
         return view('admin.hunts.create_edit_hunt', [
             'hunt' => $hunt,
             'items' => Item::orderBy('name')->pluck('name', 'id'),
