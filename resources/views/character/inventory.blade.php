@@ -95,7 +95,6 @@
                         {!! Form::text('quantities[]', 1, ['class' => 'form-control mr-2', 'placeholder' => 'Quantity']) !!}
                         <a href="#" class="remove-item btn btn-danger mb-2">×</a>
                     </div>
-                    </div>
 
                     <h5>Additional Data</h5>
 
@@ -110,7 +109,7 @@
                     </div>
 
                     <div class="form-group">
-                        <input type="checkbox" value="1" name="disallow_transfer">
+                        {!! Form::checkbox('disallow_transfer', 1, 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
                         {!! Form::label('disallow_transfer', 'Character-bound', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is on, the character\'s owner will not be able to transfer this item to their inventory. Items that disallow transfers by default will still not be transferrable.') !!}
                     </div>
 
