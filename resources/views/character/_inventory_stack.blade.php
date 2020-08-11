@@ -36,7 +36,7 @@
                             <td class="col-1">{!! Form::checkbox('ids[]', $itemRow->id, false, ['class' => 'item-check', 'onclick' => 'updateQuantities(this)']) !!}</td>
                         @endif
                         @if($item->category->can_name)
-                            <td class="col-2">{!! $itemRow->stack_name ? : 'N/A' !!}</td> 
+                            <td class="col-2">{!! htmlentities($itemRow->stack_name) ? : 'N/A' !!}</td> 
                         @endif
                         <td class="col">{!! array_key_exists('data', $itemRow->data) ? ($itemRow->data['data'] ? $itemRow->data['data'] : 'N/A') : 'N/A' !!}</td>
                         <td class="col">{!! array_key_exists('notes', $itemRow->data) ? ($itemRow->data['notes'] ? $itemRow->data['notes'] : 'N/A') : 'N/A' !!}</td>
