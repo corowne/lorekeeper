@@ -26,6 +26,18 @@ return [
     |
     */
     'site_name' => 'Lorekeeper',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Site Description
+    |--------------------------------------------------------------------------
+    |
+    | This is the description used for the site in meta tags-- previews
+    | displayed on various social media sites, discord, and the like.
+    | It is not, however, displayed on the site itself. This should be kept short and snappy!
+    |
+    */
+    'site_desc' => 'A Lorekeeper ARPG',
     
     /*
     |--------------------------------------------------------------------------

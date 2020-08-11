@@ -149,10 +149,10 @@ class CharacterController extends Controller
     /**
      * Shows a character's inventory.
      *
-     * @param  string  $name
+     * @param  string  $slug
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCharacterInventory($name)
+    public function getCharacterInventory($slug)
     {
         $categories = ItemCategory::where('is_character_owned', '1')->orderBy('sort', 'DESC')->get();
         $itemOptions = Item::whereIn('item_category_id', $categories->pluck('id'));
