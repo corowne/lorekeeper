@@ -23,13 +23,23 @@
             @foreach($categoryItems->chunk(4) as $chunk)
                 <div class="row mb-3">
                     @foreach($chunk as $itemId=>$stack)
-                        <div class="col-sm-3 col-6 text-center inventory-item" data-id="{{ $stack->first()->pivot->id }}" data-name="{{ $character->name }}'s {{ $stack->first()->name }}">
+                        <?php
+                            $canName = $stack->first()->category->can_name;
+                            $stackName = $stack->first()->pivot->pluck('stack_name', 'id')->toArray()[$stack->first()->pivot->id];
+                            $stackNameClean = htmlentities($stackName);
+                        ?>
+                        <div class="col-sm-3 col-6 text-center inventory-item" data-id="{{ $stack->first()->pivot->id }}" data-name="{!! $canName && $stackName ? htmlentities($stackNameClean).' [' : null !!}{{ $character->name }}'s {{ $stack->first()->name }}{!! $canName && $stackName ? ']' : null !!}">
                             <div class="mb-1">
                                 <a href="#" class="inventory-stack"><img src="{{ $stack->first()->imageUrl }}" /></a>
                             </div>
-                            <div>
+                            <div class="{{ $canName ? 'text-muted' : '' }}">
                                 <a href="#" class="inventory-stack inventory-stack-name">{{ $stack->first()->name }} x{{ $stack->sum('pivot.count') }}</a>
                             </div>
+                            @if($canName && $stackName)
+                                <div>
+                                    <span class="inventory-stack inventory-stack-name badge badge-info" style="font-size:95%; margin:5px;">"{{ $stackName }}"</span>
+                                </div>
+                            @endif
                         </div>
                     @endforeach
                 </div>

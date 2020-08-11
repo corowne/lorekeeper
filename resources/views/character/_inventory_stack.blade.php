@@ -19,12 +19,13 @@
                     @if($user && !$readOnly && 
                     ($owner_id == $user->id || $has_power == TRUE))
                         <th class="col-1"><input id="toggle-checks" type="checkbox" onclick="toggleChecks(this)"></th>
-                        <th class="col-4">Source</th>
-                    @else
-                        <th class="col-5">Source</th>
                     @endif
-                    <th class="col-3">Notes</th>
-                    <th class="col-3">Quantity</th>
+                    @if($item->category->can_name)
+                        <th class="col-2">Name</th>
+                    @endif
+                    <th class="col">Source</th>
+                    <th class="col">Notes</th>
+                    <th class="col-2">Quantity</th>
                     <th class="col-1"><i class="fas fa-lock invisible"></i></th>
                 </tr>
             </thead>
@@ -33,16 +34,17 @@
                     <tr id ="itemRow{{ $itemRow->id }}" class="d-flex {{ $itemRow->isTransferrable ? '' : 'accountbound' }}">
                         @if($user && !$readOnly && ($owner_id == $user->id || $has_power == TRUE))
                             <td class="col-1">{!! Form::checkbox('ids[]', $itemRow->id, false, ['class' => 'item-check', 'onclick' => 'updateQuantities(this)']) !!}</td>
-                            <td class="col-4">{!! array_key_exists('data', $itemRow->data) ? ($itemRow->data['data'] ? $itemRow->data['data'] : 'N/A') : 'N/A' !!}</td>
-                        @else
-                            <td class="col-5">{!! array_key_exists('data', $itemRow->data) ? ($itemRow->data['data'] ? $itemRow->data['data'] : 'N/A') : 'N/A' !!}</td>
                         @endif
-                        <td class="col-3">{!! array_key_exists('notes', $itemRow->data) ? ($itemRow->data['notes'] ? $itemRow->data['notes'] : 'N/A') : 'N/A' !!}</td>
+                        @if($item->category->can_name)
+                            <td class="col-2">{!! htmlentities($itemRow->stack_name) ? : 'N/A' !!}</td> 
+                        @endif
+                        <td class="col">{!! array_key_exists('data', $itemRow->data) ? ($itemRow->data['data'] ? $itemRow->data['data'] : 'N/A') : 'N/A' !!}</td>
+                        <td class="col">{!! array_key_exists('notes', $itemRow->data) ? ($itemRow->data['notes'] ? $itemRow->data['notes'] : 'N/A') : 'N/A' !!}</td>
                         @if($user && !$readOnly && ($owner_id == $user->id || $has_power == TRUE))
                             @if($itemRow->availableQuantity)
-                                <td class="col-3">{!! Form::selectRange('', 1, $itemRow->availableQuantity, 1, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;']) !!} /{{ $itemRow->availableQuantity }}</td>
+                                <td class="col-2">{!! Form::selectRange('', 1, $itemRow->availableQuantity, 1, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;']) !!} /{{ $itemRow->availableQuantity }}</td>
                             @else
-                                <td class="col-3">{!! Form::selectRange('', 0, 0, 0, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;', 'disabled']) !!} /{{ $itemRow->availableQuantity }}</td>
+                                <td class="col-2">{!! Form::selectRange('', 0, 0, 0, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;', 'disabled']) !!} /{{ $itemRow->availableQuantity }}</td>
                             @endif
                         @else
                             <td class="col-3">{!! $itemRow->count !!}</td>
@@ -57,11 +59,27 @@
             </tbody>
         </table>
     </div>
-    
+
     @if($user && !$readOnly && 
         ($owner_id == $user->id || $has_power == TRUE))
         <div class="card mt-3">
             <ul class="list-group list-group-flush">
+                @if($item->category->can_name)
+                <li class="list-group-item">
+                    <a class="card-title h5 collapse-title" data-toggle="collapse" href="#nameForm">@if($owner_id != $user->id) [ADMIN] @endif Name Item</a>
+                    <div id="nameForm" class="collapse">
+                        <p>Enter a name to display for the selected stack(s)! Note that only one of the stacks' names will display on the inventory page and title of this panel, while other stacks' names will appear in the list above.</p>
+                        {!! Form::open() !!}
+                            <div class="form-group">
+                                {!! Form::text('stack_name', null, ['class' => 'form-control stock-field', 'data-name' => 'stack_name']) !!}
+                            </div>
+                            <div class="text-right">
+                                {!! Form::button('Submit', ['class' => 'btn btn-primary', 'name' => 'action', 'value' => 'name', 'type' => 'submit']) !!}
+                            </div>
+                        {!! Form::close() !!}
+                </div>
+                </li>
+                @endif
                 @if($owner_id != null)
                 <li class="list-group-item">
                     <a class="card-title h5 collapse-title" data-toggle="collapse" href="#transferForm">@if($owner_id != $user->id) [ADMIN] @endif Transfer Item</a>
