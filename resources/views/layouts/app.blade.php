@@ -46,10 +46,10 @@
     <link href="{{ asset('css/croppie.css') }}" rel="stylesheet">
     <link href="{{ asset('css/selectize.bootstrap4.css') }}" rel="stylesheet">
 
-    <!-- @if(file_exists(public_path(). '/css/custom.css'))
+    @if(file_exists(public_path(). '/css/custom.css'))
         <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
-    @endif -->
-    
+    @endif
+
 </head>
 <body>
     <div id="app">
