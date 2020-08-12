@@ -167,7 +167,7 @@ class BoxService extends Service
             {
                 foreach($assetType as $asset)
                 {
-                    array_push($result_elements, $asset['asset']->name.(class_basename($asset['asset']) == 'Raffle' ? ' Ticket' : '')." x".$asset['quantity']);
+                    array_push($result_elements, $asset['asset']->name.(class_basename($asset['asset']) == 'Raffle' ? ' (Raffle Ticket)' : '')." x".$asset['quantity']);
                 }
             }
         }
