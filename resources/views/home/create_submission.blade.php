@@ -49,7 +49,11 @@
         @else 
             <p>Note that any rewards added here are <u>in addition</u> to the default prompt rewards. If you do not require any additional rewards, you can leave this blank.</p>
         @endif
-        @include('widgets._loot_select', ['loots' => null, 'showLootTables' => false, 'showRaffles' => false])
+        @if($isClaim)
+            @include('widgets._loot_select', ['loots' => null, 'showLootTables' => false, 'showRaffles' => true])
+        @else
+            @include('widgets._loot_select', ['loots' => null, 'showLootTables' => false, 'showRaffles' => false])
+        @endif
         @if(!$isClaim)
             <div id="rewards" class="mb-3"></div>
         @endif
@@ -70,8 +74,11 @@
     {!! Form::close() !!}
 
     @include('widgets._character_select', ['characterCurrencies' => $characterCurrencies])
-    @include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'showLootTables' => false, 'showRaffles' => false])
-
+    @if($isClaim)
+        @include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'showLootTables' => false, 'showRaffles' => true])
+    @else
+        @include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'showLootTables' => false, 'showRaffles' => false])
+    @endif
 
     <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -95,7 +102,11 @@
 @section('scripts')
 @parent 
 @if(!$closed)
-    @include('js._loot_js', ['showLootTables' => false, 'showRaffles' => false])
+    @if($isClaim)
+        @include('js._loot_js', ['showLootTables' => false, 'showRaffles' => true])
+    @else
+        @include('js._loot_js', ['showLootTables' => false, 'showRaffles' => false])
+    @endif
     @include('js._character_select_js')
 
     <script>
