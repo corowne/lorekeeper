@@ -4,7 +4,7 @@
         {!! Form::select('species_id', $specieses, $image->species_id, ['class' => 'form-control', 'id' => 'species']) !!}
     </div>
 
-    <div class="form-group">
+    <div class="form-group" id="subtypes">
         {!! Form::label('Subtype (Optional)') !!}
         {!! Form::select('subtype_id', $subtypes, $image->subtype_id, ['class' => 'form-control', 'id' => 'subtype']) !!}
     </div>
@@ -63,6 +63,15 @@
         function removeFeatureRow($trigger) {
             $trigger.parent().remove();
         }
+    });
+
+    $( "#species" ).change(function() {
+      var species = $('#species').val();
+      var id = '<?php echo($image->id); ?>';
+      $.ajax({
+        type: "GET", url: "{{ url('admin/character/image/traits/subtype') }}?species="+species+"&id="+id, dataType: "text"
+      }).done(function (res) { $("#subtypes").html(res); }).fail(function (jqXHR, textStatus, errorThrown) { alert("AJAX call failed: " + textStatus + ", " + errorThrown); });
+
     });
 
 </script>

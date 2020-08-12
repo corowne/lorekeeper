@@ -83,11 +83,13 @@ class CharacterImageController extends Controller
      */
     public function getEditImageFeatures($id)
     {
+      $image = CharacterImage::find($id);
+
         return view('character.admin._edit_features_modal', [
-            'image' => CharacterImage::find($id),
+            'image' => $image,
             'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes' => ['0' => 'Select Subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => ['0' => 'Select Subtype'] + Subtype::where('species_id','=',$image->species_id)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray()
         ]);
     }
@@ -112,6 +114,15 @@ class CharacterImageController extends Controller
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
         return redirect()->back()->withInput();
+    }
+
+    public function getEditImageSubtype(Request $request) {
+      $species = $request->input('species');
+      $id = $request->input('id');
+      return view('character.admin._edit_features_subtype', [
+          'image' => CharacterImage::find($id),
+          'subtypes' => ['0' => 'Select Subtype'] + Subtype::where('species_id','=',$species)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+      ]);
     }
 
     /**
@@ -253,7 +264,7 @@ class CharacterImageController extends Controller
             'image' => CharacterImage::find($id),
         ]);
     }
-    
+
 
     /**
      * Sets an image to be the character's active image.
@@ -288,7 +299,7 @@ class CharacterImageController extends Controller
             'image' => CharacterImage::find($id),
         ]);
     }
-    
+
     /**
      * Deletes an image.
      *
