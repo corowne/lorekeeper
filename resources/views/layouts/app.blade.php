@@ -39,16 +39,17 @@
     {{-- Bootstrap Toggle --}}
     <link href="{{ asset('css/bootstrap4-toggle.min.css') }}" rel="stylesheet">
 
-    
+
     <link href="{{ asset('css/lightbox.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap-colorpicker.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/jquery-ui-timepicker-addon.css') }}" rel="stylesheet">
     <link href="{{ asset('css/croppie.css') }}" rel="stylesheet">
     <link href="{{ asset('css/selectize.bootstrap4.css') }}" rel="stylesheet">
-    
-    @if(file_exists(public_path(). '/css/custom.css'))
+
+    <!-- @if(file_exists(public_path(). '/css/custom.css'))
         <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
-    @endif
+    @endif -->
+    
 </head>
 <body>
     <div id="app">
@@ -60,7 +61,7 @@
 
         <main class="container-fluid">
             <div class="row">
-            
+
                 <div class="sidebar col-lg-2" id="sidebar">
                     @yield('sidebar')
                 </div>
@@ -74,16 +75,16 @@
                         @include('flash::message')
                         @yield('content')
                     </div>
-                    
+
                     <div class="site-footer mt-4" id="footer">
                             @include('layouts._footer')
                     </div>
                 </div>
             </div>
-        
+
         </main>
 
-        
+
         <div class="modal fade" id="modal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
