@@ -40,7 +40,7 @@
         @endif
         <div class="card mb-3">
             <div class="card-header"><h3 class="d-inline">{{ $groups[$raffle->group_id]->name }} <span class="badge badge-xs {{ $groups[$raffle->group_id]->is_active ? 'badge-success' : 'badge-danger' }}">{{ $groups[$raffle->group_id]->is_active ? 'Visible' : 'Hidden' }}</span></h3>
-                
+
                 @if($raffle->is_active < 2)
                     <div class="float-right">
                         <a href="#" class="roll-group btn btn-outline-danger btn-sm" data-id="{{ $groups[$raffle->group_id]->id }}">Roll Group</a>
@@ -52,13 +52,14 @@
     @endif
 
     <li class="list-group-item">
-        <a href="{{ url('admin/raffles/view/'.$raffle->id) }}">{{ $raffle->name }}</a> <span class="badge {{ $raffle->is_active ? 'badge-success' : 'badge-danger' }}">{{ $raffle->is_active ? 'Visible' : 'Hidden' }}</span>
+        <i class="fas {{ $raffle->is_active ? 'fa-eye' : 'fa-eye-slash' }} mr-2"></i>
+        <a href="{{ url('admin/raffles/view/'.$raffle->id) }}">{{ $raffle->name }}</a>
         @if($raffle->is_active < 2)
             <div class="float-right">
                 @if(!$raffle->group_id)
-                    <a href="#" class="roll-raffle btn btn-outline-danger btn-xs" data-id="{{ $raffle->id }}">Roll Raffle</a>
+                    <a href="#" class="roll-raffle btn btn-outline-danger btn-xs p-2" data-id="{{ $raffle->id }}">Roll Raffle</a>
                 @endif
-                <a href="#" class="edit-raffle btn btn-xs btn-outline-primary" data-id="{{ $raffle->id }}">
+                <a href="#" class="edit-raffle btn btn-xs btn-outline-primary p-2" data-id="{{ $raffle->id }}">
                     Edit Raffle
                 </a>
             </div>
