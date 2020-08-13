@@ -174,6 +174,19 @@ class AddSiteSettings extends Command
             $this->info("Added:   blacklist_key / Default: 0");
         }
         else $this->line("Skipped: blacklist_key");
+        
+        if(!DB::table('site_settings')->where('key', 'design_votes_needed')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'design_votes_needed',
+                    'value' => 3,
+                    'description' => 'Number of approval votes needed for a design update or MYO submission to be considered as having approval.'
+                ]
+
+            ]);
+            $this->info("Added:   design_votes_needed / Default: 3");
+        }
+        else $this->line("Skipped: design_votes_needed");
 
         $this->line("\nSite settings up to date!");
         
