@@ -21,8 +21,8 @@
             if($vote == 2) $approveSum += 1;
         }
     ?>
-    <div class="card alert-primary mb-3"><div class="card-body">
-        <h5 class="text-left">{{$request->status == 'Pending' ? 'Vote' : 'Past Votes'}} on this {{ $request->character->is_myo_slot ? 'MYO Submission' : 'Design Update' }}
+    <div class="card mb-3"><div class="card-body">
+        <h5 class="text-left">{{$request->status == 'Pending' ? 'Vote' : 'Past Votes'}} on this {{ $request->update_type == 'MYO' ? 'MYO Submission' : 'Design Update' }}
         @if($request->status == 'Pending')
             <span class="text-right float-right">
                 <div class="row">
@@ -43,7 +43,7 @@
         @endif
         </h5>
             <p>
-                Design updates need {{ Settings::get('design_votes_needed') }} votes before they are considered approved. Note that this does not automatically process the submission in any case, only indicate a consensus.
+                {{ $request->update_type == 'MYO' ? 'MYO Submissions' : 'Design updates' }} need {{ Settings::get('design_votes_needed') }} votes before they are considered approved. Note that this does not automatically process the submission in any case, only indicate a consensus.
             </p>
         <hr/>
         @if(isset($request->vote_data) && $request->vote_data)
