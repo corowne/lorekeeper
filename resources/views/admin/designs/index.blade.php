@@ -43,10 +43,10 @@
       <div class="col-md-3">{!! $r->character ? $r->character->displayName : 'Deleted Character [#'.$r->character_id.']' !!}</div>
       <div class="col-3 col-md-3">{!! $r->user->displayName !!}</div>
       <div class="col-2 col-md-2">{!! $r->submitted_at ? pretty_date($r->submitted_at) : '---' !!}</div>
-      <div class="col-2 col-md-2">
-        <span class="text-danger"><strong>{{ $rejectSum }}/{{ Settings::get('design_votes_needed') }}</strong></span> :
-        <span class="text-success"><strong>{{ $approveSum }}/{{ Settings::get('design_votes_needed') }}</strong></span>
-      </div>
+      <div class="col-2 col-md-2"><strong>
+        <span class="text-danger">{{ $rejectSum }}/{{ Settings::get('design_votes_needed') }}</span> :
+        <span class="text-success">{{ $approveSum }}/{{ Settings::get('design_votes_needed') }}</span>
+        </strong></div>
       <div class="col-4 col-md-1"><span class="btn btn-{{ $r->status == 'Pending' ? 'secondary' : ($r->status == 'Approved' ? 'success' : 'danger') }} btn-sm py-0 px-1">{{ $r->status }}</span></div>
       <div class="col-4 col-md-1"><a href="{{ $r->url }}" class="btn btn-primary btn-sm">Details</a></div>
     </div>
