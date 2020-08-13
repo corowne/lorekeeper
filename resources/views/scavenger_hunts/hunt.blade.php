@@ -14,15 +14,25 @@
             <h2>{{ $hunt->displayName }}</h2>
             
             <div class="text-center">
-                @foreach($logArray as $key => $found)
-                    @if(isset($found))
-                        <span class="px-2 mb-2">
-                            {!! $hunt->targets[$key - 1]->displayItemShort !!}
-                        </span>
-                    @endif
-                @endforeach
+                @if(isset($participantLog))
+                    @foreach($logArray as $key => $found)
+                        @if(isset($found))
+                            <span class="px-2 mb-2">
+                                {!! $hunt->targets[$key - 1]->displayItemShort !!}
+                            </span>
+                        @endif
+                    @endforeach
+                @endif
 
-                <p>You have found {{$participantLog->targetsCount}}/{{ count($hunt->targets) }} targets!</p>
+                <p>
+                    You have found 
+                    @if(isset($participantLog))
+                        {{$participantLog->targetsCount}}
+                    @else
+                        0
+                    @endif
+                    /{{ count($hunt->targets) }} targets!
+                </p>
             </div>
             
             <div class="card mb-4">
@@ -50,16 +60,18 @@
 
                     <hr/>
 
-                    @foreach($logArray as $key => $found)
-                        @if(isset($found))
-                            @if(isset($hunt->targets[$key - 1]->description))
-                                <p>The <strong>{!! $hunt->targets[$key - 1]->item->name !!}</strong> had this message for you:</p>
-                                <p>
-                                    <i>{!! $hunt->targets[$key - 1]->description !!}</i>
-                                </p>
+                    @if(isset($participantLog))
+                        @foreach($logArray as $key => $found)
+                            @if(isset($found))
+                                @if(isset($hunt->targets[$key - 1]->description))
+                                    <p>The <strong>{!! $hunt->targets[$key - 1]->item->name !!}</strong> had this message for you:</p>
+                                    <p>
+                                        <i>{!! $hunt->targets[$key - 1]->description !!}</i>
+                                    </p>
+                                @endif
                             @endif
-                        @endif
-                    @endforeach
+                        @endforeach
+                    @endif
                 </div>
             </div>
 

@@ -138,8 +138,8 @@
             @endforeach
         </div>
         @endforeach
-    @endif
     </div>
+    @endif
 @endif
 
 @endsection
