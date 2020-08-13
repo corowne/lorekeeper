@@ -151,3 +151,6 @@ Route::group(['prefix' => 'shops'], function() {
     Route::post('buy', 'ShopController@postBuy');
     Route::get('history', 'ShopController@getPurchaseHistory');
 });
+
+    Route::get('profile', 'AvatarController@profile');
+    Route::post('profile', 'AvatarController@update_avatar');
