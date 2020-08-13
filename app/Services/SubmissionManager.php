@@ -18,6 +18,7 @@ use App\Models\Submission\SubmissionCharacter;
 use App\Models\Currency\Currency;
 use App\Models\Item\Item;
 use App\Models\Loot\LootTable;
+use App\Models\Raffle\Raffle;
 use App\Models\Prompt\Prompt;
 
 class SubmissionManager extends Service
@@ -199,6 +200,10 @@ class SubmissionManager extends Service
                         case 'LootTable':
                             if (!$isStaff) break;
                             $reward = LootTable::find($data['rewardable_id'][$key]);
+                            break;
+                        case 'Raffle':
+                            if (!$isStaff) break;
+                            $reward = Raffle::find($data['rewardable_id'][$key]);
                             break;
                     }
                     if(!$reward) continue;

@@ -12,6 +12,7 @@ use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
 use App\Models\Currency\Currency;
 use App\Models\Loot\LootTable;
+use App\Models\Raffle\Raffle;
 
 use App\Services\SubmissionManager;
 
@@ -61,6 +62,7 @@ class SubmissionController extends Controller
             'items' => Item::orderBy('name')->pluck('name', 'id'),
             'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
             'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
+            'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
             'count' => Submission::where('prompt_id', $submission->prompt_id)->where('status', 'Approved')->where('user_id', $submission->user_id)->count()
         ] : []));
     }    
@@ -99,6 +101,7 @@ class SubmissionController extends Controller
             'items' => Item::orderBy('name')->pluck('name', 'id'),
             'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
             'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
+            'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
             'count' => Submission::where('prompt_id', $id)->where('status', 'Approved')->where('user_id', $submission->user_id)->count(),
             'rewardsData' => isset($submission->data['rewards']) ? parseAssetData($submission->data['rewards']) : null
         ] : []));
