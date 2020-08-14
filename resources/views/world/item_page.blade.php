@@ -27,21 +27,26 @@
                     <div class="{{ $imageUrl ? 'col-md-9' : 'col-12' }}">
                         <h1>{!! $name !!}</h1>
                         <div class="row">
-                            @if(isset($item->category) && $item->category)
-                                <div class="col">
-                                    <p><strong>Category:</strong> {{ $item->category->name }}</p>
-                                </div>
-                            @endif
-                            @if(isset($item->rarity) && $item->rarity)
-                                <div class="col">
-                                    <p><strong>Rarity:</strong> {{ $item->rarity }}: {{ $item->rarityName }}</p>
-                                </div>
-                            @endif
-                            @if(isset($item->artist) && $item->artist)
-                                <div class="col">
-                                    <p><strong>Artist:</strong> {!! $item->artist !!}</p>
-                                </div>
-                            @endif
+                        @if(isset($item->category) && $item->category)
+                            <div class="col-md">
+                                <p><strong>Category:</strong> {!! $item->category->name !!}</p>
+                            </div>
+                        @endif
+                        @if(isset($item->rarity) && $item->rarity)
+                            <div class="col-md">
+                                <p><strong>Rarity:</strong> {!! $item->rarity !!}</p>
+                            </div>
+                        @endif
+                        @if(isset($item->artist) && $item->artist)
+                            <div class="col-md">
+                                <p><strong>Artist:</strong> {!! $item->artist !!}</p>
+                            </div>
+                        @endif
+                        @if(isset($item->data['resell']) && $item->data['resell'])
+                            <div class="col-md">
+                                <p><strong>Resale Value:</strong> {!! App\Models\Currency\Currency::find($item->resell->flip()->pop())->display($item->resell->pop()) !!}</p>
+                            </div>
+                        @endif
                             <div class="col-md-5 col-md">
                                 <div class="row">
                                     @foreach($item->tags as $tag)

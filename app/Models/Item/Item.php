@@ -43,7 +43,8 @@ class Item extends Model
         'rarity' => 'nullable',
         'reference_url' => 'nullable|between:3,200',
         'uses' => 'nullable|between:3,250',
-        'release' => 'nullable|between:3,100'
+        'release' => 'nullable|between:3,100',
+        'currency_quantity' => 'nullable|integer|min:1',
     ];
     
     /**
@@ -58,7 +59,8 @@ class Item extends Model
         'image' => 'mimes:png',
         'reference_url' => 'nullable|between:3,200',
         'uses' => 'nullable|between:3,250',
-        'release' => 'nullable|between:3,100'
+        'release' => 'nullable|between:3,100',
+        'currency_quantity' => 'nullable|integer|min:1',
     ];
 
     /**********************************************************************************************
@@ -295,6 +297,17 @@ class Item extends Model
     {
         if (!$this->data) return null;
         return $this->data['release'];
+    }
+
+    /**
+     * Get the resale attribute.
+     *
+     * @return string
+     */
+    public function getResellAttribute() 
+    {
+        if (!$this->data) return null;
+        return collect($this->data['resell']);
     }
 
     /**

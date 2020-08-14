@@ -9,9 +9,9 @@ use Auth;
 use App\Models\Item\ItemCategory;
 use App\Models\Item\Item;
 use App\Models\Item\ItemTag;
-
 use App\Models\Shop\Shop;
 use App\Models\Prompt\Prompt;
+use App\Models\Currency\Currency;
 
 use App\Services\ItemService;
 
@@ -206,7 +206,8 @@ class ItemController extends Controller
             'item' => $item,
             'categories' => ['none' => 'No category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'shops' => Shop::where('is_active', 1)->orderBy('id')->pluck('name', 'id'),
-            'prompts' => Prompt::where('is_active', 1)->orderBy('id')->pluck('name', 'id')
+            'prompts' => Prompt::where('is_active', 1)->orderBy('id')->pluck('name', 'id'),
+            'userCurrencies' => Currency::where('is_user_owned', 1)->orderBy('sort_user', 'DESC')->pluck('name', 'id')
         ]);
     }
 
@@ -223,7 +224,7 @@ class ItemController extends Controller
         $id ? $request->validate(Item::$updateRules) : $request->validate(Item::$createRules);
         $data = $request->only([
             'name', 'allow_transfer', 'item_category_id', 'description', 'image', 'remove_image', 'rarity',
-            'reference_url', 'artist_alias', 'artist_url', 'uses', 'shops', 'prompts', 'release'
+            'reference_url', 'artist_alias', 'artist_url', 'uses', 'shops', 'prompts', 'release', 'currency_id', 'currency_quantity'
         ]);
         if($id && $service->updateItem(Item::find($id), $data, Auth::user())) {
             flash('Item updated successfully.')->success();

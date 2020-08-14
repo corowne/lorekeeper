@@ -10,6 +10,7 @@ use Notifications;
 use App\Models\User\User;
 use App\Models\Item\Item;
 use App\Models\User\UserItem;
+use App\Models\Currency\Currency;
 
 class InventoryManager extends Service
 {
@@ -151,6 +152,57 @@ class InventoryManager extends Service
                 $oldUser = $stack->user;
 
                 if($this->debitStack($stack->user, ($stack->user_id == $user->id ? 'User Deleted' : 'Staff Deleted'), ['data' => ($stack->user_id != $user->id ? 'Deleted by '.$user->displayName : '')], $stack, $quantity)) 
+                {
+                    if($stack->user_id != $user->id) 
+                        Notifications::create('ITEM_REMOVAL', $oldUser, [
+                            'item_name' => $stack->item->name,
+                            'item_quantity' => $quantity,
+                            'sender_url' => $user->url,
+                            'sender_name' => $user->name
+                        ]);
+                }
+            }
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Sells items from stack.
+     *
+     * @param  \App\Models\User\User      $user
+     * @param  \App\Models\User\UserItem  $stacks
+     * @param  int                        $quantities
+     * @return bool
+     */
+    public function resellStack($user, $stacks, $quantities)
+    {
+        DB::beginTransaction();
+
+        try {
+            foreach($stacks as $key=>$stack) {
+                $quantity = $quantities[$key];
+                if(!$user->hasAlias) throw new \Exception("Your deviantART account must be verified before you can perform this action.");
+                if(!$stack) throw new \Exception("An invalid item was selected.");
+                if($stack->user_id != $user->id && !$user->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected items.");
+                if($stack->count < $quantity) throw new \Exception("Quantity to sell exceeds item count.");
+                if(!isset($stack->item->data['resell'])) throw new \Exception ("This item cannot be sold.");
+                
+                $oldUser = $stack->user;
+
+                $currencyManager = new CurrencyManager;
+                if(isset($stack->item->data['resell']) && $stack->item->data['resell'])
+                {
+                    $currency = $stack->item->resell->flip()->pop();
+                    $currencyQuantity = $stack->item->resell->pop() * $quantity;
+
+                    if(!$currencyManager->creditCurrency(null, $oldUser, 'Sold Item', 'Sold '.$stack->item->displayName.' ×'.$quantity, $currency, $currencyQuantity)) 
+                            throw new \Exception("Failed to credit currency.");
+                }
+
+                if($this->debitStack($stack->user, ($stack->user_id == $user->id ? 'Sold by User' : 'Sold by Staff'), ['data' => ($stack->user_id != $user->id ? 'Sold by '.$user->displayName : '')], $stack, $quantity)) 
                 {
                     if($stack->user_id != $user->id) 
                         Notifications::create('ITEM_REMOVAL', $oldUser, [

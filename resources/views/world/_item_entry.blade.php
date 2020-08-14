@@ -6,18 +6,23 @@
         <h3>{!! $name !!} @if(isset($idUrl) && $idUrl) <a href="{{ $idUrl }}" class="world-entry-search text-muted"><i class="fas fa-search"></i></a>  @endif</h3>
         <div class="row">
             @if(isset($item->category) && $item->category)
-                <div class="col">
+                <div class="col-md">
                     <p><strong>Category:</strong> {!! $item->category->name !!}</p>
                 </div>
             @endif
             @if(isset($item->rarity) && $item->rarity)
-                <div class="col">
+                <div class="col-md">
                     <p><strong>Rarity:</strong> {!! $item->rarity !!}</p>
                 </div>
             @endif
             @if(isset($item->artist) && $item->artist)
-                <div class="col">
+                <div class="col-md">
                     <p><strong>Artist:</strong> {!! $item->artist !!}</p>
+                </div>
+            @endif
+            @if(isset($item->data['resell']) && $item->data['resell'])
+                <div class="col-md">
+                    <p><strong>Resale Value:</strong> {!! App\Models\Currency\Currency::find($item->resell->flip()->pop())->display($item->resell->pop()) !!}</p>
                 </div>
             @endif
             <div class="col-md-6 col-md">
