@@ -33,13 +33,13 @@
 </div>
 
 <div class="row">
-    <div class="col">
+    <div class="col-md">
         <div class="form-group">
             {!! Form::label('Item Category (Optional)') !!}
             {!! Form::select('item_category_id', $categories, $item->item_category_id, ['class' => 'form-control']) !!}
         </div>
     </div>
-    <div class="col">
+    <div class="col-md">
         <div class="form-group">
             {!! Form::label('Item Rarity (Optional)') !!} {!! add_help('This should be a number.') !!}
             {!! Form::text('rarity', $item && $item->rarity ? $item->rarity : '', ['class' => 'form-control']) !!}
@@ -48,21 +48,21 @@
 </div>
 
 <div class="row">
-    <div class="col">
+    <div class="col-md">
         <div class="form-group">
             {!! Form::label('Reference Link (Optional)') !!} {!! add_help('An optional link to an additional reference') !!}
             {!! Form::text('reference_url', $item->reference_url, ['class' => 'form-control']) !!}
         </div>
     </div>
-    <div class="col">
+    <div class="col-md">
     {!! Form::label('Item Artist (Optional)') !!} {!! add_help('Provide the artist\'s dA alias or, failing that, a link. If both are provided, the alias will be used as the display name for the link.') !!}
         <div class="row">
-            <div class="col">
+            <div class="col-md">
                 <div class="form-group">
                     {!! Form::text('artist_alias', $item && $item->artist_alias ? $item->artist_alias : '', ['class' => 'form-control mr-2', 'placeholder' => 'Artist Alias']) !!}
                 </div>
             </div>
-            <div class="col">
+            <div class="col-md">
                 <div class="form-group">
                     {!! Form::text('artist_url', $item && $item->artist_url ? $item->artist_url : '', ['class' => 'form-control mr-2', 'placeholder' => 'Artist URL']) !!}
                 </div>
@@ -89,19 +89,19 @@
 <h3>Availability Information</h3>
 
 <div class="row">
-    <div class="col">
+    <div class="col-md">
         <div class="form-group">
             {!! Form::label('release', 'Source (Optional)') !!} {!! add_help('The original and/or general source of the item. Should be brief.') !!}
             {!! Form::text('release', $item && $item->source ? $item->source : '', ['class' => 'form-control']) !!}
         </div>
     </div>
-    <div class="col">
+    <div class="col-md">
         <div class="form-group">
             {!! Form::label('shops[]', 'Purchase Location(s) (Optional)') !!} {!! add_help('You can select up to 10 shops at once.') !!}
             {!! Form::select('shops[]', $shops, $item && isset($item->data['shops']) ? $item->data['shops'] : '', ['id' => 'shopsList', 'class' => 'form-control', 'multiple']) !!}
         </div>
     </div>
-    <div class="col">
+    <div class="col-md">
         <div class="form-group">
             {!! Form::label('prompts[]', 'Drop Location(s) (Optional)') !!} {!! add_help('You can select up to 10 prompts at once.') !!}
             {!! Form::select('prompts[]', $prompts, $item && isset($item->data['prompts']) ? $item->data['prompts'] : '', ['id' => 'promptsList', 'class' => 'form-control', 'multiple']) !!}
