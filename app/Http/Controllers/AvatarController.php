@@ -40,7 +40,6 @@ class AvatarController extends Controller
                     if (File::exists($file)) {
                         unlink($file);
                     }
-                }
 
                 // Checks if uploaded file is a GIF
                 if ($avatar->getClientOriginalExtension() == 'gif') {
@@ -63,4 +62,5 @@ class AvatarController extends Controller
             }
         }
     }
+}
 }
