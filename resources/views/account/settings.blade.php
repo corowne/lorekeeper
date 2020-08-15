@@ -8,7 +8,7 @@
 <h1>Settings</h1>
 <br>
 <h3>Avatar</h3>
-<div class="text-left"><div class="alert alert-warning">Please note a hard refresh may be required to see your updated avatar</div></div>
+<div class="text-left"><div class="alert alert-warning">Please note a hard refresh may be required to see your updated avatar. Also please note that uploading a .gif will display a 500 error after; the upload should still work, however.</div></div>
 @if(Auth::user()->isStaff)
         <div class="alert alert-danger">For admins - note that .GIF avatars leave a tmp file in the directory (e.g php2471.tmp). If you feel you are experiencing site slowdown, please remove these tmp files.
         <br>.TMP files can be remove automatically through putty by using the following command - 'cd ~/sitename.com/www/public/images/avatars' then 'rm *.tmp'
