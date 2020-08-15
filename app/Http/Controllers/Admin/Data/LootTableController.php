@@ -48,7 +48,7 @@ class LootTableController extends Controller
             'table' => new LootTable,
             'items' => Item::orderBy('name')->pluck('name', 'id'),
             'currencies' => Currency::orderBy('name')->pluck('name', 'id'),
-            'tables' => LootTable::orderBy('name')->pluck('name', 'id')
+            'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
         ]);
     }
     
@@ -67,7 +67,6 @@ class LootTableController extends Controller
             'items' => Item::orderBy('name')->pluck('name', 'id'),
             'currencies' => Currency::orderBy('name')->pluck('name', 'id'),
             'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
-            'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
         ]);
     }
 
