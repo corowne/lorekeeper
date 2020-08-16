@@ -188,7 +188,8 @@ class ItemController extends Controller
             'item' => new Item,
             'categories' => ['none' => 'No category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'shops' => Shop::where('is_active', 1)->orderBy('id')->pluck('name', 'id'),
-            'prompts' => Prompt::where('is_active', 1)->orderBy('id')->pluck('name', 'id')
+            'prompts' => Prompt::where('is_active', 1)->orderBy('id')->pluck('name', 'id'),
+            'userCurrencies' => Currency::where('is_user_owned', 1)->orderBy('sort_user', 'DESC')->pluck('name', 'id')
         ]);
     }
     
