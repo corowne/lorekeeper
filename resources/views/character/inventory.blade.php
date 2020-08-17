@@ -48,17 +48,6 @@
     </div>
 @endforeach
 
-@if(Auth::check() && Auth::user()->id == $character->user_id)
-{!! Form::open(['url' => 'character/'.$character->slug.'/inventory/edit']) !!}
-    <div id="attachments" class="mb-3">
-        @include('widgets._inventory_select', ['user' => Auth::user(), 'inventory' => $userInventory, 'categories' => $categories, 'selected' => [], 'page' => $page])
-    </div>
-        <div class="text-right">
-            {!! Form::button('Transfer', ['class' => 'btn btn-primary', 'name' => 'action', 'value' => 'give', 'type' => 'submit']) !!}
-        </div>
-{!! Form::close() !!}
-@endif
-
 <h3>Latest Activity</h3>
 <table class="table table-sm">
     <thead>

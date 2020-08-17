@@ -11,6 +11,7 @@ use App\Models\User\UserItem;
 use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
 use App\Models\Item\UserItemLog;
+use App\Models\Character\Character;
 use App\Models\Character\CharacterItem;
 use App\Services\InventoryManager;
 
@@ -76,7 +77,8 @@ class InventoryController extends Controller
             'item' => $item,
             'user' => Auth::user(),
             'userOptions' => ['' => 'Select User'] + User::visible()->where('id', '!=', $first_instance ? $first_instance->user_id : 0)->orderBy('name')->get()->pluck('verified_name', 'id')->toArray(),
-            'readOnly' => $readOnly
+            'readOnly' => $readOnly,
+            'characterOptions' => Character::visible()->myo(0)->where('user_id','=',Auth::user()->id)->orderBy('sort','DESC')->get()->pluck('fullName','id')->toArray(),
         ]);
     }
 
@@ -134,6 +136,9 @@ class InventoryController extends Controller
                 case 'delete':
                     return $this->postDelete($request, $service);
                     break;
+                case 'characterTransfer':
+                    return $this->postTransferToCharacter($request, $service);
+                    break;
                 case 'act':
                     return $this->postAct($request);
                     break;
@@ -152,6 +157,24 @@ class InventoryController extends Controller
     private function postTransfer(Request $request, InventoryManager $service)
     {
         if($service->transferStack(Auth::user(), User::visible()->where('id', $request->get('user_id'))->first(), UserItem::find($request->get('ids')), $request->get('quantities'))) {
+            flash('Item transferred successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Transfers inventory items to another user.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\InventoryManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function postTransferToCharacter(Request $request, InventoryManager $service)
+    {
+        if($service->transferCharacterStack(Auth::user(), Character::visible()->where('id', $request->get('character_id'))->first(), UserItem::find($request->get('ids')), $request->get('quantities'))) {
             flash('Item transferred successfully.')->success();
         }
         else {
