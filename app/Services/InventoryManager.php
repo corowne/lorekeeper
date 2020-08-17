@@ -150,13 +150,18 @@ class InventoryManager extends Service
         try {
             foreach($stacks as $key=>$stack) {
                 $quantity = $quantities[$key];
+
+                if(!$stack) throw new \Exception("Invalid or no stack selected.");
                 if(!$recipient) throw new \Exception("Invalid recipient selected.");
                 if(!$sender) throw new \Exception("Invalid sender selected.");
+
                 if($recipient->logType == 'Character' && $sender->logType == 'Character') throw new \Exception("Cannot transfer items between characters.");
                 if($recipient->logType == 'Character' && !$sender->hasPower('edit_inventories') && !$recipient->is_visible) throw new \Exception("Invalid character selected.");
                 if(!$stacks) throw new \Exception("Invalid stack selected.");
                 if($sender->logType == 'Character' && $quantity <= 0 && $stack->count > 0) $quantity = $stack->count;
                 if($quantity <= 0) throw new \Exception("Invalid quantity entered.");
+                
+                if(($recipient->logType == 'Character' && !$sender->hasPower('edit_inventories') && !Auth::user() == $recipient->user) || ($recipient->logType == 'User' && !Auth::user()->hasPower('edit_inventories') && !Auth::user() == $sender->user)) throw new \Exception("Cannot transfer items to/from a character you don't own.");
                 
                 if($recipient->logType == 'Character' && !$stack->item->category->is_character_owned) throw new \Exception("One of the selected items cannot be owned by characters.");
                 if((!$stack->item->allow_transfer || isset($stack->data['disallow_transfer'])) && !Auth::user()->hasPower('edit_inventories')) throw new \Exception("One of the selected items cannot be transferred.");
