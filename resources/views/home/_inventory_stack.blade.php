@@ -77,6 +77,20 @@
                     @endforeach
                 @endif
                 
+                @if(isset($item->category) && $item->category->is_character_owned)
+                    <li class="list-group-item">
+                        <a class="card-title h5 collapse-title" data-toggle="collapse" href="#characterTransferForm">@if($stack->first()->user_id != $user->id) [ADMIN] @endif Transfer Item to Character</a>
+                        <div id="characterTransferForm" class="collapse">
+                            <p>This will transfer this stack or stacks to this character's inventory.</p>
+                            <div class="form-group">
+                                {!! Form::select('character_id', $characterOptions, null, ['class' => 'form-control mr-2 default character-select', 'placeholder' => 'Select Character']) !!}
+                            </div>
+                            <div class="text-right">
+                                {!! Form::button('Transfer', ['class' => 'btn btn-primary', 'name' => 'action', 'value' => 'characterTransfer', 'type' => 'submit']) !!}
+                            </div>
+                        </div>
+                    </li>
+                @endif
                 <li class="list-group-item">
                     <a class="card-title h5 collapse-title" data-toggle="collapse" href="#transferForm">@if($stack->first()->user_id != $user->id) [ADMIN] @endif Transfer Item</a>
                     <div id="transferForm" class="collapse">
@@ -87,7 +101,7 @@
                         <div class="text-right">
                             {!! Form::button('Transfer', ['class' => 'btn btn-primary', 'name' => 'action', 'value' => 'transfer', 'type' => 'submit']) !!}
                         </div>
-                </div>
+                    </div>
                 </li>
                 <li class="list-group-item">
                     <a class="card-title h5 collapse-title" data-toggle="collapse" href="#deleteForm">@if($stack->first()->user_id != $user->id) [ADMIN] @endif Delete Item</a>
@@ -110,6 +124,7 @@
     if(code == 13)
         return false;
     });
+    $('.default.character-select').selectize();
     function toggleChecks($toggle) {
         $.each($('.item-check'), function(index, checkbox) {
             $toggle.checked ? checkbox.setAttribute('checked', 'checked') : checkbox.removeAttribute('checked');
