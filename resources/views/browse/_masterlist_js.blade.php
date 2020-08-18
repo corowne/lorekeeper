@@ -51,16 +51,28 @@
         
         // handle the ones that were already there
         var $existingFeatures = $('#featureBody .feature-block');
-        $existingFeatures.find('.selectize').selectize();
+        $existingFeatures.find('.selectize').selectize({
+            render: {
+                item: featureSelectedRender
+            }
+        });
         addRemoveListener($existingFeatures);
 
         $addFeatureButton.on('click', function(e) {
             e.preventDefault();
             var $clone = $featureSelect.clone();
             $featureBody.append($clone);
-            $clone.find('.selectize').selectize();
+            $clone.find('.selectize').selectize({
+                render: {
+                    item: featureSelectedRender
+                }
+            });
             addRemoveListener($clone);
         });
+
+        function featureSelectedRender(item, escape) {
+            return '<div><span>' + escape(item["text"].trim()) + ' (' + escape(item["optgroup"].trim()) + ')' + '</span></div>';
+        }
 
         function addRemoveListener($node)
         {

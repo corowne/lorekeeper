@@ -40,7 +40,11 @@
 
 <script>
     $(document).ready(function() {
-        $('.original.feature-select').selectize();
+        $('.original.feature-select').selectize({
+            render: {
+                item: featureSelectedRender
+            }
+        });
         $('#add-feature').on('click', function(e) {
             e.preventDefault();
             addFeatureRow();
@@ -58,10 +62,17 @@
                 e.preventDefault();
                 removeFeatureRow($(this));
             })
-            $clone.find('.feature-select').selectize();
+            $clone.find('.feature-select').selectize({
+                render: {
+                    item: featureSelectedRender
+                }
+            });
         }
         function removeFeatureRow($trigger) {
             $trigger.parent().remove();
+        }
+        function featureSelectedRender(item, escape) {
+            return '<div><span>' + escape(item["text"].trim()) + ' (' + escape(item["optgroup"].trim()) + ')' + '</span></div>';
         }
     });
 

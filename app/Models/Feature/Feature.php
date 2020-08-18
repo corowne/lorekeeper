@@ -250,4 +250,25 @@ class Feature extends Model
     {
         return url('masterlist?feature_id[]='.$this->id);
     }
+
+    /**********************************************************************************************
+    
+        Other Functions
+
+    **********************************************************************************************/
+    
+    public static function getFeaturesByCategory()
+    {
+        $sorted_feature_categories = collect(FeatureCategory::all()->sortBy('sort')->pluck('name')->toArray());
+        $grouped = Feature::select('name', 'id', 'feature_category_id')->with('category')->orderBy('name')->get()->keyBy('id')->groupBy('category.name', $preserveKeys = true)->toArray();
+        if(isset($grouped[""])) {
+            $sorted_feature_categories->push('Miscellaneous');
+            $grouped['Miscellaneous'] = $grouped[""];
+        }
+        foreach($grouped as $category => $features) foreach($features as $id => $feature) $grouped[$category][$id] = $feature["name"];
+        $features_by_category = $sorted_feature_categories->map(function($category) use($grouped) {
+            return [$category => $grouped[$category]];
+        });
+        return $features_by_category;
+    }
 }
