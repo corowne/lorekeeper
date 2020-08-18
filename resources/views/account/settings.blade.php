@@ -14,7 +14,7 @@
         <br>.TMP files can be remove automatically through putty by using the following command - 'cd ~/sitename.com/www/public/images/avatars' then 'rm *.tmp'
         <br><strong>.TMP files only occur upon gif upload, I am working on a solution to remove this but currently this method is the only I have had succesfully work. If you find a solution please contact me on the Lorekeeper discord.</strong></div>
     @endif
-<form enctype="multipart/form-data" action="/profile" method="POST">
+<form enctype="multipart/form-data" action="account/avatar" method="POST">
                 <label>Update Profile Image</label><br>
                 <input type="file" name="avatar">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
