@@ -1,8 +1,24 @@
 <script>
     $(document).ready(function() {
+        var $itemIdFilter = $('#itemIdFilter');
+        $itemIdFilter.selectize({
+            maxOptions: 10,
+            render: {
+                option: customItemSelectizeRender,
+                item: customItemSelectizeRender
+            }
+        });
+        $itemIdFilter.on('change', function(e) {
+            refreshFilter();
+        });
+        $('.clear-item-filter').on('click', function(e) {
+            e.preventDefault();
+            $itemIdFilter[0].selectize.setValue(null);
+        });
+
         var $userItemCategory = $('#userItemCategory');
         $userItemCategory.on('change', function(e) {
-            refreshCategory();
+            refreshFilter();
         });
         $('.inventory-select-all').on('click', function(e) {
             e.preventDefault();
@@ -28,10 +44,11 @@
             ($(this).is(":checked")) ? selectVisible() : deselectVisible();
         });
         
-        function refreshCategory() {
+        function refreshFilter() {
             var display = $userItemCategory.val();
+            var itemId = $itemIdFilter.val();
             $('.user-item').addClass('hide');
-            $('.user-items .category-' + display).removeClass('hide');
+            $('.user-item.category-' + display + '.item-' + (itemId ? itemId : 'all')).removeClass('hide');
             $('#toggle-checks').prop('checked', false);
         }
         function selectVisible() {
@@ -47,6 +64,16 @@
             $target.find('.inventory-checkbox').prop('checked', false);
             $('#toggle-checks').prop('checked', false);
             $target.find('.quantity-select').prop('name', '');
+        }
+        function customItemSelectizeRender(item, escape) {
+            console.log(item)
+            item = JSON.parse(item.text);
+            option_render = '<div class="option">';
+            if(item['image_url']) {
+                option_render += '<div class="d-inline mr-1"><img class="small-icon"  src="' + escape(item['image_url']) + '"></div>';
+            }
+            option_render += '<span>' + escape(item['name']) + '</span></div>';
+            return option_render;
         }
     });
 </script>
