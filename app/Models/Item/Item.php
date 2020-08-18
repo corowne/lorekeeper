@@ -18,6 +18,8 @@ class Item extends Model
         'item_category_id', 'name', 'has_image', 'description', 'parsed_description', 'allow_transfer'
     ];
 
+    protected $appends = ['image_url'];
+
     /**
      * The table associated with the model.
      *
