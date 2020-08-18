@@ -23,6 +23,8 @@ class Item extends Model
         'data', 'reference_url', 'artist_alias', 'artist_url'
     ];
 
+    protected $appends = ['image_url'];
+
     /**
      * The table associated with the model.
      *
