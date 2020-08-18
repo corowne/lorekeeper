@@ -153,6 +153,7 @@ class DesignController extends Controller
             'categories' => ItemCategory::orderBy('sort', 'DESC')->get(),
             'inventory' => $inventory,
             'items' => Item::all()->keyBy('id'),
+            'item_filter' => Item::orderBy('name')->get()->keyBy('id'),
             'page' => 'update'
         ]);
     }
