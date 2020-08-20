@@ -52,7 +52,7 @@ class HuntManager extends Service
             $participantLog->save();
             
             // Give the user the item(s)
-            if(!(new InventoryManager)->creditItem(null, $user, 'Scavenger Hunt Prize', [
+            if(!(new InventoryManager)->creditItem(null, $user, 'Prize', [
                 'data' => $participantLog->itemData, 
                 'notes' => 'Claimed ' . format_date($participantLog[$target->targetField])
             ], $target->item, $target->quantity)) throw new \Exception("Failed to claim item.");

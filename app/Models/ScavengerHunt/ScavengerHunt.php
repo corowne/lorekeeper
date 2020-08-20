@@ -39,7 +39,7 @@ class ScavengerHunt extends Model
      */
     public static $createRules = [
         'name' => 'required|unique:scavenger_hunts|between:3,50',
-        'display_name' => 'required|between:3,50',
+        'display_name' => 'required|between:3,40',
         'summary' => 'nullable',
         'locations' => 'nullable',
     ];
@@ -51,7 +51,7 @@ class ScavengerHunt extends Model
      */
     public static $updateRules = [
         'name' => 'required|between:3,50',
-        'display_name' => 'required|between:3,50',
+        'display_name' => 'required|between:3,40',
         'summary' => 'nullable',
         'locations' => 'nullable',
     ];
