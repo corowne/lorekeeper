@@ -1905,6 +1905,17 @@ class CharacterManager extends Service
                 $processedImage->insert('public/images/watermark.png', 'center');
             }
 
+            // Make the image directory if it doesn't exist
+            if(!file_exists($image->imagePath))
+            {
+                // Create the directory.
+                if (!mkdir($image->imagePath, 0755, true)) {
+                    $this->setError('error', 'Failed to create image directory.');
+                    return false;
+                }
+                chmod($image->imagePath, 0755);
+            }
+
             // Move the image file to the new image
             File::move($request->imagePath . '/' . $request->imageFileName, $processedImage->imagePath . '/' . $processedImage->imageFileName);
             File::move($request->thumbnailPath . '/' . $request->thumbnailFileName, $processedImage->thumbnailPath . '/' . $processedImage->thumbnailFileName);

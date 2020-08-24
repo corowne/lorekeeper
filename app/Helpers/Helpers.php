@@ -97,6 +97,7 @@ function parse($text, &$pings = null) {
     $config->set('Attr.EnableID', true);
     $config->set('HTML.DefinitionID', 'include');
     $config->set('HTML.DefinitionRev', 2);
+	$config->set('Cache.DefinitionImpl', null); // TODO: remove this later!
     if ($def = $config->maybeGetRawHTMLDefinition()) {
         $def->addElement('include', 'Block', 'Empty', 'Common', array('file*' => 'URI', 'height' => 'Text', 'width' => 'Text'));
 		$def->addAttribute('a', 'data-toggle', 'Enum#collapse,tab');
