@@ -175,6 +175,32 @@ class AddSiteSettings extends Command
         }
         else $this->line("Skipped: blacklist_key");
 
+        if(!DB::table('site_settings')->where('key', 'watermark_masterlist_images')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'watermark_masterlist_images',
+                    'value' => 0,
+                    'description' => '0: Do not watermark. 1: Automatically watermark masterlist images.'
+                ]
+
+            ]);
+            $this->info("Added:   watermark_masterlist_images / Default: 0");
+        }
+        else $this->line("Skipped: blacklist_key");
+
+        if(!DB::table('site_settings')->where('key', 'masterlist_image_dimension')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'masterlist_image_dimension',
+                    'value' => 0,
+                    'description' => 'Dimension, in pixels, to scale the shorter dimension (between width/height) of submitted masterlist images to. Enter "0" to disable resizing.'
+                ]
+
+            ]);
+            $this->info("Added:   masterlist_image_dimension / Default: 0");
+        }
+        else $this->line("Skipped: masterlist_image_dimension");
+
         $this->line("\nSite settings up to date!");
         
     }
