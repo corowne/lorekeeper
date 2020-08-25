@@ -421,9 +421,6 @@ class CharacterManager extends Service
         // Crop according to the selected area
         $image->crop($cropWidth, $cropHeight, isset($xOffsetNew) ? $xOffsetNew : $xOffset, isset($yOffsetNew) ? $yOffsetNew : $yOffset);
 
-        // Resize to fit the thumbnail size
-        $image->resize(Config::get('lorekeeper.settings.masterlist_thumbnails.width'), Config::get('lorekeeper.settings.masterlist_thumbnails.height'));
-
         // Save the thumbnail
         $image->save($characterImage->thumbnailPath . '/' . $characterImage->thumbnailFileName);
     }
