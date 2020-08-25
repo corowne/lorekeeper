@@ -353,74 +353,87 @@ class CharacterManager extends Service
      */
     private function cropThumbnail($points, $characterImage)
     {
-        $cropWidth = Config::get('lorekeeper.settings.masterlist_thumbnails.width');
-        $cropHeight = Config::get('lorekeeper.settings.masterlist_thumbnails.height');
-
         $image = Image::make($characterImage->imagePath . '/' . $characterImage->imageFileName);
+
+        if(Settings::get('watermark_masterlist_thumbnails') == 1) {
+            $cropWidth = Config::get('lorekeeper.settings.masterlist_thumbnails.width');
+            $cropHeight = Config::get('lorekeeper.settings.masterlist_thumbnails.height');
+
             $imageWidthOld = $image->width();
             $imageHeightOld = $image->height();
 
-        // Trim transparent parts of image.
-        $image->trim('transparent');
+            // Trim transparent parts of image.
+            $image->trim('transparent');
 
-        $trimOffsetX = $imageWidthOld - $image->width();
-        $trimOffsetY = $imageHeightOld - $image->height();
+            $trimOffsetX = $imageWidthOld - $image->width();
+            $trimOffsetY = $imageHeightOld - $image->height();
 
-        if(Settings::get('watermark_masterlist_images') == 1) {
-            // Resize image if desired, so that the watermark is applied to the correct size of image
-            if(Settings::get('masterlist_image_dimension') != 0) {
+            if(Settings::get('watermark_masterlist_images') == 1) {
+                // Resize image if desired, so that the watermark is applied to the correct size of image
+                if(Settings::get('masterlist_image_dimension') != 0) {
+                    $imageWidth = $image->width();
+                    $imageHeight = $image->height();
+
+                    if( $imageWidth > $imageHeight) {
+                        // Landscape
+                        $image->resize(null, Settings::get('masterlist_image_dimension'), function ($constraint) {
+                            $constraint->aspectRatio();
+                            $constraint->upsize();
+                        });
+                    }
+                    else {
+                        // Portrait
+                        $image->resize(Settings::get('masterlist_image_dimension'), null, function ($constraint) {
+                            $constraint->aspectRatio();
+                            $constraint->upsize();
+                        });
+                    }
+                }
+            // Watermark the image
+                $watermark = Image::make('images/watermark.png');
+                $image->insert($watermark, 'center');
+            }
+            // Now shrink the image
+            {
                 $imageWidth = $image->width();
                 $imageHeight = $image->height();
 
                 if( $imageWidth > $imageHeight) {
                     // Landscape
-                    $image->resize(null, Settings::get('masterlist_image_dimension'), function ($constraint) {
+                    $image->resize(null, $cropWidth, function ($constraint) {
                         $constraint->aspectRatio();
                         $constraint->upsize();
                     });
                 }
                 else {
                     // Portrait
-                    $image->resize(Settings::get('masterlist_image_dimension'), null, function ($constraint) {
+                    $image->resize($cropHeight, null, function ($constraint) {
                         $constraint->aspectRatio();
                         $constraint->upsize();
                     });
                 }
             }
-        // Watermark the image
-            $watermark = Image::make('images/watermark.png');
-            $image->insert($watermark, 'center');
-        }
-        // Now shrink the image
-        {
-            $imageWidth = $image->width();
-            $imageHeight = $image->height();
+            $xOffset = 0 + (($points['x0'] - $trimOffsetX) > 0 ? ($points['x0'] - $trimOffsetX) : 0);
+            if(($xOffset + $cropWidth) > $image->width()) $xOffsetNew = $cropWidth - ($image->width() - $xOffset);
+            if(isset($xOffsetNew)) if(($xOffsetNew + $cropWidth) > $image->width()) $xOffsetNew = $image->width() - $cropWidth;
+            $yOffset = 0 + (($points['y0'] - $trimOffsetY) > 0 ? ($points['y0'] - $trimOffsetY) : 0);
+            if(($yOffset + $cropHeight) > $image->height()) $yOffsetNew = $cropHeight - ($image->height() - $yOffset);
+            if(isset($yOffsetNew)) if(($yOffsetNew + $cropHeight) > $image->height()) $yOffsetNew = $image->height() - $cropHeight;
 
-            if( $imageWidth > $imageHeight) {
-                // Landscape
-                $image->resize(null, $cropWidth, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                });
-            }
-            else {
-                // Portrait
-                $image->resize($cropHeight, null, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                });
-            }
+            // Crop according to the selected area
+            $image->crop($cropWidth, $cropHeight, isset($xOffsetNew) ? $xOffsetNew : $xOffset, isset($yOffsetNew) ? $yOffsetNew : $yOffset);
         }
-        $xOffset = 0 + (($points['x0'] - $trimOffsetX) > 0 ? ($points['x0'] - $trimOffsetX) : 0);
-        if(($xOffset + $cropWidth) > $image->width()) $xOffsetNew = $cropWidth - ($image->width() - $xOffset);
-        if(isset($xOffsetNew)) if(($xOffsetNew + $cropWidth) > $image->width()) $xOffsetNew = $image->width() - $cropWidth;
-        $yOffset = 0 + (($points['y0'] - $trimOffsetY) > 0 ? ($points['y0'] - $trimOffsetY) : 0);
-        if(($yOffset + $cropHeight) > $image->height()) $yOffsetNew = $cropHeight - ($image->height() - $yOffset);
-        if(isset($yOffsetNew)) if(($yOffsetNew + $cropHeight) > $image->height()) $yOffsetNew = $image->height() - $cropHeight;
+        else {
+            $cropWidth = $points['x1'] - $points['x0'];
+            $cropHeight = $points['y1'] - $points['y0'];
+
+            // Crop according to the selected area
+            $image->crop($cropWidth, $cropHeight, $points['x0'], $points['y0']);
+
+            // Resize to fit the thumbnail size
+            $image->resize(Config::get('lorekeeper.settings.masterlist_thumbnails.width'), Config::get('lorekeeper.settings.masterlist_thumbnails.height'));
+        }
         
-        // Crop according to the selected area
-        $image->crop($cropWidth, $cropHeight, isset($xOffsetNew) ? $xOffsetNew : $xOffset, isset($yOffsetNew) ? $yOffsetNew : $yOffset);
-
         // Save the thumbnail
         $image->save($characterImage->thumbnailPath . '/' . $characterImage->thumbnailFileName);
     }

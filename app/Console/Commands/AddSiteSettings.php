@@ -186,7 +186,7 @@ class AddSiteSettings extends Command
             ]);
             $this->info("Added:   watermark_masterlist_images / Default: 0");
         }
-        else $this->line("Skipped: blacklist_key");
+        else $this->line("Skipped: watermark_masterlist_images");
 
         if(!DB::table('site_settings')->where('key', 'masterlist_image_dimension')->exists()) {
             DB::table('site_settings')->insert([
@@ -200,6 +200,19 @@ class AddSiteSettings extends Command
             $this->info("Added:   masterlist_image_dimension / Default: 0");
         }
         else $this->line("Skipped: masterlist_image_dimension");
+
+        if(!DB::table('site_settings')->where('key', 'watermark_masterlist_thumbnails')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'watermark_masterlist_thumbnails',
+                    'value' => 0,
+                    'description' => '0: Default thumbnail cropping behavior. 1: Watermark thumbnails. Expects the whole of the character to be visible.'
+                ]
+
+            ]);
+            $this->info("Added:   watermark_masterlist_thumbnails / Default: 0");
+        }
+        else $this->line("Skipped: watermark_masterlist_thumbnails");
 
         $this->line("\nSite settings up to date!");
         
