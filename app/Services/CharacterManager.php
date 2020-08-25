@@ -280,37 +280,15 @@ class CharacterManager extends Service
                     ]);
             }
 
-            // Trim transparent parts of image.
-            $processedImage = Image::make($data['image'])->trim('transparent');
-            // Resize image if desired
-            if(Settings::get('masterlist_image_dimension') != 0) {
-                list($width, $height) = getimagesize($image->imagePath);
-
-                if( $width > $height) {
-                    // Landscape
-                    $processedImage->resize(null, Settings::get('masterlist_image_dimension'), function ($constraint) {
-                        $constraint->aspectRatio();
-                        $constraint->upsize();
-                    });
-                }
-                else {
-                    // Portrait
-                    $processedImage->resize(Settings::get('masterlist_image_dimension'), null, function ($constraint) {
-                        $constraint->aspectRatio();
-                        $constraint->upsize();
-                    });
-                }
-            }
-            if(Settings::get('watermark_masterlist_images') == 1) {
-                $processedImage->insert('public/images/watermark.png', 'center');
-            }
-
             // Save image
-            $this->handleImage($processedImage, $image->imageDirectory, $image->imageFileName, null, isset($data['default_image']));
+            $this->handleImage($data['image'], $image->imageDirectory, $image->imageFileName, null, isset($data['default_image']));
             
-            // Save thumbnail
+            // Save thumbnail first before processing full image
             if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image);
             else $this->handleImage($data['thumbnail'], $image->imageDirectory, $image->thumbnailFileName, null, isset($data['default_image']));
+
+            // Process and save the image itself
+            $this->processImage($image);
             
             // Attach features
             foreach($data['feature_id'] as $key => $featureId) {
@@ -328,6 +306,46 @@ class CharacterManager extends Service
     }
 
     /**
+     * Trims and optionally resizes and watermarks an image.
+     *
+     * 
+     * @param  \App\Models\Character\CharacterImage  $characterImage
+     */
+    private function processImage($characterImage)
+    {
+        // Trim transparent parts of image.
+        $image = Image::make($characterImage->imagePath . '/' . $characterImage->imageFileName)->trim('transparent');
+        // Resize image if desired
+        if(Settings::get('masterlist_image_dimension') != 0) {
+            $imageWidth = $image->width();
+            $imageHeight = $image->height();
+
+            if( $imageWidth > $imageHeight) {
+                // Landscape
+                $image->resize(null, Settings::get('masterlist_image_dimension'), function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+            }
+            else {
+                // Portrait
+                $image->resize(Settings::get('masterlist_image_dimension'), null, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+            }
+        }
+        // Watermark the image if desired
+        if(Settings::get('watermark_masterlist_images') == 1) {
+            $watermark = Image::make('images/watermark.png');
+            $image->insert($watermark, 'center');
+        }
+
+        // Save the processed image
+        $image->save($characterImage->imagePath . '/' . $characterImage->imageFileName);
+    }
+
+    /**
      * Crops a thumbnail for the given image.
      *
      * @param  array                                 $points
@@ -335,13 +353,71 @@ class CharacterManager extends Service
      */
     private function cropThumbnail($points, $characterImage)
     {
-        $cropWidth = $points['x1'] - $points['x0'];
-        $cropHeight = $points['y1'] - $points['y0'];
+        $cropWidth = Config::get('lorekeeper.settings.masterlist_thumbnails.width');
+        $cropHeight = Config::get('lorekeeper.settings.masterlist_thumbnails.height');
 
         $image = Image::make($characterImage->imagePath . '/' . $characterImage->imageFileName);
+            $imageWidthOld = $image->width();
+            $imageHeightOld = $image->height();
+
+        // Trim transparent parts of image.
+        $image->trim('transparent');
+
+        $trimOffsetX = $imageWidthOld - $image->width();
+        $trimOffsetY = $imageHeightOld - $image->height();
+
+        if(Settings::get('watermark_masterlist_images') == 1) {
+            // Resize image if desired, so that the watermark is applied to the correct size of image
+            if(Settings::get('masterlist_image_dimension') != 0) {
+                $imageWidth = $image->width();
+                $imageHeight = $image->height();
+
+                if( $imageWidth > $imageHeight) {
+                    // Landscape
+                    $image->resize(null, Settings::get('masterlist_image_dimension'), function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                }
+                else {
+                    // Portrait
+                    $image->resize(Settings::get('masterlist_image_dimension'), null, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                }
+            }
+        // Watermark the image
+            $watermark = Image::make('images/watermark.png');
+            $image->insert($watermark, 'center');
+        }
+        // Now shrink the image
+        {
+            $imageWidth = $image->width();
+            $imageHeight = $image->height();
+
+            if( $imageWidth > $imageHeight) {
+                // Landscape
+                $image->resize(null, $cropWidth, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+            }
+            else {
+                // Portrait
+                $image->resize($cropHeight, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+            }
+        }
+        $xOffset = 0 + (($points['x0'] - $trimOffsetX) > 0 ? ($points['x0'] - $trimOffsetX) : 0);
+        if($xOffset + $cropWidth > $image->width()) $xOffset = $cropWidth - ($image->width() - $xOffset);
+        $yOffset = 0 + (($points['y0'] - $trimOffsetY) > 0 ? ($points['y0'] - $trimOffsetY) : 0);
+        if($yOffset + $cropHeight > $image->height()) $yOffset = $cropHeight - ($image->height() - $xOffset);
         
         // Crop according to the selected area
-        $image->crop($cropWidth, $cropHeight, $points['x0'], $points['y0']);
+        $image->crop($cropWidth, $cropHeight, isset($xOffsetNew) ? $xOffsetNew : $xOffset, isset($yOffsetNew) ? $yOffsetNew : $yOffset);
 
         // Resize to fit the thumbnail size
         $image->resize(Config::get('lorekeeper.settings.masterlist_thumbnails.width'), Config::get('lorekeeper.settings.masterlist_thumbnails.height'));
@@ -638,37 +714,15 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
-            // Trim transparent parts of image.
-            $processedImage = Image::make($data['image'])->trim('transparent');
-            // Resize image if desired
-            if(Settings::get('masterlist_image_dimension') != 0) {
-                list($width, $height) = getimagesize($image->imagePath);
-
-                if( $width > $height) {
-                    // Landscape
-                    $processedImage->resize(null, Settings::get('masterlist_image_dimension'), function ($constraint) {
-                        $constraint->aspectRatio();
-                        $constraint->upsize();
-                    });
-                }
-                else {
-                    // Portrait
-                    $processedImage->resize(Settings::get('masterlist_image_dimension'), null, function ($constraint) {
-                        $constraint->aspectRatio();
-                        $constraint->upsize();
-                    });
-                }
-            }
-            if(Settings::get('watermark_masterlist_images') == 1) {
-                $processedImage->insert('public/images/watermark.png', 'center');
-            }
-
             // Save image
-            $this->handleImage($processedImage, $image->imageDirectory, $image->imageFileName);
+            $this->handleImage($data['image'], $image->imageDirectory, $image->imageFileName);
             
             // Save thumbnail
-            if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $processedImage);
+            if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image);
             else $this->handleImage($data['thumbnail'], $image->thumbnailDirectory, $image->thumbnailFileName);
+
+            // Process and save the image itself
+            $this->processImage($image);
             
             // Add a log for the character
             // This logs all the updates made to the character
@@ -1876,34 +1930,9 @@ class CharacterManager extends Service
                     CharacterFeature::create(['character_image_id' => $image->id, 'feature_id' => $feature->feature_id, 'data' => $feature->data, 'character_type' => 'Character']);
                 }
             }
-            
+
             // Shift the image features over to the new image
             $request->rawFeatures()->update(['character_image_id' => $image->id, 'character_type' => 'Character']);
-
-            // Trim transparent parts of image.
-            $processedImage = Image::make($image)->trim('transparent');
-            // Resize image if desired
-            if(Settings::get('masterlist_image_dimension') != 0) {
-                list($width, $height) = getimagesize($image->imagePath);
-
-                if( $width > $height) {
-                    // Landscape
-                    $processedImage->resize(null, Settings::get('masterlist_image_dimension'), function ($constraint) {
-                        $constraint->aspectRatio();
-                        $constraint->upsize();
-                    });
-                }
-                else {
-                    // Portrait
-                    $processedImage->resize(Settings::get('masterlist_image_dimension'), null, function ($constraint) {
-                        $constraint->aspectRatio();
-                        $constraint->upsize();
-                    });
-                }
-            }
-            if(Settings::get('watermark_masterlist_images') == 1) {
-                $processedImage->insert('public/images/watermark.png', 'center');
-            }
 
             // Make the image directory if it doesn't exist
             if(!file_exists($image->imagePath))
@@ -1915,10 +1944,14 @@ class CharacterManager extends Service
                 }
                 chmod($image->imagePath, 0755);
             }
-
+            
             // Move the image file to the new image
-            File::move($request->imagePath . '/' . $request->imageFileName, $processedImage->imagePath . '/' . $processedImage->imageFileName);
-            File::move($request->thumbnailPath . '/' . $request->thumbnailFileName, $processedImage->thumbnailPath . '/' . $processedImage->thumbnailFileName);
+            File::move($request->imagePath . '/' . $request->imageFileName, $image->imagePath . '/' . $image->imageFileName);
+            // Process and save the image
+            $this->processImage($image);
+
+            // The thumbnail is already generated, so it can just be moved without processing
+            File::move($request->thumbnailPath . '/' . $request->thumbnailFileName, $image->thumbnailPath . '/' . $image->thumbnailFileName);
 
             // Set character data and other info such as cooldown time, resell cost and terms etc.
             // since those might be updated with the new design update
