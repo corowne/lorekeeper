@@ -85,6 +85,44 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Masterlist Image Dimension
+    |--------------------------------------------------------------------------
+    |
+    | Dimension, in pixels, to scale the shorter dimension (between width/height)
+    | of submitted masterlist images to. Enter "0" to disable resizing.
+    |
+    */
+    'masterlist_image_dimension' => 0,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Masterlist Image Format
+    |--------------------------------------------------------------------------
+    |
+    | File format to encode masterlist image uploads to.
+    | Set to blank/'' to leave images in their original formats.
+    |
+    */
+    'masterlist_image_format' => 'png',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Masterlist Image Fullsizes
+    |--------------------------------------------------------------------------
+    |
+    | Store Masterlist Fullsizes:
+    | 0: Do not store full-sized masterlist images (for view by the character\'s owner) and staff. 
+    | 1: Store full-sized images uploaded to the masterlist. Not retroactive either way.
+    | Masterlist Fullsizes Cap:
+    | Size, in pixels, to cap full-sized masterlist images at (if storing full-sized images is enabled). 
+    | Images above this cap in either dimension will be resized to suit. Enter "0" to disable resizing.
+    |
+    */
+    'store_masterlist_fullsizes' => 0,
+    'masterlist_fullsizes_cap' => 0,
+
+    /*
+    |--------------------------------------------------------------------------
     | Masterlist Thumbnail Dimensions
     |--------------------------------------------------------------------------
     |

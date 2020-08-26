@@ -222,6 +222,38 @@ class CharacterImage extends Model
     }
 
     /**
+     * Gets the file name of the model's fullsize image.
+     *
+     * @return string
+     */
+    public function getFullsizeFileNameAttribute()
+    {
+        return $this->id . '_'.$this->hash.'_'.$this->fullsize_hash.'_full.'.$this->extension;
+    }
+
+    /**
+     * Gets the file name of the model's fullsize image.
+     *
+     * @return string
+     */
+    public function getFullsizeUrlAttribute()
+    {
+        return asset($this->imageDirectory . '/' . $this->fullsizeFileName);
+    }
+
+    /**
+     * Gets the file name of the model's fullsize image.
+     *
+     * @return string
+     */
+    public function getCanViewFullAttribute()
+    {
+        if(((isset($this->character->user_id) && (Auth::check() ? $this->character->user->id == Auth::user()->id : false)) || (Auth::check() ? Auth::user()->hasPower('manage_masterlist') : false)))
+        return true;
+        else return false;
+    }
+
+    /**
      * Gets the file name of the model's thumbnail image.
      *
      * @return string
