@@ -1965,7 +1965,7 @@ class CharacterManager extends Service
                 'character_id' => $request->character_id,
                 'is_visible' => 1,
                 'hash' => $request->hash,
-                'extension' = Config::get('lorekeeper.settings.masterlist_image_format') ? Config::get('lorekeeper.settings.masterlist_image_format') : $request->extension,
+                'extension' => Config::get('lorekeeper.settings.masterlist_image_format') ? Config::get('lorekeeper.settings.masterlist_image_format') : $request->extension,
                 'use_cropper' => $request->use_cropper,
                 'x0' => $request->x0,
                 'x1' => $request->x1,
