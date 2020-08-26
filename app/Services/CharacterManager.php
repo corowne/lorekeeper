@@ -344,7 +344,8 @@ class CharacterManager extends Service
                 }
             }
 
-            $image->save($characterImage->imagePath . '/' . $characterImage->fullsizeFileName);
+            // Save the processed image
+            $image->save($characterImage->imagePath . '/' . $characterImage->fullsizeFileName, 100, Config::get('lorekeeper.settings.masterlist_image_format'));
         }
         else {
             // Delete fullsize if it was previously created.
@@ -377,13 +378,8 @@ class CharacterManager extends Service
             $image->insert($watermark, 'center');
         }
 
-        // Encode the image to new file format if desired
-        if(Config::get('lorekeeper.settings.masterlist_image_format') != null) {
-            $image->encode(Config::get('lorekeeper.settings.masterlist_image_format'));
-        }
-
         // Save the processed image
-        $image->save($characterImage->imagePath . '/' . $characterImage->imageFileName);
+        $image->save($characterImage->imagePath . '/' . $characterImage->imageFileName, 100, Config::get('lorekeeper.settings.masterlist_image_format'));
     }
 
     /**
@@ -475,13 +471,8 @@ class CharacterManager extends Service
             $image->resize(Config::get('lorekeeper.settings.masterlist_thumbnails.width'), Config::get('lorekeeper.settings.masterlist_thumbnails.height'));
         }
 
-        // Encode the image to new file format if desired
-        if(Config::get('lorekeeper.settings.masterlist_image_format') != null) {
-            $image->encode(Config::get('lorekeeper.settings.masterlist_image_format'));
-        }
-        
         // Save the thumbnail
-        $image->save($characterImage->thumbnailPath . '/' . $characterImage->thumbnailFileName);
+        $image->save($characterImage->thumbnailPath . '/' . $characterImage->thumbnailFileName, 100, Config::get('lorekeeper.settings.masterlist_image_format'));
     }
 
     /**
@@ -772,6 +763,15 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            if(Config::get('lorekeeper.settings.masterlist_image_format') != null) {
+                // Remove old versions so that images in various filetypes don't pile up
+                unlink($image->imagePath . '/' . $image->imageFileName);
+                unlink($image->imagePath . '/' . $image->fullsizeFileName);
+                unlink($image->imagePath . '/' . $image->thumbnailFileName);
+
+                $image->extension = Config::get('lorekeeper.settings.masterlist_image_format');
+                $image->save();
+            }
             // Save image
             $this->handleImage($data['image'], $image->imageDirectory, $image->imageFileName);
             
