@@ -284,11 +284,11 @@ class CharacterManager extends Service
             $this->handleImage($data['image'], $image->imageDirectory, $image->imageFileName, null, isset($data['default_image']));
             
             // Save thumbnail first before processing full image
-            if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image);
+            if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image, $isMyo);
             else $this->handleImage($data['thumbnail'], $image->imageDirectory, $image->thumbnailFileName, null, isset($data['default_image']));
 
             // Process and save the image itself
-            $this->processImage($image);
+            if(!$isMYO) $this->processImage($image);
             
             // Attach features
             foreach($data['feature_id'] as $key => $featureId) {
@@ -388,11 +388,11 @@ class CharacterManager extends Service
      * @param  array                                 $points
      * @param  \App\Models\Character\CharacterImage  $characterImage
      */
-    private function cropThumbnail($points, $characterImage)
+    private function cropThumbnail($points, $characterImage, $isMyo = false)
     {
         $image = Image::make($characterImage->imagePath . '/' . $characterImage->imageFileName);
 
-        if(Config::get('lorekeeper.settings.watermark_masterlist_thumbnails') == 1) {
+        if(Config::get('lorekeeper.settings.watermark_masterlist_thumbnails') == 1 && !$isMyo) {
             $cropWidth = Config::get('lorekeeper.settings.masterlist_thumbnails.width');
             $cropHeight = Config::get('lorekeeper.settings.masterlist_thumbnails.height');
 
@@ -775,12 +775,13 @@ class CharacterManager extends Service
             // Save image
             $this->handleImage($data['image'], $image->imageDirectory, $image->imageFileName);
             
+            $isMyo = $image->character->is_myo_slot ? true : false;
             // Save thumbnail
-            if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image);
+            if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image, $isMyo);
             else $this->handleImage($data['thumbnail'], $image->thumbnailDirectory, $image->thumbnailFileName);
 
             // Process and save the image itself
-            $this->processImage($image);
+            if(!$isMyo) $this->processImage($image);
             
             // Add a log for the character
             // This logs all the updates made to the character
@@ -1590,6 +1591,7 @@ class CharacterManager extends Service
                 'character_id' => $character->id,
                 'status' => 'Draft',
                 'hash' => randomString(10),
+                'fullsize_hash' => randomString(10),
                 'update_type' => $character->is_myo_slot ? 'MYO' : 'Character',
                 
                 // Set some data based on the character's existing stats
@@ -1960,12 +1962,15 @@ class CharacterManager extends Service
                 }
             }
 
+            $extension = Config::get('lorekeeper.settings.masterlist_image_format') != null ? Config::get('lorekeeper.settings.masterlist_image_format') : $request->extension;
+
             // Create a new image with the request data
             $image = CharacterImage::create([
                 'character_id' => $request->character_id,
                 'is_visible' => 1,
                 'hash' => $request->hash,
-                'extension' => Config::get('lorekeeper.settings.masterlist_image_format') ? Config::get('lorekeeper.settings.masterlist_image_format') : $request->extension,
+                'fullsize_hash' => $request->fullsize_hash ? $request->fullsize_hash : randomString(10),
+                'extension' => $extension,
                 'use_cropper' => $request->use_cropper,
                 'x0' => $request->x0,
                 'x1' => $request->x1,
