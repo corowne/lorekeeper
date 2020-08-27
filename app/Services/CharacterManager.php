@@ -288,7 +288,7 @@ class CharacterManager extends Service
             else $this->handleImage($data['thumbnail'], $image->imageDirectory, $image->thumbnailFileName, null, isset($data['default_image']));
 
             // Process and save the image itself
-            if(!$isMYO) $this->processImage($image);
+            if(!$isMyo) $this->processImage($image);
             
             // Attach features
             foreach($data['feature_id'] as $key => $featureId) {
