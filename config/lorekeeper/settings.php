@@ -94,7 +94,8 @@ return [
     | of submitted masterlist images to. Enter "0" to disable resizing.
     |
     | File format to encode masterlist image uploads to.
-    | Set to blank/'' to leave images in their original formats.
+    | Set to null to leave images in their original formats.
+    | 'masterlist_image_format' => null,
     |
     */
     'watermark_masterlist_images' => 0,
