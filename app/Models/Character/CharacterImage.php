@@ -4,6 +4,7 @@ namespace App\Models\Character;
 
 use Config;
 use DB;
+use Auth;
 use App\Models\Model;
 use App\Models\Feature\FeatureCategory;
 use App\Models\Character\CharacterCategory;
