@@ -10,9 +10,8 @@
 <h3>Avatar</h3>
 <div class="text-left"><div class="alert alert-warning">Please note a hard refresh may be required to see your updated avatar. Also please note that uploading a .gif will display a 500 error after; the upload should still work, however.</div></div>
 @if(Auth::user()->isStaff)
-        <div class="alert alert-danger">For admins - note that .GIF avatars leave a tmp file in the directory (e.g php2471.tmp). If you feel you are experiencing site slowdown, please remove these tmp files.
-        <br>.TMP files can be remove automatically through putty by using the following command - 'cd ~/sitename.com/www/public/images/avatars' then 'rm *.tmp'
-        <br><strong>.TMP files only occur upon gif upload, I am working on a solution to remove this but currently this method is the only I have had succesfully work. If you find a solution please contact me on the Lorekeeper discord.</strong></div>
+        <div class="alert alert-danger">For admins - note that .GIF avatars leave a tmp file in the directory (e.g php2471.tmp). There is an automatic schedule to delete these files.
+        </div>
     @endif
 <form enctype="multipart/form-data" action="avatar" method="POST">
                 <label>Update Profile Image</label><br>
