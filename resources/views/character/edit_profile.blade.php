@@ -19,6 +19,10 @@
         {!! Form::label('name', 'Name') !!}
         {!! Form::text('name', $character->name, ['class' => 'form-control']) !!}
     </div>
+    <div class="form-group">
+        {!! Form::label('link', 'Profile Link') !!}
+        {!! Form::text('link', $character->profile->link, ['class' => 'form-control']) !!}
+    </div>
 @endif
 <div class="form-group">
     {!! Form::label('text', 'Profile Content') !!}

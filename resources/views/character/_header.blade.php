@@ -10,6 +10,9 @@
         <?php $bookmark = Auth::user()->hasBookmarked($character); ?>
         <a href="#" class="btn btn-outline-info float-right bookmark-button" data-id="{{ $bookmark ? $bookmark->id : 0 }}" data-character-id="{{ $character->id }}"><i class="fas fa-bookmark"></i> {{ $bookmark ? 'Edit Bookmark' : 'Bookmark' }}</a> 
     @endif
+    @if($character->profile->link)
+        <a class="btn btn-outline-info" data-character-id="{{ $character->id }}" href="{!! $character->profile->link !!}"><i class="fas fa-home"></i> Profile</a>
+    @endif
     @if(!$character->is_visible) <i class="fas fa-eye-slash"></i> @endif {!! $character->displayName !!}
 </h1>
 <div class="mb-3"> 

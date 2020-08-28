@@ -990,6 +990,9 @@ class CharacterManager extends Service
             if(!$character->is_myo_slot) $character->name = $data['name'];
             $character->save();
 
+            if(!$character->is_myo_slot) $character->profile->link = $data['link'];
+            $character->profile->save();
+
             $character->profile->text = $data['text'];
             $character->profile->parsed_text = parse($data['text']);
             $character->profile->save();
