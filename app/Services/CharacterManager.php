@@ -1785,6 +1785,7 @@ class CharacterManager extends Service
                     $user = User::find($request->user_id);
                     if(!$inventoryManager->debitStack($user, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', ['data' => 'Item used in ' . ($request->character->is_myo_slot ? 'MYO design approval' : 'Character design update') . ' (<a href="'.$request->url.'">#'.$request->id.'</a>)'], $stack, $quantity)) throw new \Exception("Failed to create log for item stack.");
                 }
+                $user = $staff;
             }
             $currencyManager = new CurrencyManager;
             if(isset($requestData['user']['currencies']) && $requestData['user']['currencies'])
@@ -1890,7 +1891,7 @@ class CharacterManager extends Service
             $request->character->save();
 
             // Set status to approved
-            $request->staff_id = isset($staff) ? $staff->id : $user->id;
+            $request->staff_id = $user->id;
             $request->status = 'Approved';
             $request->save();
 
