@@ -1779,6 +1779,7 @@ class CharacterManager extends Service
                     $userItemRow->save();
                 }
 
+                $staff = $user;
                 foreach($stacks as $stackId=>$quantity) {
                     $stack = UserItem::find($stackId);
                     $user = User::find($request->user_id);
@@ -1877,7 +1878,7 @@ class CharacterManager extends Service
             $request->character->save();
 
             // Set status to approved
-            $request->staff_id = $user->id;
+            $request->staff_id = isset($staff) ? $staff->id : $user->id;
             $request->status = 'Approved';
             $request->save();
 
