@@ -1965,7 +1965,7 @@ class CharacterManager extends Service
             $request->save();
 
             // Notify the user
-            Notifications::create('DESIGN_REJECTED', $user, [
+            Notifications::create('DESIGN_REJECTED', $request->user, [
                 'design_url' => $request->url,
                 'character_url' => $request->character->url,
                 'name' => $request->character->fullName
