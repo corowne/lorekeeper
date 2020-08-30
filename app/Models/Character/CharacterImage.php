@@ -162,7 +162,7 @@ class CharacterImage extends Model
      */
     public function scopeImages($query)
     {
-        if(Auth::check() ? Auth::user()->hasPower('manage_masterlist') : FALSE) return $query->orderBy('sort')->orderBy('id', 'DESC');
+        if(Auth::check() ? Auth::user()->hasPower('manage_characters') : FALSE) return $query->orderBy('sort')->orderBy('id', 'DESC');
         else return $query->where('is_visible', 1)->orderBy('sort')->orderBy('id', 'DESC');
     }
 
