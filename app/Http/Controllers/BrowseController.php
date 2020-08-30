@@ -122,11 +122,7 @@ class BrowseController extends Controller
     {
         $query = Character::with('user.rank')->with('image.features')->with('rarity')->with('image.species')->myo(0);
 
-        $imageQuery = CharacterImage::with('features')->with('rarity')->with('species')->with('features');
-        if(!Auth::check() || !Auth::user()->hasPower('manage_characters')) {
-            $query->visible();
-            $imageQuery->guest();
-        }
+        $imageQuery = CharacterImage::images()->with('features')->with('rarity')->with('species')->with('features');
         
         if($request->get('name')) $query->where(function($query) use ($request) {
             $query->where('characters.name', 'LIKE', '%' . $request->get('name') . '%')->orWhere('characters.slug', 'LIKE', '%' . $request->get('name') . '%');
