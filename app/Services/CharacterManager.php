@@ -778,7 +778,7 @@ class CharacterManager extends Service
             $isMyo = $image->character->is_myo_slot ? true : false;
             // Save thumbnail
             if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image, $isMyo);
-            else $this->handleImage($data['thumbnail'], $image->thumbnailDirectory, $image->thumbnailFileName);
+            else $this->handleImage($data['thumbnail'], $image->thumbnailPath, $image->thumbnailFileName);
 
             // Process and save the image itself
             if(!$isMyo) $this->processImage($image);
@@ -2046,15 +2046,15 @@ class CharacterManager extends Service
                 $request->character->character_image_id = $image->id;
             }
 
-            // Add a log for the character and user
-            $this->createLog($user->id, null, $request->character->user_id, $request->character->user->alias, $request->character->id, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', '[#'.$image->id.']', 'character');
-            $this->createLog($user->id, null, $request->character->user_id, $request->character->user->alias, $request->character->id, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', '[#'.$image->id.']', 'user');
-
             // Final recheck and setting of update type, as insurance
             if($request->character->is_myo_slot) 
             $request->update_type = 'MYO';
             else $request->update_type = 'Character';
             $request->save();
+
+            // Add a log for the character and user
+            $this->createLog($user->id, null, $request->character->user_id, $request->character->user->alias, $request->character->id, $request->update_type == 'MYO' ? 'MYO Design Approved' : 'Character Design Updated', '[#'.$image->id.']', 'character');
+            $this->createLog($user->id, null, $request->character->user_id, $request->character->user->alias, $request->character->id, $request->update_type == 'MYO' ? 'MYO Design Approved' : 'Character Design Updated', '[#'.$image->id.']', 'user');
             
             // If this is for a MYO, set user's FTO status and the MYO status of the slot
             if($request->character->is_myo_slot)
@@ -2137,7 +2137,7 @@ class CharacterManager extends Service
             $request->save();
 
             // Notify the user
-            Notifications::create('DESIGN_REJECTED', $user, [
+            Notifications::create('DESIGN_REJECTED', $request->user, [
                 'design_url' => $request->url,
                 'character_url' => $request->character->url,
                 'name' => $request->character->fullName

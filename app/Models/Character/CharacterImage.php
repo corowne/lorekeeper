@@ -160,20 +160,10 @@ class CharacterImage extends Model
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeGuest($query)
+    public function scopeImages($query)
     {
-        return $query->where('is_visible', 1)->orderBy('sort')->orderBy('id', 'DESC');
-    }
-
-    /**
-     * Scope a query to include images visible to staff with the required viewing powers.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeMod($query)
-    {
-        return $query->orderBy('sort')->orderBy('id', 'DESC');
+        if(!Auth::check() || !Auth::user()->hasPower('manage_characters')) return $query->where('is_visible', 1)->orderBy('sort')->orderBy('id', 'DESC');
+        else return $query->orderBy('sort')->orderBy('id', 'DESC');
     }
 
     /**********************************************************************************************
