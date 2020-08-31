@@ -61,6 +61,14 @@ class Species extends Model
         return $this->hasMany('App\Models\Species\Subtype');
     }
 
+    /**
+     * Get the features associated with this species.
+     */
+    public function features() 
+    {
+        return $this->hasMany('App\Models\Feature\Feature');
+    }
+
     /**********************************************************************************************
     
         ACCESSORS
@@ -136,5 +144,15 @@ class Species extends Model
     public function getSearchUrlAttribute()
     {
         return url('masterlist?species_id='.$this->id);
+    }
+
+    /**
+     * Gets the URL the visual index of this species' traits.
+     *
+     * @return string
+     */
+    public function getVisualTraitsUrlAttribute()
+    {
+        return url('/world/species/'.$this->id.'/traits');
     }
 }
