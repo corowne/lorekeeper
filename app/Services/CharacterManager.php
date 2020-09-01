@@ -320,7 +320,7 @@ class CharacterManager extends Service
             // Generate fullsize hash if not already generated,
             // then save the full-sized image
             if(!$characterImage->fullsize_hash) {
-                $characterImage->fullsize_hash = randomString(10);
+                $characterImage->fullsize_hash = randomString(15);
                 $characterImage->save();
             }
 
@@ -1591,7 +1591,7 @@ class CharacterManager extends Service
                 'character_id' => $character->id,
                 'status' => 'Draft',
                 'hash' => randomString(10),
-                'fullsize_hash' => randomString(10),
+                'fullsize_hash' => randomString(15),
                 'update_type' => $character->is_myo_slot ? 'MYO' : 'Character',
                 
                 // Set some data based on the character's existing stats
@@ -1969,7 +1969,7 @@ class CharacterManager extends Service
                 'character_id' => $request->character_id,
                 'is_visible' => 1,
                 'hash' => $request->hash,
-                'fullsize_hash' => $request->fullsize_hash ? $request->fullsize_hash : randomString(10),
+                'fullsize_hash' => $request->fullsize_hash ? $request->fullsize_hash : randomString(15),
                 'extension' => $extension,
                 'use_cropper' => $request->use_cropper,
                 'x0' => $request->x0,
