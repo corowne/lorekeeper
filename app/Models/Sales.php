@@ -5,9 +5,11 @@ namespace App\Models;
 use Carbon\Carbon;
 use Config;
 use App\Models\Model;
+use Laravelista\Comments\Commentable;
 
 class Sales extends Model
 {
+    use Commentable;
     /**
      * The attributes that are mass assignable.
      *
