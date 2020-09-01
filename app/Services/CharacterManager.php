@@ -826,7 +826,7 @@ class CharacterManager extends Service
 
             // Delete the image files
             unlink($image->imagePath . '/' . $image->imageFileName);
-            unlink($image->imagePath . '/' . $image->fullsizeFileName);
+            if(isset($image->fullsize_hash) ? file_exists( public_path($image->imageDirectory.'/'.$image->fullsizeFileName)) : FALSE) unlink($image->imagePath . '/' . $image->fullsizeFileName);
             unlink($image->imagePath . '/' . $image->thumbnailFileName);
             
             // Add a log for the character
