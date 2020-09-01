@@ -766,12 +766,13 @@ class CharacterManager extends Service
             if(Config::get('lorekeeper.settings.masterlist_image_format') != null) {
                 // Remove old versions so that images in various filetypes don't pile up
                 unlink($image->imagePath . '/' . $image->imageFileName);
-                unlink($image->imagePath . '/' . $image->fullsizeFileName);
-                if(file_exists( public_path($image->imageDirectory.'/'.$image->fullsizeFileName))) unlink($image->imagePath . '/' . $image->thumbnailFileName);
+                if(isset($image->fullsize_hash) && file_exists( public_path($image->imageDirectory.'/'.$image->fullsizeFileName))) unlink($image->imagePath . '/' . $image->fullsizeFileName);
+                unlink($image->imagePath . '/' . $image->thumbnailFileName);
 
                 $image->extension = Config::get('lorekeeper.settings.masterlist_image_format');
                 $image->save();
             }
+            
             // Save image
             $this->handleImage($data['image'], $image->imageDirectory, $image->imageFileName);
             

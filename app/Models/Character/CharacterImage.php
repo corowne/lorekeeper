@@ -21,7 +21,7 @@ class CharacterImage extends Model
      */
     protected $fillable = [
         'character_id', 'user_id', 'species_id', 'subtype_id', 'rarity_id', 'url',
-        'extension', 'use_cropper', 'hash', 'sort', 
+        'extension', 'use_cropper', 'hash', 'fullsize_hash', 'sort', 
         'x0', 'x1', 'y0', 'y1',
         'description', 'parsed_description',
         'is_valid', 
