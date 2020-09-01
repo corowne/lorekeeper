@@ -780,7 +780,7 @@ class CharacterManager extends Service
             }
             else {
                 // Get uploaded image's extension and save it to the DB
-                $image->extension = $image->getClientOriginalExtension();
+                $image->extension = $data['image']->getClientOriginalExtension();
                 $image->save();
             }
             
