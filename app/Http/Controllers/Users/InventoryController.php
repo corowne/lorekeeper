@@ -78,7 +78,7 @@ class InventoryController extends Controller
             'user' => Auth::user(),
             'userOptions' => ['' => 'Select User'] + User::visible()->where('id', '!=', $first_instance ? $first_instance->user_id : 0)->orderBy('name')->get()->pluck('verified_name', 'id')->toArray(),
             'readOnly' => $readOnly,
-            'characterOptions' => Character::visible()->myo(0)->where('user_id','=',Auth::user()->id)->orderBy('sort','DESC')->get()->pluck('fullName','id')->toArray(),
+            'characterOptions' => Character::visible()->myo(0)->where('user_id', optional(Auth::user())->id)->orderBy('sort','DESC')->get()->pluck('fullName','id')->toArray(),
         ]);
     }
 
