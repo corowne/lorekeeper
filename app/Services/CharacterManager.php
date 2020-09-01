@@ -774,7 +774,13 @@ class CharacterManager extends Service
                 if(isset($image->fullsize_hash) && file_exists( public_path($image->imageDirectory.'/'.$image->fullsizeFileName))) unlink($image->imagePath . '/' . $image->fullsizeFileName);
                 unlink($image->imagePath . '/' . $image->thumbnailFileName);
 
+                // Set the image's extension in the DB as defined in settings
                 $image->extension = Config::get('lorekeeper.settings.masterlist_image_format');
+                $image->save();
+            }
+            else {
+                // Get uploaded image's extension and save it to the DB
+                $image->extension = $image->getClientOriginalExtension();
                 $image->save();
             }
             
@@ -1695,11 +1701,6 @@ class CharacterManager extends Service
                     $imageData['has_image'] = true;
                 }
                 $request->update($imageData);
-            }
-
-            if(Config::get('lorekeeper.settings.masterlist_image_format') != null) {
-                $request->extension = Config::get('lorekeeper.settings.masterlist_image_format');
-                $request->update();
             }
 
             $request->designers()->delete();
