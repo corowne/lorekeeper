@@ -354,7 +354,7 @@ class CharacterManager extends Service
         }
         else {
             // Delete fullsize if it was previously created.
-            if(isset($characterImage->fullsize_hash)) unlink($characterImage->imagePath . '/' . $characterImage->fullsizeFileName);
+            if(isset($characterImage->fullsize_hash) ? file_exists( public_path($characterImage->imageDirectory.'/'.$characterImage->fullsizeFileName)) : FALSE) unlink($characterImage->imagePath . '/' . $characterImage->fullsizeFileName);
         }
 
         // Resize image if desired
@@ -406,6 +406,11 @@ class CharacterManager extends Service
 
             // Trim transparent parts of image.
             $image->trim('transparent');
+
+            if(Config::get('lorekeeper.settings.masterlist_image_format') != 'png' && Config::get('lorekeeper.settings.masterlist_image_format') != null && Config::get('lorekeeper.settings.masterlist_image_background') != null) {
+                $canvas = Image::canvas($image->width(), $image->height(), Config::get('lorekeeper.settings.masterlist_image_background'));
+                $image = $canvas->insert($image, 'center');
+            }
 
             $trimOffsetX = $imageWidthOld - $image->width();
             $trimOffsetY = $imageHeightOld - $image->height();
@@ -807,7 +812,7 @@ class CharacterManager extends Service
     }
 
     /**
-     * Reuploads an image.
+     * Deletes an image.
      *
      * @param  \App\Models\Character\CharacterImage  $image
      * @param  \App\Models\User\User                 $user
