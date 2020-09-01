@@ -316,6 +316,11 @@ class CharacterManager extends Service
         // Trim transparent parts of image.
         $image = Image::make($characterImage->imagePath . '/' . $characterImage->imageFileName)->trim('transparent');
 
+        if(Config::get('lorekeeper.settings.masterlist_image_format') != 'png' && Config::get('lorekeeper.settings.masterlist_image_format') != null && Config::get('lorekeeper.settings.masterlist_image_background') != null) {
+            $canvas = Image::canvas($image->width(), $image->height(), Config::get('lorekeeper.settings.masterlist_image_background'));
+            $image = $canvas->insert($image);
+        }
+
         if(Config::get('lorekeeper.settings.store_masterlist_fullsizes') == 1) {
             // Generate fullsize hash if not already generated,
             // then save the full-sized image
@@ -1690,6 +1695,11 @@ class CharacterManager extends Service
                     $imageData['has_image'] = true;
                 }
                 $request->update($imageData);
+            }
+
+            if(Config::get('lorekeeper.settings.masterlist_image_format') != null) {
+                $request->extension = Config::get('lorekeeper.settings.masterlist_image_format');
+                $request->update();
             }
 
             $request->designers()->delete();

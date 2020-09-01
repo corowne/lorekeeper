@@ -95,12 +95,20 @@ return [
     |
     | File format to encode masterlist image uploads to.
     | Set to null to leave images in their original formats.
+    | Example:
     | 'masterlist_image_format' => null,
+    |
+    | Color to fill non-png images in when masterlist_image_format is set. 
+    | This is in an endeavor to make images with a transparent background
+    | compress better. Set to null to disable.
+    | Example:
+    | 'masterlist_image_background' => null,
     |
     */
     'watermark_masterlist_images' => 0,
     'masterlist_image_dimension' => 0,
     'masterlist_image_format' => 'png',
+    'masterlist_image_background' => '#ffffff',
     
     /*
     |--------------------------------------------------------------------------
