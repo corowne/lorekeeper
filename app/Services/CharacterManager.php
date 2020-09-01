@@ -318,7 +318,7 @@ class CharacterManager extends Service
 
         if(Config::get('lorekeeper.settings.masterlist_image_format') != 'png' && Config::get('lorekeeper.settings.masterlist_image_format') != null && Config::get('lorekeeper.settings.masterlist_image_background') != null) {
             $canvas = Image::canvas($image->width(), $image->height(), Config::get('lorekeeper.settings.masterlist_image_background'));
-            $image = $canvas->insert($image);
+            $image = $canvas->insert($image, 'center');
         }
 
         if(Config::get('lorekeeper.settings.store_masterlist_fullsizes') == 1) {
