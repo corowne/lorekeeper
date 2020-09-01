@@ -87,4 +87,11 @@
 </div>
 @endforeach
 <div class="text-right"><a href="{{ $user->url.'/characters' }}">View all...</a></div>
+<hr>
+<br><br>
+<div class="container">
+@comments(['model' => $user,
+        'perPage' => 5
+    ])
+</div>
 @endsection

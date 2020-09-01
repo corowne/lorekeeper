@@ -8,9 +8,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\Models\Sales;
+use Laravelista\Comments\Commentable;
 
 class SalesController extends Controller
 {
+    use Commentable;
     /*
     |--------------------------------------------------------------------------
     | sales Controller
