@@ -88,6 +88,7 @@ class ShopController extends Controller
             'quantityLimit' => $quantityLimit,
             'userPurchaseCount' => $userPurchaseCount,
             'purchaseLimitReached' => $purchaseLimitReached
+		]);
     }
 
     /**
