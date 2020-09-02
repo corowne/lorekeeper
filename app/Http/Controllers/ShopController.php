@@ -75,6 +75,8 @@ class ShopController extends Controller
         return view('shops._stock_modal', [
             'shop' => $shop,
             'stock' => $stock = ShopStock::with('item')->where('id', $stockId)->where('shop_id', $id)->first(),
+            'quantityLimit' => $service->getStockPurchaseLimit($stock, Auth::user()),
+            'userPurchaseCount' => $service->checkUserPurchases($stock, Auth::user()),
             'purchaseLimitReached' => $service->checkPurchaseLimitReached($stock, Auth::user())
         ]);
     }
@@ -89,7 +91,7 @@ class ShopController extends Controller
     public function postBuy(Request $request, ShopManager $service)
     {
         $request->validate(ShopLog::$createRules);
-        if($service->buyStock($request->only(['stock_id', 'shop_id', 'slug', 'bank']), Auth::user())) {
+        if($service->buyStock($request->only(['stock_id', 'shop_id', 'slug', 'bank', 'quantity']), Auth::user())) {
             flash('Successfully purchased item.')->success();
         }
         else {
