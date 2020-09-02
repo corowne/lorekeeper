@@ -406,7 +406,7 @@ class CharacterManager extends Service
 
         if(Config::get('lorekeeper.settings.watermark_masterlist_thumbnails') == 1 && !$isMyo) {
             // Trim transparent parts of image.
-            $image->trim($trimColor ? 'top-left' : 'transparent');
+            $image->trim(isset($trimColor) && $trimColor ? 'top-left' : 'transparent');
 
             $cropWidth = Config::get('lorekeeper.settings.masterlist_thumbnails.width');
             $cropHeight = Config::get('lorekeeper.settings.masterlist_thumbnails.height');
