@@ -397,20 +397,20 @@ class CharacterManager extends Service
     {
         $image = Image::make($characterImage->imagePath . '/' . $characterImage->imageFileName);
 
+        // Trim transparent parts of image.
+        $image->trim('transparent');
+
+        if(Config::get('lorekeeper.settings.masterlist_image_format') != 'png' && Config::get('lorekeeper.settings.masterlist_image_format') != null && Config::get('lorekeeper.settings.masterlist_image_background') != null) {
+            $canvas = Image::canvas($image->width(), $image->height(), Config::get('lorekeeper.settings.masterlist_image_background'));
+            $image = $canvas->insert($image, 'center');
+        }
+
         if(Config::get('lorekeeper.settings.watermark_masterlist_thumbnails') == 1 && !$isMyo) {
             $cropWidth = Config::get('lorekeeper.settings.masterlist_thumbnails.width');
             $cropHeight = Config::get('lorekeeper.settings.masterlist_thumbnails.height');
 
             $imageWidthOld = $image->width();
             $imageHeightOld = $image->height();
-
-            // Trim transparent parts of image.
-            $image->trim('transparent');
-
-            if(Config::get('lorekeeper.settings.masterlist_image_format') != 'png' && Config::get('lorekeeper.settings.masterlist_image_format') != null && Config::get('lorekeeper.settings.masterlist_image_background') != null) {
-                $canvas = Image::canvas($image->width(), $image->height(), Config::get('lorekeeper.settings.masterlist_image_background'));
-                $image = $canvas->insert($image, 'center');
-            }
 
             $trimOffsetX = $imageWidthOld - $image->width();
             $trimOffsetY = $imageHeightOld - $image->height();
