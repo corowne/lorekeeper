@@ -71,12 +71,23 @@ class ShopController extends Controller
     public function getShopStock(ShopManager $service, $id, $stockId)
     {
         $shop = Shop::where('id', $id)->where('is_active', 1)->first();
+        $stock = ShopStock::with('item')->where('id', $stockId)->where('shop_id', $id)->first();
+
+        $user = Auth::user();
+        $quantityLimit = 0; $userPurchaseCount = 0; $purchaseLimitReached = false;
+        if($user){
+            $quantityLimit = $service->getStockPurchaseLimit($stock, Auth::user());
+            $userPurchaseCount = $service->checkUserPurchases($stock, Auth::user());
+            $purchaseLimitReached = $service->checkPurchaseLimitReached($stock, Auth::user());
+        }
+
         if(!$shop) abort(404);
         return view('shops._stock_modal', [
             'shop' => $shop,
-            'stock' => $stock = ShopStock::with('item')->where('id', $stockId)->where('shop_id', $id)->first(),
-            'purchaseLimitReached' => $service->checkPurchaseLimitReached($stock, Auth::user())
-        ]);
+            'stock' => $stock,
+            'quantityLimit' => $quantityLimit,
+            'userPurchaseCount' => $userPurchaseCount,
+            'purchaseLimitReached' => $purchaseLimitReached
     }
 
     /**
