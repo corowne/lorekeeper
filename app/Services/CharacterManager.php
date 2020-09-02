@@ -397,15 +397,16 @@ class CharacterManager extends Service
     {
         $image = Image::make($characterImage->imagePath . '/' . $characterImage->imageFileName);
 
-        // Trim transparent parts of image.
-        $image->trim('transparent');
-
         if(Config::get('lorekeeper.settings.masterlist_image_format') != 'png' && Config::get('lorekeeper.settings.masterlist_image_format') != null && Config::get('lorekeeper.settings.masterlist_image_background') != null) {
             $canvas = Image::canvas($image->width(), $image->height(), Config::get('lorekeeper.settings.masterlist_image_background'));
             $image = $canvas->insert($image, 'center');
+            $trimColor = TRUE;
         }
 
         if(Config::get('lorekeeper.settings.watermark_masterlist_thumbnails') == 1 && !$isMyo) {
+            // Trim transparent parts of image.
+            $image->trim($trimColor ? 'top-left' : 'transparent');
+
             $cropWidth = Config::get('lorekeeper.settings.masterlist_thumbnails.width');
             $cropHeight = Config::get('lorekeeper.settings.masterlist_thumbnails.height');
 
