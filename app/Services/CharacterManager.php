@@ -618,7 +618,7 @@ class CharacterManager extends Service
             
             // Save thumbnail
             if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image);
-            else $this->handleImage($data['thumbnail'], $image->thumbnailDirectory, $image->thumbnailFileName);
+            else $this->handleImage($data['thumbnail'], $image->thumbnailPath, $image->thumbnailFileName);
             
             // Add a log for the character
             // This logs all the updates made to the character
