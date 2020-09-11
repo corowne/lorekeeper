@@ -247,13 +247,13 @@ return [
     ],
 
     // CHARACTER_ITEM_GRANT
-    39 => [
+    501 => [
         'message' => '{character_name} has received a staff grant of {item_name} (×{item_quantity}) from <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Inventory</a>)',
         'url' => 'character/{character_slug}/inventory'
     ],
 
     // CHARACTER_ITEM_REMOVAL
-    40 => [
+    502 => [
         'message' => '{item_name} (×{item_quantity}) was removed from {character_name} by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Inventory</a>)',
         'url' => 'character/{character_slug}/inventory'
     ],
