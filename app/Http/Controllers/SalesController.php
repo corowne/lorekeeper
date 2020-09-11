@@ -11,7 +11,6 @@ use App\Models\Sales;
 
 class SalesController extends Controller
 {
-    
     /*
     |--------------------------------------------------------------------------
     | sales Controller
