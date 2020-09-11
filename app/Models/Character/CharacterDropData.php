@@ -14,9 +14,8 @@ use App\Models\Character\Character;
 use App\Models\Currency\Currency;
 use App\Models\Item\Item;
 
-class Character extends Model
+class CharacterDropData extends Model
 {
-    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -88,6 +87,26 @@ class Character extends Model
         ACCESSORS
 
     **********************************************************************************************/
+
+    /**
+     * Gets the character's page's URL.
+     *
+     * @return string
+     */
+    public function getUrlAttribute()
+    {
+        return url('admin/data/character-drops/'.$this->id);
+    }
+
+    /**
+     * Get the parameter attribute as an associative array.
+     *
+     * @return array
+     */
+    public function getParameterAttribute()
+    {
+        return json_decode($this->attributes['parameters'], true);
+    }
 
     /**********************************************************************************************
     

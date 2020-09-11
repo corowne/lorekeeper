@@ -91,6 +91,10 @@ return [
                 'url' => 'admin/data/subtypes'
             ],
             [
+                'name' => 'Character Drops',
+                'url' => 'admin/data/character-drops'
+            ],
+            [
                 'name' => 'Trait Categories',
                 'url' => 'admin/data/trait-categories'
             ],

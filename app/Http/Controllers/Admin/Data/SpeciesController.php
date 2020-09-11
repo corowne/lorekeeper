@@ -8,6 +8,7 @@ use Auth;
 
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
+use App\Models\Character\CharacterDropData;
 
 use App\Services\SpeciesService;
 
@@ -258,5 +259,107 @@ class SpeciesController extends Controller
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
         return redirect()->back();
+    }
+
+    /**
+     * Shows the character drop index.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getDropIndex()
+    {
+        return view('admin.specieses.character_drops', [
+            'drops' => CharacterDropData::orderBy('species_id', 'ASC')->paginate(20)
+        ]);
+    }
+    
+    /**
+     * Shows the create subtype page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCreateDrop()
+    {
+        return view('admin.specieses.create_edit_drop', [
+            'drop' => new CharacterDropData,
+            'specieses' => Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+        ]);
+    }
+    
+    /**
+     * Shows the edit subtype page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getEditDrop($id)
+    {
+        $subtype = Subtype::find($id);
+        if(!$subtype) abort(404);
+        return view('admin.specieses.create_edit_subtype', [
+            'subtype' => $subtype,
+            'specieses' => Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
+        ]);
+    }
+
+    /**
+     * Creates or edits a subtype.
+     *
+     * @param  \Illuminate\Http\Request     $request
+     * @param  App\Services\SpeciesService  $service
+     * @param  int|null                     $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postCreateEditDrop(Request $request, SpeciesService $service, $id = null)
+    {
+        $id ? $request->validate(Subtype::$updateRules) : $request->validate(Subtype::$createRules);
+        $data = $request->only([
+            'species_id', 'name', 'description', 'image', 'remove_image'
+        ]);
+        if($id && $service->updateSubtype(Subtype::find($id), $data, Auth::user())) {
+            flash('Subtype updated successfully.')->success();
+        }
+        else if (!$id && $subtype = $service->createSubtype($data, Auth::user())) {
+            flash('Subtype created successfully.')->success();
+            return redirect()->to('admin/data/subtypes/edit/'.$subtype->id);
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+    
+    /**
+     * Gets the subtype deletion modal.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getDeleteDrop($id)
+    {
+        $drop = CharacterDropData::find($id);
+        return view('admin.specieses._delete_drop', [
+            'drop' => $drop,
+        ]);
+    }
+
+    /**
+     * Deletes a subtype.
+     *
+     * @param  \Illuminate\Http\Request     $request
+     * @param  App\Services\SpeciesService  $service
+     * @param  int                          $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postDeleteDrop(Request $request, SpeciesService $service, $id)
+    {
+        if($id && $service->deleteDropData(CharacterDropData::find($id))) {
+            flash('Drop data deleted successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->to('admin/data/character-drops');
     }
 }
