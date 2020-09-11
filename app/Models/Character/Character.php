@@ -156,7 +156,7 @@ class Character extends Model
      */
     public function images() 
     {
-        return $this->hasMany('App\Models\Character\CharacterImage', 'character_id')->guest();
+        return $this->hasMany('App\Models\Character\CharacterImage', 'character_id')->images();
     }
 
     /**

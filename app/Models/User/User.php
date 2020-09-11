@@ -395,7 +395,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $user = $this;
         $query = UserCharacterLog::with('sender.rank')->with('recipient.rank')->with('character')->where(function($query) use ($user) {
-            $query->where('sender_id', $user->id)->where('log_type', '!=', 'Character Created');
+            $query->where('sender_id', $user->id)->whereNotIn('log_type', ['Character Created', 'MYO Slot Created', 'Character Design Updated', 'MYO Design Approved']);
         })->orWhere(function($query) use ($user) {
             $query->where('recipient_id', $user->id);
         })->orderBy('id', 'DESC');

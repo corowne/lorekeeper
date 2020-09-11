@@ -11,7 +11,7 @@
     <div class="form-group">
         <label class="control-label">
             {!! Form::checkbox('is_active', 1, $group->is_active, ['class' => 'form-check-input mr-2', 'data-toggle' => 'toggle']) !!}
-            {!! Form::label('is_active', 'Active (visible to users)', ['class' => 'form-check-label ml-3']) !!}
+            {!! Form::label('is_active', 'Active (visible to users)', ['class' => 'form-check-label ml-3']) !!} {!! add_help('This setting will cascade to any raffles in this group (setting the group to active will set the raffles within it to active and vice versa). Not retroactive.') !!}
         </label>
     </div>
     <div class="text-right">
