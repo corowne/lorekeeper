@@ -6,8 +6,11 @@ use Carbon\Carbon;
 use Config;
 use App\Models\Model;
 
+use Laravelista\Comments\Commentable;
+
 class News extends Model
 {
+    use Commentable;
     /**
      * The attributes that are mass assignable.
      *
