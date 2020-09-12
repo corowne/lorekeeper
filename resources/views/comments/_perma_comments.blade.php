@@ -18,11 +18,11 @@
     <div class="d-block" style="flex:1">
         <div class="row mx-0 px-0 align-items-md-end">
             <h5 class="mt-0 mb-1 col mx-0 px-0">
-                <small><a href="{!! $comment->commenter->url !!}" class="btn btn-primary btn-sm"><i class="fas fa-user mr-1" style="opacity: 50%;"></i> {!! $comment->commenter->name !!}</a></small>
+                <small><a href="{!! $comment->commenter->url !!}" class="btn btn-primary btn-sm"><i class="fas fa-user mr-1" style="opacity: 50%;"></i> {!! $comment->commenter->commentDisplayName !!}</a></small>
             </h5>
             @if($comment->is_featured)<div class="ml-1 text-muted text-right col-6 mx-0 pr-1"><small class="text-success">Featured by Owner</small></div> @endif
         </div>
-        <div class="border p-3 rounded {{ $limit == 0 ? 'shadow-sm border-info' : '' }} {{ ($comment->is_featured && ($limit != 0)) ? 'border-success' : '' }} "><p>{!! $markdown->line($comment->comment) !!} </p>
+        <div class="border p-3 rounded {{ $limit == 0 ? 'shadow-sm border-info' : '' }} {{ ($comment->is_featured && ($limit != 0)) ? 'border-success' : '' }} "><p>{!! nl2br($markdown->line($comment->comment)) !!} </p>
         <p class="border-top pt-1 text-right mb-0">
             <small class="text-muted">{!! $comment->created_at !!}
             @if($comment->created_at != $comment->updated_at) 

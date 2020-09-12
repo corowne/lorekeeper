@@ -259,6 +259,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return ($this->is_banned ? '<strike>' : '') . '<a href="'.$this->url.'" class="display-user" '.($this->rank->color ? 'style="color: #'.$this->rank->color.';"' : '').'>'.$this->name.'</a>' . ($this->is_banned ? '</strike>' : '');
     }
 
+        /**
+     * Displays the user's name, linked to their profile page.
+     *
+     * @return string
+     */
+    public function getCommentDisplayNameAttribute()
+    {
+        return '<small><a href="'. $this->url .'" class="btn btn-default btn-sm"'.($this->rank->color ? 'style="background-color: #'.$this->rank->color.'!important;color:#000!important;"' : '').'><i class="'.($this->rank->icon ? $this->rank->icon : 'fas fa-user').' mr-1" style="opacity: 50%;"></i>'. $this->name .'</a></small>';
+    }
+
     /**
      * Displays the user's alias, linked to their deviantART page.
      *
