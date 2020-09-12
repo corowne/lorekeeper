@@ -254,7 +254,7 @@ return [
     // Comment recieved reply
     // COMMENT_REPLY
     240 => [
-        'message' => '<a href="{sender_url}">{sender}</a> has made a reply to your comment. <a href="comment/{comment_url}">See Context.</a>',
+        'message' => '<a href="{sender_url}">{sender}</a> has made a reply to your comment. <a href="comment/{comment_url}">See Reply.</a>',
         'url' => ''
     ],
 ];
