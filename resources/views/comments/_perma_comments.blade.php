@@ -18,7 +18,7 @@
     <div class="d-block" style="flex:1">
         <div class="row mx-0 px-0 align-items-md-end">
             <h5 class="mt-0 mb-1 col mx-0 px-0">
-                <small><a href="{!! $comment->commenter->url !!}" class="btn btn-primary btn-sm"><i class="fas fa-user mr-1" style="opacity: 50%;"></i> {!! $comment->commenter->commentDisplayName !!}</a></small>
+                {!! $comment->commenter->commentDisplayName !!} @if($comment->commenter->isStaff == true)<small class="text-success">Staff Member</small>@endif
             </h5>
             @if($comment->is_featured)<div class="ml-1 text-muted text-right col-6 mx-0 pr-1"><small class="text-success">Featured by Owner</small></div> @endif
         </div>
