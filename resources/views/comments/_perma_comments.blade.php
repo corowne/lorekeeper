@@ -32,18 +32,18 @@
             <a href="{{ url('comment/').'/'.$comment->id }}"><i class="fas fa-link ml-1" style="opacity: 50%;"></i></a>
         </p>
     </div>
-        <div>
+        <div class="my-1">
             @can('reply-to-comment', $comment)
-                <button data-toggle="modal" data-target="#reply-modal-{{ $comment->getKey() }}" class="btn btn-sm btn-link text-uppercase"><span class="fa fa-comment mr-2"></span>Reply</button>
+                <button data-toggle="modal" data-target="#reply-modal-{{ $comment->getKey() }}" class="btn btn-sm btn-faded text-uppercase"><span class="fa fa-comment mr-2"></span>Reply</button>
             @endcan
             @can('edit-comment', $comment)
-                <button data-toggle="modal" data-target="#comment-modal-{{ $comment->getKey() }}" class="btn btn-sm btn-link text-uppercase">Edit</button>
+                <button data-toggle="modal" data-target="#comment-modal-{{ $comment->getKey() }}" class="btn btn-sm btn-faded text-uppercase">Edit</button>
             @endcan
             @if((Auth::user()->id == $comment->commentable_id) || Auth::user()->isStaff)
-                <button data-toggle="modal" data-target="#feature-modal-{{ $comment->getKey() }}" class="btn btn-sm btn-link text-success text-uppercase">{{$comment->is_featured ? 'Unf' : 'F' }}eature Comment</button>
+                <button data-toggle="modal" data-target="#feature-modal-{{ $comment->getKey() }}" class="btn btn-sm btn-faded text-success text-uppercase">{{$comment->is_featured ? 'Unf' : 'F' }}eature Comment</button>
             @endif
             @can('delete-comment', $comment)
-                <button data-toggle="modal" data-target="#delete-modal-{{ $comment->getKey() }}" class="btn btn-sm btn-link text-danger text-uppercase">Delete</button>
+                <button data-toggle="modal" data-target="#delete-modal-{{ $comment->getKey() }}" class="btn btn-sm btn-outline-danger text-uppercase">Delete</button>
             @endcan
         </div>
 
@@ -178,3 +178,4 @@ url should be equal to the last replies permalink (e.g reply 5)--}}
             @endforeach
         </div>
     </div>
+</div>
