@@ -90,7 +90,7 @@
 <hr>
 <br><br>
 <div class="container">
-@comments(['model' => $user,
+@comments(['model' => $user->profile,
         'perPage' => 5
     ])
 </div>
