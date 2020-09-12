@@ -1,0 +1,112 @@
+<?php namespace App\Services;
+
+use App\Services\Service;
+
+use DB;
+use Config;
+
+use App\Models\Item\Item;
+use App\Models\Species\Species;
+
+class CharacterDropService extends Service
+{
+    /*
+    |--------------------------------------------------------------------------
+    | Character Drop Service
+    |--------------------------------------------------------------------------
+    |
+    | Handles the creation and editing of character drops.
+    |
+    */
+
+    /**
+     * Creates a loot table.
+     *
+     * @param  array  $data
+     * @return bool|\App\Models\Loot\LootTable
+     */
+    public function createLootTable($data)
+    {
+        DB::beginTransaction();
+
+        try {
+            
+            // More specific validation
+            foreach($data['rewardable_type'] as $key => $type)
+            {
+                if(!$type) throw new \Exception("Loot type is required.");
+                if(!$data['rewardable_id'][$key]) throw new \Exception("Reward is required.");
+                if(!$data['quantity'][$key] || $data['quantity'][$key] < 1) throw new \Exception("Quantity is required and must be an integer greater than 0.");
+                if(!$data['weight'][$key] || $data['weight'][$key] < 1) throw new \Exception("Weight is required and must be an integer greater than 0.");
+            }
+
+            $table = LootTable::create(array_only($data, ['name', 'display_name']));
+
+            $this->populateLootTable($table, array_only($data, ['rewardable_type', 'rewardable_id', 'quantity', 'weight']));
+
+            return $this->commitReturn($table);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Updates a loot table.
+     *
+     * @param  \App\Models\Loot\LootTable  $table
+     * @param  array                       $data 
+     * @return bool|\App\Models\Loot\LootTable
+     */
+    public function updateLootTable($table, $data)
+    {
+        DB::beginTransaction();
+
+        try {
+            
+            // More specific validation
+            foreach($data['rewardable_type'] as $key => $type)
+            {
+                if(!$type) throw new \Exception("Loot type is required.");
+                if(!$data['rewardable_id'][$key]) throw new \Exception("Reward is required.");
+                if(!$data['quantity'][$key] || $data['quantity'][$key] < 1) throw new \Exception("Quantity is required and must be an integer greater than 0.");
+                if(!$data['weight'][$key] || $data['weight'][$key] < 1) throw new \Exception("Weight is required and must be an integer greater than 0.");
+            }
+
+            $table->update(array_only($data, ['name', 'display_name']));
+
+            $this->populateLootTable($table, array_only($data, ['rewardable_type', 'rewardable_id', 'quantity', 'weight']));
+
+            return $this->commitReturn($table);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Deletes a loot table.
+     *
+     * @param  \App\Models\Loot\LootTable  $table
+     * @return bool
+     */
+    public function deleteLootTable($table)
+    {
+        DB::beginTransaction();
+
+        try {
+            // Check first if the table is currently in use
+            // - Prompts
+            // - Box rewards (unfortunately this can't be checked easily)
+            if(PromptReward::where('rewardable_type', 'LootTable')->where('rewardable_id', $table->id)->exists()) throw new \Exception("A prompt uses this table to distribute rewards. Please remove it from the rewards list first.");
+            
+            $table->loot()->delete();
+            $table->delete();
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+}
