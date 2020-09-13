@@ -108,27 +108,32 @@ class ShopService extends Service
         DB::beginTransaction();
 
         try {
-            foreach($data['item_id'] as $key => $itemId)
-            {
-                if(!$data['cost'][$key]) throw new \Exception("One or more of the items is missing a cost.");
-            }
+            if(isset($data['item_id'])) {
+                foreach($data['item_id'] as $key => $itemId)
+                {
+                    if(!$data['cost'][$key]) throw new \Exception("One or more of the items is missing a cost.");
+                }
 
-            // Clear the existing shop stock
-            $shop->stock()->delete();
+                // Clear the existing shop stock
+                $shop->stock()->delete();
 
-            foreach($data['item_id'] as $key => $itemId)
-            {
-                $shop->stock()->create([
-                    'shop_id'               => $shop->id,
-                    'item_id'               => $data['item_id'][$key],
-                    'currency_id'           => $data['currency_id'][$key],
-                    'cost'                  => $data['cost'][$key],
-                    'use_user_bank'         => isset($data['use_user_bank'][$key]),
-                    'use_character_bank'    => isset($data['use_character_bank'][$key]),
-                    'is_limited_stock'      => isset($data['is_limited_stock'][$key]),
-                    'quantity'              => isset($data['is_limited_stock'][$key]) ? $data['quantity'][$key] : 0,
-                    'purchase_limit'        => $data['purchase_limit'][$key],
-                ]);
+                foreach($data['item_id'] as $key => $itemId)
+                {
+                    $shop->stock()->create([
+                        'shop_id'               => $shop->id,
+                        'item_id'               => $data['item_id'][$key],
+                        'currency_id'           => $data['currency_id'][$key],
+                        'cost'                  => $data['cost'][$key],
+                        'use_user_bank'         => isset($data['use_user_bank'][$key]),
+                        'use_character_bank'    => isset($data['use_character_bank'][$key]),
+                        'is_limited_stock'      => isset($data['is_limited_stock'][$key]),
+                        'quantity'              => isset($data['is_limited_stock'][$key]) ? $data['quantity'][$key] : 0,
+                        'purchase_limit'        => $data['purchase_limit'][$key],
+                    ]);
+                }
+            } else {
+                // Clear the existing shop stock
+                $shop->stock()->delete();
             }
 
             return $this->commitReturn($shop);
