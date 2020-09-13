@@ -11,7 +11,11 @@
             <!-- Left Side Of Navbar -->
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url('news') }}">News</a>
+                    @if(Auth::check() && Auth::user()->is_news_unread)
+                        <a class="nav-link d-flex text-warning" href="{{ url('news') }}"><strong>News</strong><i class="fas fa-bell"></i></a>
+                    @else
+                        <a class="nav-link" href="{{ url('news') }}">News</a>
+                    @endif
                 </li>
                 @if(Auth::check())
                     <li class="nav-item dropdown">
