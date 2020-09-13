@@ -72,6 +72,8 @@
                             @endif
                         @endif
                         @include('flash::message')
+                    </div>
+                    <div style="position: relative;">
                         @yield('content')
                     </div>
                     
