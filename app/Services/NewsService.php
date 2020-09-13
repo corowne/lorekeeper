@@ -62,6 +62,7 @@ class NewsService extends Service
             $data['parsed_text'] = parse($data['text']);
             $data['user_id'] = $user->id;
             if(!isset($data['is_visible'])) $data['is_visible'] = 0;
+            if(isset($data['bump']) && $data['is_visible'] == 1 && $data['bump'] == 1) $this->alertUsers();
 
             $news->update($data);
 
