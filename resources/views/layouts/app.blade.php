@@ -66,11 +66,13 @@
                 </div>
                 <div class="main-content col-lg-8 p-4">
                     <div>
+                        <!-- This is the original news notification message
                         @if(Auth::check())
                             @if(Auth::user()->is_news_unread)
                                 <div class="alert alert-info"><a href="{{ url('news') }}">There is a new news post!</a></div>
                             @endif
                         @endif
+                        -->
                         @include('flash::message')
                         @yield('content')
                     </div>
