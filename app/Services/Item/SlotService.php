@@ -35,7 +35,7 @@ class SlotService extends Service
     public function getEditData()
     {
         return [
-            'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->where('id', '>', 5)->pluck('name', 'id')->toArray(),
+            'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'subtypes' => ['0' => 'Select Subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'isMyo' => true
