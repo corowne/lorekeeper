@@ -12,11 +12,9 @@ use App\Models\Item\Item;
 use App\Models\User\User;
 use App\Models\User\UserItem;
 use App\Models\Character\Character;
-use App\Models\Character\CharacterFeature;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
 use App\Models\Rarity;
-use App\Models\Feature\Feature;
 
 class SlotService extends Service
 {
@@ -40,7 +38,6 @@ class SlotService extends Service
             'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->where('id', '>', 5)->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'subtypes' => ['0' => 'Select Subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'features' => Feature::getFeaturesByCategory(),
             'isMyo' => true
         ];
     }
