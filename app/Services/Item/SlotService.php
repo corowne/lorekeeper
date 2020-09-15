@@ -130,6 +130,7 @@ class SlotService extends Service
                         //set user who is opening the item
                         $characterData['user_id'] = $user->id;
                         //other vital data that is default
+                        $characterData['name'] = isset($characterData['name']) ? $characterData['name'] : "Slot";
                         $characterData['transferrable_at'] = null;
                         $characterData['is_myo_slot'] = 1;
                         //this uses your default MYO slot image from the CharacterManager
