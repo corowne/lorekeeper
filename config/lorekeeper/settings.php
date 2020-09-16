@@ -96,5 +96,16 @@ return [
     | there are limits on data storage, so raising this is not recommended.
     |
     */
-    'trade_asset_limit' => 20
+    'trade_asset_limit' => 20,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shop Purchase Limit
+    |--------------------------------------------------------------------------
+    |
+    | This is an arbitrary upper limit on how many items a uses can buy in a
+    | single shop transaction.
+    |
+    */
+    'default_purchase_limit' => 99
 ];
