@@ -43,12 +43,14 @@
             {!! Form::checkbox('currency_enabled', 1, $gallery->currency_enabled, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
         </div>
     </div>
-    <div class="col-md">
-        <div class="form-group">
-            {!! Form::label('Votes Required') !!} {!! add_help('How many votes are required for submissions to this gallery to be accepted. Set to 0 to automatically accept submissions.') !!}
-            {!! Form::text('votes_required', $gallery->votes_required, ['class' => 'form-control']) !!}
+    @if(Settings::get('gallery_submissions_require_approval'))
+        <div class="col-md">
+            <div class="form-group">
+                {!! Form::label('Votes Required') !!} {!! add_help('How many votes are required for submissions to this gallery to be accepted. Set to 0 to automatically accept submissions.') !!}
+                {!! Form::text('votes_required', $gallery->votes_required, ['class' => 'form-control']) !!}
+            </div>
         </div>
-    </div>
+    @endif
 </div>
 
 <div class="text-right">

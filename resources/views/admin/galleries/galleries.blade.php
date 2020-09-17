@@ -19,7 +19,7 @@
         <div class="col-6 col-md-4 font-weight-bold">Name</div>
         <div class="col-6 col-md-2 font-weight-bold">Submissions Open</div>
         <div class="col-6 col-md-2 font-weight-bold">Currency Enabled</div>
-        <div class="col-6 col-md-2 font-weight-bold">Votes Required</div>
+        <div class="col-6 col-md-2 font-weight-bold">{{ Settings::get('gallery_submissions_require_approval') ? 'Votes Required' : '' }}</div>
     </div>
     @foreach($galleries as $gallery)
         @include('admin.galleries._galleries', ['gallery' => $gallery])
