@@ -27,7 +27,7 @@
 
 <div class="form-group">
     {!! Form::label('Description (Optional)') !!}
-    {!! Form::textarea('description', $gallery->description, ['class' => 'form-control wysiwyg']) !!}
+    {!! Form::textarea('description', $gallery->description, ['class' => 'form-control']) !!}
 </div>
 
 <div class="row">
