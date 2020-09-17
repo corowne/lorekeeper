@@ -62,14 +62,27 @@ class AddGallerySettings extends Command
             DB::table('site_settings')->insert([
                 [
                     'key' => 'gallery_submissions_require_approval',
-                    'value' => 0,
+                    'value' => 1,
                     'description' => '0: Gallery submissions do not require approval, 1: Gallery submissions require approval.'
                 ]
 
             ]);
-            $this->info("Added:   gallery_submissions_require_approval / Default: 0");
+            $this->info("Added:   gallery_submissions_require_approval / Default: 1");
         }
         else $this->line("Skipped: gallery_submissions_require_approval");
+
+        if(!DB::table('site_settings')->where('key', 'gallery_submissions_reward_currecy')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'gallery_submissions_reward_currecy',
+                    'value' => 0,
+                    'description' => '0: Gallery submissions do not reward currency, 1: Gallery submissions reward currency.'
+                ]
+
+            ]);
+            $this->info("Added:   gallery_submissions_reward_currecy / Default: 0");
+        }
+        else $this->line("Skipped: gallery_submissions_reward_currecy");
 
         $this->line("\nSite settings up to date!");
         

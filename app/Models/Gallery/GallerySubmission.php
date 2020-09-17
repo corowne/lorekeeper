@@ -15,10 +15,10 @@ class GallerySubmission extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'collaborator_data', 
+        'user_id', 'gallery_id', 
         'hash', 'extension', 'text', 'parsed_text',
         'description', 'parsed_description',
-        'character_data', 'prompt_id', 'data', 
+        'prompt_id', 'data', 
         'is_visible', 'status', 'vote_data'
     ];
 
@@ -48,6 +48,22 @@ class GallerySubmission extends Model
     public function user() 
     {
         return $this->belongsTo('App\Models\User\User', 'user_id');
+    }
+
+    /**
+     * Get the user who made the submission.
+     */
+    public function collaborators() 
+    {
+        return $this->hasMany('App\Models\Gallery\GalleryCollaborator', 'gallery_submission_id');
+    }
+
+    /**
+     * Get the user who made the submission.
+     */
+    public function characters() 
+    {
+        return $this->hasMany('App\Models\Gallery\GalleryCharacter', 'gallery_submission_id');
     }
 
     /**
@@ -152,16 +168,6 @@ class GallerySubmission extends Model
         if (!$this->has_image) return null;
         return asset($this->imageDirectory . '/' . $this->imageFileName);
     }
-
-    /**
-     * Get the data attribute as an associative array.
-     *
-     * @return array
-     */
-    public function getCollaboratorDataAttribute()
-    {
-        return json_decode($this->attributes['collaborator_data'], true);
-    }
     
     /**
      * Get the data attribute as an associative array.
@@ -171,16 +177,6 @@ class GallerySubmission extends Model
     public function getDataAttribute()
     {
         return json_decode($this->attributes['data'], true);
-    }
-
-    /**
-     * Get the data attribute as an associative array.
-     *
-     * @return array
-     */
-    public function getCharacterDataAttribute()
-    {
-        return json_decode($this->attributes['character_data'], true);
     }
 
     /**
