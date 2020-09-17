@@ -111,6 +111,10 @@ return [
                 'url' => 'admin/data/shops'
             ],
             [
+                'name' => 'Galleries',
+                'url' => 'admin/data/galleries'
+            ],
+            [
                 'name' => 'Prompt Categories',
                 'url' => 'admin/data/prompt-categories'
             ],

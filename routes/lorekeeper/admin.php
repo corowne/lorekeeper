@@ -75,6 +75,16 @@ Route::group(['prefix' => 'images', 'middleware' => 'power:edit_site_settings'],
 # DATA
 Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:edit_data'], function() {
 
+    # GALLERIES
+    Route::get('galleries', 'GalleryController@getIndex');
+    Route::get('galleries/create', 'GalleryController@getCreateGallery');
+    Route::get('galleries/edit/{id}', 'GalleryController@getEditGallery');
+    Route::get('galleries/delete/{id}', 'GalleryController@getDeleteGallery');
+    Route::post('galleries/create', 'GalleryController@postCreateEditGallery');
+    Route::post('galleries/edit/{id?}', 'GalleryController@postCreateEditGallery');
+    Route::post('galleries/delete/{id}', 'GalleryController@postDeleteGallery');
+    Route::post('galleries/sort', 'GalleryController@postSortGallery');
+    
     # CURRENCIES
     Route::get('currencies', 'CurrencyController@getIndex');
     Route::get('currencies/sort', 'CurrencyController@getSort');
