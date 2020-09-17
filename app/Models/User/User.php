@@ -16,10 +16,11 @@ use App\Models\User\UserCharacterLog;
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
 use App\Models\Character\CharacterBookmark;
+use Laravelista\Comments\Commenter;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable;
+    use Notifiable, Commenter;
 
     /**
      * The attributes that are mass assignable.
@@ -27,7 +28,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned'
+        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned', 'avatar', 'is_sales_unread'
     ];
 
     /**
@@ -258,6 +259,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return ($this->is_banned ? '<strike>' : '') . '<a href="'.$this->url.'" class="display-user" '.($this->rank->color ? 'style="color: #'.$this->rank->color.';"' : '').'>'.$this->name.'</a>' . ($this->is_banned ? '</strike>' : '');
     }
 
+        /**
+     * Displays the user's name, linked to their profile page.
+     *
+     * @return string
+     */
+    public function getCommentDisplayNameAttribute()
+    {
+        return '<small><a href="'. $this->url .'" class="btn btn-primary btn-sm"'.($this->rank->color ? 'style="background-color: #'.$this->rank->color.'!important;color:#000!important;"' : '').'><i class="'.($this->rank->icon ? $this->rank->icon : 'fas fa-user').' mr-1" style="opacity: 50%;"></i>'. $this->name .'</a></small>';
+    }
+
     /**
      * Displays the user's alias, linked to their deviantART page.
      *
@@ -267,6 +278,16 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if (!$this->alias) return '(Unverified)';
         return '<a href="'.$this->aliasUrl.'">'.$this->alias.'@dA</a>';
+    }
+
+    /**
+     * Displays the user's avatar
+     *
+     * @return string
+     */
+    public function getAvatar()
+    {
+        return ($this->avatar);
     }
 
     /**

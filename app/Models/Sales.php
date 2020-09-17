@@ -5,10 +5,9 @@ namespace App\Models;
 use Carbon\Carbon;
 use Config;
 use App\Models\Model;
-
 use Laravelista\Comments\Commentable;
 
-class News extends Model
+class Sales extends Model
 {
     use Commentable;
     /**
@@ -25,7 +24,7 @@ class News extends Model
      *
      * @var string
      */
-    protected $table = 'news';
+    protected $table = 'sales';
 
     /**
      * Whether the model contains timestamps to be saved and updated.
@@ -68,7 +67,7 @@ class News extends Model
     **********************************************************************************************/
     
     /**
-     * Get the user who created the news post.
+     * Get the user who created the Sales post.
      */
     public function user() 
     {
@@ -110,7 +109,7 @@ class News extends Model
     **********************************************************************************************/
 
     /**
-     * Get the news slug.
+     * Get the Sales slug.
      *
      * @return bool
      */
@@ -120,7 +119,7 @@ class News extends Model
     }
 
     /**
-     * Displays the news post title, linked to the news post itself.
+     * Displays the Sales post title, linked to the Sales post itself.
      *
      * @return string
      */
@@ -130,12 +129,12 @@ class News extends Model
     }
 
     /**
-     * Gets the news post URL.
+     * Gets the Sales post URL.
      *
      * @return string
      */
     public function getUrlAttribute()
     {
-        return url('news/'.$this->slug);
+        return url('sales/'.$this->slug);
     }
 }

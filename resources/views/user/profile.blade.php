@@ -10,6 +10,7 @@
 @endif
 
 <h1>
+<img src="/images/avatars/{{ $user->avatar }}" style="width:125px; height:125px; float:left; border-radius:50%; margin-right:25px;">
     {!! $user->displayName !!}
 
     @if($user->settings->is_fto)
@@ -86,4 +87,11 @@
 </div>
 @endforeach
 <div class="text-right"><a href="{{ $user->url.'/characters' }}">View all...</a></div>
+<hr>
+<br><br>
+<div class="container">
+@comments(['model' => $user->profile,
+        'perPage' => 5
+    ])
+</div>
 @endsection

@@ -27,6 +27,16 @@ Route::group(['prefix' => 'news'], function() {
 });
 
 /**************************************************************************************************
+    Sales
+**************************************************************************************************/
+# PROFILES
+Route::group(['prefix' => 'sales'], function() {
+    Route::get('/', 'SalesController@getIndex');
+    Route::get('{id}.{slug?}', 'SalesController@getSales');
+    Route::get('{id}.', 'SalesController@getSales');
+});
+
+/**************************************************************************************************
     Users
 **************************************************************************************************/
 Route::get('/users', 'BrowseController@getUsers');
@@ -118,3 +128,8 @@ Route::group(['prefix' => 'submissions', 'namespace' => 'Users'], function() {
 Route::group(['prefix' => 'claims', 'namespace' => 'Users'], function() {
     Route::get('view/{id}', 'SubmissionController@getClaim');
 });
+
+/**************************************************************************************************
+    Comments
+**************************************************************************************************/
+    Route::get('comment/{id}', 'PermalinkController@getComment');
