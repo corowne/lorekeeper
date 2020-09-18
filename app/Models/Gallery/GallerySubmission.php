@@ -100,6 +100,20 @@ class GallerySubmission extends Model
     }
 
     /**
+     * Scope a query to only include submissions that are pending,
+     * and where all collaborators have approved the particulars.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePendingApproval($query)
+    {
+        return $query->where('status', 'Pending')->whereHas('gallery_submission_collaborators', function($q) {
+            $q->where('has_approved', 1);
+        });
+    }
+
+    /**
      * Scope a query to only include accepted submissions.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
@@ -111,12 +125,23 @@ class GallerySubmission extends Model
     }
 
     /**
-     * Scope a query to only include viewable submissions.
+     * Scope a query to only include rejected submissions.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeViewable($query, $user)
+    public function scopeRejected($query)
+    {
+        return $query->where('status', 'Rejected');
+    }
+
+    /**
+     * Scope a query to only include submissions visible within the gallery.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeVisible($query, $user)
     {
         if($user && $user->hasPower('manage_submissions')) return $query->where('status', 'Accepted');
         return $query->where('status', 'Accepted')->where('is_visible', 1);
