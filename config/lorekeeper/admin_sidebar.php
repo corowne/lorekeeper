@@ -83,6 +83,10 @@ return [
         'power' => 'edit_data',
         'links' => [
             [
+                'name' => 'Galleries',
+                'url' => 'admin/data/galleries'
+            ],
+            [
                 'name' => 'Rarities',
                 'url' => 'admin/data/rarities'
             ],
@@ -113,10 +117,6 @@ return [
             [
                 'name' => 'Shops',
                 'url' => 'admin/data/shops'
-            ],
-            [
-                'name' => 'Galleries',
-                'url' => 'admin/data/galleries'
             ],
             [
                 'name' => 'Prompt Categories',

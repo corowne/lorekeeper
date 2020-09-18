@@ -11,6 +11,67 @@
 */
 
 /**
+ * Returns only the fields from the group currency form. Adjust
+ * to correspond to your form's configuration!
+ *
+ * @param  \Illuminate\Http\Request    $request
+ * @return array
+ */
+function returnGroupCurrencyFormData($request) 
+{
+    // Put the names of all of your form fields in the [brackets], separated by commas, like so!
+    $request->only(['piece_type', 'art_finish', 'art_type', 'art_bonus', 'base', 'frame_count', 'word_count']);
+    return $request;
+}
+
+/**
+ * Calculates amount of group currency a submission should be awarded
+ * based on form input. Corresponds to the GroupCurrencyForm configured in
+ * app/Forms.
+ *
+ * @param  array  $data
+ * @return int
+ */
+function calculateGroupCurrency($data)
+{
+    $total = 0;
+
+    // You'll need the names of the form fields you specified in the form config.
+    // You can get a particular field's value with $data['form_name'], for instance, $data['art_finish']
+    
+    // This differentiates how values are calculated depending on the type of content being submitted.
+    $pieceType = collect($data['piece_type'])->flip;
+    
+    // For instance, if the user selected that the submission has a visual art component,
+    // these actions will be performed:
+    if($pieceType->has('art')) {
+        // This adds values to the total!
+        $total += ($data['art_finish'] + $data['art_type']);
+        // This multiplies each option selected in the "bonus" form field by
+        // the result from the "art type" field, and adds it to the total.
+        foreach($data['art_bonus'] as $bonus) {
+            $total += ($bonus * $data['art_type']);
+        }
+    }
+
+    // Likewise for if the user selected that the submission has a written component:
+    if($pieceType->has('lit')) {
+        // This divides the word count by 100, rounds the result, and then multiplies it by one--
+        // so, effectively, for every 100 words, 1 of the currency is awarded.
+        // You can adjust these numbers as you see fit.
+        $total += (round($data['word_count'] / 100) * 1);
+    }
+
+    // And if it has a crafted or other physical object component:
+    if($pieceType->has('craft')) {
+        // This just adds 4! You can adjust this as you desire.
+        $total += 4;
+    }
+    
+    return $total;
+}
+
+/**
  * Gets the asset keys for an array depending on whether the
  * assets being managed are owned by a user or character. 
  *

@@ -33,8 +33,6 @@ class GalleryService extends Service
         try {
             if(!isset($data['submissions_open'])) $data['submissions_open'] = 0;
             if(!isset($data['currency_enabled'])) $data['currency_enabled'] = 0;
-
-            $data['sort'] = Gallery::pluck('sort')->max() + 1;
             if(!isset($data['votes_required'])) $data['votes_required'] = 0;
 
             $gallery = Gallery::create($data);

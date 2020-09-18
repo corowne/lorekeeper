@@ -65,7 +65,7 @@ class Gallery extends Model
      */
     public function children() 
     {
-        return $this->hasMany('App\Models\Gallery\Gallery', 'parent_id')->orderBy('name');
+        return $this->hasMany('App\Models\Gallery\Gallery', 'parent_id')->sort();
     }
     
     /**
@@ -73,7 +73,7 @@ class Gallery extends Model
      */
     public function submissions() 
     {
-        return $this->hasMany('App\Models\Gallery\GallerySubmission', 'gallery_id');
+        return $this->hasMany('App\Models\Gallery\GallerySubmission', 'gallery_id')->orderBy('created_at', 'DESC');
     }
 
     /**********************************************************************************************
@@ -81,6 +81,17 @@ class Gallery extends Model
         SCOPES
 
     **********************************************************************************************/
+
+    /**
+     * Scope a query to return galleries sorted first by sort number and then name.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSort($query)
+    {
+        return $query->orderByRaw('ISNULL(sort), sort ASC')->orderBy('name', 'ASC');
+    }
 
     /**********************************************************************************************
     

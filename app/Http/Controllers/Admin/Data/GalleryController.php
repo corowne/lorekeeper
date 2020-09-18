@@ -31,7 +31,7 @@ class GalleryController extends Controller
     public function getIndex()
     {
         return view('admin.galleries.galleries', [
-            'galleries' => Gallery::orderBy('name', 'DESC')->whereNull('parent_id')->paginate(10)
+            'galleries' => Gallery::sort()->whereNull('parent_id')->paginate(10)
         ]);
     }
     
@@ -44,7 +44,7 @@ class GalleryController extends Controller
     {
         return view('admin.galleries.create_edit_gallery', [
             'gallery' => new Gallery,
-            'galleries' => Gallery::orderBy('name', 'ASC')->pluck('name','id')
+            'galleries' => Gallery::sort()->pluck('name','id')
         ]);
     }
     
@@ -60,7 +60,7 @@ class GalleryController extends Controller
         if(!$gallery) abort(404);
         return view('admin.galleries.create_edit_gallery', [
             'gallery' => $gallery,
-            'galleries' => Gallery::orderBy('name', 'ASC')->pluck('name','id')->forget($id)
+            'galleries' => Gallery::sort()->pluck('name','id')->forget($id)
         ]);
     }
 
@@ -76,7 +76,7 @@ class GalleryController extends Controller
     {
         $id ? $request->validate(Gallery::$updateRules) : $request->validate(Gallery::$createRules);
         $data = $request->only([
-            'name', 'parent_id', 'description', 'submissions_open', 'currency_enabled', 'votes_required'
+            'name', 'sort', 'parent_id', 'description', 'submissions_open', 'currency_enabled', 'votes_required'
         ]);
         if($id && $service->updateGallery(Gallery::find($id), $data, Auth::user())) {
             flash('Gallery updated successfully.')->success();

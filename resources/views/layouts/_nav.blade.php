@@ -99,6 +99,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('sales') }}">Sales</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('gallery') }}">Gallery</a>
+                </li>
             </ul>
 
             <!-- Right Side Of Navbar -->

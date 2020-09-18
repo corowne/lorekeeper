@@ -133,3 +133,12 @@ Route::group(['prefix' => 'claims', 'namespace' => 'Users'], function() {
     Comments
 **************************************************************************************************/
     Route::get('comment/{id}', 'PermalinkController@getComment');
+
+/**************************************************************************************************
+    Galleries
+**************************************************************************************************/
+Route::group(['prefix' => 'gallery'], function() {
+    Route::get('/', 'GalleryController@getGalleryIndex');
+    Route::get('{id}', 'GalleryController@getGallery');
+    Route::get('view/{id}', 'GalleryController@getSubmission');
+});

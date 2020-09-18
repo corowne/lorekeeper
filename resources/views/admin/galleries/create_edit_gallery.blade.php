@@ -15,9 +15,19 @@
 
 <h3>Basic Information</h3>
 
-<div class="form-group">
-    {!! Form::label('Name') !!}
-    {!! Form::text('name', $gallery->name, ['class' => 'form-control']) !!}
+<div class="row">
+    <div class="col-md">
+        <div class="form-group">
+            {!! Form::label('Name') !!}
+            {!! Form::text('name', $gallery->name, ['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            {!! Form::label('Sort (Optional)') !!} {!! add_help('Galleries are ordered first by sort number, then by name-- so galleries without a sort number are sorted only by name.') !!}
+            {!! Form::text('sort', $gallery->sort, ['class' => 'form-control']) !!}
+        </div>
+    </div>
 </div>
 
 <div class="form-group">

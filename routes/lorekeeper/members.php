@@ -152,3 +152,18 @@ Route::group(['prefix' => 'shops'], function() {
     Route::post('buy', 'ShopController@postBuy');
     Route::get('history', 'ShopController@getPurchaseHistory');
 });
+
+/**************************************************************************************************
+    Gallery Submissions
+**************************************************************************************************/
+
+Route::group(['prefix' => 'gallery'], function() {
+    // Home portion
+    Route::get('submissions/{type?}', 'GalleryController@getGallerySubmissionIndex')->where('type', 'pending|approved|rejected');
+
+    Route::get('submit/{id}', 'GalleryController@getSubmit');
+    Route::post('submit', 'GalleryController@postSubmit');
+    
+    Route::get('{id}/delete', 'GalleryController@getDelete');
+    Route::post('{id}/delete', 'GalleryController@postDelete');
+});
