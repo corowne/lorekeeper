@@ -40,10 +40,8 @@ class GroupCurrencyForm extends Form
             'choices' => ['art' => 'Digital or Traditional Art', 'lit' => 'Writing and Poetry', 
             'craft' => 'Craft or Other Physical Item'],
             'choice_options' => ['wrapper' => ['class' => 'choice-wrapper'],
-            'label_attr' => ['class' => 'label-class'],
             ],
             'label' => 'Piece Type (Select as many as apply)',
-            'selected' => ['art'],
             'expanded' => true,
             'multiple' => true,
             'rules' => ['required'],
@@ -58,7 +56,6 @@ class GroupCurrencyForm extends Form
             'label_attr' => ['class' => 'label-class'],
             ],
             'label' => 'Level of Finish (For Digital/Traditional Artwork)',
-            'selected' => ['0'],
             'expanded' => true,
             'multiple' => false,
         ])
@@ -69,7 +66,6 @@ class GroupCurrencyForm extends Form
             'label_attr' => ['class' => 'label-class'],
             ],
             'label' => 'Art Type (For Digital/Traditional Artwork)',
-            'selected' => ['0'],
             'expanded' => true,
             'multiple' => false,
         ])
@@ -79,7 +75,6 @@ class GroupCurrencyForm extends Form
         ->add('art_bonus', 'choice', [
             'choices' => ['1' => 'Colored', '1.1' => 'Shading', '1.2' => 'Background'],
             'choice_options' => ['wrapper' => ['class' => 'choice-wrapper'],
-            'label_attr' => ['class' => 'label-class'],
             ],
             'label' => 'Bonus Options (Select as many as apply)',
             'selected' => ['art'],

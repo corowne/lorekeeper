@@ -6,6 +6,7 @@
             <div class="sidebar-section-header">My Submissions</div>
             <div class="sidebar-item"><a href="{{ url('gallery/submissions/pending') }}" class="{{ set_active('gallery/submissions*') }}">My Submission Queue</a></div>
             <div class="sidebar-item"><a href="{{ url('user/'.Auth::user()->name.'/gallery') }}" class="{{ set_active('user/'.Auth::user()->name.'/gallery') }}">My Gallery</a></div>
+            <div class="sidebar-item"><a href="{{ url('user/'.Auth::user()->name.'/favorites') }}" class="{{ set_active('user/'.Auth::user()->name.'/favorits') }}">My Favorites</a></div>
         </li>
     @endauth
 

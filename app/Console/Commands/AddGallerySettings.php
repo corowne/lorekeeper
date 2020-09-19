@@ -84,6 +84,19 @@ class AddGallerySettings extends Command
         }
         else $this->line("Skipped: gallery_submissions_reward_currency");
 
+        if(!DB::table('site_settings')->where('key', 'group_currency')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'group_currency',
+                    'value' => 1,
+                    'description' => 'ID of the group currency to award from gallery submissions (if enabled).'
+                ]
+
+            ]);
+            $this->info("Added:   group_currency / Default: 1");
+        }
+        else $this->line("Skipped: group_currency");
+
         $this->line("\nSite settings up to date!");
         
     }

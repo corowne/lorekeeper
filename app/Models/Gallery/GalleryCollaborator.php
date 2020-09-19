@@ -53,15 +53,5 @@ class GalleryCollaborator extends Model
         ACCESSORS
 
     **********************************************************************************************/
-    
-    /**
-     * Get the data attribute as an associative array.
-     *
-     * @return array
-     */
-    public function getDataAttribute()
-    {
-        return json_decode($this->attributes['data'], true);
-    }
 
 }

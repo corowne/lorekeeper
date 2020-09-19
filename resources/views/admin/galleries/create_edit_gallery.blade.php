@@ -25,7 +25,7 @@
     <div class="col-md-2">
         <div class="form-group">
             {!! Form::label('Sort (Optional)') !!} {!! add_help('Galleries are ordered first by sort number, then by name-- so galleries without a sort number are sorted only by name.') !!}
-            {!! Form::text('sort', $gallery->sort, ['class' => 'form-control']) !!}
+            {!! Form::number('sort', $gallery->sort, ['class' => 'form-control']) !!}
         </div>
     </div>
 </div>
@@ -57,7 +57,7 @@
         <div class="col-md">
             <div class="form-group">
                 {!! Form::label('Votes Required') !!} {!! add_help('How many votes are required for submissions to this gallery to be accepted. Set to 0 to automatically accept submissions.') !!}
-                {!! Form::text('votes_required', $gallery->votes_required, ['class' => 'form-control']) !!}
+                {!! Form::number('votes_required', $gallery->votes_required, ['class' => 'form-control']) !!}
             </div>
         </div>
     @endif

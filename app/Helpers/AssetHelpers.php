@@ -50,7 +50,7 @@ function calculateGroupCurrency($data)
         // This multiplies each option selected in the "bonus" form field by
         // the result from the "art type" field, and adds it to the total.
         foreach($data['art_bonus'] as $bonus) {
-            $total += ($bonus * $data['art_type']);
+            $total += (round($bonus) * $data['art_type']);
         }
     }
 

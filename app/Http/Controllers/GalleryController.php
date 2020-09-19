@@ -6,7 +6,10 @@ use Request;
 use App\Models\Gallery\Gallery;
 use App\Models\Gallery\GallerySubmission;
 
+use App\Models\User\User;
+use App\Models\Character\Character;
 use App\Models\Prompt\Prompt;
+use App\Models\Currency\Currency;
 
 use Kris\LaravelFormBuilder\FormBuilder;
 
@@ -85,7 +88,52 @@ class GalleryController extends Controller
             'gallery' => $gallery,
             'submission' => new GallerySubmission,
             'prompts' => Prompt::active()->sortAlphabetical()->pluck('name', 'id')->toArray(),
+            'users' => User::visible()->orderBy('name')->pluck('name', 'id')->toArray(),
             'form' => $formBuilder->create('App\Forms\GroupCurrencyForm'),
+            'currency' => Currency::find(Settings::get('group_currency')),
         ]));
+    }
+
+    /**
+     * Shows character information.
+     *
+     * @param  string  $slug
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterInfo($slug)
+    {
+        $character = Character::visible()->where('slug', $slug)->first();
+
+        return view('galleries._character', [
+            'character' => $character,
+        ]);
+    }
+
+    /**
+     * Creates or edits a submission.
+     *
+     * @param  \Illuminate\Http\Request    $request
+     * @param  App\Services\RarityService  $service
+     * @param  int|null                    $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postCreateEditRarity(Request $request, GalleryManager $service, $id = null)
+    {
+        $id ? $request->validate(GallerySubmission::$updateRules) : $request->validate(GallerySubmission::$createRules);
+        dd($request);
+        $data = $request->only([
+            'name', 'color', 'description', 'image', 'remove_image'
+        ]);
+        if($id && $service->updateSubmission(GallerySubmission::find($id), $data, Auth::user())) {
+            flash('Submission updated successfully.')->success();
+        }
+        else if (!$id && $gallery = $service->createSubmission($data, $currencyFormData, Auth::user())) {
+            flash('Submission created successfully.')->success();
+            return redirect()->to('gallery/view/'.$submission->id);
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
     }
 }
