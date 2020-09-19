@@ -17,7 +17,7 @@
         @else You can't submit to this gallery. @endif
     </div>
 @else 
-    {!! Form::open(['url' => $submission->id ? 'gallery/submission/edit/'.$submission->id : 'gallery/submit'.$gallery->id, 'files' => true]) !!}
+    {!! Form::open(['url' => $submission->id ? 'gallery/submission/edit/'.$submission->id : 'gallery/submit', 'id' => 'gallerySubmissionForm', 'files' => true]) !!}
 
         <h2>Main Content</h2>
         <p>Upload an image and/or text as the content of your submission. You <strong>can</strong> upload both in the event that you have an image with accompanying text or vice versa.</p>
@@ -172,7 +172,7 @@ $sideGallery = $gallery ?>
             var $submitButton = $('#submitButton');
             var $confirmationModal = $('#confirmationModal');
             var $formSubmit = $('#formSubmit');
-            var $submissionForm = $('#submissionForm');
+            var $gallerySubmissionForm = $('#gallerySubmissionForm');
             
             $submitButton.on('click', function(e) {
                 e.preventDefault();
@@ -181,7 +181,7 @@ $sideGallery = $gallery ?>
 
             $formSubmit.on('click', function(e) {
                 e.preventDefault();
-                $submissionForm.submit();
+                $gallerySubmissionForm.submit();
             });
 
             $('.original.collaborator-select').selectize();

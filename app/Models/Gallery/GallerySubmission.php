@@ -36,6 +36,28 @@ class GallerySubmission extends Model
      */
     public $timestamps = true;
 
+    /**
+     * Validation rules for character creation.
+     *
+     * @var array
+     */
+    public static $createRules = [
+        'title' => 'required|between:3,200',
+        'image' => 'required_without:text',
+        'text' => 'required_without:image',
+        'description' => 'nullable',
+    ];
+    
+    /**
+     * Validation rules for character updating.
+     *
+     * @var array
+     */
+    public static $updateRules = [
+        'title' => 'required|between:3,200',
+        'description' => 'nullable',
+    ];
+
     /**********************************************************************************************
     
         RELATIONS

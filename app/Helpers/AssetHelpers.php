@@ -20,8 +20,8 @@
 function returnGroupCurrencyFormData($request) 
 {
     // Put the names of all of your form fields in the [brackets], separated by commas, like so!
-    $request->only(['piece_type', 'art_finish', 'art_type', 'art_bonus', 'base', 'frame_count', 'word_count']);
-    return $request;
+    $data = $request->only(['piece_type', 'art_finish', 'art_type', 'art_bonus', 'base', 'frame_count', 'word_count']);
+    return $data;
 }
 
 /**

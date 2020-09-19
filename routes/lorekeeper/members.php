@@ -111,8 +111,8 @@ Route::group(['prefix' => 'gallery'], function() {
     Route::get('submissions/{type}', 'GalleryController@getUserSubmissions')->where('type', 'pending|approved|rejected');
 
     Route::get('submit/{id}', 'GalleryController@getNewGallerySubmission');
-    Route::post('submit', 'GalleryController@postCreateUpdateGallerySubmission');
     Route::get('submit/character/{slug}', 'GalleryController@getCharacterInfo');
+    Route::post('submit', 'GalleryController@postCreateEditGallerySubmission');
     
     Route::get('{id}/delete', 'GalleryController@getDeleteSubmission');
     Route::post('{id}/delete', 'GalleryController@postDeleteSubmission');

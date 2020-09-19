@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Auth;
 
 use App\Models\Gallery\Gallery;
-
 use App\Services\GalleryService;
 
 use App\Http\Controllers\Controller;

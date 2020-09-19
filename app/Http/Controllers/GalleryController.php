@@ -2,7 +2,7 @@
 
 use Settings;
 use Auth;
-use Request; 
+use Illuminate\Http\Request; 
 use App\Models\Gallery\Gallery;
 use App\Models\Gallery\GallerySubmission;
 
@@ -10,6 +10,8 @@ use App\Models\User\User;
 use App\Models\Character\Character;
 use App\Models\Prompt\Prompt;
 use App\Models\Currency\Currency;
+
+use App\Services\GalleryManager;
 
 use Kris\LaravelFormBuilder\FormBuilder;
 
@@ -110,20 +112,21 @@ class GalleryController extends Controller
     }
 
     /**
-     * Creates or edits a submission.
+     * Creates or edits a new gallery submission.
      *
-     * @param  \Illuminate\Http\Request    $request
-     * @param  App\Services\RarityService  $service
-     * @param  int|null                    $id
+     * @param  \Illuminate\Http\Request        $request
+     * @param  App\Services\GalleryManager  $service
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCreateEditRarity(Request $request, GalleryManager $service, $id = null)
+    public function postCreateEditGallerySubmission(Request $request, GalleryManager $service, $id = null)
     {
         $id ? $request->validate(GallerySubmission::$updateRules) : $request->validate(GallerySubmission::$createRules);
-        dd($request);
         $data = $request->only([
-            'name', 'color', 'description', 'image', 'remove_image'
+            'image', 'text', 'title', 'description', 'slug', 'collaborator_id', 'collaborator_data'
         ]);
+        if(Settings::get('gallery_submissions_reward_currency')) $currencyFormData = returnGroupCurrencyFormData($request);
+        else $currencyFormData = null;
+        
         if($id && $service->updateSubmission(GallerySubmission::find($id), $data, Auth::user())) {
             flash('Submission updated successfully.')->success();
         }
