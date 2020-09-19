@@ -2,6 +2,8 @@
 
 namespace App\Models\Gallery;
 
+use Auth;
+use Settings;
 use Config;
 use DB;
 use Carbon\Carbon;
@@ -117,6 +119,17 @@ class Gallery extends Model
     public function getUrlAttribute()
     {
         return url('gallery/'.$this->id);
+    }
+
+    /**
+     * Gets whether or not the user can submit to the gallery.
+     *
+     * @return string
+     */
+    public function getCanSubmitAttribute()
+    {
+        if(Settings::get('gallery_submissions_open')) if(Auth::check() && ($this->submissions_open || Auth::user()->hasPower('manage_submissions'))) return true;
+        else return false;
     }
 
 }

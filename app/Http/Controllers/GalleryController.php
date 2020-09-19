@@ -1,9 +1,12 @@
 <?php namespace App\Http\Controllers;
 
+use Settings;
 use Auth;
 use Request; 
 use App\Models\Gallery\Gallery;
 use App\Models\Gallery\GallerySubmission;
+
+use App\Models\Prompt\Prompt;
 
 class GalleryController extends Controller
 {
@@ -43,5 +46,43 @@ class GalleryController extends Controller
             'gallery' => $gallery,
             'submissions' => GallerySubmission::where('gallery_id', $gallery->id)->orderBy('created_at', 'DESC')->paginate(20),
         ]);
+    }
+
+    /**
+     * Shows the user's gallery submission log.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserSubmissions(Request $request, $type)
+    {
+        $submissions = GallerySubmission::where('user_id', Auth::user()->id);
+        if(!$type) $type = 'Pending';
+        
+        $submissions = $submissions->where('status', ucfirst($type));
+
+        return view('galleries.submissions', [
+            'submissions' => $submissions->orderBy('id', 'DESC')->paginate(20),
+            'galleries' => Gallery::sort()->whereNull('parent_id')->paginate(10),
+        ]);
+    }
+
+    /**
+     * Shows the submit page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getNewGallerySubmission(Request $request, $id)
+    {
+        $gallery = Gallery::find($id);
+        $closed = !Settings::get('gallery_submissions_open');
+        return view('galleries.create_submission', [
+            'closed' => $closed,
+        ] + ($closed ? [] : [
+            'gallery' => $gallery,
+            'submission' => new GallerySubmission,
+            'prompts' => Prompt::active()->sortAlphabetical()->pluck('name', 'id')->toArray(),
+        ]));
     }
 }

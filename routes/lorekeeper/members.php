@@ -107,6 +107,16 @@ Route::group(['prefix' => 'myo', 'namespace' => 'Characters'], function() {
     Submissions
 **************************************************************************************************/
 
+Route::group(['prefix' => 'gallery'], function() {
+    Route::get('submissions/{type}', 'GalleryController@getUserSubmissions')->where('type', 'pending|approved|rejected');
+
+    Route::get('submit/{id}', 'GalleryController@getNewGallerySubmission');
+    Route::post('submit', 'GalleryController@postGallerySubmission');
+    
+    Route::get('{id}/delete', 'GalleryController@getDeleteSubmission');
+    Route::post('{id}/delete', 'GalleryController@postDeleteSubmission');
+});
+
 Route::group(['prefix' => 'submissions', 'namespace' => 'Users'], function() {
     Route::get('/', 'SubmissionController@getIndex');
     Route::get('new', 'SubmissionController@getNewSubmission');
@@ -151,19 +161,4 @@ Route::group(['prefix' => 'designs', 'namespace' => 'Characters'], function() {
 Route::group(['prefix' => 'shops'], function() {
     Route::post('buy', 'ShopController@postBuy');
     Route::get('history', 'ShopController@getPurchaseHistory');
-});
-
-/**************************************************************************************************
-    Gallery Submissions
-**************************************************************************************************/
-
-Route::group(['prefix' => 'gallery'], function() {
-    // Home portion
-    Route::get('submissions/{type?}', 'GalleryController@getGallerySubmissionIndex')->where('type', 'pending|approved|rejected');
-
-    Route::get('submit/{id}', 'GalleryController@getSubmit');
-    Route::post('submit', 'GalleryController@postSubmit');
-    
-    Route::get('{id}/delete', 'GalleryController@getDelete');
-    Route::post('{id}/delete', 'GalleryController@postDelete');
 });

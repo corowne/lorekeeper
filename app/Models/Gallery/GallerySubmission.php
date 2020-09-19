@@ -17,7 +17,7 @@ class GallerySubmission extends Model
     protected $fillable = [
         'user_id', 'gallery_id', 
         'hash', 'extension', 'text', 'parsed_text',
-        'description', 'parsed_description',
+        'title', 'description', 'parsed_description',
         'prompt_id', 'data', 
         'is_visible', 'status', 'vote_data'
     ];
