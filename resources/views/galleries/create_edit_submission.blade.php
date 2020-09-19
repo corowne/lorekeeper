@@ -1,6 +1,6 @@
 @extends('galleries.layout')
 
-@section('gallery-title') {{ $submission->id ? 'Edit' : 'Create' }}Submission @endsection
+@section('gallery-title') {{ $submission->id ? 'Edit' : 'Create' }} Submission @endsection
 
 @section('gallery-content')
 {!! breadcrumbs(['Gallery' => 'gallery', $gallery->name => 'gallery/'.$gallery->id, ($submission->id ? 'Edit' : 'Create').' Submission' => $submission->id ? 'gallery/submissions/edit/'.$submission->id : 'gallery/submit/'.$gallery->id]) !!}
@@ -32,23 +32,43 @@
             {!! Form::textarea('text', $submission->text, ['class' => 'form-control wysiwyg']) !!}
         </div>
 
-        <h3>Basic Information</h3>
-        <div class="form-group">
-            {!! Form::label('Title') !!}
-            {!! Form::text('title', $submission->title, ['class' => 'form-control']) !!}
-        </div>
+        <div class="row">
+            <div class="col-md">
+                <h3>Basic Information</h3>
+                <div class="form-group">
+                    {!! Form::label('Title') !!}
+                    {!! Form::text('title', $submission->title, ['class' => 'form-control']) !!}
+                </div>
 
-        <div class="form-group">
-            {!! Form::label('Description (Optional)') !!}
-            {!! Form::textarea('description', $submission->description, ['class' => 'form-control wysiwyg']) !!}
-        </div>
+                <div class="form-group">
+                    {!! Form::label('Description (Optional)') !!}
+                    {!! Form::textarea('description', $submission->description, ['class' => 'form-control wysiwyg']) !!}
+                </div>
 
-        <h2>Characters</h2>
-        <p>Attach characters associated with this piece.</p>
-        <div id="characters" class="mb-3">
-        </div>
-        <div class="text-right mb-3">
-            <a href="#" class="btn btn-outline-info" id="addCharacter">Add Character</a>
+                <h3>Characters</h3>
+                <p>Attach characters associated with this piece.</p>
+                <div id="characters" class="mb-3">
+                </div>
+                <div class="text-right mb-3">
+                    <a href="#" class="btn btn-outline-info" id="addCharacter">Add Character</a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                @if(Settings::get('gallery_submissions_reward_currency'))
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Group Currency Form</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="ml-2">
+                            {!! form_row($form->start) !!}
+                            
+                            {!!  form_rest($form) !!}
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            </div>
         </div>
 
         <div class="text-right">

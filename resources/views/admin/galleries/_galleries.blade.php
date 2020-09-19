@@ -12,7 +12,7 @@
         </h6>
   </div>
   <div class="col-6 col-md-2">{!! $gallery->submissions_open ? 'Yes' : '-' !!}</div>
-  <div class="col-6 col-md-2">{!! $gallery->currency_enabled ? 'Yes' : '-' !!}</div>
+  <div class="col-6 col-md-2">{!! Settings::get('gallery_submissions_reward_currency') ? ($gallery->currency_enabled ? 'Yes' : '-') : '' !!}</div>
   <div class="col-6 col-md-2">{!! Settings::get('gallery_submissions_require_approval') ? ($gallery->votes_required ? $gallery->votes_required : '-') : '' !!}</div>
   <div class="col-6 col-md-2 text-right"><a href="{{ url('admin/data/galleries/edit/'.$gallery->id) }}" class="btn btn-primary">Edit</a></div>
 </div>

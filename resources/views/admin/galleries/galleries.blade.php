@@ -18,7 +18,7 @@
     <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-bottom">
         <div class="col-6 col-md-4 font-weight-bold">Name</div>
         <div class="col-6 col-md-2 font-weight-bold">Submissions Open</div>
-        <div class="col-6 col-md-2 font-weight-bold">Currency Enabled</div>
+        <div class="col-6 col-md-2 font-weight-bold">{{ Settings::get('gallery_submissions_reward_currency') ? 'Rewards Currency' : '' }}</div>
         <div class="col-6 col-md-2 font-weight-bold">{{ Settings::get('gallery_submissions_require_approval') ? 'Votes Required' : '' }}</div>
     </div>
     @foreach($galleries as $gallery)

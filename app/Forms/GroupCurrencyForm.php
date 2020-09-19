@@ -27,6 +27,12 @@ class GroupCurrencyForm extends Form
         // Each of these has a key, 'label', which corresponds to the form's label as displayed.
 
         $this
+        // Don't worry about this-- It's just here to help with adding
+        // this form to the larger "Create Submission" form!
+        ->add('start', 'hidden', [
+            'value' => ''
+        ])
+
         // Creates a form for selecting the type of piece being submitted,
         // where users can select multiple options (for instance, when submitting
         // literature with accompanying artwork)
@@ -68,8 +74,10 @@ class GroupCurrencyForm extends Form
             'multiple' => false,
         ])
         // In this particular case, these will be multiplied with the above art_type and added to the total
+        // If you wish to have options with all the same value, in this case 1, give them a .1 difference,
+        // which can easily be rounded out, but allows for the computer to distinguish between them.
         ->add('art_bonus', 'choice', [
-            'choices' => ['1' => 'Colored', '1' => 'Shading', '1' => 'Background'],
+            'choices' => ['1' => 'Colored', '1.1' => 'Shading', '1.2' => 'Background'],
             'choice_options' => ['wrapper' => ['class' => 'choice-wrapper'],
             'label_attr' => ['class' => 'label-class'],
             ],

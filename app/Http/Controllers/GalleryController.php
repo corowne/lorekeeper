@@ -8,6 +8,8 @@ use App\Models\Gallery\GallerySubmission;
 
 use App\Models\Prompt\Prompt;
 
+use Kris\LaravelFormBuilder\FormBuilder;
+
 class GalleryController extends Controller
 {
     /*
@@ -73,7 +75,7 @@ class GalleryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getNewGallerySubmission(Request $request, $id)
+    public function getNewGallerySubmission(Request $request, $id, FormBuilder $formBuilder)
     {
         $gallery = Gallery::find($id);
         $closed = !Settings::get('gallery_submissions_open');
@@ -83,6 +85,7 @@ class GalleryController extends Controller
             'gallery' => $gallery,
             'submission' => new GallerySubmission,
             'prompts' => Prompt::active()->sortAlphabetical()->pluck('name', 'id')->toArray(),
+            'form' => $formBuilder->create('App\Forms\GroupCurrencyForm'),
         ]));
     }
 }
