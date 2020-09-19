@@ -77,7 +77,7 @@ class GalleryController extends Controller
     {
         $gallery = Gallery::find($id);
         $closed = !Settings::get('gallery_submissions_open');
-        return view('galleries.create_submission', [
+        return view('galleries.create_edit_submission', [
             'closed' => $closed,
         ] + ($closed ? [] : [
             'gallery' => $gallery,
