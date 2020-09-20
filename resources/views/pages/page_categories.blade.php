@@ -25,8 +25,14 @@
                     </li>            
                 @foreach($pages as $key=>$page)
                 @if($page->page_category_id == $category->id)
-                    <li class="list-group-item">   
-                        <p class=card-text><a href='{!! $page->url !!}'>{!! $page->title !!}</a></p>
+                    <li class="list-group-item">
+                    <p class=card-text>
+                    @if($page->is_visible)
+                    <a href='{!! $page->url !!}'>{!! $page->title !!}</a>
+                    @else
+                    <span class="text-muted">{!! $page->title !!}</span>
+                    @endif 
+                    </p>
                     </li>
                 @endif
                 @endforeach
