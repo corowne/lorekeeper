@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\Models\SitePage;
+use App\Models\SitePageCategory;
 
 class PageController extends Controller
 {
@@ -32,5 +33,26 @@ class PageController extends Controller
         if(!$page) abort(404);
         return view('pages.page', ['page' => $page]);
     }
+
+    /**********************************************************************************************
     
+        PAGE CATEGORIES
+
+    **********************************************************************************************/
+    
+    /**
+     * Shows the world lore page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getPageCategory(Request $request)
+    {
+        $pages = SitePage::query();
+        $categories = SitePageCategory::query();
+        return view('pages.page_categories', [
+            'pages' => $pages->orderBy('title')->get(),
+            'categories' => $categories->orderBy('sort', 'DESC')->get()
+        ]);
+    }
 }

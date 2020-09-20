@@ -220,6 +220,19 @@ Route::group(['prefix' => 'pages', 'middleware' => 'power:edit_pages'], function
     Route::post('delete/{id}', 'PageController@postDeletePage');
 });
 
+# PAGE CATEGORIES
+Route::group(['prefix'=> 'page-categories', 'middleware' => 'power:edit_pages'], function() {
+
+    Route::get('/', 'PageController@getCategoryIndex');
+    Route::get('create', 'PageController@getCreatePageCategory');
+    Route::get('edit/{id}', 'PageController@getEditPageCategory');
+    Route::get('delete/{id}', 'PageController@getDeletePageCategory');
+    Route::post('create', 'PageController@postCreateEditPageCategory');
+    Route::post('edit/{id?}', 'PageController@postCreateEditPageCategory');
+    Route::post('delete/{id}', 'PageController@postDeletePageCategory');
+    Route::post('sort', 'PageController@postSortPageCategory');
+});
+
 
 # NEWS
 Route::group(['prefix' => 'news', 'middleware' => 'power:edit_pages'], function() {

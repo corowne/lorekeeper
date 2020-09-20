@@ -6,6 +6,7 @@ use DB;
 use Config;
 
 use App\Models\SitePage;
+use App\Models\SitePageCategory;
 
 class PageService extends Service
 {
@@ -94,4 +95,143 @@ class PageService extends Service
         }
         return $this->rollbackReturn(false);
     }
+
+    /**********************************************************************************************
+     
+        PAGE CATEGORIES
+
+    **********************************************************************************************/
+
+    /**
+     * Create a category.
+     *
+     * @param  array                 $data
+     * @param  \App\Models\User\User $user
+     * @return \App\Models\SitePageCategory|bool
+     */
+    public function createPageCategory($data, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            $data = $this->populateCategoryData($data);
+
+            $category = SitePageCategory::create($data);
+
+            return $this->commitReturn($category);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Update a category.
+     *
+     * @param  \App\Models\SitePageCategory         $category
+     * @param  array                                $data
+     * @param  \App\Models\User\User                $user
+     * @return \App\Models\SitePageCategory|bool
+     */
+    public function updatePageCategory($category, $data, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            // More specific validation
+            if(SitePageCategory::where('name', $data['name'])->where('id', '!=', $category->id)->exists()) throw new \Exception("The name has already been taken.");
+
+            $data = $this->populateCategoryData($data, $category);
+
+            $image = null;            
+            if(isset($data['image']) && $data['image']) {
+                $data['has_image'] = 1;
+                $image = $data['image'];
+                unset($data['image']);
+            }
+
+            $category->update($data);
+
+            if ($category) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
+
+            return $this->commitReturn($category);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Handle category data.
+     *
+     * @param  array                                     $data
+     * @param  \App\Models\SitePageCategory|null  $category
+     * @return array
+     */
+    private function populateCategoryData($data, $category = null)
+    {
+        if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
+        
+        if(isset($data['remove_image']))
+        {
+            if($category && $category->has_image && $data['remove_image']) 
+            { 
+                $data['has_image'] = 0; 
+                $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
+            }
+            unset($data['remove_image']);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Delete a category.
+     *
+     * @param  \App\Models\SitePageCategory  $category
+     * @return bool
+     */
+    public function deletePageCategory($category)
+    {
+        DB::beginTransaction();
+
+        try {
+            // Check first if the category is currently in use
+            if(SitePage::where('page_category_id', $category->id)->exists()) throw new \Exception("A page with this category exists. Please change its category first.");
+            
+            if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
+            $category->delete();
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Sorts category order.
+     *
+     * @param  array  $data
+     * @return bool
+     */
+    public function sortPageCategory($data)
+    {
+        DB::beginTransaction();
+
+        try {
+            // explode the sort array and reverse it since the order is inverted
+            $sort = array_reverse(explode(',', $data));
+
+            foreach($sort as $key => $s) {
+                SitePageCategory::where('id', $s)->update(['sort' => $key]);
+            }
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
 }

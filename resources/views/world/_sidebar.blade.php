@@ -1,6 +1,10 @@
 <ul>
     <li class="sidebar-header"><a href="{{ url('world') }}" class="card-link">Encyclopedia</a></li>
     <li class="sidebar-section">
+        <div class="sidebar-section-header">Lore</div>
+        <div class="sidebar-item"><a href="{{ url('world/lore') }}" class="{{ set_active('world/lore*') }}">Lore Pages</a></div>
+    </li>
+    <li class="sidebar-section">
         <div class="sidebar-section-header">Characters</div>
         <div class="sidebar-item"><a href="{{ url('world/species') }}" class="{{ set_active('world/species*') }}">Species</a></div>
         <div class="sidebar-item"><a href="{{ url('world/subtypes') }}" class="{{ set_active('world/subtypes*') }}">Subtypes</a></div>
