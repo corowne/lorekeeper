@@ -20,7 +20,6 @@
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item text-center"> 
-                    @if(isset($searchUrl) && $searchUrl) <li class="list-group-item pb-1"><a href="{{ $searchUrl }}" class="h5 btn btn-primary">[View Prompts]</a></li>@endif
                     <p class=card-text>{!! $category->description !!}</p>
                     </li>            
                 @foreach($pages as $key=>$page)

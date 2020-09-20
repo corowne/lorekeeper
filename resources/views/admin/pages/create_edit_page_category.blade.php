@@ -45,9 +45,30 @@
 
 @if($category->id)
     <h3>Preview</h3>
-    <div class="card mb-3">
-        <div class="card-body">
-            @include('world._entry', ['imageUrl' => $category->categoryImageUrl, 'name' => $category->displayName, 'description' => $category->parsed_description])
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-transparent text-center pb-0">
+                @if($category->categoryImageUrl)
+                    <div class="world-entry-image"><a href="{{ $category->categoryImageUrl }}" data-lightbox="entry" data-title="{{ $category->name }}">
+                    <img class="img-fluid" src="{{ $category->categoryImageUrl }}" class="world-entry-image" /></a></div>
+                @endif
+                <h5 class="card-title">{!! $category->name !!}</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item text-center">
+                <p class=card-text>{!! $category->description !!}</p>
+                </li>
+                <li class="list-group-item">
+                <p class=card-text>
+                <a href="">Active Page Link</a>
+                </p>
+                </li>
+                <li class="list-group-item">
+                <p class=card-text>
+                <span class="text-muted">Invisible Page Link</span>
+                </p>
+                </li>
+            </ul>
         </div>
     </div>
 @endif
