@@ -43,6 +43,9 @@
             @foreach($pages as $page)
                 <tr>
                     <td>
+                    @if(!$page->is_visible)
+                        <i class="far fa-eye-slash text-muted"></i>
+                    @endif
                         <a href="{{ $page->url }}">{{ $page->title }}</a>
                     </td>
                     <td>{{ $page->category ? $page->category->name : '' }}</td>
