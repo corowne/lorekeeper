@@ -162,10 +162,11 @@ url should be equal to the last replies permalink (e.g reply 5)--}}
 
         {{-- Recursion for children --}}
         <div class="w-100 mw-100">
-            @foreach($comment->children->sortByDesc('created_at') as $reply)
+            @php $children = $depth == 0 ? $comment->children->sortByDesc('created_at')->paginate(5) : $comment->children->sortByDesc('created_at') @endphp
+            @foreach($children as $reply)
                 @php $limit++; @endphp
 
-                @if($limit >= 5) 
+                @if($limit >= 5 && $depth >= 1) 
                     <a href="{{ url('comment/').'/'.$comment->id }}"><span class="btn btn-secondary w-100">See More Replies</span></a>
                     @break
                 @endif
@@ -174,8 +175,10 @@ url should be equal to the last replies permalink (e.g reply 5)--}}
                     'comment' => $reply,
                     'reply' => true,
                     'limit' => $limit
+                    'depth' => $depth+1
                 ])
-            @endforeach
+                @endforeach
+            @if($depth == 0) {!! $children->render() !!} @endif
         </div>
     </div>
 </div>
