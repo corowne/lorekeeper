@@ -24,6 +24,7 @@ use App\Models\Character\CharacterImage;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Character\CharacterDesignUpdate;
 use App\Models\Character\CharacterBookmark;
+use App\Models\Character\CharacterLink;
 use App\Models\User\UserCharacterLog;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
@@ -89,7 +90,7 @@ class CharacterManager extends Service
         try {
             if(!$isMyo && Character::where('slug', $data['slug'])->exists()) throw new \Exception("Please enter a unique character code.");
 
-            if(!(isset($data['user_id']) && $data['user_id']) && !(isset($data['owner_alias']) && $data['owner_alias'])) 
+            if(!(isset($data['user_id']) && $data['user_id']) && !(isset($data['owner_alias']) && $data['owner_alias']) && !(isset($data['parent_id']) && $data['parent_id'])) 
                 throw new \Exception("Please select an owner.");
             if(!$isMyo)
             {
@@ -108,7 +109,15 @@ class CharacterManager extends Service
             $recipient = null;
             $recipientId = null;
             $alias = null;
-            if(isset($data['user_id']) && $data['user_id']) $recipient = User::find($data['user_id']);
+            if(isset($data['parent_id']) && $data['parent_id'])
+            {
+                // Find the new parent of the character
+                $parent = Character::where('id', $data['parent_id'])->first();
+                //find new owner based on parent
+                $recipient = User::find($parent->user_id);
+                if(!$recipient) $recipient = Character::where('id', $data['parent_id'])->first()->owner_alias;
+            }
+            elseif(isset($data['user_id']) && $data['user_id']) $recipient = User::find($data['user_id']);
             elseif(isset($data['owner_alias']) && $data['owner_alias']) $recipient = User::where('alias', $data['owner_alias'])->first();
 
             if($recipient) {
@@ -123,6 +132,15 @@ class CharacterManager extends Service
             $character = $this->handleCharacter($data, $isMyo);
             if(!$character) throw new \Exception("Error happened while trying to create character.");
 
+            // Create character link
+            if(isset($data['parent_id']) && $data['parent_id'])
+            {
+                CharacterLink::create([
+                    'parent_id' => $data['parent_id'],
+                    'child_id' => $character->id
+                ]);
+            }
+            
             // Create character image
             $data['is_valid'] = true; // New image of new characters are always valid
             $image = $this->handleCharacterImage($data, $character, $isMyo);
@@ -1142,8 +1160,46 @@ class CharacterManager extends Service
 
             $sender = $character->user;
             
+            // Move the character
             $this->moveCharacter($character, $recipient, 'Transferred by ' . $user->displayName . (isset($data['reason']) ? ': ' . $data['reason'] : ''), isset($data['cooldown']) ? $data['cooldown'] : -1);
 
+            // Find all of the children of this character
+            if($childrenArray =  CharacterLink::where('parent_id', $character->id)->get()->pluck('child_id')->toArray())
+            {
+                //get ALL the children
+                foreach($childrenArray as $child) {
+                    if(!isset($children))
+                    {
+                        $children = Character::where('id', $child)->get();
+                    } else {
+                        $children = $children->merge(Character::where('id', $child)->get());
+                    }
+                }
+                //get all the children of children
+                $search = 5;
+                while($search >= 0)
+                {
+                    foreach($children as $child)
+                    {
+                        $grandchildren = null;
+                        if ($grandchildren = CharacterLink::where('parent_id', $child->id)->get()->pluck('child_id')->toArray()) {
+                            foreach($grandchildren as $grandchild) {
+                                $children = $children->merge(Character::where('id', $grandchild)->get());
+                            }
+                        }
+                    }
+                    $search -= 1;
+                }
+            } else $children = false;
+
+            // Move all children of this character
+            if($children) {
+                foreach($children as $child)
+                {
+                    $this->moveCharacter($child, $recipient, 'Parent ' . $character->slug . ' transferred to ' . $user->displayName . (isset($data['reason']) ? ': ' . $data['reason'] : ''), isset($data['cooldown']) ? $data['cooldown'] : -1);
+                } 
+            }
+            
             // Add notifications for the old and new owners
             if($sender) {
                 Notifications::create('CHARACTER_SENT', $sender, [
@@ -1195,7 +1251,46 @@ class CharacterManager extends Service
                 if ($transfer->is_approved) {
                     //check the cooldown saved
                     if(isset($transfer->data['cooldown'])) $cooldown = $transfer->data['cooldown'];
-                    $this->moveCharacter($transfer->character, $transfer->recipient, 'User Transfer', $cooldown);
+                    {
+                        $this->moveCharacter($transfer->character, $transfer->recipient, 'User Transfer', $cooldown);
+
+                        // Find all of the children of this character
+                        if($childrenArray =  CharacterLink::where('parent_id', $transfer->character->id)->get()->pluck('child_id')->toArray())
+                        {
+                            //get ALL the children
+                            foreach($childrenArray as $child) {
+                                if(!isset($children))
+                                {
+                                    $children = Character::where('id', $child)->get();
+                                } else {
+                                    $children = $children->merge(Character::where('id', $child)->get());
+                                }
+                            }
+                            //get all the children of children
+                            $search = 5;
+                            while($search >= 0)
+                            {
+                                foreach($children as $child)
+                                {
+                                    $grandchildren = null;
+                                    if ($grandchildren = CharacterLink::where('parent_id', $child->id)->get()->pluck('child_id')->toArray()) {
+                                        foreach($grandchildren as $grandchild) {
+                                            $children = $children->merge(Character::where('id', $grandchild)->get());
+                                        }
+                                    }
+                                }
+                                $search -= 1;
+                            }
+                        } else $children = false;
+
+                        // Move all children of this character
+                        if($children) {
+                            foreach($children as $child)
+                            {
+                                $this->moveCharacter($child, $transfer->recipient, 'Parent ' . $transfer->character->slug . ' transferred to ' . $transfer->recipient->name, $cooldown);
+                            }
+                        }
+                    }
                     if(!Settings::get('open_transfers_queue'))
                         $transfer->data = json_encode([
                             'cooldown' => $cooldown,
@@ -1294,6 +1389,41 @@ class CharacterManager extends Service
                 if($transfer->status == 'Accepted') {
                     $this->moveCharacter($transfer->character, $transfer->recipient, 'User Transfer', isset($data['cooldown']) ? $data['cooldown'] : -1);
 
+                    // Find all of the children of this character
+                    if($childrenArray =  CharacterLink::where('parent_id', $transfer->character->id)->get()->pluck('child_id')->toArray())
+                    {
+                        //get ALL the children
+                        foreach($childrenArray as $child) {
+                            if(!isset($children))
+                            {
+                                $children = Character::where('id', $child)->get();
+                            } else {
+                                $children = $children->merge(Character::where('id', $child)->get());
+                            }
+                        }
+                        //get all the children of children
+                        $search = 5;
+                        while($search >= 0)
+                        {
+                            foreach($children as $child)
+                            {
+                                $grandchildren = null;
+                                if ($grandchildren = CharacterLink::where('parent_id', $child->id)->get()->pluck('child_id')->toArray()) {
+                                    foreach($grandchildren as $grandchild) {
+                                        $children = $children->merge(Character::where('id', $grandchild)->get());
+                                    }
+                                }
+                            }
+                            $search -= 1;
+                        }
+                    }
+                    // Move all children of this character
+                    foreach($children as $child)
+                    {
+                        $this->moveCharacter($child, $transfer->recipient, 'Parent ' . $transfer->character->slug . ' transferred to ' . $transfer->recipient->name, isset($data['cooldown']) ? $data['cooldown'] : -1);
+                    }
+                    
+
                     // Notify both parties of the successful transfer
                     Notifications::create('CHARACTER_TRANSFER_APPROVED', $transfer->sender, [
                         'character_name' => $transfer->character->slug,
@@ -1344,6 +1474,85 @@ class CharacterManager extends Service
             $transfer->save();
 
             return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Handles bound characters.
+     *
+     * @param  array                            $data
+     * @param  \App\Models\Character\Character  $character
+     * @param  \App\Models\User\User            $user
+     * @return  bool
+     */
+    public function boundTransfer($data, $character, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            if(isset($data['parent_id']) && $data['parent_id']) {
+                // Find the new parent of the character
+                $parent = Character::where('id', $data['parent_id'])->first();
+
+                // Find all of the children of this character
+                if($childrenArray =  CharacterLink::where('parent_id', $character->id)->get()->pluck('child_id')->toArray())
+                {
+                    //get ALL the children
+                    foreach($childrenArray as $child) {
+                        if(!isset($children))
+                        {
+                            $children = Character::where('id', $child)->get();
+                        } else {
+                            $children = $children->merge(Character::where('id', $child)->get());
+                        }
+                    }
+                    //get all the children of children
+                    $search = 5;
+                    while($search >= 0)
+                    {
+                        foreach($children as $child)
+                        {
+                            $grandchildren = null;
+                            if ($grandchildren = CharacterLink::where('parent_id', $child->id)->get()->pluck('child_id')->toArray()) {
+                                foreach($grandchildren as $grandchild) {
+                                    $children = $children->merge(Character::where('id', $grandchild)->get());
+                                }
+                            }
+                        }
+                        $search -= 1;
+                    }
+                } else $children = false;
+
+                //find new owner based on parent
+                $recipient = User::find($parent->user_id);
+                if(!$recipient) $recipient = Character::where('id', $data['parent_id'])->first()->owner_alias;
+
+                //remove old parent and create new link
+                CharacterLink::where('child_id', $character->id)->delete();
+                CharacterLink::create([
+                    'parent_id' => $data['parent_id'],
+                    'child_id' => $character->id
+                ]);
+
+                // Move the character
+                $this->moveCharacter($character, $recipient, 'Bound to ' . $parent->slug . (isset($data['reason']) ? ': ' . $data['reason'] : ''), isset($data['cooldown']) ? $data['cooldown'] : -1);
+
+                // Move all children of this character
+                if($children) {
+                    foreach($children as $child)
+                    {
+                        $this->moveCharacter($child, $recipient, 'Parent ' . $character->slug . ' transferred by ' . $user->displayName . (isset($data['reason']) ? ': ' . $data['reason'] : ''), isset($data['cooldown']) ? $data['cooldown'] : -1);
+                    }
+                }
+            } else {
+                //if no parent is set, simply unbind
+                CharacterLink::where('child_id', $character->id)->delete();
+                flash('Character has been unbound.')->success();
+            }
+        return $this->commitReturn(true);
         } catch(\Exception $e) { 
             $this->setError('error', $e->getMessage());
         }
