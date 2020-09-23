@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use Settings;
+use Config;
 use Auth;
 use Illuminate\Http\Request; 
 use App\Models\Gallery\Gallery;
@@ -122,9 +123,9 @@ class GalleryController extends Controller
     {
         $id ? $request->validate(GallerySubmission::$updateRules) : $request->validate(GallerySubmission::$createRules);
         $data = $request->only([
-            'image', 'text', 'title', 'description', 'slug', 'collaborator_id', 'collaborator_data'
+            'image', 'text', 'title', 'description', 'slug', 'collaborator_id', 'collaborator_data', 'gallery_id'
         ]);
-        if(Settings::get('gallery_submissions_reward_currency')) $currencyFormData = returnGroupCurrencyFormData($request);
+        if(Settings::get('gallery_submissions_reward_currency')) $currencyFormData = $request->only(collect(Config::get('lorekeeper.group_currency_form'))->keys()->toArray());
         else $currencyFormData = null;
         
         if($id && $service->updateSubmission(GallerySubmission::find($id), $data, Auth::user())) {
@@ -132,7 +133,7 @@ class GalleryController extends Controller
         }
         else if (!$id && $gallery = $service->createSubmission($data, $currencyFormData, Auth::user())) {
             flash('Submission created successfully.')->success();
-            return redirect()->to('gallery/view/'.$submission->id);
+            return redirect()->to('gallery/submissions/pending');
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

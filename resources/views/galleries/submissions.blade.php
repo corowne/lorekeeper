@@ -38,7 +38,7 @@
         @foreach($submissions as $submission)
             <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-top">
             <div class="col-12 col-md-2">{!! $submission->gallery->displayName !!}</div>
-            <div class="col-6 col-md-3">{{ $submission->name }}</div>
+            <div class="col-6 col-md-3">{{ $submission->title }}</div>
             <div class="col-6 col-md-5">{!! pretty_date($submission->created_at) !!}</div>
             <div class="col-6 col-md-1 text-right">
                 <span class="btn btn-{{ $submission->status == 'Pending' ? 'secondary' : ($submission->status == 'Approved' ? 'success' : 'danger') }} btn-sm py-0 px-1">{{ $submission->status }}</span>

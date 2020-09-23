@@ -11,20 +11,6 @@
 */
 
 /**
- * Returns only the fields from the group currency form. Adjust
- * to correspond to your form's configuration!
- *
- * @param  \Illuminate\Http\Request    $request
- * @return array
- */
-function returnGroupCurrencyFormData($request) 
-{
-    // Put the names of all of your form fields in the [brackets], separated by commas, like so!
-    $data = $request->only(['piece_type', 'art_finish', 'art_type', 'art_bonus', 'base', 'frame_count', 'word_count']);
-    return $data;
-}
-
-/**
  * Calculates amount of group currency a submission should be awarded
  * based on form input. Corresponds to the GroupCurrencyForm configured in
  * app/Forms.
@@ -34,13 +20,15 @@ function returnGroupCurrencyFormData($request)
  */
 function calculateGroupCurrency($data)
 {
+    // Sets a starting point for the total so that numbers can be added to it.
+    // Don't change this!
     $total = 0;
 
-    // You'll need the names of the form fields you specified in the form config.
+    // You'll need the names of the form fields you specified both in the form config and above.
     // You can get a particular field's value with $data['form_name'], for instance, $data['art_finish']
     
     // This differentiates how values are calculated depending on the type of content being submitted.
-    $pieceType = collect($data['piece_type'])->flip;
+    $pieceType = collect($data['piece_type'])->flip();
     
     // For instance, if the user selected that the submission has a visual art component,
     // these actions will be performed:
@@ -67,7 +55,8 @@ function calculateGroupCurrency($data)
         // This just adds 4! You can adjust this as you desire.
         $total += 4;
     }
-    
+
+    // Hands the resulting total off. Don't change this!
     return $total;
 }
 

@@ -54,6 +54,8 @@
                     {!! $submission->prompt_id ? '<p><strong>Prompt:</strong> '.$submission->prompt->displayName.'</p>' : '' !!}
                 @endif
 
+                {!! Form::hidden('gallery_id', $gallery->id) !!}
+
                 <h3>Characters</h3>
                 <p>
                     Add the characters included in this piece.

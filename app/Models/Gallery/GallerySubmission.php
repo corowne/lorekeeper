@@ -212,10 +212,41 @@ class GallerySubmission extends Model
      */
     public function getImageUrlAttribute()
     {
-        if (!$this->has_image) return null;
+        if(!isset($this->hash)) return null;
         return asset($this->imageDirectory . '/' . $this->imageFileName);
     }
+
+    /**
+     * Gets the file name of the model's thumbnail image.
+     *
+     * @return string
+     */
+    public function getThumbnailFileNameAttribute()
+    {
+        return $this->id . '_'.$this->hash.'_th.'.$this->extension;
+    }
+
+    /**
+     * Gets the path to the file directory containing the model's thumbnail image.
+     *
+     * @return string
+     */
+    public function getThumbnailPathAttribute()
+    {
+        return $this->imagePath;
+    }
     
+    /**
+     * Gets the URL of the model's image.
+     *
+     * @return string
+     */
+    public function getThumbnailUrlAttribute()
+    {
+        if(!isset($this->hash)) return null;
+        return asset($this->imageDirectory . '/' . $this->thumbnailFileName);
+    }
+
     /**
      * Get the data attribute as an associative array.
      *
@@ -253,7 +284,7 @@ class GallerySubmission extends Model
      */
     public function getUrlAttribute()
     {
-        return url('gallery/'.$this->gallery->id.'/view/'.$this->id);
+        return url('gallery/view/'.$this->id);
     }
     
 }
