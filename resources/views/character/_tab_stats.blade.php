@@ -35,7 +35,7 @@
     
     <h5 class="text-center">Bound To {!! add_help('This character or add-on is bound to another character which controls the ownership.') !!}</h5>
     <div class="row justify-content-center text-center">
-        <div class="col-md-6">
+        <div class="col-md-3">
             <a href="{{ $parent->parent->url }}"><img src="{{ $parent->parent->image->thumbnailUrl }}" class="img-thumbnail" /></a><br />
             <a href="{{ $parent->parent->url }}" class="h5 mb-0">@if(!$parent->parent->is_visible) <i class="fas fa-eye-slash"></i> @endif {{ $parent->parent->fullName }}</a>
         <div class="small">
@@ -51,7 +51,7 @@
     <h5 class="text-center">Binding {!! add_help('This character is in possession of the following add-ons or characters and controls their ownership.') !!}</h5>
     <div class="row justify-content-center text-center">
     @foreach($children as $link)
-        <div class="col-md-6">
+        <div class="col-md-3">
             <a href="{{ $link->child->url }}"><img src="{{ $link->child->image->thumbnailUrl }}" class="img-thumbnail" /></a><br />
             <a href="{{ $link->child->url }}" class="h5 mb-0">@if(!$link->child->is_visible) <i class="fas fa-eye-slash"></i> @endif {{ $link->child->fullName }}</a>
         <div class="small">
