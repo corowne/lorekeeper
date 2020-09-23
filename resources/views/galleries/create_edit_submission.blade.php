@@ -98,13 +98,6 @@
                                     @endforeach
                                 @endif
                             </div>
-                            <div class="collaborator-row hide mb-2">
-                                {!! Form::select('collaborator_id[]', $users, null, ['class' => 'form-control mr-2 collaborator-select', 'placeholder' => 'Select User']) !!}
-                                <div class="d-flex">
-                                    {!! Form::text('collaborator_data[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Role (Sketch, Lines, etc.)']) !!}
-                                    <a href="#" class="remove-collaborator btn btn-danger mb-2">×</a>
-                                </div>
-                            </div>
                         @else
                             <p>
                                 @if($submission->collaborators->count())
@@ -141,6 +134,13 @@
     {!! Form::close() !!}
 
     @include('galleries._character_select')
+    <div class="collaborator-row hide mb-2">
+        {!! Form::select('collaborator_id[]', $users, null, ['class' => 'form-control mr-2 collaborator-select', 'placeholder' => 'Select User']) !!}
+        <div class="d-flex">
+            {!! Form::text('collaborator_data[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Role (Sketch, Lines, etc.)']) !!}
+            <a href="#" class="remove-collaborator btn btn-danger mb-2">×</a>
+        </div>
+    </div>
 
     <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">

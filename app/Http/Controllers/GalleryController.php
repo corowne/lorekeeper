@@ -64,7 +64,7 @@ class GalleryController extends Controller
      */
     public function getUserSubmissions(Request $request, $type)
     {
-        $submissions = GallerySubmission::where('user_id', Auth::user()->id);
+        $submissions = GallerySubmission::userPending();
         if(!$type) $type = 'Pending';
         
         $submissions = $submissions->where('status', ucfirst($type));

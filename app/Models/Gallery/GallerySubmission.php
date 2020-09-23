@@ -4,6 +4,7 @@ namespace App\Models\Gallery;
 
 use Config;
 use DB;
+use Auth;
 use Carbon\Carbon;
 use App\Models\Model;
 
@@ -119,6 +120,17 @@ class GallerySubmission extends Model
     public function scopePending($query)
     {
         return $query->where('status', 'Pending');
+    }
+
+    /**
+     * Scope a query to only include pending submissions the user has either submitted or collaborated on.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeUserPending($query)
+    {
+        return $query->pending()->where('user_id', Auth::user()->id)->orWhereIn('id', GalleryCollaborator::where('user_id', Auth::user()->id)->pluck('gallery_submission_id')->toArray());
     }
 
     /**

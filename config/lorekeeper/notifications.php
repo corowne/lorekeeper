@@ -257,4 +257,46 @@ return [
         'message' => '<a href="{sender_url}">{sender}</a> has made a reply to your comment. <a href="comment/{comment_url}">See Reply.</a>',
         'url' => ''
     ],
+
+    // GALLERY_COLLABORATOR
+    505 => [
+        'message' => '<a href="{sender_url}">{sender}</a> has added you as a collaborator on a gallery submission. (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/view/{submission_id}'
+    ],
+
+    // GALLERY_COLLABORATORS_APPROVED
+    506 => [
+        'message' => 'All of the collaborators on your submission have approved and it is now pending staff review. (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/view/{submission_id}'
+    ],
+
+    // GALLERY_SUBMISSION_APPROVED
+    507 => [
+        'message' => 'Your submission (#{submission_id}) was approved. (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/view/{submission_id}'
+    ],
+
+    // GALLERY_SUBMISSION_REJECTED
+    508 => [
+        'message' => 'Your submission (#{submission_id}) was rejected. (<a href="{url}">View Submission</a>)',
+        'url' => 'submissions/view/{submission_id}'
+    ],
+
+    // GALLERY_SUBMISSION_VALUED
+    509 => [
+        'message' => 'You have been awarded {currency} for the gallery submission (#{submission_id}). (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/view/{submission_id}'
+    ],
+
+    // GALLERY_SUBMISSION_MOVED
+    510 => [
+        'message' => 'Your gallery submission (#{submission_id}) has been moved by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Claim</a>)',
+        'url' => 'claims/view/{submission_id}'
+    ],
+
+    // GALLERY_SUBMISSION_CHARACTER
+    511 => [
+        'message' => '<a href="{sender_url}">{sender}</a> has added your character <a href="{character_url}">{character}</a> to a gallery submission. (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/view/{submission_id}'
+    ],
 ];

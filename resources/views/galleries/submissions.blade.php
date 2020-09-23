@@ -31,7 +31,8 @@
         <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-bottom">
             <div class="col-12 col-md-2 font-weight-bold">Gallery</div>
             <div class="col-6 col-md-3 font-weight-bold">Title</div>
-            <div class="col-6 col-md-5 font-weight-bold">Submitted</div>
+            <div class="col-6 col-md-3 font-weight-bold">Collaboration With</div>
+            <div class="col-6 col-md-2 font-weight-bold">Submitted</div>
             <div class="col-12 col-md-1 font-weight-bold">Status</div>
         </div>
 
@@ -39,7 +40,16 @@
             <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-top">
             <div class="col-12 col-md-2">{!! $submission->gallery->displayName !!}</div>
             <div class="col-6 col-md-3">{{ $submission->title }}</div>
-            <div class="col-6 col-md-5">{!! pretty_date($submission->created_at) !!}</div>
+            <div class="col-6 col-md-3">
+                @if($submission->collaborators->count())
+                    @foreach($submission->collaborators as $collaborator)
+                        {!! $collaborator->user_id != Auth::user()->id ? $collaborator->user->displayName : '' !!}
+                    @endforeach
+                @else
+                -
+                @endif
+            </div>
+            <div class="col-6 col-md-2">{!! pretty_date($submission->created_at) !!}</div>
             <div class="col-6 col-md-1 text-right">
                 <span class="btn btn-{{ $submission->status == 'Pending' ? 'secondary' : ($submission->status == 'Approved' ? 'success' : 'danger') }} btn-sm py-0 px-1">{{ $submission->status }}</span>
             </div>

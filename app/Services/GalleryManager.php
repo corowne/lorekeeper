@@ -49,8 +49,8 @@ class GalleryManager extends Service
 
             // Check that associated collaborators exist
             if(isset($data['collaborator_id'][0])) {
-                $collaborators = User::whereIn('id', collect($data['collaborator_id'])->unique()->toArray())->get();
-                if(count($collaborators) != collect($data['collaborator_id'])->unique()->count()) throw new \Exception("One or more of the selected users does not exist.");
+                $collaborators = User::whereIn('id', $data['collaborator_id'])->get();
+                if(count($collaborators) != $data['collaborator_id']) throw new \Exception("One or more of the selected users does not exist.");
             }
             else $collaborators = [];
 
@@ -86,8 +86,18 @@ class GalleryManager extends Service
                 GalleryCollaborator::create([
                     'user_id' => $collaborator->id,
                     'gallery_submission_id' => $submission->id,
-                    'data' => $data['collaborator_data'][$key]
+                    'data' => $data['collaborator_data'][$key],
+                    'has_approved' => $collaborator->user->id == $user->id ? 1 : 0,
                 ]);
+
+                // Notify collaborators (but not the submitting user)
+                if($collaborator->user->id != $user->id) {
+                    Notifications::create('GALLERY_COLLABORATOR', $collaborator->user, [
+                        'sender_url' => $user->url,
+                        'sender' => $user->name,
+                        'submission_id' => $submission->id,
+                    ]);
+                }
             }
 
             // Attach any characters to the submission
@@ -155,14 +165,14 @@ class GalleryManager extends Service
         $imageHeight = $thumbnail->height();
         if($imageWidth > $imageHeight) {
             // Landscape
-            $thumbnail->resize(null, Config::get('lorekeeper.settings.masterlist_thumbnails.width'), function ($constraint) {
+            $thumbnail->resize(Config::get('lorekeeper.settings.masterlist_thumbnails.width'), null, function ($constraint) {
                 $constraint->aspectRatio();
                 $constraint->upsize();
             });
         }
         else {
             // Portrait
-            $thumbnail->resize(Config::get('lorekeeper.settings.masterlist_thumbnails.height'), null, function ($constraint) {
+            $thumbnail->resize(null, Config::get('lorekeeper.settings.masterlist_thumbnails.height'), function ($constraint) {
                 $constraint->aspectRatio();
                 $constraint->upsize();
             });
