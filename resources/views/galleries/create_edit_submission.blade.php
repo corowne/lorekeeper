@@ -104,7 +104,7 @@
                                 @if($submission->id)
                                     @foreach($submission->collaborators as $collaborator)
                                         <div class="mb-2">
-                                            <div class="d-flex">{!! $collaborator->has_approved ? '<div class="btn btn-success mb-2 mr-2"><i class="fas fa-check"></i></div>' : '' !!}{!! Form::select('collaborator_id[]', $users, $collaborator->user_id, ['class' => 'form-control mr-2 collaborator-select original', 'placeholder' => 'Select User']) !!}</div>
+                                            <div class="d-flex">{!! $collaborator->has_approved ? '<div class="btn btn-success mb-2 mr-2" data-toggle="tooltip" title="Has Approved"><i class="fas fa-check"></i></div>' : '' !!}{!! Form::select('collaborator_id[]', $users, $collaborator->user_id, ['class' => 'form-control mr-2 collaborator-select original', 'placeholder' => 'Select User']) !!}</div>
                                             <div class="d-flex">
                                                 {!! Form::text('collaborator_data[]', $collaborator->data, ['class' => 'form-control mr-2', 'placeholder' => 'Role (Sketch, Lines, etc.)']) !!}
                                                 <a href="#" class="remove-collaborator btn btn-danger mb-2">×</a>
