@@ -44,7 +44,7 @@ class GallerySubmission extends Model
      */
     public static $createRules = [
         'title' => 'required|between:3,200',
-        'image' => 'required_without:text',
+        'image' => 'required_without:text|mimes:png,jpeg,gif|max:4000',
         'text' => 'required_without:image',
         'description' => 'nullable',
     ];
@@ -57,6 +57,7 @@ class GallerySubmission extends Model
     public static $updateRules = [
         'title' => 'required|between:3,200',
         'description' => 'nullable',
+        'image' => 'mimes:png,jpeg,gif|max:4000'
     ];
 
     /**********************************************************************************************
@@ -123,17 +124,6 @@ class GallerySubmission extends Model
     }
 
     /**
-     * Scope a query to only include pending submissions the user has either submitted or collaborated on.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeUserPending($query)
-    {
-        return $query->pending()->where('user_id', Auth::user()->id)->orWhereIn('id', GalleryCollaborator::where('user_id', Auth::user()->id)->pluck('gallery_submission_id')->toArray());
-    }
-
-    /**
      * Scope a query to only include submissions that are pending,
      * and where all collaborators have approved the particulars.
      *
@@ -167,6 +157,17 @@ class GallerySubmission extends Model
     public function scopeRejected($query)
     {
         return $query->where('status', 'Rejected');
+    }
+
+    /**
+     * Scope a query to only include submissions the user has either submitted or collaborated on.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeUserSubmissions($query)
+    {
+        return $query->where('user_id', Auth::user()->id)->orWhereIn('id', GalleryCollaborator::where('user_id', Auth::user()->id)->pluck('gallery_submission_id')->toArray());
     }
 
     /**

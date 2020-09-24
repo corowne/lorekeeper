@@ -7,7 +7,7 @@
 
 <h1>{{ $submission->id ? 'Edit Submission' : 'Submit to '.$gallery->name }}
     @if($submission->id)
-        <a href="#" class="btn btn-outline-danger float-right delete-submission-button">Delete Submission</a>
+        <a href="#" class="btn btn-outline-danger float-right delete-submission-button">Archive Submission</a>
     @endif
 </h1>
 
@@ -17,14 +17,29 @@
         @else You can't submit to this gallery. @endif
     </div>
 @else 
-    {!! Form::open(['url' => $submission->id ? 'gallery/submission/edit/'.$submission->id : 'gallery/submit', 'id' => 'gallerySubmissionForm', 'files' => true]) !!}
+    {!! Form::open(['url' => $submission->id ? 'gallery/edit/'.$submission->id : 'gallery/submit', 'id' => 'gallerySubmissionForm', 'files' => true]) !!}
 
         <h2>Main Content</h2>
         <p>Upload an image and/or text as the content of your submission. You <strong>can</strong> upload both in the event that you have an image with accompanying text or vice versa.</p>
 
         <div class="form-group">
             {!! Form::label('Image') !!}
-            <div>{!! Form::file('image') !!}</div>
+            @if($submission->id && isset($submission->hash) && $submission->hash)
+                <div class="card mb-2" id="existingImage">
+                    <div class="card-body text-center">
+                        <img src="{{ $submission->imageUrl }}" style="max-width:100%; max-height:60vh;" />
+                    </div>
+                </div>
+            @endif
+            <div class="card mb-2 hide" id="imageContainer">
+                <div class="card-body text-center">
+                    <img src="#" id="image" style="max-width:100%; max-height:60vh;" />
+                </div>
+            </div>
+            <div class="card p-2">
+                {!! Form::file('image', ['id' => 'mainImage']) !!}
+                <small>Images may be PNG, GIF, or JPG and up to 4MB in size.</small>
+            </div>
         </div>
 
         <div class="form-group">
@@ -89,7 +104,7 @@
                                 @if($submission->id)
                                     @foreach($submission->collaborators as $collaborator)
                                         <div class="mb-2">
-                                            <div class="d-flex">{!! $collaborator->has_approved ? '<div class="btn btn-success"><i class="fas fa-check"></i></div>' : '' !!}{!! Form::select('collaborator_id[]', $users, $collaborator->user_id, ['class' => 'form-control mr-2 collaborator-select original', 'placeholder' => 'Select User']) !!}</div>
+                                            <div class="d-flex">{!! $collaborator->has_approved ? '<div class="btn btn-success mb-2 mr-2"><i class="fas fa-check"></i></div>' : '' !!}{!! Form::select('collaborator_id[]', $users, $collaborator->user_id, ['class' => 'form-control mr-2 collaborator-select original', 'placeholder' => 'Select User']) !!}</div>
                                             <div class="d-flex">
                                                 {!! Form::text('collaborator_data[]', $collaborator->data, ['class' => 'form-control mr-2', 'placeholder' => 'Role (Sketch, Lines, etc.)']) !!}
                                                 <a href="#" class="remove-collaborator btn btn-danger mb-2">×</a>
@@ -109,7 +124,7 @@
                         @endif
                     </div>
                 </div>
-                @if(Settings::get('gallery_submissions_reward_currency'))
+                @if(Settings::get('gallery_submissions_reward_currency') && $gallery->currency_enabled)
                     <div class="card mb-4">
                         <div class="card-header">
                             <h5>{!! $currency->name !!} Awards</h5>
@@ -120,7 +135,37 @@
                                 {!! form_row($form->start) !!}
                                 {!!  form_rest($form) !!}
                             @else
-                                <p>a</p>
+                                <h6>Form Responses:</h6>
+                                @foreach($submission->data['currencyData'] as $key=>$data)
+                                    <p>
+                                        @if(isset($data))
+                                            <strong>{{ Config::get('lorekeeper.group_currency_form')[$key]['name'] }}:</strong><br/>
+                                            @if(Config::get('lorekeeper.group_currency_form')[$key]['type'] == 'choice')
+                                                @if(isset(Config::get('lorekeeper.group_currency_form')[$key]['multiple']) && Config::get('lorekeeper.group_currency_form')[$key]['multiple'] == 'true')
+                                                    @foreach($data as $answer)
+                                                        {{ Config::get('lorekeeper.group_currency_form')[$key]['choices'][$answer] }}<br/>
+                                                    @endforeach
+                                                @else
+                                                    {{ Config::get('lorekeeper.group_currency_form')[$key]['choices'][$data] }}
+                                                @endif
+                                            @else
+                                                {{ Config::get('lorekeeper.group_currency_form')[$key]['type'] == 'checkbox' ? (Config::get('lorekeeper.group_currency_form')[$key]['value'] == $data ? 'True' : 'False') : $data }}
+                                            @endif
+                                        @endif
+                                    </p>
+                                @endforeach
+                                @if(Auth::user()->hasPower('manage_submissions'))
+                                <h6>[Admin]</h6>
+                                    <p>
+                                        <strong>Calculated Total:</strong> {{ $submission->data['total'] }}
+                                        @if($submission->characters->count() > 1)
+                                            <br/><strong>Total times Number of Characters:</strong> {{ round($submission->data['total'] * $submission->characters->count()) }}
+                                        @endif
+                                        @if($submission->collaborators->count())
+                                            <br/><strong>Total divided by Number of Collaborators:</strong> {{ round(round($submission->data['total'] * $submission->characters->count()) / $submission->collaborators->count()) }}
+                                        @endif
+                                    </p>
+                                @endif
                             @endif
                         </div>
                     </div>
@@ -150,7 +195,13 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <p>This will submit the form and put it into the approval queue. You will not be able to edit certain parts after the submission has been made, so please review the contents before submitting. Click the Confirm button to complete the submission.</p>
+                    <p>
+                        @if(!$submission->id)
+                            This will submit the form and put it into the approval queue. You will not be able to edit certain parts after the submission has been made, so please review the contents before submitting. Click the Confirm button to complete the submission.
+                        @else
+                            This will update the submission.{{ $submission->status == 'Pending' ? ' If you have added or removed any collaborators, they will not be informed (so as not to send additional notifications to previously notified collaborators), so please make sure to do so if necessary as all collaborators must approve a submission for it to be submitted for admin approval.' : '' }}
+                        @endif
+                    </p>
                     <div class="text-right">
                         <a href="#" id="formSubmit" class="btn btn-primary">Confirm</a>
                     </div>
@@ -208,6 +259,23 @@ $sideGallery = $gallery ?>
             function removeCollaboratorRow($trigger) {
                 $trigger.parent().parent().remove();
             }
+
+            var $image = $('#image');
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $image.attr('src', e.target.result);
+                        $('#existingImage').addClass('hide');
+                        $('#imageContainer').removeClass('hide');
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+            $("#mainImage").change(function() {
+                readURL(this);
+            });
+            
         });
     </script>
 @endif

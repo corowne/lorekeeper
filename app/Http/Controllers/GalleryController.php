@@ -64,7 +64,7 @@ class GalleryController extends Controller
      */
     public function getUserSubmissions(Request $request, $type)
     {
-        $submissions = GallerySubmission::userPending();
+        $submissions = GallerySubmission::userSubmissions();
         if(!$type) $type = 'Pending';
         
         $submissions = $submissions->where('status', ucfirst($type));
@@ -98,6 +98,26 @@ class GalleryController extends Controller
     }
 
     /**
+     * Shows the edit submission page.
+     *
+     * @param  integer  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getEditGallerySubmission($id)
+    {
+        $submission = GallerySubmission::find($id);
+        if(!$submission) abort(404);
+
+        return view('galleries.create_edit_submission', [
+            'closed' => false,
+            'gallery' => $submission->gallery,
+            'submission' => $submission,
+            'users' => User::visible()->orderBy('name')->pluck('name', 'id')->toArray(),
+            'currency' => Currency::find(Settings::get('group_currency')),
+        ]);
+    }
+
+    /**
      * Shows character information.
      *
      * @param  string  $slug
@@ -125,7 +145,7 @@ class GalleryController extends Controller
         $data = $request->only([
             'image', 'text', 'title', 'description', 'slug', 'collaborator_id', 'collaborator_data', 'gallery_id'
         ]);
-        if(Settings::get('gallery_submissions_reward_currency')) $currencyFormData = $request->only(collect(Config::get('lorekeeper.group_currency_form'))->keys()->toArray());
+        if(!$id && Settings::get('gallery_submissions_reward_currency')) $currencyFormData = $request->only(collect(Config::get('lorekeeper.group_currency_form'))->keys()->toArray());
         else $currencyFormData = null;
         
         if($id && $service->updateSubmission(GallerySubmission::find($id), $data, Auth::user())) {

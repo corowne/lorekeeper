@@ -48,9 +48,9 @@ class GalleryManager extends Service
             if(!$gallery->submissions_open && !$user->hasPower('manage_submissions')) throw new \Exception("You cannot submit to this gallery.");
 
             // Check that associated collaborators exist
-            if(isset($data['collaborator_id'][0])) {
+            if(isset($data['collaborator_id'])) {
                 $collaborators = User::whereIn('id', $data['collaborator_id'])->get();
-                if(count($collaborators) != $data['collaborator_id']) throw new \Exception("One or more of the selected users does not exist.");
+                if(count($collaborators) != count($data['collaborator_id'])) throw new \Exception("One or more of the selected users does not exist.");
             }
             else $collaborators = [];
 
@@ -75,10 +75,17 @@ class GalleryManager extends Service
                 'is_visible' => 1
             ]);
 
-            $data = $this->populateData($data, $currencyFormData);
+            $data = $this->populateData($data);
+
+            if(isset($currencyFormData) && $currencyFormData) {
+                $data['data']['currencyData'] = $currencyFormData;
+                $data['data']['total'] = calculateGroupCurrency($currencyFormData);
+                $data['data'] = collect($data['data'])->toJson();
+            }
+
             $submission->update($data);
 
-            if($data['image'] != null) $this->processImage($data, $submission);
+            if(isset($data['image']) && $data['image']) $this->processImage($data, $submission);
             $submission->update();
 
             // Attach any collaborators to the submission
@@ -87,7 +94,7 @@ class GalleryManager extends Service
                     'user_id' => $collaborator->id,
                     'gallery_submission_id' => $submission->id,
                     'data' => $data['collaborator_data'][$key],
-                    'has_approved' => $collaborator->user->id == $user->id ? 1 : 0,
+                    'has_approved' => $collaborator->id == $user->id ? 1 : 0,
                 ]);
 
                 // Notify collaborators (but not the submitting user)
@@ -116,24 +123,88 @@ class GalleryManager extends Service
     }
 
     /**
+     * Updates a gallery submission.
+     *
+     * @param  \App\Models\Gallery\GallerySubmission  $submission
+     * @param  array                                  $data 
+     * @param  \App\Models\User\User                  $user
+     * @return bool|\App\Models\Gallery\GallerySubmission
+     */
+    public function updateSubmission($submission, $data, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            // Check that there is text and/or an image, including if there is an existing image (via the existence of a hash)
+            if((!isset($data['image']) && !isset($submission->hash)) && !$data['text']) throw new \Exception("Please submit either text or an image.");
+            
+            // If still pending, perform validation on and process collaborators
+            if($submission->status == 'Pending') { 
+                // Check that associated collaborators exist
+                if(isset($data['collaborator_id'])) {
+                    $collaborators = User::whereIn('id', $data['collaborator_id'])->get();
+                    if(count($collaborators) != count($data['collaborator_id'])) throw new \Exception("One or more of the selected users does not exist.");
+                }
+                else $collaborators = [];
+
+                // Fetch collaborator approval data
+                $collaboratorApproval = $submission->collaborators->pluck('has_approved', 'user_id');
+                // Remove all collaborators from the submission so they can be reattached with new data
+                $submission->collaborators()->delete();
+
+                // Attach any collaborators to the submission
+                foreach($collaborators as $key=>$collaborator) {
+                    GalleryCollaborator::create([
+                        'user_id' => $collaborator->id,
+                        'gallery_submission_id' => $submission->id,
+                        'data' => $data['collaborator_data'][$key],
+                        'has_approved' => isset($collaboratorApproval[$collaborator->id]) ? $collaboratorApproval[$collaborator->id] : ($collaborator->id == $user->id ? 1 : 0),
+                    ]);
+                }
+            }
+
+            // Check that associated characters exist
+            if(isset($data['slug'])) {
+                $characters = Character::myo(0)->visible()->whereIn('slug', $data['slug'])->get();
+                if(count($characters) != count($data['slug'])) throw new \Exception("One or more of the selected characters does not exist.");
+            }
+            else $characters = [];
+
+            // Remove all characters from the submission so they can be reattached with new data
+            $submission->characters()->delete();
+
+            // Attach any characters to the submission
+            foreach($characters as $character) {
+                GalleryCharacter::create([
+                    'character_id' => $character->id,
+                    'gallery_submission_id' => $submission->id,
+                ]);
+            }
+
+            $data = $this->populateData($data);
+            if(isset($data['image']) && $data['image']) $this->processImage($data, $submission);
+
+            $submission->update($data);
+
+            return $this->commitReturn($submission);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
      * Processes user input for creating/updating a gallery submission.
      *
-     * @param  array                                  $data 
-     * @param  array                                  $currencyFormData
+     * @param  array                                  $data
      * @param  \App\Models\Gallery\GallerySubmission  $submission
      * @return array
      */
-    private function populateData($data, $currencyFormData = null)
+    private function populateData($data)
     {
         // Parse any text
         if(isset($data['text']) && $data['text']) $data['parsed_text'] = parse($data['text']);
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
-
-        if(isset($currencyFormData) && $currencyFormData) {
-            $data['data']['currencyData'] = $currencyFormData;
-            $data['data']['total'] = calculateGroupCurrency($currencyFormData);
-            $data['data'] = collect($data['data'])->toJson();
-        }
 
         return $data;
     }
@@ -149,7 +220,7 @@ class GalleryManager extends Service
     {
         if(isset($submission->hash)) {
             unlink($submission->imagePath . '/' . $submission->imageFileName);
-            unlink($submission->imagePath . '/' . $submission->imageFileName);
+            unlink($submission->imagePath . '/' . $submission->thumbnailFileName);
         }
         $submission->hash = randomString(10);
         $submission->extension = $data['image']->getClientOriginalExtension();
