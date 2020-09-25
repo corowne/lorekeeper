@@ -28,10 +28,7 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Schema::defaultStringLength(191);
-    }
 
-    public function boot()
-    {
         /**
          * Paginate a standard Laravel Collection.
          *
