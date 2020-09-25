@@ -130,6 +130,10 @@ return [
                 'name' => 'Loot Tables',
                 'url' => 'admin/data/loot-tables'
             ],
+            [
+                'name' => 'Recipes',
+                'url' => 'admin/data/recipes'
+            ],
         ]
     ],
     'Masterlist' => [

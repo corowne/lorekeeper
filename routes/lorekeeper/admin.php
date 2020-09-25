@@ -138,6 +138,16 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('items/tag/{id}/{tag}', 'ItemController@postEditItemTag');
     Route::get('items/tag/{id}', 'ItemController@getAddItemTag');
     Route::post('items/tag/{id}', 'ItemController@postAddItemTag');
+
+    # RECIPES
+    Route::get('recipes', 'RecipeController@getRecipeIndex');
+    Route::get('recipes/create', 'RecipeController@getCreateRecipe');
+    Route::get('recipes/edit/{id}', 'RecipeController@getEditRecipe');
+    Route::get('recipes/delete/{id}', 'RecipeController@getDeleteRecipe');
+    Route::post('recipes/create', 'RecipeController@postCreateEditRecipe');
+    Route::post('recipes/edit/{id?}', 'RecipeController@postCreateEditRecipe');
+    Route::post('recipes/delete/{id}', 'RecipeController@postDeleteRecipe');
+
     
     # SHOPS
     Route::get('shops', 'ShopController@getIndex');
