@@ -14,9 +14,23 @@
 @if($gallery->submissions->count())
     {!! $submissions->render() !!}
 
-    @foreach($submissions as $submission)
-        <p>a</p>
-    @endforeach
+@foreach($submissions->chunk(5) as $chunk)
+    <div class="d-flex">
+        @foreach($chunk as $submission)
+            <div class="text-center mx-2">
+                <div>
+                    <a href="{{ $submission->url }}"><img src="{{ $submission->thumbnailUrl }}" class="img-thumbnail" /></a>
+                </div>
+                <div class="mt-1">
+                    <a href="{{ $submission->url }}" class="h5 mb-0">@if(!$submission->isVisible) <i class="fas fa-eye-slash"></i> @endif {{ $submission->title }}</a>
+                </div>
+                <div class="small">
+                    by {!! $submission->credits !!}
+                </div>
+            </div>
+        @endforeach
+    </div>
+@endforeach
 
     {!! $submissions->render() !!}
 @else

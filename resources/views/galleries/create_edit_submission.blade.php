@@ -5,9 +5,12 @@
 @section('gallery-content')
 {!! breadcrumbs(['Gallery' => 'gallery', $gallery->name => 'gallery/'.$gallery->id, ($submission->id ? 'Edit' : 'Create').' Submission' => $submission->id ? 'gallery/submissions/edit/'.$submission->id : 'gallery/submit/'.$gallery->id]) !!}
 
-<h1>{{ $submission->id ? 'Edit Submission' : 'Submit to '.$gallery->name }}
+<h1>
+    {{ $submission->id ? 'Edit Submission (#'.$submission->id.', "'.$submission->title.'")' : 'Submit to '.$gallery->name }}
     @if($submission->id)
-        <a href="#" class="btn btn-outline-danger float-right delete-submission-button">Archive Submission</a>
+        <div class="float-right">
+            <a href="/gallery/view/{{ $submission->id }}" class="btn btn-outline-primary">View Submission</a>
+        </div>
     @endif
 </h1>
 

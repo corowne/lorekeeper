@@ -8,8 +8,12 @@ use Auth;
 use Carbon\Carbon;
 use App\Models\Model;
 
+use Laravelista\Comments\Commentable;
+
 class GallerySubmission extends Model
 {
+    use Commentable;
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -176,9 +180,9 @@ class GallerySubmission extends Model
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeVisible($query, $user)
+    public function scopeVisible($query)
     {
-        if($user && $user->hasPower('manage_submissions')) return $query->where('status', 'Accepted');
+        if(Auth::check() && Auth::user()->hasPower('manage_submissions')) return $query->where('status', 'Accepted');
         return $query->where('status', 'Accepted')->where('is_visible', 1);
     }
 
@@ -298,6 +302,32 @@ class GallerySubmission extends Model
     public function getUrlAttribute()
     {
         return url('gallery/view/'.$this->id);
+    }
+
+    /**
+     * Get whether or not the submission is generally viewable.
+     *
+     * @return bool
+     */
+    public function getIsVisibleAttribute()
+    {
+        if($this->attributes['is_visible'] && $this->status == 'Accepted') return true;
+    }
+
+    /**
+     * Get the users responsible for the submission (submitting user or collaborators).
+     *
+     * @return string
+     */
+    public function getCreditsAttribute()
+    {
+        if($this->collaborators->count()) {
+            foreach($this->collaborators as $count=>$collaborator) {
+                $collaboratorList[] = $collaborator->user->displayName;
+            }
+            return implode(', ', $collaboratorList);
+        }
+        else return $this->user->displayName;
     }
     
 }

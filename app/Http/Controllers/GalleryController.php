@@ -52,7 +52,31 @@ class GalleryController extends Controller
 
         return view('galleries.gallery', [
             'gallery' => $gallery,
-            'submissions' => GallerySubmission::where('gallery_id', $gallery->id)->orderBy('created_at', 'DESC')->paginate(20),
+            'submissions' => GallerySubmission::where('gallery_id', $gallery->id)->visible()->accepted()->orderBy('created_at', 'DESC')->paginate(20),
+        ]);
+    }
+
+    /**
+     * Shows a given submission.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getSubmission($id)
+    {
+        $submission = GallerySubmission::find($id);
+        if(!$submission) abort(404);
+
+        if(!$submission->isVisible) {
+            if(!Auth::check()) abort(404);
+            $isMod = Auth::user()->hasPower('manage_submissions');
+            $isOwner = ($submission->user_id == Auth::user()->id);
+            if(!$isMod && !$isOwner) abort(404);
+        }
+
+        return view('galleries.submission', [
+            'submission' => $submission,
+            'currency' => Currency::find(Settings::get('group_currency')),
         ]);
     }
 
@@ -83,6 +107,7 @@ class GalleryController extends Controller
      */
     public function getNewGallerySubmission(Request $request, $id, FormBuilder $formBuilder)
     {
+        if(!Auth::check()) abort(404);
         $gallery = Gallery::find($id);
         $closed = !Settings::get('gallery_submissions_open');
         return view('galleries.create_edit_submission', [
@@ -105,8 +130,12 @@ class GalleryController extends Controller
      */
     public function getEditGallerySubmission($id)
     {
+        if(!Auth::check()) abort(404);
         $submission = GallerySubmission::find($id);
         if(!$submission) abort(404);
+        $isMod = Auth::user()->hasPower('manage_submissions');
+        $isOwner = ($submission->user_id == Auth::user()->id);
+        if(!$isMod && !$isOwner) abort(404);
 
         return view('galleries.create_edit_submission', [
             'closed' => false,

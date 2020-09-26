@@ -2,8 +2,8 @@
     <div class="row">
         <div class="col-md-4">
             <div>
-                <div class="character-image-blank">Enter character code.</div>
-                <div class="character-image-loaded hide">
+                <div class="character-image-blank hide">Enter character code.</div>
+                <div class="character-image-loaded">
                     @include('galleries._character', ['character' => $character->character])
                 </div>
             </div>

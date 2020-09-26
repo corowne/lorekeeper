@@ -26,11 +26,25 @@
                 @endif
             </div>
             <div class="card-body">
-                @if($gallery->submissions->count())
-                    @foreach($gallery->submissions->take(5) as $submission)
-                        <p>submissions go here</p>
-                    @endforeach
-                    <div class="text-right"><a href="{{ url('gallery/'.$gallery->id) }}">See More...</a></div>
+                @if($gallery->submissions->where('status', 'Accepted')->count())
+                    <div class="d-flex">
+                        @foreach($gallery->submissions->where('status', 'Accepted')->take(5) as $submission)
+                            <div class="text-center mx-2">
+                                <div>
+                                    <a href="{{ $submission->url }}"><img src="{{ $submission->thumbnailUrl }}" class="img-thumbnail" /></a>
+                                </div>
+                                <div class="mt-1">
+                                    <a href="{{ $submission->url }}" class="h5 mb-0">@if(!$submission->isVisible) <i class="fas fa-eye-slash"></i> @endif {{ $submission->title }}</a>
+                                </div>
+                                <div class="small">
+                                    by {!! $submission->credits !!}
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    @if($gallery->submissions->count() > 5)
+                        <div class="text-right"><a href="{{ url('gallery/'.$gallery->id) }}">See More...</a></div>
+                    @endif
                 @else
                     <p>This gallery has no submissions!</p>
                 @endif
