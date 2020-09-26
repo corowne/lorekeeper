@@ -4,6 +4,7 @@ use DB;
 use Image;
 use Settings;
 use Config;
+use Notifications;
 use Carbon\Carbon;
 use App\Services\Service;
 
@@ -11,6 +12,7 @@ use App\Models\Gallery\Gallery;
 use App\Models\Gallery\GallerySubmission;
 use App\Models\Gallery\GalleryCharacter;
 use App\Models\Gallery\GalleryCollaborator;
+use App\Models\Gallery\GalleryFavorite;
 
 use App\Models\User\User;
 use App\Models\Character\Character;
@@ -135,6 +137,9 @@ class GalleryManager extends Service
         DB::beginTransaction();
 
         try {
+            // Check that the user can edit the submission
+            if(!$submission->user_id == $user->id && !$user->hasPower('manage_submissions')) throw new \Exception("You can't edit this submission.");
+            
             // Check that there is text and/or an image, including if there is an existing image (via the existence of a hash)
             if((!isset($data['image']) && !isset($submission->hash)) && !$data['text']) throw new \Exception("Please submit either text or an image.");
             
@@ -197,7 +202,6 @@ class GalleryManager extends Service
      * Processes user input for creating/updating a gallery submission.
      *
      * @param  array                                  $data
-     * @param  \App\Models\Gallery\GallerySubmission  $submission
      * @return array
      */
     private function populateData($data)
@@ -253,6 +257,49 @@ class GalleryManager extends Service
         $thumbnail->save($submission->thumbnailPath . '/' . $submission->thumbnailFileName);
 
         return $submission;
+    }
+
+    /**
+     * Processes user input for creating/updating a gallery submission.
+     *
+     * @param  \App\Models\Gallery\GallerySubmission  $submission
+     * @param  \App\Models\User\User                  $user
+     * @return bool|\App\Models\Gallery\GalleryFavorite
+     */
+    public function favoriteSubmission($submission, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            // Check that the submission can be favorited
+            if(!$submission->isVisible) throw new \Exception("This submission isn't visible to be favorited.");
+
+            // Check if the user has an existing favorite, and if so, delete it
+            // or else create one.
+            if($submission->favorites->where('user_id', $user->id)->first() != null) {
+                $submission->favorites()->where('user_id', $user->id)->delete();
+            }
+            else {
+                GalleryFavorite::create([
+                    'user_id' => $user->id,
+                    'gallery_submission_id' => $submission->id,
+                ]);
+
+                if($submission->user->id != $user->id) {
+                    Notifications::create('GALLERY_SUBMISSION_FAVORITE', $submission->user, [
+                        'sender_url' => $user->url,
+                        'sender' => $user->name,
+                        'submission_title' => $submission->title,
+                        'submission_id' => $submission->id,
+                    ]);
+                }
+            }
+
+            return $this->commitReturn($submission);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
     }
 
 }

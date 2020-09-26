@@ -150,4 +150,5 @@ class Notification extends Model
     const GALLERY_SUBMISSION_VALUED       = 509;
     const GALLERY_SUBMISSION_MOVED        = 510;
     const GALLERY_SUBMISSION_CHARACTER    = 511;
+    const GALLERY_SUBMISSION_FAVORITE     = 512;
 }

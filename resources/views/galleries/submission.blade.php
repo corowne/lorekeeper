@@ -9,10 +9,14 @@
     @if(!$submission->isVisible) <i class="fas fa-eye-slash"></i> @endif {{ $submission->title }}
     <div class="float-right">
         @if(Auth::check())
-            <a class="btn btn-primary" href="/gallery/fav/{{ $submission->id }}" data-toggle="tooltip" title="Add to your Favorites"><i class="fas fa-star"></i> </a>
-            @if($submission->user->id == Auth::user()->id)
-                <a class="btn btn-outline-primary" href="/gallery/edit/{{ $submission->id }}"><i class="fas fa-edit"></i> Edit</a>
-            @endif
+            {!! Form::open(['url' => '/gallery/favorite/'.$submission->id]) !!} 
+                @if($submission->user->id != Auth::user()->id && $submission->collaborators->where('user_id', Auth::user()->id)->first() == null && $submission->isVisible)
+                    {!! Form::button('<i class="fas fa-star"></i> ', ['class' => 'btn'. ($submission->favorites->where('user_id', Auth::user()->id)->first() == null ? 'btn-outline-primary' : 'btn-primary'), 'data-toggle' => 'tooltip', 'title' => ($submission->favorites->where('user_id', Auth::user()->id)->first() == null ? 'Add to' : 'Remove from').' your Favorites', 'type' => 'submit']) !!}
+                @endif     
+                @if($submission->user->id == Auth::user()->id)
+                    <a class="btn btn-outline-primary" href="/gallery/edit/{{ $submission->id }}"><i class="fas fa-edit"></i> Edit</a>
+                @endif
+            {!! Form::close() !!}
         @endif
     </div>
 </h1>
@@ -23,7 +27,7 @@
             By {!! $submission->credits !!}
         </div>
         <div class="col-md text-right">
-            # Favorites ・ {{ Laravelista\Comments\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->count() }} Comments
+            {{ $submission->favorites->count() }} Favorite{{ $submission->favorites->count() != 1 ? 's' : ''}} ・ {{ Laravelista\Comments\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->count() }} Comment{{ Laravelista\Comments\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->count() != 1 ? 's' : ''}}
         </div>
     </diV>
 </div>
@@ -45,7 +49,7 @@
 <!-- Submission Info -->
 <div class="row mx-md-2 mb-4">
     <div class="col-sm-8 col-md-9 mb-4">
-        <div class="row">
+        <div class="row mb-4">
             <div class="col-md-2 mb-4 mobile-hide text-center">
                 <a href="/user/{{ $submission->user->name }}"><img src="/images/avatars/{{ $submission->user->avatar }}" style="border-radius:50%; margin-right:25px; max-width:100%;" data-toggle="tooltip" title="{{ $submission->user->name }}"/></a>
             </div>
@@ -53,6 +57,15 @@
                 <div class="card">
                     <div class="card-header">
                         <h5>{{ $submission->title }}</h5>
+                        <div class="float-right">
+                            @if(Auth::check() && ($submission->user->id != Auth::user()->id && $submission->collaborators->where('user_id', Auth::user()->id)->first() == null) && $submission->isVisible)
+                                {!! Form::open(['url' => '/gallery/favorite/'.$submission->id]) !!} 
+                                    {{ $submission->favorites->count() }} {!! Form::button('<i class="fas fa-star"></i> ', ['style' => 'border:0; border-radius:.5em;', 'class' => ($submission->favorites->where('user_id', Auth::user()->id)->first() != null ? 'btn-success' : ''), 'data-toggle' => 'tooltip', 'title' => ($submission->favorites->where('user_id', Auth::user()->id)->first() == null ? 'Add to' : 'Remove from').' your Favorites', 'type' => 'submit']) !!} ・ {{ Laravelista\Comments\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->count() }} <i class="fas fa-comment"></i>
+                                {!! Form::close() !!}
+                            @else
+                                {{ $submission->favorites->count() }} <i class="fas fa-star" data-toggle="tooltip" title="Favorites"></i> ・ {{ Laravelista\Comments\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->count() }} <i class="fas fa-comment" data-toggle="tooltip" title="Comments"></i>
+                            @endif
+                        </div>
                         In {!! $submission->gallery->displayName !!} ・ By {!! $submission->credits !!}
                     </div>
                     <div class="card-body">
@@ -72,6 +85,24 @@
                 </div>
             </div>
         </div>
+        @if($submission->characters->count())
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Characters</h5>
+                </div>
+                <div class="card-body">
+                    @foreach($submission->characters->chunk(3) as $chunk)
+                        <div class="row">
+                            @foreach($chunk as $character)
+                                <div class="col-md-4">
+                                    @include('galleries._character', ['character' => $character->character])
+                                </div>
+                            @endforeach
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
     </div>
     <div class="col-sm-4 col-md-3">
         @if($submission->collaborators->count())
@@ -82,18 +113,6 @@
                 <div class="card-body">
                     @foreach($submission->collaborators as $collaborator)
                         {!! $collaborator->user->displayName !!}: {{ $collaborator->data }}<br/>
-                    @endforeach
-                </div>
-            </div>
-        @endif
-        @if($submission->characters->count())
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5>Characters</h5>
-                </div>
-                <div class="card-body">
-                    @foreach($submission->characters as $character)
-                        @include('galleries._character', ['character' => $character->character])<br/>
                     @endforeach
                 </div>
             </div>

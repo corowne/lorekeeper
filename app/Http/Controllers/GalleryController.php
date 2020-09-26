@@ -71,13 +71,32 @@ class GalleryController extends Controller
             if(!Auth::check()) abort(404);
             $isMod = Auth::user()->hasPower('manage_submissions');
             $isOwner = ($submission->user_id == Auth::user()->id);
-            if(!$isMod && !$isOwner) abort(404);
+            $isCollaborator = Auth::user()->id && $submission->collaborators->where('user_id', Auth::user()->id)->first() != null;
+            if(!$isMod && (!$isOwner && !$isCollaborator)) abort(404);
         }
 
         return view('galleries.submission', [
             'submission' => $submission,
             'currency' => Currency::find(Settings::get('group_currency')),
         ]);
+    }
+
+    /**
+     * Creates or edits a new gallery submission.
+     *
+     * @param  \Illuminate\Http\Request        $request
+     * @param  App\Services\GalleryManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postFavoriteSubmission(Request $request, GalleryManager $service, $id)
+    {
+        if($service->favoriteSubmission(GallerySubmission::find($id), Auth::user())) {
+            flash('Favorite updated successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
     }
 
     /**

@@ -299,4 +299,10 @@ return [
         'message' => '<a href="{sender_url}">{sender}</a> has added your character <a href="{character_url}">{character}</a> to a gallery submission. (<a href="{url}">View Submission</a>)',
         'url' => 'gallery/view/{submission_id}'
     ],
+
+    // GALLERY_SUBMISSION_FAVORITE
+    512 => [
+        'message' => '<a href="{sender_url}">{sender}</a> has added your gallery submission <strong>{submission_title}</strong> (#{submission_id}) to their favorites. (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/view/{submission_id}'
+    ],
 ];

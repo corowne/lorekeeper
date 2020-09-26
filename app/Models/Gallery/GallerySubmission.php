@@ -13,7 +13,7 @@ use Laravelista\Comments\Commentable;
 class GallerySubmission extends Model
 {
     use Commentable;
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -92,6 +92,14 @@ class GallerySubmission extends Model
     public function characters() 
     {
         return $this->hasMany('App\Models\Gallery\GalleryCharacter', 'gallery_submission_id');
+    }
+
+    /**
+     * Get the user who made the submission.
+     */
+    public function favorites() 
+    {
+        return $this->hasMany('App\Models\Gallery\GalleryFavorite', 'gallery_submission_id');
     }
 
     /**
