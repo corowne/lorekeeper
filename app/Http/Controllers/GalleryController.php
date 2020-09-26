@@ -82,24 +82,6 @@ class GalleryController extends Controller
     }
 
     /**
-     * Creates or edits a new gallery submission.
-     *
-     * @param  \Illuminate\Http\Request        $request
-     * @param  App\Services\GalleryManager  $service
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function postFavoriteSubmission(Request $request, GalleryManager $service, $id)
-    {
-        if($service->favoriteSubmission(GallerySubmission::find($id), Auth::user())) {
-            flash('Favorite updated successfully.')->success();
-        }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
-        return redirect()->back();
-    }
-
-    /**
      * Shows the user's gallery submission log.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -208,4 +190,42 @@ class GalleryController extends Controller
         }
         return redirect()->back();
     }
+
+    /**
+     * Edits/approves collaborator contributions to a submission.
+     *
+     * @param  \Illuminate\Http\Request        $request
+     * @param  App\Services\GalleryManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postEditCollaborator(Request $request, GalleryManager $service, $id)
+    {
+        $data = $request->only(['collaborator_data', 'remove_user']);
+        if($service->editCollaborator(GallerySubmission::find($id), $data, Auth::user())) {
+            flash('Collaborator info edited successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Favorites/unfavorites a gallery submission.
+     *
+     * @param  \Illuminate\Http\Request        $request
+     * @param  App\Services\GalleryManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postFavoriteSubmission(Request $request, GalleryManager $service, $id)
+    {
+        if($service->favoriteSubmission(GallerySubmission::find($id), Auth::user())) {
+            flash('Favorite updated successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
 }

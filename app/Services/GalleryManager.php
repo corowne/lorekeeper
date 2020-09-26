@@ -260,7 +260,52 @@ class GalleryManager extends Service
     }
 
     /**
-     * Processes user input for creating/updating a gallery submission.
+     * Processes collaborator edits/approvals on a submission.
+     *
+     * @param  \App\Models\Gallery\GallerySubmission  $submission
+     * @param  \App\Models\User\User                  $user
+     * @return bool|\App\Models\Gallery\GalleryFavorite
+     */
+    public function editCollaborator($submission, $data, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            // Check that the submission is pending and the user is a collaborator on it
+            if(!$submission->status == 'Pending') throw new \Exception("This submission isn't pending.");
+            if($submission->collaborators->where('user_id', $user->id)->first() == null) throw new \Exception("You aren't a collaborator on this submission."); 
+
+            // Check if the user has requested to be removed from the submission
+            if(isset($data['remove_user']) && $data['remove_user']) {
+                $submission->collaborators()->where('user_id', $user->id)->delete();
+            }
+            // Otherwise update the record of their contribution and mark them as having approved
+            else {
+                $collaborator = $submission->collaborators->where('user_id', $user->id)->first();
+                $collaboratorData = ['data' => $data['collaborator_data'][0], 'has_approved' => 1];
+                $collaborator->update($collaboratorData);
+
+                // Check if all collaborators have approved, and if so send a notification to the
+                // submitting user (unless they are the last to approve-- which shouldn't happen, but)
+                if(!$submission->collaborators->where('has_approved', 0)->count()) {
+                    if($submission->user->id != $user->id) {
+                        Notifications::create('GALLERY_COLLABORATORS_APPROVED', $submission->user, [
+                            'submission_title' => $submission->title,
+                            'submission_id' => $submission->id,
+                        ]);
+                    }
+                }
+            }
+
+            return $this->commitReturn($submission);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Toggles favorite status on a submission for a user.
      *
      * @param  \App\Models\Gallery\GallerySubmission  $submission
      * @param  \App\Models\User\User                  $user
@@ -273,6 +318,7 @@ class GalleryManager extends Service
         try {
             // Check that the submission can be favorited
             if(!$submission->isVisible) throw new \Exception("This submission isn't visible to be favorited.");
+            if($submission->user->id == $user->id || $submission->collaborators->where('user_id', $user->id)->first() != null) throw new \Exception("You can't favorite your own submission!"); 
 
             // Check if the user has an existing favorite, and if so, delete it
             // or else create one.

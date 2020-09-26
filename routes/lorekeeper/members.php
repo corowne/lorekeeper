@@ -117,6 +117,8 @@ Route::group(['prefix' => 'gallery'], function() {
     Route::get('edit/{id}', 'GalleryController@getEditGallerySubmission');
     Route::post('submit', 'GalleryController@postCreateEditGallerySubmission');
     Route::post('edit/{id}', 'GalleryController@postCreateEditGallerySubmission');
+
+    Route::post('collaborator/{id}', 'GalleryController@postEditCollaborator');
     
     Route::get('{id}/delete', 'GalleryController@getDeleteSubmission');
     Route::post('{id}/delete', 'GalleryController@postDeleteSubmission');

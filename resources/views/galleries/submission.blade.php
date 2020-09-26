@@ -13,7 +13,7 @@
                 @if($submission->user->id != Auth::user()->id && $submission->collaborators->where('user_id', Auth::user()->id)->first() == null && $submission->isVisible)
                     {!! Form::button('<i class="fas fa-star"></i> ', ['class' => 'btn'. ($submission->favorites->where('user_id', Auth::user()->id)->first() == null ? 'btn-outline-primary' : 'btn-primary'), 'data-toggle' => 'tooltip', 'title' => ($submission->favorites->where('user_id', Auth::user()->id)->first() == null ? 'Add to' : 'Remove from').' your Favorites', 'type' => 'submit']) !!}
                 @endif     
-                @if($submission->user->id == Auth::user()->id)
+                @if($submission->user->id == Auth::user()->id || Auth::user()->hasPower('manage_submissions'))
                     <a class="btn btn-outline-primary" href="/gallery/edit/{{ $submission->id }}"><i class="fas fa-edit"></i> Edit</a>
                 @endif
             {!! Form::close() !!}
@@ -48,7 +48,7 @@
 
 <!-- Submission Info -->
 <div class="row mx-md-2 mb-4">
-    <div class="col-sm-8 col-md-9 mb-4">
+    <div class="col-md mb-4">
         <div class="row mb-4">
             <div class="col-md-2 mb-4 mobile-hide text-center">
                 <a href="/user/{{ $submission->user->name }}"><img src="/images/avatars/{{ $submission->user->avatar }}" style="border-radius:50%; margin-right:25px; max-width:100%;" data-toggle="tooltip" title="{{ $submission->user->name }}"/></a>
@@ -104,68 +104,102 @@
             </div>
         @endif
     </div>
-    <div class="col-sm-4 col-md-3">
-        @if($submission->collaborators->count())
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5>Collaboration Info</h5>
-                </div>
-                <div class="card-body">
-                    @foreach($submission->collaborators as $collaborator)
-                        {!! $collaborator->user->displayName !!}: {{ $collaborator->data }}<br/>
-                    @endforeach
-                </div>
-            </div>
-        @endif
-        @if(Settings::get('gallery_submissions_reward_currency') && $submission->gallery->currency_enabled)
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5>{!! $currency->name !!} Awards</h5>
-                </div>
-                <div class="card-body">
-                    <h6>Form Responses:</h6>
-                    @foreach($submission->data['currencyData'] as $key=>$data)
-                        <p>
-                            @if(isset($data))
-                                <strong>{{ Config::get('lorekeeper.group_currency_form')[$key]['name'] }}:</strong><br/>
-                                @if(Config::get('lorekeeper.group_currency_form')[$key]['type'] == 'choice')
-                                    @if(isset(Config::get('lorekeeper.group_currency_form')[$key]['multiple']) && Config::get('lorekeeper.group_currency_form')[$key]['multiple'] == 'true')
-                                        @foreach($data as $answer)
-                                            {{ Config::get('lorekeeper.group_currency_form')[$key]['choices'][$answer] }}<br/>
-                                        @endforeach
+    @if($submission->collaborators->count() || (Settings::get('gallery_submissions_reward_currency') && $submission->gallery->currency_enabled && Auth::check() && ($submission->user->id == Auth::user()->id || $submission->collaborators->where('user_id', Auth::user()->id)->first() != null || Auth::user()->id('manage_submissions'))))
+        <div class="col-sm-4 col-md-3">
+            @if($submission->collaborators->count())
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Collaboration Info</h5>
+                    </div>
+                    <div class="card-body">
+                        @if($submission->status == 'Pending' && Auth::check() && $submission->collaborators->where('user_id', Auth::user()->id)->first() != null)
+                            <p>Check that your role in the collaboration is correct as listed, and if not, make any changes. You can also remove yourself from the collaborator list if necessary. When you are done, press "submit" to make any changes as well as approve the submission/the record of your contribution to it. You will be able to edit this until the submission is approved.</p>
+                            {!! Form::open(['url' => '/gallery/collaborator/'.$submission->id]) !!}
+                                @foreach($submission->collaborators as $collaborator)
+                                    @if($collaborator->user_id == Auth::user()->id)
+                                    <div class="mb-2">
+                                        <div class="d-flex">{!! $collaborator->has_approved ? '<div class="mb-2 mr-2 text-success" data-toggle="tooltip" title="Has Approved"><i class="fas fa-check"></i></div>' : '' !!}{!! $collaborator->user->displayName !!}:
+                                            <div class="float-right">
+                                                {!! Form::label('remove_user', 'Remove Me', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If toggled on, this will remove the record of your collaboration from this submission.') !!}
+                                            </div>
+                                        </div>
+                                        <div class="d-flex">
+                                            {!! Form::text('collaborator_data[]', $collaborator->data, ['class' => 'form-control mr-2', 'placeholder' => 'Role (Sketch, Lines, etc.)']) !!}
+                                            {!! Form::checkbox('remove_user', 1, false, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'data-onstyle' => 'danger']) !!}
+                                        </div>
+                                    </div>
                                     @else
-                                        {{ Config::get('lorekeeper.group_currency_form')[$key]['choices'][$data] }}
+                                        <div class="d-flex">
+                                            {!! $collaborator->has_approved ? '<div class="mb-2 mr-2 text-success" data-toggle="tooltip" title="Has Approved"><i class="fas fa-check"></i></div>' : '' !!} {!! $collaborator->user->displayName !!}: {{ $collaborator->data }}
+                                        </div>
                                     @endif
-                                @else
-                                    {{ Config::get('lorekeeper.group_currency_form')[$key]['type'] == 'checkbox' ? (Config::get('lorekeeper.group_currency_form')[$key]['value'] == $data ? 'True' : 'False') : $data }}
-                                @endif
-                            @endif
-                        </p>
-                    @endforeach
-                    @if(Auth::user()->hasPower('manage_submissions'))
-                    <h6>[Admin]</h6>
-                        <p>
-                            <strong>Calculated Total:</strong> {{ $submission->data['total'] }}
-                            @if($submission->characters->count() > 1)
-                                <br/><strong>Total times Number of Characters:</strong> {{ round($submission->data['total'] * $submission->characters->count()) }}
-                            @endif
-                            @if($submission->collaborators->count())
-                                <br/><strong>Total divided by Number of Collaborators:</strong> {{ round(round($submission->data['total'] * $submission->characters->count()) / $submission->collaborators->count()) }}
-                            @endif
-                        </p>
-                    @endif
+                                @endforeach
+                                <div class="mt-2 text-right">
+                                    {!! Form::submit('Submit', ['class' => 'btn btn-primary']) !!}
+                                </div>
+                            {!! Form::close() !!}
+                        @else
+                            @foreach($submission->collaborators as $collaborator)
+                                <div class="d-flex">
+                                    {!! $submission->status == 'Pending' && $collaborator->has_approved ? '<div class="mb-2 mr-2 text-success" data-toggle="tooltip" title="Has Approved"><i class="fas fa-check"></i></div>' : '' !!} {!! $collaborator->user->displayName !!}: {{ $collaborator->data }}
+                                </div>
+                            @endforeach
+                        @endif
+                    </div>
                 </div>
-            </div>
-        @endif
-    </div>
+            @endif
+            @if(Settings::get('gallery_submissions_reward_currency') && $submission->gallery->currency_enabled && Auth::check() && ($submission->user->id == Auth::user()->id || $submission->collaborators->where('user_id', Auth::user()->id)->first() != null || Auth::user()->id('manage_submissions')))
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>{!! $currency->name !!} Awards</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>Form Responses:</h6>
+                        @foreach($submission->data['currencyData'] as $key=>$data)
+                            <p>
+                                @if(isset($data))
+                                    <strong>{{ Config::get('lorekeeper.group_currency_form')[$key]['name'] }}:</strong><br/>
+                                    @if(Config::get('lorekeeper.group_currency_form')[$key]['type'] == 'choice')
+                                        @if(isset(Config::get('lorekeeper.group_currency_form')[$key]['multiple']) && Config::get('lorekeeper.group_currency_form')[$key]['multiple'] == 'true')
+                                            @foreach($data as $answer)
+                                                {{ Config::get('lorekeeper.group_currency_form')[$key]['choices'][$answer] }}<br/>
+                                            @endforeach
+                                        @else
+                                            {{ Config::get('lorekeeper.group_currency_form')[$key]['choices'][$data] }}
+                                        @endif
+                                    @else
+                                        {{ Config::get('lorekeeper.group_currency_form')[$key]['type'] == 'checkbox' ? (Config::get('lorekeeper.group_currency_form')[$key]['value'] == $data ? 'True' : 'False') : $data }}
+                                    @endif
+                                @endif
+                            </p>
+                        @endforeach
+                        @if(Auth::user()->hasPower('manage_submissions'))
+                        <h6>[Admin]</h6>
+                            <p>
+                                <strong>Calculated Total:</strong> {{ $submission->data['total'] }}
+                                @if($submission->characters->count() > 1)
+                                    <br/><strong>Total times Number of Characters:</strong> {{ round($submission->data['total'] * $submission->characters->count()) }}
+                                @endif
+                                @if($submission->collaborators->count())
+                                    <br/><strong>Total divided by Number of Collaborators:</strong> {{ round(round($submission->data['total'] * $submission->characters->count()) / $submission->collaborators->count()) }}
+                                @endif
+                            </p>
+                        @endif
+                    </div>
+                </div>
+            @endif
+        </div>
+    @endif
 </div>
 
 <!-- Comments -->
-<div class="container">
-    @comments(['model' => $submission,
-            'perPage' => 5
-        ])
-</div>
+@if($submission->isVisible)
+    <div class="container">
+        @comments(['model' => $submission,
+                'perPage' => 5
+            ])
+    </div>
+@endif
 
 <?php $galleryPage = true; 
 $sideGallery = $submission->gallery ?>

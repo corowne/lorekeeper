@@ -260,19 +260,19 @@ return [
 
     // GALLERY_COLLABORATOR
     505 => [
-        'message' => '<a href="{sender_url}">{sender}</a> has added you as a collaborator on a gallery submission. (<a href="{url}">View Submission</a>)',
+        'message' => '<a href="{sender_url}">{sender}</a> has added you as a collaborator on a gallery submission, which needs your approval. (<a href="{url}">View Submission</a>)',
         'url' => 'gallery/view/{submission_id}'
     ],
 
     // GALLERY_COLLABORATORS_APPROVED
     506 => [
-        'message' => 'All of the collaborators on your submission have approved and it is now pending staff review. (<a href="{url}">View Submission</a>)',
+        'message' => 'All of the collaborators on your submission <strong>{submission_title}</strong> (#{submission_id}) have approved it, and it is now pending staff review. (<a href="{url}">View Submission</a>)',
         'url' => 'gallery/view/{submission_id}'
     ],
 
     // GALLERY_SUBMISSION_APPROVED
     507 => [
-        'message' => 'Your submission (#{submission_id}) was approved. (<a href="{url}">View Submission</a>)',
+        'message' => 'Your submission <strong>{submission_title}</strong> (#{submission_id}) was approved. (<a href="{url}">View Submission</a>)',
         'url' => 'gallery/view/{submission_id}'
     ],
 
