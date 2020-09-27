@@ -174,7 +174,7 @@ url should be equal to the last replies permalink (e.g reply 5)--}}
                 @include('comments._perma_comments', [
                     'comment' => $reply,
                     'reply' => true,
-                    'limit' => $limit
+                    'limit' => $limit,
                     'depth' => $depth+1
                 ])
                 @endforeach
