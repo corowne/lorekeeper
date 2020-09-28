@@ -20,15 +20,22 @@ class CreateRecipesAndIngredientsTables extends Migration
             $table->boolean('needs_unlocking')->default(false)->nullable(false);
             $table->text('description')->nullable();
             $table->text('parsed_description')->nullable();
-            $table->string('reference_url', 200)->nullable(false);
-            $table->string('artist_alias', 191)->nullable(false);
-            $table->string('artist_url', 191)->nullable(false);
+            $table->string('reference_url', 200)->nullable();
+            $table->string('artist_alias', 191)->nullable();
+            $table->string('artist_url', 191)->nullable();
         });
 
         Schema::create('recipe_ingredients', function (Blueprint $table) {
             $table->unsignedInteger('recipe_id')->nullable(false);
             $table->string('ingredient_type', 32)->nullable(false);
             $table->string('ingredient_data', 1024)->nullable(false);
+            $table->unsignedInteger('quantity')->nullable(false);
+        });
+
+        Schema::create('recipe_rewards', function (Blueprint $table) {
+            $table->unsignedInteger('recipe_id')->nullable(false);
+            $table->string('rewardable_type', 32)->nullable(false);
+            $table->unsignedInteger('rewardable_id')->nullable(false);
             $table->unsignedInteger('quantity')->nullable(false);
         });
     }
@@ -42,5 +49,6 @@ class CreateRecipesAndIngredientsTables extends Migration
     {
         Schema::dropIfExists('recipes');
         Schema::dropIfExists('recipe_ingredients');
+        Schema::dropIfExists('recipe_rewards');
     }
 }

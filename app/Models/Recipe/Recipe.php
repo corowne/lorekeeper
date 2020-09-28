@@ -67,7 +67,7 @@ class Recipe extends Model
      */
     public function rewards() 
     {
-        return $this->hasMany('App\Models\Loot\Loot');
+        return $this->hasMany('App\Models\Recipe\RecipeReward');
     }
 
 

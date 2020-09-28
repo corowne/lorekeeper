@@ -86,4 +86,20 @@ class RecipeIngredient extends Model
         }
         return null;
     }
+
+    /**********************************************************************************************
+    
+        ACCESSORS
+
+    **********************************************************************************************/
+
+    /**
+     * Gets the json decoded data array.
+     *
+     * @return string
+     */
+    public function getDataAttribute()
+    {
+        return json_decode($this->ingredient_data);
+    }
 }

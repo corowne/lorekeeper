@@ -6,6 +6,8 @@ use DB;
 use Config;
 
 use App\Models\Recipe\Recipe;
+use App\Models\Recipe\RecipeIngredient;
+use App\Models\Recipe\RecipeReward;
 
 class RecipeService extends Service
 {
@@ -18,155 +20,6 @@ class RecipeService extends Service
     |
     */
 
-    /**********************************************************************************************
-     
-        RECIPE CATEGORIES
-
-    **********************************************************************************************/
-
-    /**
-     * Create a category.
-     *
-     * @param  array                 $data
-     * @param  \App\Models\User\User $user
-     * @return \App\Models\Recipe\RecipeCategory|bool
-     */
-    public function createRecipeCategory($data, $user)
-    {
-        DB::beginTransaction();
-
-        try {
-
-            $data = $this->populateCategoryData($data);
-
-            $image = null;
-            if(isset($data['image']) && $data['image']) {
-                $data['has_image'] = 1;
-                $image = $data['image'];
-                unset($data['image']);
-            }
-            else $data['has_image'] = 0;
-
-            $category = RecipeCategory::create($data);
-
-            if ($image) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
-
-            return $this->commitReturn($category);
-        } catch(\Exception $e) { 
-            $this->setError('error', $e->getMessage());
-        }
-        return $this->rollbackReturn(false);
-    }
-
-    /**
-     * Update a category.
-     *
-     * @param  \App\Models\Recipe\RecipeCategory  $category
-     * @param  array                          $data
-     * @param  \App\Models\User\User          $user
-     * @return \App\Models\Recipe\RecipeCategory|bool
-     */
-    public function updateRecipeCategory($category, $data, $user)
-    {
-        DB::beginTransaction();
-
-        try {
-            // More specific validation
-            if(RecipeCategory::where('name', $data['name'])->where('id', '!=', $category->id)->exists()) throw new \Exception("The name has already been taken.");
-
-            $data = $this->populateCategoryData($data, $category);
-
-            $image = null;            
-            if(isset($data['image']) && $data['image']) {
-                $data['has_image'] = 1;
-                $image = $data['image'];
-                unset($data['image']);
-            }
-
-            $category->update($data);
-
-            if ($category) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
-
-            return $this->commitReturn($category);
-        } catch(\Exception $e) { 
-            $this->setError('error', $e->getMessage());
-        }
-        return $this->rollbackReturn(false);
-    }
-
-    /**
-     * Handle category data.
-     *
-     * @param  array                               $data
-     * @param  \App\Models\Recipe\RecipeCategory|null  $category
-     * @return array
-     */
-    private function populateCategoryData($data, $category = null)
-    {
-        if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
-        
-        if(isset($data['remove_image']))
-        {
-            if($category && $category->has_image && $data['remove_image']) 
-            { 
-                $data['has_image'] = 0; 
-                $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
-            }
-            unset($data['remove_image']);
-        }
-
-        return $data;
-    }
-
-    /**
-     * Delete a category.
-     *
-     * @param  \App\Models\Recipe\RecipeCategory  $category
-     * @return bool
-     */
-    public function deleteRecipeCategory($category)
-    {
-        DB::beginTransaction();
-
-        try {
-            // Check first if the category is currently in use
-            if(Recipe::where('recipe_category_id', $category->id)->exists()) throw new \Exception("An recipe with this category exists. Please change its category first.");
-            
-            if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
-            $category->delete();
-
-            return $this->commitReturn(true);
-        } catch(\Exception $e) { 
-            $this->setError('error', $e->getMessage());
-        }
-        return $this->rollbackReturn(false);
-    }
-
-    /**
-     * Sorts category order.
-     *
-     * @param  array  $data
-     * @return bool
-     */
-    public function sortRecipeCategory($data)
-    {
-        DB::beginTransaction();
-
-        try {
-            // explode the sort array and reverse it since the order is inverted
-            $sort = array_reverse(explode(',', $data));
-
-            foreach($sort as $key => $s) {
-                RecipeCategory::where('id', $s)->update(['sort' => $key]);
-            }
-
-            return $this->commitReturn(true);
-        } catch(\Exception $e) { 
-            $this->setError('error', $e->getMessage());
-        }
-        return $this->rollbackReturn(false);
-    }
-    
     /**********************************************************************************************
      
         RECIPES
@@ -185,11 +38,25 @@ class RecipeService extends Service
         DB::beginTransaction();
 
         try {
-            if(isset($data['recipe_category_id']) && $data['recipe_category_id'] == 'none') $data['recipe_category_id'] = null;
+            // if(isset($data['recipe_category_id']) && $data['recipe_category_id'] == 'none') $data['recipe_category_id'] = null;
 
-            if((isset($data['recipe_category_id']) && $data['recipe_category_id']) && !RecipeCategory::where('id', $data['recipe_category_id'])->exists()) throw new \Exception("The selected recipe category is invalid.");
+            // if((isset($data['recipe_category_id']) && $data['recipe_category_id']) && !RecipeCategory::where('id', $data['recipe_category_id'])->exists()) throw new \Exception("The selected recipe category is invalid.");
 
             $data = $this->populateData($data);
+
+            foreach($data['ingredient_type'] as $key => $type)
+            {
+                if(!$type) throw new \Exception("Ingredient type is required.");
+                if(!$data['ingredient_data'][$key]) throw new \Exception("Ingredient data is required.");
+                if(!$data['ingredient_quantity'][$key] || $data['ingredient_quantity'][$key] < 1) throw new \Exception("Quantity is required and must be an integer greater than 0.");
+            }
+
+            foreach($data['rewardable_type'] as $key => $type)
+            {
+                if(!$type) throw new \Exception("Reward type is required.");
+                if(!$data['rewardable_id'][$key]) throw new \Exception("Reward is required.");
+                if(!$data['reward_quantity'][$key] || $data['reward_quantity'][$key] < 1) throw new \Exception("Quantity is required and must be an integer greater than 0.");
+            }
 
             $image = null;
             if(isset($data['image']) && $data['image']) {
@@ -200,6 +67,8 @@ class RecipeService extends Service
             else $data['has_image'] = 0;
 
             $recipe = Recipe::create($data);
+
+            $this->populateIngredients($recipe, $data);
 
             if ($image) $this->handleImage($image, $recipe->imagePath, $recipe->imageFileName);
 
@@ -231,6 +100,9 @@ class RecipeService extends Service
 
             $data = $this->populateData($data);
 
+            $this->populateIngredients($recipe, $data);
+            $this->populateRewards($recipe, $data);
+
             $image = null;            
             if(isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
@@ -259,8 +131,6 @@ class RecipeService extends Service
     private function populateData($data, $recipe = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
-        
-        if(!isset($data['allow_transfer'])) $data['allow_transfer'] = 0;
 
         if(isset($data['remove_image']))
         {
@@ -275,6 +145,48 @@ class RecipeService extends Service
         return $data;
     }
     
+    /**
+     * Manages ingredients attached to the recipe
+     *
+     * @param  \App\Models\Recipe\Recipe   $recipe
+     * @param  array                       $data 
+     */
+    private function populateIngredients($recipe, $data)
+    {
+        $recipe->ingredients()->delete();
+
+        foreach($data['ingredient_type'] as $key => $type)
+        {
+            RecipeIngredient::create([
+                'recipe_id' => $recipe->id,
+                'ingredient_type' => $type,
+                'ingredient_data' => json_encode($data['ingredient_data'][$key]),
+                'quantity' => $data['ingredient_quantity'][$key]
+            ]);
+        }
+    }
+
+    /**
+     * Manages rewards attached to the recipe
+     *
+     * @param  \App\Models\Recipe\Recipe   $recipe
+     * @param  array                       $data 
+     */
+    private function populateRewards($recipe, $data)
+    {
+        $recipe->rewards()->delete();
+
+        foreach($data['rewardable_type'] as $key => $type)
+        {
+            RecipeReward::create([
+                'recipe_id'       => $recipe->id,
+                'rewardable_type' => $type,
+                'rewardable_id'   => $data['rewardable_id'][$key],
+                'quantity'        => $data['reward_quantity'][$key]
+            ]);
+        }
+    }
+
     /**
      * Deletes an recipe.
      *
@@ -307,109 +219,151 @@ class RecipeService extends Service
     
     /**********************************************************************************************
      
-        RECIPE TAGS
+        RECIPE CATEGORIES
 
     **********************************************************************************************/
-    
-    /**
-     * Gets a list of recipe tags for selection.
-     *
-     * @return array
-     */
-    public function getRecipeTags()
-    {
-        $tags = Config::get('lorekeeper.recipe_tags');
-        $result = [];
-        foreach($tags as $tag => $tagData)
-            $result[$tag] = $tagData['name'];
 
-        return $result;
-    }
-    
-    /**
-     * Adds an recipe tag to an recipe.
-     *
-     * @param  \App\Models\Recipe\Recipe  $recipe
-     * @param  string                 $tag
-     * @return string|bool
-     */
-    public function addRecipeTag($recipe, $tag)
-    {
-        DB::beginTransaction();
+    // /**
+    //  * Create a category.
+    //  *
+    //  * @param  array                 $data
+    //  * @param  \App\Models\User\User $user
+    //  * @return \App\Models\Recipe\RecipeCategory|bool
+    //  */
+    // public function createRecipeCategory($data, $user)
+    // {
+    //     DB::beginTransaction();
 
-        try {
-            if(!$recipe) throw new \Exception("Invalid recipe selected.");
-            if($recipe->tags()->where('tag', $tag)->exists()) throw new \Exception("This recipe already has this tag attached to it.");
-            if(!$tag) throw new \Exception("No tag selected.");
+    //     try {
+
+    //         $data = $this->populateCategoryData($data);
+
+    //         $image = null;
+    //         if(isset($data['image']) && $data['image']) {
+    //             $data['has_image'] = 1;
+    //             $image = $data['image'];
+    //             unset($data['image']);
+    //         }
+    //         else $data['has_image'] = 0;
+
+    //         $category = RecipeCategory::create($data);
+
+    //         if ($image) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
+
+    //         return $this->commitReturn($category);
+    //     } catch(\Exception $e) { 
+    //         $this->setError('error', $e->getMessage());
+    //     }
+    //     return $this->rollbackReturn(false);
+    // }
+
+    // /**
+    //  * Update a category.
+    //  *
+    //  * @param  \App\Models\Recipe\RecipeCategory  $category
+    //  * @param  array                          $data
+    //  * @param  \App\Models\User\User          $user
+    //  * @return \App\Models\Recipe\RecipeCategory|bool
+    //  */
+    // public function updateRecipeCategory($category, $data, $user)
+    // {
+    //     DB::beginTransaction();
+
+    //     try {
+    //         // More specific validation
+    //         if(RecipeCategory::where('name', $data['name'])->where('id', '!=', $category->id)->exists()) throw new \Exception("The name has already been taken.");
+
+    //         $data = $this->populateCategoryData($data, $category);
+
+    //         $image = null;            
+    //         if(isset($data['image']) && $data['image']) {
+    //             $data['has_image'] = 1;
+    //             $image = $data['image'];
+    //             unset($data['image']);
+    //         }
+
+    //         $category->update($data);
+
+    //         if ($category) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
+
+    //         return $this->commitReturn($category);
+    //     } catch(\Exception $e) { 
+    //         $this->setError('error', $e->getMessage());
+    //     }
+    //     return $this->rollbackReturn(false);
+    // }
+
+    // /**
+    //  * Handle category data.
+    //  *
+    //  * @param  array                               $data
+    //  * @param  \App\Models\Recipe\RecipeCategory|null  $category
+    //  * @return array
+    //  */
+    // private function populateCategoryData($data, $category = null)
+    // {
+    //     if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
+        
+    //     if(isset($data['remove_image']))
+    //     {
+    //         if($category && $category->has_image && $data['remove_image']) 
+    //         { 
+    //             $data['has_image'] = 0; 
+    //             $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
+    //         }
+    //         unset($data['remove_image']);
+    //     }
+
+    //     return $data;
+    // }
+
+    // /**
+    //  * Delete a category.
+    //  *
+    //  * @param  \App\Models\Recipe\RecipeCategory  $category
+    //  * @return bool
+    //  */
+    // public function deleteRecipeCategory($category)
+    // {
+    //     DB::beginTransaction();
+
+    //     try {
+    //         // Check first if the category is currently in use
+    //         if(Recipe::where('recipe_category_id', $category->id)->exists()) throw new \Exception("An recipe with this category exists. Please change its category first.");
             
-            $tag = RecipeTag::create([
-                'recipe_id' => $recipe->id,
-                'tag' => $tag
-            ]);
+    //         if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
+    //         $category->delete();
 
-            return $this->commitReturn($tag);
-        } catch(\Exception $e) { 
-            $this->setError('error', $e->getMessage());
-        }
-        return $this->rollbackReturn(false);
-    }
+    //         return $this->commitReturn(true);
+    //     } catch(\Exception $e) { 
+    //         $this->setError('error', $e->getMessage());
+    //     }
+    //     return $this->rollbackReturn(false);
+    // }
+
+    // /**
+    //  * Sorts category order.
+    //  *
+    //  * @param  array  $data
+    //  * @return bool
+    //  */
+    // public function sortRecipeCategory($data)
+    // {
+    //     DB::beginTransaction();
+
+    //     try {
+    //         // explode the sort array and reverse it since the order is inverted
+    //         $sort = array_reverse(explode(',', $data));
+
+    //         foreach($sort as $key => $s) {
+    //             RecipeCategory::where('id', $s)->update(['sort' => $key]);
+    //         }
+
+    //         return $this->commitReturn(true);
+    //     } catch(\Exception $e) { 
+    //         $this->setError('error', $e->getMessage());
+    //     }
+    //     return $this->rollbackReturn(false);
+    // }
     
-    /**
-     * Edits the data associated with an recipe tag on an recipe.
-     *
-     * @param  \App\Models\Recipe\Recipe  $recipe
-     * @param  string                 $tag
-     * @param  array                  $data
-     * @return string|bool
-     */
-    public function editRecipeTag($recipe, $tag, $data)
-    {
-        DB::beginTransaction();
-
-        try {
-            if(!$recipe) throw new \Exception("Invalid recipe selected.");
-            if(!$recipe->tags()->where('tag', $tag)->exists()) throw new \Exception("This recipe does not have this tag attached to it.");
-            
-            $tag = $recipe->tags()->where('tag', $tag)->first();
-
-            $service = $tag->service;
-            if(!$service->updateData($tag, $data)) {
-                $this->setErrors($service->errors());
-                throw new \Exception('sdlfk');
-            }
-
-            // Update the tag's active setting
-            $tag->is_active = isset($data['is_active']);
-            $tag->save();
-
-            return $this->commitReturn($tag);
-        } catch(\Exception $e) { 
-            $this->setError('error', $e->getMessage());
-        }
-        return $this->rollbackReturn(false);
-    }
-    
-    /**
-     * Removes an recipe tag from an recipe.
-     *
-     * @param  \App\Models\Recipe\Recipe  $recipe
-     * @param  string                 $tag
-     * @return string|bool
-     */
-    public function deleteRecipeTag($recipe, $tag)
-    {
-        DB::beginTransaction();
-
-        try {
-            if(!$recipe) throw new \Exception("Invalid recipe selected.");
-            if(!$recipe->tags()->where('tag', $tag)->exists()) throw new \Exception("This recipe does not have this tag attached to it.");
-            
-            $recipe->tags()->where('tag', $tag)->delete();
-
-            return $this->commitReturn(true);
-        } catch(\Exception $e) { 
-            $this->setError('error', $e->getMessage());
-        }
-        return $this->rollbackReturn(false);
-    }
 }

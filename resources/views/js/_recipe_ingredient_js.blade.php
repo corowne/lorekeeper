@@ -9,59 +9,69 @@ $( document ).ready(function() {
     var $multiCategorySelectGroup = $('#ingredientRowData').find('.multi-category-select-group');
     var $multiCategoryEntry = $('#ingredientRowData').find('.multi-category-entry');
     var $currencySelect = $('#ingredientRowData').find('.currency-select');
+    var currentRowID = $ingredientTable.find('.ingredient-row').length;
 
     $('#ingredientTableBody .selectize').selectize();
     attachRemoveListener($('#ingredientTableBody .remove-ingredient-button'));
 
     $('#addIngredient').on('click', function(e) {
         e.preventDefault();
-        var row_count = $ingredientTable.find('.ingredient-row').length;
         var $clone = $ingredientRow.clone();
-        $clone = $clone.addClass('row_num_'+row_count)
+        $clone = $clone.addClass('row_num_'+currentRowID)
         $ingredientTable.append($clone);
         attachIngredientTypeListener($clone.find('.ingredient-type'));
         attachRemoveListener($clone.find('.remove-ingredient-button'));
+        currentRowID++;
     });
 
-    $('.ingredient-type').on('change', function(e) {
-        var val = $(this).val();
-        var $cell = $(this).parent().find('.ingredient-row-select');
-        var row_num = $(this).parent().attr('class').substr(-1);
+    attachAddMultiListener($('#ingredientTableBody .add-multi-item-button'), 'MultiItem');
+    attachAddMultiListener($('#ingredientTableBody .add-multi-category-button'), 'MultiCategory');
+    attachRemoveMultiListener($('#ingredientTableBody .remove-multi-entry-button'));
 
-        var $clone = null;
-        if(val == 'Item') $clone = $itemSelect.clone();
-        else if(val == 'MultiItem') {
-            $clone = $multiItemSelectGroup.clone();
-            attachAddMultiListener($clone.find('.add-multi-item-button'), val, row_num);
-        }
-        else if(val == 'Category') $clone = $categorySelect.clone();
-        else if(val == 'MultiCategory') {
-            $clone = $multiCategorySelectGroup.clone();
-            attachAddMultiListener($clone.find('.add-multi-category-button'), val, row_num);
-        }
-        else if (val == 'Currency') $clone = $currencySelect.clone();
+    // $('.ingredient-type').on('change', function(e) {
+    //     var val = $(this).val();
+    //     var $cell = $(this).parent().find('.ingredient-row-select');
+    //     var row_num = $(this).parent().attr('class').substr(-1);
 
-        $cell.html('');
-        $cell.append($clone);
-    });
+    //     var $clone = null;
+    //     if(val == 'Item') $clone = $itemSelect.clone();
+    //     else if(val == 'MultiItem') {
+    //         $clone = $multiItemSelectGroup.clone();
+    //         attachAddMultiListener($clone.find('.add-multi-item-button'), val);
+    //     }
+    //     else if(val == 'Category') $clone = $categorySelect.clone();
+    //     else if(val == 'MultiCategory') {
+    //         $clone = $multiCategorySelectGroup.clone();
+    //         attachAddMultiListener($clone.find('.add-multi-category-button'), val);
+    //     }
+    //     else if (val == 'Currency') $clone = $currencySelect.clone();
+
+    //     attachAddMultiListener($('.add-multi-item-button'), $type, );
+    //     attachRemoveMultiListener($('.add-multi-item-button'));
+    //     attachRemoveMultiListener($('.remove-multi-entry-button'),);
+
+    //     $cell.html('');
+    //     $cell.append($clone);
+    // });
 
     function attachIngredientTypeListener(node) {
         node.on('change', function(e) {
             var val = $(this).val();
             var $cell = $(this).parent().parent().find('.ingredient-row-select');
+        console.log('change');
             var row_num = $(this).parent().parent().attr('class').substr(-1);
 
             var $clone = null;
             if(val == 'Item') $clone = $itemSelect.clone();
             else if(val == 'MultiItem') {
                 $clone = $multiItemSelectGroup.clone();
-                attachAddMultiListener($clone.find('.add-multi-item-button'), val, row_num);
+                attachAddMultiListener($clone.find('.add-multi-item-button'), val);
                 attachRemoveMultiListener($clone.find('.remove-multi-entry-button'));
             }
             else if(val == 'Category') $clone = $categorySelect.clone();
             else if(val == 'MultiCategory') {
                 $clone = $multiCategorySelectGroup.clone();
-                attachAddMultiListener($clone.find('.add-multi-category-button'), val, row_num);
+                attachAddMultiListener($clone.find('.add-multi-category-button'), val);
                 attachRemoveMultiListener($clone.find('.remove-multi-entry-button'));
             }
             else if (val == 'Currency') $clone = $currencySelect.clone();
@@ -85,12 +95,13 @@ $( document ).ready(function() {
         });
     }
 
-    function attachAddMultiListener(node, type, row_num) {
+    function attachAddMultiListener(node, type) {
         // Add listener to the add item/category buttons on multi item and multi category
         node.on('click', function(e) {
             e.preventDefault();
             var $clone;
             var $select;
+            var row_num = node.parent().parent().parent().attr('class').substr(-1);
             if(type == 'MultiItem') {
                 $clone = $multiItemEntry.clone();
                 $(this).parent().find('.multi-item-list').append($clone);

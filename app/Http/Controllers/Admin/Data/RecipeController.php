@@ -97,7 +97,9 @@ class RecipeController extends Controller
     {
         $id ? $request->validate(Recipe::$updateRules) : $request->validate(Recipe::$createRules);
         $data = $request->only([
-            'name', 'description', 'image', 'remove_image'
+            'name', 'description', 'image', 'remove_image', 'needs_unlocking',
+            'ingredient_type', 'ingredient_data', 'ingredient_quantity',
+            'rewardable_type', 'rewardable_id', 'reward_quantity'
         ]);
         if($id && $service->updateRecipe(Recipe::find($id), $data, Auth::user())) {
             flash('Recipe updated successfully.')->success();

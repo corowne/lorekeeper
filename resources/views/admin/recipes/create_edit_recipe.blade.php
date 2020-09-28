@@ -41,10 +41,12 @@
 </div>
 
 <h3>Recipe Ingredients</h3>
-@include('widgets._ingredient_select', ['ingredients' => $recipe->ingredients])
+@include('widgets._recipe_ingredient_select', ['ingredients' => $recipe->ingredients])
+
+<hr>
 
 <h3>Recipe Rewards</h3>
-@include('widgets._loot_select', ['loots' => $recipe->rewards, 'showLootTables' => true])
+@include('widgets._recipe_reward_select', ['rewards' => $recipe->rewards])
 
 <div class="text-right">
     {!! Form::submit($recipe->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
@@ -52,14 +54,10 @@
 
 {!! Form::close() !!}
 
-@include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables, 'showLootTables' => true])
-@include('widgets._ingredient_select_row', ['items' => $items, 'categories' => $categories, 'currencies' => $currencies])
+@include('widgets._recipe_reward_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables])
+@include('widgets._recipe_ingredient_select_row', ['items' => $items, 'categories' => $categories, 'currencies' => $currencies])
 
 @if($recipe->id)
-    <div class="text-right">
-        <a href="{{ url('admin/data/recipes/tag/'.$recipe->id) }}" class="btn btn-outline-primary">Add a Tag</a>
-    </div>
-    
     <h3>Preview</h3>
     <div class="card mb-3">
         <div class="card-body">
@@ -72,8 +70,8 @@
 
 @section('scripts')
 @parent
-@include('js._loot_js', ['showLootTables' => true])
-@include('js._ingredient_js')
+@include('js._recipe_reward_js')
+@include('js._recipe_ingredient_js')
 <script>
 $( document ).ready(function() {    
     $('.delete-recipe-button').on('click', function(e) {
