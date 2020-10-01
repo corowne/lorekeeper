@@ -13,9 +13,10 @@
 <table class="table table-sm">
     <thead>
         <th>Item</th>
+        <th>Quantity</th>
+        <th>Cost</th>
         <th>Shop</th>
         <th>Character</th>
-        <th>Cost</th>
         <th>Date</th>
     </thead>
     <tbody>

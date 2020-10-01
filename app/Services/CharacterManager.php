@@ -1783,10 +1783,24 @@ class CharacterManager extends Service
                     $userItemRow->save();
                 }
 
+                $staff = $user;
                 foreach($stacks as $stackId=>$quantity) {
                     $stack = UserItem::find($stackId);
                     $user = User::find($request->user_id);
                     if(!$inventoryManager->debitStack($user, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', ['data' => 'Item used in ' . ($request->character->is_myo_slot ? 'MYO design approval' : 'Character design update') . ' (<a href="'.$request->url.'">#'.$request->id.'</a>)'], $stack, $quantity)) throw new \Exception("Failed to create log for item stack.");
+                }
+                $user = $staff;
+            }
+            $currencyManager = new CurrencyManager;
+            if(isset($requestData['user']['currencies']) && $requestData['user']['currencies'])
+            {
+                foreach($requestData['user']['currencies'] as $currencyId=>$quantity) {
+                    $currency = Currency::find($currencyId);
+                    if(!$currencyManager->createLog($request->user_id, 'User', null, null, 
+                    $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', 
+                    'Used in ' . ($request->character->is_myo_slot ? 'MYO design approval' : 'character design update') . ' (<a href="'.$request->url.'">#'.$request->id.'</a>)', 
+                    $currencyId, $quantity)) 
+                        throw new \Exception("Failed to create log for user currency.");
                 }
             }
             if(isset($requestData['character']['currencies']) && $requestData['character']['currencies'])
