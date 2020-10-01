@@ -160,8 +160,9 @@ class HuntTarget extends Model
      */
     public function getDisplayItemShortAttribute()
     {
-        $image = ($this->item->imageUrl) ? '<img class="small-icon" src="'.$this->item->imageUrl.'">' : null;
-        return $image.' '.$this->item->displayName;
+        $image = ($this->item->imageUrl) ? '<img style="max-height:150px;" src="'.$this->item->imageUrl.'" data-toggle="tooltip" title="'.$this->item->name.'"/>' : null;
+        if(isset($image)) return $image;
+        else return $this->item->displayName;
     }
 
     /**
