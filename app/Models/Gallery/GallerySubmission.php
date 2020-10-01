@@ -273,6 +273,27 @@ class GallerySubmission extends Model
     }
 
     /**
+     * Gets the gallery submission's thumbnail-- the image if there is one, truncated text if not.
+     *
+     * @return string
+     */
+    public function getThumbnailAttribute()
+    {
+        if(isset($this->hash)) return '<img class="img-thumbnail" src="'.$this->thumbnailUrl.'"/>';
+        return 
+        '<div class="mx-auto img-thumbnail text-left" style="height:'.Config::get('lorekeeper.settings.masterlist_thumbnails.height').'px; width:'.Config::get('lorekeeper.settings.masterlist_thumbnails.width').'px;">
+            <span class="badge-primary px-2 py-1" style="border-radius:0 0 .5em 0; position:absolute; z-index:5;">Literature</span>
+            <div class="container-'.$this->id.' parsed-text pb-2 pr-2" style="height:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.height')-10).'px; width:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.width')-4).'px; overflow:hidden;">
+                <div class="content-'.$this->id.' text-body">'.$this->parsed_text.'</div>
+            </div>
+        </div>
+        <style>
+            .content-'.$this->id.' {transition-duration: '.(strlen($this->parsed_text)/1000).'s;}
+            .content-'.$this->id.':hover, .content-'.$this->id.':focus-within {transform: translateY(calc('.Config::get('lorekeeper.settings.masterlist_thumbnails.height').'px - 100%)); transition-duration: '.(strlen($this->parsed_text)/100).'s;}
+        </style>';
+    }
+
+    /**
      * Get the data attribute as an associative array.
      *
      * @return array
@@ -283,13 +304,13 @@ class GallerySubmission extends Model
     }
 
     /**
-     * Get the data attribute as an associative array.
+     * Gets the voting data of the gallery submission.
      *
-     * @return array
+     * @return string
      */
     public function getVoteDataAttribute()
     {
-        return json_decode($this->attributes['vote_data'], true);
+        return collect(json_decode($this->attributes['vote_data'], true));
     }
 
     /**
@@ -299,11 +320,11 @@ class GallerySubmission extends Model
      */
     public function getDisplayNameAttribute()
     {
-        return '<a href="'.$this->url.'">'.$this->name.'</a>';
+        return '<a href="'.$this->url.'">'.$this->title.'</a>';
     }
 
     /**
-     * Get the viewing URL of the submission/claim.
+     * Get the viewing URL of the submission.
      *
      * @return string
      */

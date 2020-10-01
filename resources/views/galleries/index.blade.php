@@ -31,7 +31,7 @@
                         @foreach($gallery->submissions->where('status', 'Accepted')->take(5) as $submission)
                             <div class="text-center mx-2">
                                 <div>
-                                    <a href="{{ $submission->url }}"><img src="{{ $submission->thumbnailUrl }}" class="img-thumbnail" /></a>
+                                    <a href="{{ $submission->url }}">{!! $submission->thumbnail !!}</a>
                                 </div>
                                 <div class="mt-1">
                                     <a href="{{ $submission->url }}" class="h5 mb-0">@if(!$submission->isVisible) <i class="fas fa-eye-slash"></i> @endif {{ $submission->title }}</a>

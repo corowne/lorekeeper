@@ -57,6 +57,10 @@ return [
         'power' => 'manage_submissions',
         'links' => [
             [
+                'name' => 'Gallery Submissions',
+                'url' => 'admin/gallery'
+            ],
+            [
                 'name' => 'Prompt Submissions',
                 'url' => 'admin/submissions'
             ],

@@ -9,6 +9,9 @@
     {{ $submission->id ? 'Edit Submission (#'.$submission->id.', "'.$submission->title.'")' : 'Submit to '.$gallery->name }}
     @if($submission->id)
         <div class="float-right">
+            @if($submission->status == 'Accepted')
+                <a href="#" class="btn btn-warning archive-submission-button">{{ $submission->isVisible ? 'Archive' : 'Unarchive' }}</a>
+            @endif
             <a href="/gallery/view/{{ $submission->id }}" class="btn btn-outline-primary">View Submission</a>
         </div>
     @endif
@@ -238,6 +241,11 @@ $sideGallery = $gallery ?>
             $formSubmit.on('click', function(e) {
                 e.preventDefault();
                 $gallerySubmissionForm.submit();
+            });
+
+            $('.archive-submission-button').on('click', function(e) {
+                e.preventDefault();
+                loadModal("{{ url('galleries/archive') }}/{{ $submission->id }}", 'Archive Submission');
             });
 
             $('.original.collaborator-select').selectize();
