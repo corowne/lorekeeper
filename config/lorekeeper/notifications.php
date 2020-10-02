@@ -273,19 +273,19 @@ return [
     // GALLERY_SUBMISSION_APPROVED
     507 => [
         'message' => 'Your submission <strong>{submission_title}</strong> (#{submission_id}) was approved. (<a href="{url}">View Submission</a>)',
-        'url' => 'gallery/view/{submission_id}'
+        'url' => 'gallery/queue/{submission_id}'
     ],
 
     // GALLERY_SUBMISSION_REJECTED
     508 => [
         'message' => 'Your submission (#{submission_id}) was rejected. (<a href="{url}">View Submission</a>)',
-        'url' => 'submissions/view/{submission_id}'
+        'url' => 'submissions/queue/{submission_id}'
     ],
 
     // GALLERY_SUBMISSION_VALUED
     509 => [
         'message' => 'You have been awarded {currency} for the gallery submission (#{submission_id}). (<a href="{url}">View Submission</a>)',
-        'url' => 'gallery/view/{submission_id}'
+        'url' => 'gallery/queue/{submission_id}'
     ],
 
     // GALLERY_SUBMISSION_MOVED
@@ -304,5 +304,11 @@ return [
     512 => [
         'message' => '<a href="{sender_url}">{sender}</a> has added your gallery submission <strong>{submission_title}</strong> (#{submission_id}) to their favorites. (<a href="{url}">View Submission</a>)',
         'url' => 'gallery/view/{submission_id}'
+    ],
+
+    // GALLERY_SUBMISSION_STAFF_COMMENTS
+    513 => [
+        'message' => '<a href="{sender_url}">{sender}</a> updated the staff comments on your gallery submission <strong>{submission_title}</strong> (#{submission_id}). (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/queue/{submission_id}'
     ],
 ];

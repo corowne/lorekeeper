@@ -34,4 +34,85 @@ class GalleryController extends Controller
             'galleries' => ['' => 'Any Gallery'] + Gallery::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
+
+    /**
+     * Edits gallery submissions.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\GalleryManager    $service
+     * @param  int                            $id
+     * @param  string                         $action
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postEditSubmission(Request $request, GalleryManager $service, $id, $action)
+    {
+        if(!$id) { flash('Invalid submission selected.')->error(); }
+        
+        if($id && $action) {
+            switch($action) {
+                default:
+                    flash('Invalid action selected.')->error();
+                    break;
+                case 'accept':
+                    return $this->postVote($id, $service, $action);
+                    break;
+                case 'reject':
+                    return $this->postVote($id, $service, $action);
+                    break;
+                case 'comment':
+                    return $this->postStaffComments($id, $request->only(['staff_comments', 'alert_user']), $service);
+                    break;
+                case 'value':
+                    return $this->postValueSubmission($id, $request, $service);
+                    break;
+            }
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Casts a vote for a submission's approval or denial.
+     *
+     * @param  int                            $id
+     * @param  string                         $action
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\GalleryManager    $service
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    private function postVote($id, GalleryManager $service, $action)
+    {
+        $submission = GallerySubmission::where('id', $id)->where('status', 'Pending')->first();
+        if(!$submission) throw new \Exception ("Invalid submission.");
+
+        if($action == 'reject' && $service->castVote($action, $submission, Auth::user())) {
+            flash('Voted to reject successfully.')->success();
+        }
+        elseif($action == 'accept' && $service->castVote($action, $submission, Auth::user())) {
+            flash('Voted to approve successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Posts staff comments for a gallery submission.
+     *
+     * @param  int                             $id
+     * @param  string                          $data
+     * @param  App\Services\GalleryManager     $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function postStaffComments($id, $data, GalleryManager $service)
+    {
+        if($service->postStaffComments($id, $data, Auth::user())) {
+            flash('Comments updated succesfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
 }

@@ -71,7 +71,7 @@ class GalleryController extends Controller
             if(!Auth::check()) abort(404);
             $isMod = Auth::user()->hasPower('manage_submissions');
             $isOwner = ($submission->user_id == Auth::user()->id);
-            $isCollaborator = Auth::user()->id && $submission->collaborators->where('user_id', Auth::user()->id)->first() != null;
+            $isCollaborator = $submission->collaborators->where('user_id', Auth::user()->id)->first() != null;
             if(!$isMod && (!$isOwner && !$isCollaborator)) abort(404);
         }
 
@@ -95,11 +95,12 @@ class GalleryController extends Controller
         if(!Auth::check()) abort(404);
         $isMod = Auth::user()->hasPower('manage_submissions');
         $isOwner = ($submission->user_id == Auth::user()->id);
-        $isCollaborator = Auth::user()->id && $submission->collaborators->where('user_id', Auth::user()->id)->first() != null;
+        $isCollaborator = $submission->collaborators->where('user_id', Auth::user()->id)->first() != null;
         if(!$isMod && (!$isOwner && !$isCollaborator)) abort(404);
 
         return view('galleries.submission_log', [
-            'submission' => $submission
+            'submission' => $submission,
+            'currency' => Currency::find(Settings::get('group_currency')),
         ]);
     }
 

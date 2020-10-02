@@ -108,7 +108,7 @@ Route::group(['prefix' => 'myo', 'namespace' => 'Characters'], function() {
 **************************************************************************************************/
 
 Route::group(['prefix' => 'gallery'], function() {
-    Route::get('submissions/{type}', 'GalleryController@getUserSubmissions')->where('type', 'pending|approved|rejected');
+    Route::get('submissions/{type}', 'GalleryController@getUserSubmissions')->where('type', 'pending|accepted|rejected');
 
     Route::post('favorite/{id}', 'GalleryController@postFavoriteSubmission');
 

@@ -85,26 +85,8 @@
                 </div>
             </div>
         </div>
-        @if($submission->characters->count())
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5>Characters</h5>
-                </div>
-                <div class="card-body">
-                    @foreach($submission->characters->chunk(3) as $chunk)
-                        <div class="row">
-                            @foreach($chunk as $character)
-                                <div class="col-md-4">
-                                    @include('galleries._character', ['character' => $character->character])
-                                </div>
-                            @endforeach
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        @endif
     </div>
-    @if($submission->collaborators->count() || (Settings::get('gallery_submissions_reward_currency') && $submission->gallery->currency_enabled && Auth::check() && ($submission->user->id == Auth::user()->id || $submission->collaborators->where('user_id', Auth::user()->id)->first() != null || Auth::user()->id('manage_submissions'))))
+    @if($submission->collaborators->count() || $submission->characters->count())
         <div class="col-md-4 col-lg-3">
             @if($submission->collaborators->count())
                 <div class="card mb-4">
@@ -148,43 +130,21 @@
                     </div>
                 </div>
             @endif
-            @if(Settings::get('gallery_submissions_reward_currency') && $submission->gallery->currency_enabled && Auth::check() && ($submission->user->id == Auth::user()->id || $submission->collaborators->where('user_id', Auth::user()->id)->first() != null || Auth::user()->id('manage_submissions')))
+            @if($submission->characters->count())
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5>{!! $currency->name !!} Awards</h5>
+                        <h5>Characters</h5>
                     </div>
                     <div class="card-body">
-                        <h6>Form Responses:</h6>
-                        @foreach($submission->data['currencyData'] as $key=>$data)
-                            <p>
-                                @if(isset($data))
-                                    <strong>{{ Config::get('lorekeeper.group_currency_form')[$key]['name'] }}:</strong><br/>
-                                    @if(Config::get('lorekeeper.group_currency_form')[$key]['type'] == 'choice')
-                                        @if(isset(Config::get('lorekeeper.group_currency_form')[$key]['multiple']) && Config::get('lorekeeper.group_currency_form')[$key]['multiple'] == 'true')
-                                            @foreach($data as $answer)
-                                                {{ Config::get('lorekeeper.group_currency_form')[$key]['choices'][$answer] }}<br/>
-                                            @endforeach
-                                        @else
-                                            {{ Config::get('lorekeeper.group_currency_form')[$key]['choices'][$data] }}
-                                        @endif
-                                    @else
-                                        {{ Config::get('lorekeeper.group_currency_form')[$key]['type'] == 'checkbox' ? (Config::get('lorekeeper.group_currency_form')[$key]['value'] == $data ? 'True' : 'False') : $data }}
-                                    @endif
-                                @endif
-                            </p>
+                        @foreach($submission->characters->chunk(1) as $chunk)
+                            <div class="row mb-2">
+                                @foreach($chunk as $character)
+                                    <div class="col-md">
+                                        @include('galleries._character', ['character' => $character->character])
+                                    </div>
+                                @endforeach
+                            </div>
                         @endforeach
-                        @if(Auth::user()->hasPower('manage_submissions'))
-                        <h6>[Admin]</h6>
-                            <p>
-                                <strong>Calculated Total:</strong> {{ $submission->data['total'] }}
-                                @if($submission->characters->count() > 1)
-                                    <br/><strong>Total times Number of Characters:</strong> {{ round($submission->data['total'] * $submission->characters->count()) }}
-                                @endif
-                                @if($submission->collaborators->count())
-                                    <br/><strong>Total divided by Number of Collaborators:</strong> {{ round(round($submission->data['total'] * $submission->characters->count()) / $submission->collaborators->count()) }}
-                                @endif
-                            </p>
-                        @endif
                     </div>
                 </div>
             @endif

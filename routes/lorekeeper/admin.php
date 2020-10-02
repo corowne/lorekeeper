@@ -396,7 +396,7 @@ Route::group(['prefix' => 'claims', 'middleware' => 'power:manage_submissions'],
 Route::group(['prefix' => 'gallery', 'middleware' => 'power:manage_submissions'], function() {
     Route::get('/', 'GalleryController@getSubmissionIndex');
     Route::get('/{status}', 'GalleryController@getSubmissionIndex')->where('status', 'pending|accepted|rejected');
-    Route::post('edit/{id}/{action}', 'GalleryController@postSubmission')->where('action', 'vote|archive');
+    Route::post('edit/{id}/{action}', 'GalleryController@postEditSubmission')->where('action', 'accept|reject|comment|move|value');
 });
 
 # DESIGN APPROVALS

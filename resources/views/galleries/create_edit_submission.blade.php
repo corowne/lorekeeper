@@ -95,6 +95,7 @@
                     <a href="#" class="btn btn-outline-info" id="addCharacter">Add Character</a>
                 </div>
             </div>
+            @if(!$submission->id || $submission->status == 'Pending')
             <div class="col-md-4">
                 <div class="card mb-4">
                     <div class="card-header">
@@ -130,53 +131,20 @@
                         @endif
                     </div>
                 </div>
-                @if(Settings::get('gallery_submissions_reward_currency') && $gallery->currency_enabled)
+                @if(Settings::get('gallery_submissions_reward_currency') && $gallery->currency_enabled && !$submission->id)
                     <div class="card mb-4">
                         <div class="card-header">
                             <h5>{!! $currency->name !!} Awards</h5>
                         </div>
                         <div class="card-body">
-                            @if(!$submission->id)
-                                <p>Please select options as appropriate for this piece. This will help the staff processing your submission award {!! $currency->displayName !!} for it. You <strong>will not</strong> be able to edit this after creating the submission.</p>
-                                {!! form_row($form->start) !!}
-                                {!!  form_rest($form) !!}
-                            @else
-                                <h6>Form Responses:</h6>
-                                @foreach($submission->data['currencyData'] as $key=>$data)
-                                    <p>
-                                        @if(isset($data))
-                                            <strong>{{ Config::get('lorekeeper.group_currency_form')[$key]['name'] }}:</strong><br/>
-                                            @if(Config::get('lorekeeper.group_currency_form')[$key]['type'] == 'choice')
-                                                @if(isset(Config::get('lorekeeper.group_currency_form')[$key]['multiple']) && Config::get('lorekeeper.group_currency_form')[$key]['multiple'] == 'true')
-                                                    @foreach($data as $answer)
-                                                        {{ Config::get('lorekeeper.group_currency_form')[$key]['choices'][$answer] }}<br/>
-                                                    @endforeach
-                                                @else
-                                                    {{ Config::get('lorekeeper.group_currency_form')[$key]['choices'][$data] }}
-                                                @endif
-                                            @else
-                                                {{ Config::get('lorekeeper.group_currency_form')[$key]['type'] == 'checkbox' ? (Config::get('lorekeeper.group_currency_form')[$key]['value'] == $data ? 'True' : 'False') : $data }}
-                                            @endif
-                                        @endif
-                                    </p>
-                                @endforeach
-                                @if(Auth::user()->hasPower('manage_submissions'))
-                                <h6>[Admin]</h6>
-                                    <p>
-                                        <strong>Calculated Total:</strong> {{ $submission->data['total'] }}
-                                        @if($submission->characters->count() > 1)
-                                            <br/><strong>Total times Number of Characters:</strong> {{ round($submission->data['total'] * $submission->characters->count()) }}
-                                        @endif
-                                        @if($submission->collaborators->count())
-                                            <br/><strong>Total divided by Number of Collaborators:</strong> {{ round(round($submission->data['total'] * $submission->characters->count()) / $submission->collaborators->count()) }}
-                                        @endif
-                                    </p>
-                                @endif
-                            @endif
+                            <p>Please select options as appropriate for this piece. This will help the staff processing your submission award {!! $currency->displayName !!} for it. You <strong>will not</strong> be able to edit this after creating the submission.</p>
+                            {!! form_row($form->start) !!}
+                            {!!  form_rest($form) !!}
                         </div>
                     </div>
                 @endif
             </div>
+            @endif
         </div>
 
         <div class="text-right">

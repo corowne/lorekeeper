@@ -117,6 +117,8 @@ class GalleryManager extends Service
                 ]);
             }
 
+            if(!$submission->collaborators->count() && (!Settings::get('gallery_submissions_require_approval') || (Settings::get('gallery_submissions_require_approval') && $submission->gallery->votes_required == 0))) $this->approveSubmission($submission);
+
             return $this->commitReturn($submission);
         } catch(\Exception $e) { 
             $this->setError('error', $e->getMessage());
@@ -274,9 +276,19 @@ class GalleryManager extends Service
 
                 // Check if all collaborators have approved, and if so send a notification to the
                 // submitting user (unless they are the last to approve-- which shouldn't happen, but)
-                if(!$submission->collaborators->where('has_approved', 0)->count()) {
-                    if($submission->user->id != $user->id) {
-                        Notifications::create('GALLERY_COLLABORATORS_APPROVED', $submission->user, [
+                if($submission->collaboratorApproved) {
+                    if(Settings::get('gallery_submissions_require_approval') && $submission->gallery->votes_required > 0) {
+                        if($submission->user->id != $user->id) {
+                            Notifications::create('GALLERY_COLLABORATORS_APPROVED', $submission->user, [
+                                'submission_title' => $submission->title,
+                                'submission_id' => $submission->id,
+                            ]);
+                        }
+                    }
+                    else {
+                        $this->approveSubmission($submission);
+
+                        Notifications::create('GALLERY_SUBMISSION_APPROVED', $submission->user, [
                             'submission_title' => $submission->title,
                             'submission_id' => $submission->id,
                         ]);
@@ -290,6 +302,153 @@ class GalleryManager extends Service
         }
         return $this->rollbackReturn(false);
     }
+
+    /**
+     * Votes on a gallery submission.
+     *
+     * @param  string                                 $action
+     * @param  \App\Models\Gallery\GallerySubmission  $submission
+     * @param  \App\Models\User\User                  $user
+     * @return  bool
+     */
+    public function castVote($action, $submission, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            if($submission->status != 'Pending') throw new \Exception("This request cannot be processed.");
+            if(!$submission->collaboratorApproved) throw new \Exception("This submission's collaborators have not all approved yet.");
+
+            switch($action) {
+                default:
+                    flash('Invalid action.')->error();
+                    break;
+                case 'accept':
+                    $vote = 2;
+                    break;
+                case 'reject':
+                    $vote = 1;
+                    break;
+            }
+
+            // Get existing vote data if it exists, remove any existing vote data for the user,
+            // add the new vote data, and json encode it
+            $voteData = (isset($submission->vote_data) ? collect(json_decode($submission->vote_data, true)) : collect([]));
+            $voteData->get($user->id) ? $voteData->pull($user->id) : null;
+            $voteData->put($user->id, $vote);
+            $submission->vote_data = $voteData->toJson();
+            
+            $submission->save();
+
+            // Count up the existing votes to see if the required number has been reached
+            $rejectSum = 0;
+            $approveSum = 0;
+            foreach($submission->voteData as $voter=>$vote) {
+                if($vote == 1) $rejectSum += 1;
+                if($vote == 2) $approveSum += 1;
+            }
+
+            // And if so, process the submission
+            if($action == 'reject' && $rejectSum >= $submission->gallery->votes_required) $this->rejectSubmission($submission);
+            if($action == 'accept' && $approveSum >= $submission->gallery->votes_required) $this->approveSubmission($submission);
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Processes approval for a submission.
+     *
+     * @param  \App\Models\Gallery\GallerySubmission  $submission
+     * @param  \App\Models\User\User                  $user
+     * @return bool|\App\Models\Gallery\GalleryFavorite
+     */
+    public function postStaffComments($id, $data, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            $submission = GallerySubmission::find($id);
+            // Check that the submission exists and that the user can edit staff comments
+            if(!$submission) throw new \Exception("Invalid submission selected.");
+            if(!$user->hasPower('manage_submissions')) throw new \Exception("You can't edit staff comments on this submission.");
+
+            // Parse comments
+            if(isset($data['staff_comments']) && $data['staff_comments']) $data['parsed_staff_comments'] = parse($data['staff_comments']);
+
+            $submission->update([
+                'staff_comments' => $data['staff_comments'],
+                'parsed_staff_comments' => $data['parsed_staff_comments'],
+                'staff_id' => $user->id,
+            ]);
+
+            if(isset($data['alert_user'])) {
+                Notifications::create('GALLERY_SUBMISSION_STAFF_COMMENTS', $submission->user, [
+                    'sender' => $user->name,
+                    'sender_url' => $user->url,
+                    'submission_title' => $submission->title,
+                    'submission_id' => $submission->id,
+                ]);
+            }
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Processes approval for a submission.
+     *
+     * @param  \App\Models\Gallery\GallerySubmission  $submission
+     * @return bool|\App\Models\Gallery\GallerySubmission
+     */
+    private function approveSubmission($submission)
+    {
+        DB::beginTransaction();
+
+        try {
+            // Check that the submission exists and is pending
+            if(!$submission) throw new \Exception("Invalid submission selected.");
+            if($submission->status != 'Pending') throw new \Exception("This submission isn't pending."); 
+
+            $submission->update(['status' => 'Accepted']);
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Processes rejection for a submission.
+     *
+     * @param  \App\Models\Gallery\GallerySubmission  $submission
+     * @return bool|\App\Models\Gallery\GallerySubmission
+     */
+    private function rejectSubmission($submission)
+    {
+        DB::beginTransaction();
+
+        try {
+            // Check that the submission exists and is pending
+            if(!$submission) throw new \Exception("Invalid submission selected.");
+            if($submission->status != 'Pending') throw new \Exception("This submission isn't pending."); 
+
+            $submission->update(['status' => 'Rejected']);
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
 
     /**
      * Toggles favorite status on a submission for a user.
@@ -328,7 +487,7 @@ class GalleryManager extends Service
                 }
             }
 
-            return $this->commitReturn($submission);
+            return $this->commitReturn(true);
         } catch(\Exception $e) { 
             $this->setError('error', $e->getMessage());
         }

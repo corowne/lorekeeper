@@ -23,8 +23,9 @@ class GallerySubmission extends Model
         'user_id', 'gallery_id', 
         'hash', 'extension', 'text', 'parsed_text',
         'title', 'description', 'parsed_description',
-        'prompt_id', 'data', 
-        'is_visible', 'status', 'vote_data'
+        'prompt_id', 'data', 'is_visible', 'status', 
+        'vote_data', 'staff_id',
+        'staff_comments', 'parsed_staff_comments'
     ];
 
     /**
@@ -76,6 +77,14 @@ class GallerySubmission extends Model
     public function user() 
     {
         return $this->belongsTo('App\Models\User\User', 'user_id');
+    }
+
+    /**
+     * Get the staff member who last edited the submission's comments.
+     */
+    public function staff() 
+    {
+        return $this->belongsTo('App\Models\User\User', 'staff_id');
     }
 
     /**
@@ -375,6 +384,17 @@ class GallerySubmission extends Model
             return implode(', ', $collaboratorList);
         }
         else return $this->user->displayName;
+    }
+
+    /**
+     * Checks if all of a submission's collaborators have approved or no.
+     *
+     * @return string
+     */
+    public function getCollaboratorApprovedAttribute()
+    {
+        if($this->collaborators->where('has_approved', 0)->count()) return false;
+        return true;
     }
     
 }

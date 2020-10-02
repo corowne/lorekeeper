@@ -17,7 +17,7 @@
         <a class="nav-link {{ set_active('gallery/submissions/pending') }}" href="{{ url('gallery/submissions/pending') }}">Pending</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link {{ set_active('gallery/submissions/approved') }}" href="{{ url('gallery/submissions/approved') }}">Approved</a>
+        <a class="nav-link {{ set_active('gallery/submissions/accepted') }}" href="{{ url('gallery/submissions/accepted') }}">Accepted</a>
     </li>
     <li class="nav-item">
         <a class="nav-link {{ set_active('gallery/submissions/rejected') }}" href="{{ url('gallery/submissions/rejected') }}">Rejected</a>
@@ -51,7 +51,7 @@
             </div>
             <div class="col-6 col-md-2">{!! pretty_date($submission->created_at) !!}</div>
             <div class="col-6 col-md-1 text-right">
-                <span class="btn btn-{{ $submission->status == 'Pending' ? 'secondary' : ($submission->status == 'Approved' ? 'success' : 'danger') }} btn-sm py-0 px-1">{{ $submission->status }}</span>
+                <span class="btn btn-{{ $submission->status == 'Pending' ? 'secondary' : ($submission->status == 'Accepted' ? 'success' : 'danger') }} btn-sm py-0 px-1">{{ $submission->status }}</span>
             </div>
             <div class="col-6 col-md-1"><a href="{{ $submission->queueUrl }}" class="btn btn-primary btn-sm py-0 px-1">Details</a></div>
             </div>
