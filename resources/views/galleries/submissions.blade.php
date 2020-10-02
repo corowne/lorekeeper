@@ -39,7 +39,7 @@
         @foreach($submissions as $submission)
             <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-top">
             <div class="col-12 col-md-2">{!! $submission->gallery->displayName !!}</div>
-            <div class="col-6 col-md-3">{{ $submission->title }}</div>
+            <div class="col-6 col-md-3">{!! $submission->displayName !!}</div>
             <div class="col-6 col-md-3">
                 @if($submission->collaborators->count())
                     @foreach($submission->collaborators as $collaborator)
@@ -53,7 +53,7 @@
             <div class="col-6 col-md-1 text-right">
                 <span class="btn btn-{{ $submission->status == 'Pending' ? 'secondary' : ($submission->status == 'Approved' ? 'success' : 'danger') }} btn-sm py-0 px-1">{{ $submission->status }}</span>
             </div>
-            <div class="col-6 col-md-1"><a href="{{ $submission->url }}" class="btn btn-primary btn-sm py-0 px-1">Details</a></div>
+            <div class="col-6 col-md-1"><a href="{{ $submission->queueUrl }}" class="btn btn-primary btn-sm py-0 px-1">Details</a></div>
             </div>
         @endforeach
     </div>

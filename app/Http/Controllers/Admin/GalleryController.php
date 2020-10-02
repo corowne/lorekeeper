@@ -24,7 +24,7 @@ class GalleryController extends Controller
      */
     public function getSubmissionIndex(Request $request, $status = null)
     {
-        $submissions = GallerySubmission::where('status', $status ? ucfirst($status) : 'Pending');
+        $submissions = GallerySubmission::collaboratorApproved()->where('status', $status ? ucfirst($status) : 'Pending');
         if($request->get('gallery_id')) 
             $submissions->where(function($query) use ($request) {
                 $query->where('gallery_id', $request->get('gallery_id'));

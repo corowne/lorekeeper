@@ -136,17 +136,14 @@ class GallerySubmission extends Model
     }
 
     /**
-     * Scope a query to only include submissions that are pending,
-     * and where all collaborators have approved the particulars.
+     * Scope a query to only include submissions where all collaborators have approved.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopePendingApproval($query)
+    public function scopeCollaboratorApproved($query)
     {
-        return $query->where('status', 'Pending')->whereHas('gallery_submission_collaborators', function($q) {
-            $q->where('has_approved', 1);
-        });
+        return $query->whereNotIn('id', GalleryCollaborator::where('has_approved', 0)->pluck('gallery_submission_id')->toArray());
     }
 
     /**
@@ -169,6 +166,17 @@ class GallerySubmission extends Model
     public function scopeRejected($query)
     {
         return $query->where('status', 'Rejected');
+    }
+
+    /**
+     * Scope a query to only include submissions that require currecy awards.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeRequiresAward($query)
+    {
+        return $query->where('status', 'Accepted');
     }
 
     /**
@@ -331,6 +339,16 @@ class GallerySubmission extends Model
     public function getUrlAttribute()
     {
         return url('gallery/view/'.$this->id);
+    }
+
+    /**
+     * Get the internal processing URL of the submission.
+     *
+     * @return string
+     */
+    public function getQueueUrlAttribute()
+    {
+        return url('gallery/queue/'.$this->id);
     }
 
     /**

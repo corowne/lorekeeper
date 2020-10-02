@@ -234,24 +234,11 @@ class GalleryManager extends Service
         
         // Process thumbnail
         $thumbnail = Image::make($submission->imagePath . '/' .  $submission->imageFileName);
-
-        // Resize based on larger dimension
-        $imageWidth = $thumbnail->width();
-        $imageHeight = $thumbnail->height();
-        if($imageWidth > $imageHeight) {
-            // Landscape
-            $thumbnail->resize(Config::get('lorekeeper.settings.masterlist_thumbnails.width'), null, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
-        }
-        else {
-            // Portrait
-            $thumbnail->resize(null, Config::get('lorekeeper.settings.masterlist_thumbnails.height'), function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
-        }
+        // Resize
+        $thumbnail->resize(null, Config::get('lorekeeper.settings.masterlist_thumbnails.height'), function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
 
         // Save thumbnail
         $thumbnail->save($submission->thumbnailPath . '/' . $submission->thumbnailFileName);

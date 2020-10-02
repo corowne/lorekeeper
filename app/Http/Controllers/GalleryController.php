@@ -82,6 +82,28 @@ class GalleryController extends Controller
     }
 
     /**
+     * Shows a given submission's detailed queue log.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getSubmissionLog($id)
+    {
+        $submission = GallerySubmission::find($id);
+        if(!$submission) abort(404);
+
+        if(!Auth::check()) abort(404);
+        $isMod = Auth::user()->hasPower('manage_submissions');
+        $isOwner = ($submission->user_id == Auth::user()->id);
+        $isCollaborator = Auth::user()->id && $submission->collaborators->where('user_id', Auth::user()->id)->first() != null;
+        if(!$isMod && (!$isOwner && !$isCollaborator)) abort(404);
+
+        return view('galleries.submission_log', [
+            'submission' => $submission
+        ]);
+    }
+
+    /**
      * Shows the user's gallery submission log.
      *
      * @param  \Illuminate\Http\Request  $request

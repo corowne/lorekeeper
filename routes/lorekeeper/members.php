@@ -115,6 +115,7 @@ Route::group(['prefix' => 'gallery'], function() {
     Route::get('submit/{id}', 'GalleryController@getNewGallerySubmission');
     Route::get('submit/character/{slug}', 'GalleryController@getCharacterInfo');
     Route::get('edit/{id}', 'GalleryController@getEditGallerySubmission');
+    Route::get('queue/{id}', 'GalleryController@getSubmissionLog');
     Route::post('submit', 'GalleryController@postCreateEditGallerySubmission');
     Route::post('edit/{id}', 'GalleryController@postCreateEditGallerySubmission');
 
