@@ -1,23 +1,20 @@
 @extends('admin.layout')
 
-@section('admin-title') Gallery Queue @endsection
+@section('admin-title') Gallery Currency Queue @endsection
 
 @section('admin-content')
-{!! breadcrumbs(['Admin Panel' => 'admin', 'Gallery Submissions Queue' => 'admin/gallery/submissions/pending']) !!}
+{!! breadcrumbs(['Admin Panel' => 'admin', $currency->name.' Queue' => 'admin/gallery/currency/pending']) !!}
 
 <h1>
-    Gallery Submission Queue
+    {!! $currency->name !!} Queue
 </h1>
 
 <ul class="nav nav-tabs mb-3">
     <li class="nav-item">
-        <a class="nav-link {{ set_active('admin/gallery/submissions/pending*') }} {{ set_active('admin/gallery/submissions') }}" href="{{ url('admin/gallery/submissions/pending') }}">Pending</a>
+        <a class="nav-link {{ set_active('admin/gallery/currency/pending*') }} {{ set_active('admin/gallery/currency') }}" href="{{ url('admin/gallery/currency/pending') }}">Pending</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link {{ set_active('admin/gallery/submissions/accepted*') }}" href="{{ url('admin/gallery/submissions/accepted') }}">Accepted</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{ set_active('admin/gallery/submissions/rejected*') }}" href="{{ url('admin/gallery/submissions/rejected') }}">Rejected</a>
+        <a class="nav-link {{ set_active('admin/gallery/currency/valued*') }}" href="{{ url('admin/gallery/currency/valued') }}">Processed</a>
     </li>
 </ul>
 

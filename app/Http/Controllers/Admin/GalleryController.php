@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Auth;
 use Config;
+use Settings;
 use Illuminate\Http\Request;
 
 use App\Models\Gallery\Gallery;
@@ -36,6 +37,26 @@ class GalleryController extends Controller
     }
 
     /**
+     * Shows the index of submissions in the context of currency rewards.
+     *
+     * @param  string  $status
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCurrencyIndex(Request $request, $status = null)
+    {
+        $submissions = GallerySubmission::requiresAward()->where('is_valued', !$status || $status == 'pending' ? 0 : 1);
+        if($request->get('gallery_id')) 
+            $submissions->where(function($query) use ($request) {
+                $query->where('gallery_id', $request->get('gallery_id'));
+            });
+        return view('admin.galleries.submissions_currency_index', [
+            'submissions' => $submissions->orderBy('id', 'DESC')->paginate(10)->appends($request->query()),
+            'galleries' => ['' => 'Any Gallery'] + Gallery::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'currency' => Currency::find(Settings::get('group_currency'))
+        ]);
+    }
+
+    /**
      * Edits gallery submissions.
      *
      * @param  \Illuminate\Http\Request       $request
@@ -63,7 +84,7 @@ class GalleryController extends Controller
                     return $this->postStaffComments($id, $request->only(['staff_comments', 'alert_user']), $service);
                     break;
                 case 'value':
-                    return $this->postValueSubmission($id, $request, $service);
+                    return $this->postValue($id, $request->only('value'), $service);
                     break;
             }
         }
@@ -108,6 +129,25 @@ class GalleryController extends Controller
     {
         if($service->postStaffComments($id, $data, Auth::user())) {
             flash('Comments updated succesfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Posts group currency evaluation for a gallery submission.
+     *
+     * @param  int                             $id
+     * @param  string                          $data
+     * @param  App\Services\GalleryManager     $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function postValue($id, $data, GalleryManager $service)
+    {
+        if($service->postValueSubmission($id, $data, Auth::user())) {
+            flash('Submission evaluated succesfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

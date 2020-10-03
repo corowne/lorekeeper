@@ -258,7 +258,7 @@ return [
         'url' => ''
     ],
 
-    // GALLERY_COLLABORATOR
+    // GALLERY_SUBMISSION_COLLABORATOR
     505 => [
         'message' => '<a href="{sender_url}">{sender}</a> has added you as a collaborator on a gallery submission, which needs your approval. (<a href="{url}">View Submission</a>)',
         'url' => 'gallery/view/{submission_id}'
@@ -285,13 +285,13 @@ return [
     // GALLERY_SUBMISSION_VALUED
     509 => [
         'message' => 'You have been awarded {currency} for the gallery submission (#{submission_id}). (<a href="{url}">View Submission</a>)',
-        'url' => 'gallery/queue/{submission_id}'
+        'url' => 'gallery/view/{submission_id}'
     ],
 
     // GALLERY_SUBMISSION_MOVED
     510 => [
-        'message' => 'Your gallery submission (#{submission_id}) has been moved by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Claim</a>)',
-        'url' => 'claims/view/{submission_id}'
+        'message' => 'Your gallery submission <strong>{submission_title}</strong> (#{submission_id}) has been moved by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/view/{submission_id}'
     ],
 
     // GALLERY_SUBMISSION_CHARACTER
@@ -310,5 +310,17 @@ return [
     513 => [
         'message' => '<a href="{sender_url}">{sender}</a> updated the staff comments on your gallery submission <strong>{submission_title}</strong> (#{submission_id}). (<a href="{url}">View Submission</a>)',
         'url' => 'gallery/queue/{submission_id}'
+    ],
+
+    // GALLERY_SUBMISSION_EDITED
+    514 => [
+        'message' => 'Your gallery submission <strong>{submission_title}</strong> (#{submission_id}) has been edited by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/view/{submission_id}'
+    ],
+
+    // GALLERY_SUBMISSION_PARTICIPANT
+    515 => [
+        'message' => '<a href="{sender_url}">{sender}</a> has added you as a participant on a gallery submission. (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/view/{submission_id}'
     ],
 ];

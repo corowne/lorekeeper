@@ -17,7 +17,7 @@ class Prompt extends Model
      */
     protected $fillable = [
         'prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active',
-        'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image'
+        'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image', 'prefix'
     ];
 
     /**
@@ -42,6 +42,7 @@ class Prompt extends Model
     public static $createRules = [
         'prompt_category_id' => 'nullable',
         'name' => 'required|unique:prompts|between:3,25',
+        'prefix' => 'nullable|unique:prompts|between:2,10',
         'summary' => 'nullable',
         'description' => 'nullable',
         'image' => 'mimes:png',
@@ -55,6 +56,7 @@ class Prompt extends Model
     public static $updateRules = [
         'prompt_category_id' => 'nullable',
         'name' => 'required|between:3,25',
+        'prefix' => 'nullable|between:2,10',
         'summary' => 'nullable',
         'description' => 'nullable',
         'image' => 'mimes:png',

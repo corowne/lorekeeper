@@ -9,7 +9,7 @@
     <span class="float-right badge badge-{{ $submission->status == 'Pending' ? 'secondary' : ($submission->status == 'Accepted' ? 'success' : 'danger') }}">{{ $submission->collaboratorApproved ? $submission->status : 'Pending Collaborator Approval' }}</span>
 </h1>
 
-@include('galleries._queue_submission', ['queue' => false, 'key' => 0])
+@include('galleries._queue_submission', ['key' => 0])
 
 <div class="row">
     <div class="col-md">
@@ -65,10 +65,41 @@
                 </div>
                 <div class="card-body">
                     @if($submission->status == 'Accepted')
-                        @if(Auth::user()->hasPower('manage_submissions'))
-                            power
+                        @if(!$submission->is_valued)
+                            @if(Auth::user()->hasPower('manage_submissions'))
+                                <p>Enter in the amount of {{ $currency->name }} that {{ $submission->collaborators->count() ? 'each collaborator' : 'the submitting user'}}{{ $submission->participants->count() ? ' and any participants' : '' }} should receive. The suggested amount has been pre-filled for you based on the provided form responses, but this is only a guideline based on user input and should be verified and any adjustments made as necessary.</p>
+                                {!! Form::open(['url' => 'admin/gallery/edit/'.$submission->id.'/value']) !!}
+                                    @if(!$submission->collaborators->count() || $submission->collaborators->where('user_id', $submission->user_id)->first() == null)
+                                        <div class="form-group">    
+                                            {!! Form::label($submission->user->name) !!}:
+                                            {!! Form::number('value[submitted]['.$submission->user->id.']', round(($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')), ['class' => 'form-control']) !!}
+                                        </div>
+                                    @endif
+                                    @if($submission->collaborators->count())
+                                        @foreach($submission->collaborators as $key=>$collaborator)
+                                            <div class="form-group">    
+                                                {!! Form::label($collaborator->user->name) !!}:
+                                                {!! Form::number('value[collab]['.$collaborator->user->id.']', round(($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')), ['class' => 'form-control']) !!}
+                                            </div>
+                                        @endforeach
+                                    @endif
+                                    @if($submission->participants->count())
+                                        @foreach($submission->participants as $key=>$participant)
+                                            <div class="form-group">    
+                                                {!! Form::label($participant->user->name.' ('.$participant->displayType.')') !!}:
+                                                {!! Form::number('value[participant]['.$participant->user->id.']', $participant->type == 'Comm' ? round(($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')/2) : 0, ['class' => 'form-control']) !!}
+                                            </div>
+                                        @endforeach
+                                    @endif
+                                    <div class="text-right">
+                                        {!! Form::submit('Submit', ['class' => 'btn btn-primary']) !!}
+                                    </div>
+                                {!! Form::close() !!}
+                            @else
+                                <p>This submission hasn't been evaluated yet. You'll receive a notification once it has!</p>
+                            @endif
                         @else
-                            view
+                            results
                         @endif
                     @else
                         <p>This submission is not eligible for currency awards{{ $submission->status == 'Pending' ? ' yet-- it must be accepted first' : '' }}.</p>

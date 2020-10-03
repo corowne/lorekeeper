@@ -6,7 +6,7 @@
 {!! breadcrumbs(['Gallery' => 'gallery', $gallery->name => 'gallery/'.$gallery->id, ($submission->id ? 'Edit' : 'Create').' Submission' => $submission->id ? 'gallery/submissions/edit/'.$submission->id : 'gallery/submit/'.$gallery->id]) !!}
 
 <h1>
-    {{ $submission->id ? 'Edit Submission (#'.$submission->id.', "'.$submission->title.'")' : 'Submit to '.$gallery->name }}
+    {{ $submission->id ? 'Edit Submission (#'.$submission->id.', "'.$submission->displayTitle.'")' : 'Submit to '.$gallery->name }}
     @if($submission->id)
         <div class="float-right">
             @if($submission->status == 'Accepted')
@@ -57,7 +57,7 @@
             <div class="col-md">
                 <h3>Basic Information</h3>
                 <div class="form-group">
-                    {!! Form::label('Title') !!}
+                    {!! Form::label('Title') !!} {!! add_help('You do not need to indicate that a piece is a trade, gift, for a prompt etc. as this will be automatically added based on your input elsewhere in this form.') !!}
                     {!! Form::text('title', $submission->title, ['class' => 'form-control']) !!}
                 </div>
 
@@ -75,7 +75,16 @@
                     {!! $submission->prompt_id ? '<p><strong>Prompt:</strong> '.$submission->prompt->displayName.'</p>' : '' !!}
                 @endif
 
-                {!! Form::hidden('gallery_id', $gallery->id) !!}
+                @if($submission->id && Auth::user()->hasPower('manage_submissions'))
+                    <div class="form-group">
+                        {!! Form::label('gallery_id', '[Admin] Gallery / Move Submission') !!} {!! add_help('Use in the event you need to move a submission between galleries. If left blank, leaves the submission in its current location. Note that if currency rewards from submissions are enabled, this won\'t retroactively fill out the form if moved from a gallery where they are disabled to one where they are enabled.') !!}
+                        {!! Form::select('gallery_id', $galleries, null, ['class' => 'form-control selectize gallery-select original', 'id' => 'gallery', 'placeholder' => '']) !!}
+                    </div>
+                @endif
+
+                @if(!$submission->id)
+                    {!! Form::hidden('gallery_id', $gallery->id) !!}
+                @endif
 
                 <h3>Characters</h3>
                 <p>
@@ -99,10 +108,10 @@
             <div class="col-md-4">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5>Collaborator Info</h5>
+                        <h5>Collaborators</h5>
                     </div>
                     <div class="card-body">
-                        <p>If this piece is a collaboration, add collaborators and their roles here, including yourself. <strong>Otherwise, leave this blank</strong>. You <strong>will not</strong> be able to edit this once the submission has been accepted.</p>
+                        <p>If this piece is a collaboration, add collaborators and their roles here, including yourself. <strong>Otherwise, leave this blank</strong>. You <strong>will not</strong> be able to edit this once the submission has been accepted, but will while it is still pending.</p>
                         @if(!$submission->id || $submission->status == 'Pending')
                             <div class="text-right mb-3">
                                 <a href="#" class="btn btn-outline-info" id="add-collaborator">Add Collaborator</a>
@@ -131,6 +140,40 @@
                         @endif
                     </div>
                 </div>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Other Participants</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>If this piece is gift, part of a trade, or was commissioned, specify the related user(s) here and select their role. <strong>Otherwise, leave this blank</strong>. You <strong>will not</strong> be able to edit this once the submission has been accepted, but will while it is still pending.</p>
+                        @if(!$submission->id || $submission->status == 'Pending')
+                            <div class="text-right mb-3">
+                                <a href="#" class="btn btn-outline-info" id="add-participant">Add Participant</a>
+                            </div>
+                            <div id="participantList">
+                                @if($submission->id)
+                                    @foreach($submission->participants as $participant)
+                                        <div class="mb-2">
+                                            <div class="d-flex">{!! Form::select('participant_id[]', $users, $participant->user_id, ['class' => 'form-control mr-2 participant-select original', 'placeholder' => 'Select User']) !!}</div>
+                                            <div class="d-flex">
+                                                {!! Form::select('participant_type[]', ['Gift' => 'Gift For', 'Trade' => 'Traded For', 'Comm' => 'Commissioned', 'Comm (Currency)' => 'Commissioned ('.$currency->name.')'], $participant->type, ['class' => 'form-control mr-2', 'placeholder' => 'Select Role']) !!}
+                                                <a href="#" class="remove-participant btn btn-danger mb-2">×</a>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @endif
+                            </div>
+                        @else
+                            <p>
+                                @if($submission->participants->count())
+                                    @foreach($submission->participants as $participant)
+                                        {!! $participant->user->displayName !!}: {{ $participant->displayType }}<br/>
+                                    @endforeach
+                                @endif
+                            </p>
+                        @endif
+                    </div>
+                </div>
                 @if(Settings::get('gallery_submissions_reward_currency') && $gallery->currency_enabled && !$submission->id)
                     <div class="card mb-4">
                         <div class="card-header">
@@ -147,6 +190,13 @@
             @endif
         </div>
 
+        @if($submission->id && Auth::user()->id != $submission->user->id && Auth::user()->hasPower('manage_submissions'))
+            <div class="form-group">
+                {!! Form::checkbox('alert_user', 1, true, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'data-onstyle' => 'danger']) !!}
+                {!! Form::label('alert_user', 'Notify User', ['class' => 'form-check-label ml-3']) !!} {!! add_help('This will send a notification to the user that either their submission has been edited or moved. It does not send both notifications, preferring the move notification if relevant.') !!}
+            </div>
+        @endif
+
         <div class="text-right">
             <a href="#" class="btn btn-primary" id="submitButton">Submit</a>
         </div>
@@ -158,6 +208,13 @@
         <div class="d-flex">
             {!! Form::text('collaborator_data[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Role (Sketch, Lines, etc.)']) !!}
             <a href="#" class="remove-collaborator btn btn-danger mb-2">×</a>
+        </div>
+    </div>
+    <div class="participant-row hide mb-2">
+        {!! Form::select('participant_id[]', $users, null, ['class' => 'form-control mr-2 participant-select', 'placeholder' => 'Select User']) !!}
+        <div class="d-flex">
+            {!! Form::select('participant_type[]', ['Gift' => 'Gift For', 'Trade' => 'Traded For', 'Comm' => 'Commissioned', 'Comm (Currency)' => 'Commissioned ('.$currency->name.')'], null, ['class' => 'form-control mr-2', 'placeholder' => 'Select Role']) !!}
+            <a href="#" class="remove-participant btn btn-danger mb-2">×</a>
         </div>
     </div>
 
@@ -239,6 +296,29 @@ $sideGallery = $gallery ?>
                 $trigger.parent().parent().remove();
             }
 
+            $('.original.participant-select').selectize();
+            $('#add-participant').on('click', function(e) {
+                e.preventDefault();
+                addParticipantRow();
+            });
+            $('.remove-participant').on('click', function(e) {
+                e.preventDefault();
+                removeParticipantRow($(this));
+            })
+            function addParticipantRow() {
+                var $clone = $('.participant-row').clone();
+                $('#participantList').append($clone);
+                $clone.removeClass('hide participant-row');
+                $clone.find('.remove-participant').on('click', function(e) {
+                    e.preventDefault();
+                    removeParticipantRow($(this));
+                })
+                $clone.find('.participant-select').selectize();
+            }
+            function removeParticipantRow($trigger) {
+                $trigger.parent().parent().remove();
+            }
+
             var $image = $('#image');
             function readURL(input) {
                 if (input.files && input.files[0]) {
@@ -255,6 +335,7 @@ $sideGallery = $gallery ?>
                 readURL(this);
             });
             
+            $('.original.gallery-select').selectize();
         });
     </script>
 @endif

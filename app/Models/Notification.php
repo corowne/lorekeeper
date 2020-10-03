@@ -143,7 +143,7 @@ class Notification extends Model
     const CHARACTER_TRANSFER_ACCEPTABLE     = 38;
     const COMMENT_MADE                      = 239;
     const COMMENT_REPLY                     = 240;
-    const GALLERY_COLLABORATOR              = 505;
+    const GALLERY_SUBMISSION_COLLABORATOR   = 505;
     const GALLERY_COLLABORATORS_APPROVED    = 506;
     const GALLERY_SUBMISSION_ACCEPTED       = 507;
     const GALLERY_SUBMISSION_REJECTED       = 508;
@@ -152,4 +152,6 @@ class Notification extends Model
     const GALLERY_SUBMISSION_CHARACTER      = 511;
     const GALLERY_SUBMISSION_FAVORITE       = 512;
     const GALLERY_SUBMISSION_STAFF_COMMENTS = 513;
+    const GALLERY_SUBMISSION_EDITED         = 514;
+    const GALLERY_SUBMISSION_PARTICIPANT    = 515;
 }

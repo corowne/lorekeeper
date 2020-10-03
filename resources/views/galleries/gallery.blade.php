@@ -18,9 +18,9 @@
     <div class="d-flex">
         @foreach($chunk as $submission)
             <div class="text-center mx-2">
-                {!! $submission->thumbnail !!}
+                <a href="{{ $submission->url }}">{!! $submission->thumbnail !!}</a>
                 <div class="mt-1">
-                    <a href="{{ $submission->url }}" class="h5 mb-0">@if(!$submission->isVisible) <i class="fas fa-eye-slash"></i> @endif {{ $submission->title }}</a>
+                    <a href="{{ $submission->url }}" class="h5 mb-0">@if(!$submission->isVisible) <i class="fas fa-eye-slash"></i> @endif {{ $submission->displayTitle }}</a>
                 </div>
                 <div class="small">
                     by {!! $submission->credits !!}

@@ -1,12 +1,12 @@
 @extends('galleries.layout')
 
-@section('gallery-title') {{ $submission->title }} @endsection
+@section('gallery-title') {{ $submission->displayTitle }} @endsection
 
 @section('gallery-content')
-{!! breadcrumbs(['gallery' => 'gallery', $submission->gallery->displayName => 'gallery/'.$submission->gallery->id, $submission->title => 'gallery/view/'.$submission->id ]) !!}
+{!! breadcrumbs(['gallery' => 'gallery', $submission->gallery->displayName => 'gallery/'.$submission->gallery->id, $submission->displayTitle => 'gallery/view/'.$submission->id ]) !!}
 
 <h1>
-    @if(!$submission->isVisible) <i class="fas fa-eye-slash"></i> @endif {{ $submission->title }}
+    @if(!$submission->isVisible) <i class="fas fa-eye-slash"></i> @endif {{ $submission->displayTitle }}
     <div class="float-right">
         @if(Auth::check())
             {!! Form::open(['url' => '/gallery/favorite/'.$submission->id]) !!} 
@@ -14,6 +14,7 @@
                     {!! Form::button('<i class="fas fa-star"></i> ', ['class' => 'btn btn'. ($submission->favorites->where('user_id', Auth::user()->id)->first() == null ? 'btn-outline-primary' : 'btn-primary'), 'data-toggle' => 'tooltip', 'title' => ($submission->favorites->where('user_id', Auth::user()->id)->first() == null ? 'Add to' : 'Remove from').' your Favorites', 'type' => 'submit']) !!}
                 @endif     
                 @if($submission->user->id == Auth::user()->id || Auth::user()->hasPower('manage_submissions'))
+                    <a class="btn btn-outline-primary" href="/gallery/queue/{{ $submission->id }}" data-toggle="tooltip" title="View Log Details"><i class="fas fa-clipboard-list"></i></a>    
                     <a class="btn btn-outline-primary" href="/gallery/edit/{{ $submission->id }}"><i class="fas fa-edit"></i> Edit</a>
                 @endif
             {!! Form::close() !!}
@@ -36,7 +37,7 @@
 @if(isset($submission->parsed_text) && $submission->parsed_text) <div class="card mx-md-4 mb-4"><div class="card-body"> @endif
     @if(isset($submission->hash) && $submission->hash)
         <div class="text-center mb-4">
-            <a href="{{ $submission->imageUrl }}" data-lightbox="entry" data-title="{{ $submission->title }}">
+            <a href="{{ $submission->imageUrl }}" data-lightbox="entry" data-title="{{ $submission->displayTitle }}">
                 <img src="{{ $submission->imageUrl }}" class="image" style="max-width:100%; {{ isset($submission->parsed_text) && $submission->parsed_text ? 'max-height:50vh;' : 'max-height:70vh;' }} border-radius:.5em;" data-toggle="tooltip" title="Click to view larger size"/>
             </a>
         </div>
@@ -56,7 +57,7 @@
             <div class="col-md ml-md-2">
                 <div class="card">
                     <div class="card-header">
-                        <h5>{{ $submission->title }}</h5>
+                        <h5>{{ $submission->displayTitle }}</h5>
                         <div class="float-right">
                             @if(Auth::check() && ($submission->user->id != Auth::user()->id && $submission->collaborators->where('user_id', Auth::user()->id)->first() == null) && $submission->isVisible)
                                 {!! Form::open(['url' => '/gallery/favorite/'.$submission->id]) !!} 
@@ -86,12 +87,12 @@
             </div>
         </div>
     </div>
-    @if($submission->collaborators->count() || $submission->characters->count())
+    @if($submission->collaborators->count() || $submission->characters->count() || $submission->participants->count())
         <div class="col-md-4 col-lg-3">
             @if($submission->collaborators->count())
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5>Collaboration Info</h5>
+                        <h5>Collaborators</h5>
                     </div>
                     <div class="card-body">
                         @if($submission->status == 'Pending' && Auth::check() && $submission->collaborators->where('user_id', Auth::user()->id)->first() != null)
@@ -127,6 +128,20 @@
                                 </div>
                             @endforeach
                         @endif
+                    </div>
+                </div>
+            @endif
+            @if($submission->participants->count())
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Participants</h5>
+                    </div>
+                    <div class="card-body">
+                        @foreach($submission->participants as $participant)
+                            <div class="d-flex">
+                                {!! $participant->user->displayName !!}: {{ $participant->displayType }}
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             @endif

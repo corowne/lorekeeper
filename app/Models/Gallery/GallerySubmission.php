@@ -5,7 +5,9 @@ namespace App\Models\Gallery;
 use Config;
 use DB;
 use Auth;
+use Settings;
 use Carbon\Carbon;
+use App\Models\Currency\Currency;
 use App\Models\Model;
 
 use Laravelista\Comments\Commentable;
@@ -88,15 +90,23 @@ class GallerySubmission extends Model
     }
 
     /**
-     * Get the user who made the submission.
+     * Get the collaborating users on the submission.
      */
     public function collaborators() 
     {
-        return $this->hasMany('App\Models\Gallery\GalleryCollaborator', 'gallery_submission_id');
+        return $this->hasMany('App\Models\Gallery\GalleryCollaborator', 'gallery_submission_id')->where('type', 'Collab');
     }
 
     /**
-     * Get the user who made the submission.
+     * Get the user(s) who are related to the submission in some way.
+     */
+    public function participants() 
+    {
+        return $this->hasMany('App\Models\Gallery\GalleryCollaborator', 'gallery_submission_id')->where('type', '!=', 'Collab');
+    }
+
+    /**
+     * Get the characters associated with the submission.
      */
     public function characters() 
     {
@@ -104,7 +114,7 @@ class GallerySubmission extends Model
     }
 
     /**
-     * Get the user who made the submission.
+     * Get any favorites on the submission.
      */
     public function favorites() 
     {
@@ -185,7 +195,8 @@ class GallerySubmission extends Model
      */
     public function scopeRequiresAward($query)
     {
-        return $query->where('status', 'Accepted');
+        if(!Settings::get('gallery_submissions_reward_currency')) return null;
+        return $query->where('status', 'Accepted')->whereIn('gallery_id', Gallery::where('currency_enabled', 1)->pluck('id')->toArray());
     }
 
     /**
@@ -298,9 +309,9 @@ class GallerySubmission extends Model
     {
         if(isset($this->hash)) return '<img class="img-thumbnail" src="'.$this->thumbnailUrl.'"/>';
         return 
-        '<div class="mx-auto img-thumbnail text-left" style="height:'.Config::get('lorekeeper.settings.masterlist_thumbnails.height').'px; width:'.Config::get('lorekeeper.settings.masterlist_thumbnails.width').'px;">
+        '<div class="mx-auto img-thumbnail text-left" style="height:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.height')+10).'px; width:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.width')+4).'px;">
             <span class="badge-primary px-2 py-1" style="border-radius:0 0 .5em 0; position:absolute; z-index:5;">Literature</span>
-            <div class="container-'.$this->id.' parsed-text pb-2 pr-2" style="height:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.height')-10).'px; width:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.width')-4).'px; overflow:hidden;">
+            <div class="container-'.$this->id.' parsed-text pb-2 pr-2" style="height:'.Config::get('lorekeeper.settings.masterlist_thumbnails.height').'px; width:'.Config::get('lorekeeper.settings.masterlist_thumbnails.width').'px; overflow:hidden;">
                 <div class="content-'.$this->id.' text-body">'.$this->parsed_text.'</div>
             </div>
         </div>
@@ -331,13 +342,23 @@ class GallerySubmission extends Model
     }
 
     /**
-     * Get the viewing URL of the submission/claim.
+     * Get the title of the submission, with prefix.
+     *
+     * @return string
+     */
+    public function getDisplayTitleAttribute()
+    {
+        return $this->prefix.$this->attributes['title'];
+    }
+
+    /**
+     * Get the display name of the submission.
      *
      * @return string
      */
     public function getDisplayNameAttribute()
     {
-        return '<a href="'.$this->url.'">'.$this->title.'</a>';
+        return '<a href="'.$this->url.'">'.$this->displayTitle.'</a>';
     }
 
     /**
@@ -348,6 +369,40 @@ class GallerySubmission extends Model
     public function getUrlAttribute()
     {
         return url('gallery/view/'.$this->id);
+    }
+
+    /**
+     * Checks if all of a submission's collaborators have approved or no.
+     *
+     * @return string
+     */
+    public function getPrefixAttribute()
+    {
+        $currencyName = Currency::find(Settings::get('group_currency'))->abbreviation ? Currency::find(Settings::get('group_currency'))->abbreviation : Currency::find(Settings::get('group_currency'))->name;
+        
+        $prefixList = [];
+        if($this->prompt && isset($this->prompt->prefix)) $prefixList[] = $this->prompt->prefix;
+        foreach($this->participants as $participant) {
+            switch($participant->type) {
+                case 'Collab':
+                    $prefixList[] = 'Collab';
+                    break;
+                case 'Trade':
+                    $prefixList[] = 'Trade';
+                    break;
+                case 'Gift':
+                    $prefixList[] = 'Gift';
+                    break;
+                case 'Comm':
+                    $prefixList[] = 'Comm';
+                    break;
+                case 'Comm (Currency)':
+                    $prefixList[] = 'Comm ('.$currencyName.')';
+                    break;
+            }
+        }
+        if($prefixList != null) return '['.implode(' : ', $prefixList).'] ';
+        return null;
     }
 
     /**
@@ -396,5 +451,5 @@ class GallerySubmission extends Model
         if($this->collaborators->where('has_approved', 0)->count()) return false;
         return true;
     }
-    
+
 }

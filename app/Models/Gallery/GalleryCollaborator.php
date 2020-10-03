@@ -5,6 +5,9 @@ namespace App\Models\Gallery;
 use Config;
 use DB;
 use Carbon\Carbon;
+
+use App\Models\Currency\Currency;
+
 use App\Models\Model;
 
 class GalleryCollaborator extends Model
@@ -16,7 +19,7 @@ class GalleryCollaborator extends Model
      */
     protected $fillable = [
         'gallery_submission_id', 'user_id', 
-        'has_approved', 'data'
+        'has_approved', 'data', 'type'
     ];
 
     /**
@@ -53,5 +56,34 @@ class GalleryCollaborator extends Model
         ACCESSORS
 
     **********************************************************************************************/
+
+    /**
+     * Get the display name of the participant's type.
+     *
+     * @return string
+     */
+    public function getDisplayTypeAttribute()
+    {
+        switch($this->type) {
+            default:
+                flash('Invalid type selected.')->error();
+                break;
+            case 'Collab':
+                return 'Collaborator';
+                break;
+            case 'Trade':
+                return 'Trade With';
+                break;
+            case 'Gift':
+                return 'Gift For';
+                break;
+            case 'Comm':
+                return 'Commissioned';
+                break;
+            case 'Comm (Currency)':
+                return 'Commissioned ('.Currency::find(Settings::get('group_currency'))->name.')';
+                break;
+        }
+    }
 
 }

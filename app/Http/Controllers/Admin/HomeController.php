@@ -37,7 +37,7 @@ class HomeController extends Controller
             'galleryRequireApproval' => $galleryRequireApproval,
             'galleryCurrencyAwards' => $galleryCurrencyAwards,
             'gallerySubmissionCount' => GallerySubmission::collaboratorApproved()->where('status', 'Pending')->count(),
-            'galleryAwardCount' => GallerySubmission::where('status', 'Accepted')->requiresAward()->count()
+            'galleryAwardCount' => GallerySubmission::requiresAward()->where('is_valued', 0)->count()
         ]);
     }
 }

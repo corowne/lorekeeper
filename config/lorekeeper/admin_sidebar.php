@@ -58,7 +58,11 @@ return [
         'links' => [
             [
                 'name' => 'Gallery Submissions',
-                'url' => 'admin/gallery'
+                'url' => 'admin/gallery/submissions'
+            ],
+            [
+                'name' => 'Gallery Currency Awards',
+                'url' => 'admin/gallery/currency'
             ],
             [
                 'name' => 'Prompt Submissions',

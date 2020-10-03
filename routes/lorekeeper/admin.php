@@ -394,8 +394,10 @@ Route::group(['prefix' => 'claims', 'middleware' => 'power:manage_submissions'],
 
 # SUBMISSIONS
 Route::group(['prefix' => 'gallery', 'middleware' => 'power:manage_submissions'], function() {
-    Route::get('/', 'GalleryController@getSubmissionIndex');
-    Route::get('/{status}', 'GalleryController@getSubmissionIndex')->where('status', 'pending|accepted|rejected');
+    Route::get('/submissions', 'GalleryController@getSubmissionIndex');
+    Route::get('/submissions/{status}', 'GalleryController@getSubmissionIndex')->where('status', 'pending|accepted|rejected');
+    Route::get('/currency', 'GalleryController@getCurrencyIndex');
+    Route::get('/currency/{status}', 'GalleryController@getCurrencyIndex')->where('status', 'pending|valued');
     Route::post('edit/{id}/{action}', 'GalleryController@postEditSubmission')->where('action', 'accept|reject|comment|move|value');
 });
 

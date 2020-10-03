@@ -18,7 +18,7 @@
                             if($vote == 2) $approveSum[$key] += 1;
                         }
                     ?>
-                    <div class="row my-2">
+                    <div class="row mt-2">
                         <div class="col-6 text-right text-danger">
                             {{ $rejectSum[$key] }}/{{ $submission->gallery->votes_required }}
                             {!! Form::open(['url' => 'admin/gallery/edit/'.$submission->id.'/reject', 'id' => 'voteRejectForm']) !!}
@@ -32,10 +32,10 @@
                             {!! Form::close() !!}
                         </div>
                     </div>
+                @endif
 
-                    @if($queue)
-                        <h6><a href="{{ $submission->queueUrl }}" data-toggle="tooltip" title="Check vote logs and leave staff comments here.">Detailed Log</a></h6>
-                    @endif
+                @if(isset($queue) && $queue)
+                    <h6 class="mt-2"><a href="{{ $submission->queueUrl }}" data-toggle="tooltip" title="Check vote logs, process currency rewards, and leave staff comments here.">Detailed Log</a></h6>
                 @endif
             </div>
         </div>
