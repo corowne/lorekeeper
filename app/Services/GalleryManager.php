@@ -117,7 +117,7 @@ class GalleryManager extends Service
                 ]);
             }
 
-            if(!$submission->collaborators->count() && (!Settings::get('gallery_submissions_require_approval') || (Settings::get('gallery_submissions_require_approval') && $submission->gallery->votes_required == 0))) $this->approveSubmission($submission);
+            if(!$submission->collaborators->count() && (!Settings::get('gallery_submissions_require_approval') || (Settings::get('gallery_submissions_require_approval') && $submission->gallery->votes_required == 0))) $this->acceptSubmission($submission);
 
             return $this->commitReturn($submission);
         } catch(\Exception $e) { 
@@ -285,7 +285,7 @@ class GalleryManager extends Service
                             ]);
                         }
                     }
-                    else $this->approveSubmission($submission);
+                    else $this->acceptSubmission($submission);
                 }
             }
 
@@ -342,8 +342,9 @@ class GalleryManager extends Service
             }
 
             // And if so, process the submission
-            if($action == 'reject' && $rejectSum >= $submission->gallery->votes_required) $this->rejectSubmission($submission);
-            if($action == 'accept' && $approveSum >= $submission->gallery->votes_required) $this->approveSubmission($submission);
+            if($action == 'reject' && $rejectSum >= $submission->gallery->votes_required) 
+            $this->rejectSubmission($submission);
+            if($action == 'accept' && $approveSum >= $submission->gallery->votes_required) $this->acceptSubmission($submission);
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
@@ -395,12 +396,12 @@ class GalleryManager extends Service
     }
 
     /**
-     * Processes approval for a submission.
+     * Processes acceptance for a submission.
      *
      * @param  \App\Models\Gallery\GallerySubmission  $submission
      * @return bool|\App\Models\Gallery\GallerySubmission
      */
-    private function approveSubmission($submission)
+    private function acceptSubmission($submission)
     {
         DB::beginTransaction();
 
