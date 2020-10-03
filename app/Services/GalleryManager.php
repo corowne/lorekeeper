@@ -285,14 +285,7 @@ class GalleryManager extends Service
                             ]);
                         }
                     }
-                    else {
-                        $this->approveSubmission($submission);
-
-                        Notifications::create('GALLERY_SUBMISSION_APPROVED', $submission->user, [
-                            'submission_title' => $submission->title,
-                            'submission_id' => $submission->id,
-                        ]);
-                    }
+                    else $this->approveSubmission($submission);
                 }
             }
 
@@ -418,6 +411,30 @@ class GalleryManager extends Service
 
             $submission->update(['status' => 'Accepted']);
 
+            // If the submission wouldn't have been automatically approved, send a notification
+            if(Settings::get('gallery_submissions_require_approval') || (!Settings::get('gallery_submissions_require_approval') && $submission->collaborators->count())) {
+                Notifications::create('GALLERY_SUBMISSION_ACCEPTED', $submission->user, [
+                    'submission_title' => $submission->title,
+                    'submission_id' => $submission->id
+                ]);
+            }
+
+            if($submission->characters->count()) {
+                // Send a notification to included characters' owners now that the submission is accepted
+                // but not for the submitting user's own characters
+                foreach($submission->characters as $character) {
+                    if($character->character->user->id != $submission->user->id) {
+                        Notifications::create('GALLERY_SUBMISSION_CHARACTER', $character->character->user, [
+                            'sender' => $submission->user->name,
+                            'sender_url' => $submission->user->url,
+                            'character_url' => $character->character->url,
+                            'character' => isset($character->character->name) ? $character->character->fullName : $character->character->slug,
+                            'submission_id' => $submission->id,
+                        ]);
+                    }
+                }
+            }
+
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
             $this->setError('error', $e->getMessage());
@@ -441,6 +458,11 @@ class GalleryManager extends Service
             if($submission->status != 'Pending') throw new \Exception("This submission isn't pending."); 
 
             $submission->update(['status' => 'Rejected']);
+
+            Notifications::create('GALLERY_SUBMISSION_REJECTED', $submission->user, [
+                'submission_title' => $submission->title,
+                'submission_id' => $submission->id,
+            ]);
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 

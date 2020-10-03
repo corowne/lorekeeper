@@ -270,15 +270,15 @@ return [
         'url' => 'gallery/view/{submission_id}'
     ],
 
-    // GALLERY_SUBMISSION_APPROVED
+    // GALLERY_SUBMISSION_ACCEPTED
     507 => [
-        'message' => 'Your submission <strong>{submission_title}</strong> (#{submission_id}) was approved. (<a href="{url}">View Submission</a>)',
+        'message' => 'Your submission <strong>{submission_title}</strong> (#{submission_id}) was accepted. (<a href="{url}">View Submission</a>)',
         'url' => 'gallery/queue/{submission_id}'
     ],
 
     // GALLERY_SUBMISSION_REJECTED
     508 => [
-        'message' => 'Your submission (#{submission_id}) was rejected. (<a href="{url}">View Submission</a>)',
+        'message' => 'Your submission <strong>{submission_title}</strong> (#{submission_id}) was rejected. (<a href="{url}">View Submission</a>)',
         'url' => 'submissions/queue/{submission_id}'
     ],
 
