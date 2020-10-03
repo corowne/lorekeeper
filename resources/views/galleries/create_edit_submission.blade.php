@@ -213,7 +213,7 @@ $sideGallery = $gallery ?>
 
             $('.archive-submission-button').on('click', function(e) {
                 e.preventDefault();
-                loadModal("{{ url('galleries/archive') }}/{{ $submission->id }}", 'Archive Submission');
+                loadModal("{{ url('gallery/archive') }}/{{ $submission->id }}", 'Archive Submission');
             });
 
             $('.original.collaborator-select').selectize();

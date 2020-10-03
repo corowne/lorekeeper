@@ -449,6 +449,29 @@ class GalleryManager extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Archives a submission.
+     *
+     * @param  \App\Models\Gallery\GallerySubmission  $submission
+     * @return bool
+     */
+    public function archiveSubmission($submission, $user)
+    {
+        DB::beginTransaction();
+
+        try {         
+            if(!$submission) throw new \Exception("Invalid submission selected.");
+            if($submission->user->id != $user->id && !$user->hasPower('manage_submissions')) throw new \Exception("You can't archive this submission.");
+
+            if($submission->is_visible) $submission->update(['is_visible' => 0]);
+            else $submission->update(['is_visible' => 1]);
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
 
     /**
      * Toggles favorite status on a submission for a user.

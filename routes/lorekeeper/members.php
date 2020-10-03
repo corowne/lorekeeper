@@ -121,8 +121,8 @@ Route::group(['prefix' => 'gallery'], function() {
 
     Route::post('collaborator/{id}', 'GalleryController@postEditCollaborator');
     
-    Route::get('{id}/delete', 'GalleryController@getDeleteSubmission');
-    Route::post('{id}/delete', 'GalleryController@postDeleteSubmission');
+    Route::get('archive/{id}', 'GalleryController@getArchiveSubmission');
+    Route::post('archive/{id}', 'GalleryController@postArchiveSubmission');
 });
 
 Route::group(['prefix' => 'submissions', 'namespace' => 'Users'], function() {

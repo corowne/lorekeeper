@@ -186,6 +186,20 @@ class GalleryController extends Controller
     }
 
     /**
+     * Gets the submission archival modal.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getArchiveSubmission($id)
+    {
+        $submission = GallerySubmission::find($id);
+        return view('galleries._archive_submission', [
+            'submission' => $submission,
+        ]);
+    }
+
+    /**
      * Creates or edits a new gallery submission.
      *
      * @param  \Illuminate\Http\Request        $request
@@ -207,6 +221,25 @@ class GalleryController extends Controller
         else if (!$id && $gallery = $service->createSubmission($data, $currencyFormData, Auth::user())) {
             flash('Submission created successfully.')->success();
             return redirect()->to('gallery/submissions/pending');
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Archives a submission.
+     *
+     * @param  \Illuminate\Http\Request    $request
+     * @param  App\Services\GalleryManager $service
+     * @param  int                         $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postArchiveSubmission(Request $request, GalleryManager $service, $id)
+    {
+        if($id && $service->archiveSubmission(GallerySubmission::find($id), Auth::user())) {
+            flash('Submission updated successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

@@ -42,7 +42,7 @@
                             </div>
                         @endforeach
                     </div>
-                    @if($gallery->submissions->count() > 5)
+                    @if($gallery->submissions->where('status', 'Accepted')->count() > 5)
                         <div class="text-right"><a href="{{ url('gallery/'.$gallery->id) }}">See More...</a></div>
                     @endif
                 @else
