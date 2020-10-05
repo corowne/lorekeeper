@@ -17,6 +17,7 @@ use App\Models\Gallery\GalleryFavorite;
 use App\Models\User\User;
 use App\Models\Character\Character;
 use App\Models\Prompt\Prompt;
+use App\Models\Currency\Currency;
 
 class GalleryManager extends Service 
 {
@@ -52,14 +53,14 @@ class GalleryManager extends Service
             // Check that associated collaborators exist
             if(isset($data['collaborator_id'])) {
                 $collaborators = User::whereIn('id', $data['collaborator_id'])->get();
-                if(count($collaborators) != count($data['collaborator_id'])) throw new \Exception("One or more of the selected collaborators does not exist.");
+                if(count($collaborators) != count($data['collaborator_id'])) throw new \Exception("One or more of the selected collaborators does not exist, or you have entered a duplicate.");
             }
             else $collaborators = [];
 
             // Check that associated participants exist
             if(isset($data['participant_id'])) {
                 $participants = User::whereIn('id', $data['participant_id'])->get();
-                if(count($participants) != count($data['participant_id'])) throw new \Exception("One or more of the selected participants does not exist.");
+                if(count($participants) != count($data['participant_id'])) throw new \Exception("One or more of the selected participants does not exist, or you have entered a duplicate.");
 
                 // Remove the submitting user and any collaborators from participants
                 $participants = $participants->whereNotIn('id', $user->id);
@@ -70,7 +71,7 @@ class GalleryManager extends Service
             // Check that associated characters exist
             if(isset($data['slug'])) {
                 $characters = Character::myo(0)->visible()->whereIn('slug', $data['slug'])->get();
-                if(count($characters) != count($data['slug'])) throw new \Exception("One or more of the selected characters does not exist.");
+                if(count($characters) != count($data['slug'])) throw new \Exception("One or more of the selected characters does not exist, or you have entered a duplicate.");
             }
             else $characters = [];
 
@@ -172,7 +173,7 @@ class GalleryManager extends Service
                 // Check that associated collaborators exist
                 if(isset($data['collaborator_id'])) {
                     $collaborators = User::whereIn('id', $data['collaborator_id'])->get();
-                    if(count($collaborators) != count($data['collaborator_id'])) throw new \Exception("One or more of the selected users does not exist.");
+                    if(count($collaborators) != count($data['collaborator_id'])) throw new \Exception("One or more of the selected users does not exist, or you have entered a duplicate.");
                 }
                 else $collaborators = [];
 
@@ -194,7 +195,7 @@ class GalleryManager extends Service
                 // Check that associated participants exist
                 if(isset($data['participant_id'])) {
                     $participants = User::whereIn('id', $data['participant_id'])->get();
-                    if(count($participants) != count($data['participant_id'])) throw new \Exception("One or more of the selected participants does not exist.");
+                    if(count($participants) != count($data['participant_id'])) throw new \Exception("One or more of the selected participants does not exist, or you have entered a duplicate.");
                     // Remove the submitting user and any collaborators from participants
                     $participants = $participants->whereNotIn('id', $submission->user->id);
                     if(count($collaborators)) $participants = $participants->whereNotIn('id', $data['collaborator_id']);
@@ -219,7 +220,7 @@ class GalleryManager extends Service
             // Check that associated characters exist
             if(isset($data['slug'])) {
                 $characters = Character::myo(0)->visible()->whereIn('slug', $data['slug'])->get();
-                if(count($characters) != count($data['slug'])) throw new \Exception("One or more of the selected characters does not exist.");
+                if(count($characters) != count($data['slug'])) throw new \Exception("One or more of the selected characters does not exist, or you have entered a duplicate.");
             }
             else $characters = [];
 
@@ -600,19 +601,71 @@ class GalleryManager extends Service
             if(!$submission) throw new \Exception("Invalid submission selected.");
             if(!$user->hasPower('manage_submissions')) throw new \Exception("You can't evaluate this submission.");
 
-            $valuation = collect($data['value'])->toJson();
-            dd($valuation);
+            // Process data and award currency for each user associated with the submission
+            // First, set up CurrencyManager instance and log information
+            $currencyManager = new CurrencyManager;
+            $currency = Currency::find(Settings::get('group_currency'));
+
+            $awardType = 'Gallery Submission Reward';
+            $awardData = 'Received reward for gallery submission (<a href="'.$submission->url.'">#'.$submission->id.'</a>)';
             
+            $grantedList = [];
+            $awardQuantity = [];
 
-            $submission->update([]);
+            // Then cycle through associated users and award currency
+            if(isset($data['value']['submitted'])) {
+                if(!$currencyManager->creditCurrency($user, $submission->user, $awardType, $awardData, $currency, $data['value']['submitted'][$submission->user->id])) throw new \Exception("Failed to award currency to submitting user.");
 
-            // Send notifications to the submitting user and/or collaborators,
-            // as well as participants receiving currency
-            Notifications::create('GALLERY_SUBMISSION_STAFF_COMMENTS', $submission->user, [
-                'currency' => '',
-                'submission_title' => $submission->title,
-                'submission_id' => $submission->id,
+                $grantedList[] = $submission->user;
+                $awardQuantity[] = $data['value']['submitted'][$submission->user->id];
+            }
+
+            if(isset($data['value']['collaborator'])) {
+                foreach($submission->collaborators as $collaborator) {
+                    if($data['value']['collaborator'][$collaborator->user->id] > 0) {
+                        // Double check that the submitting user isn't being awarded currency twice
+                        if(isset($data['value']['submitted']) && $collaborator->user->id == $submission->user->id) throw new \Exception("Can't award currency to the submitting user twice.");
+
+                        if(!$currencyManager->creditCurrency($user, $collaborator->user, $awardType, $awardData, $currency, $data['value']['collaborator'][$collaborator->user->id])) throw new \Exception("Failed to award currency to one or more collaborators.");
+
+                        $grantedList[] = $collaborator->user;
+                        $awardQuantity[] = $data['value']['collaborator'][$collaborator->user->id];
+                    }
+                }
+            }
+
+            if(isset($data['value']['participant'])) {
+                foreach($submission->participants as $participant) {
+                    if($data['value']['participant'][$participant->user->id] > 0) {
+                        if(!$currencyManager->creditCurrency($user, $participant->user, $awardType, $awardData, $currency, $data['value']['participant'][$participant->user->id])) throw new \Exception("Failed to award currency to one or more participants.");
+
+                        $grantedList[] = $participant->user;
+                        $awardQuantity[] = $data['value']['participant'][$participant->user->id];
+                    }
+                }
+            }
+
+            // Collect and json encode existing as well as new data for storage
+            $valueData = collect([
+                'currencyData' => $submission->data['currencyData'], 
+                'total' => $submission->data['total'], 
+                'value' => $data['value']
+            ])->toJson();
+
+            $submission->update([
+                'data' => $valueData,
+                'is_valued' => 1,
             ]);
+
+            // Send a notification to each user that received a currency award
+            foreach($grantedList as $key=>$grantedUser) {
+                Notifications::create('GALLERY_SUBMISSION_VALUED', $grantedUser, [
+                    'currency_quantity' => $awardQuantity[$key],
+                    'currency_name' => $currency->name,
+                    'submission_title' => $submission->title,
+                    'submission_id' => $submission->id,
+                ]);
+            }
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 

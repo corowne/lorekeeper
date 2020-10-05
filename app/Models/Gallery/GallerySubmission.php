@@ -207,7 +207,7 @@ class GallerySubmission extends Model
      */
     public function scopeUserSubmissions($query)
     {
-        return $query->where('user_id', Auth::user()->id)->orWhereIn('id', GalleryCollaborator::where('user_id', Auth::user()->id)->pluck('gallery_submission_id')->toArray());
+        return $query->where('user_id', Auth::user()->id)->orWhereIn('id', GalleryCollaborator::where('user_id', Auth::user()->id)->where('type', 'Collab')->pluck('gallery_submission_id')->toArray());
     }
 
     /**

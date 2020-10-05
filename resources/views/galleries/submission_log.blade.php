@@ -78,8 +78,8 @@
                                     @if($submission->collaborators->count())
                                         @foreach($submission->collaborators as $key=>$collaborator)
                                             <div class="form-group">    
-                                                {!! Form::label($collaborator->user->name) !!}:
-                                                {!! Form::number('value[collab]['.$collaborator->user->id.']', round(($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')), ['class' => 'form-control']) !!}
+                                                {!! Form::label($collaborator->user->name.' ('.$collaborator->data.')') !!}:
+                                                {!! Form::number('value[collaborator]['.$collaborator->user->id.']', round(($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')), ['class' => 'form-control']) !!}
                                             </div>
                                         @endforeach
                                     @endif
@@ -91,6 +91,10 @@
                                             </div>
                                         @endforeach
                                     @endif
+                                    <div class="form-group">
+                                        {!! Form::checkbox('ineligible', 1, false, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'data-onstyle' => 'danger']) !!}
+                                        {!! Form::label('ineligible', 'Inelegible/Award No Currency', ['class' => 'form-check-label ml-3']) !!} {!! add_help('When on, this will mark the submission as valued, but will not award currency to any of the users listed.') !!}
+                                    </div>
                                     <div class="text-right">
                                         {!! Form::submit('Submit', ['class' => 'btn btn-primary']) !!}
                                     </div>
@@ -99,7 +103,25 @@
                                 <p>This submission hasn't been evaluated yet. You'll receive a notification once it has!</p>
                             @endif
                         @else
-                            results
+                            <p>{{ $currency->name }} has been awarded for this submission.</p>
+                            <p>
+                                @if(isset($submission->data['value']['submitted']))
+                                    {!! $submission->user->displayName !!}: {!! $currency->display($submission->data['value']['submitted'][$submission->user->id]) !!}
+                                    <br/>
+                                @endif
+                                @if($submission->collaborators->count())
+                                    @foreach($submission->collaborators as $collaborator)
+                                        {!! $collaborator->user->displayName !!} ({{ $collaborator->data }}): {!! $currency->display($submission->data['value']['collaborator'][$collaborator->user->id]) !!}
+                                    <br/>
+                                    @endforeach
+                                @endif
+                                @if($submission->participants->count())
+                                    @foreach($submission->participants as $participant)
+                                        {!! $participant->user->displayName !!} ({{ $participant->displayType }}): {!! $currency->display($submission->data['value']['participant'][$participant->user->id]) !!}
+                                    <br/>
+                                    @endforeach
+                                @endif
+                            </p>
                         @endif
                     @else
                         <p>This submission is not eligible for currency awards{{ $submission->status == 'Pending' ? ' yet-- it must be accepted first' : '' }}.</p>

@@ -57,7 +57,7 @@
             <div class="col-md">
                 <h3>Basic Information</h3>
                 <div class="form-group">
-                    {!! Form::label('Title') !!} {!! add_help('You do not need to indicate that a piece is a trade, gift, for a prompt etc. as this will be automatically added based on your input elsewhere in this form.') !!}
+                    {!! Form::label('Title') !!} {!! add_help('You <strong>do not</strong> need to indicate that a piece is a trade, gift, for a prompt etc. as this will be automatically added based on your input elsewhere in this form.') !!}
                     {!! Form::text('title', $submission->title, ['class' => 'form-control']) !!}
                 </div>
 
