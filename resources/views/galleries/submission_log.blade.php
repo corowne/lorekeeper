@@ -103,25 +103,29 @@
                                 <p>This submission hasn't been evaluated yet. You'll receive a notification once it has!</p>
                             @endif
                         @else
-                            <p>{{ $currency->name }} has been awarded for this submission.</p>
-                            <p>
-                                @if(isset($submission->data['value']['submitted']))
-                                    {!! $submission->user->displayName !!}: {!! $currency->display($submission->data['value']['submitted'][$submission->user->id]) !!}
-                                    <br/>
-                                @endif
-                                @if($submission->collaborators->count())
-                                    @foreach($submission->collaborators as $collaborator)
-                                        {!! $collaborator->user->displayName !!} ({{ $collaborator->data }}): {!! $currency->display($submission->data['value']['collaborator'][$collaborator->user->id]) !!}
-                                    <br/>
-                                    @endforeach
-                                @endif
-                                @if($submission->participants->count())
-                                    @foreach($submission->participants as $participant)
-                                        {!! $participant->user->displayName !!} ({{ $participant->displayType }}): {!! $currency->display($submission->data['value']['participant'][$participant->user->id]) !!}
-                                    <br/>
-                                    @endforeach
-                                @endif
-                            </p>
+                            @if(isset($submission->data['ineligible']) && $submission->data['ineligible'] == 1)
+                                <p>This submission has been evaluated as ineligible for {{ $currency->name }} rewards.</p>
+                            @else
+                                <p>{{ $currency->name }} has been awarded for this submission.</p>
+                                <p>
+                                    @if(isset($submission->data['value']['submitted']))
+                                        {!! $submission->user->displayName !!}: {!! $currency->display($submission->data['value']['submitted'][$submission->user->id]) !!}
+                                        <br/>
+                                    @endif
+                                    @if($submission->collaborators->count())
+                                        @foreach($submission->collaborators as $collaborator)
+                                            {!! $collaborator->user->displayName !!} ({{ $collaborator->data }}): {!! $currency->display($submission->data['value']['collaborator'][$collaborator->user->id]) !!}
+                                        <br/>
+                                        @endforeach
+                                    @endif
+                                    @if($submission->participants->count())
+                                        @foreach($submission->participants as $participant)
+                                            {!! $participant->user->displayName !!} ({{ $participant->displayType }}): {!! $currency->display($submission->data['value']['participant'][$participant->user->id]) !!}
+                                        <br/>
+                                        @endforeach
+                                    @endif
+                                </p>
+                            @endif
                         @endif
                     @else
                         <p>This submission is not eligible for currency awards{{ $submission->status == 'Pending' ? ' yet-- it must be accepted first' : '' }}.</p>

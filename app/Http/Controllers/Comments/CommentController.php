@@ -16,6 +16,7 @@ use App\Models\Comment;
 use App\Models\Sales;
 use App\Models\User\User;
 use App\Models\News;
+use App\Models\Gallery\GallerySubmission;
 
 use Notifications;
 
@@ -101,7 +102,13 @@ class CommentController extends Controller implements CommentControllerInterface
                 $post = 'your news post'; // Simple message to show if it's profile/sales/news
                 $link = $news->url . '/#comment-' . $comment->getKey();
                 break;    
-            } 
+            case 'App\Models\Gallery\GallerySubmission':
+                $submission = GallerySubmission::find($comment->commentable_id);
+                $recipient = $submission->user; // User that has been commented on (or owner of sale post)
+                $post = 'your gallery submission'; // Simple message to show if it's profile/sales/news
+                $link = $submission->url . '/#comment-' . $comment->getKey();
+                break;    
+        } 
 
 
         if($recipient != $sender) {

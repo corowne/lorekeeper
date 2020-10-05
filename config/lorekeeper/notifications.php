@@ -285,7 +285,7 @@ return [
     // GALLERY_SUBMISSION_VALUED
     509 => [
         'message' => 'You have been awarded {currency_quantity} {currency_name} for the gallery submission <strong>{submission_title}</strong> (#{submission_id}). (<a href="{url}">View Submission</a>)',
-        'url' => 'gallery/view/{submission_id}'
+        'url' => 'gallery/queue/{submission_id}'
     ],
 
     // GALLERY_SUBMISSION_MOVED

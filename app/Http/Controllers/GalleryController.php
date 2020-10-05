@@ -11,6 +11,7 @@ use App\Models\User\User;
 use App\Models\Character\Character;
 use App\Models\Prompt\Prompt;
 use App\Models\Currency\Currency;
+use App\Models\Comment;
 
 use App\Services\GalleryManager;
 
@@ -77,6 +78,7 @@ class GalleryController extends Controller
 
         return view('galleries.submission', [
             'submission' => $submission,
+            'commentCount' => Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->count(),
             'currency' => Currency::find(Settings::get('group_currency')),
         ]);
     }

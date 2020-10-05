@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use App\Models\Currency\Currency;
 use App\Models\Model;
 
-use Laravelista\Comments\Commentable;
+use App\Traits\Commentable;
 
 class GallerySubmission extends Model
 {
@@ -26,7 +26,7 @@ class GallerySubmission extends Model
         'hash', 'extension', 'text', 'parsed_text',
         'title', 'description', 'parsed_description',
         'prompt_id', 'data', 'is_visible', 'status', 
-        'vote_data', 'staff_id',
+        'vote_data', 'staff_id', 'is_valued',
         'staff_comments', 'parsed_staff_comments'
     ];
 

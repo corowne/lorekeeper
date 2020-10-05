@@ -28,7 +28,7 @@
             By {!! $submission->credits !!}
         </div>
         <div class="col-md text-right">
-            {{ $submission->favorites->count() }} Favorite{{ $submission->favorites->count() != 1 ? 's' : ''}} ・ {{ Laravelista\Comments\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->count() }} Comment{{ Laravelista\Comments\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->count() != 1 ? 's' : ''}}
+            {{ $submission->favorites->count() }} Favorite{{ $submission->favorites->count() != 1 ? 's' : ''}} ・ {{ $commentCount }} Comment{{ $commentCount != 1 ? 's' : ''}}
         </div>
     </diV>
 </div>
@@ -61,10 +61,10 @@
                         <div class="float-right">
                             @if(Auth::check() && ($submission->user->id != Auth::user()->id && $submission->collaborators->where('user_id', Auth::user()->id)->first() == null) && $submission->isVisible)
                                 {!! Form::open(['url' => '/gallery/favorite/'.$submission->id]) !!} 
-                                    {{ $submission->favorites->count() }} {!! Form::button('<i class="fas fa-star"></i> ', ['style' => 'border:0; border-radius:.5em;', 'class' => ($submission->favorites->where('user_id', Auth::user()->id)->first() != null ? 'btn-success' : ''), 'data-toggle' => 'tooltip', 'title' => ($submission->favorites->where('user_id', Auth::user()->id)->first() == null ? 'Add to' : 'Remove from').' your Favorites', 'type' => 'submit']) !!} ・ {{ Laravelista\Comments\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->count() }} <i class="fas fa-comment"></i>
+                                    {{ $submission->favorites->count() }} {!! Form::button('<i class="fas fa-star"></i> ', ['style' => 'border:0; border-radius:.5em;', 'class' => ($submission->favorites->where('user_id', Auth::user()->id)->first() != null ? 'btn-success' : ''), 'data-toggle' => 'tooltip', 'title' => ($submission->favorites->where('user_id', Auth::user()->id)->first() == null ? 'Add to' : 'Remove from').' your Favorites', 'type' => 'submit']) !!} ・ {{ $commentCount }} <i class="fas fa-comment"></i>
                                 {!! Form::close() !!}
                             @else
-                                {{ $submission->favorites->count() }} <i class="fas fa-star" data-toggle="tooltip" title="Favorites"></i> ・ {{ Laravelista\Comments\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->count() }} <i class="fas fa-comment" data-toggle="tooltip" title="Comments"></i>
+                                {{ $submission->favorites->count() }} <i class="fas fa-star" data-toggle="tooltip" title="Favorites"></i> ・ {{ $commentCount }} <i class="fas fa-comment" data-toggle="tooltip" title="Comments"></i>
                             @endif
                         </div>
                         In {!! $submission->gallery->displayName !!} ・ By {!! $submission->credits !!}
