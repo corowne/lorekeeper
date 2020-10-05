@@ -5,7 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Config;
 use App\Models\Model;
-use Laravelista\Comments\Commentable;
+use App\Traits\Commentable;
 
 class Sales extends Model
 {

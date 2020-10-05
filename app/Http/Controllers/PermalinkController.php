@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User\User;
 use App\Models\Model;
 
-use Laravelista\Comments\Comment;
+use App\Models\Comment;
 
 class PermalinkController extends Controller
 {

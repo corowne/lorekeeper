@@ -16,7 +16,7 @@ use App\Models\User\UserCharacterLog;
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
 use App\Models\Character\CharacterBookmark;
-use Laravelista\Comments\Commenter;
+use App\Traits\Commenter;
 
 class User extends Authenticatable implements MustVerifyEmail
 {

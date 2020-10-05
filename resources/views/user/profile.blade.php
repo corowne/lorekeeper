@@ -89,9 +89,8 @@
 <div class="text-right"><a href="{{ $user->url.'/characters' }}">View all...</a></div>
 <hr>
 <br><br>
-<div class="container">
+
 @comments(['model' => $user->profile,
         'perPage' => 5
-    ])
-</div>
+    ])  
 @endsection

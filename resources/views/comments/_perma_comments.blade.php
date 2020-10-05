@@ -1,10 +1,6 @@
 @inject('markdown', 'Parsedown')
 @php 
     $markdown->setSafeMode(true);
-    //TO DO:
-    // fixing permalink to replies for notification
-    // permalink to comment blade
-    // issue: https://github.com/laravelista/comments/issues/114
 @endphp
 @if(isset($reply) && $reply === true)
   <div id="comment-{{ $comment->getKey() }}" class="comment_replies border-left col-12 column mw-100 pr-0 pt-4" style="flex-basis: 100%;">
@@ -13,7 +9,7 @@
 @endif
 <div class="media-body row mw-100 mx-0" style="flex:1;flex-wrap:wrap;">
     <div class="d-none d-md-block">
-        <img class="mr-3 mt-2" src="/images/avatars/{{ $comment->commenter->avatar }}" style="width:70px; height:70px; border-radius:50%;" alt="{{ $comment->commenter->name ?? $comment->guest_name }} Avatar">
+        <img class="mr-3 mt-2" src="/images/avatars/{{ $comment->commenter->avatar }}" style="width:70px; height:70px; border-radius:50%;" alt="{{ $comment->commenter->name }} Avatar">
     </div>
     <div class="d-block" style="flex:1">
         <div class="row mx-0 px-0 align-items-md-end">
@@ -32,6 +28,7 @@
             <a href="{{ url('comment/').'/'.$comment->id }}"><i class="fas fa-link ml-1" style="opacity: 50%;"></i></a>
         </p>
     </div>
+    @if(Auth::check())
         <div class="my-1">
             @can('reply-to-comment', $comment)
                 <button data-toggle="modal" data-target="#reply-modal-{{ $comment->getKey() }}" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1  btn-faded text-uppercase"><i class="fas fa-comment"></i><span class="ml-2 d-none d-sm-inline-block">Reply</span></button>
@@ -46,7 +43,8 @@
                 <button data-toggle="modal" data-target="#delete-modal-{{ $comment->getKey() }}" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1 btn-outline-danger text-uppercase"><i class="fas fa-minus-circle"></i><span class="ml-2 d-none d-sm-inline-block">Delete</span></button>
             @endcan
         </div>
-
+    @endif
+    
         @can('edit-comment', $comment)
             <div class="modal fade" id="comment-modal-{{ $comment->getKey() }}" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
@@ -118,8 +116,8 @@
                                     </div>
                             <div class="modal-body">
                                 <div class="form-group">Are you sure you want to delete this comment?</div></div>
-                                <div class="alert alert-warning">Comments can be restored. Deleting a comment does not delete the comment record.</div>
-                    <a href="{{ route('comments.destroy', $comment->getKey()) }}" onclick="event.preventDefault();document.getElementById('comment-delete-form-{{ $comment->getKey() }}').submit();" class="btn btn-danger text-uppercase">Delete</a>
+                                <div class="alert alert-warning"><strong>Comments can be restored in the database.</strong> <br> Deleting a comment does not delete the comment record.</div>
+                                <a href="{{ route('comments.destroy', $comment->getKey()) }}" onclick="event.preventDefault();document.getElementById('comment-delete-form-{{ $comment->getKey() }}').submit();" class="btn btn-danger text-uppercase">Delete</a>
                         <form id="comment-delete-form-{{ $comment->getKey() }}" action="{{ route('comments.destroy', $comment->getKey()) }}" method="POST" style="display: none;">
                             @method('DELETE')
                             @csrf
@@ -160,10 +158,11 @@ url should be equal to the last replies permalink (e.g reply 5)--}}
 
         {{-- Recursion for children --}}
         <div class="w-100 mw-100">
-            @foreach($comment->children->sortByDesc('created_at') as $reply)
+            @php $children = $depth == 0 ? $comment->children->sortByDesc('created_at')->paginate(5) : $comment->children->sortByDesc('created_at') @endphp
+            @foreach($children as $reply)
                 @php $limit++; @endphp
 
-                @if($limit >= 5) 
+                @if($limit >= 5 && $depth >= 1) 
                     <a href="{{ url('comment/').'/'.$comment->id }}"><span class="btn btn-secondary w-100">See More Replies</span></a>
                     @break
                 @endif
@@ -171,9 +170,11 @@ url should be equal to the last replies permalink (e.g reply 5)--}}
                 @include('comments._perma_comments', [
                     'comment' => $reply,
                     'reply' => true,
-                    'limit' => $limit
+                    'limit' => $limit,
+                    'depth' => $depth+1
                 ])
-            @endforeach
+                @endforeach
+            @if($depth == 0) {!! $children->render() !!} @endif
         </div>
     </div>
 </div>

@@ -8,7 +8,7 @@
 @if(count($saleses))
     {!! $saleses->render() !!}
     @foreach($saleses as $sales)
-        @include('sales._sales', ['sales' => $sales])
+        @include('sales._sales', ['sales' => $sales, 'page' => FALSE])
     @endforeach
     {!! $saleses->render() !!}
 @else
