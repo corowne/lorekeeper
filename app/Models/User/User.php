@@ -16,6 +16,9 @@ use App\Models\User\UserCharacterLog;
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
 use App\Models\Character\CharacterBookmark;
+use App\Models\Gallery\GallerySubmission;
+use App\Models\Gallery\GalleryCollaborator;
+use App\Models\Gallery\GalleryFavorite;
 use App\Traits\Commenter;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -133,6 +136,22 @@ class User extends Authenticatable implements MustVerifyEmail
     public function items()
     {
         return $this->belongsToMany('App\Models\Item\Item', 'user_items')->withPivot('data', 'updated_at', 'id')->whereNull('user_items.deleted_at')->whereNull('user_items.holding_type');
+    }
+
+    /**
+     * Get all of the user's gallery submissions.
+     */
+    public function gallerySubmissions() 
+    {
+        return $this->hasMany('App\Models\Gallery\GallerySubmission')->where('user_id', $this->id)->orWhereIn('id', GalleryCollaborator::where('user_id', $this->id)->where('type', 'Collab')->pluck('gallery_submission_id')->toArray())->visible()->accepted()->orderBy('created_at', 'DESC');
+    }
+
+    /**
+     * Get all of the user's favorited gallery submissions.
+     */
+    public function galleryFavorites() 
+    {
+        return $this->hasMany('App\Models\Gallery\GalleryFavorite')->where('user_id', $this->id);
     }
 
     /**********************************************************************************************

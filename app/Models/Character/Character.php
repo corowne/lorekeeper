@@ -184,6 +184,14 @@ class Character extends Model
         return $this->belongsTo('App\Models\Rarity', 'rarity_id');
     }
 
+    /**
+     * Get the character's active design update.
+     */
+    public function gallerySubmissions() 
+    {
+        return $this->hasMany('App\Models\Gallery\GalleryCharacter', 'character_id');
+    }
+
     /**********************************************************************************************
     
         SCOPES

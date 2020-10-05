@@ -11,11 +11,15 @@ use App\Models\User\User;
 use App\Models\User\UserCurrency;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
+use App\Models\Gallery\Gallery;
+use App\Models\Gallery\GallerySubmission;
 
 use App\Models\User\UserItem;
 use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
 use App\Models\Item\UserItemLog;
+use App\Models\Gallery\GalleryFavorite;
+use App\Models\Gallery\GalleryCharacter;
 
 use App\Http\Controllers\Controller;
 
@@ -180,6 +184,50 @@ class UserController extends Controller
         return view('user.submission_logs', [
             'user' => $this->user,
             'logs' => $this->user->getSubmissions()
+        ]);
+    }
+
+    /**
+     * Shows a user's gallery submissions.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserGallery($name)
+    {
+        return view('user.gallery', [
+            'user' => $this->user,
+            'submissions' => $this->user->gallerySubmissions()->paginate(20),
+        ]);
+    }
+
+    /**
+     * Shows a user's gallery submission favorites.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserFavorites($name)
+    {
+        return view('user.favorites', [
+            'user' => $this->user,
+            'characters' => false,
+            'favorites' => GallerySubmission::whereIn('id', $this->user->galleryFavorites()->pluck('gallery_submission_id')->toArray())->visible()->accepted()->orderBy('created_at', 'DESC')->paginate(20),
+        ]);
+    }
+
+    /**
+     * Shows a user's gallery submission favorites.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserOwnCharacterFavorites($name)
+    {
+        return view('user.favorites', [
+            'user' => $this->user,
+            'characters' => true,
+            'favorites' => GallerySubmission::whereIn('id', $this->user->galleryFavorites()->pluck('gallery_submission_id')->toArray())->whereIn('id', GalleryCharacter::where('character_id', $this->user->characters->pluck('id')->toArray())->pluck('gallery_submission_id'))->visible()->accepted()->orderBy('created_at', 'DESC')->paginate(20),
         ]);
     }
 }
