@@ -1,10 +1,6 @@
 @inject('markdown', 'Parsedown')
 @php 
     $markdown->setSafeMode(true);
-    //TO DO:
-    // fixing permalink to replies for notification
-    // permalink to comment blade
-    // issue: https://github.com/laravelista/comments/issues/114
 @endphp
 @if(isset($reply) && $reply === true)
   <div id="comment-{{ $comment->getKey() }}" class="comment_replies border-left col-12 column mw-100 pr-0 pt-4" style="flex-basis: 100%;">
@@ -13,7 +9,7 @@
 @endif
 <div class="media-body row mw-100 mx-0" style="flex:1;flex-wrap:wrap;">
     <div class="d-none d-md-block">
-        <img class="mr-3 mt-2" src="/images/avatars/{{ $comment->commenter->avatar }}" style="width:70px; height:70px; border-radius:50%;" alt="{{ $comment->commenter->name ?? $comment->guest_name }} Avatar">
+        <img class="mr-3 mt-2" src="/images/avatars/{{ $comment->commenter->avatar }}" style="width:70px; height:70px; border-radius:50%;" alt="{{ $comment->commenter->name }} Avatar">
     </div>
     <div class="d-block" style="flex:1">
         <div class="row mx-0 px-0 align-items-md-end">
@@ -120,8 +116,8 @@
                                     </div>
                             <div class="modal-body">
                                 <div class="form-group">Are you sure you want to delete this comment?</div></div>
-                                <div class="alert alert-warning">Comments can be restored. Deleting a comment does not delete the comment record.</div>
-                    <a href="{{ route('comments.destroy', $comment->getKey()) }}" onclick="event.preventDefault();document.getElementById('comment-delete-form-{{ $comment->getKey() }}').submit();" class="btn btn-danger text-uppercase">Delete</a>
+                                <div class="alert alert-warning"><strong>Comments can be restored in the database.</strong> <br> Deleting a comment does not delete the comment record.</div>
+                                <a href="{{ route('comments.destroy', $comment->getKey()) }}" onclick="event.preventDefault();document.getElementById('comment-delete-form-{{ $comment->getKey() }}').submit();" class="btn btn-danger text-uppercase">Delete</a>
                         <form id="comment-delete-form-{{ $comment->getKey() }}" action="{{ route('comments.destroy', $comment->getKey()) }}" method="POST" style="display: none;">
                             @method('DELETE')
                             @csrf

@@ -7,9 +7,9 @@
     @include('sales._sales', ['sales' => $sales, 'page' => TRUE])
     <hr>
 <br><br>
-<div class="container">
+
 @comments(['model' => $sales,
         'perPage' => 5
     ])
-</div>
+
 @endsection

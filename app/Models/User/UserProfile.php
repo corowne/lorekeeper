@@ -3,7 +3,7 @@
 namespace App\Models\User;
 
 use App\Models\Model;
-use Laravelista\Comments\Commentable;
+use App\Traits\Commentable;
 
 class UserProfile extends Model
 {
