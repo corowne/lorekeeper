@@ -27,8 +27,8 @@
             </div>
             <div class="card-body">
                 @if($gallery->submissions->where('status', 'Accepted')->count())
-                    <div class="d-flex">
-                        @foreach($gallery->submissions->visible()->accepted()->take(5) as $submission)
+                    <div class="d-flex mw-100">
+                        @foreach($gallery->submissions->where('is_visible', 1)->where('status', 'Accepted')->take(5) as $submission)
                             <div class="text-center mx-2">
                                 <div>
                                     <a href="{{ $submission->url }}">{!! $submission->thumbnail !!}</a>
