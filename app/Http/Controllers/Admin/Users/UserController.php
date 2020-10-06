@@ -33,7 +33,7 @@ class UserController extends Controller
         });
         if($request->get('rank_id')) $query->where('rank_id', $request->get('rank_id'));
 
-        switch($sort['sort']) {
+        switch(isset($sort['sort']) ? $sort['sort'] : null) {
             default:
                 $query->orderBy('ranks.sort', 'DESC')->orderBy('name');
                 break;
