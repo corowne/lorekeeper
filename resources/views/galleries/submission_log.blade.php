@@ -72,14 +72,14 @@
                                     @if(!$submission->collaborators->count() || $submission->collaborators->where('user_id', $submission->user_id)->first() == null)
                                         <div class="form-group">    
                                             {!! Form::label($submission->user->name) !!}:
-                                            {!! Form::number('value[submitted]['.$submission->user->id.']', round(($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')), ['class' => 'form-control']) !!}
+                                            {!! Form::number('value[submitted]['.$submission->user->id.']', isset($submission->data['total']) ? round(($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')) : 0, ['class' => 'form-control']) !!}
                                         </div>
                                     @endif
                                     @if($submission->collaborators->count())
                                         @foreach($submission->collaborators as $key=>$collaborator)
                                             <div class="form-group">    
                                                 {!! Form::label($collaborator->user->name.' ('.$collaborator->data.')') !!}:
-                                                {!! Form::number('value[collaborator]['.$collaborator->user->id.']', round(($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')), ['class' => 'form-control']) !!}
+                                                {!! Form::number('value[collaborator]['.$collaborator->user->id.']', isset($submission->data['total']) ? round(($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')) : 0, ['class' => 'form-control']) !!}
                                             </div>
                                         @endforeach
                                     @endif
@@ -87,7 +87,7 @@
                                         @foreach($submission->participants as $key=>$participant)
                                             <div class="form-group">    
                                                 {!! Form::label($participant->user->name.' ('.$participant->displayType.')') !!}:
-                                                {!! Form::number('value[participant]['.$participant->user->id.']', $participant->type == 'Comm' ? round(($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')/2) : 0, ['class' => 'form-control']) !!}
+                                                {!! Form::number('value[participant]['.$participant->user->id.']', isset($submission->data['total']) ? ($participant->type == 'Comm' ? round(($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')/2) : 0) : 0, ['class' => 'form-control']) !!}
                                             </div>
                                         @endforeach
                                     @endif
@@ -131,44 +131,48 @@
                         <p>This submission is not eligible for currency awards{{ $submission->status == 'Pending' ? ' yet-- it must be accepted first' : '' }}.</p>
                     @endif
                     <hr/>
-                    <h6>Form Responses:</h6>
-                    @foreach($submission->data['currencyData'] as $key=>$data)
-                        <p>
-                            @if(isset($data))
-                                <strong>{{ Config::get('lorekeeper.group_currency_form')[$key]['name'] }}:</strong><br/>
-                                @if(Config::get('lorekeeper.group_currency_form')[$key]['type'] == 'choice')
-                                    @if(isset(Config::get('lorekeeper.group_currency_form')[$key]['multiple']) && Config::get('lorekeeper.group_currency_form')[$key]['multiple'] == 'true')
-                                        @foreach($data as $answer)
-                                            {{ Config::get('lorekeeper.group_currency_form')[$key]['choices'][$answer] }}<br/>
-                                        @endforeach
+                    @if(isset($submission->data['total']))
+                        <h6>Form Responses:</h6>
+                        @foreach($submission->data['currencyData'] as $key=>$data)
+                            <p>
+                                @if(isset($data))
+                                    <strong>{{ Config::get('lorekeeper.group_currency_form')[$key]['name'] }}:</strong><br/>
+                                    @if(Config::get('lorekeeper.group_currency_form')[$key]['type'] == 'choice')
+                                        @if(isset(Config::get('lorekeeper.group_currency_form')[$key]['multiple']) && Config::get('lorekeeper.group_currency_form')[$key]['multiple'] == 'true')
+                                            @foreach($data as $answer)
+                                                {{ Config::get('lorekeeper.group_currency_form')[$key]['choices'][$answer] }}<br/>
+                                            @endforeach
+                                        @else
+                                            {{ Config::get('lorekeeper.group_currency_form')[$key]['choices'][$data] }}
+                                        @endif
                                     @else
-                                        {{ Config::get('lorekeeper.group_currency_form')[$key]['choices'][$data] }}
+                                        {{ Config::get('lorekeeper.group_currency_form')[$key]['type'] == 'checkbox' ? (Config::get('lorekeeper.group_currency_form')[$key]['value'] == $data ? 'True' : 'False') : $data }}
                                     @endif
-                                @else
-                                    {{ Config::get('lorekeeper.group_currency_form')[$key]['type'] == 'checkbox' ? (Config::get('lorekeeper.group_currency_form')[$key]['value'] == $data ? 'True' : 'False') : $data }}
                                 @endif
-                            @endif
-                        </p>
-                    @endforeach
-                    @if(Auth::user()->hasPower('manage_submissions'))
-                    <h6>[Admin]</h6>
-                        <p class="text-center">
-                            <strong>Calculated Total:</strong> {{ $submission->data['total'] }}
-                            @if($submission->characters->count())
-                                 ・ <strong> Times {{ $submission->characters->count() }} Characters:</strong> {{ round($submission->data['total'] * $submission->characters->count()) }}
-                            @endif
-                            @if($submission->collaborators->count())
-                                <br/><strong>Divided by {{ $submission->collaborators->count() }} Collaborators:</strong> {{ round($submission->data['total'] / $submission->collaborators->count()) }}
+                            </p>
+                        @endforeach
+                        @if(Auth::user()->hasPower('manage_submissions') && isset($submission->data['total']))
+                        <h6>[Admin]</h6>
+                            <p class="text-center">
+                                <strong>Calculated Total:</strong> {{ $submission->data['total'] }}
                                 @if($submission->characters->count())
-                                    ・ <strong> Times {{ $submission->characters->count() }} Characters:</strong> {{ round(round($submission->data['total'] * $submission->characters->count()) / $submission->collaborators->count()) }}
+                                    ・ <strong> Times {{ $submission->characters->count() }} Characters:</strong> {{ round($submission->data['total'] * $submission->characters->count()) }}
                                 @endif
-                            @endif
-                            <br/>For a suggested {!! $currency->display(
-                                round(
-                                    ($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')
-                                )
-                            ) !!}{{ $submission->collaborators->count() ? ' per collaborator' : ''}}
-                        </p>
+                                @if($submission->collaborators->count())
+                                    <br/><strong>Divided by {{ $submission->collaborators->count() }} Collaborators:</strong> {{ round($submission->data['total'] / $submission->collaborators->count()) }}
+                                    @if($submission->characters->count())
+                                        ・ <strong> Times {{ $submission->characters->count() }} Characters:</strong> {{ round(round($submission->data['total'] * $submission->characters->count()) / $submission->collaborators->count()) }}
+                                    @endif
+                                @endif
+                                <br/>For a suggested {!! $currency->display(
+                                    round(
+                                        ($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')
+                                    )
+                                ) !!}{{ $submission->collaborators->count() ? ' per collaborator' : ''}}
+                            </p>
+                        @endif
+                    @else
+                        <p>This submission does not have form data associated with it.</p>
                     @endif
                 </div>
             </div>

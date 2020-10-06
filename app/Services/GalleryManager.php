@@ -647,11 +647,12 @@ class GalleryManager extends Service
                 }
 
                 // Collect and json encode existing as well as new data for storage
-                $valueData = collect([
+                if(isset($submission->data['total'])) $valueData = collect([
                     'currencyData' => $submission->data['currencyData'], 
                     'total' => $submission->data['total'], 
                     'value' => $data['value']
                 ])->toJson();
+                else $valueData = collect(['value' => $data['value']])->toJson();
 
                 // Update the submission with the new data and mark it as processed
                 $submission->update([
@@ -676,6 +677,12 @@ class GalleryManager extends Service
                     'total' => $submission->data['total'], 
                     'ineligible' => 1,
                 ])->toJson();
+                if(isset($submission->data['total'])) $valueData = collect([
+                    'currencyData' => $submission->data['currencyData'], 
+                    'total' => $submission->data['total'], 
+                    'ineligible' => 1,
+                ])->toJson();
+                else $valueData = collect(['ineligible' => 1,])->toJson();
 
                 // Update the submission, including marking it as processed
                 $submission->update([
