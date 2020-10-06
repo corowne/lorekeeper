@@ -4,7 +4,6 @@ namespace App\Models\Gallery;
 
 use Config;
 use DB;
-use Auth;
 use Settings;
 use Carbon\Carbon;
 use App\Models\Currency\Currency;
@@ -203,11 +202,12 @@ class GallerySubmission extends Model
      * Scope a query to only include submissions the user has either submitted or collaborated on.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param                                         $user
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeUserSubmissions($query)
+    public function scopeUserSubmissions($query, $user)
     {
-        return $query->where('user_id', Auth::user()->id)->orWhereIn('id', GalleryCollaborator::where('user_id', Auth::user()->id)->where('type', 'Collab')->pluck('gallery_submission_id')->toArray());
+        return $query->where('user_id', $user->id)->orWhereIn('id', GalleryCollaborator::where('user_id', $user->id)->where('type', 'Collab')->pluck('gallery_submission_id')->toArray());
     }
 
     /**
@@ -216,9 +216,9 @@ class GallerySubmission extends Model
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeVisible($query)
+    public function scopeVisible($query, $user = null)
     {
-        if(Auth::check() && Auth::user()->hasPower('manage_submissions')) return $query->where('status', 'Accepted');
+        if($user && $user->hasPower('manage_submissions')) return $query->where('status', 'Accepted');
         return $query->where('status', 'Accepted')->where('is_visible', 1);
     }
 

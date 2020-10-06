@@ -14,7 +14,7 @@
             <div class="card-header">
                 <h4>
                     {!! $gallery->displayName !!}
-                    @if(Auth::check() && ($gallery->submissions_open || Auth::user()->hasPower('manage_submissions'))) <a href="{{ url('gallery/submit/'.$gallery->id) }}" class="btn btn-primary float-right"><i class="fas fa-plus"></i></a> @endif
+                    @if(Auth::check() && $gallery->canSubmit(Auth::user())) <a href="{{ url('gallery/submit/'.$gallery->id) }}" class="btn btn-primary float-right"><i class="fas fa-plus"></i></a> @endif
                 </h4>
                 @if($gallery->children->count())
                     <p>

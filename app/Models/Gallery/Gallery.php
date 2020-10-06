@@ -2,7 +2,6 @@
 
 namespace App\Models\Gallery;
 
-use Auth;
 use Settings;
 use Config;
 use DB;
@@ -126,9 +125,9 @@ class Gallery extends Model
      *
      * @return string
      */
-    public function getCanSubmitAttribute()
+    public function canSubmit($user = null)
     {
-        if(Settings::get('gallery_submissions_open')) if(Auth::check() && ($this->submissions_open || Auth::user()->hasPower('manage_submissions'))) return true;
+        if(Settings::get('gallery_submissions_open')) if($user && ($this->submissions_open || $user->hasPower('manage_submissions'))) return true;
         else return false;
     }
 

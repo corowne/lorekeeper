@@ -7,7 +7,7 @@
 
 <h1>
     {{ $gallery->name }}
-    @if(Auth::check() && ($gallery->submissions_open || Auth::user()->hasPower('manage_submissions'))) <a href="{{ url('gallery/submit/'.$gallery->id) }}" class="btn btn-primary float-right"><i class="fas fa-plus mr-1"></i> Submit</a> @endif
+    @if(Auth::check() && $gallery->canSubmit(Auth::user())) <a href="{{ url('gallery/submit/'.$gallery->id) }}" class="btn btn-primary float-right"><i class="fas fa-plus mr-1"></i> Submit</a> @endif
 </h1>
 <p>{!! nl2br(htmlentities($gallery->description)) !!}</p>
 
