@@ -40,9 +40,7 @@
         <tbody>
             @foreach($items as $item)
                 <tr class="sort-item" data-id="{{ $item->id }}">
-                    <td>
-                        {{ $item->name }}
-                    </td>
+                    <td><a href="{{ $item->idUrl }}">{{ $item->name }}</a></td>
                     <td>{{ $item->category ? $item->category->name : '' }}</td>
                     <td class="text-right">
                         <a href="{{ url('admin/data/items/edit/'.$item->id) }}" class="btn btn-primary">Edit</a>

@@ -3,7 +3,7 @@
 @else
     <div class="text-center">
         <div class="mb-1"><a href="{{ $item->url }}"><img src="{{ $item->imageUrl }}" /></a></div>
-        <div @if(count($item->tags)) class="mb-1" @endif><a href="{{ $item->url }}">{{ $item->name }}</a></div>
+        <div @if(count($item->tags)) class="mb-1" @endif><a href="{{ $item->idUrl }}">{{ $item->name }}</a></div>
         @if(count($item->tags))
             <div>
                 @foreach($item->tags as $tag)
@@ -87,6 +87,17 @@
                             </div>
                             <div class="text-right">
                                 {!! Form::button('Transfer', ['class' => 'btn btn-primary', 'name' => 'action', 'value' => 'characterTransfer', 'type' => 'submit']) !!}
+                            </div>
+                        </div>
+                    </li>
+                @endif
+                @if(isset($item->data['resell']))
+                    <li class="list-group-item">
+                        <a class="card-title h5 collapse-title" data-toggle="collapse" href="#resellForm">@if($stack->first()->user_id != $user->id) [ADMIN] @endif Sell Item</a>
+                        <div id="resellForm" class="collapse">
+                            <p>This item can be sold for <strong>{!! App\Models\Currency\Currency::find($item->resell->flip()->pop())->display($item->resell->pop()) !!}</strong>. This action is not reversible. Are you sure you want to sell this item?</p>
+                            <div class="text-right">
+                                {!! Form::button('Sell', ['class' => 'btn btn-danger', 'name' => 'action', 'value' => 'resell', 'type' => 'submit']) !!}
                             </div>
                         </div>
                     </li>

@@ -138,6 +138,8 @@ class InventoryController extends Controller
                     break;
                 case 'characterTransfer':
                     return $this->postTransferToCharacter($request, $service);
+                case 'resell':
+                    return $this->postResell($request, $service);
                     break;
                 case 'act':
                     return $this->postAct($request);
@@ -194,6 +196,24 @@ class InventoryController extends Controller
     {
         if($service->deleteStack(Auth::user(), UserItem::find($request->get('ids')), $request->get('quantities'))) {
             flash('Item deleted successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Sells an inventory stack.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\InventoryManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function postResell(Request $request, InventoryManager $service)
+    {
+        if($service->resellStack(Auth::user(), UserItem::find($request->get('ids')), $request->get('quantities'))) {
+            flash('Item sold successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
