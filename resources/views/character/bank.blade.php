@@ -18,7 +18,7 @@
 @if(count($currencies))
 <div class="card mb-4">
     <ul class="list-group list-group-flush">
-    
+
         @foreach($currencies as $currency)
             <li class="list-group-item">
                 <div class="row">
@@ -83,20 +83,18 @@
     {!! Form::close() !!}
 @endif
 <h3>Latest Activity</h3>
-<table class="table table-sm">
-    <thead>
-        <th>Sender</th>
-        <th>Recipient</th>
-        <th>Currency</th>
-        <th>Log</th>
-        <th>Date</th>
-    </thead>
-    <tbody>
-        @foreach($logs as $log)
-            @include('user._currency_log_row', ['log' => $log, 'owner' => $character])
-        @endforeach
-    </tbody>
-</table>
+<div class="row ml-md-2">
+  <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-bottom">
+    <div class="col-6 col-md-2 font-weight-bold">Sender</div>
+    <div class="col-6 col-md-2 font-weight-bold">Recipient</div>
+    <div class="col-6 col-md-2 font-weight-bold">Currency</div>
+    <div class="col-6 col-md-4 font-weight-bold">Log</div>
+    <div class="col-6 col-md-2 font-weight-bold">Date</div>
+  </div>
+    @foreach($logs as $log)
+        @include('user._currency_log_row', ['log' => $log, 'owner' => $character])
+    @endforeach
+</div>
 <div class="text-right">
     <a href="{{ url($character->url.'/currency-logs') }}">View all...</a>
 </div>
@@ -114,7 +112,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    {!! Form::label('currency_id', 'Currency') !!} 
+                                    {!! Form::label('currency_id', 'Currency') !!}
                                     {!! Form::select('currency_id', $currencyOptions, null, ['class' => 'form-control']) !!}
                                 </div>
                             </div>
