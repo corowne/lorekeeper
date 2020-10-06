@@ -233,6 +233,18 @@ Route::group(['prefix' => 'news', 'middleware' => 'power:edit_pages'], function(
     Route::post('delete/{id}', 'NewsController@postDeleteNews');
 });
 
+# SALES
+Route::group(['prefix' => 'sales', 'middleware' => 'power:edit_pages'], function() {
+
+    Route::get('/', 'SalesController@getIndex');
+    Route::get('create', 'SalesController@getCreateSales');
+    Route::get('edit/{id}', 'SalesController@getEditSales');
+    Route::get('delete/{id}', 'SalesController@getDeleteSales');
+    Route::post('create', 'SalesController@postCreateEditSales');
+    Route::post('edit/{id?}', 'SalesController@postCreateEditSales');
+    Route::post('delete/{id}', 'SalesController@postDeleteSales');
+});
+
 # SITE SETTINGS
 Route::group(['prefix' => 'settings', 'middleware' => 'power:edit_site_settings'], function() {
     Route::get('/', 'SettingsController@getIndex');

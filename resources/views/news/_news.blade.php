@@ -10,4 +10,14 @@
             {!! $news->parsed_text !!}
         </div>
     </div>
+    <?php $commentCount = App\Models\Comment::where('commentable_type', 'App\Models\News')->where('commentable_id', $news->id)->count(); ?>
+    @if(!$page)
+        <div class="text-right mb-2 mr-2">
+            <a class="btn" href="{{ $news->url }}"><i class="fas fa-comment"></i> {{ $commentCount }} Comment{{ $commentCount != 1 ? 's' : ''}}</a>
+        </div>
+    @else
+        <div class="text-right mb-2 mr-2">
+            <span class="btn"><i class="fas fa-comment"></i> {{ $commentCount }} Comment{{ $commentCount != 1 ? 's' : ''}}</span>
+        </div>
+    @endif
 </div>

@@ -245,7 +245,18 @@ return [
         'message' => 'The transfer for <a href="{character_url}">{character_name}</a> was approved by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Transfers</a>)',
         'url' => 'characters/transfers/incoming'
     ],
-
+    // Comment made on user's model
+    // COMMENT_MADE
+    239 => [
+        'message' => '<a href="{sender_url}">{sender}</a> has made a comment on {post_type}. <a href="{comment_url}">See Context.</a>',
+        'url' => ''
+    ],
+    // Comment recieved reply
+    // COMMENT_REPLY
+    240 => [
+        'message' => '<a href="{sender_url}">{sender}</a> has made a reply to your comment. <a href="comment/{comment_url}">See Reply.</a>',
+        'url' => ''
+    ],
     // CHARACTER_ITEM_GRANT
     501 => [
         'message' => '{character_name} has received a staff grant of {item_name} (×{item_quantity}) from <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Inventory</a>)',

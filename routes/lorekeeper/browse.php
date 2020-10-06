@@ -28,6 +28,16 @@ Route::group(['prefix' => 'news'], function() {
 });
 
 /**************************************************************************************************
+    Sales
+**************************************************************************************************/
+# PROFILES
+Route::group(['prefix' => 'sales'], function() {
+    Route::get('/', 'SalesController@getIndex');
+    Route::get('{id}.{slug?}', 'SalesController@getSales');
+    Route::get('{id}.', 'SalesController@getSales');
+});
+
+/**************************************************************************************************
     Users
 **************************************************************************************************/
 Route::get('/users', 'BrowseController@getUsers');
@@ -125,4 +135,17 @@ Route::group(['prefix' => 'submissions', 'namespace' => 'Users'], function() {
 });
 Route::group(['prefix' => 'claims', 'namespace' => 'Users'], function() {
     Route::get('view/{id}', 'SubmissionController@getClaim');
+});
+
+/**************************************************************************************************
+    Comments
+**************************************************************************************************/
+Route::get('comment/{id}', 'PermalinkController@getComment');
+
+Route::group(['prefix' => 'comments', 'namespace' => 'Comments'], function() {
+    Route::post('/', 'CommentController@store')->name('comments.store');
+    Route::delete('/{comment}', 'CommentController@destroy')->name('comments.destroy');
+    Route::put('/{comment}', 'CommentController@update')->name('comments.update');
+    Route::post('/{comment}', 'CommentController@reply')->name('comments.reply');
+    Route::post('/{id}/feature', 'CommentController@feature')->name('comments.feature');
 });

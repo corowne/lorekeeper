@@ -3,6 +3,9 @@
 use App\Services\Service;
 
 use DB;
+use Auth;
+use File;
+use Image;
 use Carbon\Carbon;
 
 use App\Models\User\User;
@@ -12,6 +15,7 @@ use App\Models\Character\CharacterDesignUpdate;
 use App\Models\Submission\Submission;
 use App\Models\User\UserUpdateLog;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 use App\Services\SubmissionManager;
 use App\Services\CharacterManager;
@@ -112,6 +116,54 @@ class UserService extends Service
         $user->sendEmailVerificationNotification();
 
         return true;
+    }
+
+    /**
+     * Updates the user's avatar. 
+     *
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $user
+     * @return bool
+     */
+    public function updateAvatar($avatar, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            if(!$avatar) throw new \Exception ("Please upload a file.");
+            $filename = $user->id . '.' . $avatar->getClientOriginalExtension();
+            
+            if ($user->avatar !== 'default.jpg') {
+                $file = 'images/avatars/' . $user->avatar;
+                //$destinationPath = 'uploads/' . $id . '/';
+
+                if (File::exists($file)) {
+                    if(!unlink($file)) throw new \Exception("Failed to unlink old avatar.");
+                }
+            }
+
+            // Checks if uploaded file is a GIF
+            if ($avatar->getClientOriginalExtension() == 'gif') {
+            
+                if(!copy($avatar, $file)) throw new \Exception("Failed to copy file.");
+                if(!$file->move( public_path('images/avatars', $filename))) throw new \Exception("Failed to move file."); 
+                if(!$avatar->move( public_path('images/avatars', $filename))) throw new \Exception("Failed to move file."); 
+                
+            }
+
+            else {
+                if(!Image::make($avatar)->resize(150, 150)->save( public_path('images/avatars/' . $filename))) 
+                throw new \Exception("Failed to process avatar.");
+            }
+
+            $user->avatar = $filename;
+            $user->save();
+
+            return $this->commitReturn($avatar);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
     }
 
     /**
