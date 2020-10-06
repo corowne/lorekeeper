@@ -95,7 +95,20 @@ class UserController extends Controller
     public function getUserInventory($name)
     {
         $categories = ItemCategory::orderBy('sort', 'DESC')->get();
-        $items = count($categories) ? $this->user->items()->orderByRaw('FIELD(item_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')->orderBy('name')->orderBy('updated_at')->get()->groupBy('item_category_id') : $this->user->items()->orderBy('name')->orderBy('updated_at')->get()->groupBy('item_category_id');
+        $items = count($categories) ? 
+            $this->user->items()
+                ->where('count', '>', 0)
+                ->orderByRaw('FIELD(item_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
+                ->orderBy('name')
+                ->orderBy('updated_at')
+                ->get()
+                ->groupBy(['item_category_id', 'id']) :
+            $this->user->items()
+                ->where('count', '>', 0)
+                ->orderBy('name')
+                ->orderBy('updated_at')
+                ->get()
+                ->groupBy(['item_category_id', 'id']);
         return view('user.inventory', [
             'user' => $this->user,
             'categories' => $categories->keyBy('id'),

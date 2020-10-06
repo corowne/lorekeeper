@@ -21,7 +21,7 @@
             {!! Form::textarea('comments', $trade->comments, ['class' => 'form-control']) !!}
         </div>
     @endif
-    @include('widgets._inventory_select', ['user' => Auth::user(), 'inventory' => $inventory, 'categories' => $categories, 'selected' => $trade->getInventory(Auth::user())])
+    @include('widgets._inventory_select', ['user' => Auth::user(), 'inventory' => $inventory, 'categories' => $categories, 'selected' => $trade->getInventory(Auth::user()), 'page' => $page])
     @include('widgets._my_character_select', ['readOnly' => true, 'categories' => $characterCategories, 'selected' => $trade->getCharacters(Auth::user())])
     @include('widgets._bank_select', ['owner' => Auth::user(), 'selected' => $trade->getCurrencies(Auth::user()), 'isTransferrable' => true])
     <div class="text-right">{!! Form::submit('Edit Trade', ['class' => 'btn btn-primary']) !!}</div>

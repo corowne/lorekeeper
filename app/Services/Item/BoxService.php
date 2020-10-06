@@ -112,33 +112,60 @@ class BoxService extends Service
     /**
      * Acts upon the item when used from the inventory.
      *
-     * @param  \App\Models\User\UserItem  $stack
+     * @param  \App\Models\User\UserItem  $stacks
      * @param  \App\Models\User\User      $user
      * @param  array                      $data
      * @return bool
      */
-    public function act($stack, $user, $data)
+    public function act($stacks, $user, $data)
     {
         DB::beginTransaction();
 
         try {
-            // We don't want to let anyone who isn't the owner of the box open it,
-            // so do some validation... 
-            if($stack->user_id != $user->id) throw new \Exception("This item does not belong to you.");
+            foreach($stacks as $key=>$stack) {
+                // We don't want to let anyone who isn't the owner of the box open it,
+                // so do some validation... 
+                if($stack->user_id != $user->id) throw new \Exception("This item does not belong to you.");
 
-            // Next, try to delete the box item. If successful, we can start distributing rewards.
-            if((new InventoryManager)->debitStack($stack->user, 'Box Opened', ['data' => ''], $stack)) {
-
-                // Distribute user rewards
-                if(!$rewards = fillUserAssets(parseAssetData($stack->item->tag('box')->data), $user, $user, 'Box Rewards', [
-                    'data' => 'Received rewards from opening <a href="#" class="inventory-log-stack" data-id="'.$stack->id.'" data-name="'.$stack->item->name.'">'.$stack->item->name.'</a>'
-                ])) throw new \Exception("Failed to open box.");  
+                // Next, try to delete the box item. If successful, we can start distributing rewards.
+                if((new InventoryManager)->debitStack($stack->user, 'Box Opened', ['data' => ''], $stack, $data['quantities'][$key])) {
+                    
+                    for($q=0; $q<$data['quantities'][$key]; $q++) {
+                        // Distribute user rewards
+                        if(!$rewards = fillUserAssets(parseAssetData($stack->item->tag('box')->data), $user, $user, 'Box Rewards', [
+                            'data' => 'Received rewards from opening '.$stack->item->name
+                        ])) throw new \Exception("Failed to open box.");
+                        flash($this->getBoxRewardsString($rewards));
+                    }
+                }
             }
-
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Acts upon the item when used from the inventory.
+     *
+     * @param  array                  $rewards
+     * @return string
+     */
+    private function getBoxRewardsString($rewards)
+    {
+        $results = "You have received: ";
+        $result_elements = [];
+        foreach($rewards as $assetType)
+        {
+            if(isset($assetType))
+            {
+                foreach($assetType as $asset)
+                {
+                    array_push($result_elements, $asset['asset']->name." x".$asset['quantity']);
+                }
+            }
+        }
+        return $results.implode(', ', $result_elements);
     }
 }
