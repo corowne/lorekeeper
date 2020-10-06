@@ -133,6 +133,7 @@ class CharacterController extends Controller
     public function getCharacterImages($slug)
     {
         return view('character.images', [
+            'user' => Auth::check() ? Auth::user() : null,
             'character' => $this->character,
         ]);
     }
