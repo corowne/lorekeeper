@@ -89,9 +89,13 @@ Route::group(['prefix' => 'world'], function() {
     Route::get('items/{id}', 'WorldController@getItem');
     Route::get('trait-categories', 'WorldController@getFeatureCategories');
     Route::get('traits', 'WorldController@getFeatures');
-    Route::get('prompt-categories', 'WorldController@getPromptCategories');
-    Route::get('prompts', 'WorldController@getPrompts');
     Route::get('character-categories', 'WorldController@getCharacterCategories');
+});
+
+Route::group(['prefix' => 'prompts'], function() {
+    Route::get('/', 'PromptsController@getIndex');
+    Route::get('prompt-categories', 'PromptsController@getPromptCategories');
+    Route::get('prompts', 'PromptsController@getPrompts');
 });
 
 Route::group(['prefix' => 'shops'], function() {

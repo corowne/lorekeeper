@@ -109,7 +109,7 @@ class PromptCategory extends Model
      */
     public function getUrlAttribute()
     {
-        return url('world/prompt-categories?name='.$this->name);
+        return url('prompts/prompt-categories?name='.$this->name);
     }
 
     /**
@@ -119,6 +119,6 @@ class PromptCategory extends Model
      */
     public function getSearchUrlAttribute()
     {
-        return url('world/prompts?prompt_category_id='.$this->id);
+        return url('prompts/prompts?prompt_category_id='.$this->id);
     }
 }
