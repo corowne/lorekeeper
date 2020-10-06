@@ -47,12 +47,14 @@
             {!! Form::checkbox('submissions_open', 1, $gallery->submissions_open, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
         </div>
     </div>
+    @if(Settings::get('gallery_submissions_reward_currency'))
     <div class="col-md">
         <div class="form-group">
             {!! Form::label('currency_enabled', 'Enable Currency Rewards', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Whether or not submissions to this gallery are eligible for rewards of group currency.') !!}<br/>
             {!! Form::checkbox('currency_enabled', 1, $gallery->currency_enabled, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
         </div>
     </div>
+    @endif
     @if(Settings::get('gallery_submissions_require_approval'))
         <div class="col-md">
             <div class="form-group">
