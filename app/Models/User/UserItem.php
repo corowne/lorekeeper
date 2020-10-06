@@ -88,7 +88,7 @@ class UserItem extends Model
      */
     public function getAvailableQuantityAttribute()
     {
-        return ($this->count - $this->trade_count - $this->update_count);
+        return ($this->count - $this->trade_count - $this->update_count- $this->submission_count);
     }
 
     /**
@@ -106,9 +106,9 @@ class UserItem extends Model
      *
      * @return string
      */
-    public function getOthers($tradeCount = 0, $updateCount = 0)
+    public function getOthers($tradeCount = 0, $updateCount = 0, $submissionCount = 0)
     {
-        return $this->getHeldString($this->trade_count - $tradeCount, $this->update_count - $updateCount);
+        return $this->getHeldString($this->trade_count - $tradeCount, $this->update_count - $updateCount, $this->submission_count - $submissionCount);
     }
 
     /**
@@ -126,12 +126,13 @@ class UserItem extends Model
      * 
      * @return string
      */
-    private function getHeldString($tradeCount, $updateCount)
+    private function getHeldString($tradeCount, $updateCount, $submissionCount)
     {
-        if(!$tradeCount && !$updateCount) return null;
+        if(!$tradeCount && !$updateCount && !$submissionCount) return null;
         $held = [];
         if($tradeCount) array_push($held, $tradeCount.' held in Trades');
         if($updateCount) array_push($held, $updateCount.' held in Design Updates');
+        if($submissionCount) array_push($held, $submissionCount.' held in Submissions');
         return ('('.implode(', ',$held).')');
     }
 }
