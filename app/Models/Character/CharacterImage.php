@@ -237,9 +237,9 @@ class CharacterImage extends Model
      *
      * @return string
      */
-    public function getCanViewFullAttribute()
+    public function getCanViewFullAttribute($user = null)
     {
-        if(((isset($this->character->user_id) && (Auth::check() ? $this->character->user->id == Auth::user()->id : false)) || (Auth::check() ? Auth::user()->hasPower('manage_characters') : false)))
+        if(((isset($this->character->user_id) && ($user ? $this->character->user->id == $user->id : false)) || ($user ? $user->hasPower('manage_characters') : false)))
         return true;
         else return false;
     }
