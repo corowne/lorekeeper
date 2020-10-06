@@ -618,7 +618,7 @@ class CharacterManager extends Service
             
             // Save thumbnail
             if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image);
-            else $this->handleImage($data['thumbnail'], $image->thumbnailDirectory, $image->thumbnailFileName);
+            else $this->handleImage($data['thumbnail'], $image->thumbnailPath, $image->thumbnailFileName);
             
             // Add a log for the character
             // This logs all the updates made to the character
@@ -981,7 +981,7 @@ class CharacterManager extends Service
                 if($character->is_trading != isset($data['is_trading'])) $notifyTrading = true;
                 if($character->is_gift_art_allowed != isset($data['is_gift_art_allowed'])) $notifyGiftArt = true;
 
-                $character->is_gift_art_allowed = isset($data['is_gift_art_allowed']);
+                $character->is_gift_art_allowed = isset($data['is_gift_art_allowed']) && $data['is_gift_art_allowed'] <= 2 ? $data['is_gift_art_allowed'] : 0;
                 $character->is_trading = isset($data['is_trading']);
                 $character->save();
             }
@@ -1848,6 +1848,17 @@ class CharacterManager extends Service
             // Shift the image features over to the new image
             $request->rawFeatures()->update(['character_image_id' => $image->id, 'character_type' => 'Character']);
 
+            // Make the image directory if it doesn't exist
+            if(!file_exists($image->imagePath))
+            {
+                // Create the directory.
+                if (!mkdir($image->imagePath, 0755, true)) {
+                    $this->setError('error', 'Failed to create image directory.');
+                    return false;
+                }
+                chmod($image->imagePath, 0755);
+            }
+
             // Move the image file to the new image
             File::move($request->imagePath . '/' . $request->imageFileName, $image->imagePath . '/' . $image->imageFileName);
             File::move($request->thumbnailPath . '/' . $request->thumbnailFileName, $image->thumbnailPath . '/' . $image->thumbnailFileName);
@@ -1881,15 +1892,15 @@ class CharacterManager extends Service
                 $request->character->character_image_id = $image->id;
             }
 
-            // Add a log for the character and user
-            $this->createLog($user->id, null, $request->character->user_id, $request->character->user->alias, $request->character->id, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', '[#'.$image->id.']', 'character');
-            $this->createLog($user->id, null, $request->character->user_id, $request->character->user->alias, $request->character->id, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', '[#'.$image->id.']', 'user');
-
             // Final recheck and setting of update type, as insurance
             if($request->character->is_myo_slot) 
             $request->update_type = 'MYO';
             else $request->update_type = 'Character';
             $request->save();
+
+            // Add a log for the character and user
+            $this->createLog($user->id, null, $request->character->user_id, $request->character->user->alias, $request->character->id, $request->update_type == 'MYO' ? 'MYO Design Approved' : 'Character Design Updated', '[#'.$image->id.']', 'character');
+            $this->createLog($user->id, null, $request->character->user_id, $request->character->user->alias, $request->character->id, $request->update_type == 'MYO' ? 'MYO Design Approved' : 'Character Design Updated', '[#'.$image->id.']', 'user');
             
             // If this is for a MYO, set user's FTO status and the MYO status of the slot
             if($request->character->is_myo_slot)
@@ -1981,7 +1992,7 @@ class CharacterManager extends Service
             $request->save();
 
             // Notify the user
-            Notifications::create('DESIGN_REJECTED', $user, [
+            Notifications::create('DESIGN_REJECTED', $request->user, [
                 'design_url' => $request->url,
                 'character_url' => $request->character->url,
                 'name' => $request->character->fullName

@@ -8,6 +8,7 @@ use DB;
 use Auth;
 use Route;
 use App\Models\User\User;
+
 use App\Models\User\UserCurrency;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
@@ -15,7 +16,7 @@ use App\Models\Currency\CurrencyLog;
 use App\Models\User\UserItem;
 use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
-use App\Models\Item\UserItemLog;
+use App\Models\Item\ItemLog;
 
 use App\Http\Controllers\Controller;
 

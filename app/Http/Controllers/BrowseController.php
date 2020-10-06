@@ -122,11 +122,7 @@ class BrowseController extends Controller
     {
         $query = Character::with('user.rank')->with('image.features')->with('rarity')->with('image.species')->myo(0);
 
-        $imageQuery = CharacterImage::with('features')->with('rarity')->with('species')->with('features');
-        if(!Auth::check() || !Auth::user()->hasPower('manage_characters')) {
-            $query->visible();
-            $imageQuery->guest();
-        }
+        $imageQuery = CharacterImage::images()->with('features')->with('rarity')->with('species')->with('features');
         
         if($request->get('name')) $query->where(function($query) use ($request) {
             $query->where('characters.name', 'LIKE', '%' . $request->get('name') . '%')->orWhere('characters.slug', 'LIKE', '%' . $request->get('name') . '%');
@@ -138,7 +134,17 @@ class BrowseController extends Controller
         if($request->get('sale_value_max')) $query->where('sale_value', '<=', $request->get('sale_value_max'));
 
         if($request->get('is_trading')) $query->where('is_trading', 1);
-        if($request->get('is_gift_art_allowed')) $query->where('is_gift_art_allowed', 1);
+        if($request->get('is_gift_art_allowed')) switch($request->get('is_gift_art_allowed')) {
+            case 1:
+                $query->where('is_gift_art_allowed', 1);
+            break;
+            case 2:
+                $query->where('is_gift_art_allowed', 2);
+            break;
+            case 3:
+                $query->where('is_gift_art_allowed', 1)->orWhere('is_gift_art_allowed', 2);
+            break;
+        }
         if($request->get('is_sellable')) $query->where('is_sellable', 1);
         if($request->get('is_tradeable')) $query->where('is_tradeable', 1);
         if($request->get('is_giftable')) $query->where('is_giftable', 1);
@@ -230,11 +236,7 @@ class BrowseController extends Controller
     {
         $query = Character::with('user.rank')->with('image.features')->with('rarity')->with('image.species')->myo(1);
 
-        $imageQuery = CharacterImage::with('features')->with('rarity')->with('species')->with('features');
-        if(!Auth::check() || !Auth::user()->hasPower('manage_characters')) {
-            $query->visible();
-            $imageQuery->guest();
-        }
+        $imageQuery = CharacterImage::images()->with('features')->with('rarity')->with('species')->with('features');
         
         if($request->get('name')) $query->where(function($query) use ($request) {
             $query->where('characters.name', 'LIKE', '%' . $request->get('name') . '%')->orWhere('characters.slug', 'LIKE', '%' . $request->get('name') . '%');
