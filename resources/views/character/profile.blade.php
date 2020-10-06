@@ -9,10 +9,15 @@
 
 @include('character._header', ['character' => $character])
 
-<div class="text-center mb-3">
-    <a href="{{ $character->image->imageUrl }}" data-lightbox="entry" data-title="{{ $character->slug }}">
-        <img src="{{ $character->image->imageUrl }}" class="image" />
-    </a>
+<div class="mb-3">
+    <div class="text-center">
+        <a href="{{ $character->image->canViewFull(Auth::check() ? Auth::user() : null) && file_exists( public_path($character->image->imageDirectory.'/'.$character->image->fullsizeFileName)) ? $character->image->fullsizeUrl : $character->image->imageUrl }}" data-lightbox="entry" data-title="{{ $character->fullName }}">
+        <img src="{{ $character->image->canViewFull(Auth::check() ? Auth::user() : null) && file_exists( public_path($character->image->imageDirectory.'/'.$character->image->fullsizeFileName)) ? $character->image->fullsizeUrl : $character->image->imageUrl }}" class="image" style="max-height:700px; max-width:700px;" />
+        </a>
+    </div>
+    @if($character->image->canViewFull(Auth::check() ? Auth::user() : null) && file_exists( public_path($character->image->imageDirectory.'/'.$character->image->fullsizeFileName)))
+        <div class="text-right">You are viewing the full-size image. <a href="{{ $character->image->imageUrl }}">View watermarked image</a>?</div>
+    @endif
 </div>
 
 {{-- Bio --}}

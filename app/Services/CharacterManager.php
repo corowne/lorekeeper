@@ -252,10 +252,11 @@ class CharacterManager extends Service
             $imageData['description'] = isset($data['image_description']) ? $data['image_description'] : null;
             $imageData['parsed_description'] = parse($imageData['description']);
             $imageData['hash'] = randomString(10);
+            $imageData['fullsize_hash'] = randomString(15);
             $imageData['sort'] = 0;
             $imageData['is_valid'] = isset($data['is_valid']);
             $imageData['is_visible'] = isset($data['is_visible']);
-            $imageData['extension'] = isset($data['extension']) ? $data['extension'] : $data['image']->getClientOriginalExtension();
+            $imageData['extension'] = (Config::get('lorekeeper.settings.masterlist_image_format') ? Config::get('lorekeeper.settings.masterlist_image_format') : (isset($data['extension']) ? $data['extension'] : $data['image']->getClientOriginalExtension()));
             $imageData['character_id'] = $character->id;
 
             $image = CharacterImage::create($imageData);
@@ -283,9 +284,12 @@ class CharacterManager extends Service
             // Save image
             $this->handleImage($data['image'], $image->imageDirectory, $image->imageFileName, null, isset($data['default_image']));
             
-            // Save thumbnail
-            if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image);
+            // Save thumbnail first before processing full image
+            if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image, $isMyo);
             else $this->handleImage($data['thumbnail'], $image->imageDirectory, $image->thumbnailFileName, null, isset($data['default_image']));
+
+            // Process and save the image itself
+            if(!$isMyo) $this->processImage($image);
             
             // Attach features
             foreach($data['feature_id'] as $key => $featureId) {
@@ -303,26 +307,184 @@ class CharacterManager extends Service
     }
 
     /**
+     * Trims and optionally resizes and watermarks an image.
+     *
+     * 
+     * @param  \App\Models\Character\CharacterImage  $characterImage
+     */
+    private function processImage($characterImage)
+    {
+        // Trim transparent parts of image.
+        $image = Image::make($characterImage->imagePath . '/' . $characterImage->imageFileName)->trim('transparent');
+
+        if(Config::get('lorekeeper.settings.masterlist_image_format') != 'png' && Config::get('lorekeeper.settings.masterlist_image_format') != null && Config::get('lorekeeper.settings.masterlist_image_background') != null) {
+            $canvas = Image::canvas($image->width(), $image->height(), Config::get('lorekeeper.settings.masterlist_image_background'));
+            $image = $canvas->insert($image, 'center');
+        }
+
+        if(Config::get('lorekeeper.settings.store_masterlist_fullsizes') == 1) {
+            // Generate fullsize hash if not already generated,
+            // then save the full-sized image
+            if(!$characterImage->fullsize_hash) {
+                $characterImage->fullsize_hash = randomString(15);
+                $characterImage->save();
+            }
+
+            if(Config::get('lorekeeper.settings.masterlist_fullsizes_cap') != 0) {
+                $imageWidth = $image->width();
+                $imageHeight = $image->height();
+
+                if( $imageWidth > $imageHeight) {
+                    // Landscape
+                    $image->resize(Config::get('lorekeeper.settings.masterlist_fullsizes_cap'), null, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                }
+                else {
+                    // Portrait
+                    $image->resize(null, Config::get('lorekeeper.settings.masterlist_fullsizes_cap'), function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                }
+            }
+
+            // Save the processed image
+            $image->save($characterImage->imagePath . '/' . $characterImage->fullsizeFileName, 100, Config::get('lorekeeper.settings.masterlist_image_format'));
+        }
+        else {
+            // Delete fullsize if it was previously created.
+            if(isset($characterImage->fullsize_hash) ? file_exists( public_path($characterImage->imageDirectory.'/'.$characterImage->fullsizeFileName)) : FALSE) unlink($characterImage->imagePath . '/' . $characterImage->fullsizeFileName);
+        }
+
+        // Resize image if desired
+        if(Config::get('lorekeeper.settings.masterlist_image_dimension') != 0) {
+            $imageWidth = $image->width();
+            $imageHeight = $image->height();
+
+            if( $imageWidth > $imageHeight) {
+                // Landscape
+                $image->resize(null, Config::get('lorekeeper.settings.masterlist_image_dimension'), function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+            }
+            else {
+                // Portrait
+                $image->resize(Config::get('lorekeeper.settings.masterlist_image_dimension'), null, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+            }
+        }
+        // Watermark the image if desired
+        if(Config::get('lorekeeper.settings.watermark_masterlist_images') == 1) {
+            $watermark = Image::make('images/watermark.png');
+            $image->insert($watermark, 'center');
+        }
+
+        // Save the processed image
+        $image->save($characterImage->imagePath . '/' . $characterImage->imageFileName, 100, Config::get('lorekeeper.settings.masterlist_image_format'));
+    }
+
+    /**
      * Crops a thumbnail for the given image.
      *
      * @param  array                                 $points
      * @param  \App\Models\Character\CharacterImage  $characterImage
      */
-    private function cropThumbnail($points, $characterImage)
+    private function cropThumbnail($points, $characterImage, $isMyo = false)
     {
-        $cropWidth = $points['x1'] - $points['x0'];
-        $cropHeight = $points['y1'] - $points['y0'];
-
         $image = Image::make($characterImage->imagePath . '/' . $characterImage->imageFileName);
-        
-        // Crop according to the selected area
-        $image->crop($cropWidth, $cropHeight, $points['x0'], $points['y0']);
 
-        // Resize to fit the thumbnail size
-        $image->resize(Config::get('lorekeeper.settings.masterlist_thumbnails.width'), Config::get('lorekeeper.settings.masterlist_thumbnails.height'));
+        if(Config::get('lorekeeper.settings.masterlist_image_format') != 'png' && Config::get('lorekeeper.settings.masterlist_image_format') != null && Config::get('lorekeeper.settings.masterlist_image_background') != null) {
+            $canvas = Image::canvas($image->width(), $image->height(), Config::get('lorekeeper.settings.masterlist_image_background'));
+            $image = $canvas->insert($image, 'center');
+            $trimColor = TRUE;
+        }
+
+        if(Config::get('lorekeeper.settings.watermark_masterlist_thumbnails') == 1 && !$isMyo) {
+            // Trim transparent parts of image.
+            $image->trim(isset($trimColor) && $trimColor ? 'top-left' : 'transparent');
+
+            $cropWidth = Config::get('lorekeeper.settings.masterlist_thumbnails.width');
+            $cropHeight = Config::get('lorekeeper.settings.masterlist_thumbnails.height');
+
+            $imageWidthOld = $image->width();
+            $imageHeightOld = $image->height();
+
+            $trimOffsetX = $imageWidthOld - $image->width();
+            $trimOffsetY = $imageHeightOld - $image->height();
+
+            if(Config::get('lorekeeper.settings.watermark_masterlist_images') == 1) {
+                // Resize image if desired, so that the watermark is applied to the correct size of image
+                if(Config::get('lorekeeper.settings.masterlist_image_dimension') != 0) {
+                    $imageWidth = $image->width();
+                    $imageHeight = $image->height();
+
+                    if( $imageWidth > $imageHeight) {
+                        // Landscape
+                        $image->resize(null, Config::get('lorekeeper.settings.masterlist_image_dimension'), function ($constraint) {
+                            $constraint->aspectRatio();
+                            $constraint->upsize();
+                        });
+                    }
+                    else {
+                        // Portrait
+                        $image->resize(Config::get('lorekeeper.settings.masterlist_image_dimension'), null, function ($constraint) {
+                            $constraint->aspectRatio();
+                            $constraint->upsize();
+                        });
+                    }
+                }
+            // Watermark the image
+                $watermark = Image::make('images/watermark.png');
+                $image->insert($watermark, 'center');
+            }
+            // Now shrink the image
+            {
+                $imageWidth = $image->width();
+                $imageHeight = $image->height();
+
+                if( $imageWidth > $imageHeight) {
+                    // Landscape
+                    $image->resize(null, $cropWidth, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                }
+                else {
+                    // Portrait
+                    $image->resize($cropHeight, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                }
+            }
+            $xOffset = 0 + (($points['x0'] - $trimOffsetX) > 0 ? ($points['x0'] - $trimOffsetX) : 0);
+            if(($xOffset + $cropWidth) > $image->width()) $xOffsetNew = $cropWidth - ($image->width() - $xOffset);
+            if(isset($xOffsetNew)) if(($xOffsetNew + $cropWidth) > $image->width()) $xOffsetNew = $image->width() - $cropWidth;
+            $yOffset = 0 + (($points['y0'] - $trimOffsetY) > 0 ? ($points['y0'] - $trimOffsetY) : 0);
+            if(($yOffset + $cropHeight) > $image->height()) $yOffsetNew = $cropHeight - ($image->height() - $yOffset);
+            if(isset($yOffsetNew)) if(($yOffsetNew + $cropHeight) > $image->height()) $yOffsetNew = $image->height() - $cropHeight;
+
+            // Crop according to the selected area
+            $image->crop($cropWidth, $cropHeight, isset($xOffsetNew) ? $xOffsetNew : $xOffset, isset($yOffsetNew) ? $yOffsetNew : $yOffset);
+        }
+        else {
+            $cropWidth = $points['x1'] - $points['x0'];
+            $cropHeight = $points['y1'] - $points['y0'];
+
+            // Crop according to the selected area
+            $image->crop($cropWidth, $cropHeight, $points['x0'], $points['y0']);
+
+            // Resize to fit the thumbnail size
+            $image->resize(Config::get('lorekeeper.settings.masterlist_thumbnails.width'), Config::get('lorekeeper.settings.masterlist_thumbnails.height'));
+        }
 
         // Save the thumbnail
-        $image->save($characterImage->thumbnailPath . '/' . $characterImage->thumbnailFileName);
+        $image->save($characterImage->thumbnailPath . '/' . $characterImage->thumbnailFileName, 100, Config::get('lorekeeper.settings.masterlist_image_format'));
     }
 
     /**
@@ -613,12 +775,32 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            if(Config::get('lorekeeper.settings.masterlist_image_format') != null) {
+                // Remove old versions so that images in various filetypes don't pile up
+                unlink($image->imagePath . '/' . $image->imageFileName);
+                if(isset($image->fullsize_hash) ? file_exists( public_path($image->imageDirectory.'/'.$image->fullsizeFileName)) : FALSE) unlink($image->imagePath . '/' . $image->fullsizeFileName);
+                unlink($image->imagePath . '/' . $image->thumbnailFileName);
+
+                // Set the image's extension in the DB as defined in settings
+                $image->extension = Config::get('lorekeeper.settings.masterlist_image_format');
+                $image->save();
+            }
+            else {
+                // Get uploaded image's extension and save it to the DB
+                $image->extension = $data['image']->getClientOriginalExtension();
+                $image->save();
+            }
+            
             // Save image
             $this->handleImage($data['image'], $image->imageDirectory, $image->imageFileName);
             
+            $isMyo = $image->character->is_myo_slot ? true : false;
             // Save thumbnail
-            if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image);
+            if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image, $isMyo);
             else $this->handleImage($data['thumbnail'], $image->thumbnailPath, $image->thumbnailFileName);
+
+            // Process and save the image itself
+            if(!$isMyo) $this->processImage($image);
             
             // Add a log for the character
             // This logs all the updates made to the character
@@ -632,7 +814,7 @@ class CharacterManager extends Service
     }
 
     /**
-     * Reuploads an image.
+     * Deletes an image.
      *
      * @param  \App\Models\Character\CharacterImage  $image
      * @param  \App\Models\User\User                 $user
@@ -651,6 +833,7 @@ class CharacterManager extends Service
 
             // Delete the image files
             unlink($image->imagePath . '/' . $image->imageFileName);
+            if(isset($image->fullsize_hash) ? file_exists( public_path($image->imageDirectory.'/'.$image->fullsizeFileName)) : FALSE) unlink($image->imagePath . '/' . $image->fullsizeFileName);
             unlink($image->imagePath . '/' . $image->thumbnailFileName);
             
             // Add a log for the character
@@ -1427,6 +1610,7 @@ class CharacterManager extends Service
                 'character_id' => $character->id,
                 'status' => 'Draft',
                 'hash' => randomString(10),
+                'fullsize_hash' => randomString(15),
                 'update_type' => $character->is_myo_slot ? 'MYO' : 'Character',
                 
                 // Set some data based on the character's existing stats
@@ -1520,7 +1704,7 @@ class CharacterManager extends Service
                     $imageData['use_cropper'] = isset($data['use_cropper']);
                 }
                 if(!$isAdmin && isset($data['image'])) {
-                    $imageData['extension'] = isset($data['extension']) ? $data['extension'] : $data['image']->getClientOriginalExtension();
+                    $imageData['extension'] = (Config::get('lorekeeper.settings.masterlist_image_format') ? Config::get('lorekeeper.settings.masterlist_image_format') : (isset($data['extension']) ? $data['extension'] : $data['image']->getClientOriginalExtension()));
                     $imageData['has_image'] = true;
                 }
                 $request->update($imageData);
@@ -1815,12 +1999,15 @@ class CharacterManager extends Service
                 }
             }
 
+            $extension = Config::get('lorekeeper.settings.masterlist_image_format') != null ? Config::get('lorekeeper.settings.masterlist_image_format') : $request->extension;
+
             // Create a new image with the request data
             $image = CharacterImage::create([
                 'character_id' => $request->character_id,
                 'is_visible' => 1,
                 'hash' => $request->hash,
-                'extension' => $request->extension,
+                'fullsize_hash' => $request->fullsize_hash ? $request->fullsize_hash : randomString(15),
+                'extension' => $extension,
                 'use_cropper' => $request->use_cropper,
                 'x0' => $request->x0,
                 'x1' => $request->x1,
@@ -1844,7 +2031,7 @@ class CharacterManager extends Service
                     CharacterFeature::create(['character_image_id' => $image->id, 'feature_id' => $feature->feature_id, 'data' => $feature->data, 'character_type' => 'Character']);
                 }
             }
-            
+
             // Shift the image features over to the new image
             $request->rawFeatures()->update(['character_image_id' => $image->id, 'character_type' => 'Character']);
 
@@ -1858,9 +2045,13 @@ class CharacterManager extends Service
                 }
                 chmod($image->imagePath, 0755);
             }
-
+            
             // Move the image file to the new image
             File::move($request->imagePath . '/' . $request->imageFileName, $image->imagePath . '/' . $image->imageFileName);
+            // Process and save the image
+            $this->processImage($image);
+
+            // The thumbnail is already generated, so it can just be moved without processing
             File::move($request->thumbnailPath . '/' . $request->thumbnailFileName, $image->thumbnailPath . '/' . $image->thumbnailFileName);
 
             // Set character data and other info such as cooldown time, resell cost and terms etc.
