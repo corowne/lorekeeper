@@ -45,33 +45,32 @@ class BrowseController extends Controller
         });
         if($request->get('rank_id')) $query->where('rank_id', $request->get('rank_id'));
 
-        if(isset($sort['sort'])) 
-        {
-            switch($sort['sort']) {
-                case 'alpha':
-                    $query->orderBy('name');
-                    break;
-                case 'alpha-reverse':
-                    $query->orderBy('name', 'DESC');
-                    break;
-                case 'alias':
-                    $query->orderBy('alias', 'ASC');
-                    break;
-                case 'alias-reverse':
-                    $query->orderBy('alias', 'DESC');
-                    break;
-                case 'rank':
-                    $query->orderBy('ranks.sort', 'DESC')->orderBy('name');
-                    break;
-                case 'newest':
-                    $query->orderBy('created_at', 'DESC');
-                    break;
-                case 'oldest':
-                    $query->orderBy('created_at', 'ASC');
-                    break;
-            }
-        } 
-        else $query->orderBy('ranks.sort', 'DESC')->orderBy('name');
+        switch($sort['sort']) {
+            default:
+                $query->orderBy('ranks.sort', 'DESC')->orderBy('name');
+                break;
+            case 'alpha':
+                $query->orderBy('name');
+                break;
+            case 'alpha-reverse':
+                $query->orderBy('name', 'DESC');
+                break;
+            case 'alias':
+                $query->orderBy('alias', 'ASC');
+                break;
+            case 'alias-reverse':
+                $query->orderBy('alias', 'DESC');
+                break;
+            case 'rank':
+                $query->orderBy('ranks.sort', 'DESC')->orderBy('name');
+                break;
+            case 'newest':
+                $query->orderBy('created_at', 'DESC');
+                break;
+            case 'oldest':
+                $query->orderBy('created_at', 'ASC');
+                break;
+        }
 
         return view('browse.users', [  
             'users' => $query->paginate(30)->appends($request->query()),
@@ -122,7 +121,7 @@ class BrowseController extends Controller
     {
         $query = Character::with('user.rank')->with('image.features')->with('rarity')->with('image.species')->myo(0);
 
-        $imageQuery = CharacterImage::images()->with('features')->with('rarity')->with('species')->with('features');
+        $imageQuery = CharacterImage::images(Auth::check() ? Auth::user() : null)->with('features')->with('rarity')->with('species')->with('features');
         
         if($request->get('name')) $query->where(function($query) use ($request) {
             $query->where('characters.name', 'LIKE', '%' . $request->get('name') . '%')->orWhere('characters.slug', 'LIKE', '%' . $request->get('name') . '%');
@@ -236,7 +235,7 @@ class BrowseController extends Controller
     {
         $query = Character::with('user.rank')->with('image.features')->with('rarity')->with('image.species')->myo(1);
 
-        $imageQuery = CharacterImage::images()->with('features')->with('rarity')->with('species')->with('features');
+        $imageQuery = CharacterImage::images(Auth::check() ? Auth::user() : null)->with('features')->with('rarity')->with('species')->with('features');
         
         if($request->get('name')) $query->where(function($query) use ($request) {
             $query->where('characters.name', 'LIKE', '%' . $request->get('name') . '%')->orWhere('characters.slug', 'LIKE', '%' . $request->get('name') . '%');
