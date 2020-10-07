@@ -22,8 +22,7 @@
                     <li class="list-group-item text-center"> 
                     <p class=card-text>{!! $category->description !!}</p>
                     </li>            
-                @foreach($pages as $key=>$page)
-                @if($page->page_category_id == $category->id)
+                @foreach($category->pages as $page)
                     <li class="list-group-item">
                     <p class=card-text>
                     @if($page->is_visible)
@@ -33,7 +32,6 @@
                     @endif 
                     </p>
                     </li>
-                @endif
                 @endforeach
                 </ul>
             </div>

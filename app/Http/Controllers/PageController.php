@@ -48,11 +48,8 @@ class PageController extends Controller
      */
     public function getPageCategory(Request $request)
     {
-        $pages = SitePage::query();
-        $categories = SitePageCategory::query();
         return view('pages.page_categories', [
-            'pages' => $pages->orderBy('title')->get(),
-            'categories' => $categories->orderBy('sort', 'DESC')->get()
+            'categories' => SitePageCategory::orderBy('sort', 'DESC')->get()
         ]);
     }
 }
