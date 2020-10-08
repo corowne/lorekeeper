@@ -17,7 +17,7 @@
     @endif
 </h1>
 
-@if(!$submission->id && ($closed || !$gallery->canSubmit))
+@if(!$submission->id && ($closed || !$gallery->canSubmit(Auth::user())))
     <div class="alert alert-danger">
         @if($closed) Gallery submissions are currently closed.
         @else You can't submit to this gallery. @endif
