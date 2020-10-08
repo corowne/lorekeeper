@@ -207,7 +207,7 @@ class UserService extends Service
                 }
                 $gallerySubmissions = GallerySubmission::where('user_id', $user->id)->where('status', 'Accepted')->get();
                 foreach($gallerySubmissions as $submission)
-                    $galleryManager->archiveSubmission($submission, $staff);
+                    $submission->update(['is_visible' => 0]);
 
                 // 4. Design approvals
                 $requests = CharacterDesignUpdate::where('user_id', $user->id)->where(function($query) {
