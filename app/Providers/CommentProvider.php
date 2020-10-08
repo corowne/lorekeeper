@@ -44,8 +44,8 @@ class CommentProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(
-            base_path('\config\lorekeeper\comments.php'),
+            base_path('config/lorekeeper/comments.php'),
             'comments'
-        );
+        ); // Swapped to / instead of \ because for some reason Dreamhost was Not Happy if it was \
     }
 }
