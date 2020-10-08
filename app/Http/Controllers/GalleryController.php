@@ -44,6 +44,7 @@ class GalleryController extends Controller
      * Shows a given gallery.
      *
      * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getGallery($id, Request $request)
