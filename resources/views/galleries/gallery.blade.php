@@ -11,6 +11,30 @@
 </h1>
 <p>{!! nl2br(htmlentities($gallery->description)) !!}</p>
 
+<div>
+    {!! Form::open(['method' => 'GET', 'class' => 'form-inline justify-content-end']) !!}
+        <div class="form-group mr-3 mb-3">
+            {!! Form::text('title', Request::get('title'), ['class' => 'form-control', 'placeholder' => 'Title']) !!}
+        </div>
+        <div class="form-group mr-3 mb-3">
+            {!! Form::select('prompt_id', $prompts, Request::get('prompt_id'), ['class' => 'form-control']) !!}
+        </div>
+        <div class="form-group mr-3 mb-3">
+            {!! Form::select('sort', [
+                'alpha'          => 'Sort Alphabetically (A-Z)',
+                'alpha-reverse'  => 'Sort Alphabetically (Z-A)',
+                'prompt'         => 'Sort by Prompt (Newest to Oldest)',
+                'prompt-reverse' => 'Sort by Prompt (Oldest to Newest)',
+                'newest'         => 'Newest First',
+                'oldest'         => 'Oldest First'    
+            ], Request::get('sort') ? : 'category', ['class' => 'form-control']) !!}
+        </div>
+        <div class="form-group mb-3">
+            {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
+        </div>
+    {!! Form::close() !!}
+</div>
+
 @if($gallery->submissions->count())
     {!! $submissions->render() !!}
 

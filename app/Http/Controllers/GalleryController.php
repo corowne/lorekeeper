@@ -46,14 +46,48 @@ class GalleryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getGallery($id)
+    public function getGallery($id, Request $request)
     {
         $gallery = Gallery::find($id);
         if(!$gallery) abort(404);
 
+        $query = GallerySubmission::where('gallery_id', $gallery->id)->visible(Auth::check() ? Auth::user() : null)->accepted();
+        $sort = $request->only(['sort']);
+
+        if($request->get('title')) $query->where(function($query) use ($request) {
+            $query->where('gallery_submissions.title', 'LIKE', '%' . $request->get('title') . '%');
+        });
+        if($request->get('prompt_id')) $query->where('prompt_id', $request->get('prompt_id'));
+
+        if(isset($sort['sort'])) 
+        {
+            switch($sort['sort']) {
+                case 'alpha':
+                    $query->orderBy('title');
+                    break;
+                case 'alpha-reverse':
+                    $query->orderBy('title', 'DESC');
+                    break;
+                case 'prompt':
+                    $query->orderBy('prompt_id', 'DESC');
+                    break;
+                case 'prompt-reverse':
+                    $query->orderBy('prompt_id', 'ASC');
+                    break;
+                case 'newest':
+                    $query->orderBy('created_at', 'DESC');
+                    break;
+                case 'oldest':
+                    $query->orderBy('created_at', 'ASC');
+                    break;
+            }
+        } 
+        else $query->orderBy('created_at', 'DESC');
+
         return view('galleries.gallery', [
             'gallery' => $gallery,
-            'submissions' => GallerySubmission::where('gallery_id', $gallery->id)->visible()->accepted()->orderBy('created_at', 'DESC')->paginate(20),
+            'submissions' => $query->paginate(30)->appends($request->query()),
+            'prompts' => [0 => 'Any Prompt'] + Prompt::whereIn('id', GallerySubmission::whereNotNull('prompt_id')->pluck('prompt_id')->toArray())->orderBy('name')->pluck('name', 'id')->toArray(),
         ]);
     }
 
