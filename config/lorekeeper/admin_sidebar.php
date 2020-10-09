@@ -123,6 +123,10 @@ return [
                 'url' => 'admin/data/character-categories'
             ],
             [
+                'name' => 'Sub Masterlists',
+                'url' => 'admin/data/sublists'
+            ],
+            [
                 'name' => 'Currencies',
                 'url' => 'admin/data/currencies'
             ],

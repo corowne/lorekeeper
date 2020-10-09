@@ -7,6 +7,9 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
+use Illuminate\Support\Facades\View;
+use App\Models\Character\Sublist;
+
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -16,5 +19,7 @@ class Controller extends BaseController
      *
      * @return void
      */
-    public function __construct() {}
+    public function __construct() {
+        View::share('navsublists', Sublist::all());
+    }
 }
