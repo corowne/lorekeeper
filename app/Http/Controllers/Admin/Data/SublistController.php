@@ -42,6 +42,8 @@ class SublistController extends Controller
     {
         return view('admin.sublist.create_edit_sublist', [
             'sublist' => new Sublist,
+            'subCategories' => [],
+            'subSpecies' => [],
             'categories' => CharacterCategory::orderBy('sort')->pluck('name', 'id'),
             'species' => Species::orderBy('sort')->pluck('name', 'id')
         ]);

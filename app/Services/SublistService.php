@@ -43,7 +43,7 @@ class SublistService extends Service
             //update categories and species
             if(isset($contents['categories']) && $contents['categories'])
             {
-                CharacterCategories::whereIn('id', $contents['categories'])->update(array('masterlist_sub_id' => $sublist->id));
+                CharacterCategory::whereIn('id', $contents['categories'])->update(array('masterlist_sub_id' => $sublist->id));
             }
             if(isset($contents['species']) && $contents['species'])
             {

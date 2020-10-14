@@ -17,6 +17,9 @@ use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
 use App\Models\Item\UserItemLog;
 
+use Illuminate\Support\Facades\View;
+use App\Models\Character\Sublist;
+
 use App\Http\Controllers\Controller;
 
 class UserController extends Controller
@@ -42,6 +45,8 @@ class UserController extends Controller
         if(!$this->user) abort(404);
 
         $this->user->updateCharacters();
+        
+        View::share('navsublists', Sublist::all());
     }
 
     /**
