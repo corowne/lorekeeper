@@ -2,6 +2,8 @@
 
 @section('profile-title') {{ $character->fullName }}'s Profile @endsection
 
+@section('meta-img') {{ $character->image->thumbnailUrl }} @endsection
+
 @section('profile-content')
 {!! breadcrumbs([($character->is_myo_slot ? 'MYO Slot Masterlist' : 'Character Masterlist') => ($character->is_myo_slot ? 'myos' : 'masterlist'), $character->fullName => $character->url, 'Profile' => $character->url . '/profile']) !!}
 
@@ -31,8 +33,8 @@
     <div class="card mb-3">
         @if($character->is_trading || $character->is_gift_art_allowed)
             <ul class="list-group list-group-flush">
-                @if($character->is_gift_art_allowed && !$character->is_myo_slot)
-                    <li class="list-group-item"><h5 class="mb-0"><i class="text-success far fa-circle fa-fw mr-2"></i> Gift art is allowed</h5></li>
+                @if($character->is_gift_art_allowed >= 1 && !$character->is_myo_slot)
+                    <li class="list-group-item"><h5 class="mb-0"><i class="{{ $character->is_gift_art_allowed == 1 ? 'text-success' : 'text-secondary' }} far fa-circle fa-fw mr-2"></i> {{ $character->is_gift_art_allowed == 1 ? 'Gift art is allowed' : 'Please ask before gift art' }}</h5></li>
                 @endif
                 @if($character->is_trading)
                     <li class="list-group-item"><h5 class="mb-0"><i class="text-success far fa-circle fa-fw mr-2"></i> Open for trades</h5></li>
