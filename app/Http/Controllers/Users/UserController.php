@@ -46,7 +46,7 @@ class UserController extends Controller
 
         $this->user->updateCharacters();
         
-        View::share('navsublists', Sublist::all());
+        View::share('navsublists', Sublist::orderBy('sort', 'DESC')->get());
     }
 
     /**
@@ -71,6 +71,7 @@ class UserController extends Controller
      */
     public function getUserCharacters($name)
     {
+        $sublists = Sublist::all();
         return view('user.characters', [
             'user' => $this->user,
             'characters' => $this->user->characters()->visible()->get()

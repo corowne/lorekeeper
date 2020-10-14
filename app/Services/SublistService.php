@@ -115,4 +115,29 @@ class SublistService extends Service
         }
         return $this->rollbackReturn(false);
     }
+
+    /**
+     * Sorts sublist  order.
+     *
+     * @param  array  $data
+     * @return bool
+     */
+    public function sortSublist($data)
+    {
+        DB::beginTransaction();
+
+        try {
+            // explode the sort array and reverse it since the order is inverted
+            $sort = array_reverse(explode(',', $data));
+
+            foreach($sort as $key => $s) {
+                Sublist::where('id', $s)->update(['sort' => $key]);
+            }
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
 }

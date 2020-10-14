@@ -29,7 +29,7 @@ class SublistController extends Controller
     public function getIndex()
     {
         return view('admin.sublist.sublist', [
-            'sublists' => Sublist::orderBy('name', 'DESC')->get()
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
     
@@ -129,5 +129,23 @@ class SublistController extends Controller
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
         return redirect()->to('admin/data/sublists');
+    }
+    
+    /**
+     * Sorts sublist order.
+     *
+     * @param  \Illuminate\Http\Request               $request
+     * @param  App\Services\SublistService              $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postSortSublist(Request $request, SublistService $service)
+    {
+        if($service->sortSublist($request->get('sort'))) {
+            flash('Category order updated successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
     }
 }

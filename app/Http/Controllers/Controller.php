@@ -20,6 +20,6 @@ class Controller extends BaseController
      * @return void
      */
     public function __construct() {
-        View::share('navsublists', Sublist::all());
+        View::share('navsublists', Sublist::orderBy('sort', 'DESC')->get());
     }
 }

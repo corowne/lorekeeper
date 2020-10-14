@@ -34,6 +34,7 @@ class AddSubMasterlist extends Migration
             $table->string('name');
             $table->string('key');
             $table->integer('show_main')->default(0); //whether or not its characters show up on the main masterlist
+            $table->integer('sort')->unsigned()->default(0);
         });
     }
 
