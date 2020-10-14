@@ -13,7 +13,7 @@ class Species extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description'
+        'name', 'sort', 'has_image', 'description', 'parsed_description', 'masterlist_sub_id'
     ];
 
     /**
@@ -59,6 +59,14 @@ class Species extends Model
     public function subtypes() 
     {
         return $this->hasMany('App\Models\Species\Subtype');
+    }
+
+    /**
+     * Get the sub masterlist for this species.
+     */
+    public function sublist() 
+    {
+        return $this->belongsTo('App\Models\Character\Sublist', 'masterlist_sub_id');
     }
 
     /**********************************************************************************************

@@ -8,7 +8,7 @@
 <h1>Sub Masterlists</h1>
 
 <p>Sub masterlists are additional masterlists which can be separate or alternative to the main masterlist. This can be used to divide a masterlist up between species, player versus non-player-character, characters vs pets/mounts, etc.</p>
-<p>After creating a sub masterlist, you must select a sublist in either Species or Character Category (or both) for it to apply.</p> 
+<p>Both categories and species can be assigned to sublists, but each can only be assigned to ONE sublist.</p> 
 
 <div class="text-right mb-3"><a class="btn btn-primary" href="{{ url('admin/data/sublists/create') }}"><i class="fas fa-plus"></i> Create New Sub Masterlist</a></div>
 

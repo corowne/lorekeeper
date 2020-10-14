@@ -7,6 +7,7 @@ use Config;
 
 use App\Models\Character\Sublist;
 use App\Models\Character\CharacterCategory;
+use App\Models\Species\Species;
 
 class SublistService extends Service
 {
@@ -29,14 +30,25 @@ class SublistService extends Service
      * Create a sublist.
      *
      * @param  array                 $data
+     * @param  array                 $contents
      * @return \App\Models\Character\Sublist|bool
      */
-    public function createSublist($data)
+    public function createSublist($data, $contents)
     {
         DB::beginTransaction();
 
         try {
             $sublist = Sublist::create($data);
+
+            //update categories and species
+            if(isset($contents['categories']) && $contents['categories'])
+            {
+                CharacterCategories::whereIn('id', $contents['categories'])->update(array('masterlist_sub_id' => $sublist->id));
+            }
+            if(isset($contents['species']) && $contents['species'])
+            {
+                Species::whereIn('id', $contents['species'])->update(array('masterlist_sub_id' => $sublist->id));
+            }
 
             return $this->commitReturn($sublist);
         } catch(\Exception $e) { 
@@ -50,10 +62,11 @@ class SublistService extends Service
      *
      * @param  \App\Models\Character\Sublist        $sublist
      * @param  array                                $data
+     * @param  array                                $contents
      * @param  \App\Models\User\User                $user
      * @return \App\Models\Character\Sublist|bool
      */
-    public function updateSublist($sublist, $data)
+    public function updateSublist($sublist, $data, $contents)
     {
         DB::beginTransaction();
 
@@ -61,7 +74,16 @@ class SublistService extends Service
             // More specific validation
             if(Sublist::where('name', $data['name'])->where('id', '!=', $sublist->id)->exists()) throw new \Exception("The name has already been taken.");
 
+            //update sublist
             $sublist->update($data);
+
+            //update categories and species
+            CharacterCategory::where('masterlist_sub_id', $sublist->id)->update(array('masterlist_sub_id' => 0));
+            Species::where('masterlist_sub_id', $sublist->id)->update(array('masterlist_sub_id' => 0));
+            if(isset($contents['categories']))
+                CharacterCategory::whereIn('id', $contents['categories'])->update(array('masterlist_sub_id' => $sublist->id));
+            if(isset($contents['species']))
+                Species::whereIn('id', $contents['species'])->update(array('masterlist_sub_id' => $sublist->id));
 
             return $this->commitReturn($sublist);
         } catch(\Exception $e) { 
@@ -82,7 +104,8 @@ class SublistService extends Service
 
         try {
             // Check first if the sublist is currently in use
-            if(CharacterCategory::where('masterlist_sub_id', $sublist->id)->exists()) throw new \Exception("A character category is set to this sub masterlist. Please change its settings first.");
+            CharacterCategories::where('masterlist_sub_id', $sublist->id)->update(array('masterlist_sub_id' => 0));
+            Species::where('masterlist_sub_id', $sublist->id)->update(array('masterlist_sub_id' => 0));
             
             $sublist->delete();
 

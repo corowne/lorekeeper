@@ -61,6 +61,14 @@ class Sublist extends Model
         return $this->hasMany('App\Models\Character\CharacterCategory', 'masterlist_sub_id');
     }
 
+    /**
+     * Get all character categories associated with the sub list.
+     */
+    public function species() 
+    {
+        return $this->hasMany('App\Models\Species\Species', 'masterlist_sub_id');
+    }
+
     /**********************************************************************************************
     
         ACCESSORS

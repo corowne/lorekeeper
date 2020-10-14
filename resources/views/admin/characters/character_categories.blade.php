@@ -34,7 +34,8 @@
                         {{ $category->code }}
                     </td>
                     <td>
-                    @if(isset($category->sublist->name)) {{ $category->sublist->name  }} @else -- @endif</td>
+                    @if(isset($category->sublist->name)) {{ $category->sublist->name  }} @else -- @endif
+                    </td>
                     <td class="text-right">
                         <a href="{{ url('admin/data/character-categories/edit/'.$category->id) }}" class="btn btn-primary">Edit</a>
                     </td>

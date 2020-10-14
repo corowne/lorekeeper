@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Character\Sublist;
 use App\Services\SublistService;
+use App\Models\Character\CharacterCategory;
+use App\Models\Species\Species;
 
 class SublistController extends Controller
 {
@@ -39,7 +41,9 @@ class SublistController extends Controller
     public function getCreateSublist()
     {
         return view('admin.sublist.create_edit_sublist', [
-            'sublist' => new Sublist
+            'sublist' => new Sublist,
+            'categories' => CharacterCategory::orderBy('sort')->pluck('name', 'id'),
+            'species' => Species::orderBy('sort')->pluck('name', 'id')
         ]);
     }
     
@@ -54,7 +58,11 @@ class SublistController extends Controller
         $sublist = Sublist::find($id);
         if(!$sublist) abort(404);
         return view('admin.sublist.create_edit_sublist', [
-            'sublist' => $sublist
+            'sublist' => $sublist,
+            'subCategories' => CharacterCategory::where('masterlist_sub_id', $sublist->id)->pluck('id'),
+            'subSpecies' => Species::where('masterlist_sub_id', $sublist->id)->pluck('id'),
+            'categories' => CharacterCategory::orderBy('sort')->pluck('name', 'id'),
+            'species' => Species::orderBy('sort')->pluck('name', 'id')
         ]);
     }
 
@@ -73,11 +81,12 @@ class SublistController extends Controller
         $data = $request->only([
             'name', 'key', 'show_main'
         ]);
+        $contents = $request->only([ 'categories', 'species' ]);
 
-        if($id && $service->updateSublist(Sublist::find($id), $data)) {
+        if($id && $service->updateSublist(Sublist::find($id), $data, $contents)) {
             flash('Sublist updated successfully.')->success();
         }
-        else if (!$id && $sublist = $service->createSublist($data)) {
+        else if (!$id && $sublist = $service->createSublist($data, $contents)) {
             flash('Sublist created successfully.')->success();
             return redirect()->to('admin/data/sublists/edit/'.$sublist->id);
         }

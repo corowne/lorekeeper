@@ -96,18 +96,16 @@ class BrowseController extends Controller
         $imageQuery = CharacterImage::with('features')->with('rarity')->with('species')->with('features');
 
         if($sublists = Sublist::where('show_main', 0)->get())
+        $subCategories = []; $subSpecies = [];
         {   foreach($sublists as $sublist)
             {
-                if(!isset($categories)) $categories = $sublist->categories->pluck('id')->toArray(); else $categories = array_merge($categories, $sublist->categories->pluck('id')->toArray());
-            }
-            if(isset($categories))
-            {   foreach($categories as $category)
-                {
-                    $query->where('character_category_id', '!=', $category);
-                }
+                $subCategories = array_merge($subCategories, $sublist->categories->pluck('id')->toArray());
+                $subSpecies = array_merge($subSpecies, $sublist->species->pluck('id')->toArray());
             }
         }
         
+        $query->whereNotIn('character_category_id', $subCategories);
+        $imageQuery->whereNotIn('species_id', $subSpecies);
 
         if(!Auth::check() || !Auth::user()->hasPower('manage_characters')) {
             $query->visible();
@@ -198,8 +196,8 @@ class BrowseController extends Controller
         return view('browse.masterlist', [  
             'isMyo' => false,
             'characters' => $query->paginate(24)->appends($request->query()),
-            'categories' => [0 => 'Any Category'] + CharacterCategory::orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'specieses' => [0 => 'Any Species'] + Species::orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'categories' => [0 => 'Any Category'] + CharacterCategory::whereNotIn('id', $subCategories)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'specieses' => [0 => 'Any Species'] + Species::whereNotIn('id', $subSpecies)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'subtypes' => [0 => 'Any Subtype'] + Subtype::orderBy('subtypes.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities' => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features' => Feature::orderBy('features.name')->pluck('name', 'id')->toArray()
@@ -312,16 +310,12 @@ class BrowseController extends Controller
         $query = Character::with('user.rank')->with('image.features')->with('rarity')->with('image.species')->myo(0);
         $imageQuery = CharacterImage::with('features')->with('rarity')->with('species')->with('features');
 
-        if($sublist = Sublist::where('key', $key)->first())
-        {
-            $categories = $sublist->categories->pluck('id')->toArray();
-        }
-        if(isset($categories))
-        {   foreach($categories as $category)
-            {
-                $query->where('character_category_id', $category);
-            }
-        }
+        $sublist = Sublist::where('key', $key)->first();
+        $subCategories = $sublist->categories->pluck('id')->toArray();
+        $subSpecies = $sublist->species->pluck('id')->toArray();
+
+        if($subCategories) $query->whereIn('character_category_id', $subCategories);
+        if($subSpecies) $imageQuery->whereIn('species_id', $subSpecies);
         
         if($request->get('name')) $query->where(function($query) use ($request) {
             $query->where('characters.name', 'LIKE', '%' . $request->get('name') . '%')->orWhere('characters.slug', 'LIKE', '%' . $request->get('name') . '%');
@@ -407,7 +401,7 @@ class BrowseController extends Controller
             'isMyo' => false,
             'characters' => $query->paginate(24)->appends($request->query()),
             'categories' => [0 => 'Any Category'] + CharacterCategory::where('masterlist_sub_id', $sublist->id)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'specieses' => [0 => 'Any Species'] + Species::orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'specieses' => [0 => 'Any Species'] + Species::where('masterlist_sub_id', $sublist->id)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'subtypes' => [0 => 'Any Subtype'] + Subtype::orderBy('subtypes.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities' => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features' => Feature::orderBy('features.name')->pluck('name', 'id')->toArray(),
