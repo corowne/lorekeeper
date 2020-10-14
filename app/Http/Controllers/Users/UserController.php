@@ -19,6 +19,7 @@ use App\Models\Item\UserItemLog;
 
 use Illuminate\Support\Facades\View;
 use App\Models\Character\Sublist;
+use App\Models\Character\CharacterCategory;
 
 use App\Http\Controllers\Controller;
 
@@ -71,10 +72,12 @@ class UserController extends Controller
      */
     public function getUserCharacters($name)
     {
-        $sublists = Sublist::all();
+        $categories = CharacterCategory::orderBy('sort', 'DESC')->get();
+        $characters = count($categories) ? $this->user->characters()->orderByRaw('FIELD(character_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')->orderBy('sort', 'DESC')->get()->groupBy('character_category_id') : $this->user->characters()->orderBy('sort', 'DESC')->get()->groupBy('character_category_id');
         return view('user.characters', [
             'user' => $this->user,
-            'characters' => $this->user->characters()->visible()->get()
+            'categories' => $categories->keyBy('id'),
+            'characters' => $characters
         ]);
     }
     

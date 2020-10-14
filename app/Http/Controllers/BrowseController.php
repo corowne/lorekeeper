@@ -311,6 +311,7 @@ class BrowseController extends Controller
         $imageQuery = CharacterImage::with('features')->with('rarity')->with('species')->with('features');
 
         $sublist = Sublist::where('key', $key)->first();
+        if(!$sublist) abort(404);
         $subCategories = $sublist->categories->pluck('id')->toArray();
         $subSpecies = $sublist->species->pluck('id')->toArray();
 

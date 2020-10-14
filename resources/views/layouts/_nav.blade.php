@@ -76,7 +76,7 @@
                         @if(isset($navsublists) && $navsublists)
                             @foreach($navsublists as $navsub)
                             <a class="dropdown-item" href="{{ $navsub->url }}">
-                                {{ $navsub->name }}
+                                {{ $navsub->name }} Masterlist
                             </a>
                             @endforeach
                         @endif
