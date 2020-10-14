@@ -59,7 +59,7 @@ class CharacterController extends Controller
             'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
             'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes' => ['0' => 'Select Subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => ['0' => 'Pick a Species First'],
             'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
             'isMyo' => false
         ]);
@@ -76,10 +76,24 @@ class CharacterController extends Controller
             'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
             'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes' => ['0' => 'Select Subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => ['0' => 'Pick a Species First'],
             'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
             'isMyo' => true
         ]);
+    }
+
+    /**
+     * Shows the edit image subtype portion of the modal
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCreateCharacterMyoSubtype(Request $request) {
+      $species = $request->input('species');
+      return view('admin.masterlist._create_character_subtype', [
+          'subtypes' => ['0' => 'Select Subtype'] + Subtype::where('species_id','=',$species)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+          'isMyo' => $request->input('myo')
+      ]);
     }
 
     /**
@@ -442,7 +456,7 @@ class CharacterController extends Controller
 
         if ($service->deleteCharacter($this->character, Auth::user())) {
             flash('Character deleted successfully.')->success();
-            return redirect()->to($character->url);
+            return redirect()->to('myos');
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
