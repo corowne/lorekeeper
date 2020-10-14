@@ -82,10 +82,6 @@ class CharacterController extends Controller
         ]);
     }
 
-
-
-
-
     /**
      * Shows the edit image subtype portion of the modal
      *
@@ -99,9 +95,6 @@ class CharacterController extends Controller
           'isMyo' => $request->input('myo')
       ]);
     }
-
-
-
 
     /**
      * Creates a character.
@@ -575,7 +568,11 @@ class CharacterController extends Controller
         $action = $request->get('action');
 
         if($service->processTransferQueue($request->only(['action', 'cooldown', 'reason']) + ['transfer_id' => $id], Auth::user())) {
-            flash('Transfer ' . strtolower($action) . 'ed.')->success();
+            if (strtolower($action) == 'approve') {
+                flash('Transfer ' . strtolower($action) . 'd.')->success();
+            } else {
+                flash('Transfer ' . strtolower($action) . 'ed.')->success();
+            }
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
