@@ -60,7 +60,7 @@ class CharacterController extends Controller
             'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
             'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes' => ['0' => 'Select Subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => ['0' => 'Pick a Species First'],
             'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
             'isMyo' => false
         ]);
@@ -77,12 +77,26 @@ class CharacterController extends Controller
             'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
             'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes' => ['0' => 'Select Subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => ['0' => 'Pick a Species First'],
             'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
             'isMyo' => true
         ]);
     }
-    
+
+    /**
+     * Shows the edit image subtype portion of the modal
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCreateCharacterMyoSubtype(Request $request) {
+      $species = $request->input('species');
+      return view('admin.masterlist._create_character_subtype', [
+          'subtypes' => ['0' => 'Select Subtype'] + Subtype::where('species_id','=',$species)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+          'isMyo' => $request->input('myo')
+      ]);
+    }
+
     /**
      * Creates a character.
      *
@@ -112,7 +126,7 @@ class CharacterController extends Controller
         }
         return redirect()->back()->withInput();
     }
-    
+
     /**
      * Creates an MYO slot.
      *
@@ -247,7 +261,7 @@ class CharacterController extends Controller
     {
         $this->character = Character::where('slug', $slug)->first();
         if(!$this->character) abort(404);
-        
+
         return view('character.admin._edit_description_modal', [
             'character' => $this->character,
             'isMyo' => false
@@ -264,7 +278,7 @@ class CharacterController extends Controller
     {
         $this->character = Character::where('is_myo_slot', 1)->where('id', $id)->first();
         if(!$this->character) abort(404);
-        
+
         return view('character.admin._edit_description_modal', [
             'character' => $this->character,
             'isMyo' => true
@@ -443,13 +457,13 @@ class CharacterController extends Controller
 
         if ($service->deleteCharacter($this->character, Auth::user())) {
             flash('Character deleted successfully.')->success();
-            return redirect()->to($character->url);
+            return redirect()->to('myos');
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
         return redirect()->back();
-    }    
+    }
 
     /**
      * Transfers a character.
@@ -463,7 +477,7 @@ class CharacterController extends Controller
     {
         $this->character = Character::where('slug', $slug)->first();
         if(!$this->character) abort(404);
-        
+
         if($service->adminTransfer($request->only(['recipient_id', 'recipient_alias', 'cooldown', 'reason']), $this->character, Auth::user())) {
             flash('Character transferred successfully.')->success();
         }
@@ -472,7 +486,7 @@ class CharacterController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Transfers an MYO slot.
      *
@@ -485,7 +499,7 @@ class CharacterController extends Controller
     {
         $this->character = Character::where('is_myo_slot', 1)->where('id', $id)->first();
         if(!$this->character) abort(404);
-        
+
         if($service->adminTransfer($request->only(['recipient_id', 'cooldown', 'reason']), $this->character, Auth::user())) {
             flash('Character transferred successfully.')->success();
         }
@@ -520,7 +534,7 @@ class CharacterController extends Controller
             'tradeCount' => $openTransfersQueue ? Trade::where('status', 'Pending')->count() : 0
         ]);
     }
-    
+
     /**
      * Shows the character transfer action modal.
      *
@@ -539,7 +553,7 @@ class CharacterController extends Controller
             'cooldown' => Settings::get('transfer_cooldown'),
         ]);
     }
-    
+
     /**
      * Acts on a transfer in the transfer queue.
      *
@@ -553,9 +567,13 @@ class CharacterController extends Controller
         if(!Auth::check()) abort(404);
 
         $action = $request->get('action');
-        
+
         if($service->processTransferQueue($request->only(['action', 'cooldown', 'reason']) + ['transfer_id' => $id], Auth::user())) {
-            flash('Transfer ' . strtolower($action) . 'ed.')->success();
+            if (strtolower($action) == 'approve') {
+                flash('Transfer ' . strtolower($action) . 'd.')->success();
+            } else {
+                flash('Transfer ' . strtolower($action) . 'ed.')->success();
+            }
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
@@ -606,7 +624,7 @@ class CharacterController extends Controller
             'stacks' => $stacks
         ]);
     }
-    
+
     /**
      * Shows the character trade action modal.
      *
@@ -625,7 +643,7 @@ class CharacterController extends Controller
             'cooldown' => Settings::get('transfer_cooldown'),
         ]);
     }
-    
+
     /**
      * Acts on a trade in the trade queue.
      *
@@ -650,7 +668,7 @@ class CharacterController extends Controller
         }
         return redirect()->back();
     }
-    
+
 
     /**
      * Shows a list of all existing MYO slots.

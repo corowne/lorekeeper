@@ -13,3 +13,4 @@ yarn-error.log
 *.env
 clear_characters.sql
 .idea
+/.idea
