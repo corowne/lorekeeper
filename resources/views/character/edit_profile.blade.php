@@ -2,6 +2,8 @@
 
 @section('profile-title') Editing {{ $character->fullName }}'s Profile @endsection
 
+@section('meta-img') {{ $character->image->thumbnailUrl }} @endsection
+
 @section('profile-content')
 {!! breadcrumbs([($character->is_myo_slot ? 'MYO Slot Masterlist' : 'Character Masterlist') => ($character->is_myo_slot ? 'myos' : 'masterlist'), $character->fullName => $character->url, 'Editing Profile' => $character->url . '/profile/edit']) !!}
 
@@ -28,8 +30,8 @@
 @if($character->user_id == Auth::user()->id)
     @if(!$character->is_myo_slot)
         <div class="form-group">
-            {!! Form::checkbox('is_gift_art_allowed', 1, $character->is_gift_art_allowed, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-            {!! Form::label('is_gift_art_allowed', 'Allow Gift Art', ['class' => 'form-check-label ml-3']) !!} {!! add_help('This will place the character on the list of characters that can be drawn for gift art. This does not have any other functionality, but allow users looking for characters to draw to find your character easily.') !!}
+            {!! Form::label('is_gift_art_allowed', 'Allow Gift Art', ['class' => 'form-check-label mb-3']) !!} {!! add_help('This will place the character on the list of characters that can be drawn for gift art. This does not have any other functionality, but allow users looking for characters to draw to find your character easily.') !!}
+            {!! Form::select('is_gift_art_allowed', [0 => 'No', 1 => 'Yes', 2 => 'Ask First'], $character->is_gift_art_allowed, ['class' => 'form-control user-select']) !!}
         </div>
     @endif
     @if($character->is_tradeable ||  $character->is_sellable)
