@@ -234,9 +234,10 @@ class CharacterImage extends Model
     /**
      * Gets the file name of the model's fullsize image.
      *
+     * @param  user
      * @return string
      */
-    public function getCanViewFullAttribute($user = null)
+    public function canViewFull($user = null)
     {
         if(((isset($this->character->user_id) && ($user ? $this->character->user->id == $user->id : false)) || ($user ? $user->hasPower('manage_characters') : false)))
         return true;
