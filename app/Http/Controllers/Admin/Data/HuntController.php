@@ -65,7 +65,7 @@ class HuntController extends Controller
         
         return view('admin.hunts.create_edit_hunt', [
             'hunt' => $hunt,
-            'participants' => $participants->get()->sortBy('user.name')->paginate(60),
+            'participants' => $participants->get()->sortBy('user.name')->paginate(20),
             'items' => Item::orderBy('name')->pluck('name', 'id'),
         ]);
     }
