@@ -2,6 +2,8 @@
 
 @section('profile-title') Transferring {{ $character->fullName }} @endsection
 
+@section('meta-img') {{ $character->image->thumbnailUrl }} @endsection
+
 @section('profile-content')
 @if($character->category->masterlist_sub_id != 0 && $character->category->sublist->show_main == 0)
 {!! breadcrumbs([($character->is_myo_slot ? 'MYO Slot Masterlist' : $character->category->sublist->name.' Masterlist') => ($character->is_myo_slot ? 'myos' : 'sublist/'.$character->category->sublist->key), $character->fullName => $character->url, 'Transfer' => $character->url . '/transfer']) !!}

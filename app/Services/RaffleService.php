@@ -91,6 +91,7 @@ class RaffleService  extends Service
         DB::beginTransaction();
         if(!isset($data['is_active'])) $data['is_active'] = 0;
         $group->update(array_only($data, ['name', 'is_active']));
+        foreach($group->raffles as $raffle) $raffle->update(['is_active' => $data['is_active']]);
         DB::commit();
         return $group;
     }  
