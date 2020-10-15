@@ -429,11 +429,17 @@ class BrowseController extends Controller
             default:
                 $query->orderBy('characters.id', 'DESC');
         }
+
+        $subCategory = $sublist->categories->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray();
+        if(!$subCategory) $subCategory = CharacterCategory::orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray();
+        $subSpecies = $sublist->species->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray();
+        if(!$subSpecies) $subSpecies = Species::orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray();
+        
         return view('browse.sub_masterlist', [  
             'isMyo' => false,
             'characters' => $query->paginate(24)->appends($request->query()),
-            'categories' => [0 => 'Any Category'] + CharacterCategory::where('masterlist_sub_id', $sublist->id)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'specieses' => [0 => 'Any Species'] + Species::where('masterlist_sub_id', $sublist->id)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'categories' => [0 => 'Any Category'] + $subCategory,
+            'specieses' => [0 => 'Any Species'] + $subSpecies,
             'subtypes' => [0 => 'Any Subtype'] + Subtype::orderBy('subtypes.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities' => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features' => Feature::orderBy('features.name')->pluck('name', 'id')->toArray(),
