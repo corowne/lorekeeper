@@ -10,7 +10,7 @@
 </h1>
 
 <div class="text-center">
-    <img src="{{ $shop->shopImageUrl }}" />
+    <img src="{{ $shop->shopImageUrl }}" style="max-width:100%" />
     <p>{!! $shop->parsed_description !!}</p>
 </div>
 
