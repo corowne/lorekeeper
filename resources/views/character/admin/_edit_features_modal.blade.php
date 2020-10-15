@@ -4,7 +4,7 @@
         {!! Form::select('species_id', $specieses, $image->species_id, ['class' => 'form-control', 'id' => 'species']) !!}
     </div>
 
-    <div class="form-group">
+    <div class="form-group" id="subtypes">
         {!! Form::label('Subtype (Optional)') !!}
         {!! Form::select('subtype_id', $subtypes, $image->subtype_id, ['class' => 'form-control', 'id' => 'subtype']) !!}
     </div>
@@ -19,8 +19,8 @@
         <div id="featureList">
             @foreach($image->features as $feature)
                 <div class="d-flex mb-2">
-                    {!! Form::select('feature_id['.$feature->id.']', $features, $feature->feature_id, ['class' => 'form-control mr-2 feature-select original', 'placeholder' => 'Select Trait']) !!}
-                    {!! Form::text('feature_data['.$feature->id.']', $feature->data, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}
+                    {!! Form::select('feature_id[]', $features, $feature->feature_id, ['class' => 'form-control mr-2 feature-select original', 'placeholder' => 'Select Trait']) !!}
+                    {!! Form::text('feature_data[]', $feature->data, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}
                     <a href="#" class="remove-feature btn btn-danger mb-2">×</a>
                 </div>
             @endforeach
@@ -63,6 +63,15 @@
         function removeFeatureRow($trigger) {
             $trigger.parent().remove();
         }
+    });
+
+    $( "#species" ).change(function() {
+      var species = $('#species').val();
+      var id = '<?php echo($image->id); ?>';
+      $.ajax({
+        type: "GET", url: "{{ url('admin/character/image/traits/subtype') }}?species="+species+"&id="+id, dataType: "text"
+      }).done(function (res) { $("#subtypes").html(res); }).fail(function (jqXHR, textStatus, errorThrown) { alert("AJAX call failed: " + textStatus + ", " + errorThrown); });
+
     });
 
 </script>

@@ -1,9 +1,6 @@
 @extends('layouts.app')
 
-@section('title') 
-    User :: 
-    @yield('profile-title')
-@endsection
+@section('title') User ::@yield('profile-title')@endsection
 
 @section('sidebar')
     @include('user._sidebar')
