@@ -143,9 +143,9 @@ class Species extends Model
      */
     public function getSearchUrlAttribute()
     {
-        if($this->masterlist_sub_id == 0)
-        return url('masterlist?species_id='.$this->id);
-        else
+        if($this->masterlist_sub_id != 0 && $this->sublist->show_main == 0)
         return url('sublist/'.$this->sublist->key.'?species_id='.$this->id);
+        else
+        return url('masterlist?species_id='.$this->id);
     }
 }

@@ -3,7 +3,11 @@
 @section('profile-title') {{ $character->fullName }}'s Profile @endsection
 
 @section('profile-content')
-{!! breadcrumbs([($character->is_myo_slot ? 'MYO Slot Masterlist' : 'Character Masterlist') => ($character->is_myo_slot ? 'myos' : 'masterlist'), $character->fullName => $character->url, 'Profile' => $character->url . '/profile']) !!}
+@if($character->category->masterlist_sub_id != 0 && $character->category->sublist->show_main == 0)
+{!! breadcrumbs([($character->is_myo_slot ? 'MYO Slot Masterlist' : $character->category->sublist->name.' Masterlist') => ($character->is_myo_slot ? 'myos' : 'sublist/'.$character->category->sublist->key), $character->fullName => $character->url,  'Profile' => $character->url . '/profile']) !!}
+@else
+{!! breadcrumbs([($character->is_myo_slot ? 'MYO Slot Masterlist' : 'Character Masterlist') => ($character->is_myo_slot ? 'myos' : 'masterlist'), $character->fullName => $character->url,  'Profile' => $character->url . '/profile']) !!}
+@endif
 
 @include('character._header', ['character' => $character])
 
