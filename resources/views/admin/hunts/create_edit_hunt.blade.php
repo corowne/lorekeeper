@@ -117,6 +117,8 @@
     </p>
 
     @if(count($hunt->participants))
+    {!! $participants->render() !!}
+
     <div class="row ml-md-2 mb-3">
         <div class="d-flex row flex-wrap col-12 pb-1 px-0 ubt-bottom">
             <div class="col-md-2 font-weight-bold">User</div>
@@ -124,7 +126,7 @@
                 <div class="col-md font-weight-bold text-center">Target {{ $target->targetNumber }}</div>
             @endforeach
         </div>
-        @foreach($hunt->participants as $participant)
+        @foreach($participants as $participant)
         <div class="d-flex row flex-wrap col-12 mt-1 pt-2 px-0 ubt-top">
             <div class="col-md-2">
             {!! $participant->user->displayName !!}
@@ -139,7 +141,12 @@
         </div>
         @endforeach
     </div>
+
+    {!! $participants->render() !!}
+    @else
+        <p>No participants found!</p>
     @endif
+
 @endif
 
 @endsection
