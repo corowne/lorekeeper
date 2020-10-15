@@ -73,13 +73,6 @@
                         <a class="dropdown-item" href="{{ url('myos') }}">
                             MYO Slot Masterlist
                         </a>
-                        @if(isset($navsublists) && $navsublists)
-                            @foreach($navsublists as $navsub)
-                            <a class="dropdown-item" href="{{ $navsub->url }}">
-                                {{ $navsub->name }} Masterlist
-                            </a>
-                            @endforeach
-                        @endif
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ url('raffles') }}">
                             Raffles

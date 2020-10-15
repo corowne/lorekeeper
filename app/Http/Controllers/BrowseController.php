@@ -200,7 +200,8 @@ class BrowseController extends Controller
             'specieses' => [0 => 'Any Species'] + Species::whereNotIn('id', $subSpecies)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'subtypes' => [0 => 'Any Subtype'] + Subtype::orderBy('subtypes.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities' => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'features' => Feature::orderBy('features.name')->pluck('name', 'id')->toArray()
+            'features' => Feature::orderBy('features.name')->pluck('name', 'id')->toArray(),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
 
@@ -295,7 +296,8 @@ class BrowseController extends Controller
             'slots' => $query->paginate(30)->appends($request->query()),
             'specieses' => [0 => 'Any Species'] + Species::orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities' => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'features' => Feature::orderBy('features.name')->pluck('name', 'id')->toArray()
+            'features' => Feature::orderBy('features.name')->pluck('name', 'id')->toArray(),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
 
@@ -406,7 +408,8 @@ class BrowseController extends Controller
             'subtypes' => [0 => 'Any Subtype'] + Subtype::orderBy('subtypes.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities' => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features' => Feature::orderBy('features.name')->pluck('name', 'id')->toArray(),
-            'sublist' => $sublist
+            'sublist' => $sublist,
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
 }

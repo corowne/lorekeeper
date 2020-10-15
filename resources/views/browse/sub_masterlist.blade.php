@@ -2,6 +2,10 @@
 
 @section('title') {{ $sublist->name }} Masterlist @endsection
 
+@section('sidebar')
+    @include('browse._sidebar')
+@endsection
+
 @section('content')
 {!! breadcrumbs([$sublist->name.' Masterlist' => $sublist->key ]) !!}
 <h1>{{ $sublist->name }} Masterlist</h1>
