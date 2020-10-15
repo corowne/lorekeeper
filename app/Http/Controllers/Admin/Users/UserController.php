@@ -33,33 +33,32 @@ class UserController extends Controller
         });
         if($request->get('rank_id')) $query->where('rank_id', $request->get('rank_id'));
 
-        if(isset($sort['sort'])) 
-        {
-            switch($sort['sort']) {
-                case 'alpha':
-                    $query->orderBy('name');
-                    break;
-                case 'alpha-reverse':
-                    $query->orderBy('name', 'DESC');
-                    break;
-                case 'alias':
-                    $query->orderBy('alias', 'ASC');
-                    break;
-                case 'alias-reverse':
-                    $query->orderBy('alias', 'DESC');
-                    break;
-                case 'rank':
-                    $query->orderBy('ranks.sort', 'DESC')->orderBy('name');
-                    break;
-                case 'newest':
-                    $query->orderBy('created_at', 'DESC');
-                    break;
-                case 'oldest':
-                    $query->orderBy('created_at', 'ASC');
-                    break;
-            }
-        } 
-        else $query->orderBy('ranks.sort', 'DESC')->orderBy('name');
+        switch(isset($sort['sort']) ? $sort['sort'] : null) {
+            default:
+                $query->orderBy('ranks.sort', 'DESC')->orderBy('name');
+                break;
+            case 'alpha':
+                $query->orderBy('name');
+                break;
+            case 'alpha-reverse':
+                $query->orderBy('name', 'DESC');
+                break;
+            case 'alias':
+                $query->orderBy('alias', 'ASC');
+                break;
+            case 'alias-reverse':
+                $query->orderBy('alias', 'DESC');
+                break;
+            case 'rank':
+                $query->orderBy('ranks.sort', 'DESC')->orderBy('name');
+                break;
+            case 'newest':
+                $query->orderBy('created_at', 'DESC');
+                break;
+            case 'oldest':
+                $query->orderBy('created_at', 'ASC');
+                break;
+        }
 
         return view('admin.users.index', [
             'users' => $query->paginate(30)->appends($request->query()),
