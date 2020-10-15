@@ -40,7 +40,7 @@ class HuntController extends Controller
     }
     
     /**
-     * Shows the create prompt page.
+     * Shows the create hunt page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -52,7 +52,7 @@ class HuntController extends Controller
     }
     
     /**
-     * Shows the edit prompt page.
+     * Shows the edit hunt page.
      *
      * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
@@ -61,10 +61,11 @@ class HuntController extends Controller
     {
         $hunt = ScavengerHunt::find($id);
         if(!$hunt) abort(404);
+        $participants = HuntParticipant::where('hunt_id', $id)->with('user');
         
         return view('admin.hunts.create_edit_hunt', [
             'hunt' => $hunt,
-            'participants' => $hunt->participants->paginate(20),
+            'participants' => $participants->get()->sortBy('user.name')->paginate(20),
             'items' => Item::orderBy('name')->pluck('name', 'id'),
         ]);
     }
