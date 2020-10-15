@@ -40,16 +40,23 @@ class MyoController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(function ($request, $next) {
-            $id = Route::current()->parameter('id');
-            $query = Character::myo(1)->where('id', $id);
-            if(!(Auth::check() && Auth::user()->hasPower('manage_characters'))) $query->where('is_visible', 1);
-            $this->character = $query->first();
-            if(!$this->character) abort(404);
+       $this->middleware(function ($request, $next) {
+           $id = Route::current()->parameter('id');
+           $check = Character::where('id', $id)->first();
+           if(!$check) abort(404);
 
-            $this->character->updateOwner();
-            return $next($request);
-        });
+           if($check->is_myo_slot) {
+             $query = Character::myo(1)->where('id', $id);
+             if(!(Auth::check() && Auth::user()->hasPower('manage_characters'))) $query->where('is_visible', 1);
+             $this->character = $query->first();
+             if(!$this->character) abort(404);
+             $this->character->updateOwner();
+             return $next($request);
+           }
+           else {
+             return redirect('/character/' . $check->slug);
+           }
+       });
     }
 
     /**
@@ -89,7 +96,7 @@ class MyoController extends Controller
     public function getEditCharacterProfile($id)
     {
         if(!Auth::check()) abort(404);
-        
+
         $isMod = Auth::user()->hasPower('manage_characters');
         $isOwner = ($this->character->user_id == Auth::user()->id);
         if(!$isMod && !$isOwner) abort(404);
@@ -98,7 +105,7 @@ class MyoController extends Controller
             'character' => $this->character,
         ]);
     }
-    
+
     /**
      * Edits an MYO slot's profile.
      *
@@ -114,7 +121,7 @@ class MyoController extends Controller
         $isMod = Auth::user()->hasPower('manage_characters');
         $isOwner = ($this->character->user_id == Auth::user()->id);
         if(!$isMod && !$isOwner) abort(404);
-        
+
         if($service->updateCharacterProfile($request->only(['text', 'is_gift_art_allowed', 'is_trading', 'alert_user']), $this->character, Auth::user(), !$isOwner)) {
             flash('Profile edited successfully.')->success();
         }
@@ -123,7 +130,7 @@ class MyoController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Shows an MYO slot's ownership logs.
      *
@@ -137,7 +144,7 @@ class MyoController extends Controller
             'logs' => $this->character->getOwnershipLogs(0)
         ]);
     }
-    
+
     /**
      * Shows an MYO slot's ownership logs.
      *
@@ -151,7 +158,7 @@ class MyoController extends Controller
             'logs' => $this->character->getCharacterLogs()
         ]);
     }
-    
+
     /**
      * Shows an MYO slot's submissions.
      *
@@ -175,7 +182,7 @@ class MyoController extends Controller
     public function getTransfer($id)
     {
         if(!Auth::check()) abort(404);
-        
+
         $isMod = Auth::user()->hasPower('manage_characters');
         $isOwner = ($this->character->user_id == Auth::user()->id);
         if(!$isMod && !$isOwner) abort(404);
@@ -193,7 +200,7 @@ class MyoController extends Controller
             'characterOptions' => [null => 'Unbound'] + Character::visible()->myo(0)->orderBy('slug','ASC')->get()->pluck('fullName','id')->toArray()
         ]);
     }
-    
+
     /**
      * Opens a transfer request for an MYO slot.
      *
@@ -221,7 +228,7 @@ class MyoController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Cancels a transfer request for an MYO slot.
      *
@@ -234,7 +241,7 @@ class MyoController extends Controller
     public function postCancelTransfer(Request $request, CharacterManager $service, $id, $id2)
     {
         if(!Auth::check()) abort(404);
-        
+
         if($service->cancelTransfer(['transfer_id' => $id2], Auth::user())) {
             flash('Transfer cancelled.')->success();
         }
@@ -243,7 +250,7 @@ class MyoController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Shows an MYO slot's approval page.
      *

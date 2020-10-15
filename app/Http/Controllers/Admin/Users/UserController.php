@@ -26,14 +26,42 @@ class UserController extends Controller
     public function getIndex(Request $request)
     {
         $query = User::join('ranks','users.rank_id', '=', 'ranks.id')->select('ranks.name AS rank_name', 'users.*');
+        $sort = $request->only(['sort']);
 
         if($request->get('name')) $query->where(function($query) use ($request) {
             $query->where('users.name', 'LIKE', '%' . $request->get('name') . '%')->orWhere('users.alias', 'LIKE', '%' . $request->get('name') . '%');
         });
         if($request->get('rank_id')) $query->where('rank_id', $request->get('rank_id'));
 
+        switch(isset($sort['sort']) ? $sort['sort'] : null) {
+            default:
+                $query->orderBy('ranks.sort', 'DESC')->orderBy('name');
+                break;
+            case 'alpha':
+                $query->orderBy('name');
+                break;
+            case 'alpha-reverse':
+                $query->orderBy('name', 'DESC');
+                break;
+            case 'alias':
+                $query->orderBy('alias', 'ASC');
+                break;
+            case 'alias-reverse':
+                $query->orderBy('alias', 'DESC');
+                break;
+            case 'rank':
+                $query->orderBy('ranks.sort', 'DESC')->orderBy('name');
+                break;
+            case 'newest':
+                $query->orderBy('created_at', 'DESC');
+                break;
+            case 'oldest':
+                $query->orderBy('created_at', 'ASC');
+                break;
+        }
+
         return view('admin.users.index', [
-            'users' => $query->orderBy('ranks.sort', 'DESC')->orderBy('name')->paginate(30)->appends($request->query()),
+            'users' => $query->paginate(30)->appends($request->query()),
             'ranks' => [0 => 'Any Rank'] + Rank::orderBy('ranks.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'count' => $query->count()
         ]);
