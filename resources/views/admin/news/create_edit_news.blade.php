@@ -36,9 +36,21 @@
     {!! Form::textarea('text', $news->text, ['class' => 'form-control wysiwyg']) !!}
 </div>
 
-<div class="form-group">
-    {!! Form::checkbox('is_visible', 1, $news->id ? $news->is_visible : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-    {!! Form::label('is_visible', 'Is Viewable', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is turned off, the post will not be visible. If the post time is set, it will automatically become visible at/after the given post time, so make sure the post time is empty if you want it to be completely hidden.') !!}
+<div class="row">
+    <div class="col-md">
+        <div class="form-group">
+            {!! Form::checkbox('is_visible', 1, $news->id ? $news->is_visible : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+            {!! Form::label('is_visible', 'Is Viewable', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is turned off, the post will not be visible. If the post time is set, it will automatically become visible at/after the given post time, so make sure the post time is empty if you want it to be completely hidden.') !!}
+        </div>
+    </div>
+    @if($news->id && $news->is_visible)
+        <div class="col-md">
+            <div class="form-group">
+                {!! Form::checkbox('bump', 1, null, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+                {!! Form::label('bump', 'Bump News', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If toggled on, this will alert users that there is new news. Best in conjunction with a clear notification of changes!') !!}
+            </div>
+        </div>
+    @endif
 </div>
 
 <div class="text-right">
