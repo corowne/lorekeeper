@@ -430,11 +430,10 @@ class BrowseController extends Controller
                 $query->orderBy('characters.id', 'DESC');
         }
 
-        $subCategory = $sublist->categories->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray();
+        $subCategory = CharacterCategory::where('masterlist_sub_id', $sublist->id)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray();
         if(!$subCategory) $subCategory = CharacterCategory::orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray();
-        $subSpecies = $sublist->species->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray();
+        $subSpecies = Species::where('masterlist_sub_id', $sublist->id)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray();
         if(!$subSpecies) $subSpecies = Species::orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray();
-        
         return view('browse.sub_masterlist', [  
             'isMyo' => false,
             'characters' => $query->paginate(24)->appends($request->query()),
