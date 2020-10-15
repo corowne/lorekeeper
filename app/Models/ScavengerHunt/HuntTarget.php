@@ -149,6 +149,17 @@ class HuntTarget extends Model
      */
     public function getDisplayItemAttribute()
     {
+        $image = ($this->item->imageUrl) ? '<img class="small-icon" src="'.$this->item->imageUrl.'"/>' : null;
+        return $image.' '.$this->item->displayName.' ×'.$this->attributes['quantity'];
+    }
+
+    /**
+     * Displays the target item and its quantity.
+     *
+     * @return string
+     */
+    public function getDisplayItemLongAttribute()
+    {
         $image = ($this->item->imageUrl) ? '<img style="max-height:150px;" src="'.$this->item->imageUrl.'" data-toggle="tooltip" title="'.$this->item->name.'"/>' : null;
         return $image.(isset($image) ? '<br/>' : '').' '.$this->item->displayName.' ×'.$this->attributes['quantity'];
     }

@@ -12,7 +12,7 @@
         <div class="mb-3 pt-3 text-center card">
             <div class="card-body">
                 <p>
-                    {!! $target->displayItem !!}
+                    {!! $target->displayItemLong !!}
                 </p>
 
                 <p>
