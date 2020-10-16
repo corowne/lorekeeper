@@ -21,7 +21,7 @@ use App\Services\CharacterManager;
 use App\Http\Controllers\Controller;
 
 class DesignController extends Controller
-{    
+{
     /**
      * Shows the index of character design update submissions.
      *
@@ -83,7 +83,7 @@ class DesignController extends Controller
         $r = CharacterDesignUpdate::find($id);
         if(!$r) abort(404);
         if($r->user_id != Auth::user()->id) abort(404);
-        
+
         if($service->saveRequestComment($request->only(['comments']), $r)) {
             flash('Request edited successfully.')->success();
         }
@@ -107,7 +107,7 @@ class DesignController extends Controller
             'request' => $r
         ]);
     }
-    
+
     /**
      * Edits a design update request's image upload section.
      *
@@ -122,7 +122,7 @@ class DesignController extends Controller
         if(!$r) abort(404);
         if($r->user_id != Auth::user()->id && !Auth::user()->hasPower('manage_characters')) abort(404);
         $request->validate(CharacterDesignUpdate::$imageRules);
-        
+
         $useAdmin = ($r->status != 'Draft' || $r->user_id != Auth::user()->id) && Auth::user()->hasPower('manage_characters');
         if($service->saveRequestImage($request->all(), $r, $useAdmin)) {
             flash('Request edited successfully.')->success();
@@ -132,7 +132,7 @@ class DesignController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Shows a design update request's addons section.
      *
@@ -143,13 +143,13 @@ class DesignController extends Controller
     {
         $r = CharacterDesignUpdate::find($id);
         if(!$r || ($r->user_id != Auth::user()->id && !Auth::user()->hasPower('manage_characters'))) abort(404);
-        if($r->status == 'Draft' && $r->user_id == Auth::user()->id) 
+        if($r->status == 'Draft' && $r->user_id == Auth::user()->id)
             $inventory = UserItem::with('item')->whereNull('deleted_at')->where('user_id', $r->user_id)->where(function($query) use ($id) {
                 $query->whereNull('holding_id')->orWhere(function($query) use ($id) {
                     $query->where('holding_type', 'Update')->where('holding_id', $id);
                 });
             })->get();
-        else 
+        else
             $inventory = UserItem::with('item')->whereNull('deleted_at')->where('user_id', $r->user_id)->where('holding_id', $id)->where('holding_type', 'Update')->get();
         return view('character.design.addons', [
             'request' => $r,
@@ -171,7 +171,7 @@ class DesignController extends Controller
         $r = CharacterDesignUpdate::find($id);
         if(!$r) abort(404);
         if($r->user_id != Auth::user()->id) abort(404);
-        
+
         if($service->saveRequestAddons($request->all(), $r)) {
             flash('Request edited successfully.')->success();
         }
@@ -191,13 +191,30 @@ class DesignController extends Controller
     {
         $r = CharacterDesignUpdate::find($id);
         if(!$r || ($r->user_id != Auth::user()->id && !Auth::user()->hasPower('manage_characters'))) abort(404);
+
         return view('character.design.features', [
             'request' => $r,
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes' => ['0' => 'No Subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => ['0' => 'No Subtype'] + Subtype::where('species_id','=',$r->species_id)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray()
         ]);
+    }
+
+    /**
+     * Shows the edit image subtype portion of the modal
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getFeaturesSubtype(Request $request) {
+
+      $species = $request->input('species');
+      $id = $request->input('id');
+      return view('character.design._features_subtype', [
+          'subtypes' => ['0' => 'Select Subtype'] + Subtype::where('species_id','=',$species)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+          'subtype' => $id
+      ]);
     }
 
     /**
@@ -213,7 +230,7 @@ class DesignController extends Controller
         $r = CharacterDesignUpdate::find($id);
         if(!$r) abort(404);
         if($r->user_id != Auth::user()->id) abort(404);
-        
+
         if($service->saveRequestFeatures($request->all(), $r)) {
             flash('Request edited successfully.')->success();
         }
@@ -222,7 +239,7 @@ class DesignController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Shows the design update request submission confirmation modal.
      *
@@ -250,7 +267,7 @@ class DesignController extends Controller
         $r = CharacterDesignUpdate::find($id);
         if(!$r) abort(404);
         if($r->user_id != Auth::user()->id) abort(404);
-        
+
         if($service->submitRequest($r)) {
             flash('Request submitted successfully.')->success();
         }
@@ -259,7 +276,7 @@ class DesignController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Shows the design update request deletion confirmation modal.
      *
@@ -287,7 +304,7 @@ class DesignController extends Controller
         $r = CharacterDesignUpdate::find($id);
         if(!$r) abort(404);
         if($r->user_id != Auth::user()->id) abort(404);
-        
+
         if($service->deleteRequest($r)) {
             flash('Request deleted successfully.')->success();
         }

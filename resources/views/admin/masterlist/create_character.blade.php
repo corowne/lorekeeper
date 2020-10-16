@@ -11,7 +11,7 @@
 
     <div class="alert alert-danger">Creating characters requires at least one <a href="{{ url('admin/data/character-categories') }}">character category</a> to be created first, as character categories are used to generate the character code.</div>
 
-@else 
+@else
 
     {!! Form::open(['url' => 'admin/masterlist/create-'.($isMyo ? 'myo' : 'character'), 'files' => true]) !!}
 
@@ -37,7 +37,7 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                {!! Form::label('Owner Alias (Optional)') !!} 
+                {!! Form::label('Owner Alias (Optional)') !!}
                 {!! Form::text('owner_alias', old('owner_alias'), ['class' => 'form-control']) !!}
             </div>
         </div>
@@ -61,7 +61,7 @@
                     {!! Form::label('Number') !!} {!! add_help('This number helps to identify the character and should preferably be unique either within the category, or among all characters.') !!}
                     <div class="d-flex">
                         {!! Form::text('number', old('number'), ['class' => 'form-control mr-2', 'id' => 'number']) !!}
-                        <a href="#" id="pull-number" class="btn btn-primary" data-toggle="tooltip" title="This will find the highest number assigned to a character currently and add 1 to it. It can be adjusted to pull the highest number in the category or the highest overall number - this setting is in the code.">Pull Next Number</a> 
+                        <a href="#" id="pull-number" class="btn btn-primary" data-toggle="tooltip" title="This will find the highest number assigned to a character currently and add 1 to it. It can be adjusted to pull the highest number in the category or the highest overall number - this setting is in the code.">Pull Next Number</a>
                     </div>
                 </div>
             </div>
@@ -74,7 +74,7 @@
     @endif
 
     <div class="form-group">
-        {!! Form::label('Description (Optional)') !!} 
+        {!! Form::label('Description (Optional)') !!}
         @if($isMyo)
             {!! add_help('This section is for making additional notes about the MYO slot. If there are restrictions for the character that can be created by this slot that cannot be expressed with the options below, use this section to describe them.') !!}
         @else
@@ -91,7 +91,7 @@
     <h3>Transfer Information</h3>
 
     <div class="alert alert-info">
-        These are displayed on the {{ $isMyo ? 'MYO slot' : 'character' }}'s profile, but don't have any effect on site functionality except for the following: 
+        These are displayed on the {{ $isMyo ? 'MYO slot' : 'character' }}'s profile, but don't have any effect on site functionality except for the following:
         <ul>
             <li>If all switches are off, the {{ $isMyo ? 'MYO slot' : 'character' }} cannot be transferred by the user (directly or through trades).</li>
             <li>If a transfer cooldown is set, the {{ $isMyo ? 'MYO slot' : 'character' }} also cannot be transferred by the user (directly or through trades) until the cooldown is up.</li>
@@ -116,17 +116,17 @@
         </div>
     </div>
     <div class="form-group">
-        {!! Form::label('On Transfer Cooldown Until (Optional)') !!} 
+        {!! Form::label('On Transfer Cooldown Until (Optional)') !!}
         {!! Form::text('transferrable_at', old('transferrable_at'), ['class' => 'form-control', 'id' => 'datepicker']) !!}
     </div>
 
     <h3>Image Upload</h3>
 
     <div class="form-group">
-        {!! Form::label('Image') !!} 
+        {!! Form::label('Image') !!}
         @if($isMyo)
             {!! add_help('This is a cover image for the MYO slot. If left blank, a default image will be used.') !!}
-        @else 
+        @else
             {!! add_help('This is the full masterlist image. Note that the image is not protected in any way, so take precautions to avoid art/design theft.') !!}
         @endif
         <div>{!! Form::file('image', ['id' => 'mainImage']) !!}</div>
@@ -191,7 +191,7 @@
             {!! Form::textarea('image_description', old('image_description'), ['class' => 'form-control wysiwyg']) !!}
         </div>
     @endif
-    
+
     <h3>Traits</h3>
 
     <div class="form-group">
@@ -199,9 +199,9 @@
         {!! Form::select('species_id', $specieses, old('species_id'), ['class' => 'form-control', 'id' => 'species']) !!}
     </div>
 
-    <div class="form-group">
+    <div class="form-group" id="subtypes">
         {!! Form::label('Subtype (Optional)') !!} @if($isMyo) {!! add_help('This will lock the slot into a particular subtype. Leave it blank if you would like to give the user a choice, or not select a subtype. The subtype must match the species selected above, and if no species is specified, the subtype will not be applied.') !!} @endif
-        {!! Form::select('subtype_id', $subtypes, old('subtype_id'), ['class' => 'form-control', 'id' => 'subtype']) !!}
+        {!! Form::select('subtype_id', $subtypes, old('subtype_id'), ['class' => 'form-control disabled', 'id' => 'subtype']) !!}
     </div>
 
     <div class="form-group">
@@ -236,4 +236,15 @@
 @if(!$isMyo)
     @include('widgets._character_code_js')
 @endif
+
+<script>
+    $( "#species" ).change(function() {
+      var species = $('#species').val();
+      var myo = '<?php echo($isMyo); ?>';
+      $.ajax({
+        type: "GET", url: "{{ url('admin/masterlist/check-subtype') }}?species="+species+"&myo="+myo, dataType: "text"
+      }).done(function (res) { $("#subtypes").html(res); }).fail(function (jqXHR, textStatus, errorThrown) { alert("AJAX call failed: " + textStatus + ", " + errorThrown); });
+    });
+</script>
+
 @endsection

@@ -4,7 +4,6 @@ namespace App\Models\Character;
 
 use Config;
 use DB;
-use Auth;
 use App\Models\Model;
 use App\Models\Feature\FeatureCategory;
 use App\Models\Character\CharacterCategory;
@@ -160,9 +159,9 @@ class CharacterImage extends Model
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeImages($query)
+    public function scopeImages($query, $user = null)
     {
-        if(!Auth::check() || !Auth::user()->hasPower('manage_characters')) return $query->where('is_visible', 1)->orderBy('sort')->orderBy('id', 'DESC');
+        if(!$user || !$user->hasPower('manage_characters')) return $query->where('is_visible', 1)->orderBy('sort')->orderBy('id', 'DESC');
         else return $query->orderBy('sort')->orderBy('id', 'DESC');
     }
 

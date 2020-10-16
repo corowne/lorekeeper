@@ -981,7 +981,7 @@ class CharacterManager extends Service
                 if($character->is_trading != isset($data['is_trading'])) $notifyTrading = true;
                 if($character->is_gift_art_allowed != isset($data['is_gift_art_allowed'])) $notifyGiftArt = true;
 
-                $character->is_gift_art_allowed = isset($data['is_gift_art_allowed']) ? $data['is_gift_art_allowed'] : 0;
+                $character->is_gift_art_allowed = isset($data['is_gift_art_allowed']) && $data['is_gift_art_allowed'] <= 2 ? $data['is_gift_art_allowed'] : 0;
                 $character->is_trading = isset($data['is_trading']);
                 $character->save();
             }
