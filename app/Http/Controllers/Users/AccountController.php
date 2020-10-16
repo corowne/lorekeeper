@@ -160,9 +160,10 @@ class AccountController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postClearNotifications()
+    public function postClearNotifications($type = null)
     {
-        Auth::user()->notifications()->delete();
+        if(isset($type) && $type) Auth::user()->notifications()->where('notification_type_id', $type)->delete();
+        else Auth::user()->notifications()->delete();
         flash('Notifications cleared successfully.')->success();
         return redirect()->back();
     }
