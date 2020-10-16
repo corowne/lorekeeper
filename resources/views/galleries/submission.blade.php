@@ -2,6 +2,8 @@
 
 @section('gallery-title') {{ $submission->displayTitle }} @endsection
 
+@section('meta-img') {{ isset($submission->hash) ? $submission->thumbnailUrl : asset('images/meta-image.png') }} @endsection
+
 @section('gallery-content')
 {!! breadcrumbs(['gallery' => 'gallery', $submission->gallery->displayName => 'gallery/'.$submission->gallery->id, $submission->displayTitle => 'gallery/view/'.$submission->id ]) !!}
 
@@ -78,9 +80,12 @@
                             @if($submission->prompt_id)
                                 <strong>for</strong> {!! $submission->prompt->displayName !!}
                             @endif
+                            @if($submission->favorites->count())
+                                 ・ <a class="view-favorites" href="#">View Favorites</a>
+                            @endif
                             <br/>
                             <strong>Submitted:</strong> {!! pretty_date($submission->created_at) !!} ・ 
-                            <strong>Last Edited:</strong> {!! pretty_date($submission->updated_at) !!}
+                            <strong>Last Updated:</strong> {!! pretty_date($submission->updated_at) !!}
                         </p>
                     </div>
                 </div>
@@ -179,4 +184,16 @@
 <?php $galleryPage = true; 
 $sideGallery = $submission->gallery ?>
 
+@endsection
+
+@section('scripts')
+@parent 
+<script>
+    $(document).ready(function() {
+        $('.view-favorites').on('click', function(e) {
+            e.preventDefault();
+            loadModal("{{ url('gallery/view/favorites') }}/{{ $submission->id }}", 'Favorited By');
+        });
+    });
+</script>
 @endsection

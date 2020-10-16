@@ -44,7 +44,7 @@
             </div>
             <div class="card p-2">
                 {!! Form::file('image', ['id' => 'mainImage']) !!}
-                <small>Images may be PNG, GIF, or JPG and up to 4MB in size.</small>
+                <small>Images may be PNG, GIF, or JPG and up to 3MB in size.</small>
             </div>
         </div>
 
@@ -66,10 +66,10 @@
                     {!! Form::textarea('description', $submission->description, ['class' => 'form-control wysiwyg']) !!}
                 </div>
 
-                @if(!$submission->id)
+                @if((!$submission->id || $submission->status == 'Pending') || Auth::user()->hasPower('manage_submissions'))
                     <div class="form-group">
-                        {!! Form::label('prompt_id', 'Prompt (Optional)') !!} {!! add_help('This <strong>does not</strong> automatically submit to the selected prompt, and you will need to submit to it separately. The prompt selected here will be displayed on the submission page for future reference. You will not be able to edit this after creating the submission.') !!}
-                        {!! Form::select('prompt_id', $prompts, null, ['class' => 'form-control selectize', 'id' => 'prompt', 'placeholder' => 'Select a Prompt']) !!}
+                        {!! Form::label('prompt_id', ($submission->id && Auth::user()->hasPower('manage_submissions') ? '[Admin] ' : '').'Prompt (Optional)') !!} {!! add_help('This <strong>does not</strong> automatically submit to the selected prompt, and you will need to submit to it separately. The prompt selected here will be displayed on the submission page for future reference.'.(!Auth::user()->hasPower('manage_submissions') ? ' You will not be able to edit the submission is accepted.' : '')) !!}
+                        {!! Form::select('prompt_id', $prompts, $submission->prompt_id, ['class' => 'form-control selectize', 'id' => 'prompt', 'placeholder' => 'Select a Prompt']) !!}
                     </div>
                 @else
                     {!! $submission->prompt_id ? '<p><strong>Prompt:</strong> '.$submission->prompt->displayName.'</p>' : '' !!}

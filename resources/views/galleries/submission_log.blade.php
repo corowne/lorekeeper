@@ -103,6 +103,7 @@
                                 <p>This submission hasn't been evaluated yet. You'll receive a notification once it has!</p>
                             @endif
                         @else
+                            @if(isset($submission->data['staff']))<p><strong>Processed By:</strong> {!! App\Models\User\User::find($submission->data['staff'])->displayName !!}</p>@endif
                             @if(isset($submission->data['ineligible']) && $submission->data['ineligible'] == 1)
                                 <p>This submission has been evaluated as ineligible for {{ $currency->name }} rewards.</p>
                             @else

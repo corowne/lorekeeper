@@ -7,7 +7,7 @@
             <div class="col-md text-center align-self-center">
                 <h5>{!! $submission->displayName !!}</h5>
                 In {!! $submission->gallery->displayName !!} ・ By {!! $submission->credits !!}<br/>
-                Submitted {!! pretty_date($submission->created_at) !!} ・ Last edited {!! pretty_date($submission->updated_at) !!}
+                Submitted {!! pretty_date($submission->created_at) !!} ・ Last updated {!! pretty_date($submission->updated_at) !!}
                 
                 @if($submission->status == 'Pending' && $submission->collaboratorApproved && Auth::user()->hasPower('manage_submissions'))
                     <?php
@@ -35,6 +35,9 @@
                 @endif
 
                 @if(isset($queue) && $queue)
+                    @if(isset($submission->staff_comments))
+                        <h6 class="mt-2">Has Staff Comments</h6>
+                    @endif
                     <h6 class="mt-2"><a href="{{ $submission->queueUrl }}" data-toggle="tooltip" title="Check vote logs, process currency rewards, and leave staff comments here.">Detailed Log</a></h6>
                 @endif
             </div>

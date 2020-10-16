@@ -27,22 +27,14 @@
             </div>
             <div class="card-body">
                 @if($gallery->submissions->where('status', 'Accepted')->count())
-                    <div class="d-flex mw-100">
-                        @foreach($gallery->submissions->where('is_visible', 1)->where('status', 'Accepted')->take(5) as $submission)
-                            <div class="text-center mx-2">
-                                <div>
-                                    <a href="{{ $submission->url }}">{!! $submission->thumbnail !!}</a>
-                                </div>
-                                <div class="mt-1">
-                                    <a href="{{ $submission->url }}" class="h5 mb-0">@if(!$submission->isVisible) <i class="fas fa-eye-slash"></i> @endif {{ $submission->displayTitle }}</a>
-                                </div>
-                                <div class="small">
-                                    by {!! $submission->credits !!}
-                                </div>
+                    <div class="row">
+                        @foreach($gallery->submissions->where('is_visible', 1)->where('status', 'Accepted')->take(4) as $submission)
+                            <div class="col-md-3 text-center align-self-center">
+                                @include('galleries._thumb', ['submission' => $submission, 'gallery' => true])
                             </div>
                         @endforeach
                     </div>
-                    @if($gallery->submissions->where('status', 'Accepted')->count() > 5)
+                    @if($gallery->submissions->where('status', 'Accepted')->count() > 4)
                         <div class="text-right"><a href="{{ url('gallery/'.$gallery->id) }}">See More...</a></div>
                     @endif
                 @else
