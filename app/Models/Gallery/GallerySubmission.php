@@ -6,7 +6,6 @@ use Config;
 use DB;
 use Settings;
 use Carbon\Carbon;
-use Image;
 use App\Models\Currency\Currency;
 use App\Models\Model;
 
@@ -308,30 +307,18 @@ class GallerySubmission extends Model
      */
     public function getThumbnailAttribute()
     {
-        $image = $this->thumbnailUrl;
-        $text = '<span class="badge-primary px-2 py-1" style="border-radius:0 0 .5em 0; position:absolute; z-index:5;">Literature</span>
-        <div class="info-'.$this->id.'"></div>
-        <div class="content-'.$this->id.' text-body">'.$this->parsed_text.'</div>
+        if(isset($this->hash)) return '<img class="img-thumbnail" src="'.$this->thumbnailUrl.'"/>';
+        return 
+        '<div class="mx-auto img-thumbnail text-left" style="height:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.height')+10).'px; width:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.width')+4).'px;">
+            <span class="badge-primary px-2 py-1" style="border-radius:0 0 .5em 0; position:absolute; z-index:5;">Literature</span>
+            <div class="container-'.$this->id.' parsed-text pb-2 pr-2" style="height:'.Config::get('lorekeeper.settings.masterlist_thumbnails.height').'px; width:'.Config::get('lorekeeper.settings.masterlist_thumbnails.width').'px; overflow:hidden;">
+                <div class="content-'.$this->id.' text-body">'.$this->parsed_text.'</div>
+            </div>
+        </div>
         <style>
             .content-'.$this->id.' {transition-duration: '.(strlen($this->parsed_text)/1000).'s;}
-            .content-'.$this->id.':hover, .content-'.$this->id.':focus-within, .info-'.$this->id.':hover + .content-'.$this->id.', .info-'.$this->id.':focus-within + .content-'.$this->id.' {transform: translateY(calc('.Config::get('lorekeeper.settings.masterlist_thumbnails.height').'px - 100%)); transition-duration: '.(strlen($this->parsed_text)/100).'s;}
+            .content-'.$this->id.':hover, .content-'.$this->id.':focus-within {transform: translateY(calc('.Config::get('lorekeeper.settings.masterlist_thumbnails.height').'px - 100%)); transition-duration: '.(strlen($this->parsed_text)/100).'s;}
         </style>';
-        if(isset($this->hash)) $content = $image; else $content = $text;
-        if($content == $image) $width = (Image::make($this->imagePath . '/' . $this->thumbnailFileName)->width())+4; else $width = Config::get('lorekeeper.settings.masterlist_thumbnails.width');
-
-        return '<div class="mx-auto img-thumbnail text-left" style="height:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.height')+10).'px; width:'.($width+4).'px;">
-            <div class="info-'.$this->id.'" style="z-index:5;">
-            </div>
-            <div class="info-content-'.$this->id.'" style="display:none; z-index:4;">
-                a
-            </div>
-            <div class="container-'.$this->id.' parsed-text pb-2 pr-2" style="height:'.Config::get('lorekeeper.settings.masterlist_thumbnails.height').'px; width:'.$width.'px; overflow:hidden;'.($content == $image ? ' background: url('.$content.') no-repeat; padding-right:4px;' : '').'">
-                '.($content == $text ? $content : '' ).'
-            </div>
-            <style>
-                .info-'.$this->id.', .info-content-'.$this->id.' {height:'.Config::get('lorekeeper.settings.masterlist_thumbnails.height').'px; width:'.$width.'px;  transition-duration:5s; position:absolute;} .info-'.$this->id.':hover + .info-content-'.$this->id.', .info-'.$this->id.':focus-within + .info-content-'.$this->id.' {display:block !important;}
-            </style>
-        </div>';
     }
 
     /**
