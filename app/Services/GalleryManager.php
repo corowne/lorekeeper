@@ -112,8 +112,8 @@ class GalleryManager extends Service
                 ]);
 
                 // Notify collaborators (but not the submitting user)
-                if($collaborator->user->id != $user->id) {
-                    Notifications::create('GALLERY_SUBMISSION_COLLABORATOR', $collaborator->user, [
+                if($collaborator->id != $user->id) {
+                    Notifications::create('GALLERY_SUBMISSION_COLLABORATOR', $collaborator, [
                         'sender_url' => $user->url,
                         'sender' => $user->name,
                         'submission_id' => $submission->id,
