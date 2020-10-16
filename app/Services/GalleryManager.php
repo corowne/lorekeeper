@@ -77,7 +77,7 @@ class GalleryManager extends Service
 
             // Check that the selected prompt exists and can be submitted to
             if(isset($data['prompt_id'])) {
-                $prompt = Prompt::active()->find($id);
+                $prompt = Prompt::active()->find($data['prompt_id']);
                 if(!$prompt) throw new \Exception("Invalid prompt selected.");
             }
 
@@ -234,6 +234,15 @@ class GalleryManager extends Service
                     'gallery_submission_id' => $submission->id,
                 ]);
             }
+
+            // Check that the selected prompt exists and can be submitted to
+            if(isset($data['prompt_id'])) {
+                $prompt = $user->hasPower('manage_submissions') ? Prompt::find($data['prompt_id']) : Prompt::active()->find($data['prompt_id']);
+                if(!$prompt) throw new \Exception("Invalid prompt selected.");
+            }
+
+            if((isset($submission->parsed_description) && $submission->parsed_description) && !isset($data['description'])) $data['parsed_description'] = null;
+            if((isset($submission->parsed_text) && $submission->parsed_text) && !isset($data['text'])) $data['parsed_text'] = null;
 
             $data = $this->populateData($data);
             if(isset($data['image']) && $data['image']) $this->processImage($data, $submission);
@@ -650,9 +659,10 @@ class GalleryManager extends Service
                 if(isset($submission->data['total'])) $valueData = collect([
                     'currencyData' => $submission->data['currencyData'], 
                     'total' => $submission->data['total'], 
-                    'value' => $data['value']
+                    'value' => $data['value'],
+                    'staff' => $user->id,
                 ])->toJson();
-                else $valueData = collect(['value' => $data['value']])->toJson();
+                else $valueData = collect(['value' => $data['value'], 'staff' => $user->id])->toJson();
 
                 // Update the submission with the new data and mark it as processed
                 $submission->update([
@@ -672,17 +682,13 @@ class GalleryManager extends Service
             }
             else {
                 // Collect and json encode existing as well as new data for storage
-                $valueData = collect([
-                    'currencyData' => $submission->data['currencyData'], 
-                    'total' => $submission->data['total'], 
-                    'ineligible' => 1,
-                ])->toJson();
                 if(isset($submission->data['total'])) $valueData = collect([
                     'currencyData' => $submission->data['currencyData'], 
                     'total' => $submission->data['total'], 
                     'ineligible' => 1,
+                    'staff' => $user->id,
                 ])->toJson();
-                else $valueData = collect(['ineligible' => 1,])->toJson();
+                else $valueData = collect(['ineligible' => 1, 'staff' => $user->id])->toJson();
 
                 // Update the submission, including marking it as processed
                 $submission->update([

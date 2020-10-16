@@ -119,6 +119,20 @@ class GalleryController extends Controller
     }
 
     /**
+     * Gets the submission favorites list modal.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getSubmissionFavorites($id)
+    {
+        $submission = GallerySubmission::find($id);
+        return view('galleries._submission_favorites', [
+            'submission' => $submission,
+        ]);
+    }
+
+    /**
      * Shows a given submission's detailed queue log.
      *
      * @param  int  $id
@@ -198,10 +212,14 @@ class GalleryController extends Controller
         $isOwner = ($submission->user_id == Auth::user()->id);
         if(!$isMod && !$isOwner) abort(404);
 
+        // Show inactive prompts in the event of being edited by an admin after acceptance
+        $prompts = Auth::user()->hasPower('manage_submissions') && $submission->status == 'Pending' ? Prompt::query() : Prompt::active();
+
         return view('galleries.create_edit_submission', [
             'closed' => false,
             'gallery' => $submission->gallery,
             'galleries' => Gallery::orderBy('name')->pluck('name', 'id')->toArray(),
+            'prompts' => $prompts->sortAlphabetical()->pluck('name', 'id')->toArray(),
             'submission' => $submission,
             'users' => User::visible()->orderBy('name')->pluck('name', 'id')->toArray(),
             'currency' => Currency::find(Settings::get('group_currency')),
@@ -247,7 +265,7 @@ class GalleryController extends Controller
     public function postCreateEditGallerySubmission(Request $request, GalleryManager $service, $id = null)
     {
         $id ? $request->validate(GallerySubmission::$updateRules) : $request->validate(GallerySubmission::$createRules);
-        $data = $request->only(['image', 'text', 'title', 'description', 'slug', 'collaborator_id', 'collaborator_data', 'participant_id', 'participant_type', 'gallery_id', 'alert_user']);
+        $data = $request->only(['image', 'text', 'title', 'description', 'slug', 'collaborator_id', 'collaborator_data', 'participant_id', 'participant_type', 'gallery_id', 'alert_user', 'prompt_id']);
 
         if(!$id && Settings::get('gallery_submissions_reward_currency')) $currencyFormData = $request->only(collect(Config::get('lorekeeper.group_currency_form'))->keys()->toArray());
         else $currencyFormData = null;
