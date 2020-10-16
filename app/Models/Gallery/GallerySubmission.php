@@ -50,7 +50,7 @@ class GallerySubmission extends Model
      */
     public static $createRules = [
         'title' => 'required|between:3,200',
-        'image' => 'required_without:text|mimes:png,jpeg,gif|max:4000',
+        'image' => 'required_without:text|mimes:png,jpeg,gif|max:3000',
         'text' => 'required_without:image',
         'description' => 'nullable',
     ];
@@ -63,7 +63,7 @@ class GallerySubmission extends Model
     public static $updateRules = [
         'title' => 'required|between:3,200',
         'description' => 'nullable',
-        'image' => 'mimes:png,jpeg,gif|max:4000'
+        'image' => 'mimes:png,jpeg,gif|max:3000'
     ];
 
     /**********************************************************************************************
@@ -309,7 +309,7 @@ class GallerySubmission extends Model
     {
         if(isset($this->hash)) return '<img class="img-thumbnail" src="'.$this->thumbnailUrl.'"/>';
         return 
-        '<div class="mx-auto img-thumbnail text-left" style="height:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.height')+10).'px; width:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.width')+4).'px;">
+        '<div class="mx-auto img-thumbnail text-left" style="height:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.height')+8).'px; width:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.width')+4).'px;">
             <span class="badge-primary px-2 py-1" style="border-radius:0 0 .5em 0; position:absolute; z-index:5;">Literature</span>
             <div class="container-'.$this->id.' parsed-text pb-2 pr-2" style="height:'.Config::get('lorekeeper.settings.masterlist_thumbnails.height').'px; width:'.Config::get('lorekeeper.settings.masterlist_thumbnails.width').'px; overflow:hidden;">
                 <div class="content-'.$this->id.' text-body">'.$this->parsed_text.'</div>
@@ -401,7 +401,7 @@ class GallerySubmission extends Model
                     break;
             }
         }
-        if($prefixList != null) return '['.implode(' : ', $prefixList).'] ';
+        if($prefixList != null) return '['.implode(' : ', array_unique($prefixList)).'] ';
         return null;
     }
 

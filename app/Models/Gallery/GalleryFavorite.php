@@ -30,7 +30,7 @@ class GalleryFavorite extends Model
      */
     public function user() 
     {
-        return $this->belongsTo('App\Models\User\User', 'use_id');
+        return $this->belongsTo('App\Models\User\User', 'user_id');
     }
     
     /**

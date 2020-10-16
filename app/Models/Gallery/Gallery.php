@@ -74,7 +74,7 @@ class Gallery extends Model
      */
     public function submissions() 
     {
-        return $this->hasMany('App\Models\Gallery\GallerySubmission', 'gallery_id')->orderBy('created_at', 'DESC');
+        return $this->hasMany('App\Models\Gallery\GallerySubmission', 'gallery_id')->visible()->orderBy('created_at', 'DESC');
     }
 
     /**********************************************************************************************
