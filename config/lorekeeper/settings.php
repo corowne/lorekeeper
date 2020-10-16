@@ -102,12 +102,12 @@ return [
     | This is in an endeavor to make images with a transparent background
     | compress better. Set to null to disable.
     | Example:
-    | 'masterlist_image_background' => null,
+    | 'masterlist_image_background' => 'png',
     |
     */
     'watermark_masterlist_images' => 0,
     'masterlist_image_dimension' => 0,
-    'masterlist_image_format' => 'png',
+    'masterlist_image_format' => null,
     'masterlist_image_background' => '#ffffff',
     
     /*
