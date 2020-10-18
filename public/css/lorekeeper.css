@@ -595,3 +595,8 @@ tr.accountbound {
 .bookmark-table .img-thumbnail {
     width: 100px;
 }
+
+/* RECIPES ***************************************************************************************/
+.recipe-image {
+    width: 150px;
+}

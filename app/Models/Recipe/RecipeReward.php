@@ -2,6 +2,7 @@
 
 namespace App\Models\Recipe;
 
+use App;
 use Config;
 use App\Models\Model;
 

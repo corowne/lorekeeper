@@ -2,6 +2,7 @@
 
 namespace App\Models\Recipe;
 
+use App;
 use Config;
 use DB;
 use App\Models\Model;
@@ -62,31 +63,6 @@ class RecipeIngredient extends Model
         return $this->belongsTo('App\Models\Recipe\Recipe');
     }
 
-    /**
-     * Gets the associated ingredient item(s) or category(ies).
-     *
-     * @return string
-     */
-    public function ingredient()
-    {
-        $ingredient_data = json_decode($this->ingredient_data);
-        switch ($this->ingredient_type)
-        {
-            case 'Item':
-                return App\Models\Item\Item::where('id', $ingredient_data['ids'][0]);
-            case 'MultiItem':
-                return App\Models\Item\Item::whereIn('id', $ingredient_data['ids']);
-            case 'Category':
-                return App\Models\Item\ItemCategory::where('id', $ingredient_data['ids'][0]);
-            case 'MultiCategory':
-                return App\Models\Item\ItemCategory::whereIn('id', $ingredient_data['ids']);
-            case 'None':
-                // Laravel requires a relationship instance to be returned (cannot return null), so returning one that doesn't exist here.
-                return $this->belongsTo('App\Models\Recipe\RecipeIngredient', 'recipe_id', 'recipe_id')->whereNull('recipe_id');
-        }
-        return null;
-    }
-
     /**********************************************************************************************
     
         ACCESSORS
@@ -101,5 +77,27 @@ class RecipeIngredient extends Model
     public function getDataAttribute()
     {
         return json_decode($this->ingredient_data);
+    }
+
+    /**
+     * Gets the associated ingredient item(s) or category(ies).
+     *
+     * @return string
+     */
+    public function getIngredientAttribute()
+    {
+        $ingredient_data = json_decode($this->ingredient_data);
+        switch ($this->ingredient_type)
+        {
+            case 'Item':
+                return App\Models\Item\Item::where('id', $ingredient_data[0])->get()[0];
+            case 'MultiItem':
+                return App\Models\Item\Item::whereIn('id', $ingredient_data)->get();
+            case 'Category':
+                return App\Models\Item\ItemCategory::where('id', $ingredient_data[0])->get()[0];
+            case 'MultiCategory':
+                return App\Models\Item\ItemCategory::whereIn('id', $ingredient_data)->get();
+        }
+        return null;
     }
 }
