@@ -25,14 +25,14 @@ It also serves as a base for developing extensions, providing several common 'de
 
 Please see the associated wiki page for each extension for more information on their functionality.
 
-- @Draginraptor : [Stacked Inventories](http://wiki.lorekeeper.me/index.php?title=Extensions:Stacked_Inventories)
-- @itinerare : [Submission Addons](http://wiki.lorekeeper.me/index.php?title=Extensions:Submission_Addons)
-- @itinerare : [Character Items](http://wiki.lorekeeper.me/index.php?title=Extensions:Character_Items)
-- @preimpression : [Bootstrap Tables](http://wiki.lorekeeper.me/index.php?title=Extensions:Bootstrap_Tables)
-- @itinerare : [Item Entry Expansion (Stacked Inventories version)](http://wiki.lorekeeper.me/index.php?title=Extensions:Item_Entry_Expansion)
-- @itinerare : [Watermarking](http://wiki.lorekeeper.me/index.php?title=Extensions:Watermarking)
-- @itinerare : [Separate Prompts](http://wiki.lorekeeper.me/index.php?title=Extensions:Separate_Prompts)
-- @preimpression & @ne-wt : [Comments](http://wiki.lorekeeper.me/index.php?title=Extensions:Comments)
+- [Draginraptor](https://github.com/Draginraptor) : [Stacked Inventories](http://wiki.lorekeeper.me/index.php?title=Extensions:Stacked_Inventories)
+- [itinerare](https://github.com/itinerare) : [Submission Addons](http://wiki.lorekeeper.me/index.php?title=Extensions:Submission_Addons)
+- [itinerare](https://github.com/itinerare) : [Character Items](http://wiki.lorekeeper.me/index.php?title=Extensions:Character_Items)
+- [Preimpression](https://github.com/preimpression) : [Bootstrap Tables](http://wiki.lorekeeper.me/index.php?title=Extensions:Bootstrap_Tables)
+- [itinerare](https://github.com/itinerare) : [Item Entry Expansion (Stacked Inventories version)](http://wiki.lorekeeper.me/index.php?title=Extensions:Item_Entry_Expansion)
+- [itinerare](https://github.com/itinerare) : [Watermarking](http://wiki.lorekeeper.me/index.php?title=Extensions:Watermarking)
+- [itinerare](https://github.com/itinerare) : [Separate Prompts](http://wiki.lorekeeper.me/index.php?title=Extensions:Separate_Prompts)
+- [Preimpression](https://github.com/preimpression) & [Ne-wt](https://github.com/Ne-wt) : [Comments](http://wiki.lorekeeper.me/index.php?title=Extensions:Comments)
 
 # Setup
 
@@ -42,7 +42,7 @@ Please see [the Readme](https://github.com/corowne/lorekeeper/blob/master/README
 
 Depending on how modified your site's copy is, you may be able to simply pull this branch without any resulting conflicts. 
 
-In the case that conflicts do result, or if you need further information, see @junijwi's [tutorial on installing extensions](http://wiki.lorekeeper.me/index.php?title=Tutorial:_Installing_Extensions) for information on resolving conflicts and generally installing extensions. As you will already have added the core Lorekeeper repository as a remote in order to set up Lorekeeper, you can skip to step 2, pulling this branch ("modified-main").
+In the case that conflicts do result, or if you need further information, see [Junijwi](https://github.com/juniJwi)'s [tutorial on installing extensions](http://wiki.lorekeeper.me/index.php?title=Tutorial:_Installing_Extensions) for information on resolving conflicts and generally installing extensions. As you will already have added the core Lorekeeper repository as a remote in order to set up Lorekeeper, you can skip to step 2, pulling this branch ("modified-main").
 
 ### Extension-specific instructions:
 
