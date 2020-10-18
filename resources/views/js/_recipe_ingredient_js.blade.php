@@ -17,7 +17,7 @@ $( document ).ready(function() {
     $('#addIngredient').on('click', function(e) {
         e.preventDefault();
         var $clone = $ingredientRow.clone();
-        $clone = $clone.addClass('row_num_'+currentRowID)
+        $clone = $clone.attr('data-row', currentRowID);
         $ingredientTable.append($clone);
         var $typeSelect = $clone.find('.ingredient-type');
         $typeSelect.attr('name', 'ingredient_type['+currentRowID+']')
@@ -35,7 +35,7 @@ $( document ).ready(function() {
         node.on('change', function(e) {
             var val = $(this).val();
             var $cell = $(this).parent().parent().find('.ingredient-row-select');
-            var row_num = $(this).parent().parent().attr('class').substr(-1);
+            var row_num = $(this).parent().parent().data('row');
 
             var $clone = null;
             if(val == 'Item') $clone = $itemSelect.clone();
@@ -77,7 +77,7 @@ $( document ).ready(function() {
             e.preventDefault();
             var $clone;
             var $select;
-            var row_num = node.parent().parent().parent().attr('class').substr(-1);
+            var row_num = $(this).parent().parent().data('row');
             if(type == 'MultiItem') {
                 $clone = $multiItemEntry.clone();
                 $(this).parent().find('.multi-item-list').append($clone);

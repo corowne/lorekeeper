@@ -14,7 +14,7 @@
         @if($ingredients)
             @php $row_counter = 0; @endphp
             @foreach($ingredients as $ingredient)
-                <tr class="ingredient-row row_num_{{ $row_counter }}">
+                <tr class="ingredient-row" data-row="{{ $row_counter }}">
                     <td>{!! Form::select('ingredient_type['.$row_counter.']', ['Item' => 'Item', 'MultiItem' => 'Multi Item', 'Category' => 'Category', 'MultiCategory' => 'Multi Category', 'Currency' => 'Currency'], $ingredient->ingredient_type, ['class' => 'form-control ingredient-type', 'placeholder' => 'Select Ingredient Type']) !!}</td>
                     <td class="ingredient-row-select">
                         @switch($ingredient->ingredient_type)

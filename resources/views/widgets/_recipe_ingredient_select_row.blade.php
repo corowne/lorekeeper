@@ -4,7 +4,7 @@
             <tr class="ingredient-row">
                 <td>{!! Form::select('ingredient_type[]', ['Item' => 'Item', 'MultiItem' => 'Multi Item', 'Category' => 'Category', 'MultiCategory' => 'Multi Category', 'Currency' => 'Currency'], null, ['class' => 'form-control ingredient-type', 'placeholder' => 'Select Ingredient Type']) !!}</td>
                 <td class="ingredient-row-select"></td>
-                <td>{!! Form::text('ingredient_quantity[]', 1, ['class' => 'form-control ingredient_quantity']) !!}</td>
+                <td>{!! Form::text('ingredient_quantity[]', 1, ['class' => 'form-control ingredient-quantity']) !!}</td>
                 <td class="text-right"><a href="#" class="btn btn-danger remove-ingredient-button">Remove</a></td>
             </tr>
         </tbody>
