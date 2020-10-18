@@ -86,17 +86,16 @@ class RecipeIngredient extends Model
      */
     public function getIngredientAttribute()
     {
-        $ingredient_data = json_decode($this->ingredient_data);
         switch ($this->ingredient_type)
         {
             case 'Item':
-                return App\Models\Item\Item::where('id', $ingredient_data[0])->get()[0];
+                return App\Models\Item\Item::where('id', $this->data[0])->get()[0];
             case 'MultiItem':
-                return App\Models\Item\Item::whereIn('id', $ingredient_data)->get();
+                return App\Models\Item\Item::whereIn('id', $this->data)->get();
             case 'Category':
-                return App\Models\Item\ItemCategory::where('id', $ingredient_data[0])->get()[0];
+                return App\Models\Item\ItemCategory::where('id', $this->data[0])->get()[0];
             case 'MultiCategory':
-                return App\Models\Item\ItemCategory::whereIn('id', $ingredient_data)->get();
+                return App\Models\Item\ItemCategory::whereIn('id', $this->data)->get();
         }
         return null;
     }

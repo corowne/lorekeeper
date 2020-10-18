@@ -187,4 +187,14 @@ class Recipe extends Model
     {
         return 'recipes';
     }
+
+    /**
+    * Gets the currency's asset type for asset management.
+    *
+    * @return bool
+    */
+   public function getLockedAttribute()
+   {
+       return $this->needs_unlocking && !User;
+   }
 }
