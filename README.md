@@ -19,7 +19,7 @@ It also serves as a base for developing extensions, providing several common 'de
 
 - **Core Lorekeeper:** Please see [the Readme](https://github.com/corowne/lorekeeper/blob/master/README.md) and [feature documentation](http://lorekeeper-arpg.wikidot.com/) for more information.
 - **Grouped Notifications:** To account for the potentially large variety and potentially volume of notifications, they are grouped by notification type and collapse when there are more than 5 notifications of a type.
-- **Extension Service:** A utility for use by extension developers. By default, facilitates adjusting notification type IDs in a site's DB to comply with [community notification standards](). See the [this command]() (made for Character Items) for an example of how to use this functionality.
+- **Extension Service:** A utility for use by extension developers. By default, facilitates adjusting notification type IDs in a site's DB to comply with the [community notification standard](http://wiki.lorekeeper.me/index.php?title=Community_Notification_Standard). See the [this command](https://github.com/itinerare/lorekeeper/blob/15f9ba0a750f4a08d1e3e07139ad32a0b3c7fc9f/app/Console/Commands/FixCharItemNotifs.php) (made for Character Items) for an example of how to use this functionality.
 
 ## Extensions Included
 
@@ -48,6 +48,7 @@ In the case that conflicts do result, or if you need further information, see @j
 
 - **Stacked Inventories:** Existing user items in the database with identical owner, source, and notes are not automatically combined; these must be manually edited to be combined if desired. Not doing so will not cause issues, however.
 - **Submission Addons:** Before installing, **process any remaining unprocessed submissions**. Otherwise, you will need to edit their data in the database before they can be processed.
+- **Character Items:** If you installed this extension already, and did so prior to September 10th, 2020, run `php artisan fix-char-item-notifs`.
 - **Comments:** The version included in this branch has been separated from the original package. If you installed the prior version of the extension, run `php artisan view:clear` after installation to clear your view caches.
 
 When ready, run `php artisan migrate`.
