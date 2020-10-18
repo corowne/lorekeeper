@@ -19,7 +19,10 @@ $( document ).ready(function() {
         var $clone = $ingredientRow.clone();
         $clone = $clone.addClass('row_num_'+currentRowID)
         $ingredientTable.append($clone);
-        attachIngredientTypeListener($clone.find('.ingredient-type'));
+        var $typeSelect = $clone.find('.ingredient-type');
+        $typeSelect.attr('name', 'ingredient_type['+currentRowID+']')
+        $clone.find('.ingredient-quantity').attr('name', 'ingredient_quantity['+currentRowID+']')
+        attachIngredientTypeListener($typeSelect);
         attachRemoveListener($clone.find('.remove-ingredient-button'));
         currentRowID++;
     });
@@ -28,37 +31,10 @@ $( document ).ready(function() {
     attachAddMultiListener($('#ingredientTableBody .add-multi-category-button'), 'MultiCategory');
     attachRemoveMultiListener($('#ingredientTableBody .remove-multi-entry-button'));
 
-    // $('.ingredient-type').on('change', function(e) {
-    //     var val = $(this).val();
-    //     var $cell = $(this).parent().find('.ingredient-row-select');
-    //     var row_num = $(this).parent().attr('class').substr(-1);
-
-    //     var $clone = null;
-    //     if(val == 'Item') $clone = $itemSelect.clone();
-    //     else if(val == 'MultiItem') {
-    //         $clone = $multiItemSelectGroup.clone();
-    //         attachAddMultiListener($clone.find('.add-multi-item-button'), val);
-    //     }
-    //     else if(val == 'Category') $clone = $categorySelect.clone();
-    //     else if(val == 'MultiCategory') {
-    //         $clone = $multiCategorySelectGroup.clone();
-    //         attachAddMultiListener($clone.find('.add-multi-category-button'), val);
-    //     }
-    //     else if (val == 'Currency') $clone = $currencySelect.clone();
-
-    //     attachAddMultiListener($('.add-multi-item-button'), $type, );
-    //     attachRemoveMultiListener($('.add-multi-item-button'));
-    //     attachRemoveMultiListener($('.remove-multi-entry-button'),);
-
-    //     $cell.html('');
-    //     $cell.append($clone);
-    // });
-
     function attachIngredientTypeListener(node) {
         node.on('change', function(e) {
             var val = $(this).val();
             var $cell = $(this).parent().parent().find('.ingredient-row-select');
-        console.log('change');
             var row_num = $(this).parent().parent().attr('class').substr(-1);
 
             var $clone = null;

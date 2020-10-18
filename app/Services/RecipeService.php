@@ -179,10 +179,10 @@ class RecipeService extends Service
         foreach($data['rewardable_type'] as $key => $type)
         {
             RecipeReward::create([
-                'recipe_id'       => $recipe->id,
+                'recipe_id' => $recipe->id,
                 'rewardable_type' => $type,
-                'rewardable_id'   => $data['rewardable_id'][$key],
-                'quantity'        => $data['reward_quantity'][$key]
+                'rewardable_id' => $data['rewardable_id'][$key],
+                'quantity' => $data['reward_quantity'][$key]
             ]);
         }
     }

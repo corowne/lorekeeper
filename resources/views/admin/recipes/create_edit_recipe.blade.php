@@ -54,8 +54,8 @@
 
 {!! Form::close() !!}
 
-@include('widgets._recipe_reward_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables])
 @include('widgets._recipe_ingredient_select_row', ['items' => $items, 'categories' => $categories, 'currencies' => $currencies])
+@include('widgets._recipe_reward_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables])
 
 @if($recipe->id)
     <h3>Preview</h3>
