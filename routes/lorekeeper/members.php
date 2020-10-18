@@ -121,6 +121,13 @@ Route::group(['prefix' => 'claims', 'namespace' => 'Users'], function() {
     Route::post('new', 'SubmissionController@postNewClaim');
 });
 
+Route::group(['prefix' => 'reports', 'namespace' => 'Users'], function() {
+    Route::get('/', 'ReportController@getReportsIndex');
+    Route::get('new', 'ReportController@getNewReport');
+    Route::post('new', 'ReportController@postNewReport');
+    Route::get('view/{id}', 'ReportController@getReport');
+});
+
 Route::group(['prefix' => 'designs', 'namespace' => 'Characters'], function() {
     Route::get('{type?}', 'DesignController@getDesignUpdateIndex')->where('type', 'pending|approved|rejected');
     Route::get('{id}', 'DesignController@getDesignUpdate');

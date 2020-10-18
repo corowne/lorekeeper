@@ -16,6 +16,7 @@ use App\Models\Comment;
 use App\Models\Sales;
 use App\Models\User\User;
 use App\Models\News;
+use App\Models\Report\Report;
 
 use Notifications;
 
@@ -101,6 +102,14 @@ class CommentController extends Controller implements CommentControllerInterface
                 $post = 'your news post'; // Simple message to show if it's profile/sales/news
                 $link = $news->url . '/#comment-' . $comment->getKey();
                 break;    
+            case 'App\Models\Report\Report':
+                $report = Report::find($comment->commentable_id);
+                $recipients = $report->user; // User that has been commented on (or owner of sale post)
+                $post = 'your report'; // Simple message to show if it's profile/sales/news
+                $link = 'reports/view/' . $report->id . '/#comment-' . $comment->getKey();
+                if($recipients == $sender) $recipient = $report->staff;
+                else  $recipient = $recipients;
+                break; 
             } 
 
 

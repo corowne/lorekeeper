@@ -245,6 +245,17 @@ return [
         'message' => 'The transfer for <a href="{character_url}">{character_name}</a> was approved by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Transfers</a>)',
         'url' => 'characters/transfers/incoming'
     ],
+    // REPORT_ASSIGNED
+    220 => [
+        'message' => 'Your report (#{report_id}) was assigned to <a href="{staff_url}">{staff_name}</a>, you can expect a response soon. (<a href="{url}">View Report</a>)',
+        'url' => 'reports/view/{report_id}'
+    ],
+
+    // REPORT_CLOSED
+    221 => [
+        'message' => 'Your report (#{report_id}) was closed by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Report</a>)',
+        'url' => 'reports/view/{report_id}'
+    ],
     // Comment made on user's model
     // COMMENT_MADE
     239 => [

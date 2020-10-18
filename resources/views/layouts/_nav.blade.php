@@ -45,6 +45,9 @@
                             <a class="dropdown-item" href="{{ url('claims') }}">
                                 Claims
                             </a>
+                            <a class="dropdown-item" href="{{ url('reports') }}">
+                                Reports
+                            </a>
                             <a class="dropdown-item" href="{{ url('designs') }}">
                                 Design Approvals
                             </a>
@@ -136,6 +139,9 @@
                             </a>
                             <a class="dropdown-item" href="{{ url('claims/new') }}">
                                 Submit Claim
+                            </a>
+                            <a class="dropdown-item" href="{{ url('reports/new') }}">
+                                Submit Report
                             </a>
                         </div>
                     </li>
