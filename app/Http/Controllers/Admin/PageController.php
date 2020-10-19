@@ -153,7 +153,7 @@ class PageController extends Controller
     {
         return view('admin.pages.create_edit_page_category', [
             'category' => new SitePageCategory,
-            'sections' => SitePageSection::orderBy('sort', 'DESC')->get()
+            'sections' => [0 => 'None'] + SitePageSection::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
     
@@ -169,7 +169,7 @@ class PageController extends Controller
         if(!$category) abort(404);
         return view('admin.pages.create_edit_page_category', [
             'category' => $category,
-            'sections' => SitePageSection::orderBy('sort', 'DESC')->get()
+            'sections' => [0 => 'None'] + SitePageSection::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
 

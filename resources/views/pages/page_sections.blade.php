@@ -1,14 +1,14 @@
 @extends('world.layout')
 
-@section('title') World Lore @endsection
+@section('title') World Info  @endsection
 
 @section('content')
-{!! breadcrumbs(['World' => 'world', 'World Lore' => '/world/lore']) !!}
+{!! breadcrumbs(['World' => 'world', $section->name => '/world/pages'.$section->key ]) !!}
 
-<h1>Lore Pages</h1>
+<h1>{{ $section->name }}</h1>
 
 <div class="row justify-content-center">
-    @foreach($categories as $category)
+    @foreach($section->categories as $category)
         <div class="col-md-4 mb-4">
             <div class="card">
                 <div class="card-header bg-transparent text-center pb-0">
@@ -38,8 +38,5 @@
         </div>
     @endforeach
 </div>
-
-
-
 
 @endsection

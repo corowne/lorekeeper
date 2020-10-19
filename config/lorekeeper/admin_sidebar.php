@@ -35,6 +35,10 @@ return [
                 'url' => 'admin/page-categories'
             ],
             [
+                'name' => 'Page Sections',
+                'url' => 'admin/page-sections'
+            ],
+            [
                 'name' => 'Pages',
                 'url' => 'admin/pages'
             ]

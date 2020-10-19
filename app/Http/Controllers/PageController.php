@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\SitePage;
 use App\Models\SitePageCategory;
+use App\Models\SitePageSection;
 
 class PageController extends Controller
 {
@@ -49,6 +50,7 @@ class PageController extends Controller
     public function getPageSection($key)
     {
         return view('pages.page_sections', [
+            'sections' => SitePageSection::orderBy('sort', 'DESC')->get(),
             'section' => SitePageSection::where('key', $key)->first(),
             'categories' => SitePageCategory::orderBy('sort', 'DESC')->get()
         ]);

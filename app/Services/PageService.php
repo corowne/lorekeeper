@@ -7,6 +7,7 @@ use Config;
 
 use App\Models\SitePage;
 use App\Models\SitePageCategory;
+use App\Models\SitePageSection;
 
 class PageService extends Service
 {
@@ -254,7 +255,7 @@ class PageService extends Service
 
             //update categories
             if(isset($contents['categories']) && $contents['categories'])
-                SitePageCategory::whereIn('id', $contents['categories'])->update(array('section' => $section->id));
+                SitePageCategory::whereIn('id', $contents['categories'])->update(array('section_id' => $section->id));
 
             return $this->commitReturn($section);
         } catch(\Exception $e) { 

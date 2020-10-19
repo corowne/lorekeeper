@@ -4,7 +4,7 @@
 
 @section('content')
 @if($page->page_category_id)
-{!! breadcrumbs(['World' => 'world', 'World Lore' => '/world/lore', $page->title => $page->url])!!}
+{!! breadcrumbs(['World' => 'world', $page->category->section->name.' Info' => '/world/pages/'.$page->category->section->key , $page->title => $page->url])!!}
 @else
 {!! breadcrumbs([$page->title => $page->url]) !!}
 @endif

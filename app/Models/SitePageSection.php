@@ -5,7 +5,7 @@ namespace App\Models;
 use Config;
 use App\Models\Model;
 
-class SitePageCategory extends Model
+class SitePageSection extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -13,7 +13,7 @@ class SitePageCategory extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'has_image', 'description', 'parsed_description', 'sort'
+        'name', 'key', 'sort'
     ];
 
     /**
@@ -21,7 +21,7 @@ class SitePageCategory extends Model
      *
      * @var string
      */
-    protected $table = 'site_page_categories';
+    protected $table = 'site_page_sections';
 
     /**
      * Whether the model contains timestamps to be saved and updated.
@@ -36,7 +36,7 @@ class SitePageCategory extends Model
      * @var array
      */
     public static $createRules = [
-        'name' => 'required|unique:site_page_categories|between:3,25',
+        'name' => 'required|unique:site_page_sections|between:3,25',
         'description' => 'nullable',
     ];
     
