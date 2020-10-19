@@ -17,14 +17,14 @@ class AddSubMasterlist extends Migration
             //adds a setting on character categories which moves those characters to a second masterlist
             //this allows for an NPC masterlist, or a PET masterlist, or a MNT (mount) masterlist
             //0 is main masterlist
-            $table->boolean('masterlist_sub_id')->default(0);
+            $table->integer('masterlist_sub_id')->default(0);
         });
 
         Schema::table('specieses', function (Blueprint $table) {
             //adds a setting on species which moves those species to a second masterlist
             //this allows for an NPC masterlist, or a PET masterlist, or a MNT (mount) masterlist
             //0 is main masterlist
-            $table->boolean('masterlist_sub_id')->default(0);
+            $table->integer('masterlist_sub_id')->default(0);
         });
 
         //
