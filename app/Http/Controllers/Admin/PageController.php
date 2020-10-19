@@ -188,10 +188,10 @@ class PageController extends Controller
             'name', 'description', 'image', 'remove_image', 'section_id'
         ]);
 
-        if($id && $service->updatePageCategory(SitePageCategory::find($id), $data, Auth::user())) {
+        if($id && $service->updatePageCategory(SitePageCategory::find($id), $data)) {
             flash('Category updated successfully.')->success();
         }
-        else if (!$id && $category = $service->createPageCategory($data, Auth::user())) {
+        else if (!$id && $category = $service->createPageCategory($data)) {
             flash('Category created successfully.')->success();
             return redirect()->to('admin/page-categories/edit/'.$category->id);
         }
@@ -313,11 +313,12 @@ class PageController extends Controller
         $data = $request->only([
             'name', 'key'
         ]);
+        $contents = $request->only([ 'categories' ]);
 
-        if($id && $service->updatePageSection(SitePageSection::find($id), $data, Auth::user())) {
+        if($id && $service->updatePageSection(SitePageSection::find($id), $data, $contents)) {
             flash('Section updated successfully.')->success();
         }
-        else if (!$id && $section = $service->createPageSection($data, Auth::user())) {
+        else if (!$id && $section = $service->createPageSection($data, $contents)) {
             flash('Section created successfully.')->success();
             return redirect()->to('admin/page-sections/edit/'.$section->id);
         }

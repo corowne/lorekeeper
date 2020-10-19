@@ -24,7 +24,7 @@ class AddPageSections extends Migration
 
         //link site_pages to page_categories
         Schema::table('site_page_categories', function(Blueprint $table) {
-            $table->integer('section_id')->unsigned->default(0);
+            $table->integer('section_id')->unsigned()->default(0);
             });
     }
         

@@ -1,8 +1,12 @@
 <ul>
     <li class="sidebar-header"><a href="{{ url('world') }}" class="card-link">Encyclopedia</a></li>
     <li class="sidebar-section">
-        <div class="sidebar-section-header">Lore</div>
-        <div class="sidebar-item"><a href="{{ url('world/lore') }}" class="{{ set_active('world/lore*') }}">Lore Pages</a></div>
+        <div class="sidebar-section-header">Info</div>
+        @if(isset($sections))
+            @foreach($sections as $section)
+                <div class="sidebar-item"><a href="{{ url($section->url) }}" class="{{ set_active($section->url) }}">{{ $section->name }}</a></div>
+            @endforeach
+        @endif
     </li>
     <li class="sidebar-section">
         <div class="sidebar-section-header">Characters</div>

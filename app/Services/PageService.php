@@ -106,10 +106,9 @@ class PageService extends Service
      * Create a category.
      *
      * @param  array                 $data
-     * @param  \App\Models\User\User $user
      * @return \App\Models\SitePageCategory|bool
      */
-    public function createPageCategory($data, $user)
+    public function createPageCategory($data)
     {
         DB::beginTransaction();
 
@@ -130,10 +129,9 @@ class PageService extends Service
      *
      * @param  \App\Models\SitePageCategory         $category
      * @param  array                                $data
-     * @param  \App\Models\User\User                $user
      * @return \App\Models\SitePageCategory|bool
      */
-    public function updatePageCategory($category, $data, $user)
+    public function updatePageCategory($category, $data)
     {
         DB::beginTransaction();
 
@@ -244,15 +242,19 @@ class PageService extends Service
      * Create a section.
      *
      * @param  array                 $data
-     * @param  \App\Models\User\User $user
+     * @param  array                 $contents
      * @return \App\Models\SitePageSection|bool
      */
-    public function createPageSection($data, $user)
+    public function createPageSection($data, $contents)
     {
         DB::beginTransaction();
 
         try {
             $section = SitePageSection::create($data);
+
+            //update categories
+            if(isset($contents['categories']) && $contents['categories'])
+                SitePageCategory::whereIn('id', $contents['categories'])->update(array('section' => $section->id));
 
             return $this->commitReturn($section);
         } catch(\Exception $e) { 
@@ -266,10 +268,10 @@ class PageService extends Service
      *
      * @param  \App\Models\SitePageSection         $section
      * @param  array                                $data
-     * @param  \App\Models\User\User                $user
+     * @param  array                 $contents
      * @return \App\Models\SitePageSection|bool
      */
-    public function updatePageSection($section, $data, $user)
+    public function updatePageSection($section, $data, $contents)
     {
         DB::beginTransaction();
 
@@ -278,6 +280,10 @@ class PageService extends Service
             if(SitePageSection::where('name', $data['name'])->where('id', '!=', $section->id)->exists()) throw new \Exception("The name has already been taken.");
 
             $section->update($data);
+
+            SitePageCategory::where('section_id', $section->id)->update(array('section_id' => 0));
+            if(isset($contents['categories']))
+                SitePageCategory::whereIn('id', $contents['categories'])->update(array('section_id' => $section->id));
 
             return $this->commitReturn($section);
         } catch(\Exception $e) { 
