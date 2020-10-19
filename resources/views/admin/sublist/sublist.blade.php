@@ -18,8 +18,8 @@
     <table class="table table-sm category-table">
         <thead>
             <tr>
-                <th>Show on Main</th>
                 <th>Name</th>
+                <th>Show on Main</th>
                 <th>Key</th>
                 <th></th>
             </tr>
