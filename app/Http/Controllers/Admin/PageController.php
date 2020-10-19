@@ -152,7 +152,8 @@ class PageController extends Controller
     public function getCreatePageCategory()
     {
         return view('admin.pages.create_edit_page_category', [
-            'category' => new SitePageCategory
+            'category' => new SitePageCategory,
+            'sections' => SitePageSection::orderBy('sort', 'DESC')->get()
         ]);
     }
     
@@ -167,7 +168,8 @@ class PageController extends Controller
         $category = SitePageCategory::find($id);
         if(!$category) abort(404);
         return view('admin.pages.create_edit_page_category', [
-            'category' => $category
+            'category' => $category,
+            'sections' => SitePageSection::orderBy('sort', 'DESC')->get()
         ]);
     }
 
@@ -183,7 +185,7 @@ class PageController extends Controller
     {
         $id ? $request->validate(SitePageCategory::$updateRules) : $request->validate(SitePageCategory::$createRules);
         $data = $request->only([
-            'name', 'description', 'image', 'remove_image'
+            'name', 'description', 'image', 'remove_image', 'section_id'
         ]);
 
         if($id && $service->updatePageCategory(SitePageCategory::find($id), $data, Auth::user())) {

@@ -21,6 +21,11 @@
 </div>
 
 <div class="form-group">
+    {!! Form::label('Page Section (Optional)') !!} {!! add_help('A Page Section is a group listed in the Encyclopedia. You need a Section to list a category for display, otherwise it will remain unlisted.') !!}
+    {!! Form::select('section_id', $sections, $category->section_id, ['class' => 'form-control']) !!}
+</div>
+
+<div class="form-group">
     {!! Form::label('World Page Image (Optional)') !!} {!! add_help('This image is used only on the world information pages.') !!}
     <div>{!! Form::file('image') !!}</div>
     <div class="text-muted">Recommended size: 200px x 200px</div>

@@ -8,6 +8,7 @@
 <h1>Page Categories</h1>
 
 <p>This is a list of page categories that will be used to sort pages in the encyclopedia. Creating page categories is entirely optional, but recommended if you want to create lore pages for users to browse without linking each one individually.</p> 
+<p>Page Categories must be put into Page Sections to be displayed in the encyclopedia. A section is an index page that lists pages by category within it. For example, one can make a Lore section and Guides section, and then create "history" and "deities" categories in Lore and "Prompt Guide" and "Beginners Materials" categories for Guides.
 <p>The sorting order reflects the order in which the trait categories will be displayed in the encyclopedia.</p>
 
 <div class="text-right mb-3"><a class="btn btn-primary" href="{{ url('admin/page-categories/create') }}"><i class="fas fa-plus"></i> Create New Page Category</a></div>

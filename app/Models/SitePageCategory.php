@@ -13,7 +13,7 @@ class SitePageCategory extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'has_image', 'description', 'parsed_description', 'sort'
+        'name', 'has_image', 'description', 'parsed_description', 'sort', 'section_id'
     ];
 
     /**
@@ -62,6 +62,14 @@ class SitePageCategory extends Model
     public function pages() 
     {
         return $this->hasMany('App\Models\SitePage', 'page_category_id');
+    }
+    
+    /**
+     * Get the section belonging to this category.
+     */
+    public function section() 
+    {
+        return $this->belongsTo('App\Models\SitePageSection', 'section_id');
     }
 
     /**********************************************************************************************
