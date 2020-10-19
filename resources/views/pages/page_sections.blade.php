@@ -3,7 +3,7 @@
 @section('title') World Info  @endsection
 
 @section('content')
-{!! breadcrumbs(['World' => 'world', $section->name => '/world/pages'.$section->key ]) !!}
+{!! breadcrumbs(['World' => 'world', $section->name => '/world/info'.$section->key ]) !!}
 
 <h1>{{ $section->name }}</h1>
 

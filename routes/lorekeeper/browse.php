@@ -100,7 +100,7 @@ Route::group(['prefix' => 'shops'], function() {
     Site Pages
 **************************************************************************************************/
 Route::get('info/{key}', 'PageController@getPage');
-Route::get('world/pages/{key}', 'PageController@getPageSection');
+Route::get('world/info/{key}', 'PageController@getPageSection');
 
 /**************************************************************************************************
     Raffles

@@ -77,6 +77,6 @@ class SitePageSection extends Model
      */
     public function getUrlAttribute()
     {
-        return url('world/pages/'.$this->key);
+        return url('world/info/'.$this->key);
     }
 }
