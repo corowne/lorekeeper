@@ -17,7 +17,7 @@ class Sublist extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'key', 'show_main'
+        'name', 'key', 'show_main', 'sort'
     ];
 
     /**
