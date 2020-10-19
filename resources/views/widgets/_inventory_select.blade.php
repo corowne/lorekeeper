@@ -1,6 +1,6 @@
-<h3>Your Inventory <a class="small inventory-collapse-toggle collapse-toggle" href="#userInventory" data-toggle="collapse">Show</a></h3>
+<h3>Your Inventory <a class="small inventory-collapse-toggle collapse-toggle collapsed" href="#userInventory" data-toggle="collapse">Show</a></h3>
 <hr>
-<div class="collapse show" id="userInventory">
+<div class="collapse" id="userInventory">
     <div class="card mb-3">
         <div class="card-body">
             <div class="text-left mb-3">
