@@ -104,7 +104,7 @@ class SublistService extends Service
 
         try {
             // Check first if the sublist is currently in use
-            CharacterCategories::where('masterlist_sub_id', $sublist->id)->update(array('masterlist_sub_id' => 0));
+            CharacterCategory::where('masterlist_sub_id', $sublist->id)->update(array('masterlist_sub_id' => 0));
             Species::where('masterlist_sub_id', $sublist->id)->update(array('masterlist_sub_id' => 0));
             
             $sublist->delete();
