@@ -8,6 +8,7 @@ use Auth;
 
 use App\Models\SitePage;
 use App\Models\SitePageCategory;
+use App\Models\SitePageSection;
 use App\Services\PageService;
 
 use App\Http\Controllers\Controller;
@@ -242,6 +243,132 @@ class PageController extends Controller
     {
         if($service->sortPageCategory($request->get('sort'))) {
             flash('Category order updated successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+        
+    /**********************************************************************************************
+    
+        PAGE SECTIONS
+
+    **********************************************************************************************/
+
+    /**
+     * Shows the page section index.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getSectionIndex()
+    {
+        return view('admin.pages.page_sections', [
+            'sections' => SitePageSection::orderBy('sort', 'DESC')->get()
+        ]);
+    }
+
+    /**
+     * Shows the create page section page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCreatePageSection()
+    {
+        return view('admin.pages.create_edit_page_section', [
+            'section' => new SitePageSection,
+            'categories' => SitePageCategory::orderBy('sort', 'DESC')->pluck('name', 'id')
+        ]);
+    }
+    
+    /**
+     * Shows the edit page section page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getEditPageSection($id)
+    {
+        $section = SitePageSection::find($id);
+        if(!$section) abort(404);
+        return view('admin.pages.create_edit_page_section', [
+            'section' => $section,
+            'categories' => SitePageCategory::orderBy('sort', 'DESC')->pluck('name', 'id')
+        ]);
+    }
+
+    /**
+     * Creates or edits a page section.
+     *
+     * @param  \Illuminate\Http\Request     $request
+     * @param  App\Services\PageService  $service
+     * @param  int|null                     $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postCreateEditPageSection(Request $request, PageService $service, $id = null)
+    {
+        $id ? $request->validate(SitePageSection::$updateRules) : $request->validate(SitePageSection::$createRules);
+        $data = $request->only([
+            'name', 'key'
+        ]);
+
+        if($id && $service->updatePageSection(SitePageSection::find($id), $data, Auth::user())) {
+            flash('Section updated successfully.')->success();
+        }
+        else if (!$id && $section = $service->createPageSection($data, Auth::user())) {
+            flash('Section created successfully.')->success();
+            return redirect()->to('admin/page-sections/edit/'.$section->id);
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+    
+    /**
+     * Gets the page section deletion modal.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getDeletePageSection($id)
+    {
+        $section = SitePageSection::find($id);
+        return view('admin.pages._delete_page_section', [
+            'section' => $section,
+        ]);
+    }
+
+    /**
+     * Creates or edits a page category.
+     *
+     * @param  \Illuminate\Http\Request     $request
+     * @param  App\Services\PageService  $service
+     * @param  int|null                     $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postDeletePageSection(Request $request, PageService $service, $id)
+    {
+        if($id && $service->deletePageSection(SitePageSection::find($id))) {
+            flash('Section deleted successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->to('admin/page-sections');
+    }
+
+    /**
+     * Sorts page sections.
+     *
+     * @param  \Illuminate\Http\Request     $request
+     * @param  App\Services\PageService  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postSortPageSection(Request $request, PageService $service)
+    {
+        if($service->sortPageSection($request->get('sort'))) {
+            flash('Section order updated successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

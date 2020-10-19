@@ -43,12 +43,13 @@ class PageController extends Controller
     /**
      * Shows the world lore page.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $key
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getPageCategory(Request $request)
+    public function getPageSection($key)
     {
-        return view('pages.page_categories', [
+        return view('pages.page_sections', [
+            'section' => SitePageSection::where('key', $key)->first(),
             'categories' => SitePageCategory::orderBy('sort', 'DESC')->get()
         ]);
     }

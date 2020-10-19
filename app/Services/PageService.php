@@ -234,4 +234,104 @@ class PageService extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**********************************************************************************************
+     
+        PAGE SECTIONS
+
+    **********************************************************************************************/
+
+    /**
+     * Create a section.
+     *
+     * @param  array                 $data
+     * @param  \App\Models\User\User $user
+     * @return \App\Models\SitePageSection|bool
+     */
+    public function createPageSection($data, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            $section = SitePageSection::create($data);
+
+            return $this->commitReturn($section);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Update a section.
+     *
+     * @param  \App\Models\SitePageSection         $section
+     * @param  array                                $data
+     * @param  \App\Models\User\User                $user
+     * @return \App\Models\SitePageSection|bool
+     */
+    public function updatePageSection($section, $data, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            // More specific validation
+            if(SitePageSection::where('name', $data['name'])->where('id', '!=', $section->id)->exists()) throw new \Exception("The name has already been taken.");
+
+            $section->update($data);
+
+            return $this->commitReturn($section);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Delete a section.
+     *
+     * @param  \App\Models\SitePageSection  $section
+     * @return bool
+     */
+    public function deletePageSection($section)
+    {
+        DB::beginTransaction();
+
+        try {
+            // Check first if the section is currently in use
+            SitePageCategory::where('section_id', $section->id)->update(array('section_id' => 0));
+            
+            $section->delete();
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Sorts section order.
+     *
+     * @param  array  $data
+     * @return bool
+     */
+    public function sortPageSection($data)
+    {
+        DB::beginTransaction();
+
+        try {
+            // explode the sort array and reverse it since the order is inverted
+            $sort = array_reverse(explode(',', $data));
+
+            foreach($sort as $key => $s) {
+                SitePageSection::where('id', $s)->update(['sort' => $key]);
+            }
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
 }
