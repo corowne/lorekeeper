@@ -31,12 +31,12 @@ return [
                 'url' => 'admin/news'
             ],
             [
-                'name' => 'Page Categories',
-                'url' => 'admin/page-categories'
-            ],
-            [
                 'name' => 'Page Sections',
                 'url' => 'admin/page-sections'
+            ],
+            [
+                'name' => 'Page Categories',
+                'url' => 'admin/page-categories'
             ],
             [
                 'name' => 'Pages',
