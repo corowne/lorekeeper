@@ -3,6 +3,11 @@
     <li class="sidebar-section">
         <div class="sidebar-section-header">User</div>
         <div class="sidebar-item"><a href="{{ $user->url.'/characters' }}" class="{{ set_active('user/'.$user->name.'/characters*') }}">Characters</a></div>
+        @if(isset($sublists) && $sublists->count() > 0)
+                @foreach($sublists as $sublist)
+                <div class="sidebar-item"><a href="{{ $user->url.'/sublist/'.$sublist->key }}" class="{{ set_active('user/'.$user->name.'sublist/'.$sublist->key) }}">{{ $sublist->name }}</a></div>
+                @endforeach
+        @endif
         <div class="sidebar-item"><a href="{{ $user->url.'/myos' }}" class="{{ set_active('user/'.$user->name.'/myos*') }}">MYO Slots</a></div>
         <div class="sidebar-item"><a href="{{ $user->url.'/inventory' }}" class="{{ set_active('user/'.$user->name.'/inventory*') }}">Inventory</a></div>
         <div class="sidebar-item"><a href="{{ $user->url.'/bank' }}" class="{{ set_active('user/'.$user->name.'/bank*') }}">Bank</a></div>

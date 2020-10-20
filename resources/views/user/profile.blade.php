@@ -70,9 +70,16 @@
     </div>
 </div>
 
-<h2>Characters</h2>
+<h2>
+    <a href="{{ $user->url.'/characters' }}">Characters</a>
+    @if(isset($sublists) && $sublists->count() > 0)
+        @foreach($sublists as $sublist)
+        / <a href="{{ $user->url.'/sublist/'.$sublist->key }}">{{ $sublist->name }}</a>
+        @endforeach
+    @endif
+</h2>
 @foreach($user->characters()->visible()->take(4)->get()->chunk(4) as $chunk)
-<div class="row">
+<div class="row mb-4">
     @foreach($chunk as $character)
         <div class="col-md-3 col-6 text-center">
             <div>
@@ -85,5 +92,24 @@
     @endforeach
 </div>
 @endforeach
-<div class="text-right"><a href="{{ $user->url.'/characters' }}">View all...</a></div>
+
+<h2><a href="{{ $user->url.'/myos' }}">MYO Slots</a></h2>
+@foreach($user->myoSlots()->visible()->take(4)->get()->chunk(4) as $chunk)
+    <div class="row">
+        @foreach($chunk as $character)
+            <div class="col-md-3 col-6 text-center">
+                <div>
+                    <a href="{{ $character->url }}"><img src="{{ $character->image->thumbnailUrl }}" class="img-thumbnail" /></a>
+                </div>
+                <div class="mt-1">
+                    <a href="{{ $character->url }}" class="h5 mb-0">{{ $character->fullName }}</a>
+                </div>
+            </div>
+        @endforeach
+    </div>
+@endforeach
+@if(!count($user->myoSlots()->visible()->take(4)->get()->chunk(4)))
+    <div>No slots owned.</div>
+@endif
+
 @endsection
