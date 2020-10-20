@@ -169,7 +169,7 @@ class GalleryController extends Controller
         $submissions = $submissions->where('status', ucfirst($type));
 
         return view('galleries.submissions', [
-            'submissions' => $submissions->orderBy('id', 'DESC')->paginate(20),
+            'submissions' => $submissions->orderBy('id', 'DESC')->paginate(10),
             'galleries' => Gallery::sort()->whereNull('parent_id')->paginate(10),
         ]);
     }

@@ -12,7 +12,7 @@
     <div class="alert alert-warning">There are no comments yet.</div>
 @endif
 
-@if($type == "User-User")
+@if(!isset($type) || $type == "User-User")
 <h2>Comments</h2>
 @endif
 <div class="d-flex mw-100 row mx-0" style="overflow:hidden;">
