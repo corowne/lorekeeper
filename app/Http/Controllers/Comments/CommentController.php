@@ -108,7 +108,7 @@ class CommentController extends Controller implements CommentControllerInterface
                 $submission = GallerySubmission::find($comment->commentable_id);
                 if($type = "Staff-Staff") $recipient = User::find(1); 
                 else $recipient = $submission->user;
-                $post = 'your gallery submission';
+                $post = ($type != null) ? 'your gallery submission\'s staff comments' : 'your gallery submission';
                 $link = ($type != null) ? $submission->queueUrl . '/#comment-' . $comment->getKey() : $submission->url . '/#comment-' . $comment->getKey();
                 break;    
         } 
