@@ -299,6 +299,20 @@ return [
         'url' => ''
     ],
 
+    // CHARACTER_ITEM_GRANT
+    501 => [
+        'name' => 'Character Item Grant',
+        'message' => '{character_name} has received a staff grant of {item_name} (×{item_quantity}) from <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Inventory</a>)',
+        'url' => 'character/{character_slug}/inventory'
+    ],
+
+    // CHARACTER_ITEM_REMOVAL
+    502 => [
+        'name' => 'Character Item Removal',
+        'message' => '{item_name} (×{item_quantity}) was removed from {character_name} by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Inventory</a>)',
+        'url' => 'character/{character_slug}/inventory'
+    ],
+
     // GALLERY_SUBMISSION_COLLABORATOR
     505 => [
         'name' => 'Gallery Submission Collaborator',

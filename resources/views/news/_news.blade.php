@@ -10,7 +10,6 @@
             {!! $news->parsed_text !!}
         </div>
     </div>
-    
     <?php $commentCount = App\Models\Comment::where('commentable_type', 'App\Models\News')->where('commentable_id', $news->id)->count(); ?>
     @if(!$page)
         <div class="text-right mb-2 mr-2">

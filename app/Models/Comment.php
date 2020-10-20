@@ -32,6 +32,14 @@ class Comment extends Model
     ];
 
     /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
+
+
+    /**
      * The attributes that should be cast to native types.
      *
      * @var array

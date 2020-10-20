@@ -245,7 +245,7 @@ class Prompt extends Model
      */
     public function getUrlAttribute()
     {
-        return url('world/prompts?name='.$this->name);
+        return url('prompts/prompts?name='.$this->name);
     }
 
     /**

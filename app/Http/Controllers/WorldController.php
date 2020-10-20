@@ -15,6 +15,7 @@ use App\Models\Feature\Feature;
 use App\Models\Character\CharacterCategory;
 use App\Models\Prompt\PromptCategory;
 use App\Models\Prompt\Prompt;
+use App\Models\Shop\Shop;
 
 class WorldController extends Controller
 {
@@ -233,7 +234,30 @@ class WorldController extends Controller
 
         return view('world.items', [
             'items' => $query->paginate(20)->appends($request->query()),
-            'categories' => ['none' => 'Any Category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
+            'categories' => ['none' => 'Any Category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'shops' => Shop::orderBy('sort', 'DESC')->get()
+        ]);
+    }
+
+    /**
+     * Shows an individual item's page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getItem($id)
+    {
+        $categories = ItemCategory::orderBy('sort', 'DESC')->get();
+        $item = Item::where('id', $id)->first();
+        if(!$item) abort(404);
+
+        return view('world.item_page', [
+            'item' => $item,
+            'imageUrl' => $item->imageUrl, 
+            'name' => $item->displayName, 
+            'description' => $item->parsed_description,
+            'categories' => $categories->keyBy('id'),
+            'shops' => Shop::orderBy('sort', 'DESC')->get()
         ]);
     }
 
