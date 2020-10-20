@@ -19,6 +19,7 @@ It also serves as a base for developing extensions, providing several common 'de
 
 - **Core Lorekeeper:** Please see [the Readme](https://github.com/corowne/lorekeeper/blob/master/README.md) and [feature documentation](http://lorekeeper-arpg.wikidot.com/) for more information.
 - **Grouped Notifications:** To account for the potentially large variety and potentially volume of notifications, they are grouped by notification type and collapse when there are more than 5 notifications of a type.
+- **Toggleable Comments on Site Pages:** Adds a toggle to site pages which enables/disables commenting on them. Disabled by default.
 - **Extension Service:** A utility for use by extension developers. By default, facilitates adjusting notification type IDs in a site's DB to comply with the [community notification standard](http://wiki.lorekeeper.me/index.php?title=Community_Notification_Standard). See the [this command](https://github.com/itinerare/lorekeeper/blob/15f9ba0a750f4a08d1e3e07139ad32a0b3c7fc9f/app/Console/Commands/FixCharItemNotifs.php) (made for Character Items) for an example of how to use this functionality.
 
 ## Extensions Included
@@ -51,13 +52,15 @@ In the case that conflicts do result, or if you need further information, see [J
 - **Character Items:** If you installed this extension already, and did so prior to September 10th, 2020, run `php artisan fix-char-item-notifs`.
 - **Comments:** The version included in this branch has been separated from the original package. If you installed the prior version of the extension, run `php artisan view:clear` after installation to clear your view caches.
 
-When ready, run `php artisan migrate`.
+When ready, run `php artisan migrate` and `php artisan add-site-settings`.
 
-Run `composer update`/`composer install`. You may need to include `composer.lock` if you are on a limited hosting plan/composer requires more memory than you can spare.
+Run `composer update`/`composer install`. You may need to first run `composer update` locally and upload the `composer.lock` file to your site's server if you are on a limited hosting plan/composer requires more memory than you can spare.
 
-Proceed to any necessary configuration.
+## Configuration
 
-## Per-Extension Configuration
+- Admin account ID. Notifications for comments on pages are sent to this account. | Default: 1 | Configured in: Site Settings admin panel
+
+### Per-Extension Configuration
 
 **Stacked Inventories:** 
 - The maximum number of items purchaseable at once from a shop (in a single transaction) | Default: 99 | Configured in: config/lorekeeper/settings.php

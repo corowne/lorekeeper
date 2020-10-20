@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Comments;
 
 use Illuminate\Http\Request;
+use Settings;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Honeypot\ProtectAgainstSpam;
@@ -16,6 +17,7 @@ use App\Models\Comment;
 use App\Models\Sales;
 use App\Models\User\User;
 use App\Models\News;
+use App\Models\SitePage;
 
 use Notifications;
 
@@ -100,7 +102,13 @@ class CommentController extends Controller implements CommentControllerInterface
                 $recipient = $news->user; // User that has been commented on (or owner of sale post)
                 $post = 'your news post'; // Simple message to show if it's profile/sales/news
                 $link = $news->url . '/#comment-' . $comment->getKey();
-                break;    
+                break;  
+            case 'App\Models\SitePage':
+                $page = SitePage::find($comment->commentable_id);
+                $recipient = User::find(Settings::get('admin_user'));
+                $post = 'your site page';
+                $link = $page->url . '/#comment-' . $comment->getKey();
+                break;  
             } 
 
 
