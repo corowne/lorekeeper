@@ -28,7 +28,7 @@ class Comment extends Model
      * @var array
      */
     protected $fillable = [
-        'comment', 'approved', 'guest_name', 'guest_email', 'is_featured'
+        'comment', 'approved', 'guest_name', 'guest_email', 'is_featured', 'type'
     ];
 
     /**
@@ -39,6 +39,13 @@ class Comment extends Model
     protected $casts = [
         'approved' => 'boolean'
     ];
+
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
 
     /**
      * The event map for the model.

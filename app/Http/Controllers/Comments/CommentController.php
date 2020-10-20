@@ -76,6 +76,7 @@ class CommentController extends Controller implements CommentControllerInterface
         $comment->commentable()->associate($model);
         $comment->comment = $request->message;
         $comment->approved = !Config::get('comments.approval_required');
+        $comment->type = isset($request['type']) ? $request['type'] : "User-User";
         $comment->save();
 
         $recipient = null;
@@ -83,6 +84,7 @@ class CommentController extends Controller implements CommentControllerInterface
         $model_type = $comment->commentable_type;
         //getting user who commented
         $sender = User::find($comment->commenter_id);
+        $type = $comment->type;
 
         switch($model_type) {
             case 'App\Models\User\UserProfile':
@@ -104,9 +106,10 @@ class CommentController extends Controller implements CommentControllerInterface
                 break;    
             case 'App\Models\Gallery\GallerySubmission':
                 $submission = GallerySubmission::find($comment->commentable_id);
-                $recipient = $submission->user; // User that has been commented on (or owner of sale post)
-                $post = 'your gallery submission'; // Simple message to show if it's profile/sales/news
-                $link = $submission->url . '/#comment-' . $comment->getKey();
+                if($type = "Staff-Staff") $recipient = User::find(1); 
+                else $recipient = $submission->user;
+                $post = 'your gallery submission';
+                $link = ($type != null) ? $submission->queueUrl . '/#comment-' . $comment->getKey() : $submission->url . '/#comment-' . $comment->getKey();
                 break;    
         } 
 

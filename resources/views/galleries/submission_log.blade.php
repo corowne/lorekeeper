@@ -13,57 +13,12 @@
 
 <div class="row">
     <div class="col-md">
-        <div class="card">
-            <div class="card-header">
-                <h4>Staff Comments{!! isset($submission->staff_id) ? ' - '.$submission->staff->displayName : '' !!}</h4>
-                {!! Auth::user()->hasPower('staff_comments') ? '(Visible to '.$submission->credits.')' : '' !!}
-            </div>
-            <div class="card-body">
-                @if(Auth::user()->hasPower('staff_comments'))
-                    {!! Form::open(['url' => 'admin/gallery/edit/'.$submission->id.'/comment']) !!}
-                        <div class="form-group">
-                            {!! Form::label('staff_comments', 'Staff Comments') !!}
-                            {!! Form::textarea('staff_comments', $submission->staff_comments, ['class' => 'form-control wysiwyg']) !!}
-                        </div>
-                        <div class="form-group">
-                            {!! Form::checkbox('alert_user', 1, true, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'data-onstyle' => 'danger']) !!}
-                            {!! Form::label('alert_user', 'Notify User', ['class' => 'form-check-label ml-3']) !!} {!! add_help('This will send a notification to the user that the staff comments on their submission have been edited.') !!}
-                        </div>
-                        <div class="text-right">
-                            {!! Form::submit('Edit Comments', ['class' => 'btn btn-primary']) !!}
-                        </div>
-                    {!! Form::close() !!}
-                @else
-                    {!! isset($submission->parsed_staff_comments) ? $submission->parsed_staff_comments : '<i>No comments provided.</i>' !!}
-                @endif
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        @if(Auth::user()->hasPower('manage_submissions') && $submission->collaboratorApproved)
+        @if(Settings::get('gallery_submissions_reward_currency') && $submission->gallery->currency_enabled)
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5>[Admin] Vote Info</h5>
+                    <h5>{!! $currency->displayName !!} Award Info <a class="small inventory-collapse-toggle collapse-toggle {{ $submission->status == 'Accepted' ? '' : 'collapsed' }}" href="#currencyForm" data-toggle="collapse">Show</a></h5>
                 </div>
-                <div class="card-body">
-                    @if(isset($submission->vote_data) && $submission->voteData->count())
-                        @foreach($submission->voteData as $voter=>$vote)
-                            <li>
-                                {!! App\Models\User\User::find($voter)->displayName !!} {{ $voter == Auth::user()->id ? '(you)' : '' }}: <span {!! $vote == 2 ? 'class="text-success">Accept' : 'class="text-danger">Reject' !!}</span>
-                            </li>
-                        @endforeach
-                    @else
-                        <p>No votes have been cast yet!</p>
-                    @endif
-                </div>
-            </div>
-        @endif
-        @if(Settings::get('gallery_submissions_reward_currency') && $submission->gallery->currency_enabled)
-            <div class="card">
-                <div class="card-header">
-                    <h5>{!! $currency->displayName !!} Award Info</h5>
-                </div>
-                <div class="card-body">
+                <div class="card-body collapse {{ $submission->status == 'Accepted' ? 'show' : '' }}" id="currencyForm">
                     @if($submission->status == 'Accepted')
                         @if(!$submission->is_valued)
                             @if(Auth::user()->hasPower('manage_submissions'))
@@ -108,24 +63,29 @@
                                 <p>This submission has been evaluated as ineligible for {{ $currency->name }} rewards.</p>
                             @else
                                 <p>{{ $currency->name }} has been awarded for this submission.</p>
-                                <p>
+                                <div class="row">
                                     @if(isset($submission->data['value']['submitted']))
+                                        <div class="col-md-4">
                                         {!! $submission->user->displayName !!}: {!! $currency->display($submission->data['value']['submitted'][$submission->user->id]) !!}
-                                        <br/>
+                                        </div>
                                     @endif
                                     @if($submission->collaborators->count())
+                                        <div class="col-md-4">
                                         @foreach($submission->collaborators as $collaborator)
                                             {!! $collaborator->user->displayName !!} ({{ $collaborator->data }}): {!! $currency->display($submission->data['value']['collaborator'][$collaborator->user->id]) !!}
                                         <br/>
                                         @endforeach
+                                        </div>
                                     @endif
                                     @if($submission->participants->count())
+                                        <div class="col-md-4">
                                         @foreach($submission->participants as $participant)
                                             {!! $participant->user->displayName !!} ({{ $participant->displayType }}): {!! $currency->display($submission->data['value']['participant'][$participant->user->id]) !!}
                                         <br/>
                                         @endforeach
+                                        </div>
                                     @endif
-                                </p>
+                                </div>
                             @endif
                         @endif
                     @else
@@ -134,24 +94,26 @@
                     <hr/>
                     @if(isset($submission->data['total']))
                         <h6>Form Responses:</h6>
-                        @foreach($submission->data['currencyData'] as $key=>$data)
-                            <p>
-                                @if(isset($data))
-                                    <strong>{{ Config::get('lorekeeper.group_currency_form')[$key]['name'] }}:</strong><br/>
-                                    @if(Config::get('lorekeeper.group_currency_form')[$key]['type'] == 'choice')
-                                        @if(isset(Config::get('lorekeeper.group_currency_form')[$key]['multiple']) && Config::get('lorekeeper.group_currency_form')[$key]['multiple'] == 'true')
-                                            @foreach($data as $answer)
-                                                {{ Config::get('lorekeeper.group_currency_form')[$key]['choices'][$answer] }}<br/>
-                                            @endforeach
+                        <div class="row mb-2">
+                            @foreach($submission->data['currencyData'] as $key=>$data)
+                                <div class="col-md-3 text-center">
+                                    @if(isset($data))
+                                        <strong>{{ Config::get('lorekeeper.group_currency_form')[$key]['name'] }}:</strong><br/>
+                                        @if(Config::get('lorekeeper.group_currency_form')[$key]['type'] == 'choice')
+                                            @if(isset(Config::get('lorekeeper.group_currency_form')[$key]['multiple']) && Config::get('lorekeeper.group_currency_form')[$key]['multiple'] == 'true')
+                                                @foreach($data as $answer)
+                                                    {{ Config::get('lorekeeper.group_currency_form')[$key]['choices'][$answer] }}<br/>
+                                                @endforeach
+                                            @else
+                                                {{ Config::get('lorekeeper.group_currency_form')[$key]['choices'][$data] }}
+                                            @endif
                                         @else
-                                            {{ Config::get('lorekeeper.group_currency_form')[$key]['choices'][$data] }}
+                                            {{ Config::get('lorekeeper.group_currency_form')[$key]['type'] == 'checkbox' ? (Config::get('lorekeeper.group_currency_form')[$key]['value'] == $data ? 'True' : 'False') : $data }}
                                         @endif
-                                    @else
-                                        {{ Config::get('lorekeeper.group_currency_form')[$key]['type'] == 'checkbox' ? (Config::get('lorekeeper.group_currency_form')[$key]['value'] == $data ? 'True' : 'False') : $data }}
                                     @endif
-                                @endif
-                            </p>
-                        @endforeach
+                                </div>
+                            @endforeach
+                        </div>
                         @if(Auth::user()->hasPower('manage_submissions') && isset($submission->data['total']))
                         <h6>[Admin]</h6>
                             <p class="text-center">
@@ -175,6 +137,59 @@
                     @else
                         <p>This submission does not have form data associated with it.</p>
                     @endif
+                </div>
+            </div>
+        @endif
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Staff Comments</h4> {!! Auth::user()->hasPower('staff_comments') ? '(Visible to '.$submission->credits.')' : '' !!}
+            </div>
+            <div class="card-body">
+                @if(isset($submission->parsed_staff_comments))
+                    <h5>Staff Comments (Old):</h5>
+                    {!! $submission->parsed_staff_comments !!}
+                    <hr/>
+                @endif
+                <!-- Staff-User Comments -->
+                <div class="container">
+                    @comments(['model' => $submission,
+                            'type' => 'Staff-User',
+                            'perPage' => 5
+                        ])
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5">
+        @if(Auth::user()->hasPower('manage_submissions') && $submission->collaboratorApproved)
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>[Admin] Vote Info</h5>
+                </div>
+                <div class="card-body">
+                    @if(isset($submission->vote_data) && $submission->voteData->count())
+                        @foreach($submission->voteData as $voter=>$vote)
+                            <li>
+                                {!! App\Models\User\User::find($voter)->displayName !!} {{ $voter == Auth::user()->id ? '(you)' : '' }}: <span {!! $vote == 2 ? 'class="text-success">Accept' : 'class="text-danger">Reject' !!}</span>
+                            </li>
+                        @endforeach
+                    @else
+                        <p>No votes have been cast yet!</p>
+                    @endif
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>[Admin] Staff Comments</h5> (Only visible to staff)
+                </div>
+                <div class="card-body">
+                    <!-- Staff-User Comments -->
+                    <div class="container">
+                        @comments(['model' => $submission,
+                                'type' => 'Staff-Staff',
+                                'perPage' => 5
+                            ])
+                    </div>
                 </div>
             </div>
         @endif
