@@ -76,7 +76,7 @@ class CommentController extends Controller implements CommentControllerInterface
         $comment->commentable()->associate($model);
         $comment->comment = $request->message;
         $comment->approved = !Config::get('comments.approval_required');
-        $comment->type = isset($request['type']) ? $request['type'] : "User-User";
+        $comment->type = isset($request['type']) && $request['type'] ? $request['type'] : "User-User";
         $comment->save();
 
         $recipient = null;
