@@ -57,16 +57,17 @@
     {{-- Bootstrap Toggle --}}
     <link href="{{ asset('css/bootstrap4-toggle.min.css') }}" rel="stylesheet">
 
-    
+
     <link href="{{ asset('css/lightbox.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap-colorpicker.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/jquery-ui-timepicker-addon.css') }}" rel="stylesheet">
     <link href="{{ asset('css/croppie.css') }}" rel="stylesheet">
     <link href="{{ asset('css/selectize.bootstrap4.css') }}" rel="stylesheet">
-    
+
     @if(file_exists(public_path(). '/css/custom.css'))
         <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
     @endif
+
 </head>
 <body>
     <div id="app">
@@ -78,7 +79,7 @@
 
         <main class="container-fluid">
             <div class="row">
-            
+
                 <div class="sidebar col-lg-2" id="sidebar">
                     @yield('sidebar')
                 </div>
@@ -88,20 +89,23 @@
                             @if(Auth::user()->is_news_unread)
                                 <div class="alert alert-info"><a href="{{ url('news') }}">There is a new news post!</a></div>
                             @endif
+                            @if(Auth::user()->is_sales_unread)
+                                <div class="alert alert-info"><a href="{{ url('sales') }}">There is a new sales post!</a></div>
+                            @endif
                         @endif
                         @include('flash::message')
                         @yield('content')
                     </div>
-                    
+
                     <div class="site-footer mt-4" id="footer">
                             @include('layouts._footer')
                     </div>
                 </div>
             </div>
-        
+
         </main>
 
-        
+
         <div class="modal fade" id="modal" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">

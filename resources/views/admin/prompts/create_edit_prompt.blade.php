@@ -85,7 +85,7 @@
 <h3>Rewards</h3>
 <p>Rewards are credited on a per-user basis. Mods are able to modify the specific rewards granted at approval time.</p>
 <p>You can add loot tables containing any kind of currencies (both user- and character-attached), but be sure to keep track of which are being distributed! Character-only currencies cannot be given to users.</p>
-@include('widgets._loot_select', ['loots' => $prompt->rewards, 'showLootTables' => true])
+@include('widgets._loot_select', ['loots' => $prompt->rewards, 'showLootTables' => true, 'showRaffles' => true])
 
 <div class="text-right">
     {!! Form::submit($prompt->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
@@ -93,13 +93,13 @@
 
 {!! Form::close() !!}
 
-@include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables, 'showLootTables' => true])
+@include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables, 'raffles' => $raffles, 'showLootTables' => true, 'showRaffles' => true])
 
 @if($prompt->id)
     <h3>Preview</h3>
     <div class="card mb-3">
         <div class="card-body">
-            @include('world._prompt_entry', ['prompt' => $prompt])
+            @include('prompts._prompt_entry', ['prompt' => $prompt])
         </div>
     </div>
 @endif
@@ -108,7 +108,7 @@
 
 @section('scripts')
 @parent
-@include('js._loot_js', ['showLootTables' => true])
+@include('js._loot_js', ['showLootTables' => true, 'showRaffles' => true])
 <script>
 $( document ).ready(function() {    
     $('.delete-prompt-button').on('click', function(e) {

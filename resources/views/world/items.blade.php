@@ -37,7 +37,7 @@
 @foreach($items as $item)
     <div class="card mb-3">
         <div class="card-body">
-        @include('world._entry', ['imageUrl' => $item->imageUrl, 'name' => $item->displayName, 'description' => $item->parsed_description, 'searchUrl' => $item->searchUrl])
+        @include('world._item_entry', ['imageUrl' => $item->imageUrl, 'name' => $item->displayName, 'description' => $item->parsed_description, 'idUrl' => $item->idUrl])
         </div>
     </div>
 @endforeach

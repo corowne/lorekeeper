@@ -7,7 +7,7 @@
 
 <h1>Traits</h1>
 
-<p>This is a list of traits that can be attached to characters. </p> 
+<p>This is a list of traits that can be attached to characters. </p>
 
 <div class="text-right mb-3"><a class="btn btn-primary" href="{{ url('admin/data/traits/create') }}"><i class="fas fa-plus"></i> Create New Trait</a></div>
 
@@ -36,37 +36,29 @@
 
 @if(!count($features))
     <p>No traits found.</p>
-@else 
+@else
     {!! $features->render() !!}
-    <table class="table table-sm category-table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Rarity</th>
-                <th>Category</th>
-                <th>Species</th>
-                <th>Subtype</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($features as $feature)
-                <tr class="sort-item" data-id="{{ $feature->id }}">
-                    <td>
-                        {{ $feature->name }}
-                    </td>
-                    <td>{!! $feature->rarity->displayName !!}</td>
-                    <td>{{ $feature->category ? $feature->category->name : '' }}</td>
-                    <td>{{ $feature->species ? $feature->species->name : '' }}</td>
-                    <td>{{ $feature->subtype ? $feature->subtype->name : '' }}</td>
-                    <td class="text-right">
-                        <a href="{{ url('admin/data/traits/edit/'.$feature->id) }}" class="btn btn-primary">Edit</a>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+      <div class="row ml-md-2">
+        <div class="d-flex row flex-wrap col-12 pb-1 px-0 ubt-bottom">
+          <div class="col-12 col-md-3 font-weight-bold">Name</div>
+          <div class="col-6 col-md-2 font-weight-bold">Rarity</div>
+          <div class="col-6 col-md-2 font-weight-bold">Category</div>
+          <div class="col-6 col-md-2 font-weight-bold">Species</div>
+          <div class="col-6 col-md-2 font-weight-bold">Subtype</div>
+        </div>
+        @foreach($features as $feature)
+        <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-top">
+          <div class="col-12 col-md-3">{{ $feature->name }}</div>
+          <div class="col-6 col-md-2">{!! $feature->rarity->displayName !!}</div>
+          <div class="col-6 col-md-2">{{ $feature->category ? $feature->category->name : '---' }}</div>
+          <div class="col-6 col-md-2">{{ $feature->species ? $feature->species->name : '---' }}</div>
+          <div class="col-6 col-md-2">{{ $feature->subtype ? $feature->subtype->name : '---' }}</div>
+          <div class="col-12 col-md-1"><a href="{{ url('admin/data/traits/edit/'.$feature->id) }}" class="btn btn-primary py-0 px-1 w-100">Edit</a></div>
+        </div>
+        @endforeach
+      </div>
     {!! $features->render() !!}
+    <div class="text-center mt-4 small text-muted">{{ $features->total() }} result{{ $features->total() == 1 ? '' : 's' }} found.</div>
 @endif
 
 @endsection

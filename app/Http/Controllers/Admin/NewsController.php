@@ -21,7 +21,7 @@ class NewsController extends Controller
     public function getIndex()
     {
         return view('admin.news.news', [
-            'newses' => News::orderBy('post_at', 'DESC')->paginate(20)
+            'newses' => News::orderBy('updated_at', 'DESC')->paginate(20)
         ]);
     }
     
@@ -64,7 +64,7 @@ class NewsController extends Controller
     {
         $id ? $request->validate(News::$updateRules) : $request->validate(News::$createRules);
         $data = $request->only([
-            'title', 'text', 'post_at', 'is_visible'
+            'title', 'text', 'post_at', 'is_visible', 'bump'
         ]);
         if($id && $service->updateNews(News::find($id), $data, Auth::user())) {
             flash('News updated successfully.')->success();

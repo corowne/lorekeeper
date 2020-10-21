@@ -2,48 +2,84 @@
 
 Lorekeeper is a framework for managing deviantART-based ARPGs/closed species masterlists coded using the Laravel framework. In simple terms - you will be able to make a copy of the site, do some minor setup/enter data about your species and game, and it'll provide you with the automation to keep track of your species, players and ARPG submissions.
 
-Demo site: [http://lorekeeper.me/](http://lorekeeper.me/)
-Wiki for users: [http://lorekeeper-arpg.wikidot.com/](http://lorekeeper-arpg.wikidot.com/)
-Original git repository: [https://github.com/corowne/lorekeeper](https://github.com/corowne/lorekeeper)
+## Modified Main
 
-# Info
+This version of Lorekeeper is modified. It contains several extensions-- additional or modified parts of core Lorekeeper which change or add functions and behavior-- selected for their wide applicability, and for falling into one of the following categories: 
+- An unavoidable change in behavior, but one that is arguably a net quality-of-life improvement. May also be highly useful as a base for other extensions to build upon.
+- Opt-in/must be deliberately enabled for significant changes in the behavior of the site to occur. No more obtrusive than effectively optional functions in core Lorekeeper if not in use. 
 
-This fork was set up for the purpose of sharing some of the changes I made. These changes are usually merged to master, but can also be found in their own branches.
+It also serves as a base for developing extensions, providing several common 'dependencies'.
 
-## inventory_stacks
+**Reference Links:**
+- Demo site: [http://lorekeeper.me/](http://lorekeeper.me/)
+- Wiki for users: [http://lorekeeper-arpg.wikidot.com/](http://lorekeeper-arpg.wikidot.com/)
+- Extensions wiki: [http://wiki.lorekeeper.me/index.php?title=Category:Extensions](http://wiki.lorekeeper.me/index.php?title=Category:Extensions)
 
-Special thanks to [itinerare](https://github.com/itinerare) for isolating and testing the changes.
+# Features
 
-This changes the default inventory in Lorekeeper from displaying each user_item row as a stack of 1, and instead condenses duplicate entries into stacks. This has affected Inventory, Trades, and Design Updates the most, though there could still be remnants of code that still aren't using the new system.
+- **Core Lorekeeper:** Please see [the Readme](https://github.com/corowne/lorekeeper/blob/master/README.md) and [feature documentation](http://lorekeeper-arpg.wikidot.com/) for more information.
+- **Grouped Notifications:** To account for the potentially large variety and potentially volume of notifications, they are grouped by notification type and collapse when there are more than 5 notifications of a type.
+- **Toggleable Comments on Site Pages:** Adds a toggle to site pages which enables/disables commenting on them. Disabled by default.
+- **Extension Service:** A utility for use by extension developers. By default, facilitates adjusting notification type IDs in a site's DB to comply with the [community notification standard](http://wiki.lorekeeper.me/index.php?title=Community_Notification_Standard). See the [this command](https://github.com/itinerare/lorekeeper/blob/15f9ba0a750f4a08d1e3e07139ad32a0b3c7fc9f/app/Console/Commands/FixCharItemNotifs.php) (made for Character Items) for an example of how to use this functionality.
 
-Once the changes are pulled, the database needs to be updated as well - this can be done with:
+## Extensions Included
 
-```
-$ php artisan migrate
-```
+Please see the associated wiki page for each extension for more information on their functionality.
 
-The migrations will add 2 new columns to user_items: trade_count and update_count, for tracking items held in trades and updates respectively. It will also change the default value of count in user_items to 0.
+- [Draginraptor](https://github.com/Draginraptor) : [Stacked Inventories](http://wiki.lorekeeper.me/index.php?title=Extensions:Stacked_Inventories)
+- [itinerare](https://github.com/itinerare) : [Submission Addons](http://wiki.lorekeeper.me/index.php?title=Extensions:Submission_Addons)
+- [itinerare](https://github.com/itinerare) : [Character Items](http://wiki.lorekeeper.me/index.php?title=Extensions:Character_Items)
+- [Preimpression](https://github.com/preimpression) : [Bootstrap Tables](http://wiki.lorekeeper.me/index.php?title=Extensions:Bootstrap_Tables)
+- [itinerare](https://github.com/itinerare) : [Item Entry Expansion (Stacked Inventories version)](http://wiki.lorekeeper.me/index.php?title=Extensions:Item_Entry_Expansion)
+- [itinerare](https://github.com/itinerare) : [Watermarking](http://wiki.lorekeeper.me/index.php?title=Extensions:Watermarking)
+- [itinerare](https://github.com/itinerare) : [Separate Prompts](http://wiki.lorekeeper.me/index.php?title=Extensions:Separate_Prompts)
+- [Preimpression](https://github.com/preimpression) & [Ne-wt](https://github.com/Ne-wt) : [Comments](http://wiki.lorekeeper.me/index.php?title=Extensions:Comments)
 
-Note that existing data in the database will need to be edited such that duplicate entries (where the item_id, user_id, and data are the same) need to be combined separately.
+# Setup
 
-You could just update each row's count column to reflect the total count at that point in time, leaving the duplicate entries alone. I'm unsure if it will break anything, but I don't think so.
+Please see [the Readme](https://github.com/corowne/lorekeeper/blob/master/README.md) or refer to the [Wiki](http://lorekeeper-arpg.wikidot.com/) for general instructions. It is **highly recommended** that you set up core Lorekeeper first and make sure it's functional before modifying it in any fashion.
 
-You can also delete the duplicate rows once the count column is updated. However, this will probably require deleting the item logs associated with the affected stacks, unless you create your own workaround.
+## Updating from Core or a Previously Modified Version of Core
 
-I have included some SQL that you can reference in creating a query, but it is unlikely to work out of the box. Alternatively, you can also edit the database manually. Either way, ALWAYS backup your database before making changes.
+Depending on how modified your site's copy is, you may be able to simply pull this branch without any resulting conflicts. 
 
-The migrations do not remove holding_type and holding_id, which are not used in this version of the inventory; these may be left in or removed on your own.
+In the case that conflicts do result, or if you need further information, see [Junijwi](https://github.com/juniJwi)'s [tutorial on installing extensions](http://wiki.lorekeeper.me/index.php?title=Tutorial:_Installing_Extensions) for information on resolving conflicts and generally installing extensions. As you will already have added the core Lorekeeper repository as a remote in order to set up Lorekeeper, you can skip to step 2, pulling this branch ("modified-main").
 
-## embed_service
+### Extension-specific instructions:
 
-This adds the EmbedController and EmbedService, which makes use of [oscarotero/Embed](https://github.com/oscarotero/Embed) library.
+- **Stacked Inventories:** Existing user items in the database with identical owner, source, and notes are not automatically combined; these must be manually edited to be combined if desired. Not doing so will not cause issues, however.
+- **Submission Addons:** Before installing, **process any remaining unprocessed submissions**. Otherwise, you will need to edit their data in the database before they can be processed.
+- **Character Items:** If you installed this extension already, and did so prior to September 10th, 2020, run `php artisan fix-char-item-notifs`.
+- **Comments:** The version included in this branch has been separated from the original package. If you installed the prior version of the extension, run `php artisan view:clear` after installation to clear your view caches.
 
-You will need to install the above library and have at least one of [these PSR-7 libraries](https://github.com/middlewares/awesome-psr15-middlewares#psr-7-implementations). The composer.json has already been updated to include these libraries, so if you don't want to customise, just run `composer update` after pulling the branch.
+When ready, run `php artisan migrate` and `php artisan add-site-settings`.
 
-### How to use
+Run `composer update`/`composer install`. You may need to first run `composer update` locally and upload the `composer.lock` file to your site's server if you are on a limited hosting plan/composer requires more memory than you can spare.
 
-For server-side queries, add the EmbedService to the target file. Create an instance of the service to call getEmbed(), which only takes one argument: an URL. It will return an OEmbed response if it finds one. The library is able to return a variety of different responses, so don't be afraid to read up the documentation and change it to suit your needs!
+## Configuration
 
-For client-side queries, you can use jQuery's get() function to query the controller, which will handle the communication between the client and service. The controller also does validation to ensure that the input is actually in a URL format, and is from an accepted domain. 
-Currently, it only accepts dA URLs, but can be have other sites added, or just have that part of the validation removed entirely.
-The controller will also process the response to return only the image URL and thumbnail URL - you can configure these to your needs as necessary. 
+- Admin account ID. Notifications for comments on pages are sent to this account. | Default: 1 | Configured in: Site Settings admin panel
+
+### Per-Extension Configuration
+
+**Stacked Inventories:** 
+- The maximum number of items purchaseable at once from a shop (in a single transaction) | Default: 99 | Configured in: config/lorekeeper/settings.php
+
+**Character Items:**
+- Whether or not items in a category can be held by characters | Default: no | Configured in: Creating/editing an item category
+- Whether there is a limit on the number of items of a category a character can own/what that limit is (Note: Admin grants direct to a character do not check against this) | Default: 0/infinite | Configured in: Creating/editing an item category
+- Whether stacks in a category can be "named" when in a character's inventory (for instance, in the case of pets) | Default: no | Configured in: Creating/editing an item category
+
+**Watermarking:**
+
+All settings are configured in 'config/lorekeeper/settings.php' and disabled by default.
+- Whether or not masterlist images are watermarked | Default: 0/No
+- Dimension (in px) to scale the shorter dimension (between width/height) of masterlist images to. Set to 0 to disable resizing. |  Default: 0/Disabled
+- Format to convert masterlist images to. Set to null to disable conversion. | Default: null
+- Color (hex code) to fill the background of non-png image types when converting images to file formats that do not support transparency. Set to null to disable. Only takes effect when converting to a file format that isn't png. | Default: #ffffff
+- Whether to store the full size of masterlist images (relevant if resizing and/or watermarking are enabled). Set to 0 to disable. Not retroactive either way. | Default: 0/Disabled
+- Size (in px) to cap full-sized masterlist images at. Images above this cap in either dimension will be resized, retaining aspect ratio. Set to 0 to disable. | Default: 0/Disabled
+- Whether or not to watermark masterlist thumbnails. Expects the whole of the character to be visible, so it is recommended to use the thumbnail behavior/disable this if that isn't standard for your site. Set to 0 to disable. | Default: 0/Disabled
+
+**Separate Prompts:**
+- It's recommended to customize the index page and/or sidebar for the new prompts section. | Configured in: resources/views/prompts

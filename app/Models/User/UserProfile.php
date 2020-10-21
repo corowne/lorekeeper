@@ -3,9 +3,12 @@
 namespace App\Models\User;
 
 use App\Models\Model;
+use App\Traits\Commentable;
 
 class UserProfile extends Model
 {
+
+    use Commentable;
 
     /**
      * The attributes that are mass assignable.

@@ -141,4 +141,8 @@ class Notification extends Model
     const BOOKMARK_OWNER                  = 36;
     const BOOKMARK_IMAGE                  = 37;
     const CHARACTER_TRANSFER_ACCEPTABLE   = 38;
+    const COMMENT_MADE                    = 239;
+    const COMMENT_REPLY                   = 240;
+    const CHARACTER_ITEM_GRANT            = 501;
+    const CHARACTER_ITEM_REMOVAL          = 502;
 }

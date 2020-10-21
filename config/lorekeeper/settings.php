@@ -85,18 +85,64 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Masterlist Thumbnail Dimensions
+    | Masterlist Images
+    |--------------------------------------------------------------------------
+    |
+    | 0: Do not watermark. 1: Automatically watermark masterlist images.
+    | 
+    | Dimension, in pixels, to scale the shorter dimension (between width/height)
+    | of submitted masterlist images to. Enter "0" to disable resizing.
+    |
+    | File format to encode masterlist image uploads to.
+    | Set to null to leave images in their original formats.
+    | Example:
+    | 'masterlist_image_format' => null,
+    |
+    | Color to fill non-png images in when masterlist_image_format is set. 
+    | This is in an endeavor to make images with a transparent background
+    | compress better. Set to null to disable.
+    | Example:
+    | 'masterlist_image_background' => 'png',
+    |
+    */
+    'watermark_masterlist_images' => 0,
+    'masterlist_image_dimension' => 0,
+    'masterlist_image_format' => null,
+    'masterlist_image_background' => '#ffffff',
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Masterlist Image Fullsizes
+    |--------------------------------------------------------------------------
+    |
+    | 0: Do not store full-sized masterlist images (for view by the character\'s owner) and staff. 
+    | 1: Store full-sized images uploaded to the masterlist. Not retroactive either way.
+    | 
+    | Size, in pixels, to cap full-sized masterlist images at (if storing full-sized images is enabled). 
+    | Images above this cap in either dimension will be resized to suit. Enter "0" to disable resizing.
+    |
+    */
+    'store_masterlist_fullsizes' => 0,
+    'masterlist_fullsizes_cap' => 0,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Masterlist Thumbnail Dimensions & Watermarking
     |--------------------------------------------------------------------------
     |
     | This affects the dimensions used by the character thumbnail cropper.
     | Using a smallish size is recommended to reduce the amount of time
     | needed to load the masterlist pages.
     |
+    | 0: Default thumbnail cropping behavior. 1: Watermark thumbnails. 
+    | Expects the whole of the character to be visible in the thumbnail.
+    |
     */
     'masterlist_thumbnails' => [
         'width' => 200,
         'height' => 200
     ],
+    'watermark_masterlist_thumbnails' => 0,
 
     /*
     |--------------------------------------------------------------------------
@@ -108,5 +154,16 @@ return [
     | there are limits on data storage, so raising this is not recommended.
     |
     */
-    'trade_asset_limit' => 20
+    'trade_asset_limit' => 20,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shop Purchase Limit
+    |--------------------------------------------------------------------------
+    |
+    | This is an arbitrary upper limit on how many items a uses can buy in a
+    | single shop transaction.
+    |
+    */
+    'default_purchase_limit' => 99
 ];
