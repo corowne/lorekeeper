@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use App\Models\Comment;
+
 use Illuminate\Support\Facades\Config;
 
 /**
