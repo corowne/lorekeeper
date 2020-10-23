@@ -77,7 +77,7 @@ $( document ).ready(function() {
             e.preventDefault();
             var $clone;
             var $select;
-            var row_num = $(this).parent().parent().data('row');
+            var row_num = $(this).parent().parent().parent().data('row');
             if(type == 'MultiItem') {
                 $clone = $multiItemEntry.clone();
                 $(this).parent().find('.multi-item-list').append($clone);
