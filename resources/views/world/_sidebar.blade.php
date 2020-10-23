@@ -4,7 +4,7 @@
     <li class="sidebar-section">
         <div class="sidebar-section-header">Info</div>
         @foreach($sections as $section)
-            <div class="sidebar-item"><a href="{{ url($section->url) }}" class="{{ set_active($section->url) }}">{{ $section->name }}</a></div>
+            <div class="sidebar-item"><a href="{{ url($section->url) }}" class="{{ set_active('world/info/'.$section->key) }}">{{ $section->name }}</a></div>
         @endforeach
     </li>
     @endif
