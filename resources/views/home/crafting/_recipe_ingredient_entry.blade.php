@@ -18,6 +18,5 @@
         @foreach($ingredient->ingredient as $ing)
             <div>- @if(isset($ing->image_url))<img class="small-icon" src="{{ $ing->image_url }}">@endif<span>{!! $ing->displayName !!}</div>
         @endforeach
-    </div>
     @break
 @endswitch

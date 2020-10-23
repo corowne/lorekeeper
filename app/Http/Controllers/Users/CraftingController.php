@@ -56,7 +56,7 @@ class CraftingController extends Controller
     }
 
     /**
-     * Shows a recipe's crafting page.
+     * Shows a recipe's crafting modal.
      *
      * @param  integer  $id
      * @return \Illuminate\Contracts\Support\Renderable
@@ -111,5 +111,16 @@ class CraftingController extends Controller
             'page' => 'craft',
             'selected' => $selected
         ]);
+    }
+
+    /**
+     * Crafts a recipe
+     *
+     * @param  integer  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function postCraftRecipe(Request $request, RecipeService $service, $id)
+    {
+        // TODO: process request
     }
 }
