@@ -18,7 +18,7 @@
         <div class="form-group">
             {!! Form::label('url', 'URL') !!} 
                 {!! add_help('Enter a URL relevant to your claim (for example, a comment proving you may make this claim). This field cannot be left blank.') !!} 
-            {!! Form::text('url', null, ['class' => 'form-control', 'required']) !!}
+            {!! Form::text('url',  Request::get('url'), ['class' => 'form-control', 'required']) !!}
         </div>
         <div class="form-group">
             <div class="form-check">
