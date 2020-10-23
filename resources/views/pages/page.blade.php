@@ -3,7 +3,7 @@
 @section('title') {{ $page->title }} @endsection
 
 @section('content')
-@if($page->category->section)
+@if($page->page_category_id && category->section)
 {!! breadcrumbs(['World' => 'world', $page->category->section->name => '/world/info/'.$page->category->section->key , $page->title => $page->url])!!}
 @else
 {!! breadcrumbs([$page->title => $page->url]) !!}
