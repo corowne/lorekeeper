@@ -44,6 +44,26 @@ class ReportController extends Controller
             'reports' => $reports->orderBy('id', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
+
+    /**
+     * Shows the bug report log.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getBugIndex(Request $request)
+    {
+        $reports = Report::where('is_br', 1);
+
+        $data = $request->only(['url']);
+        
+        if(isset($data['url'])) 
+            $reports->where('url', 'LIKE', '%'.$data['url'].'%');
+
+        return view('home.bug_report_index', [
+            'reports' => $reports->orderBy('id', 'DESC')->paginate(20)->appends($request->query()),
+        ]);
+    }
     
     /**
      * Shows the report page.

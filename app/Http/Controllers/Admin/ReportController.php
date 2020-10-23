@@ -27,10 +27,7 @@ class ReportController extends Controller
     public function getReportIndex(Request $request, $status = null)
     {
         $reports = Report::where('status', $status ? ucfirst($status) : 'Pending');
-        if($request->get('prompt_category_id')) 
-            $reports->whereHas('prompt', function($query) use ($request) {
-                $query->where('prompt_category_id', $request->get('prompt_category_id'));
-            });
+
         return view('admin.reports.index', [
             'reports' => $reports->orderBy('id', 'DESC')->paginate(30)->appends($request->query()),
         ]);

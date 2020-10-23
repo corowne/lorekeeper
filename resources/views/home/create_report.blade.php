@@ -15,8 +15,13 @@
     </div>
 @else 
     {!! Form::open(['url' => 'reports/new', 'id' => 'submissionForm']) !!}
+    <div class="br-form-group alert alert-warning" style="display: none">
+        <div class="form-check">
+            When submitting a bug report, please use the 'URL / Title' section to briefly summarise the bug. Inlcude any links in the 'Comments' section. This is to allow an easy search.
+        </div>
+    </div>
         <div class="form-group">
-            {!! Form::label('url', 'URL') !!} 
+            {!! Form::label('url', 'URL / Title') !!} 
                 {!! add_help('Enter a URL relevant to your claim (for example, a comment proving you may make this claim). This field cannot be left blank.') !!} 
             {!! Form::text('url',  Request::get('url'), ['class' => 'form-control', 'required']) !!}
         </div>

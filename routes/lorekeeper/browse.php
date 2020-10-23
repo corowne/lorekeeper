@@ -141,3 +141,10 @@ Route::group(['prefix' => 'comments', 'namespace' => 'Comments'], function() {
     Route::post('/{comment}', 'CommentController@reply')->name('comments.reply');
     Route::post('/{id}/feature', 'CommentController@feature')->name('comments.feature');
 });
+
+/**************************************************************************************************
+    Reports
+**************************************************************************************************/
+Route::group(['prefix' => 'reports', 'namespace' => 'Users'], function() {
+    Route::get('/bug-reports', 'ReportController@getBugIndex');
+});

@@ -28,7 +28,7 @@
             <thead>
                 <tr>
                     <th>User</th>
-                    <th width="20%">Link</th>
+                    <th width="20%">Link / Title</th>
                     <th width="20%">Submitted</th>
                     <th>Status</th>
                     <th></th>

@@ -46,7 +46,7 @@
                                 Claims
                             </a>
                             <a class="dropdown-item" href="{{ url('reports') }}">
-                                Reports
+                                My Reports
                             </a>
                             <a class="dropdown-item" href="{{ url('designs') }}">
                                 Design Approvals
@@ -79,6 +79,10 @@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ url('raffles') }}">
                             Raffles
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ url('reports/bug-reports') }}">
+                            Bug Reports
                         </a>
                     </div>
                 </li>

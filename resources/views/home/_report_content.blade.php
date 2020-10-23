@@ -8,7 +8,7 @@
         <div class="col-md-10 col-8">{!! $report->user->displayName !!}</div>
     </div>
     <div class="row">
-        <div class="col-md-2 col-4"><h5>URL</h5></div>
+        <div class="col-md-2 col-4"><h5>URL / Title</h5></div>
         <div class="col-md-10 col-8"><a href="{{ $report->url }}">{{ $report->url }}</a></div>
     </div>
     <div class="row">

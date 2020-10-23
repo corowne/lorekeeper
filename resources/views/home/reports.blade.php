@@ -5,7 +5,7 @@
 @section('home-content')
     {!! breadcrumbs(['Reports' => 'reports']) !!}
 <h1>
-Reports
+My Reports
 </h1>
 
 <div class="text-right">
@@ -29,7 +29,7 @@ Reports
     <table class="table table-sm">
         <thead>
             <tr>
-                <th width="30%">Link</th>
+                <th width="30%">Link / Title</th>
                 <th width="20%">Submitted</th>
                 <th>Status</th>
                 <th></th>

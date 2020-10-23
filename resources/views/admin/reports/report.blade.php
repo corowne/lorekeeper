@@ -20,7 +20,7 @@
             <div class="col-md-10 col-8">{!! $report->user->displayName !!}</div>
         </div>
         <div class="row">
-            <div class="col-md-2 col-4"><h5>URL</h5></div>
+            <div class="col-md-2 col-4"><h5>URL / Title</h5></div>
             <div class="col-md-10 col-8"><a href="{{ $report->url }}">{{ $report->url }}</a></div>
         </div>
         <div class="row">
@@ -86,7 +86,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <p>This will assign yourself to the report.</p>
+                    <p class="text-left">This will assign yourself to the report.</p>
                     <div class="text-right">
                         <a href="#" id="assignSubmit" class="btn btn-danger">Assign</a>
                     </div>
