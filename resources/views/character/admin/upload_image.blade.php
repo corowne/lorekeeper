@@ -7,7 +7,7 @@
 
 @include('character._header', ['character' => $character])
 
-<p>This will add a new image to the character's gallery. The character's active image will be changed to the new one automatically. If the character is marked as visible, the owner of the character will be notified of the upload.</p> 
+<p>This will add a new image to the character's gallery. The character's active image will be changed to the new one automatically. If the character is marked as visible, the owner of the character will be notified of the upload.</p>
 
 {!! Form::open(['url' => 'admin/character/'.$character->slug.'/image', 'files' => true]) !!}
 
@@ -94,8 +94,8 @@ Traits
     {!! Form::select('species_id', $specieses, old('species_id') ? : $character->image->species_id, ['class' => 'form-control', 'id' => 'species']) !!}
 </div>
 
-<div class="form-group">
-    {!! Form::label('Subtype (Optional)') !!} 
+<div class="form-group" id="subtypes">
+    {!! Form::label('Subtype (Optional)') !!}
     {!! Form::select('subtype_id', $subtypes, old('subtype_id') ? : $character->image->subtype_id, ['class' => 'form-control', 'id' => 'subtype']) !!}
 </div>
 
@@ -172,7 +172,7 @@ $( document ).ready(function() {
         })
         $trigger.css({ visibility: 'hidden' });
     }
-    
+
     $('.add-artist').on('click', function(e) {
         e.preventDefault();
         addArtistRow($(this));
@@ -190,7 +190,7 @@ $( document ).ready(function() {
     }
 
     // Traits /////////////////////////////////////////////////////////////////////////////////////
-    
+
     $('#add-feature').on('click', function(e) {
         e.preventDefault();
         addFeatureRow();
@@ -261,8 +261,19 @@ $( document ).ready(function() {
         $y1.val(values.points[3]);
     }
 
-    
+
 });
-    
+
+
+
+$( "#species" ).change(function() {
+  var species = $('#species').val();
+  var id = '<?php echo($character->image->id); ?>';
+  $.ajax({
+    type: "GET", url: "{{ url('admin/character/image/subtype') }}?species="+species+"&id="+id, dataType: "text"
+  }).done(function (res) { $("#subtypes").html(res); }).fail(function (jqXHR, textStatus, errorThrown) { alert("AJAX call failed: " + textStatus + ", " + errorThrown); });
+
+});
+
 </script>
 @endsection

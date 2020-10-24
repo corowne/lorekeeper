@@ -46,7 +46,7 @@ class CurrencyManager extends Service
             if(!$currency) throw new \Exception("Invalid currency selected.");
             if(!$currency->is_user_owned) throw new \Exception("This currency cannot be held by users.");
 
-            if($data['quantity'] < 0) 
+            if($data['quantity'] < 0)
                 foreach($users as $user) {
                     $this->debitCurrency($user, $staff, 'Staff Removal', $data['data'], $currency, -$data['quantity']);
                     Notifications::create('CURRENCY_REMOVAL', $user, [
@@ -68,7 +68,7 @@ class CurrencyManager extends Service
                 }
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -98,34 +98,38 @@ class CurrencyManager extends Service
             if(!$currency->is_character_owned) throw new \Exception("This currency cannot be held by characters.");
             if($data['quantity'] < 0) {
                 $this->debitCurrency($character, $staff, 'Staff Removal', $data['data'], $currency, -$data['quantity']);
-                Notifications::create('CHARACTER_CURRENCY_REMOVAL', $character->user, [
-                    'currency_name' => $currency->name,
-                    'currency_quantity' => -$data['quantity'],
-                    'sender_url' => $staff->url,
-                    'sender_name' => $staff->name,
-                    'character_name' => $character->fullName,
-                    'character_slug' => $character->slug
-                ]);
+                if(isset($character->user)) {
+                  Notifications::create('CHARACTER_CURRENCY_REMOVAL', $character->user, [
+                      'currency_name' => $currency->name,
+                      'currency_quantity' => -$data['quantity'],
+                      'sender_url' => $staff->url,
+                      'sender_name' => $staff->name,
+                      'character_name' => $character->fullName,
+                      'character_slug' => $character->slug
+                  ]);
+                }
             }
             else{
                 $this->creditCurrency($staff, $character, 'Staff Grant', $data['data'], $currency, $data['quantity']);
-                Notifications::create('CHARACTER_CURRENCY_GRANT', $character->user, [
-                    'currency_name' => $currency->name,
-                    'currency_quantity' => $data['quantity'],
-                    'sender_url' => $staff->url,
-                    'sender_name' => $staff->name,
-                    'character_name' => $character->fullName,
-                    'character_slug' => $character->slug
-                ]);
+                if(isset($character->user)) {
+                  Notifications::create('CHARACTER_CURRENCY_GRANT', $character->user, [
+                      'currency_name' => $currency->name,
+                      'currency_quantity' => $data['quantity'],
+                      'sender_url' => $staff->url,
+                      'sender_name' => $staff->name,
+                      'character_name' => $character->fullName,
+                      'character_slug' => $character->slug
+                  ]);
+                }
             }
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
-    
+
     /**
      * Transfers currency between users.
      *
@@ -148,10 +152,10 @@ class CurrencyManager extends Service
 
 
             if($this->debitCurrency($sender, $recipient, null, null, $currency, $quantity) &&
-            $this->creditCurrency($sender, $recipient, null, null, $currency, $quantity)) 
+            $this->creditCurrency($sender, $recipient, null, null, $currency, $quantity))
             {
                 $this->createLog($sender->id, $sender->logType, $recipient->id, $recipient->logType, 'User Transfer', null, $currency->id, $quantity);
-                
+
                 Notifications::create('CURRENCY_TRANSFER', $recipient, [
                     'currency_name' => $currency->name,
                     'currency_quantity' => $quantity,
@@ -160,12 +164,12 @@ class CurrencyManager extends Service
                 ]);
                 return $this->commitReturn(true);
             }
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
-    
+
     /**
      * Transfers currency between a user and character.
      *
@@ -189,23 +193,23 @@ class CurrencyManager extends Service
 
 
             if($this->debitCurrency($sender, $recipient, null, null, $currency, $quantity) &&
-            $this->creditCurrency($sender, $recipient, null, null, $currency, $quantity)) 
+            $this->creditCurrency($sender, $recipient, null, null, $currency, $quantity))
             {
                 $this->createLog($sender->id, $sender->logType, $recipient->id, $recipient->logType, $sender->logType == 'User' ? 'User → Character Transfer' : 'Character → User Transfer', null, $currency->id, $quantity);
                 return $this->commitReturn(true);
             }
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
-    
+
     /**
      * Credits currency to a user or character.
      *
      * @param  \App\Models\User\User|\App\Models\Character\Character  $sender
      * @param  \App\Models\User\User|\App\Models\Character\Character  $recipient
-     * @param  string                                                 $type 
+     * @param  string                                                 $type
      * @param  string                                                 $data
      * @param  \App\Models\Currency\Currency                          $currency
      * @param  int                                                    $quantity
@@ -237,23 +241,23 @@ class CurrencyManager extends Service
                     $record = CharacterCurrency::create(['character_id' => $recipient->id, 'currency_id' => $currency->id, 'quantity' => $quantity]);
                 }
             }
-            if($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, 
-            $recipient ? $recipient->id : null, $recipient ? $recipient->logType : null, 
+            if($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null,
+            $recipient ? $recipient->id : null, $recipient ? $recipient->logType : null,
             $type, $data, $currency->id, $quantity)) throw new \Exception("Failed to create log.");
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
-    
+
     /**
      * Debits currency from a user or character.
      *
      * @param  \App\Models\User\User|\App\Models\Character\Character  $sender
      * @param  \App\Models\User\User|\App\Models\Character\Character  $recipient
-     * @param  string                                                 $type 
+     * @param  string                                                 $type
      * @param  string                                                 $data
      * @param  \App\Models\Currency\Currency                          $currency
      * @param  int                                                    $quantity
@@ -278,18 +282,18 @@ class CurrencyManager extends Service
                 // Laravel doesn't support composite primary keys, so directly updating the DB row here
                 DB::table('character_currencies')->where('character_id', $sender->id)->where('currency_id', $currency->id)->update(['quantity' => $record->quantity - $quantity]);
             }
-            
-            if($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, 
-            $recipient ? $recipient->id : null, $recipient ? $recipient->logType : null, 
+
+            if($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null,
+            $recipient ? $recipient->id : null, $recipient ? $recipient->logType : null,
             $type, $data, $currency->id, -$quantity)) throw new \Exception("Failed to create log.");
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
-    
+
     /**
      * Creates a currency log.
      *
@@ -297,7 +301,7 @@ class CurrencyManager extends Service
      * @param  string  $senderType
      * @param  int     $recipientId
      * @param  string  $recipientType
-     * @param  string  $type 
+     * @param  string  $type
      * @param  string  $data
      * @param  int     $currencyId
      * @param  int     $quantity

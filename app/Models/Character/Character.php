@@ -147,9 +147,9 @@ class Character extends Model
     /**
      * Get all images associated with the character.
      */
-    public function images() 
+    public function images($user = null) 
     {
-        return $this->hasMany('App\Models\Character\CharacterImage', 'character_id')->guest();
+        return $this->hasMany('App\Models\Character\CharacterImage', 'character_id')->images($user);
     }
 
     /**
