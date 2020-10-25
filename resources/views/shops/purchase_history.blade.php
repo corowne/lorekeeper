@@ -15,7 +15,7 @@
 <div class="row ml-md-2">
   <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-bottom">
     <div class="col-12 col-md-2 font-weight-bold">Item</div>
-    <div class="col-12 col-md-2 font-weight-bold">Quantity</div>
+    <div class="col-6 col-md-2 font-weight-bold">Quantity</div>
     <div class="col-6 col-md-2 font-weight-bold">Shop</div>
     <div class="col-6 col-md-2 font-weight-bold">Character</div>
     <div class="col-6 col-md-2 font-weight-bold">Cost</div>
