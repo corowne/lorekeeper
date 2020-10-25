@@ -155,4 +155,5 @@ Route::group(['prefix' => 'gallery'], function() {
     Route::get('/', 'GalleryController@getGalleryIndex');
     Route::get('{id}', 'GalleryController@getGallery');
     Route::get('view/{id}', 'GalleryController@getSubmission');
+    Route::get('view/favorites/{id}', 'GalleryController@getSubmissionFavorites');
 });
