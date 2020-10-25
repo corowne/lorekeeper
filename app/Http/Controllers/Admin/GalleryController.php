@@ -46,13 +46,16 @@ class GalleryController extends Controller
      */
     public function getCurrencyIndex(Request $request, $status = null)
     {
-        $submissions = GallerySubmission::requiresAward()->where('is_valued', !$status || $status == 'pending' ? 0 : 1);
-        if($request->get('gallery_id')) 
-            $submissions->where(function($query) use ($request) {
-                $query->where('gallery_id', $request->get('gallery_id'));
-            });
-        if($status == 'pending' || !$status) $submissions = $submissions->orderBy('created_at', 'ASC');
-        else $submissions = $submissions->orderBy('created_at', 'DESC');
+        if(Settings::get('gallery_submissions_reward_currency')) {
+            $submissions = GallerySubmission::requiresAward()->where('is_valued', !$status || $status == 'pending' ? 0 : 1);
+            if($request->get('gallery_id')) 
+                $submissions->where(function($query) use ($request) {
+                    $query->where('gallery_id', $request->get('gallery_id'));
+                });
+            if($status == 'pending' || !$status) $submissions = $submissions->orderBy('created_at', 'ASC');
+            else $submissions = $submissions->orderBy('created_at', 'DESC');
+        }
+        else $submissions = null;
         return view('admin.galleries.submissions_currency_index', [
             'submissions' => $submissions->paginate(10)->appends($request->query()),
             'galleries' => ['' => 'Any Gallery'] + Gallery::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
