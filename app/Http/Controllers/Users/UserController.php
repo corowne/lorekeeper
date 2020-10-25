@@ -241,7 +241,7 @@ class UserController extends Controller
         return view('user.favorites', [
             'user' => $this->user,
             'characters' => true,
-            'favorites' => GallerySubmission::whereIn('id', $this->user->galleryFavorites()->pluck('gallery_submission_id')->toArray())->whereIn('id', GalleryCharacter::where('character_id', $this->user->characters->pluck('id')->toArray())->pluck('gallery_submission_id'))->visible(Auth::check() ? Auth::user() : null)->accepted()->orderBy('created_at', 'DESC')->paginate(20),
+            'favorites' => GallerySubmission::whereIn('id', $this->user->galleryFavorites()->pluck('gallery_submission_id')->toArray())->whereIn('id', GalleryCharacter::where('character_id', ($this->user->characters->count() ? $this->user->characters->pluck('id')->toArray() : []))->pluck('gallery_submission_id'))->visible(Auth::check() ? Auth::user() : null)->accepted()->orderBy('created_at', 'DESC')->paginate(20),
         ]);
     }
 }
