@@ -13,7 +13,7 @@
         @if(Auth::check())
             {!! Form::open(['url' => '/gallery/favorite/'.$submission->id]) !!} 
                 @if($submission->user->id != Auth::user()->id && $submission->collaborators->where('user_id', Auth::user()->id)->first() == null && $submission->isVisible)
-                    {!! Form::button('<i class="fas fa-star"></i> ', ['class' => 'btn btn'. ($submission->favorites->where('user_id', Auth::user()->id)->first() == null ? 'btn-outline-primary' : 'btn-primary'), 'data-toggle' => 'tooltip', 'title' => ($submission->favorites->where('user_id', Auth::user()->id)->first() == null ? 'Add to' : 'Remove from').' your Favorites', 'type' => 'submit']) !!}
+                    {!! Form::button('<i class="fas fa-star"></i> ', ['class' => 'btn '. ($submission->favorites->where('user_id', Auth::user()->id)->first() == null ? 'btn-outline-primary' : 'btn-primary'), 'data-toggle' => 'tooltip', 'title' => ($submission->favorites->where('user_id', Auth::user()->id)->first() == null ? 'Add to' : 'Remove from').' your Favorites', 'type' => 'submit']) !!}
                 @endif     
                 @if($submission->user->id == Auth::user()->id || Auth::user()->hasPower('manage_submissions'))
                     <a class="btn btn-outline-primary" href="/gallery/queue/{{ $submission->id }}" data-toggle="tooltip" title="View Log Details"><i class="fas fa-clipboard-list"></i></a>    
