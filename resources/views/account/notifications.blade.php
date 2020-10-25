@@ -28,7 +28,7 @@
             </span> 
             <a class="card-title h5 collapse-title mb-2" href="#{{ str_replace(' ', '_', Config::get('lorekeeper.notifications.'.$type.'.name')) }}" data-toggle="collapse">{{ Config::get('lorekeeper.notifications.'.$type.'.name') }}   
             </a> 
-        <div id="{{ str_replace(' ', '_', Config::get('lorekeeper.notifications.'.$type.'.name')) }}" class="collapse {{ $notifications->where('notification_type_id', $type)->count() < 5 ? 'show' : '' }}" class="mt-2">
+        <div id="{{ str_replace(' ', '_', Config::get('lorekeeper.notifications.'.$type.'.name')) }}" class="collapse {{ $notifications->where('notification_type_id', $type)->count() < 5 ? 'show' : '' }} mt-2">
             <table class="table notifications-table">
                 <thead>
                     <tr>
