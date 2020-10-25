@@ -66,7 +66,6 @@
             $target.find('.quantity-select').prop('name', '');
         }
         function customItemSelectizeRender(item, escape) {
-            console.log(item)
             item = JSON.parse(item.text);
             option_render = '<div class="option">';
             if(item['image_url']) {
