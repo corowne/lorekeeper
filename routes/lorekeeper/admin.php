@@ -16,7 +16,7 @@ Route::group(['prefix' => 'users', 'namespace' => 'Users'], function() {
     # USER LIST
     Route::group(['middleware' => 'power:edit_user_info'], function() {
         Route::get('/', 'UserController@getIndex');
-        
+
         Route::get('{name}/edit', 'UserController@getUser');
         Route::post('{name}/basic', 'UserController@postUserBasicInfo');
         Route::post('{name}/alias', 'UserController@postUserAlias');
@@ -95,7 +95,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('rarities/edit/{id?}', 'RarityController@postCreateEditRarity');
     Route::post('rarities/delete/{id}', 'RarityController@postDeleteRarity');
     Route::post('rarities/sort', 'RarityController@postSortRarity');
-    
+
     # SPECIES
     Route::get('species', 'SpeciesController@getIndex');
     Route::get('species/create', 'SpeciesController@getCreateSpecies');
@@ -113,7 +113,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('subtypes/edit/{id?}', 'SpeciesController@postCreateEditSubtype');
     Route::post('subtypes/delete/{id}', 'SpeciesController@postDeleteSubtype');
     Route::post('subtypes/sort', 'SpeciesController@postSortSubtypes');
-    
+
     # ITEMS
     Route::get('item-categories', 'ItemController@getIndex');
     Route::get('item-categories/create', 'ItemController@getCreateItemCategory');
@@ -123,7 +123,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('item-categories/edit/{id?}', 'ItemController@postCreateEditItemCategory');
     Route::post('item-categories/delete/{id}', 'ItemController@postDeleteItemCategory');
     Route::post('item-categories/sort', 'ItemController@postSortItemCategory');
-    
+
     Route::get('items', 'ItemController@getItemIndex');
     Route::get('items/create', 'ItemController@getCreateItem');
     Route::get('items/edit/{id}', 'ItemController@getEditItem');
@@ -138,7 +138,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('items/tag/{id}/{tag}', 'ItemController@postEditItemTag');
     Route::get('items/tag/{id}', 'ItemController@getAddItemTag');
     Route::post('items/tag/{id}', 'ItemController@postAddItemTag');
-    
+
     # SHOPS
     Route::get('shops', 'ShopController@getIndex');
     Route::get('shops/create', 'ShopController@getCreateShop');
@@ -149,7 +149,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('shops/stock/{id}', 'ShopController@postEditShopStock');
     Route::post('shops/delete/{id}', 'ShopController@postDeleteShop');
     Route::post('shops/sort', 'ShopController@postSortShop');
-    
+
     # FEATURES (TRAITS)
     Route::get('trait-categories', 'FeatureController@getIndex');
     Route::get('trait-categories/create', 'FeatureController@getCreateFeatureCategory');
@@ -159,7 +159,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('trait-categories/edit/{id?}', 'FeatureController@postCreateEditFeatureCategory');
     Route::post('trait-categories/delete/{id}', 'FeatureController@postDeleteFeatureCategory');
     Route::post('trait-categories/sort', 'FeatureController@postSortFeatureCategory');
-    
+
     Route::get('traits', 'FeatureController@getFeatureIndex');
     Route::get('traits/create', 'FeatureController@getCreateFeature');
     Route::get('traits/edit/{id}', 'FeatureController@getEditFeature');
@@ -177,7 +177,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('character-categories/edit/{id?}', 'CharacterCategoryController@postCreateEditCharacterCategory');
     Route::post('character-categories/delete/{id}', 'CharacterCategoryController@postDeleteCharacterCategory');
     Route::post('character-categories/sort', 'CharacterCategoryController@postSortCharacterCategory');
-    
+
     # LOOT TABLES
     Route::get('loot-tables', 'LootTableController@getIndex');
     Route::get('loot-tables/create', 'LootTableController@getCreateLootTable');
@@ -187,7 +187,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('loot-tables/create', 'LootTableController@postCreateEditLootTable');
     Route::post('loot-tables/edit/{id?}', 'LootTableController@postCreateEditLootTable');
     Route::post('loot-tables/delete/{id}', 'LootTableController@postDeleteLootTable');
-    
+
     # PROMPTS
     Route::get('prompt-categories', 'PromptController@getIndex');
     Route::get('prompt-categories/create', 'PromptController@getCreatePromptCategory');
@@ -197,7 +197,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('prompt-categories/edit/{id?}', 'PromptController@postCreateEditPromptCategory');
     Route::post('prompt-categories/delete/{id}', 'PromptController@postDeletePromptCategory');
     Route::post('prompt-categories/sort', 'PromptController@postSortPromptCategory');
-    
+
     Route::get('prompts', 'PromptController@getPromptIndex');
     Route::get('prompts/create', 'PromptController@getCreatePrompt');
     Route::get('prompts/edit/{id}', 'PromptController@getEditPrompt');
@@ -252,14 +252,14 @@ Route::group(['prefix' => 'grants', 'namespace' => 'Users', 'middleware' => 'pow
 Route::group(['prefix' => 'masterlist', 'namespace' => 'Characters', 'middleware' => 'power:manage_characters'], function() {
     Route::get('create-character', 'CharacterController@getCreateCharacter');
     Route::post('create-character', 'CharacterController@postCreateCharacter');
-    
+
     Route::get('get-number', 'CharacterController@getPullNumber');
-    
+
     Route::get('transfers/{type}', 'CharacterController@getTransferQueue');
     Route::get('transfer/{id}', 'CharacterController@getTransferInfo');
     Route::get('transfer/act/{id}/{type}', 'CharacterController@getTransferModal');
     Route::post('transfer/{id}', 'CharacterController@postTransferQueue');
-    
+
     Route::get('trades/{type}', 'CharacterController@getTradeQueue');
     Route::get('trade/{id}', 'CharacterController@getTradeInfo');
     Route::get('trade/act/{id}/{type}', 'CharacterController@getTradeModal');
@@ -267,6 +267,8 @@ Route::group(['prefix' => 'masterlist', 'namespace' => 'Characters', 'middleware
 
     Route::get('create-myo', 'CharacterController@getCreateMyo');
     Route::post('create-myo', 'CharacterController@postCreateMyo');
+
+    Route::get('check-subtype', 'CharacterController@getCreateCharacterMyoSubtype');
 });
 Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware' => 'power:edit_inventories'], function() {
     Route::post('{slug}/grant', 'GrantController@postCharacterCurrency');
@@ -276,9 +278,11 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware'
     # IMAGES
     Route::get('{slug}/image', 'CharacterImageController@getNewImage');
     Route::post('{slug}/image', 'CharacterImageController@postNewImage');
+    Route::get('image/subtype', 'CharacterImageController@getNewImageSubtype');
 
     Route::get('image/{id}/traits', 'CharacterImageController@getEditImageFeatures');
     Route::post('image/{id}/traits', 'CharacterImageController@postEditImageFeatures');
+    Route::get('image/traits/subtype', 'CharacterImageController@getEditImageSubtype');
 
     Route::get('image/{id}/notes', 'CharacterImageController@getEditImageNotes');
     Route::post('image/{id}/notes', 'CharacterImageController@postEditImageNotes');
@@ -288,7 +292,7 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware'
 
     Route::get('image/{id}/reupload', 'CharacterImageController@getImageReupload');
     Route::post('image/{id}/reupload', 'CharacterImageController@postImageReupload');
-    
+
     Route::post('image/{id}/settings', 'CharacterImageController@postImageSettings');
 
     Route::get('image/{id}/active', 'CharacterImageController@getImageActive');
@@ -296,7 +300,7 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware'
 
     Route::get('image/{id}/delete', 'CharacterImageController@getImageDelete');
     Route::post('image/{id}/delete', 'CharacterImageController@postImageDelete');
-    
+
     Route::post('{slug}/images/sort', 'CharacterImageController@postSortImages');
 
     # CHARACTER
@@ -311,12 +315,12 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware'
 
     Route::get('{slug}/delete', 'CharacterController@getCharacterDelete');
     Route::post('{slug}/delete', 'CharacterController@postCharacterDelete');
-    
+
     Route::post('{slug}/settings', 'CharacterController@postCharacterSettings');
-    
+
     Route::post('{slug}/transfer', 'CharacterController@postTransfer');
 });
-// Might rewrite these parts eventually so there's less code duplication... 
+// Might rewrite these parts eventually so there's less code duplication...
 Route::group(['prefix' => 'myo', 'namespace' => 'Characters', 'middleware' => 'power:manage_characters'], function() {
     # CHARACTER
     Route::get('{id}/stats', 'CharacterController@getEditMyoStats');
@@ -330,9 +334,9 @@ Route::group(['prefix' => 'myo', 'namespace' => 'Characters', 'middleware' => 'p
 
     Route::get('{id}/delete', 'CharacterController@getMyoDelete');
     Route::post('{id}/delete', 'CharacterController@postMyoDelete');
-    
+
     Route::post('{id}/settings', 'CharacterController@postMyoSettings');
-    
+
     Route::post('{id}/transfer', 'CharacterController@postMyoTransfer');
 });
 
@@ -347,7 +351,7 @@ Route::group(['prefix' => 'raffles', 'middleware' => 'power:manage_raffles'], fu
     Route::get('view/{id}', 'RaffleController@getRaffleTickets');
     Route::post('view/ticket/{id}', 'RaffleController@postCreateRaffleTickets');
     Route::post('view/ticket/delete/{id}', 'RaffleController@postDeleteRaffleTicket');
-    
+
     Route::get('roll/raffle/{id}', 'RaffleController@getRollRaffle');
     Route::post('roll/raffle/{id}', 'RaffleController@postRollRaffle');
     Route::get('roll/group/{id}', 'RaffleController@getRollRaffleGroup');

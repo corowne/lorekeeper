@@ -27,12 +27,25 @@ class SubmissionController extends Controller
     public function getSubmissionIndex(Request $request, $status = null)
     {
         $submissions = Submission::with('prompt')->where('status', $status ? ucfirst($status) : 'Pending')->whereNotNull('prompt_id');
-        if($request->get('prompt_category_id')) 
-            $submissions->whereHas('prompt', function($query) use ($request) {
-                $query->where('prompt_category_id', $request->get('prompt_category_id'));
+        $data = $request->only(['prompt_category_id', 'sort']);
+        if(isset($data['prompt_category_id']) && $data['prompt_category_id'] != 'none') 
+            $submissions->whereHas('prompt', function($query) use ($data) {
+                $query->where('prompt_category_id', $data['prompt_category_id']);
             });
+        if(isset($data['sort'])) 
+        {
+            switch($data['sort']) {
+                case 'newest':
+                    $submissions->sortNewest();
+                    break;
+                case 'oldest':
+                    $submissions->sortOldest();
+                    break;
+            }
+        } 
+        else $submissions->sortOldest();
         return view('admin.submissions.index', [
-            'submissions' => $submissions->orderBy('id', 'DESC')->paginate(30)->appends($request->query()),
+            'submissions' => $submissions->paginate(30)->appends($request->query()),
             'categories' => ['none' => 'Any Category'] + PromptCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'isClaims' => false
         ]);
@@ -65,10 +78,24 @@ class SubmissionController extends Controller
      * @param  string  $status
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getClaimIndex($status = null)
+    public function getClaimIndex(Request $request, $status = null)
     {
+        $submissions = Submission::where('status', $status ? ucfirst($status) : 'Pending')->whereNull('prompt_id');
+        $data = $request->only(['sort']);
+        if(isset($data['sort'])) 
+        {
+            switch($data['sort']) {
+                case 'newest':
+                    $submissions->sortNewest();
+                    break;
+                case 'oldest':
+                    $submissions->sortOldest();
+                    break;
+            }
+        } 
+        else $submissions->sortOldest();
         return view('admin.submissions.index', [
-            'submissions' => Submission::where('status', $status ? ucfirst($status) : 'Pending')->whereNull('prompt_id')->orderBy('id', 'DESC')->paginate(30),
+            'submissions' => $submissions->paginate(30),
             'isClaims' => true
         ]);
     }
