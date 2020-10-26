@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Users;
 
+use DB;
 use Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\Models\Recipe\Recipe;
+use App\Models\User\UserRecipe;
 use App\Models\Item\ItemCategory;
 use App\Models\Item\Item;
 use App\Models\User\User;
@@ -52,6 +54,19 @@ class CraftingController extends Controller
         else $query->sortAlphabetical();
         return view('home.crafting.index', [
             'recipes' => $query->paginate(20)
+        ]);
+    }
+
+    /**
+     * Shows the user's recipes.
+     *
+     * @param  string  $type
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getRecipeBook(Request $request)
+    {
+        return view('home.crafting.recipebook', [
+            'default' => Recipe::where('needs_unlocking','0')->get(),
         ]);
     }
 

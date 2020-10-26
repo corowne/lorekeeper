@@ -133,6 +133,14 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany('App\Models\Item\Item', 'user_items')->withPivot('count', 'data', 'updated_at', 'id')->whereNull('user_items.deleted_at');
     }
+    
+    /**
+     * Get the user's items.
+     */
+    public function recipes()
+    {
+        return $this->belongsToMany('App\Models\Recipe\Recipe', 'user_recipes')->withPivot('id');
+    }
 
     /**********************************************************************************************
     

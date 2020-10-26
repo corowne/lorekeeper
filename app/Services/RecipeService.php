@@ -3,7 +3,11 @@
 use App\Services\Service;
 
 use DB;
+use Notifications;
 use Config;
+
+use App\Models\User\User;
+use App\Models\User\UserRecipe;
 
 use App\Models\Recipe\Recipe;
 use App\Models\Recipe\RecipeIngredient;
@@ -220,6 +224,109 @@ class RecipeService extends Service
         }
         return $this->rollbackReturn(false);
     }
+    
+    
+    /**********************************************************************************************
+     
+        RECIPE GRANTS
+
+    **********************************************************************************************/
+
+    /**
+     * Admin function for granting recipes to multiple users.
+     *
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $staff
+     * @return  bool
+     */
+    public function grantRecipes($data, $staff)
+    {
+        DB::beginTransaction();
+
+        try {
+            // Process names
+            $users = User::find($data['names']);
+            if(count($users) != count($data['names'])) throw new \Exception("An invalid user was selected.");
+
+            // Process recipes
+            $recipes = Recipe::find($data['recipe_ids']);
+            if(!$recipes) throw new \Exception("Invalid recipes selected.");
+
+            foreach($users as $user) {
+                foreach($recipes as $recipe) {   
+                    if($this->creditRecipe($staff, $user, 'Staff Grant', array_only($data, ['data']), $recipe))
+                    {
+                        Notifications::create('RECIPE_GRANT', $user, [
+                            'recipe_name' => $recipe->name,
+                            'sender_url' => $staff->url,
+                            'sender_name' => $staff->name
+                        ]);
+                    }
+                    else
+                    {
+                        throw new \Exception("Failed to credit recipes to ".$user->name.".");
+                    }
+                }
+            }
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+
+    
+    /**
+     * Credits recipe to a user or character.
+     *
+     * @param  \App\Models\User\User|\App\Models\Character\Character  $sender
+     * @param  \App\Models\User\User|\App\Models\Character\Character  $recipient
+     * @param  string                                                 $type 
+     * @param  string                                                 $data
+     * @param  \App\Models\Recipe\Recipe                            $recipe
+     * @param  int                                                    $quantity
+     * @return  bool
+     */
+    public function creditRecipe($sender, $recipient, $type, $data, $recipe)
+    {
+        DB::beginTransaction();
+
+        try {
+            if(is_numeric($recipe)) $recipe = Recipe::find($recipe);
+            
+            if($user->recipes->contains($recipe)) throw new \Exception($user->name." already has the recipe ".$recipe->displayName);
+            
+            $record = UserRecipe::where('user_id', $recipient->id)->where('recipe_id', $recipe->id)->first();
+            if($record) {
+                // Laravel doesn't support composite primary keys, so directly updating the DB row here
+                DB::table('user_recipes')->where('user_id', $recipient->id)->where('recipe_id', $recipe->id);
+            }
+            else {
+                $record = UserRecipe::create(['user_id' => $recipient->id, 'recipe_id' => $recipe->id]);
+            }
+            
+            // if($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, 
+            // $recipient ? $recipient->id : null, $recipient ? $recipient->logType : null, 
+            // $type, $data, $recipe->id, $quantity)) throw new \Exception("Failed to create log.");
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+
+
+
+
+
+
+
+
+
+
     
     /**********************************************************************************************
      

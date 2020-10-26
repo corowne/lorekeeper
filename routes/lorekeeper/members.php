@@ -74,6 +74,7 @@ Route::group(['prefix' => 'trades', 'namespace' => 'Users'], function() {
 
 Route::group(['prefix' => 'crafting', 'namespace' => 'Users'], function() {
     Route::get('/', 'CraftingController@getIndex');
+    Route::get('recipebook', 'CraftingController@getRecipeBook');
     Route::get('craft/{id}', 'CraftingController@getCraftRecipe');
     Route::post('craft/{id}', 'CraftingController@postCraftRecipe');
 });

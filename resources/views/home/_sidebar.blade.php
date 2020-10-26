@@ -13,6 +13,10 @@
         <div class="sidebar-item"><a href="{{ url('claims') }}" class="{{ set_active('claims*') }}">Claims</a></div>
         <div class="sidebar-item"><a href="{{ url('characters/transfers/incoming') }}" class="{{ set_active('characters/transfers*') }}">Character Transfers</a></div>
         <div class="sidebar-item"><a href="{{ url('trades/open') }}" class="{{ set_active('trades/open*') }}">Trades</a></div>
-        <div class="sidebar-item"><a href="{{ url('crafting') }}" class="{{ set_active('crafting*') }}">Crafting</a></div>
+    </li>
+    <li class="sidebar-section">
+        <div class="sidebar-section-header">Crafting</div>
+        <div class="sidebar-item"><a href="{{ url('crafting') }}" class="{{ set_active('crafting') }}">Recipes</a></div>
+        <div class="sidebar-item"><a href="{{ url('crafting/recipebook') }}" class="{{ set_active('crafting/recipebook') }}">Recipebook</a></div>
     </li>
 </ul>
