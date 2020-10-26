@@ -7,7 +7,25 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} - @yield('title')</title>
+    <title>{{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} -@yield('title')</title>
+
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="{{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} -@yield('title')">
+    <meta name="description" content="@if(View::hasSection('meta-desc')) @yield('meta-desc') @else {{ config('lorekeeper.settings.site_desc', 'A Lorekeeper ARPG') }} @endif">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ config('app.url', 'http://localhost') }}">
+    <meta property="og:image" content="@if(View::hasSection('meta-img')) @yield('meta-img') @else {{ asset('images/meta-image.png') }} @endif">
+    <meta property="og:title" content="{{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} -@yield('title')">
+    <meta property="og:description" content="@if(View::hasSection('meta-desc')) @yield('meta-desc') @else {{ config('lorekeeper.settings.site_desc', 'A Lorekeeper ARPG') }} @endif">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ config('app.url', 'http://localhost') }}">
+    <meta property="twitter:image" content="@if(View::hasSection('meta-img')) @yield('meta-img') @else {{ asset('images/meta-image.png') }} @endif">
+    <meta property="twitter:title" content="{{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} -@yield('title')">
+    <meta property="twitter:description" content="@if(View::hasSection('meta-desc')) @yield('meta-desc') @else {{ config('lorekeeper.settings.site_desc', 'A Lorekeeper ARPG') }} @endif">
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
@@ -39,16 +57,17 @@
     {{-- Bootstrap Toggle --}}
     <link href="{{ asset('css/bootstrap4-toggle.min.css') }}" rel="stylesheet">
 
-    
+
     <link href="{{ asset('css/lightbox.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap-colorpicker.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/jquery-ui-timepicker-addon.css') }}" rel="stylesheet">
     <link href="{{ asset('css/croppie.css') }}" rel="stylesheet">
     <link href="{{ asset('css/selectize.bootstrap4.css') }}" rel="stylesheet">
-    
+
     @if(file_exists(public_path(). '/css/custom.css'))
         <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
     @endif
+
 </head>
 <body>
     <div id="app">
@@ -60,7 +79,7 @@
 
         <main class="container-fluid">
             <div class="row">
-            
+
                 <div class="sidebar col-lg-2" id="sidebar">
                     @yield('sidebar')
                 </div>
@@ -74,16 +93,16 @@
                         @include('flash::message')
                         @yield('content')
                     </div>
-                    
+
                     <div class="site-footer mt-4" id="footer">
                             @include('layouts._footer')
                     </div>
                 </div>
             </div>
-        
+
         </main>
 
-        
+
         <div class="modal fade" id="modal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">

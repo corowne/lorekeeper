@@ -46,16 +46,17 @@
                     {!! Form::label('sale_value_max', 'Resale Maximum ($): ') !!}
                     {!! Form::text('sale_value_max', Request::get('sale_value_max'), ['class' => 'form-control']) !!}
                 </div>
+                @if(!$isMyo)
+                    <div class="masterlist-search-field">
+                        {!! Form::label('is_gift_art_allowed', 'Gift Art Status: ') !!}
+                        {!! Form::select('is_gift_art_allowed', [0 => 'Any', 2 => 'Ask First', 1 => 'Yes', 3 => 'Yes OR Ask First'], Request::get('is_gift_art_allowed'), ['class' => 'form-control']) !!}
+                    </div>
+                @endif
+                <br />
                 {{-- Setting the width and height on the toggles as they don't seem to calculate correctly if the div is collapsed. --}}
                 <div class="masterlist-search-field">
                     {!! Form::checkbox('is_trading', 1, Request::get('is_trading'), ['class' => 'form-check-input',  'data-toggle' => 'toggle', 'data-on' => 'Open For Trade', 'data-off' => 'Any Trading Status', 'data-width' => '200', 'data-height' => '46']) !!}
                 </div>
-                @if(!$isMyo)
-                    <div class="masterlist-search-field">
-                        {!! Form::checkbox('is_gift_art_allowed', 1, Request::get('is_gift_art_allowed'), ['class' => 'form-check-input',  'data-toggle' => 'toggle', 'data-on' => 'Open For Gift Art', 'data-off' => 'Any Gift Art Status', 'data-width' => '195', 'data-height' => '46']) !!}
-                    </div>
-                @endif
-                <br />
                 <div class="masterlist-search-field">
                     {!! Form::checkbox('is_sellable', 1, Request::get('is_sellable'), ['class' => 'form-check-input',  'data-toggle' => 'toggle', 'data-on' => 'Can Be Sold', 'data-off' => 'Any Sellable Status', 'data-width' => '204', 'data-height' => '46']) !!}
                 </div>

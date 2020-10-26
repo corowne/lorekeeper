@@ -45,7 +45,7 @@ class CharacterController extends Controller
             'characters' => $characters,
         ]);
     }
-    
+
     /**
      * Shows the user's MYO slots.
      *
@@ -109,7 +109,7 @@ class CharacterController extends Controller
             'transfersQueue' => Settings::get('open_transfers_queue'),
         ]);
     }
-    
+
     /**
      * Transfers one of the user's own characters.
      *
@@ -123,12 +123,17 @@ class CharacterController extends Controller
         if(!Auth::check()) abort(404);
 
         $action = $request->get('action');
-        
+
         if($action == 'Cancel' && $service->cancelTransfer(['transfer_id' => $id], Auth::user())) {
             flash('Transfer cancelled.')->success();
         }
         else if($service->processTransfer($request->only(['action']) + ['transfer_id' => $id], Auth::user())) {
-            flash('Transfer ' . strtolower($action) . 'ed.')->success();
+            if(strtolower($action) == 'approve'){
+                flash('Transfer ' . strtolower($action) . 'd.')->success();
+            }
+            else {
+                flash('Transfer ' . strtolower($action) . 'ed.')->success();
+            }
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
