@@ -96,6 +96,8 @@ class RecipeIngredient extends Model
                 return App\Models\Item\ItemCategory::where('id', $this->data[0])->get()[0];
             case 'MultiCategory':
                 return App\Models\Item\ItemCategory::whereIn('id', $this->data)->get();
+            case 'Currency':
+                return App\Models\Currency\Currency::where('id', $this->data[0])->get()[0];
         }
         return null;
     }
