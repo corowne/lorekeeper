@@ -69,6 +69,7 @@ class RecipeService extends Service
             $recipe = Recipe::create($data);
 
             $this->populateIngredients($recipe, $data);
+            $this->populateRewards($recipe, $data);
 
             if ($image) $this->handleImage($image, $recipe->imagePath, $recipe->imageFileName);
 
