@@ -32,8 +32,9 @@
     @endif
 </div>
 
-{!! Form::checkbox('needs_unlocking', 1, false, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-{!! Form::label('needs_unlocking', 'Locked by default', ['class' => 'form-check-label ml-3 mb-3']) !!}
+<div class="form-group mb-2">
+{!! Form::checkbox('needs_unlocking', 1, $recipe->needs_unlocking, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'data-on' => 'Needs to be Unlocked', 'data-off' => 'Automatically Unlocked']) !!}
+</div>
 
 <div class="form-group">
     {!! Form::label('Description (Optional)') !!}

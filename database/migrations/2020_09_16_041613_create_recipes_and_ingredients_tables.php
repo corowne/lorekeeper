@@ -14,7 +14,8 @@ class CreateRecipesAndIngredientsTables extends Migration
     public function up()
     {
         Schema::create('recipes', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->engine = 'InnoDB';
+            $table->increments('id');
             $table->string('name', 191)->nullable(false);
             $table->boolean('has_image')->default(false)->nullable(false);
             $table->boolean('needs_unlocking')->default(false)->nullable(false);
@@ -26,6 +27,7 @@ class CreateRecipesAndIngredientsTables extends Migration
         });
 
         Schema::create('recipe_ingredients', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->unsignedInteger('recipe_id')->nullable(false);
             $table->string('ingredient_type', 32)->nullable(false);
             $table->string('ingredient_data', 1024)->nullable(false);
@@ -33,6 +35,7 @@ class CreateRecipesAndIngredientsTables extends Migration
         });
 
         Schema::create('recipe_rewards', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->unsignedInteger('recipe_id')->nullable(false);
             $table->string('rewardable_type', 32)->nullable(false);
             $table->unsignedInteger('rewardable_id')->nullable(false);

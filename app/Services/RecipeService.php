@@ -132,6 +132,9 @@ class RecipeService extends Service
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
 
+        if(isset($data['needs_unlocking']) && $data['needs_unlocking']) $data['needs_unlocking'] = 1;
+        else $data['needs_unlocking'] = 0;
+
         if(isset($data['remove_image']))
         {
             if($recipe && $recipe->has_image && $data['remove_image']) 
