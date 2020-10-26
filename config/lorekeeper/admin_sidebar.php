@@ -108,7 +108,7 @@ return [
         'power' => 'edit_data',
         'links' => [
             [
-                'name' => 'Char. Categories',
+                'name' => 'Character Categories',
                 'url' => 'admin/data/character-categories'
             ],
             [
