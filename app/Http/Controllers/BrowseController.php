@@ -226,6 +226,8 @@ class BrowseController extends Controller
                 $query->orderBy('characters.number', 'DESC');
         }
 
+        if(!Auth::check() || !Auth::user()->hasPower('manage_characters')) $query->visible();
+
         return view('browse.masterlist', [  
             'isMyo' => false,
             'characters' => $query->paginate(24)->appends($request->query()),
@@ -319,6 +321,8 @@ class BrowseController extends Controller
                 $query->orderBy('characters.sale_value', 'ASC');
                 break;
         }
+
+        if(!Auth::check() || !Auth::user()->hasPower('manage_characters')) $query->visible();
 
         return view('browse.myo_masterlist', [  
             'isMyo' => true,

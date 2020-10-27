@@ -73,13 +73,15 @@ class ShopController extends Controller
         $shop = Shop::where('id', $id)->where('is_active', 1)->first();
         if(!$shop) abort(404);
 
+        $stock = ShopStock::with('item')->where('id', $stockId)->where('shop_id', $id)->first();
+
         if(Auth::user()){
             $purchaseLimitReached = $service->checkPurchaseLimitReached($stock, Auth::user());
         } else $purchaseLimitReached = false;
 
         return view('shops._stock_modal', [
             'shop' => $shop,
-            'stock' => $stock = ShopStock::with('item')->where('id', $stockId)->where('shop_id', $id)->first(),
+            'stock' => $stock,
             'purchaseLimitReached' => $purchaseLimitReached
         ]);
     }
