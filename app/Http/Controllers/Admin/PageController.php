@@ -64,7 +64,7 @@ class PageController extends Controller
     {
         $id ? $request->validate(SitePage::$updateRules) : $request->validate(SitePage::$createRules);
         $data = $request->only([
-            'key', 'title', 'text', 'is_visible'
+            'key', 'title', 'text', 'is_visible', 'can_comment'
         ]);
         if($id && $service->updatePage(SitePage::find($id), $data, Auth::user())) {
             flash('Page updated successfully.')->success();
