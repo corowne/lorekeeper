@@ -10,13 +10,20 @@ use App\Models\Model;
 
 use App\Models\User\User;
 use App\Models\User\UserCharacterLog;
+
 use App\Models\Character\Character;
 use App\Models\Character\CharacterCategory;
-use App\Models\Character\CharacterCurrency;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Character\CharacterBookmark;
+
+use App\Models\Character\CharacterCurrency;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
+
+use App\Models\Character\CharacterItem;
+use App\Models\Item\Item;
+use App\Models\Item\ItemLog;
+
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -185,11 +192,19 @@ class Character extends Model
     }
 
     /**
-     * Get the character's active design update.
+     * Get the character's associated gallery submissions.
      */
     public function gallerySubmissions() 
     {
         return $this->hasMany('App\Models\Gallery\GalleryCharacter', 'character_id');
+    }
+    
+    /**     
+     * Get the character's items.
+     */
+    public function items()
+    {
+        return $this->belongsToMany('App\Models\Item\Item', 'character_items')->withPivot('count', 'data', 'updated_at', 'id')->whereNull('character_items.deleted_at');
     }
 
     /**********************************************************************************************
@@ -422,6 +437,26 @@ class Character extends Model
         })->orWhere(function($query) use ($character) {
             $query->with('recipient.rank')->where('recipient_type', 'Character')->where('recipient_id', $character->id)->where('log_type', '!=', 'Staff Removal');
         })->orderBy('id', 'DESC');
+        if($limit) return $query->take($limit)->get();
+        else return $query->paginate(30);
+    }
+
+    /**
+     * Get the character's item logs.
+     *
+     * @param  int  $limit
+     * @return \Illuminate\Support\Collection|\Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getItemLogs($limit = 10)
+    {
+        $character = $this;
+
+        $query = ItemLog::with('item')->where(function($query) use ($character) {
+            $query->with('sender.rank')->where('sender_type', 'Character')->where('sender_id', $character->id)->where('log_type', '!=', 'Staff Grant');
+        })->orWhere(function($query) use ($character) {
+            $query->with('recipient.rank')->where('recipient_type', 'Character')->where('recipient_id', $character->id)->where('log_type', '!=', 'Staff Removal');
+        })->orderBy('id', 'DESC');
+
         if($limit) return $query->take($limit)->get();
         else return $query->paginate(30);
     }

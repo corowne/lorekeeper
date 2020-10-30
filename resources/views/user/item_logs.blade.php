@@ -19,7 +19,7 @@
     <div class="col-6 col-md-2 font-weight-bold">Date</div>
   </div>
     @foreach($logs as $log)
-        @include('user._item_log_row', ['log' => $log, 'user' => $user])
+        @include('user._item_log_row', ['log' => $log, 'owner' => $user])
     @endforeach
 </div>
 {!! $logs->render() !!}

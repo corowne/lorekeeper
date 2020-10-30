@@ -15,7 +15,8 @@ class ItemLog extends Model
     protected $fillable = [
         'sender_id', 'recipient_id', 
         'log', 'log_type', 'data',
-        'item_id', 'quantity', 'stack_id'
+        'item_id', 'quantity', 'stack_id',
+        'sender_type', 'recipient_type'
     ];
 
     /**
@@ -23,7 +24,7 @@ class ItemLog extends Model
      *
      * @var string
      */
-    protected $table = 'user_items_log';
+    protected $table = 'items_log';
 
     /**
      * Whether the model contains timestamps to be saved and updated.
@@ -43,7 +44,8 @@ class ItemLog extends Model
      */
     public function sender() 
     {
-        return $this->belongsTo('App\Models\User\User', 'sender_id');
+        if($this->sender_type == 'User') return $this->belongsTo('App\Models\User\User', 'sender_id');
+        return $this->belongsTo('App\Models\Character\Character', 'sender_id');
     }
 
     /**
@@ -51,7 +53,8 @@ class ItemLog extends Model
      */
     public function recipient() 
     {
-        return $this->belongsTo('App\Models\User\User', 'recipient_id');
+        if($this->recipient_type == 'User') return $this->belongsTo('App\Models\User\User', 'recipient_id');
+        return $this->belongsTo('App\Models\Character\Character', 'recipient_id');
     }
 
     /**

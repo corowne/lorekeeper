@@ -13,3 +13,4 @@ yarn-error.log
 *.env
 .idea
 composer.phar
+clear_characters.sql

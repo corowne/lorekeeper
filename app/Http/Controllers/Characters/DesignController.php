@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use DB;
 use Auth;
 use Settings;
+use App\Models\Item\Item;
 use App\Models\User\User;
 use App\Models\User\UserItem;
 use App\Models\Character\Character;
@@ -143,18 +144,17 @@ class DesignController extends Controller
     {
         $r = CharacterDesignUpdate::find($id);
         if(!$r || ($r->user_id != Auth::user()->id && !Auth::user()->hasPower('manage_characters'))) abort(404);
-        if($r->status == 'Draft' && $r->user_id == Auth::user()->id)
-            $inventory = UserItem::with('item')->whereNull('deleted_at')->where('user_id', $r->user_id)->where(function($query) use ($id) {
-                $query->whereNull('holding_id')->orWhere(function($query) use ($id) {
-                    $query->where('holding_type', 'Update')->where('holding_id', $id);
-                });
-            })->get();
-        else
-            $inventory = UserItem::with('item')->whereNull('deleted_at')->where('user_id', $r->user_id)->where('holding_id', $id)->where('holding_type', 'Update')->get();
+        if($r->status == 'Draft' && $r->user_id == Auth::user()->id) 
+            $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', $r->user_id)->get();
+        else 
+            $inventory = isset($r->data['user']) ? parseAssetData($r->data['user']) : null;
         return view('character.design.addons', [
             'request' => $r,
             'categories' => ItemCategory::orderBy('sort', 'DESC')->get(),
-            'inventory' => $inventory
+            'inventory' => $inventory,
+            'items' => Item::all()->keyBy('id'),
+            'item_filter' => Item::orderBy('name')->get()->keyBy('id'),
+            'page' => 'update'
         ]);
     }
 

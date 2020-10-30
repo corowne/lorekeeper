@@ -113,7 +113,7 @@ class GalleryController extends Controller
 
         return view('galleries.submission', [
             'submission' => $submission,
-            'commentCount' => Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->count(),
+            'commentCount' => Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->where('type', 'User-User')->count(),
             'currency' => Currency::find(Settings::get('group_currency')),
         ]);
     }

@@ -160,8 +160,8 @@
             </div>
         </div>
     </div>
-    <div class="col-md-5">
-        @if(Auth::user()->hasPower('manage_submissions') && $submission->collaboratorApproved)
+    @if(Auth::user()->hasPower('manage_submissions') && $submission->collaboratorApproved)
+        <div class="col-md-5">
             <div class="card mb-4">
                 <div class="card-header">
                     <h5>[Admin] Vote Info</h5>
@@ -192,8 +192,8 @@
                     </div>
                 </div>
             </div>
-        @endif
-    </div>
+        </div>
+    @endif
 </div>
 
 <?php $galleryPage = true; 

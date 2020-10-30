@@ -13,10 +13,15 @@
     @foreach($character->images($user)->with('features.feature')->with('species')->with('rarity')->get() as $image)
         <div class="tab-pane fade {{ $image->id == $character->character_image_id ? 'show active' : '' }}" id="image-{{ $image->id }}">
             <div class="row mb-3">
-                <div class="text-center col-md-7">
-                    <a href="{{ $image->imageUrl }}" data-lightbox="entry" data-title="{{ $character->fullName }} [#{{ $image->id }}]">
-                        <img src="{{ $image->imageUrl }}" class="image" />
-                    </a>
+                <div class="col-md-7">
+                    <div class="text-center">
+                        <a href="{{ $image->canViewFull(Auth::check() ? Auth::user() : null) && file_exists( public_path($image->imageDirectory.'/'.$image->fullsizeFileName)) ? $image->fullsizeUrl : $image->imageUrl }}" data-lightbox="entry" data-title="{{ $character->fullName }} [#{{ $image->id }}] {{ $image->canViewFull(Auth::check() ? Auth::user() : null) && file_exists( public_path($image->imageDirectory.'/'.$image->fullsizeFileName)) ? ' : Full-size Image' : ''}}">
+                            <img src="{{ $image->canViewFull(Auth::check() ? Auth::user() : null) && file_exists( public_path($image->imageDirectory.'/'.$image->fullsizeFileName)) ? $image->fullsizeUrl : $image->imageUrl }}" class="image" />
+                        </a>
+                    </div>
+                    @if($image->canViewFull(Auth::check() ? Auth::user() : null) && file_exists( public_path($image->imageDirectory.'/'.$image->fullsizeFileName)))
+                        <div class="text-right">You are viewing the full-size image. <a href="{{ $image->imageUrl }}">View watermarked image</a>?</div>
+                    @endif
                 </div>
                 @include('character._image_info', ['image' => $image])
             </div>

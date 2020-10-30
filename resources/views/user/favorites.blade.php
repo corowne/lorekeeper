@@ -17,7 +17,7 @@
     <p>These are {{ Auth::check() && Auth::user()->id == $user->id ? 'your' : $user->name.'\'s' }} favorites which feature <a href="{{ url($user->url . '/characters') }}">characters {{ Auth::check() && Auth::user()->id == $user->id ? 'you' : 'they' }} own</a>.</p>
 @endif
 
-@if($favorites->count())
+@if(isset($favorites) && $favorites->count())
 
     {!! $favorites->render() !!}
 

@@ -88,7 +88,7 @@ class Sales extends Model
      */
     public function scopeVisible($query)
     {
-        return $query->where('is_visible', 1);
+        return $query->orderBy('updated_at', 'DESC')->where('is_visible', 1);
     }
 
     /**
