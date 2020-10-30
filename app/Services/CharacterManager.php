@@ -1402,6 +1402,20 @@ class CharacterManager extends Service
         // Notify bookmarkers
         $character->notifyBookmarkers('BOOKMARK_OWNER');
 
+        // Reset name, trading status, gift art status, and writing status
+        $character->update([
+            'name'                    => null,
+            'is_gift_art_allowed'     => 0,
+            'is_gift_writing_allowed' => 0,
+            'is_trading'              => 0,
+        ]);
+        
+        // Reset profile
+        $character->profile->update([
+            'text'        => null,
+            'parsed_text' => null
+        ]);
+
         // Add a log for the ownership change
         $this->createLog(
             $sender ? $sender->id : null, 
