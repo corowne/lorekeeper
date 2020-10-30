@@ -35,7 +35,7 @@ class Character extends Model
         'owner_alias', 'number', 'slug', 'description', 'parsed_description', 
         'is_sellable', 'is_tradeable', 'is_giftable',
         'sale_value', 'transferrable_at', 'is_visible',
-        'is_gift_art_allowed', 'is_trading', 'sort',
+        'is_gift_art_allowed', 'is_gift_writing_allowed', 'is_trading', 'sort',
         'is_myo_slot', 'name', 'trade_id'
     ];
 
@@ -474,6 +474,9 @@ class Character extends Model
                     break;
                 case 'BOOKMARK_GIFTS':
                     $column = 'notify_on_gift_art_status';
+                    break;
+                case 'BOOKMARK_GIFT_WRITING':
+                    $column = 'notify_on_gift_writing_status';
                     break;
                 case 'BOOKMARK_OWNER':
                     $column = 'notify_on_transfer';

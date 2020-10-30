@@ -971,6 +971,7 @@ class CharacterManager extends Service
         try {
             $notifyTrading = false;
             $notifyGiftArt = false;
+            $notifyGiftWriting = false;
 
             // Allow updating the gift art/trading options if the editing
             // user owns the character
@@ -979,9 +980,11 @@ class CharacterManager extends Service
                 if($character->user_id != $user->id) throw new \Exception("You cannot edit this character.");
 
                 if($character->is_trading != isset($data['is_trading'])) $notifyTrading = true;
-                if($character->is_gift_art_allowed != isset($data['is_gift_art_allowed'])) $notifyGiftArt = true;
+                if(isset($data['is_gift_art_allowed']) && $character->is_gift_art_allowed != $data['is_gift_art_allowed']) $notifyGiftArt = true;
+                if(isset($data['is_gift_writing_allowed']) && $character->is_gift_writing_allowed != $data['is_gift_writing_allowed']) $notifyGiftWriting = true;
 
                 $character->is_gift_art_allowed = isset($data['is_gift_art_allowed']) && $data['is_gift_art_allowed'] <= 2 ? $data['is_gift_art_allowed'] : 0;
+                $character->is_gift_writing_allowed = isset($data['is_gift_writing_allowed']) && $data['is_gift_writing_allowed'] <= 2 ? $data['is_gift_writing_allowed'] : 0;
                 $character->is_trading = isset($data['is_trading']);
                 $character->save();
             }
@@ -1006,6 +1009,7 @@ class CharacterManager extends Service
 
             if($notifyTrading) $character->notifyBookmarkers('BOOKMARK_TRADING');
             if($notifyGiftArt) $character->notifyBookmarkers('BOOKMARK_GIFTS');
+            if($notifyGiftWriting) $character->notifyBookmarkers('BOOKMARK_GIFT_WRITING');
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
