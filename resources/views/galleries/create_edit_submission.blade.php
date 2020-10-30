@@ -66,6 +66,11 @@
                     {!! Form::textarea('description', $submission->description, ['class' => 'form-control wysiwyg']) !!}
                 </div>
 
+                <div class="form-group">
+                    {!! Form::label('Content Warning (Optional)') !!} {!! add_help('Provide a succinct content warning for the piece if necessary. If a content warning is provided, the thumbnail will be replaced with a generic image and the warning displayed under it. The piece will be displayed in full on its page, however.') !!}
+                    {!! Form::text('content_warning', $submission->content_warning, ['class' => 'form-control']) !!}
+                </div>
+
                 @if((!$submission->id || $submission->status == 'Pending') || Auth::user()->hasPower('manage_submissions'))
                     <div class="form-group">
                         {!! Form::label('prompt_id', ($submission->id && Auth::user()->hasPower('manage_submissions') ? '[Admin] ' : '').'Prompt (Optional)') !!} {!! add_help('This <strong>does not</strong> automatically submit to the selected prompt, and you will need to submit to it separately. The prompt selected here will be displayed on the submission page for future reference.'.(!Auth::user()->hasPower('manage_submissions') ? ' You will not be able to edit the submission is accepted.' : '')) !!}

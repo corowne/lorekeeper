@@ -21,8 +21,8 @@ class GallerySubmission extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'gallery_id', 
-        'hash', 'extension', 'text', 'parsed_text',
+        'user_id', 'gallery_id', 'hash', 'extension', 
+        'text', 'parsed_text', 'content_warning',
         'title', 'description', 'parsed_description',
         'prompt_id', 'data', 'is_visible', 'status', 
         'vote_data', 'staff_id', 'is_valued',
@@ -307,6 +307,7 @@ class GallerySubmission extends Model
      */
     public function getThumbnailAttribute()
     {
+        if(isset($this->content_warning)) return '<img class="img-thumbnail" src="'.asset('/images/content_warning.png').'"/>';
         if(isset($this->hash)) return '<img class="img-thumbnail" src="'.$this->thumbnailUrl.'"/>';
         return 
         '<div class="mx-auto img-thumbnail text-left" style="height:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.height')+8).'px; width:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.width')+4).'px;">

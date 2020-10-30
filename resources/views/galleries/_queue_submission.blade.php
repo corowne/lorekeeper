@@ -6,6 +6,9 @@
             </div>
             <div class="col-md text-center align-self-center">
                 <h5>{!! $submission->displayName !!}</h5>
+                @if(isset($submission->content_warning))
+                    <p><span class="text-danger"><strong>Content Warning:</strong></span> {!! nl2br(htmlentities($submission->content_warning)) !!}</p>
+                @endif
                 @if(isset($queue) && $queue)
                 <span style="font-size:95%;" class="badge badge-{{ $submission->status == 'Accepted' ? 'success' : ($submission->status == 'Rejected' ? 'danger' : 'secondary') }}">{{ $submission->status }}</span> ・ 
                 @endif

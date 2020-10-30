@@ -70,6 +70,9 @@
                             @endif
                         </div>
                         In {!! $submission->gallery->displayName !!} ・ By {!! $submission->credits !!}
+                        @if(isset($submission->content_warning))
+                            ・ <span class="text-danger"><strong>Content Warning:</strong></span> {!! nl2br(htmlentities($submission->content_warning)) !!}
+                        @endif
                     </div>
                     <div class="card-body">
                         {!! $submission->parsed_description ? $submission->parsed_description : '<i>No description provided.</i>' !!}

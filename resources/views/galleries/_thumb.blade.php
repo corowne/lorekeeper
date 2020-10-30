@@ -1,7 +1,10 @@
 <div class="flex-fill text-center mb-1">
     <a href="{{ $submission->url }}">{!! $submission->thumbnail !!}</a>
-    <?php if(isset($submission->hash)) $width = Image::make($submission->imagePath.'/'.$submission->thumbnailFileName)->width(); else $width = 200; ?>
+    <?php if(isset($submission->hash) && !isset($submission->content_warning)) $width = Image::make($submission->imagePath.'/'.$submission->thumbnailFileName)->width(); else $width = 200; ?>
     <div class="mt-1 mx-auto" style="max-width:{{ $width }}px; overflow: hidden; text-overflow: ellipsis;">
+        @if(isset($submission->content_warning))
+            <p><span class="text-danger"><strong>Content Warning:</strong></span> {!! nl2br(htmlentities($submission->content_warning)) !!}</p>
+        @endif
         <a href="{{ $submission->url }}" class="h5 mb-0">@if(!$submission->isVisible) <i class="fas fa-eye-slash"></i> @endif {{ $submission->displayTitle }}</a>
     </div>
     <div class="small">
