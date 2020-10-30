@@ -200,6 +200,7 @@ class CharacterManager extends Service
             $characterData['is_visible'] = isset($data['is_visible']);
             $characterData['sale_value'] = isset($data['sale_value']) ? $data['sale_value'] : 0;
             $characterData['is_gift_art_allowed'] = 0;
+            $characterData['is_gift_writing_allowed'] = 0;
             $characterData['is_trading'] = 0;
             $characterData['parsed_description'] = parse($data['description']);
             if($isMyo) $characterData['is_myo_slot'] = 1;
