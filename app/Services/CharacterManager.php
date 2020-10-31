@@ -1416,7 +1416,8 @@ class CharacterManager extends Service
                             }
                             $search -= 1;
                         }
-                    }
+                    } else $children = false;
+                    
                     // Move all children of this character
                     if($children) {
                         foreach($children as $child)
