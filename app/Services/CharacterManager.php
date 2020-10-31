@@ -1402,14 +1402,18 @@ class CharacterManager extends Service
         // Notify bookmarkers
         $character->notifyBookmarkers('BOOKMARK_OWNER');
 
-        if(Config::get('lorekeeper.settings.reset_character_info_on_transfer')) {
-            // Reset name, trading status, gift art status, and writing status
+        if(Config::get('lorekeeper.settings.reset_character_status_on_transfer')) {
+            // Reset trading status, gift art status, and writing status
             $character->update([
-                'name'                    => null,
                 'is_gift_art_allowed'     => 0,
                 'is_gift_writing_allowed' => 0,
                 'is_trading'              => 0,
             ]);
+        }
+
+        if(Config::get('lorekeeper.settings.reset_character_profile_on_transfer')) {
+            // Reset name and profile
+            $character->update(['name' => null]);
             
             // Reset profile
             $character->profile->update([
