@@ -1538,6 +1538,12 @@ class CharacterManager extends Service
                     'parent_id' => $data['parent_id'],
                     'child_id' => $character->id
                 ]);
+                
+                //we dont want the child to be tradeable/transferrable...
+                $transfer['is_sellable'] = false;
+                $transfer['is_tradeable'] = false;
+                $transfer['is_giftable'] = false;
+                $character->update($transfer);
 
                 // Move the character
                 $this->moveCharacter($character, $recipient, 'Bound to ' . $parent->slug . (isset($data['reason']) ? ': ' . $data['reason'] : ''), isset($data['cooldown']) ? $data['cooldown'] : -1);
