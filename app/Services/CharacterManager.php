@@ -116,6 +116,10 @@ class CharacterManager extends Service
                 //find new owner based on parent
                 $recipient = User::find($parent->user_id);
                 if(!$recipient) $recipient = Character::where('id', $data['parent_id'])->first()->owner_alias;
+                //we dont want the child to be tradeable/transferrable...
+                $data['is_sellable'] = null;
+                $data['is_tradeable'] = null;
+                $data['is_giftable'] = null;
             }
             elseif(isset($data['user_id']) && $data['user_id']) $recipient = User::find($data['user_id']);
             elseif(isset($data['owner_alias']) && $data['owner_alias']) $recipient = User::where('alias', $data['owner_alias'])->first();
