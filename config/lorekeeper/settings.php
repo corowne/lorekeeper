@@ -78,10 +78,22 @@ return [
     |           The next number pulled for STD will be 004.
     |           The next number pulled for MYO will be 003. 
     |
+    | reset_character_info_on_transfer:
+    |       This determines whether owner-set character info--
+    |       name, trading status, gift art status, gift writing status, and profile--
+    |       should be cleared when the character is transferred to a new owner.
+    |
+    | clear_myo_slot_name_on_approval:
+    |       Whether the "name" given to a MYO slot should be cleared when a design update for it is approved/
+    |       the slot becomes a full character.
+    |
     */
     'character_codes' => '{category}-{number}',
     'character_number_digits' => 3,
     'character_pull_number' => 'all',
+
+    'reset_character_info_on_transfer' => 0,
+    'clear_myo_slot_name_on_approval' => 0,
 
     /*
     |--------------------------------------------------------------------------

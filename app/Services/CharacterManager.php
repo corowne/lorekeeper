@@ -1402,19 +1402,21 @@ class CharacterManager extends Service
         // Notify bookmarkers
         $character->notifyBookmarkers('BOOKMARK_OWNER');
 
-        // Reset name, trading status, gift art status, and writing status
-        $character->update([
-            'name'                    => null,
-            'is_gift_art_allowed'     => 0,
-            'is_gift_writing_allowed' => 0,
-            'is_trading'              => 0,
-        ]);
-        
-        // Reset profile
-        $character->profile->update([
-            'text'        => null,
-            'parsed_text' => null
-        ]);
+        if(Config::get('lorekeeper.settings.reset_character_info_on_transfer')) {
+            // Reset name, trading status, gift art status, and writing status
+            $character->update([
+                'name'                    => null,
+                'is_gift_art_allowed'     => 0,
+                'is_gift_writing_allowed' => 0,
+                'is_trading'              => 0,
+            ]);
+            
+            // Reset profile
+            $character->profile->update([
+                'text'        => null,
+                'parsed_text' => null
+            ]);
+        }
 
         // Add a log for the ownership change
         $this->createLog(
@@ -1907,7 +1909,7 @@ class CharacterManager extends Service
             // and clear the character's name
             if($request->character->is_myo_slot)
             {
-                $request->character->name = null;
+                if(Config::get('lorekeeper.settings.clear_myo_name_on_approval')) $request->character->name = null;
                 $request->character->is_myo_slot = 0;
                 $request->user->settings->is_fto = 0;
                 $request->user->settings->save();
