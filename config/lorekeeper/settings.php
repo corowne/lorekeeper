@@ -82,13 +82,17 @@ return [
     |       This determines whether owner-set character status--
     |       trading, gift art, and gift writing--
     |       should be cleared when the character is transferred to a new owner.
+    |       Default: 0/Disabled, 1 to enable.
+    |
     | reset_character_profile_on_transfer:
     |       This determines whether character name and profile should be cleared
     |       when the character is transferred to a new owner.
+    |       Default: 0/Disabled, 1 to enable.
     |
     | clear_myo_slot_name_on_approval:
     |       Whether the "name" given to a MYO slot should be cleared when a design update for it is approved/
     |       the slot becomes a full character.
+    |       Default: 0/Disabled, 1 to enable.
     |
     */
     'character_codes' => '{category}-{number}',
