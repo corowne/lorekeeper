@@ -1418,9 +1418,11 @@ class CharacterManager extends Service
                         }
                     }
                     // Move all children of this character
-                    foreach($children as $child)
-                    {
-                        $this->moveCharacter($child, $transfer->recipient, 'Parent ' . $transfer->character->slug . ' transferred to ' . $transfer->recipient->name, isset($data['cooldown']) ? $data['cooldown'] : -1);
+                    if($children) {
+                        foreach($children as $child)
+                        {
+                            $this->moveCharacter($child, $transfer->recipient, 'Parent ' . $transfer->character->slug . ' transferred to ' . $transfer->recipient->name, isset($data['cooldown']) ? $data['cooldown'] : -1);
+                        }
                     }
                     
 
