@@ -200,6 +200,7 @@ class CharacterManager extends Service
             $characterData['is_visible'] = isset($data['is_visible']);
             $characterData['sale_value'] = isset($data['sale_value']) ? $data['sale_value'] : 0;
             $characterData['is_gift_art_allowed'] = 0;
+            $characterData['is_gift_writing_allowed'] = 0;
             $characterData['is_trading'] = 0;
             $characterData['parsed_description'] = parse($data['description']);
             if($isMyo) $characterData['is_myo_slot'] = 1;
@@ -971,6 +972,7 @@ class CharacterManager extends Service
         try {
             $notifyTrading = false;
             $notifyGiftArt = false;
+            $notifyGiftWriting = false;
 
             // Allow updating the gift art/trading options if the editing
             // user owns the character
@@ -979,9 +981,11 @@ class CharacterManager extends Service
                 if($character->user_id != $user->id) throw new \Exception("You cannot edit this character.");
 
                 if($character->is_trading != isset($data['is_trading'])) $notifyTrading = true;
-                if($character->is_gift_art_allowed != isset($data['is_gift_art_allowed'])) $notifyGiftArt = true;
+                if(isset($data['is_gift_art_allowed']) && $character->is_gift_art_allowed != $data['is_gift_art_allowed']) $notifyGiftArt = true;
+                if(isset($data['is_gift_writing_allowed']) && $character->is_gift_writing_allowed != $data['is_gift_writing_allowed']) $notifyGiftWriting = true;
 
                 $character->is_gift_art_allowed = isset($data['is_gift_art_allowed']) && $data['is_gift_art_allowed'] <= 2 ? $data['is_gift_art_allowed'] : 0;
+                $character->is_gift_writing_allowed = isset($data['is_gift_writing_allowed']) && $data['is_gift_writing_allowed'] <= 2 ? $data['is_gift_writing_allowed'] : 0;
                 $character->is_trading = isset($data['is_trading']);
                 $character->save();
             }
@@ -1006,6 +1010,7 @@ class CharacterManager extends Service
 
             if($notifyTrading) $character->notifyBookmarkers('BOOKMARK_TRADING');
             if($notifyGiftArt) $character->notifyBookmarkers('BOOKMARK_GIFTS');
+            if($notifyGiftWriting) $character->notifyBookmarkers('BOOKMARK_GIFT_WRITING');
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
@@ -1396,6 +1401,26 @@ class CharacterManager extends Service
         
         // Notify bookmarkers
         $character->notifyBookmarkers('BOOKMARK_OWNER');
+
+        if(Config::get('lorekeeper.settings.reset_character_status_on_transfer')) {
+            // Reset trading status, gift art status, and writing status
+            $character->update([
+                'is_gift_art_allowed'     => 0,
+                'is_gift_writing_allowed' => 0,
+                'is_trading'              => 0,
+            ]);
+        }
+
+        if(Config::get('lorekeeper.settings.reset_character_profile_on_transfer')) {
+            // Reset name and profile
+            $character->update(['name' => null]);
+            
+            // Reset profile
+            $character->profile->update([
+                'text'        => null,
+                'parsed_text' => null
+            ]);
+        }
 
         // Add a log for the ownership change
         $this->createLog(
@@ -1885,8 +1910,10 @@ class CharacterManager extends Service
             $this->createLog($user->id, null, $request->character->user_id, $request->character->user->alias, $request->character->id, $request->update_type == 'MYO' ? 'MYO Design Approved' : 'Character Design Updated', '[#'.$image->id.']', 'user');
             
             // If this is for a MYO, set user's FTO status and the MYO status of the slot
+            // and clear the character's name
             if($request->character->is_myo_slot)
             {
+                if(Config::get('lorekeeper.settings.clear_myo_name_on_approval')) $request->character->name = null;
                 $request->character->is_myo_slot = 0;
                 $request->user->settings->is_fto = 0;
                 $request->user->settings->save();
