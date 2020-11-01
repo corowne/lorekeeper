@@ -73,7 +73,7 @@ class BookmarkController extends Controller
     {
         $id ? $request->validate(CharacterBookmark::$updateRules) : $request->validate(CharacterBookmark::$createRules);
         $data = $request->only([
-            'character_id', 'notify_on_trade_status', 'notify_on_gift_art_status', 'notify_on_transfer', 'notify_on_image', 'comment'
+            'character_id', 'notify_on_trade_status', 'notify_on_gift_art_status', 'notify_on_gift_writing_status', 'notify_on_transfer', 'notify_on_image', 'comment'
         ]);
         if($id && $service->updateBookmark($data + ['bookmark_id' => $id], Auth::user())) {
             flash('Bookmark updated successfully.')->success();
