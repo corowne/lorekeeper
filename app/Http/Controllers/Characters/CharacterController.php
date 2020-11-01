@@ -13,13 +13,22 @@ use App\Models\Character\Character;
 use App\Models\Species\Species;
 use App\Models\Rarity;
 use App\Models\Feature\Feature;
+
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
 use App\Models\User\UserCurrency;
 use App\Models\Character\CharacterCurrency;
+
+use App\Models\Item\Item;
+use App\Models\Item\ItemCategory;
+use App\Models\User\UserItem;
+use App\Models\Character\CharacterItem;
+use App\Models\Item\ItemLog;
+
 use App\Models\Character\CharacterTransfer;
 
 use App\Services\CurrencyManager;
+use App\Services\InventoryManager;
 use App\Services\CharacterManager;
 
 use App\Http\Controllers\Controller;
@@ -139,6 +148,43 @@ class CharacterController extends Controller
     }
 
     /**
+     * Shows a character's inventory.
+     *
+     * @param  string  $slug
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterInventory($slug)
+    {
+        $categories = ItemCategory::where('is_character_owned', '1')->orderBy('sort', 'DESC')->get();
+        $itemOptions = Item::whereIn('item_category_id', $categories->pluck('id'));
+        
+        $items = count($categories) ? 
+            $this->character->items()
+                ->where('count', '>', 0)
+                ->orderByRaw('FIELD(item_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
+                ->orderBy('name')
+                ->orderBy('updated_at')
+                ->get()
+                ->groupBy(['item_category_id', 'id']) :
+            $this->character->items()
+                ->where('count', '>', 0)
+                ->orderBy('name')
+                ->orderBy('updated_at')
+                ->get()
+                ->groupBy(['item_category_id', 'id']);
+        return view('character.inventory', [
+            'character' => $this->character,
+            'categories' => $categories->keyBy('id'),
+            'items' => $items,
+            'logs' => $this->character->getItemLogs(),
+            ] + (Auth::check() && (Auth::user()->hasPower('edit_inventories') || Auth::user()->id == $this->character->user_id) ? [
+                'itemOptions' => $itemOptions->pluck('name', 'id'),
+                'userInventory' => UserItem::with('item')->whereIn('item_id', $itemOptions->pluck('id'))->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get()->filter(function($userItem){return $userItem->isTransferrable == true;})->sortBy('item.name'),
+                'page' => 'character'
+            ] : []));
+    }
+
+    /**
      * Shows a character's bank.
      *
      * @param  string  $slug
@@ -186,6 +232,100 @@ class CharacterController extends Controller
     }
 
     /**
+     * Handles inventory item processing, including transferring items between the user and character.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\CharacterManager  $service
+     * @param  string                         $slug
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postInventoryEdit(Request $request, InventoryManager $service, $slug)
+    {
+        if(!Auth::check()) abort(404);
+        switch($request->get('action')) {
+            default:
+                flash('Invalid action selected.')->error();
+                break;
+            case 'give':
+                $sender = Auth::user();
+                $recipient = $this->character;
+
+                if($service->transferCharacterStack($sender, $recipient, UserItem::find($request->get('stack_id')), $request->get('stack_quantity'))) {
+                    flash('Item transferred successfully.')->success();
+                }
+                else {
+                    foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+                }
+                break;
+            case 'name':
+                return $this->postName($request, $service);
+                break;
+            case 'delete':
+                return $this->postDelete($request, $service);
+                break;
+            case 'take':
+                return $this->postItemTransfer($request, $service);
+                break;
+        }
+
+        return redirect()->back();
+    }
+
+    /**
+     * Transfers inventory items back to a user.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\InventoryManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function postItemTransfer(Request $request, InventoryManager $service)
+    {
+        if($service->transferCharacterStack($this->character, $this->character->user, CharacterItem::find($request->get('ids')), $request->get('quantities'))) {
+            flash('Item transferred successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Names an inventory stack.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\CharacterManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function postName(Request $request, InventoryManager $service)
+    {
+        if($service->nameStack($this->character, CharacterItem::find($request->get('ids')), $request->get('stack_name'))) {
+            flash('Item named successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Deletes an inventory stack.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\CharacterManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function postDelete(Request $request, InventoryManager $service)
+    {
+        if($service->deleteStack($this->character, CharacterItem::find($request->get('ids')), $request->get('quantities'))) {
+            flash('Item deleted successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
      * Shows a character's currency logs.
      *
      * @param  string  $slug
@@ -196,6 +336,20 @@ class CharacterController extends Controller
         return view('character.currency_logs', [
             'character' => $this->character,
             'logs' => $this->character->getCurrencyLogs(0)
+        ]);
+    }
+
+    /**
+     * Shows a character's item logs.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterItemLogs($slug)
+    {
+        return view('character.item_logs', [
+            'character' => $this->character,
+            'logs' => $this->character->getItemLogs(0)
         ]);
     }
     

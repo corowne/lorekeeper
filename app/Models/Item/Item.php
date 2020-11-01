@@ -7,6 +7,10 @@ use DB;
 use App\Models\Model;
 use App\Models\Item\ItemCategory;
 
+use App\Models\User\User;
+use App\Models\Shop\Shop;
+use App\Models\Prompt\Prompt;
+
 class Item extends Model
 {
     /**
@@ -15,8 +19,11 @@ class Item extends Model
      * @var array
      */
     protected $fillable = [
-        'item_category_id', 'name', 'has_image', 'description', 'parsed_description', 'allow_transfer'
+        'item_category_id', 'name', 'has_image', 'description', 'parsed_description', 'allow_transfer',
+        'data', 'reference_url', 'artist_alias', 'artist_url'
     ];
+
+    protected $appends = ['image_url'];
 
     /**
      * The table associated with the model.
@@ -32,9 +39,14 @@ class Item extends Model
      */
     public static $createRules = [
         'item_category_id' => 'nullable',
-        'name' => 'required|unique:items|between:3,25',
+        'name' => 'required|unique:items|between:3,100',
         'description' => 'nullable',
         'image' => 'mimes:png',
+        'rarity' => 'nullable',
+        'reference_url' => 'nullable|between:3,200',
+        'uses' => 'nullable|between:3,250',
+        'release' => 'nullable|between:3,100',
+        'currency_quantity' => 'nullable|integer|min:1',
     ];
     
     /**
@@ -44,9 +56,13 @@ class Item extends Model
      */
     public static $updateRules = [
         'item_category_id' => 'nullable',
-        'name' => 'required|between:3,25',
+        'name' => 'required|between:3,100',
         'description' => 'nullable',
         'image' => 'mimes:png',
+        'reference_url' => 'nullable|between:3,200',
+        'uses' => 'nullable|between:3,250',
+        'release' => 'nullable|between:3,100',
+        'currency_quantity' => 'nullable|integer|min:1',
     ];
 
     /**********************************************************************************************
@@ -191,6 +207,16 @@ class Item extends Model
     }
 
     /**
+     * Gets the URL of the individual item's page, by ID.
+     *
+     * @return string
+     */
+    public function getIdUrlAttribute()
+    {
+        return url('world/items/'.$this->id);
+    }
+
+    /**
      * Gets the currency's asset type for asset management.
      *
      * @return string
@@ -198,6 +224,116 @@ class Item extends Model
     public function getAssetTypeAttribute()
     {
         return 'items';
+    }
+
+    /**
+     * Get the artist of the item's image.
+     * 
+     * @return string
+     */
+    public function getArtistAttribute() 
+    {
+        if(!$this->artist_url && !$this->artist_alias) return null;
+        if ($this->artist_url)
+        {
+            return '<a href="'.$this->artist_url.'" class="display-creator">'. ($this->artist_alias ? : $this->artist_url) .'</a>';
+        }
+        else if($this->artist_alias)
+        {
+            $user = User::where('alias', trim($this->artist_alias))->first();
+            if($user) return $user->displayName;
+            else return '<a href="https://www.deviantart.com/'.$this->artist_alias.'">'.$this->artist_alias.'@dA</a>';
+        }
+    }
+
+    /**
+     * Get the reference url attribute.
+     *
+     * @return string
+     */
+    public function getReferenceAttribute() 
+    {
+        if (!$this->reference_url) return null;
+        return $this->reference_url;
+    }
+
+    /**
+     * Get the data attribute as an associative array.
+     *
+     * @return array
+     */
+    public function getDataAttribute() 
+    {
+        if (!$this->id) return null;
+        return json_decode($this->attributes['data'], true);
+    }
+
+    /**
+     * Get the rarity attribute.
+     *
+     * @return string
+     */
+    public function getRarityAttribute() 
+    {
+        if (!$this->data) return null;
+        return $this->data['rarity'];
+    }
+
+    /**
+     * Get the uses attribute.
+     *
+     * @return string
+     */
+    public function getUsesAttribute() 
+    {
+        if (!$this->data) return null;
+        return $this->data['uses'];
+    }
+
+    /**
+     * Get the source attribute.
+     *
+     * @return string
+     */
+    public function getSourceAttribute() 
+    {
+        if (!$this->data) return null;
+        return $this->data['release'];
+    }
+
+    /**
+     * Get the resale attribute.
+     *
+     * @return string
+     */
+    public function getResellAttribute() 
+    {
+        if (!$this->data) return null;
+        return collect($this->data['resell']);
+    }
+
+    /**
+     * Get the shops attribute as an associative array.
+     *
+     * @return array
+     */
+    public function getShopsAttribute() 
+    {
+        if (!$this->data) return null;
+        $itemShops = $this->data['shops'];
+        return Shop::whereIn('id', $itemShops)->get();
+    }
+
+    /**
+     * Get the prompts attribute as an associative array.
+     *
+     * @return array
+     */
+    public function getPromptsAttribute() 
+    {
+        if (!$this->data) return null;
+        $itemPrompts = $this->data['prompts'];
+        return Prompt::whereIn('id', $itemPrompts)->get();
     }
 
     /**********************************************************************************************

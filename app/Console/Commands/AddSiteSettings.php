@@ -188,6 +188,19 @@ class AddSiteSettings extends Command
         }
         else $this->line("Skipped: blacklist_key");
 
+        if(!DB::table('site_settings')->where('key', 'admin_user')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'admin_user',
+                    'value' => 1,
+                    'description' => 'ID of the site\'s admin user.'
+                ]
+
+            ]);
+            $this->info("Added:   admin_user / Default: 1");
+        }
+        else $this->line("Skipped: admin_user");
+
         $this->line("\nSite settings up to date!");
         
     }

@@ -17,6 +17,7 @@ Route::group(['prefix' => 'notifications', 'namespace' => 'Users'], function() {
     Route::get('/', 'AccountController@getNotifications');
     Route::get('delete/{id}', 'AccountController@getDeleteNotification');
     Route::post('clear', 'AccountController@postClearNotifications');
+    Route::post('clear/{type}', 'AccountController@postClearNotifications');
 });
 
 Route::group(['prefix' => 'account', 'namespace' => 'Users'], function() {
@@ -37,9 +38,7 @@ Route::group(['prefix' => 'account', 'namespace' => 'Users'], function() {
 
 Route::group(['prefix' => 'inventory', 'namespace' => 'Users'], function() {
     Route::get('/', 'InventoryController@getIndex');
-    Route::post('transfer/{id}', 'InventoryController@postTransfer');
-    Route::post('delete/{id}', 'InventoryController@postDelete');
-    Route::post('act/{id}/{tag}', 'InventoryController@postAct');
+    Route::post('edit', 'InventoryController@postEdit');
 
     Route::get('selector', 'InventoryController@getSelector');
 });
@@ -83,7 +82,6 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() 
     Route::post('{slug}/profile/edit', 'CharacterController@postEditCharacterProfile');
 
     Route::post('{slug}/bank/transfer', 'CharacterController@postCurrencyTransfer');
-
     Route::get('{slug}/transfer', 'CharacterController@getTransfer');
     Route::post('{slug}/transfer', 'CharacterController@postTransfer');
     Route::post('{slug}/transfer/{id}/cancel', 'CharacterController@postCancelTransfer');
@@ -159,4 +157,15 @@ Route::group(['prefix' => 'designs', 'namespace' => 'Characters'], function() {
 Route::group(['prefix' => 'shops'], function() {
     Route::post('buy', 'ShopController@postBuy');
     Route::get('history', 'ShopController@getPurchaseHistory');
+});
+
+/**************************************************************************************************
+    Comments
+**************************************************************************************************/
+Route::group(['prefix' => 'comments', 'namespace' => 'Comments'], function() {
+    Route::post('/', 'CommentController@store')->name('comments.store');
+    Route::delete('/{comment}', 'CommentController@destroy')->name('comments.destroy');
+    Route::put('/{comment}', 'CommentController@update')->name('comments.update');
+    Route::post('/{comment}', 'CommentController@reply')->name('comments.reply');
+    Route::post('/{id}/feature', 'CommentController@feature')->name('comments.feature');
 });

@@ -8,6 +8,7 @@ use DB;
 use Auth;
 use Route;
 use App\Models\User\User;
+
 use App\Models\User\UserCurrency;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
@@ -15,7 +16,7 @@ use App\Models\Currency\CurrencyLog;
 use App\Models\User\UserItem;
 use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
-use App\Models\Item\UserItemLog;
+use App\Models\Item\ItemLog;
 
 use App\Http\Controllers\Controller;
 
@@ -95,7 +96,20 @@ class UserController extends Controller
     public function getUserInventory($name)
     {
         $categories = ItemCategory::orderBy('sort', 'DESC')->get();
-        $items = count($categories) ? $this->user->items()->orderByRaw('FIELD(item_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')->orderBy('name')->orderBy('updated_at')->get()->groupBy('item_category_id') : $this->user->items()->orderBy('name')->orderBy('updated_at')->get()->groupBy('item_category_id');
+        $items = count($categories) ? 
+            $this->user->items()
+                ->where('count', '>', 0)
+                ->orderByRaw('FIELD(item_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
+                ->orderBy('name')
+                ->orderBy('updated_at')
+                ->get()
+                ->groupBy(['item_category_id', 'id']) :
+            $this->user->items()
+                ->where('count', '>', 0)
+                ->orderBy('name')
+                ->orderBy('updated_at')
+                ->get()
+                ->groupBy(['item_category_id', 'id']);
         return view('user.inventory', [
             'user' => $this->user,
             'categories' => $categories->keyBy('id'),

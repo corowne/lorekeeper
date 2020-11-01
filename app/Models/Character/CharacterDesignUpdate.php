@@ -24,7 +24,7 @@ class CharacterDesignupdate extends Model
         'use_cropper', 'x0', 'x1', 'y0', 'y1',
         'hash', 'species_id', 'subtype_id', 'rarity_id', 
         'has_comments', 'has_image', 'has_addons', 'has_features',
-        'submitted_at', 'update_type'
+        'submitted_at', 'update_type', 'fullsize_hash'
     ];
 
     /**
@@ -213,7 +213,7 @@ class CharacterDesignupdate extends Model
         // This is for showing the addons page
         // just need to retrieve a list of stack IDs to tell which ones to check
 
-        return $this->data ? $this->data['stacks'] : [];
+        return $this->data && isset($this->data['user']['user_items']) ? $this->data['user']['user_items'] : [];
     }
 
     /**

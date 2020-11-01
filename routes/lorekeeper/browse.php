@@ -15,6 +15,7 @@
 **************************************************************************************************/
 
 Route::get('items/{id}', 'Users\InventoryController@getStack');
+Route::get('items/character/{id}', 'Users\InventoryController@getCharacterStack');
 
 /**************************************************************************************************
     News
@@ -65,9 +66,11 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() 
     Route::get('{slug}', 'CharacterController@getCharacter');
     Route::get('{slug}/profile', 'CharacterController@getCharacterProfile');
     Route::get('{slug}/bank', 'CharacterController@getCharacterBank');
+    Route::get('{slug}/inventory', 'CharacterController@getCharacterInventory');
     Route::get('{slug}/images', 'CharacterController@getCharacterImages');
     
     Route::get('{slug}/currency-logs', 'CharacterController@getCharacterCurrencyLogs');
+    Route::get('{slug}/item-logs', 'CharacterController@getCharacterItemLogs');
     Route::get('{slug}/ownership', 'CharacterController@getCharacterOwnershipLogs');
     Route::get('{slug}/change-log', 'CharacterController@getCharacterLogs');
     Route::get('{slug}/submissions', 'CharacterController@getCharacterSubmissions');
@@ -93,11 +96,16 @@ Route::group(['prefix' => 'world'], function() {
     Route::get('subtypes', 'WorldController@getSubtypes');
     Route::get('item-categories', 'WorldController@getItemCategories');
     Route::get('items', 'WorldController@getItems');
+    Route::get('items/{id}', 'WorldController@getItem');
     Route::get('trait-categories', 'WorldController@getFeatureCategories');
     Route::get('traits', 'WorldController@getFeatures');
-    Route::get('prompt-categories', 'WorldController@getPromptCategories');
-    Route::get('prompts', 'WorldController@getPrompts');
     Route::get('character-categories', 'WorldController@getCharacterCategories');
+});
+
+Route::group(['prefix' => 'prompts'], function() {
+    Route::get('/', 'PromptsController@getIndex');
+    Route::get('prompt-categories', 'PromptsController@getPromptCategories');
+    Route::get('prompts', 'PromptsController@getPrompts');
 });
 
 Route::group(['prefix' => 'shops'], function() {
@@ -142,9 +150,12 @@ Route::group(['prefix' => 'comments', 'namespace' => 'Comments'], function() {
     Route::post('/{id}/feature', 'CommentController@feature')->name('comments.feature');
 });
 
+Route::get('comment/{id}', 'PermalinkController@getComment');
 /**************************************************************************************************
     Reports
 **************************************************************************************************/
 Route::group(['prefix' => 'reports', 'namespace' => 'Users'], function() {
     Route::get('/bug-reports', 'ReportController@getBugIndex');
 });
+
+

@@ -132,7 +132,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function items()
     {
-        return $this->belongsToMany('App\Models\Item\Item', 'user_items')->withPivot('data', 'updated_at', 'id')->whereNull('user_items.deleted_at')->whereNull('user_items.holding_type');
+        return $this->belongsToMany('App\Models\Item\Item', 'user_items')->withPivot('count', 'data', 'updated_at', 'id')->whereNull('user_items.deleted_at');
     }
 
     /**********************************************************************************************
@@ -384,10 +384,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getItemLogs($limit = 10)
     {
         $user = $this;
-        $query = ItemLog::with('sender')->with('recipient')->with('item')->where(function($query) use ($user) {
-            $query->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Staff Removal']);
+        $query = ItemLog::with('item')->where(function($query) use ($user) {
+            $query->with('sender')->where('sender_type', 'User')->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Prompt Rewards', 'Claim Rewards']);
         })->orWhere(function($query) use ($user) {
-            $query->where('recipient_id', $user->id);
+            $query->with('recipient')->where('recipient_type', 'User')->where('recipient_id', $user->id)->where('log_type', '!=', 'Staff Removal');
         })->orderBy('id', 'DESC');
         if($limit) return $query->take($limit)->get();
         else return $query->paginate(30);
