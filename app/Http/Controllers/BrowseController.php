@@ -144,6 +144,18 @@ class BrowseController extends Controller
                 $query->where('is_gift_art_allowed', 1)->orWhere('is_gift_art_allowed', 2);
             break;
         }
+        if($request->get('is_gift_writing_allowed')) switch($request->get('is_gift_writing_allowed')) {
+            case 1:
+                $query->where('is_gift_writing_allowed', 1);
+            break;
+            case 2:
+                $query->where('is_gift_writing_allowed', 2);
+            break;
+            case 3:
+                $query->where('is_gift_writing_allowed', 1)->orWhere('is_gift_writing_allowed', 2);
+            break;
+        }
+        
         if($request->get('is_sellable')) $query->where('is_sellable', 1);
         if($request->get('is_tradeable')) $query->where('is_tradeable', 1);
         if($request->get('is_giftable')) $query->where('is_giftable', 1);
@@ -213,6 +225,8 @@ class BrowseController extends Controller
             default:
                 $query->orderBy('characters.number', 'DESC');
         }
+
+        if(!Auth::check() || !Auth::user()->hasPower('manage_characters')) $query->visible();
 
         return view('browse.masterlist', [  
             'isMyo' => false,
@@ -306,6 +320,8 @@ class BrowseController extends Controller
                 $query->orderBy('characters.sale_value', 'ASC');
                 break;
         }
+
+        if(!Auth::check() || !Auth::user()->hasPower('manage_characters')) $query->visible();
 
         return view('browse.myo_masterlist', [  
             'isMyo' => true,

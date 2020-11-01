@@ -186,7 +186,7 @@ class AddSiteSettings extends Command
             ]);
             $this->info("Added:   admin_user / Default: 1");
         }
-        else $this->line("Skipped: blacklist_key");
+        else $this->line("Skipped: admin_user");
 
         $this->line("\nSite settings up to date!");
         
