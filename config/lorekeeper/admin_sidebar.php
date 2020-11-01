@@ -75,63 +75,6 @@ return [
             ],
         ]
     ],
-    'Data' => [
-        'power' => 'edit_data',
-        'links' => [
-            [
-                'name' => 'Rarities',
-                'url' => 'admin/data/rarities'
-            ],
-            [
-                'name' => 'Species',
-                'url' => 'admin/data/species'
-            ],
-            [
-                'name' => 'Subtypes',
-                'url' => 'admin/data/subtypes'
-            ],
-            [
-                'name' => 'Trait Categories',
-                'url' => 'admin/data/trait-categories'
-            ],
-            [
-                'name' => 'Traits',
-                'url' => 'admin/data/traits'
-            ],
-            [
-                'name' => 'Item Categories',
-                'url' => 'admin/data/item-categories'
-            ],
-            [
-                'name' => 'Items',
-                'url' => 'admin/data/items'
-            ],
-            [
-                'name' => 'Shops',
-                'url' => 'admin/data/shops'
-            ],
-            [
-                'name' => 'Prompt Categories',
-                'url' => 'admin/data/prompt-categories'
-            ],
-            [
-                'name' => 'Prompts',
-                'url' => 'admin/data/prompts'
-            ],
-            [
-                'name' => 'Character Categories',
-                'url' => 'admin/data/character-categories'
-            ],
-            [
-                'name' => 'Currencies',
-                'url' => 'admin/data/currencies'
-            ],
-            [
-                'name' => 'Loot Tables',
-                'url' => 'admin/data/loot-tables'
-            ],
-        ]
-    ],
     'Masterlist' => [
         'power' => 'manage_characters',
         'links' => [
@@ -158,6 +101,51 @@ return [
             [
                 'name' => 'MYO Approvals',
                 'url' => 'admin/myo-approvals/pending'
+            ],
+        ]
+    ],
+    'Data' => [
+        'power' => 'edit_data',
+        'links' => [
+            [
+                'name' => 'Character Categories',
+                'url' => 'admin/data/character-categories'
+            ],
+            [
+                'name' => 'Rarities',
+                'url' => 'admin/data/rarities'
+            ],
+            [
+                'name' => 'Species',
+                'url' => 'admin/data/species'
+            ],
+            [
+                'name' => 'Subtypes',
+                'url' => 'admin/data/subtypes'
+            ],
+            [
+                'name' => 'Traits',
+                'url' => 'admin/data/traits'
+            ],
+            [
+                'name' => 'Shops',
+                'url' => 'admin/data/shops'
+            ],
+            [
+                'name' => 'Currencies',
+                'url' => 'admin/data/currencies'
+            ],
+            [
+                'name' => 'Prompts',
+                'url' => 'admin/data/prompts'
+            ],
+            [
+                'name' => 'Loot Tables',
+                'url' => 'admin/data/loot-tables'
+            ],
+            [
+                'name' => 'Items',
+                'url' => 'admin/data/items'
             ],
         ]
     ],
