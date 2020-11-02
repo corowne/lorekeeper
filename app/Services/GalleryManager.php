@@ -121,7 +121,7 @@ class GalleryManager extends Service
 
             if(isset($data['participant_id']) && $participants->count()) {
                 // Attach any participants to the submission
-                foreach($participantArray as $key=>$participant) {
+                foreach($data['participant_id'] as $key=>$participant) {
                     GalleryCollaborator::create([
                         'user_id' => $participant,
                         'gallery_submission_id' => $submission->id,
