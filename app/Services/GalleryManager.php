@@ -61,10 +61,6 @@ class GalleryManager extends Service
             if(isset($data['participant_id'])) {
                 $participants = User::whereIn('id', $data['participant_id'])->get();
                 if(count($participants) != count($data['participant_id'])) throw new \Exception("One or more of the selected participants does not exist, or you have entered a duplicate.");
-
-                // Remove the submitting user and any collaborators from participants
-                $participants = $participants->whereNotIn('id', $user->id);
-                if(count($collaborators)) $participants = $participants->whereNotIn('id', $data['collaborator_id']);
             }
             else $participants = [];
 
@@ -102,34 +98,38 @@ class GalleryManager extends Service
             if(isset($data['image']) && $data['image']) $this->processImage($data, $submission);
             $submission->update();
 
-            // Attach any collaborators to the submission
-            foreach($collaborators as $key=>$collaborator) {
-                GalleryCollaborator::create([
-                    'user_id' => $collaborator->id,
-                    'gallery_submission_id' => $submission->id,
-                    'data' => $data['collaborator_data'][$key],
-                    'has_approved' => $collaborator->id == $user->id ? 1 : 0,
-                ]);
-
-                // Notify collaborators (but not the submitting user)
-                if($collaborator->id != $user->id) {
-                    Notifications::create('GALLERY_SUBMISSION_COLLABORATOR', $collaborator, [
-                        'sender_url' => $user->url,
-                        'sender' => $user->name,
-                        'submission_id' => $submission->id,
+            if(isset($data['collaborator_id']) && $collaborators->count()) {
+                // Attach any collaborators to the submission
+                foreach($data['collaborator_id'] as $key=>$collaborator) {
+                    GalleryCollaborator::create([
+                        'user_id' => $collaborator,
+                        'gallery_submission_id' => $submission->id,
+                        'data' => $data['collaborator_data'][$key],
+                        'has_approved' => $collaborator == $user->id ? 1 : 0,
                     ]);
+
+                    // Notify collaborators (but not the submitting user)
+                    if($collaborator != $user->id) {
+                        Notifications::create('GALLERY_SUBMISSION_COLLABORATOR', User::find($collaborator), [
+                            'sender_url' => $user->url,
+                            'sender' => $user->name,
+                            'submission_id' => $submission->id,
+                        ]);
+                    }
                 }
             }
 
-            // Attach any participants to the submission
-            foreach($participants as $key=>$participant) {
-                GalleryCollaborator::create([
-                    'user_id' => $participant->id,
-                    'gallery_submission_id' => $submission->id,
-                    'data' => null,
-                    'has_approved' => 1,
-                    'type' => $data['participant_type'][$key]
-                ]);
+            if(isset($data['participant_id']) && $participants->count()) {
+                // Attach any participants to the submission
+                foreach($participantArray as $key=>$participant) {
+                    GalleryCollaborator::create([
+                        'user_id' => $participant,
+                        'gallery_submission_id' => $submission->id,
+                        'data' => null,
+                        'has_approved' => 1,
+                        'type' => $data['participant_type'][$key]
+                    ]);
+                }
             }
 
             // Attach any characters to the submission
@@ -182,38 +182,39 @@ class GalleryManager extends Service
                 // Remove all collaborators from the submission so they can be reattached with new data
                 $submission->collaborators()->delete();
 
-                // Attach any collaborators to the submission
-                foreach($collaborators as $key=>$collaborator) {
-                    GalleryCollaborator::create([
-                        'user_id' => $collaborator->id,
-                        'gallery_submission_id' => $submission->id,
-                        'data' => $data['collaborator_data'][$key],
-                        'has_approved' => isset($collaboratorApproval[$collaborator->id]) ? $collaboratorApproval[$collaborator->id] : ($collaborator->id == $user->id ? 1 : 0),
-                    ]);
+                if(isset($data['collaborator_id']) && $collaborators->count()) {
+                    // Attach any collaborators to the submission
+                    foreach($data['collaborator_id'] as $key=>$collaborator) {
+                        GalleryCollaborator::create([
+                            'user_id' => $collaborator,
+                            'gallery_submission_id' => $submission->id,
+                            'data' => $data['collaborator_data'][$key],
+                            'has_approved' => isset($collaboratorApproval[$collaborator]) ? $collaboratorApproval[$collaborator] : ($collaborator == $user->id ? 1 : 0),
+                        ]);
+                    }
                 }
 
                 // Check that associated participants exist
                 if(isset($data['participant_id'])) {
                     $participants = User::whereIn('id', $data['participant_id'])->get();
                     if(count($participants) != count($data['participant_id'])) throw new \Exception("One or more of the selected participants does not exist, or you have entered a duplicate.");
-                    // Remove the submitting user and any collaborators from participants
-                    $participants = $participants->whereNotIn('id', $submission->user->id);
-                    if(count($collaborators)) $participants = $participants->whereNotIn('id', $data['collaborator_id']);
                 }
                 else $participants = [];
 
                 // Remove all participants from the submission so they can be reattached with new data
                 $submission->participants()->delete();
 
-                // Attach any participants to the submission
-                foreach($participants as $key=>$participant) {
-                    GalleryCollaborator::create([
-                        'user_id' => $participant->id,
-                        'gallery_submission_id' => $submission->id,
-                        'data' => null,
-                        'has_approved' => 1,
-                        'type' => $data['participant_type'][$key]
-                    ]);
+                if(isset($data['participant_id']) && $participants->count()) {
+                    // Attach any participants to the submission
+                    foreach($data['participant_id'] as $key=>$participant) {
+                        GalleryCollaborator::create([
+                            'user_id' => $participant,
+                            'gallery_submission_id' => $submission->id,
+                            'data' => null,
+                            'has_approved' => 1,
+                            'type' => $data['participant_type'][$key]
+                        ]);
+                    }
                 }
             }
 
