@@ -65,6 +65,8 @@ class SalesService extends Service
             if(!isset($data['is_visible'])) $data['is_visible'] = 0;
             if(!isset($data['is_open'])) $data['is_open'] = 0;
 
+            if(isset($data['bump']) && $data['is_visible'] == 1 && $data['bump'] == 1) $this->alertUsers();
+
             $sales->update($data);
 
             return $this->commitReturn($sales);
