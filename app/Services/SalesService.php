@@ -34,6 +34,7 @@ class SalesService extends Service
             $data['parsed_text'] = parse($data['text']);
             $data['user_id'] = $user->id;
             if(!isset($data['is_visible'])) $data['is_visible'] = 0;
+            if(!isset($data['is_open'])) $data['is_open'] = 0;
 
             $sales = Sales::create($data);
 
@@ -62,6 +63,7 @@ class SalesService extends Service
             $data['parsed_text'] = parse($data['text']);
             $data['user_id'] = $user->id;
             if(!isset($data['is_visible'])) $data['is_visible'] = 0;
+            if(!isset($data['is_open'])) $data['is_open'] = 0;
 
             $sales->update($data);
 

@@ -16,7 +16,8 @@ class Sales extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'text', 'parsed_text', 'title', 'is_visible', 'post_at'
+        'user_id', 'text', 'parsed_text', 'title', 'is_visible', 'post_at', 
+        'is_open', 'comments_open_at'
     ];
 
     /**
@@ -38,7 +39,7 @@ class Sales extends Model
      *
      * @var array
      */
-    public $dates = ['post_at'];
+    public $dates = ['post_at', 'comments_open_at'];
 
     /**
      * Validation rules for creation.
@@ -125,7 +126,7 @@ class Sales extends Model
      */
     public function getDisplayNameAttribute()
     {
-        return '<a href="'.$this->url.'">'.$this->title.'</a>';
+        return '<a href="'.$this->url.'"> ['.($this->is_open ? (isset($this->comments_open_at) && $this->comments_open_at > Carbon::now() ? 'Preview' : 'Open') : 'Closed').'] '.$this->title.'</a>';
     }
 
     /**
