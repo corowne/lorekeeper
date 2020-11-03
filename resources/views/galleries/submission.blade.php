@@ -95,84 +95,97 @@
             </div>
         </div>
     </div>
-    @if($submission->collaborators->count() || $submission->characters->count() || $submission->participants->count())
-        <div class="col-md-4 col-lg-3">
-            @if($submission->collaborators->count())
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5>Collaborators</h5>
-                    </div>
-                    <div class="card-body">
-                        @if($submission->status == 'Pending' && Auth::check() && $submission->collaborators->where('user_id', Auth::user()->id)->first() != null)
-                            <p>Check that your role in the collaboration is correct as listed, and if not, make any changes. You can also remove yourself from the collaborator list if necessary. When you are done, press "submit" to make any changes as well as approve the submission/the record of your contribution to it. You will be able to edit this until the submission is approved.</p>
-                            {!! Form::open(['url' => '/gallery/collaborator/'.$submission->id]) !!}
-                                @foreach($submission->collaborators as $collaborator)
-                                    @if($collaborator->user_id == Auth::user()->id)
-                                    <div class="mb-2">
-                                        <div class="d-flex">{!! $collaborator->has_approved ? '<div class="mb-2 mr-2 text-success" data-toggle="tooltip" title="Has Approved"><i class="fas fa-check"></i></div>' : '' !!}{!! $collaborator->user->displayName !!}:
-                                            <div class="float-right">
-                                                {!! Form::label('remove_user', 'Remove Me', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If toggled on, this will remove the record of your collaboration from this submission.') !!}
-                                            </div>
-                                        </div>
-                                        <div class="d-flex">
-                                            {!! Form::text('collaborator_data[]', $collaborator->data, ['class' => 'form-control mr-2', 'placeholder' => 'Role (Sketch, Lines, etc.)']) !!}
-                                            {!! Form::checkbox('remove_user', 1, false, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'data-onstyle' => 'danger']) !!}
+    <div class="col-md-4 col-lg-3">
+        @if($submission->collaborators->count())
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Collaborators</h5>
+                </div>
+                <div class="card-body">
+                    @if($submission->status == 'Pending' && Auth::check() && $submission->collaborators->where('user_id', Auth::user()->id)->first() != null)
+                        <p>Check that your role in the collaboration is correct as listed, and if not, make any changes. You can also remove yourself from the collaborator list if necessary. When you are done, press "submit" to make any changes as well as approve the submission/the record of your contribution to it. You will be able to edit this until the submission is approved.</p>
+                        {!! Form::open(['url' => '/gallery/collaborator/'.$submission->id]) !!}
+                            @foreach($submission->collaborators as $collaborator)
+                                @if($collaborator->user_id == Auth::user()->id)
+                                <div class="mb-2">
+                                    <div class="d-flex">{!! $collaborator->has_approved ? '<div class="mb-2 mr-2 text-success" data-toggle="tooltip" title="Has Approved"><i class="fas fa-check"></i></div>' : '' !!}{!! $collaborator->user->displayName !!}:
+                                        <div class="float-right">
+                                            {!! Form::label('remove_user', 'Remove Me', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If toggled on, this will remove the record of your collaboration from this submission.') !!}
                                         </div>
                                     </div>
-                                    @else
-                                        <div class="d-flex">
-                                            {!! $collaborator->has_approved ? '<div class="mb-2 mr-2 text-success" data-toggle="tooltip" title="Has Approved"><i class="fas fa-check"></i></div>' : '' !!} {!! $collaborator->user->displayName !!}: {{ $collaborator->data }}
-                                        </div>
-                                    @endif
-                                @endforeach
-                                <div class="mt-2 text-right">
-                                    {!! Form::submit('Submit', ['class' => 'btn btn-primary']) !!}
+                                    <div class="d-flex">
+                                        {!! Form::text('collaborator_data[]', $collaborator->data, ['class' => 'form-control mr-2', 'placeholder' => 'Role (Sketch, Lines, etc.)']) !!}
+                                        {!! Form::checkbox('remove_user', 1, false, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'data-onstyle' => 'danger']) !!}
+                                    </div>
                                 </div>
-                            {!! Form::close() !!}
-                        @else
-                            @foreach($submission->collaborators as $collaborator)
-                                <div class="d-flex">
-                                    {!! $submission->status == 'Pending' && $collaborator->has_approved ? '<div class="mb-2 mr-2 text-success" data-toggle="tooltip" title="Has Approved"><i class="fas fa-check"></i></div>' : '' !!} {!! $collaborator->user->displayName !!}: {{ $collaborator->data }}
+                                @else
+                                    <div class="d-flex">
+                                        {!! $collaborator->has_approved ? '<div class="mb-2 mr-2 text-success" data-toggle="tooltip" title="Has Approved"><i class="fas fa-check"></i></div>' : '' !!} {!! $collaborator->user->displayName !!}: {{ $collaborator->data }}
+                                    </div>
+                                @endif
+                            @endforeach
+                            <div class="mt-2 text-right">
+                                {!! Form::submit('Submit', ['class' => 'btn btn-primary']) !!}
+                            </div>
+                        {!! Form::close() !!}
+                    @else
+                        @foreach($submission->collaborators as $collaborator)
+                            <div class="d-flex">
+                                {!! $submission->status == 'Pending' && $collaborator->has_approved ? '<div class="mb-2 mr-2 text-success" data-toggle="tooltip" title="Has Approved"><i class="fas fa-check"></i></div>' : '' !!} {!! $collaborator->user->displayName !!}: {{ $collaborator->data }}
+                            </div>
+                        @endforeach
+                    @endif
+                </div>
+            </div>
+        @endif
+        @if($submission->participants->count())
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Participants</h5>
+                </div>
+                <div class="card-body">
+                    @foreach($submission->participants as $participant)
+                        <div class="d-flex">
+                            {!! $participant->user->displayName !!}: {{ $participant->displayType }}
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+        @if($submission->characters->count())
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Characters</h5>
+                </div>
+                <div class="card-body">
+                    @foreach($submission->characters->chunk(1) as $chunk)
+                        <div class="row mb-2">
+                            @foreach($chunk as $character)
+                                <div class="col-md">
+                                    @include('galleries._character', ['character' => $character->character])
                                 </div>
                             @endforeach
-                        @endif
-                    </div>
+                        </div>
+                    @endforeach
                 </div>
-            @endif
-            @if($submission->participants->count())
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5>Participants</h5>
-                    </div>
-                    <div class="card-body">
-                        @foreach($submission->participants as $participant)
-                            <div class="d-flex">
-                                {!! $participant->user->displayName !!}: {{ $participant->displayType }}
-                            </div>
-                        @endforeach
-                    </div>
+            </div>
+        @endif
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Mention This</h5>
+            </div>
+            <div class="card-body">
+                In the rich text editor:
+                <div class="alert alert-secondary">
+                    [thumb={{ $submission->id }}]
                 </div>
-            @endif
-            @if($submission->characters->count())
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5>Characters</h5>
-                    </div>
-                    <div class="card-body">
-                        @foreach($submission->characters->chunk(1) as $chunk)
-                            <div class="row mb-2">
-                                @foreach($chunk as $character)
-                                    <div class="col-md">
-                                        @include('galleries._character', ['character' => $character->character])
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endforeach
-                    </div>
+                In a comment:
+                <div class="alert alert-secondary">
+                    [![Image]({{ $submission->thumbnailUrl }})]({{ $submission->url }})
                 </div>
-            @endif
+            </div>
         </div>
-    @endif
+    </div>
 </div>
 
 <!-- Comments -->
