@@ -105,7 +105,7 @@
                 <h5 class="card-title">Reports @if($reportCount)<span class="badge badge-primary">{{ $reportCount }}</span>@endif</h5>
                 <p class="card-text">
                     @if($reportCount)
-                        {{ $reportCount }} report {{ $reportCount == 1 ? '' : 's' }} awaiting assignment.
+                        {{ $reportCount }} report{{ $reportCount == 1 ? '' : 's' }} awaiting assignment.
                     @else 
                         The report queue is clear. Hooray!
                     @endif

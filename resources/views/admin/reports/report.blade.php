@@ -8,6 +8,8 @@
 @if($report->status !== 'Closed')
     @if($report->status == 'Assigned' && auth::user()->id !== $report->staff_id)
     <div class="alert alert-danger">This report is not assigned to you</div>
+    @elseif($report->status == 'Pending')
+    <div class="alert alert-warning">This report needs assigning</div>
     @endif
     <h1>
         Report (#{{ $report->id }})
