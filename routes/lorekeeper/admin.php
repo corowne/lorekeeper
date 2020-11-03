@@ -387,6 +387,14 @@ Route::group(['prefix' => 'claims', 'middleware' => 'power:manage_submissions'],
     Route::post('edit/{id}/{action}', 'SubmissionController@postSubmission')->where('action', 'approve|reject');
 });
 
+# REPORTS
+Route::group(['prefix' => 'reports', 'middleware' => 'power:manage_reports'], function() {
+    Route::get('/', 'ReportController@getReportIndex');
+    Route::get('/{status}', 'ReportController@getReportIndex')->where('status', 'pending|assigned|closed');
+    Route::get('edit/{id}', 'ReportController@getReport');
+    Route::post('edit/{id}/{action}', 'ReportController@postReport')->where('action', 'assign|close');
+});
+
 # DESIGN APPROVALS
 Route::group(['prefix' => 'designs', 'middleware' => 'power:manage_characters'], function() {
     Route::get('edit/{id}/{action}', 'DesignController@getDesignConfirmation')->where('action', 'cancel|approve|reject');

@@ -291,6 +291,19 @@ return [
     'url' => 'account/bookmarks'
     ],
     
+    // REPORT_ASSIGNED
+    220 => [
+        'name' => 'Report Assigned',
+        'message' => 'Your report (#{report_id}) was assigned to <a href="{staff_url}">{staff_name}</a>, you can expect a response soon. (<a href="{url}">View Report</a>)',
+        'url' => 'reports/view/{report_id}'
+    ],
+
+    // REPORT_CLOSED
+    221 => [
+        'name' => 'Report Closed',
+        'message' => 'Your report (#{report_id}) was closed by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Report</a>)',
+        'url' => 'reports/view/{report_id}'
+    ],
     // Comment made on user's model
     // COMMENT_MADE
     239 => [

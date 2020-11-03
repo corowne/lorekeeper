@@ -10,10 +10,11 @@
 @if($user->is_banned)
     <div class="alert alert-danger">This user has been banned.</div>
 @endif
-
 <h1>
 <img src="/images/avatars/{{ $user->avatar }}" style="width:125px; height:125px; float:left; border-radius:50%; margin-right:25px;">
-    {!! $user->displayName !!}
+    {!! $user->displayName !!} 
+    
+    <small><small><a href="{{ url('reports/new?url=') . $user->url }}"><i class="fas fa-exclamation-triangle fa-xs" data-toggle="tooltip" title="Click here to report this user." style="opacity: 50%;"></i></a></small></small>
 
     @if($user->settings->is_fto)
         <span class="badge badge-success float-right" data-toggle="tooltip" title="This user has not owned any characters from this world before.">FTO</span>
