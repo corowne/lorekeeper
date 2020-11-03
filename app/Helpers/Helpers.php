@@ -117,6 +117,7 @@ function parse($text, &$pings = null) {
     $users = $characters = null;
     $text = parseUsers($text, $users);
     $text = parseCharacters($text, $characters);
+    $text = parseGalleryThumbs($text, $submissions);
     if($pings) $pings = ['users' => $users, 'characters' => $characters];
 
     return $text;
@@ -167,6 +168,32 @@ function parseCharacters($text, &$characters) {
             if($character) {
                 $characters[] = $character;
                 $text = preg_replace('/\[character='.$match.'\]/', $character->displayName, $text);
+            }
+        }
+    }
+
+    return $text;
+}
+
+/**
+ * Parses a piece of user-entered text to match gallery submission thumb mentions
+ * and replace with a link.
+ *
+ * @param  string  $text
+ * @param  mixed   $submissions
+ * @return string
+ */
+function parseGalleryThumbs($text, &$submissions) {
+    $matches = null;
+    $submissions = [];
+    $count = preg_match_all('/\[thumb=([^\[\]&<>?"\']+)\]/', $text, $matches);
+    if($count) {
+        $matches = array_unique($matches[1]);
+        foreach($matches as $match) {
+            $submission = \App\Models\Gallery\GallerySubmission::where('id', $match)->first();
+            if($submission) {
+                $submissions[] = $submission;
+                $text = preg_replace('/\[thumb='.$match.'\]/', '<a href="'.$submission->url.'" data-toggle="tooltip" title="'.$submission->displayTitle.' by '.nl2br(htmlentities($submission->credits)).'">'.$submission->thumbnail.'</a>', $text);
             }
         }
     }
