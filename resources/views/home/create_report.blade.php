@@ -34,7 +34,7 @@
         <div class="br-form-group" style="display: none">
             <div class="form-group">
                 <div class="form-check">
-                    {!! Form::select('error', array('500' => '500 error', '404' => '404 error', 'text' => 'Text error', 'other' => 'Other error'), ['class' => 'form-check-input']) !!} {!! add_help('What error best describes the bug?') !!}
+                    {!! Form::select('error', array('500' => '500 error', '404' => '404 error', 'text' => 'Text error', 'exploit' => 'Exploit', 'other' => 'Other error'), ['class' => 'form-check-input']) !!} {!! add_help('What error best describes the bug?') !!}
                     {!! Form::label('error', 'Error type', ['class' => 'form-check-label']) !!}
                 </div>
             </div>

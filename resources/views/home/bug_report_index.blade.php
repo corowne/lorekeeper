@@ -9,12 +9,12 @@ Bug Reports
 </h1>
 
 <p>Please check the current 'fix in progress' reports to ensure your bug is not already being worked on! If the title is not descriptive enough, or does not match your bug, feel free to create a new one.</p>
-<div class="alert alert-warning">Please note that bug reports cannot be viewed unless they are closed to prevent users abusing exploits.</div>
+<div class="alert alert-warning">Please note that certain bug reports cannot be viewed until they are closed to prevent abuse.</div>
 
-@if(auth::check())
-<div class="text-right">
-        <a href="{{ url('reports/new') }}" class="btn btn-success">To make a new report, please go here</a>
-</div>
+@if(Auth::check())
+    <div class="text-right">
+            <a href="{{ url('reports/new') }}" class="btn btn-success">New Report</a>
+    </div>
 @endif
 <br>
 {!! Form::open(['method' => 'GET', 'class' => 'form-inline justify-content-end']) !!}

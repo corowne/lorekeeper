@@ -117,7 +117,7 @@
         </div>
     </div>
     @endif
-    @if (!Auth::user()->hasPower('manage_submissions') && !Auth::user()->hasPower('manage_characters'))
+    @if(!Auth::user()->hasPower('manage_submissions') && !Auth::user()->hasPower('manage_characters') && !Auth::user()->hasPower('manage_reports'))
       <div class="card p-4 col-12">
         <h5 class="card-title">You do not have a rank that allows you to access any queues.</h5>
         <p class="mb-1">
