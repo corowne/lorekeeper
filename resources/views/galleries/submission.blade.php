@@ -181,7 +181,11 @@
                 </div>
                 In a comment:
                 <div class="alert alert-secondary">
-                    [![Image]({{ $submission->thumbnailUrl }})]({{ $submission->url }})
+                    @if(isset($submission->hash))
+                        [![Image]({{ $submission->thumbnailUrl }})]({{ $submission->url }})
+                    @else
+                        [{{ $submission->displayTitle }} by {{ $submission->creditsPlain }} (Literature)]({{ $submission->url }})
+                    @endif
                 </div>
             </div>
         </div>

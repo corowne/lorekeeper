@@ -238,6 +238,10 @@ class UserController extends Controller
      */
     public function getUserOwnCharacterFavorites($name)
     {
+        $user = $this->user;
+        $userCharacters = $user->characters()->pluck('id')->toArray();
+        $userFavorites = $user->galleryFavorites()->pluck('gallery_submission_id')->toArray();
+        
         return view('user.favorites', [
             'user' => $this->user,
             'characters' => true,

@@ -313,12 +313,12 @@ class GallerySubmission extends Model
         '<div class="mx-auto img-thumbnail text-left" style="height:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.height')+8).'px; width:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.width')+4).'px;">
             <span class="badge-primary px-2 py-1" style="border-radius:0 0 .5em 0; position:absolute; z-index:5;">Literature</span>
             <div class="container-'.$this->id.' parsed-text pb-2 pr-2" style="height:'.Config::get('lorekeeper.settings.masterlist_thumbnails.height').'px; width:'.Config::get('lorekeeper.settings.masterlist_thumbnails.width').'px; overflow:hidden;">
-                <div class="content-'.$this->id.' text-body">'.$this->parsed_text.'</div>
+                <div class="content-'.$this->id.' text-body">'.substr($this->parsed_text, 0, 500).(strlen($this->parsed_text) > 500 ? '...' : '').'</div>
             </div>
         </div>
         <style>
-            .content-'.$this->id.' {transition-duration: '.(strlen($this->parsed_text)/1000).'s;}
-            .content-'.$this->id.':hover, .content-'.$this->id.':focus-within {transform: translateY(calc('.Config::get('lorekeeper.settings.masterlist_thumbnails.height').'px - 100%)); transition-duration: '.(strlen($this->parsed_text)/100).'s;}
+            .content-'.$this->id.' {transition-duration: '.(strlen(substr($this->parsed_text, 0, 500))/1000).'s;}
+            .content-'.$this->id.':hover, .content-'.$this->id.':focus-within {transform: translateY(calc('.Config::get('lorekeeper.settings.masterlist_thumbnails.height').'px - 100%)); transition-duration: '.(strlen(substr($this->parsed_text, 0, 500))/100).'s;}
         </style>';
     }
 
@@ -440,6 +440,22 @@ class GallerySubmission extends Model
             return implode(', ', $collaboratorList);
         }
         else return $this->user->displayName;
+    }
+
+    /**
+     * Get the users responsible for the submission (submitting user or collaborators).
+     *
+     * @return string
+     */
+    public function getCreditsPlainAttribute()
+    {
+        if($this->collaborators->count()) {
+            foreach($this->collaborators as $count=>$collaborator) {
+                $collaboratorList[] = $collaborator->user->name;
+            }
+            return implode(', ', $collaboratorList);
+        }
+        else return $this->user->name;
     }
 
     /**
