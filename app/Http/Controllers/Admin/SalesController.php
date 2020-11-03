@@ -64,7 +64,7 @@ class SalesController extends Controller
     {
         $id ? $request->validate(Sales::$updateRules) : $request->validate(Sales::$createRules);
         $data = $request->only([
-            'title', 'text', 'post_at', 'is_visible'
+            'title', 'text', 'post_at', 'is_visible', 'bump', 'is_open', 'comments_open_at'
         ]);
         if($id && $service->updateSales(Sales::find($id), $data, Auth::user())) {
             flash('Sales updated successfully.')->success();
