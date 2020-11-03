@@ -1,8 +1,8 @@
-@extends('home.layout')
+@extends('admin.layout')
 
-@section('home-title') Report #{{ $report->id }}) @endsection
+@section('admin-title') Report #{{ $report->id }}) @endsection
 
-@section('home-content')
+@section('admin-content')
     {!! breadcrumbs(['Admin Panel' => 'admin', 'Report Queue' => 'admin/reports/pending', 'Report (#' . $report->id . ')' => $report->viewUrl]) !!}
 
 @if($report->status !== 'Closed')
