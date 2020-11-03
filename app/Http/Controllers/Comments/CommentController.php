@@ -109,7 +109,7 @@ class CommentController extends Controller implements CommentControllerInterface
                 $recipients = $report->user; // User that has been commented on (or owner of sale post)
                 $post = 'your report'; // Simple message to show if it's profile/sales/news
                 $link = 'reports/view/' . $report->id . '/#comment-' . $comment->getKey();
-                if($recipients == $sender) $recipient = $report->staff;
+                if($recipients == $sender) $recipient = (isset($report->staff_id) ? $report->staff : User::find(Settings::get('admin_user')));
                 else  $recipient = $recipients;
                 break; 
                 break;  

@@ -50,7 +50,7 @@
                         <td>
                             @if($report->is_br == 1)<span class="badge badge-danger">Bug Report</span></td>@endif
                         <td>
-                            @if($report->is_br == 1) {{ $report->error_type }} error @endif
+                            @if($report->is_br == 1) {{ ucfirst($report->error_type).($report->error_type != 'exploit' ? ' Error' : '') }} @endif
                         </td>
                         <td class="text-right"><a href="{{ $report->adminUrl }}" class="btn btn-primary btn-sm">Details</a></td>
                     </tr>

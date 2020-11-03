@@ -103,8 +103,8 @@ class Report extends Model
     {
         if($user && $user->hasPower('manage_reports')) return $query;
         return $query->where(function($query) use ($user) {
-            if($user) $query->where('user_id', $user->id)->orWhere('status', 'Closed');
-            else $query->where('status', 'Closed');
+            if($user) $query->where('user_id', $user->id)->orWhere('error_type', '!=', 'exploit');
+            else $query->where('error_type', '!=', 'exploit');
         });
     }
 

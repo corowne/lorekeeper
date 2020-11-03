@@ -105,7 +105,7 @@
                 <h5 class="card-title">Reports @if($reportCount)<span class="badge badge-primary">{{ $reportCount }}</span>@endif</h5>
                 <p class="card-text">
                     @if($reportCount)
-                        {{ $reportCount }} report {{ $reportCount == 1 ? '' : 's' }} awaiting assignment.
+                        {{ $reportCount }} report{{ $reportCount == 1 ? '' : 's' }} awaiting assignment.
                     @else 
                         The report queue is clear. Hooray!
                     @endif
@@ -117,7 +117,7 @@
         </div>
     </div>
     @endif
-    @if (!Auth::user()->hasPower('manage_submissions') && !Auth::user()->hasPower('manage_characters'))
+    @if(!Auth::user()->hasPower('manage_submissions') && !Auth::user()->hasPower('manage_characters') && !Auth::user()->hasPower('manage_reports'))
       <div class="card p-4 col-12">
         <h5 class="card-title">You do not have a rank that allows you to access any queues.</h5>
         <p class="mb-1">

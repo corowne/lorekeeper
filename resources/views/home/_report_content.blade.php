@@ -11,6 +11,12 @@
         <div class="col-md-2 col-4"><h5>URL / Title</h5></div>
         <div class="col-md-10 col-8"><a href="{{ $report->url }}">{{ $report->url }}</a></div>
     </div>
+    @if($report->is_br == 1)
+        <div class="row">
+            <div class="col-md-2 col-4"><h5>Bug Type</h5></div>
+            <div class="col-md-10 col-8">{{ ucfirst($report->error_type).($report->error_type != 'exploit' ? ' Error' : '') }}</div>
+        </div>
+    @endif
     <div class="row">
         <div class="col-md-2 col-4"><h5>Submitted</h5></div>
         <div class="col-md-10 col-8">{!! format_date($report->created_at) !!} ({{ $report->created_at->diffForHumans() }})</div>
@@ -23,7 +29,6 @@
     @endif
 </div>
 <h2>Report Details</h2>
-@if($report->is_br == 1)<span class="float-left badge badge-danger">Bug Report -> {{ $report->error_type }} error</span><br>@endif
 <div class="card mb-3"><div class="card-body">{!! nl2br(htmlentities($report->comments)) !!}</div></div>
 
 @if(Auth::check() && $report->status == 'Assigned' && $report->user == Auth::user() || Auth::user()->hasPower('manage_reports'))
@@ -34,7 +39,6 @@
 @else
 <div class="alert alert-danger"> Please await admin assignment. </div>
 @endif
-@if(Auth::user()->hasPower('manage_reports'))<div class="alert alert-warning">Please include a small paragraph on the solution and as many important details as you deem necessary, as the user will no longer be able to view the comments after the report is closed</div>@endif
 @if(Auth::check() && $report->staff_comments && ($report->user_id == Auth::user()->id || Auth::user()->hasPower('manage_reports')))
     <h2>Staff Comments</h2>
     <div class="card mb-3"><div class="card-body">
