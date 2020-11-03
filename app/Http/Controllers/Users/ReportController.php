@@ -53,7 +53,7 @@ class ReportController extends Controller
      */
     public function getBugIndex(Request $request)
     {
-        $reports = Report::where('is_br', 1);
+        $reports = Report::where('is_br', 1)->where('status', 'Closed');
 
         $data = $request->only(['url']);
         
