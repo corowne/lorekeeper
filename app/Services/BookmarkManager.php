@@ -41,7 +41,8 @@ class BookmarkManager extends Service
                 'user_id' => $user->id,
                 'sort' => 0,
                 'notify_on_trade_status' => isset($data['notify_on_trade_status']) ? $data['notify_on_trade_status'] : 0, 
-                'notify_on_gift_art_status' => isset($data['notify_on_gift_art_status']) ? $data['notify_on_gift_art_status'] : 0, 
+                'notify_on_gift_art_status' => isset($data['notify_on_gift_art_status']) ? $data['notify_on_gift_art_status'] : 0,
+                'notify_on_gift_writing_status' => isset($data['notify_on_gift_writing_status']) ? $data['notify_on_gift_writing_status'] : 0, 
                 'notify_on_transfer' => isset($data['notify_on_transfer']) ? $data['notify_on_transfer'] : 0, 
                 'notify_on_image' => isset($data['notify_on_image']) ? $data['notify_on_image'] : 0, 
                 'comment' => $data['comment']
@@ -72,7 +73,8 @@ class BookmarkManager extends Service
 
             $bookmark->update([
                 'notify_on_trade_status' => isset($data['notify_on_trade_status']) ? $data['notify_on_trade_status'] : 0, 
-                'notify_on_gift_art_status' => isset($data['notify_on_gift_art_status']) ? $data['notify_on_gift_art_status'] : 0, 
+                'notify_on_gift_art_status' => isset($data['notify_on_gift_art_status']) ? $data['notify_on_gift_art_status'] : 0,
+                'notify_on_gift_writing_status' => isset($data['notify_on_gift_writing_status']) ? $data['notify_on_gift_writing_status'] : 0, 
                 'notify_on_transfer' => isset($data['notify_on_transfer']) ? $data['notify_on_transfer'] : 0,
                 'notify_on_image' => isset($data['notify_on_image']) ? $data['notify_on_image'] : 0,  
                 'comment' => $data['comment']
