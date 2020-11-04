@@ -10,6 +10,7 @@ use App\Models\Item\ItemCategory;
 use App\Models\Item\Item;
 use App\Models\Item\ItemTag;
 use App\Models\Shop\Shop;
+use App\Models\Shop\ShopStock;
 use App\Models\Prompt\Prompt;
 use App\Models\Currency\Currency;
 
