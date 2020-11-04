@@ -27,7 +27,7 @@ return [
         'power' => 'manage_reports',
         'links' => [
             [
-                'name' => 'Report Quque',
+                'name' => 'Report Queue',
                 'url' => 'admin/reports/pending'
             ]
         ]
