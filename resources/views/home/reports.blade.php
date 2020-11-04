@@ -26,22 +26,18 @@ My Reports
 
 @if(count($reports))
     {!! $reports->render() !!}
-    <table class="table table-sm">
-        <thead>
-            <tr>
-                <th width="30%">Link / Title</th>
-                <th width="20%">Submitted</th>
-                <th>Status</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="row ml-md-2">
+      <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-bottom">
+        <div class="col-6 col-md-4 font-weight-bold">Link/Title</div>
+        <div class="col-6 col-md-5 font-weight-bold">Submitted</div>
+        <div class="col-12 col-md-1 font-weight-bold">Status</div>
+      </div>
             @foreach($reports as $report)
                 @include('home._report', ['report' => $report])
             @endforeach
-        </tbody>
-    </table>
+      </div>
     {!! $reports->render() !!}
+    <div class="text-center mt-4 small text-muted">{{ $reports->total() }} result{{ $reports->total() == 1 ? '' : 's' }} found.</div>
 @else 
     <p>No reports found.</p>
 @endif

@@ -22,44 +22,31 @@
 </ul>
 
 {!! $reports->render() !!}
-<table>
-    <thead>
-        <table class="table table-sm">
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th width="20%">Link / Title</th>
-                    <th width="20%">Submitted</th>
-                    <th>Status</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($reports as $report)
-                    <tr>
-                        <td>{!! $report->user->displayName !!}</td>
-                        <td class="text-break"><a href="{{ $report->url }}">{{ $report->url }}</a></td>
-                        <td>{!! format_date($report->created_at) !!}</td>
-                        <td>
-                            <span class="badge badge-{{ $report->status == 'Pending' ? 'secondary' : ($report->status == 'Closed' ? 'success' : 'danger') }}">{{ $report->status }}</span>
-                        </td>
-                        @if($report->status !== 'Pending')<td>
-                            Assigned to: {!! $report->staff->displayName !!}</td> @endif
-                        <td>
-                            @if($report->is_br == 1)<span class="badge badge-danger">Bug Report</span></td>@endif
-                        <td>
-                            @if($report->is_br == 1) {{ ucfirst($report->error_type).($report->error_type != 'exploit' ? ' Error' : '') }} @endif
-                        </td>
-                        <td class="text-right"><a href="{{ $report->adminUrl }}" class="btn btn-primary btn-sm">Details</a></td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </thead>
-</table>
-{!! $reports->render() !!}
 
+<div class="row ml-md-2">
+  <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-bottom">
+    <div class="col-6 col-md-3 font-weight-bold">User</div>
+    <div class="col-6 col-md-4 font-weight-bold">Url/Title</div>
+    <div class="col-6 col-md-3 font-weight-bold">Submitted</div>
+    <div class="col-6 col-md-1 font-weight-bold">Status</div>
+  </div>
+
+  @foreach($reports as $report)
+    <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-top">
+      <div class="col-6 col-md-3">{!! $report->user->displayName !!}</div>
+      <div class="col-6 col-md-4">
+        <span class="ubt-texthide">@if(!$report->is_br)<a href="{{ $report->url }}">@endif {{ $report->url }} @if(!$report->is_br)</a>@endif</span>
+      </div>
+      <div class="col-6 col-md-3">{!! pretty_date($report->created_at) !!}</div>
+      <div class="col-3 col-md-1">
+        <span class="badge badge-{{ $report->status == 'Pending' ? 'secondary' : ($report->status == 'Closed' ? 'success' : 'danger') }}">{{ $report->status }}</span>
+      </div>
+      <div class="col-3 col-md-1"><a href="{{ $report->adminUrl }}" class="btn btn-primary btn-sm py-0 px-1">Details</a></div>
+    </div>
+  @endforeach
+</div>
+
+{!! $reports->render() !!}
+<div class="text-center mt-4 small text-muted">{{ $reports->total() }} result{{ $reports->total() == 1 ? '' : 's' }} found.</div>
 
 @endsection
