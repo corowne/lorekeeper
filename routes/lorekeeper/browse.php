@@ -142,15 +142,6 @@ Route::group(['prefix' => 'claims', 'namespace' => 'Users'], function() {
 **************************************************************************************************/
 Route::get('comment/{id}', 'PermalinkController@getComment');
 
-Route::group(['prefix' => 'comments', 'namespace' => 'Comments'], function() {
-    Route::post('/', 'CommentController@store')->name('comments.store');
-    Route::delete('/{comment}', 'CommentController@destroy')->name('comments.destroy');
-    Route::put('/{comment}', 'CommentController@update')->name('comments.update');
-    Route::post('/{comment}', 'CommentController@reply')->name('comments.reply');
-    Route::post('/{id}/feature', 'CommentController@feature')->name('comments.feature');
-});
-
-Route::get('comment/{id}', 'PermalinkController@getComment');
 /**************************************************************************************************
     Reports
 **************************************************************************************************/
