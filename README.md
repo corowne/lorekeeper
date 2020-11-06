@@ -34,6 +34,7 @@ Please see the associated wiki page for each extension for more information on t
 - [itinerare](https://github.com/itinerare) : [Watermarking](http://wiki.lorekeeper.me/index.php?title=Extensions:Watermarking)
 - [itinerare](https://github.com/itinerare) : [Separate Prompts](http://wiki.lorekeeper.me/index.php?title=Extensions:Separate_Prompts)
 - [Preimpression](https://github.com/preimpression) & [Ne-wt](https://github.com/Ne-wt) : [Comments](http://wiki.lorekeeper.me/index.php?title=Extensions:Comments)
+- [Ne-wt](https://github.com/Ne-wt) : [Reports](https://github.com/Ne-wt/lorekeeper/tree/reports) : Adds the ability for users to submit general and bug reports, as well as providing a visible list of current, non-sensitive (exploit) bugs.
 
 # Setup
 
@@ -83,3 +84,6 @@ All settings are configured in 'config/lorekeeper/settings.php' and disabled by 
 
 **Separate Prompts:**
 - It's recommended to customize the index page and/or sidebar for the new prompts section. | Configured in: resources/views/prompts
+
+**Reports:**
+- Whether or not reports are open | Default: 1/open | Configured in: Site settings admin panel
