@@ -157,3 +157,12 @@ Route::group(['prefix' => 'gallery'], function() {
     Route::get('view/{id}', 'GalleryController@getSubmission');
     Route::get('view/favorites/{id}', 'GalleryController@getSubmissionFavorites');
 });
+
+/**************************************************************************************************
+    Reports
+**************************************************************************************************/
+Route::group(['prefix' => 'reports', 'namespace' => 'Users'], function() {
+    Route::get('/bug-reports', 'ReportController@getBugIndex');
+});
+
+

@@ -109,6 +109,19 @@ class AddSiteSettings extends Command
             $this->info("Added:   is_claims_open / Default: 1");
         }
         else $this->line("Skipped: is_claims_open");
+
+        if(!DB::table('site_settings')->where('key', 'is_reports_open')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'is_reports_open',
+                    'value' => 1,
+                    'description' => '0: New reports cannot be made (mods can work on the queue still), 1: Reports are submittable.'
+                ]
+
+            ]);
+            $this->info("Added:   is_reports_open / Default: 1");
+        }
+        else $this->line("Skipped: is_reports_open");
         
         if(!DB::table('site_settings')->where('key', 'is_myos_open')->exists()) {
             DB::table('site_settings')->insert([

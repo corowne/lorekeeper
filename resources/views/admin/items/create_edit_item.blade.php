@@ -96,12 +96,6 @@
     </div>
     <div class="col-md">
         <div class="form-group">
-            {!! Form::label('shops[]', 'Purchase Location(s) (Optional)') !!} {!! add_help('You can select up to 10 shops at once.') !!}
-            {!! Form::select('shops[]', $shops, $item && isset($item->data['shops']) ? $item->data['shops'] : '', ['id' => 'shopsList', 'class' => 'form-control', 'multiple']) !!}
-        </div>
-    </div>
-    <div class="col-md">
-        <div class="form-group">
             {!! Form::label('prompts[]', 'Drop Location(s) (Optional)') !!} {!! add_help('You can select up to 10 prompts at once.') !!}
             {!! Form::select('prompts[]', $prompts, $item && isset($item->data['prompts']) ? $item->data['prompts'] : '', ['id' => 'promptsList', 'class' => 'form-control', 'multiple']) !!}
         </div>

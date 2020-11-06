@@ -18,6 +18,7 @@ use App\Models\Sales;
 use App\Models\User\User;
 use App\Models\News;
 use App\Models\Gallery\GallerySubmission;
+use App\Models\Report\Report;
 use App\Models\SitePage;
 
 use Notifications;
@@ -105,20 +106,28 @@ class CommentController extends Controller implements CommentControllerInterface
                 $recipient = $news->user; // User that has been commented on (or owner of sale post)
                 $post = 'your news post'; // Simple message to show if it's profile/sales/news
                 $link = $news->url . '/#comment-' . $comment->getKey();
-                break; 
+                break;
+            case 'App\Models\Report\Report':
+                $report = Report::find($comment->commentable_id);
+                $recipients = $report->user; // User that has been commented on (or owner of sale post)
+                $post = 'your report'; // Simple message to show if it's profile/sales/news
+                $link = 'reports/view/' . $report->id . '/#comment-' . $comment->getKey();
+                if($recipients == $sender) $recipient = (isset($report->staff_id) ? $report->staff : User::find(Settings::get('admin_user')));
+                else  $recipient = $recipients;
+                break;
+            case 'App\Models\SitePage':
+                $page = SitePage::find($comment->commentable_id);
+                $recipient = User::find(Settings::get('admin_user'));
+                $post = 'your site page';
+                $link = $page->url . '/#comment-' . $comment->getKey();
+                break;
             case 'App\Models\Gallery\GallerySubmission':
                 $submission = GallerySubmission::find($comment->commentable_id);
                 if($type == 'Staff-Staff') $recipient = User::find(Settings::get('admin_user')); 
                 else $recipient = $submission->user;
                 $post = (($type != 'User-User') ? 'your gallery submission\'s staff comments' : 'your gallery submission');
                 $link = (($type != 'User-User') ? $submission->queueUrl . '/#comment-' . $comment->getKey() : $submission->url . '/#comment-' . $comment->getKey());
-                break;  
-            case 'App\Models\SitePage':
-                $page = SitePage::find($comment->commentable_id);
-                $recipient = User::find(Settings::get('admin_user'));
-                $post = 'your site page';
-                $link = $page->url . '/#comment-' . $comment->getKey();
-                break;  
+                break;
             } 
 
 
