@@ -23,6 +23,15 @@ return [
             ]
         ]
     ],
+    'Reports' => [
+        'power' => 'manage_reports',
+        'links' => [
+            [
+                'name' => 'Report Queue',
+                'url' => 'admin/reports/pending'
+            ]
+        ]
+    ],
     'Site' => [
         'power' => 'edit_pages',
         'links' => [
