@@ -99,7 +99,7 @@ class InventoryController extends Controller
         isset($stack->first()->character->user_id) ?
         $ownerId = $stack->first()->character->user_id : null;
 
-        $hasPower = Auth::user()->hasPower('edit_inventories');
+        $hasPower = Auth::check() ? Auth::user()->hasPower('edit_inventories') : false;
         $readOnly = $request->get('read_only') ? : ((Auth::check() && $first_instance && (isset($ownerId) == TRUE || $hasPower == TRUE)) ? 0 : 1);
 
         return view('character._inventory_stack', [
