@@ -59,7 +59,8 @@
             <div class="col-md ml-md-2">
                 <div class="card">
                     <div class="card-header">
-                        <h5>{{ $submission->displayTitle }}</h5>
+                        <h5>{{ $submission->displayTitle }}
+                        <a class="float-right" href="{{ url('reports/new?url=') . $submission->url }}"><i class="fas fa-exclamation-triangle" data-toggle="tooltip" title="Click here to report this submission." style="opacity: 50%;"></i></a></h5>
                         <div class="float-right">
                             @if(Auth::check() && ($submission->user->id != Auth::user()->id && $submission->collaborators->where('user_id', Auth::user()->id)->first() == null) && $submission->isVisible)
                                 {!! Form::open(['url' => '/gallery/favorite/'.$submission->id]) !!} 
@@ -184,7 +185,7 @@
                     @if(isset($submission->hash))
                         [![Image]({{ $submission->thumbnailUrl }})]({{ $submission->url }})
                     @else
-                        [{{ $submission->displayTitle }} by {{ $submission->creditsPlain }} (Literature)]({{ $submission->url }})
+                        [{{ $submission->displayTitle }} by {{ $submission->creditsPlain }} (Literature){{ isset($submission->content_warning) ? ' ・ **Content Warning:** '.nl2br(htmlentities($submission->content_warning)) : '' }}]({{ $submission->url }})
                     @endif
                 </div>
             </div>

@@ -193,7 +193,7 @@ function parseGalleryThumbs($text, &$submissions) {
             $submission = \App\Models\Gallery\GallerySubmission::where('id', $match)->first();
             if($submission) {
                 $submissions[] = $submission;
-                $text = preg_replace('/\[thumb='.$match.'\]/', '<a href="'.$submission->url.'" data-toggle="tooltip" title="'.$submission->displayTitle.' by '.nl2br(htmlentities($submission->credits)).'">'.$submission->thumbnail.'</a>', $text);
+                $text = preg_replace('/\[thumb='.$match.'\]/', '<a href="'.$submission->url.'" data-toggle="tooltip" title="'.$submission->displayTitle.' by '.nl2br(htmlentities($submission->creditsPlain)).(isset($submission->content_warning) ? '<br/><strong>Content Warning:</strong> '.nl2br(htmlentities($submission->content_warning)) : '').'">'.$submission->thumbnail.'</a>', $text);
             }
         }
     }
