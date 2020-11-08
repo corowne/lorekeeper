@@ -390,7 +390,7 @@ Route::group(['prefix' => 'claims', 'middleware' => 'power:manage_submissions'],
 # REPORTS
 Route::group(['prefix' => 'reports', 'middleware' => 'power:manage_reports'], function() {
     Route::get('/', 'ReportController@getReportIndex');
-    Route::get('/{status}', 'ReportController@getReportIndex')->where('status', 'pending|assigned|closed');
+    Route::get('/{status}', 'ReportController@getReportIndex')->where('status', 'pending|assigned|assigned-to-me|closed');
     Route::get('edit/{id}', 'ReportController@getReport');
     Route::post('edit/{id}/{action}', 'ReportController@postReport')->where('action', 'assign|close');
 });
