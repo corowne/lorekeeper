@@ -29,13 +29,9 @@
             {!! Form::checkbox('is_br', 1, 0, ['class' => 'is-br-class form-check-input', 'data-toggle' => 'toggle']) !!}
             {!! Form::label('is_br', 'Is this report a bug report?', ['class' => 'is-br-label form-check-label']) !!} {!! add_help('Only check this box if it has not already been reported/you cannot find a matching bug in the bug report index.') !!}
         </div>
-        <div class="br-form-group" style="display: none">
-            <div class="form-group">
-                <div class="form-check">
-                    {!! Form::select('error', array('500' => '500 error', '404' => '404 error', 'text' => 'Text error', 'exploit' => 'Exploit', 'other' => 'Other error'), ['class' => 'form-check-input']) !!} {!! add_help('What error best describes the bug?') !!}
-                    {!! Form::label('error', 'Error type', ['class' => 'form-check-label']) !!}
-                </div>
-            </div>
+        <div class="br-form-group mb-2" style="display: none">
+            {!! Form::label('error', 'Error type', ['class' => 'form-check-label mb-2']) !!} {!! add_help('What error best describes the bug?') !!}
+            {!! Form::select('error', ['500' => '500 error', '404' => '404 error', 'text' => 'Text error', 'exploit' => 'Exploit', 'other' => 'Other error'], null, ['class' => 'form-control mr-2', 'placeholder' => 'Select Type']) !!}
         </div>
         <div class="form-group">
             {!! Form::label('comments', 'Comments (Optional)') !!} {!! add_help('Enter a comment for your report (no HTML). This will be viewed by the mods when reviewing your report.') !!}
