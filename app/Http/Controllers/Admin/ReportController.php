@@ -26,7 +26,8 @@ class ReportController extends Controller
      */
     public function getReportIndex(Request $request, $status = null)
     {
-        $reports = Report::where('status', $status ? ucfirst($status) : 'Pending');
+        if($status == 'assigned-to-me') $reports = Report::assignedToMe(Auth::user()); 
+        else $reports = Report::where('status', $status ? ucfirst($status) : 'Pending');
 
         return view('admin.reports.index', [
             'reports' => $reports->orderBy('id', 'DESC')->paginate(30)->appends($request->query()),

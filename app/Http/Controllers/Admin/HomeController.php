@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 
 use Settings;
+use Auth;
 
 use App\Models\Submission\Submission;
 use App\Models\Gallery\GallerySubmission;
@@ -33,6 +34,7 @@ class HomeController extends Controller
             'designCount' => CharacterDesignUpdate::characters()->where('status', 'Pending')->count(),
             'myoCount' => CharacterDesignUpdate::myos()->where('status', 'Pending')->count(),
             'reportCount' => Report::where('status', 'Pending')->count(),
+            'assignedReportCount' => Report::assignedToMe(Auth::user())->count(),
             'openTransfersQueue' => $openTransfersQueue,
             'transferCount' => $openTransfersQueue ? CharacterTransfer::active()->where('is_approved', 0)->count() : 0,
             'tradeCount' => $openTransfersQueue ? Trade::where('status', 'Pending')->count() : 0,

@@ -94,6 +94,17 @@ class Report extends Model
     }
 
     /**
+     * Scope a query to only include reports assigned to a given user.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeAssignedToMe($query, $user)
+    {
+        return $query->where('status', 'Assigned')->where('staff_id', $user->id);
+    }
+
+    /**
      * Scope a query to only include viewable reports.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
