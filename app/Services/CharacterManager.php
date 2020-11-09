@@ -261,23 +261,37 @@ class CharacterManager extends Service
 
             $image = CharacterImage::create($imageData);
 
+            // Check that users with the specified name(s) exist on site
+            foreach($data['designer_alias'] as $username) {
+                if(isset($username) && $username) {
+                    $user = User::where('name', $username)->first()->id;
+                    if(!$user) throw new \Exception('One or more designers do not exist on the site. Please check that you have correctly entered their usernames; for off-site designers, please use the link field.');
+                }
+            }
+            foreach($data['artist_alias'] as $username) {
+                if(isset($username) && $username) {
+                    $user = User::where('name', $username)->first()->id;
+                    if(!$user) throw new \Exception('One or more artists do not exist on the site. Please check that you have correctly entered their usernames; for off-site designers, please use the link field.');
+                }
+            }
+
             // Attach artists/designers
-            foreach($data['designer_alias'] as $key => $alias) {
-                if($alias || $data['designer_url'][$key])
+            foreach($data['designer_alias'] as $key => $username) {
+                if($username || $data['designer_url'][$key])
                     DB::table('character_image_creators')->insert([
                         'character_image_id' => $image->id,
                         'type' => 'Designer',
                         'url' => $data['designer_url'][$key],
-                        'alias' => $alias
+                        'user_id' => User::where('name', $username)->first()->id
                     ]);
             }
-            foreach($data['artist_alias'] as $key => $alias) {
-                if($alias || $data['artist_url'][$key])
+            foreach($data['artist_alias'] as $key => $username) {
+                if($username || $data['artist_url'][$key])
                     DB::table('character_image_creators')->insert([
                         'character_image_id' => $image->id,
                         'type' => 'Artist',
                         'url' => $data['artist_url'][$key],
-                        'alias' => $alias
+                        'user_id' => User::where('name', $username)->first()->id
                     ]);
             }
 
@@ -549,28 +563,42 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            // Check that users with the specified name(s) exist on site
+            foreach($data['designer_alias'] as $username) {
+                if(isset($username) && $username) {
+                    $user = User::where('name', $username)->first()->id;
+                    if(!$user) throw new \Exception('One or more designers do not exist on the site. Please check that you have correctly entered their usernames; for off-site designers, please use the link field.');
+                }
+            }
+            foreach($data['artist_alias'] as $username) {
+                if(isset($username) && $username) {
+                    $user = User::where('name', $username)->first()->id;
+                    if(!$user) throw new \Exception('One or more artists do not exist on the site. Please check that you have correctly entered their usernames; for off-site designers, please use the link field.');
+                }
+            }
+            
             $old = $this->generateCredits($image);
 
             // Clear old artists/designers
             $image->creators()->delete();
 
             // Attach artists/designers
-            foreach($data['designer_alias'] as $key => $alias) {
-                if($alias || $data['designer_url'][$key])
+            foreach($data['designer_alias'] as $key => $username) {
+                if($username || $data['designer_url'][$key])
                     DB::table('character_image_creators')->insert([
                         'character_image_id' => $image->id,
                         'type' => 'Designer',
                         'url' => $data['designer_url'][$key],
-                        'alias' => trim($alias)
+                        'user_id' => User::where('name', $username)->first()->id
                     ]);
             }
-            foreach($data['artist_alias'] as $key => $alias) {
-                if($alias || $data['artist_url'][$key])
+            foreach($data['artist_alias'] as $key => $username) {
+                if($username || $data['artist_url'][$key])
                     DB::table('character_image_creators')->insert([
                         'character_image_id' => $image->id,
                         'type' => 'Artist',
                         'url' => $data['artist_url'][$key],
-                        'alias' => trim($alias)
+                        'user_id' => User::where('name', $username)->first()->id
                     ]);
             }
             
@@ -633,7 +661,7 @@ class CharacterManager extends Service
     }
 
     /**
-     * Reuploads an image.
+     * Deletes an image.
      *
      * @param  \App\Models\Character\CharacterImage  $image
      * @param  \App\Models\User\User                 $user
@@ -1554,25 +1582,39 @@ class CharacterManager extends Service
             $request->designers()->delete();
             $request->artists()->delete();
 
+            // Check that users with the specified name(s) exist on site
+            foreach($data['designer_alias'] as $username) {
+                if(isset($username) && $username) {
+                    $user = User::where('name', $username)->first()->id;
+                    if(!$user) throw new \Exception('One or more designers do not exist on the site. Please check that you have correctly entered their usernames; for off-site designers, please use the link field.');
+                }
+            }
+            foreach($data['artist_alias'] as $username) {
+                if(isset($username) && $username) {
+                    $user = User::where('name', $username)->first()->id;
+                    if(!$user) throw new \Exception('One or more artists do not exist on the site. Please check that you have correctly entered their usernames; for off-site designers, please use the link field.');
+                }
+            }
+
             // Attach artists/designers
-            foreach($data['designer_alias'] as $key => $alias) {
-                if($alias || $data['designer_url'][$key])
+            foreach($data['designer_alias'] as $key => $username) {
+                if($username || $data['designer_url'][$key])
                     DB::table('character_image_creators')->insert([
                         'character_image_id' => $request->id,
                         'type' => 'Designer',
                         'character_type' => 'Update',
                         'url' => $data['designer_url'][$key],
-                        'alias' => $alias
+                        'user_id' => User::where('name', $username)->first()->id
                     ]);
             }
-            foreach($data['artist_alias'] as $key => $alias) {
-                if($alias || $data['artist_url'][$key])
+            foreach($data['artist_alias'] as $key => $username) {
+                if($username || $data['artist_url'][$key])
                     DB::table('character_image_creators')->insert([
                         'character_image_id' => $request->id,
                         'type' => 'Artist',
                         'character_type' => 'Update',
                         'url' => $data['artist_url'][$key],
-                        'alias' => $alias
+                        'user_id' => User::where('name', $username)->first()->id
                     ]);
             }
 

@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 use App\Models\Character\Character;
+use App\Models\Character\CharacterImageCreator;
 use App\Models\Rank\RankPower;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
@@ -422,6 +423,20 @@ class User extends Authenticatable implements MustVerifyEmail
                 $this->settings->save();
             }
         }
+    }
+
+    /**     
+     * Checks if there are art or design credits credited to the user's alias and credits them to their account accordingly.
+     */    
+    public function updateArtDesignCredits()    
+    {
+        if(!$this->alias) return;
+        
+        // Find any art credited to this alias and update credit to this account.
+        if(CharacterImageCreator::where('alias', $this->alias)->update([
+            'alias' => null,
+            'user_id' => $this->id
+        ]));
     }
 
     /**
