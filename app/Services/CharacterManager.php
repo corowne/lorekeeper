@@ -2122,7 +2122,7 @@ class CharacterManager extends Service
             // and clear the character's name
             if($request->character->is_myo_slot)
             {
-                if(Config::get('lorekeeper.settings.clear_myo_name_on_approval')) $request->character->name = null;
+                if(Config::get('lorekeeper.settings.clear_myo_slot_name_on_approval')) $request->character->name = null;
                 $request->character->is_myo_slot = 0;
                 $request->user->settings->is_fto = 0;
                 $request->user->settings->save();
