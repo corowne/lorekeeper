@@ -15,7 +15,7 @@ class AddUserIdToCharacterImageCreators extends Migration
     {
         Schema::table('character_image_creators', function (Blueprint $table) {
             //
-            $table->integer('user_id')->unsigned();
+            $table->integer('user_id')->unsigned()->nullable();
         });
     }
 
