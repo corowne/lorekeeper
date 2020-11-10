@@ -51,6 +51,10 @@ class AssignArtCreditsToIds extends Command
             if($user) {
                 $creator->update(['alias' => null, 'user_id' => $user->id]);
             }
+            elseif(!$user) {
+                $alias = $creator->alias;
+                $creator->update(['alias' => null, 'url' => 'https://deviantart.com/'.$alias]);
+            }
         }
     }
 }
