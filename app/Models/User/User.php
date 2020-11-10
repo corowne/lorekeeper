@@ -433,10 +433,14 @@ class User extends Authenticatable implements MustVerifyEmail
         if(!$this->alias) return;
         
         // Find any art credited to this alias and update credit to this account.
-        if(CharacterImageCreator::where('alias', $this->alias)->update([
-            'alias' => null,
-            'user_id' => $this->id
-        ]));
+        if(CharacterImageCreator::where('alias', $this->alias)->update(['alias' => null, 'user_id' => $this->id]));
+
+        $urlCreators = CharacterImageCreator::whereNotNull('url')->pluck('url','id');
+        if(count($urlCreators)) {
+            $matches = null;
+            foreach($urlCreators as $key=>$creator) preg_match_all('/deviantart\.com\/([A-Za-z0-9_-]+)/', $creator, $matches[$key]);
+            foreach($matches as $key=>$match) if($match[1][0] == $this->alias) CharacterImageCreator::find($key)->update(['url' => null, 'user_id' => $this->id]);
+        }
     }
 
     /**
