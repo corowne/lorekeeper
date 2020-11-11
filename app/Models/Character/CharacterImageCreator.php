@@ -76,7 +76,7 @@ class CharacterImageCreator extends Model
         }
         else if ($this->url)
         {
-            return '<a href="'.$this->url.'" class="display-creator">'. ($this->url) .'</a>';
+            return prettyProfileLink($this->url);
         }
         else if($this->alias)
         {
