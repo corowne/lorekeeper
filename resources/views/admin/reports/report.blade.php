@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('admin-title') Report #{{ $report->id }}) @endsection
+@section('admin-title') Report (#{{ $report->id }}) @endsection
 
 @section('admin-content')
     {!! breadcrumbs(['Admin Panel' => 'admin', 'Report Queue' => 'admin/reports/pending', 'Report (#' . $report->id . ')' => $report->viewUrl]) !!}

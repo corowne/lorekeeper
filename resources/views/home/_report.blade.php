@@ -8,9 +8,9 @@
     </div>
     <div class="col-6 col-md-2 text-right">
         @if($report->status == 'Closed' || ($report->status == 'Assigned' && $report->is_br && $report->error_type != 'exploit') || (Auth::check() && Auth::user()->id == $report->user_id)) 
-            <td class="text-right"><a href="{{ $report->viewUrl }}" class="btn btn-primary btn-sm">Details</a></td>
+            <a href="{{ $report->viewUrl }}" class="btn btn-primary btn-sm">Details</a>
         @else 
-            <td class="text-right"><div class="btn btn-dark btn-sm">Report not closed</a></td>
+            <a class="btn btn-dark btn-sm text-light">Report not closed</a>
         @endif
     </div>
 </div>

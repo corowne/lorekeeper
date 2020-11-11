@@ -2,7 +2,7 @@
     <div class="card-header">
         <h2 class="card-title mb-0">{!! $sales->displayName !!}</h2>
         <small>
-            Posted {!! $sales->post_at ? format_date($sales->post_at) : format_date($sales->created_at) !!} by {!! $sales->user->displayName !!}
+            Posted {!! $sales->post_at ? pretty_date($sales->post_at) : pretty_date($sales->created_at) !!} :: Last edited {!! pretty_date($sales->updated_at) !!} by {!! $sales->user->displayName !!}
         </small>
     </div>
     <div class="card-body">

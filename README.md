@@ -38,6 +38,7 @@ Please see the associated wiki page for each extension for more information on t
 - [Preimpression](https://github.com/preimpression) & [Ne-wt](https://github.com/Ne-wt) : [Comments](http://wiki.lorekeeper.me/index.php?title=Extensions:Comments)
 - [Junijwi](https://github.com/junijwi) : [Masterlist Sublists](http://wiki.lorekeeper.me/index.php?title=Extensions:Masterlist_Sublists)
 - [Junijwi](https://github.com/junijwi) : [MYO Item Tag](http://wiki.lorekeeper.me/index.php?title=Extensions:MYO_Item_Tag)
+- [Ne-wt](https://github.com/Ne-wt) : [Reports](https://github.com/Ne-wt/lorekeeper/tree/reports) : Adds the ability for users to submit general and bug reports, as well as providing a visible list of current, non-sensitive (exploit) bugs.
 
 ### Extensions Toggleable in Config
 
@@ -51,7 +52,7 @@ These extensions are included within this branch, but are opt-in and must be ena
 
 # Setup
 
-Please see [the Readme](https://github.com/corowne/lorekeeper/blob/master/README.md) or refer to the [Wiki](http://lorekeeper-arpg.wikidot.com/) for general instructions. It is **highly recommended** that you set up core Lorekeeper first and make sure it's functional before modifying it in any fashion.
+Please see [the Readme](https://github.com/corowne/lorekeeper/blob/master/README.md) or refer to the [Wiki](http://lorekeeper-arpg.wikidot.com/) for general instructions. It is **recommended** that you set up core Lorekeeper first and make sure it's functional before modifying it in any fashion, though it is not strictly required.
 
 ## Updating from Core or a Previously Modified Version of Core
 
@@ -97,3 +98,6 @@ All settings are configured in `config/lorekeeper/settings.php` and disabled by 
 
 **Separate Prompts:**
 - It's recommended to customize the index page and/or sidebar for the new prompts section. | Configured in: resources/views/prompts
+
+**Reports:**
+- Whether or not reports are open | Default: 1/open | Configured in: Site settings admin panel
