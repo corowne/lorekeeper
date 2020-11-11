@@ -8,6 +8,8 @@ This version of Lorekeeper is modified. It contains several extensions-- additio
 - An unavoidable change in behavior, but one that is arguably a net quality-of-life improvement. May also be highly useful as a base for other extensions to build upon.
 - Opt-in/must be deliberately enabled for significant changes in the behavior of the site to occur. No more obtrusive than effectively optional functions in core Lorekeeper if not in use. 
 
+Certain extensions are also included on an opt-in basis, via a config file. This is done because they provide notable QoL and are broadly desirable, but perhaps not universally; these also tend to be restrained enough in scope that they can be made opt-in in this way.
+
 It also serves as a base for developing extensions, providing several common 'dependencies'.
 
 **Reference Links:**
@@ -34,6 +36,18 @@ Please see the associated wiki page for each extension for more information on t
 - [itinerare](https://github.com/itinerare) : [Watermarking](http://wiki.lorekeeper.me/index.php?title=Extensions:Watermarking)
 - [itinerare](https://github.com/itinerare) : [Separate Prompts](http://wiki.lorekeeper.me/index.php?title=Extensions:Separate_Prompts)
 - [Preimpression](https://github.com/preimpression) & [Ne-wt](https://github.com/Ne-wt) : [Comments](http://wiki.lorekeeper.me/index.php?title=Extensions:Comments)
+- [Junijwi](https://github.com/junijwi) : [Masterlist Sublists](http://wiki.lorekeeper.me/index.php?title=Extensions:Masterlist_Sublists)
+- [Junijwi](https://github.com/junijwi) : [MYO Item Tag](http://wiki.lorekeeper.me/index.php?title=Extensions:MYO_Item_Tag)
+
+### Extensions Toggleable in Config
+
+These extensions are included within this branch, but are opt-in and must be enabled via a config file (located at `config/lorekeeper/extensions.php`).
+
+- [Junijwi](https://github.com/junijwi) : [Navbar News Notif](http://wiki.lorekeeper.me/index.php?title=Extensions:Navbar_News_Notif) - Has also been modified to apply to sales
+- [itinerare](https://github.com/itinerare) : [Species Trait Index](http://wiki.lorekeeper.me/index.php?title=Extensions:Species_Trait_Index)
+- [Junijwi](https://github.com/junijwi) : [Character Status Badges](http://wiki.lorekeeper.me/index.php?title=Extensions:Character_Status_Badges)
+- [Junijwi](https://github.com/junijwi) : [Character TH Profile Link](http://wiki.lorekeeper.me/index.php?title=Extensions:Character_TH_Profile_Link)
+- [itinerare](https://github.com/itinerare) : [Design Update Voting](http://wiki.lorekeeper.me/index.php?title=Extensions:Design_Update_Voting)
 
 # Setup
 
@@ -72,7 +86,7 @@ Run `composer update`/`composer install`. You may need to first run `composer up
 
 **Watermarking:**
 
-All settings are configured in 'config/lorekeeper/settings.php' and disabled by default.
+All settings are configured in `config/lorekeeper/settings.php` and disabled by default.
 - Whether or not masterlist images are watermarked | Default: 0/No
 - Dimension (in px) to scale the shorter dimension (between width/height) of masterlist images to. Set to 0 to disable resizing. |  Default: 0/Disabled
 - Format to convert masterlist images to. Set to null to disable conversion. | Default: null
