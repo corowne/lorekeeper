@@ -47,6 +47,7 @@ Route::get('/blacklist', 'BrowseController@getBlacklist');
 Route::group(['prefix' => 'user', 'namespace' => 'Users'], function() {
     Route::get('{name}', 'UserController@getUser');
     Route::get('{name}/characters', 'UserController@getUserCharacters');
+    Route::get('{name}/sublist/{key}', 'UserController@getUserSublist');
     Route::get('{name}/myos', 'UserController@getUserMyoSlots');
     Route::get('{name}/inventory', 'UserController@getUserInventory');
     Route::get('{name}/bank', 'UserController@getUserBank');
@@ -62,6 +63,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'Users'], function() {
 **************************************************************************************************/
 Route::get('/masterlist', 'BrowseController@getCharacters');
 Route::get('/myos', 'BrowseController@getMyos');
+Route::get('/sublist/{key}', 'BrowseController@getSublist');
 Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() {
     Route::get('{slug}', 'CharacterController@getCharacter');
     Route::get('{slug}/profile', 'CharacterController@getCharacterProfile');

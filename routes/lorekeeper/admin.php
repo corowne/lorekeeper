@@ -178,6 +178,16 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('character-categories/delete/{id}', 'CharacterCategoryController@postDeleteCharacterCategory');
     Route::post('character-categories/sort', 'CharacterCategoryController@postSortCharacterCategory');
 
+    # SUB MASTERLISTS
+    Route::get('sublists', 'SublistController@getIndex');
+    Route::get('sublists/create', 'SublistController@getCreateSublist');
+    Route::get('sublists/edit/{id}', 'SublistController@getEditSublist');
+    Route::get('sublists/delete/{id}', 'SublistController@getDeleteSublist');
+    Route::post('sublists/create', 'SublistController@postCreateEditSublist');
+    Route::post('sublists/edit/{id?}', 'SublistController@postCreateEditSublist');
+    Route::post('sublists/delete/{id}', 'SublistController@postDeleteSublist');
+    Route::post('sublists/sort', 'SublistController@postSortSublist');
+    
     # LOOT TABLES
     Route::get('loot-tables', 'LootTableController@getIndex');
     Route::get('loot-tables/create', 'LootTableController@getCreateLootTable');
