@@ -1177,7 +1177,7 @@ class CharacterManager extends Service
             if(!$character->is_myo_slot) $character->name = $data['name'];
             $character->save();
 
-            if(!$character->is_myo_slot) $character->profile->link = $data['link'];
+            if(!$character->is_myo_slot && Config::get('lorekeeper.extensions.character_TH_profile_link')) $character->profile->link = $data['link'];
             $character->profile->save();
 
             $character->profile->text = $data['text'];
@@ -2339,6 +2339,7 @@ class CharacterManager extends Service
 
         try {
             if($request->status != 'Pending') throw new \Exception("This request cannot be processed.");
+            if(!Config::get('lorekeeper.extensions.design_update_voting')) throw new \Exception('This extension is not currently enabled.');
 
             switch($action) {
                 default:

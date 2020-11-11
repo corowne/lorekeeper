@@ -40,7 +40,7 @@ Please see the associated wiki page for each extension for more information on t
 - [Junijwi](https://github.com/junijwi) : [Masterlist Sublists](http://wiki.lorekeeper.me/index.php?title=Extensions:Masterlist_Sublists)
 - [Junijwi](https://github.com/junijwi) : [MYO Item Tag](http://wiki.lorekeeper.me/index.php?title=Extensions:MYO_Item_Tag)
 
-### Extensions Toggleable in Config
+### Opt-in Extensions
 
 These extensions are included within this branch, but are opt-in and must be enabled via a config file (located at `config/lorekeeper/extensions.php`).
 
@@ -101,3 +101,8 @@ All settings are configured in `config/lorekeeper/settings.php` and disabled by 
 
 **Reports:**
 - Whether or not reports are open | Default: 1/open | Configured in: Site settings admin panel
+
+#### Opt-in Extensions
+
+**Design Update Voting:**
+- The number of votes needed for consensus on a design update | Default: 3 | Configured in: Site settings admin panel
