@@ -36,9 +36,9 @@ Please see the associated wiki page for each extension for more information on t
 - [itinerare](https://github.com/itinerare) : [Watermarking](http://wiki.lorekeeper.me/index.php?title=Extensions:Watermarking)
 - [itinerare](https://github.com/itinerare) : [Separate Prompts](http://wiki.lorekeeper.me/index.php?title=Extensions:Separate_Prompts)
 - [Preimpression](https://github.com/preimpression) & [Ne-wt](https://github.com/Ne-wt) : [Comments](http://wiki.lorekeeper.me/index.php?title=Extensions:Comments)
+- [Ne-wt](https://github.com/Ne-wt) : [Reports](https://github.com/Ne-wt/lorekeeper/tree/reports) : Adds the ability for users to submit general and bug reports, as well as providing a visible list of current, non-sensitive (exploit) bugs.
 - [Junijwi](https://github.com/junijwi) : [Masterlist Sublists](http://wiki.lorekeeper.me/index.php?title=Extensions:Masterlist_Sublists)
 - [Junijwi](https://github.com/junijwi) : [MYO Item Tag](http://wiki.lorekeeper.me/index.php?title=Extensions:MYO_Item_Tag)
-- [Ne-wt](https://github.com/Ne-wt) : [Reports](https://github.com/Ne-wt/lorekeeper/tree/reports) : Adds the ability for users to submit general and bug reports, as well as providing a visible list of current, non-sensitive (exploit) bugs.
 
 ### Extensions Toggleable in Config
 
