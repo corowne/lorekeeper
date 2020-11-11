@@ -68,6 +68,14 @@ class Species extends Model
     {
         return $this->belongsTo('App\Models\Character\Sublist', 'masterlist_sub_id');
     }
+    
+    /**
+     * Get the features associated with this species.
+     */
+    public function features() 
+    {
+        return $this->hasMany('App\Models\Feature\Feature');
+    }
 
     /**********************************************************************************************
     
@@ -147,5 +155,15 @@ class Species extends Model
         return url('sublist/'.$this->sublist->key.'?species_id='.$this->id);
         else
         return url('masterlist?species_id='.$this->id);
+    }
+
+    /**
+     * Gets the URL the visual index of this species' traits.
+     *
+     * @return string
+     */
+    public function getVisualTraitsUrlAttribute()
+    {
+        return url('/world/species/'.$this->id.'/traits');
     }
 }
