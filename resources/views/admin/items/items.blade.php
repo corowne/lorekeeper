@@ -32,26 +32,23 @@
     <p>No items found.</p>
 @else
     {!! $items->render() !!}
-    <table class="table table-sm category-table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Category</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($items as $item)
-                <tr class="sort-item" data-id="{{ $item->id }}">
-                    <td><a href="{{ $item->idUrl }}">{{ $item->name }}</a></td>
-                    <td>{{ $item->category ? $item->category->name : '' }}</td>
-                    <td class="text-right">
-                        <a href="{{ url('admin/data/items/edit/'.$item->id) }}" class="btn btn-primary">Edit</a>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+
+        <div class="row ml-md-2 mb-4">
+          <div class="d-flex row flex-wrap col-12 pb-1 px-0 ubt-bottom">
+            <div class="col-5 col-md-6 font-weight-bold">Name</div>
+            <div class="col-5 col-md-5 font-weight-bold">Category</div>
+          </div>
+          @foreach($items as $item)
+          <div class="d-flex row flex-wrap col-12 mt-1 pt-2 px-0 ubt-top">
+            <div class="col-5 col-md-6"> {{ $item->name }} </div>
+            <div class="col-4 col-md-5"> {{ $item->category ? $item->category->name : '' }} </div>
+            <div class="col-3 col-md-1 text-right">
+              <a href="{{ url('admin/data/items/edit/'.$item->id) }}"  class="btn btn-primary py-0 px-2">Edit</a>
+            </div>
+          </div>
+          @endforeach
+        </div>
+
     {!! $items->render() !!}
 @endif
 

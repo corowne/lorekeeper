@@ -1,8 +1,8 @@
-@extends('home.layout')
+@extends('layouts.app')
 
-@section('home-title') Bug Reports @endsection
+@section('title') Bug Reports @endsection
 
-@section('home-content')
+@section('content')
     {!! breadcrumbs(['Reports' => 'reports']) !!}
 <h1>
 Bug Reports

@@ -38,7 +38,7 @@ Please see the associated wiki page for each extension for more information on t
 
 # Setup
 
-Please see [the Readme](https://github.com/corowne/lorekeeper/blob/master/README.md) or refer to the [Wiki](http://lorekeeper-arpg.wikidot.com/) for general instructions. It is **highly recommended** that you set up core Lorekeeper first and make sure it's functional before modifying it in any fashion.
+Please see [the Readme](https://github.com/corowne/lorekeeper/blob/master/README.md) or refer to the [Wiki](http://lorekeeper-arpg.wikidot.com/) for general instructions. It is **recommended** that you set up core Lorekeeper first and make sure it's functional before modifying it in any fashion, though it is not strictly required.
 
 ## Updating from Core or a Previously Modified Version of Core
 
