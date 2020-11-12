@@ -132,7 +132,7 @@ return [
             'rule-name' => 'custom-message',
         ],
         'g-recaptcha-response' => [
-            'recaptchav3' => 'Captcha error message',
+            'recaptchav3' => 'A captcha error has occurred. If you believe this is in error, please contact the site administrator.',
         ],
     ],
 
