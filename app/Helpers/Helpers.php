@@ -194,15 +194,9 @@ function prettyProfileLink($url)
 {
     $matches = [];
     // Check different sites and return site if a match is made, plus username (retreived from the URL)
-    if(preg_match_all('/deviantart\.com\/([A-Za-z0-9_-]+)/', $url, $matches)) {$site = 'dA'; $name = $matches[1][0]; $link = $matches[0][0];}
-    if(preg_match_all('/twitter\.com\/([A-Za-z0-9_-]+)/', $url, $matches)) {$site = 'twitter'; $name = $matches[1][0]; $link = $matches[0][0];}
-    if(preg_match_all('/instagram\.com\/([A-Za-z0-9_-]+)/', $url, $matches)) {$site = 'ig'; $name = $matches[1][0]; $link = $matches[0][0];}
-    if(preg_match_all('/toyhou\.se\/([A-Za-z0-9_-]+)/', $url, $matches)) {$site = 'TH'; $name = $matches[1][0]; $link = $matches[0][0];}
-    if(preg_match_all('/artstation\.com\/([A-Za-z0-9_-]+)/', $url, $matches)) {$site = 'artstation'; $name = $matches[1][0]; $link = $matches[0][0];}
-    if(preg_match_all('/picarto\.tv\/([A-Za-z0-9_-]+)/', $url, $matches)) {$site = 'picarto'; $name = $matches[1][0]; $link = $matches[0][0];}
-    if(preg_match_all('/twitch\.tv\/([A-Za-z0-9_-]+)/', $url, $matches)) {$site = 'twitch'; $name = $matches[1][0]; $link = $matches[0][0];}
-    if(preg_match_all('/([A-Za-z0-9_-]+)\.tumblr\.com/', $url, $matches)) {$site = 'tumblr'; $name = $matches[1][0]; $link = $matches[0][0];}
-    if(preg_match_all('/imgur\.com\/user\/([A-Za-z0-9_-]+)/', $url, $matches)) {$site = 'imgur'; $name = $matches[1][0]; $link = $matches[0][0];}
+    foreach(Config::get('lorekeeper.sites') as $siteName=>$siteInfo) {
+        if(preg_match_all($siteInfo['regex'], $url, $matches)) {$site = $siteName; $name = $matches[1][0]; $link = $matches[0][0]; break;}
+    }
 
     // Return formatted link if possible; failing that, an unformatted link
     if(isset($name) && isset($site) && isset($link)) return '<a href="https://'.$link.'">'.$name.'@'.$site.'</a>';
