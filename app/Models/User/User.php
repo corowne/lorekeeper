@@ -29,7 +29,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned'
+        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned', 'has_alias'
     ];
 
     /**
@@ -86,6 +86,22 @@ class User extends Authenticatable implements MustVerifyEmail
     public function profile() 
     {
         return $this->hasOne('App\Models\User\UserProfile');
+    }
+
+    /**
+     * Get the user's notifications.
+     */
+    public function aliases() 
+    {
+        return $this->hasMany('App\Models\User\UserAlias');
+    }
+
+    /**
+     * Get the user's notifications.
+     */
+    public function primaryAlias() 
+    {
+        return $this->hasOne('App\Models\User\UserAlias')->where('is_primary_alias', 1);
     }
 
     /**
@@ -166,7 +182,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getVerifiedNameAttribute()
     {
-        return $this->name . ($this->hasAlias ? '' : ' (Unverified)');
+        return $this->name . ($this->has_alias ? '' : ' (Unverified)');
     }
 
     /**
@@ -176,7 +192,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getHasAliasAttribute() 
     {
-        return !is_null($this->alias);
+        return $this->attributes['has_alias'];
     }
 
     /**
@@ -240,17 +256,6 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Gets the URL for the user's deviantART account.
-     *
-     * @return string
-     */
-    public function getAliasUrlAttribute()
-    {
-        if(!$this->alias) return null;
-        return 'https://www.deviantart.com/'.$this->alias;
-    }
-
-    /**
      * Displays the user's name, linked to their profile page.
      *
      * @return string
@@ -261,14 +266,14 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Displays the user's alias, linked to their deviantART page.
+     * Displays the user's primary alias.
      *
      * @return string
      */
     public function getDisplayAliasAttribute()
     {
-        if (!$this->alias) return '(Unverified)';
-        return '<a href="'.$this->aliasUrl.'">'.$this->alias.'@dA</a>';
+        if (!$this->hasAlias) return '(Unverified)';
+        return $this->primaryAlias->displayAlias;
     }
 
     /**
@@ -409,7 +414,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function updateCharacters()
     {
-        if(!$this->alias) return;
+        if(!$this->hasAlias) return;
 
         // Find any uncredited characters and credit them.
         if(Character::where('owner_alias', $this->alias)->update([
@@ -431,7 +436,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */    
     public function updateArtDesignCredits()    
     {
-        if(!$this->alias) return;
+        if(!$this->hasAlias) return;
         
         // Find any art credited to this alias and update credit to this account.
         if(CharacterImageCreator::where('alias', $this->alias)->update(['alias' => null, 'user_id' => $this->id]));

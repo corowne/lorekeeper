@@ -41,7 +41,7 @@
     <thead>
         <tr>
             <th>Username</th>
-            <th>Alias</th>
+            <th>Primary Alias</th>
             <th>Rank</th>
             <th>Joined</th>
         </tr>
