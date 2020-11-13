@@ -182,7 +182,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getVerifiedNameAttribute()
     {
-        return $this->name . ($this->has_alias ? '' : ' (Unverified)');
+        return $this->name . ($this->hasAlias ? '' : ' (Unverified)');
     }
 
     /**
