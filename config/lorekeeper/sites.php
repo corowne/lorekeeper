@@ -37,7 +37,7 @@ return [
         'regex' => '/twitter\.com\/([A-Za-z0-9_-]+)/'
     ],
     'ig' => [
-        'fullName' => 'instagram',
+        'fullName' => 'Instagram',
         'regex' => '/instagram\.com\/([A-Za-z0-9_-]+)/'
     ],
     'tumblr' => [
@@ -61,7 +61,7 @@ return [
         'regex' => '/twitch\.tv\/([A-Za-z0-9_-]+)/'
     ],
     'imgur' => [
-        'fullName' => 'imgur',
+        'fullName' => 'Imgur',
         'regex' => '/imgur\.com\/user\/([A-Za-z0-9_-]+)/'
     ],
 ];

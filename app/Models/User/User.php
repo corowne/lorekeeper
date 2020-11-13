@@ -5,6 +5,7 @@ namespace App\Models\User;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Config;
 
 use App\Models\Character\Character;
 use App\Models\Character\CharacterImageCreator;
@@ -440,9 +441,9 @@ class User extends Authenticatable implements MustVerifyEmail
         if(count($urlCreators)) {
             $matches = null;
             // Find all deviantArt urls
-            foreach($urlCreators as $key=>$creator) preg_match_all('/deviantart\.com\/([A-Za-z0-9_-]+)/', $creator, $matches[$key]);
+            foreach($urlCreators as $key=>$creator) preg_match_all(Config::get('lorekeeper.sites.dA.regex'), $creator, $matches[$key]);
             // Find all alias matches within those, and update the relevant CharacterImageCreator
-            foreach($matches as $key=>$match) if($match[1][0] == $this->alias) CharacterImageCreator::find($key)->update(['url' => null, 'user_id' => $this->id]);
+            foreach($matches as $key=>$match) if($match[1] != [] && $match[1][0] == $this->alias) CharacterImageCreator::find($key)->update(['url' => null, 'user_id' => $this->id]);
         }
     }
 
