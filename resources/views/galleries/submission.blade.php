@@ -104,20 +104,18 @@
                 </div>
                 <div class="card-body">
                     @if($submission->status == 'Pending' && Auth::check() && $submission->collaborators->where('user_id', Auth::user()->id)->first() != null)
-                        <p>Check that your role in the collaboration is correct as listed, and if not, make any changes. You can also remove yourself from the collaborator list if necessary. When you are done, press "submit" to make any changes as well as approve the submission/the record of your contribution to it. You will be able to edit this until the submission is approved.</p>
+                        <p>Check that your role in the collaboration is correct as listed, and if not, make any changes. You can also remove yourself from the collaborator list if necessary. When you are done, or if the record is already accurate, press "submit" to make any changes and mark yourself as having approved. You will be able to edit this until the submission is approved.</p>
                         {!! Form::open(['url' => '/gallery/collaborator/'.$submission->id]) !!}
                             @foreach($submission->collaborators as $collaborator)
                                 @if($collaborator->user_id == Auth::user()->id)
                                 <div class="mb-2">
                                     <div class="d-flex">{!! $collaborator->has_approved ? '<div class="mb-2 mr-2 text-success" data-toggle="tooltip" title="Has Approved"><i class="fas fa-check"></i></div>' : '' !!}{!! $collaborator->user->displayName !!}:
-                                        <div class="float-right">
-                                            {!! Form::label('remove_user', 'Remove Me', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If toggled on, this will remove the record of your collaboration from this submission.') !!}
-                                        </div>
                                     </div>
                                     <div class="d-flex">
                                         {!! Form::text('collaborator_data[]', $collaborator->data, ['class' => 'form-control mr-2', 'placeholder' => 'Role (Sketch, Lines, etc.)']) !!}
-                                        {!! Form::checkbox('remove_user', 1, false, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'data-onstyle' => 'danger']) !!}
                                     </div>
+                                    {!! Form::label('remove_user', 'Remove Me', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If toggled on, this will remove the record of your collaboration from this submission.') !!}
+                                    {!! Form::checkbox('remove_user', 1, false, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'data-onstyle' => 'danger']) !!}
                                 </div>
                                 @else
                                     <div class="d-flex">
