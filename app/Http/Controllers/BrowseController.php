@@ -290,7 +290,7 @@ class BrowseController extends Controller
         // Searching on image properties
         if($request->get('species_id')) $imageQuery->where('species_id', $request->get('species_id'));
         if($request->get('artist')) {
-            $artistName = $request->get('artists');
+            $artistName = $request->get('artist');
             // Usernames are prevented from containing spaces, but this is to deal with previously made accounts with spaces in names
             $artistName = str_replace('%20', ' ', $artistName);
             $artists = User::where('name', 'LIKE', '%' . $artistName . '%')->pluck('id')->toArray();
@@ -299,7 +299,7 @@ class BrowseController extends Controller
             });
         }
         if($request->get('designer')) {
-            $designerName = $request->get('designers');
+            $designerName = $request->get('designer');
             // Usernames are prevented from containing spaces, but this is to deal with previously made accounts with spaces in names
             $designerName = str_replace('%20', ' ', $designerName);
             $designers = User::where('name', 'LIKE', '%' . $designerName . '%')->pluck('id')->toArray();
