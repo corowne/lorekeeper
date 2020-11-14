@@ -49,9 +49,11 @@ class PageController extends Controller
      */
     public function getPageSection($key)
     {
+        $section = SitePageSection::where('key', $key)->first();
+        if(!$section) abort(404);
         return view('pages.page_sections', [
             'sections' => SitePageSection::orderBy('sort', 'DESC')->get(),
-            'section' => SitePageSection::where('key', $key)->first(),
+            'section' => $section,
             'categories' => SitePageCategory::orderBy('sort', 'DESC')->get()
         ]);
     }
