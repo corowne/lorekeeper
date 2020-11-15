@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Data;
 use Illuminate\Http\Request;
 
 use App\Models\Character\CharacterCategory;
+use App\Models\Character\Sublist;
 
 use App\Services\CharacterCategoryService;
 
@@ -41,7 +42,8 @@ class CharacterCategoryController extends Controller
     public function getCreateCharacterCategory()
     {
         return view('admin.characters.create_edit_character_category', [
-            'category' => new CharacterCategory
+            'category' => new CharacterCategory,
+            'sublists' => [0 => 'No Sublist'] + Sublist::orderBy('name', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
     
@@ -56,7 +58,8 @@ class CharacterCategoryController extends Controller
         $category = CharacterCategory::find($id);
         if(!$category) abort(404);
         return view('admin.characters.create_edit_character_category', [
-            'category' => $category
+            'category' => $category,
+            'sublists' => [0 => 'No Sublist'] + Sublist::orderBy('name', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
 
@@ -72,7 +75,7 @@ class CharacterCategoryController extends Controller
     {
         $id ? $request->validate(CharacterCategory::$updateRules) : $request->validate(CharacterCategory::$createRules);
         $data = $request->only([
-            'code', 'name', 'description', 'image', 'remove_image'
+            'code', 'name', 'description', 'image', 'remove_image', 'masterlist_sub_id'
         ]);
         if($id && $service->updateCharacterCategory(CharacterCategory::find($id), $data)) {
             flash('Category updated successfully.')->success();

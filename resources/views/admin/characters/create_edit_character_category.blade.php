@@ -26,6 +26,11 @@
 </div>
 
 <div class="form-group">
+    {!! Form::label('Sub Masterlist (Optional)') !!} {!! add_help('This puts it onto a sub masterlist.') !!}
+    {!! Form::select('masterlist_sub_id', $sublists, $category->masterlist_sub_id, ['class' => 'form-control']) !!}
+</div>
+
+<div class="form-group">
     {!! Form::label('World Page Image (Optional)') !!} {!! add_help('This image is used only on the world information pages.') !!}
     <div>{!! Form::file('image') !!}</div>
     <div class="text-muted">Recommended size: 200px x 200px</div>

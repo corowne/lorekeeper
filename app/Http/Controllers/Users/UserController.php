@@ -18,6 +18,11 @@ use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
 use App\Models\Item\ItemLog;
 
+use App\Models\Character\CharacterCategory;
+use App\Models\Character\CharacterImage;
+use App\Models\Character\Character;
+use App\Models\Character\Sublist;
+
 use App\Http\Controllers\Controller;
 
 class UserController extends Controller
@@ -43,6 +48,7 @@ class UserController extends Controller
         if(!$this->user) abort(404);
 
         $this->user->updateCharacters();
+        $this->user->updateArtDesignCredits();
     }
 
     /**
@@ -55,7 +61,8 @@ class UserController extends Controller
     {
         return view('user.profile', [
             'user' => $this->user,
-            'items' => $this->user->items()->orderBy('user_items.updated_at', 'DESC')->take(4)->get()
+            'items' => $this->user->items()->orderBy('user_items.updated_at', 'DESC')->take(4)->get(),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
     
@@ -67,9 +74,56 @@ class UserController extends Controller
      */
     public function getUserCharacters($name)
     {
+        $query = Character::myo(0)->visible()->where('user_id', $this->user->id);
+        $imageQuery = CharacterImage::images(Auth::check() ? Auth::user() : null)->with('features')->with('rarity')->with('species')->with('features');
+        
+        if($sublists = Sublist::where('show_main', 0)->get())
+        $subCategories = []; $subSpecies = [];
+        {   foreach($sublists as $sublist)
+            {
+                $subCategories = array_merge($subCategories, $sublist->categories->pluck('id')->toArray());
+                $subSpecies = array_merge($subSpecies, $sublist->species->pluck('id')->toArray());
+            }
+        }
+
+        $query->whereNotIn('character_category_id', $subCategories);
+        $imageQuery->whereNotIn('species_id', $subSpecies);
+
+        $query->whereIn('id', $imageQuery->pluck('character_id'));
+
         return view('user.characters', [
             'user' => $this->user,
-            'characters' => $this->user->characters()->visible()->get()
+            'characters' => $query->orderBy('sort', 'DESC')->get(),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
+        ]);
+    }
+    
+    /**
+     * Shows a user's sublist characters.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserSublist($name, $key)
+    {
+        $query = Character::myo(0)->visible()->where('user_id', $this->user->id);
+        $imageQuery = CharacterImage::images(Auth::check() ? Auth::user() : null)->with('features')->with('rarity')->with('species')->with('features');
+        
+        $sublist = Sublist::where('key', $key)->first();
+        if(!$sublist) abort(404);
+        $subCategories = $sublist->categories->pluck('id')->toArray();
+        $subSpecies = $sublist->species->pluck('id')->toArray();
+
+        if($subCategories) $query->whereIn('character_category_id', $subCategories);
+        if($subSpecies) $imageQuery->whereIn('species_id', $subSpecies);
+
+        $query->whereIn('id', $imageQuery->pluck('character_id'));
+
+        return view('user.sublist', [
+            'user' => $this->user,
+            'characters' => $query->orderBy('sort', 'DESC')->get(),
+            'sublist' => $sublist,
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
     
@@ -83,7 +137,8 @@ class UserController extends Controller
     {
         return view('user.myo_slots', [
             'user' => $this->user,
-            'myos' => $this->user->myoSlots()->visible()->get()
+            'myos' => $this->user->myoSlots()->visible()->get(),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
     
@@ -116,7 +171,8 @@ class UserController extends Controller
             'items' => $items,
             'userOptions' => User::where('id', '!=', $this->user->id)->orderBy('name')->pluck('name', 'id')->toArray(),
             'user' => $this->user,
-            'logs' => $this->user->getItemLogs()
+            'logs' => $this->user->getItemLogs(),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
 
@@ -132,10 +188,10 @@ class UserController extends Controller
         return view('user.bank', [
             'user' => $this->user,
             'logs' => $this->user->getCurrencyLogs(),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ] + (Auth::check() && Auth::user()->id == $this->user->id ? [
             'currencyOptions' => Currency::where('allow_user_to_user', 1)->where('is_user_owned', 1)->whereIn('id', UserCurrency::where('user_id', $this->user->id)->pluck('currency_id')->toArray())->orderBy('sort_user', 'DESC')->pluck('name', 'id')->toArray(),
             'userOptions' => User::where('id', '!=', Auth::user()->id)->orderBy('name')->pluck('name', 'id')->toArray()
-
         ] : []));
     }
 
@@ -150,7 +206,8 @@ class UserController extends Controller
         $user = $this->user;
         return view('user.currency_logs', [
             'user' => $this->user,
-            'logs' => $this->user->getCurrencyLogs(0)
+            'logs' => $this->user->getCurrencyLogs(0),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
 
@@ -165,7 +222,8 @@ class UserController extends Controller
         $user = $this->user;
         return view('user.item_logs', [
             'user' => $this->user,
-            'logs' => $this->user->getItemLogs(0)
+            'logs' => $this->user->getItemLogs(0),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
 
@@ -179,7 +237,8 @@ class UserController extends Controller
     {
         return view('user.ownership_logs', [
             'user' => $this->user,
-            'logs' => $this->user->getOwnershipLogs()
+            'logs' => $this->user->getOwnershipLogs(),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
 
@@ -193,7 +252,8 @@ class UserController extends Controller
     {
         return view('user.submission_logs', [
             'user' => $this->user,
-            'logs' => $this->user->getSubmissions()
+            'logs' => $this->user->getSubmissions(),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
 }

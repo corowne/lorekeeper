@@ -178,6 +178,16 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('character-categories/delete/{id}', 'CharacterCategoryController@postDeleteCharacterCategory');
     Route::post('character-categories/sort', 'CharacterCategoryController@postSortCharacterCategory');
 
+    # SUB MASTERLISTS
+    Route::get('sublists', 'SublistController@getIndex');
+    Route::get('sublists/create', 'SublistController@getCreateSublist');
+    Route::get('sublists/edit/{id}', 'SublistController@getEditSublist');
+    Route::get('sublists/delete/{id}', 'SublistController@getDeleteSublist');
+    Route::post('sublists/create', 'SublistController@postCreateEditSublist');
+    Route::post('sublists/edit/{id?}', 'SublistController@postCreateEditSublist');
+    Route::post('sublists/delete/{id}', 'SublistController@postDeleteSublist');
+    Route::post('sublists/sort', 'SublistController@postSortSublist');
+    
     # LOOT TABLES
     Route::get('loot-tables', 'LootTableController@getIndex');
     Route::get('loot-tables/create', 'LootTableController@getCreateLootTable');
@@ -403,9 +413,18 @@ Route::group(['prefix' => 'claims', 'middleware' => 'power:manage_submissions'],
     Route::post('edit/{id}/{action}', 'SubmissionController@postSubmission')->where('action', 'approve|reject');
 });
 
+# REPORTS
+Route::group(['prefix' => 'reports', 'middleware' => 'power:manage_reports'], function() {
+    Route::get('/', 'ReportController@getReportIndex');
+    Route::get('/{status}', 'ReportController@getReportIndex')->where('status', 'pending|assigned|assigned-to-me|closed');
+    Route::get('edit/{id}', 'ReportController@getReport');
+    Route::post('edit/{id}/{action}', 'ReportController@postReport')->where('action', 'assign|close');
+});
+
 # DESIGN APPROVALS
 Route::group(['prefix' => 'designs', 'middleware' => 'power:manage_characters'], function() {
     Route::get('edit/{id}/{action}', 'DesignController@getDesignConfirmation')->where('action', 'cancel|approve|reject');
     Route::post('edit/{id}/{action}', 'DesignController@postDesign')->where('action', 'cancel|approve|reject');
+    Route::post('vote/{id}/{action}', 'DesignController@postVote')->where('action', 'approve|reject');
 });
 Route::get('{type}/{status}', 'DesignController@getDesignIndex')->where('type', 'myo-approvals|design-approvals')->where('status', 'pending|approved|rejected');

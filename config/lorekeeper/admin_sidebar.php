@@ -23,6 +23,15 @@ return [
             ]
         ]
     ],
+    'Reports' => [
+        'power' => 'manage_reports',
+        'links' => [
+            [
+                'name' => 'Report Queue',
+                'url' => 'admin/reports/pending'
+            ]
+        ]
+    ],
     'Site' => [
         'power' => 'edit_pages',
         'links' => [
@@ -114,6 +123,10 @@ return [
             [
                 'name' => 'Character Categories',
                 'url' => 'admin/data/character-categories'
+            ],
+            [
+                'name' => 'Sub Masterlists',
+                'url' => 'admin/data/sublists'
             ],
             [
                 'name' => 'Rarities',

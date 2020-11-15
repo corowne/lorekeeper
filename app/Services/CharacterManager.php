@@ -262,23 +262,37 @@ class CharacterManager extends Service
 
             $image = CharacterImage::create($imageData);
 
+            // Check that users with the specified id(s) exist on site
+            foreach($data['designer_alias'] as $id) {
+                if(isset($id) && $id) {
+                    $user = User::find($id);
+                    if(!$user) throw new \Exception('One or more designers is invalid.');
+                }
+            }
+            foreach($data['artist_alias'] as $id) {
+                if(isset($id) && $id) {
+                    $user = $user = User::find($id);
+                    if(!$user) throw new \Exception('One or more artists is invalid.');
+                }
+            }
+
             // Attach artists/designers
-            foreach($data['designer_alias'] as $key => $alias) {
-                if($alias || $data['designer_url'][$key])
+            foreach($data['designer_alias'] as $key => $id) {
+                if($id || $data['designer_url'][$key])
                     DB::table('character_image_creators')->insert([
                         'character_image_id' => $image->id,
                         'type' => 'Designer',
                         'url' => $data['designer_url'][$key],
-                        'alias' => $alias
+                        'user_id' => $id
                     ]);
             }
-            foreach($data['artist_alias'] as $key => $alias) {
-                if($alias || $data['artist_url'][$key])
+            foreach($data['artist_alias'] as $key => $id) {
+                if($id || $data['artist_url'][$key])
                     DB::table('character_image_creators')->insert([
                         'character_image_id' => $image->id,
                         'type' => 'Artist',
                         'url' => $data['artist_url'][$key],
-                        'alias' => $alias
+                        'user_id' => $id
                     ]);
             }
 
@@ -716,23 +730,37 @@ class CharacterManager extends Service
             // Clear old artists/designers
             $image->creators()->delete();
 
+            // Check that users with the specified id(s) exist on site
+            foreach($data['designer_alias'] as $id) {
+                if(isset($id) && $id) {
+                    $user = User::find($id);
+                    if(!$user) throw new \Exception('One or more designers is invalid.');
+                }
+            }
+            foreach($data['artist_alias'] as $id) {
+                if(isset($id) && $id) {
+                    $user = $user = User::find($id);
+                    if(!$user) throw new \Exception('One or more artists is invalid.');
+                }
+            }
+
             // Attach artists/designers
-            foreach($data['designer_alias'] as $key => $alias) {
-                if($alias || $data['designer_url'][$key])
+            foreach($data['designer_alias'] as $key => $id) {
+                if($id || $data['designer_url'][$key])
                     DB::table('character_image_creators')->insert([
                         'character_image_id' => $image->id,
                         'type' => 'Designer',
                         'url' => $data['designer_url'][$key],
-                        'alias' => trim($alias)
+                        'user_id' => $id
                     ]);
             }
-            foreach($data['artist_alias'] as $key => $alias) {
-                if($alias || $data['artist_url'][$key])
+            foreach($data['artist_alias'] as $key => $id) {
+                if($id || $data['artist_url'][$key])
                     DB::table('character_image_creators')->insert([
                         'character_image_id' => $image->id,
                         'type' => 'Artist',
                         'url' => $data['artist_url'][$key],
-                        'alias' => trim($alias)
+                        'user_id' => $id
                     ]);
             }
             
@@ -1176,6 +1204,9 @@ class CharacterManager extends Service
             // Update the character's profile
             if(!$character->is_myo_slot) $character->name = $data['name'];
             $character->save();
+
+            if(!$character->is_myo_slot && Config::get('lorekeeper.extensions.character_TH_profile_link')) $character->profile->link = $data['link'];
+            $character->profile->save();
 
             $character->profile->text = $data['text'];
             $character->profile->parsed_text = parse($data['text']);
@@ -1738,25 +1769,39 @@ class CharacterManager extends Service
             $request->designers()->delete();
             $request->artists()->delete();
 
+            // Check that users with the specified id(s) exist on site
+            foreach($data['designer_alias'] as $id) {
+                if(isset($id) && $id) {
+                    $user = User::find($id);
+                    if(!$user) throw new \Exception('One or more designers is invalid.');
+                }
+            }
+            foreach($data['artist_alias'] as $id) {
+                if(isset($id) && $id) {
+                    $user = $user = User::find($id);
+                    if(!$user) throw new \Exception('One or more artists is invalid.');
+                }
+            }
+
             // Attach artists/designers
-            foreach($data['designer_alias'] as $key => $alias) {
-                if($alias || $data['designer_url'][$key])
+            foreach($data['designer_alias'] as $key => $id) {
+                if($id || $data['designer_url'][$key])
                     DB::table('character_image_creators')->insert([
                         'character_image_id' => $request->id,
                         'type' => 'Designer',
                         'character_type' => 'Update',
                         'url' => $data['designer_url'][$key],
-                        'alias' => $alias
+                        'user_id' => $id
                     ]);
             }
-            foreach($data['artist_alias'] as $key => $alias) {
-                if($alias || $data['artist_url'][$key])
+            foreach($data['artist_alias'] as $key => $id) {
+                if($id || $data['artist_url'][$key])
                     DB::table('character_image_creators')->insert([
                         'character_image_id' => $request->id,
                         'type' => 'Artist',
                         'character_type' => 'Update',
                         'url' => $data['artist_url'][$key],
-                        'alias' => $alias
+                        'user_id' => $id
                     ]);
             }
 
@@ -2122,7 +2167,7 @@ class CharacterManager extends Service
             // and clear the character's name
             if($request->character->is_myo_slot)
             {
-                if(Config::get('lorekeeper.settings.clear_myo_name_on_approval')) $request->character->name = null;
+                if(Config::get('lorekeeper.settings.clear_myo_slot_name_on_approval')) $request->character->name = null;
                 $request->character->is_myo_slot = 0;
                 $request->user->settings->is_fto = 0;
                 $request->user->settings->save();
@@ -2314,6 +2359,48 @@ class CharacterManager extends Service
 
             // Delete the request
             $request->delete();
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Votes on a a character design update request.
+     *
+     * @param  string                                       $action
+     * @param  \App\Models\Character\CharacterDesignUpdate  $request
+     * @param  \App\Models\User\User                        $user
+     * @return  bool
+     */
+    public function voteRequest($action, $request, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            if($request->status != 'Pending') throw new \Exception("This request cannot be processed.");
+            if(!Config::get('lorekeeper.extensions.design_update_voting')) throw new \Exception('This extension is not currently enabled.');
+
+            switch($action) {
+                default:
+                    flash('Invalid action.')->error();
+                    break;
+                case 'approve':
+                    $vote = 2;
+                    break;
+                case 'reject':
+                    $vote = 1;
+                    break;
+            }
+
+            $voteData = (isset($request->vote_data) ? collect(json_decode($request->vote_data, true)) : collect([]));
+            $voteData->get($user->id) ? $voteData->pull($user->id) : null;
+            $voteData->put($user->id, $vote);
+            $request->vote_data = $voteData->toJson();
+            
+            $request->save();
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
