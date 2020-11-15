@@ -137,6 +137,10 @@ return [
                 'url' => 'admin/data/character-categories'
             ],
             [
+                'name' => 'Sub Masterlists',
+                'url' => 'admin/data/sublists'
+            ],
+            [
                 'name' => 'Rarities',
                 'url' => 'admin/data/rarities'
             ],

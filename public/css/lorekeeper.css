@@ -61,6 +61,11 @@ body {
     display: none !important;
 }
 
+.parsed-text img {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
 /**************************************************************************************************
     
     Layout
