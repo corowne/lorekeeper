@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 use App\Models\Character\Character;
+use App\Models\Character\CharacterImageCreator;
 use App\Models\Rank\RankPower;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
@@ -421,6 +422,27 @@ class User extends Authenticatable implements MustVerifyEmail
                 }
                 $this->settings->save();
             }
+        }
+    }
+
+    /**     
+     * Checks if there are art or design credits credited to the user's alias and credits them to their account accordingly.
+     */    
+    public function updateArtDesignCredits()    
+    {
+        if(!$this->alias) return;
+        
+        // Find any art credited to this alias and update credit to this account.
+        if(CharacterImageCreator::where('alias', $this->alias)->update(['alias' => null, 'user_id' => $this->id]));
+
+        // Perform the same operation, plucking alias from url
+        $urlCreators = CharacterImageCreator::whereNotNull('url')->pluck('url','id');
+        if(count($urlCreators)) {
+            $matches = null;
+            // Find all deviantArt urls
+            foreach($urlCreators as $key=>$creator) preg_match_all('/deviantart\.com\/([A-Za-z0-9_-]+)/', $creator, $matches[$key]);
+            // Find all alias matches within those, and update the relevant CharacterImageCreator
+            foreach($matches as $key=>$match) if($match[1][0] == $this->alias) CharacterImageCreator::find($key)->update(['url' => null, 'user_id' => $this->id]);
         }
     }
 

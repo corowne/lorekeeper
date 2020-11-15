@@ -104,7 +104,8 @@ class DesignController extends Controller
         $r = CharacterDesignUpdate::find($id);
         if(!$r || ($r->user_id != Auth::user()->id && !Auth::user()->hasPower('manage_characters'))) abort(404);
         return view('character.design.image', [
-            'request' => $r
+            'request' => $r,
+            'users' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
         ]);
     }
 

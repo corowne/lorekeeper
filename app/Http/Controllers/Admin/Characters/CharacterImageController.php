@@ -46,6 +46,7 @@ class CharacterImageController extends Controller
             'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'subtypes' => ['0' => 'Select Subtype'] + Subtype::where('species_id','=',$this->character->image->species_id)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'users' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
             'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
             'isMyo' => false
         ]);
@@ -191,6 +192,7 @@ class CharacterImageController extends Controller
     {
         return view('character.admin._edit_credits_modal', [
             'image' => CharacterImage::find($id),
+            'users' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
         ]);
     }
 
