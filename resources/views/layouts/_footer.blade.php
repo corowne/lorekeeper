@@ -8,4 +8,4 @@
         <li class="nav-item"><a href="https://github.com/corowne/lorekeeper" class="nav-link">Lorekeeper</a></li>
     </ul>
 </nav>
-<div class="copyright">&copy; {{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} {{ Carbon\Carbon::now()->year }}</div>
+<div class="copyright">&copy; {{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} v{{ config('lorekeeper.settings.version') }} {{ Carbon\Carbon::now()->year }}</div>
