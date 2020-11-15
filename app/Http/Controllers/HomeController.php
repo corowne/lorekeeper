@@ -65,6 +65,7 @@ class HomeController extends Controller
             if($deviantart->linkUser(Auth::user(), $request->get('access_token'), $request->get('refresh_token'))) {
                 flash('deviantART account has been linked successfully.')->success();
                 Auth::user()->updateCharacters();
+                Auth::user()->updateArtDesignCredits();
                 return redirect()->to('/');
             }
             else {
