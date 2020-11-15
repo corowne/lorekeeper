@@ -479,6 +479,8 @@ class BrowseController extends Controller
                 $query->orderBy('characters.id', 'DESC');
         }
 
+        if(!Auth::check() || !Auth::user()->hasPower('manage_characters')) $query->visible();
+
         $subCategory = CharacterCategory::where('masterlist_sub_id', $sublist->id)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray();
         if(!$subCategory) $subCategory = CharacterCategory::orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray();
         $subSpecies = Species::where('masterlist_sub_id', $sublist->id)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray();
