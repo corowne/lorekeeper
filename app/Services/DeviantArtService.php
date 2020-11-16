@@ -76,7 +76,7 @@ class DeviantArtService extends Service
             $this->deviantart->setToken($accessToken, $refreshToken);
             $data = $this->deviantart->getUser();
 
-            if(DB::table('users')->where('alias', $data['username'])->exists()) throw new \Exception("Cannot link the same deviantART account to multiple site accounts. Please ask a staff member to unlink your old account first.");
+            if(DB::table('user_aliases')->where('site', 'dA')->where('alias', $data['username'])->exists()) throw new \Exception("Cannot link the same deviantART account multiple times. Please ask a staff member to unlink your old account first.");
 
             // Save that the user has an alias
             $user->has_alias = 1;
