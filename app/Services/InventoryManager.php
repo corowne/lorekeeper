@@ -327,6 +327,7 @@ class InventoryManager extends Service
                 if($stack->user_id != $user->id && !$user->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected items.");
                 if($stack->count < $quantity) throw new \Exception("Quantity to sell exceeds item count.");
                 if(!isset($stack->item->data['resell'])) throw new \Exception ("This item cannot be sold.");
+                if(!Config::get('lorekeeper.extensions.item_entry_expansion.resale_function')) throw new \Exception("This function is not currently enabled.");
                 
                 $oldUser = $stack->user;
 
