@@ -177,6 +177,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         App\Providers\SettingsProvider::class,
         App\Providers\NotificationsProvider::class,
+        App\Providers\CommentProvider::class,
         Intervention\Image\ImageServiceProvider::class,
 
     ],

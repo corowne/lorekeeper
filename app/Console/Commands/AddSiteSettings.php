@@ -109,6 +109,19 @@ class AddSiteSettings extends Command
             $this->info("Added:   is_claims_open / Default: 1");
         }
         else $this->line("Skipped: is_claims_open");
+
+        if(!DB::table('site_settings')->where('key', 'is_reports_open')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'is_reports_open',
+                    'value' => 1,
+                    'description' => '0: New reports cannot be made (mods can work on the queue still), 1: Reports are submittable.'
+                ]
+
+            ]);
+            $this->info("Added:   is_reports_open / Default: 1");
+        }
+        else $this->line("Skipped: is_reports_open");
         
         if(!DB::table('site_settings')->where('key', 'is_myos_open')->exists()) {
             DB::table('site_settings')->insert([
@@ -174,6 +187,32 @@ class AddSiteSettings extends Command
             $this->info("Added:   blacklist_key / Default: 0");
         }
         else $this->line("Skipped: blacklist_key");
+        
+        if(!DB::table('site_settings')->where('key', 'design_votes_needed')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'design_votes_needed',
+                    'value' => 3,
+                    'description' => 'Number of approval votes needed for a design update or MYO submission to be considered as having approval.'
+                ]
+
+            ]);
+            $this->info("Added:   design_votes_needed / Default: 3");
+        }
+        else $this->line("Skipped: design_votes_needed");
+
+        if(!DB::table('site_settings')->where('key', 'admin_user')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'admin_user',
+                    'value' => 1,
+                    'description' => 'ID of the site\'s admin user.'
+                ]
+
+            ]);
+            $this->info("Added:   admin_user / Default: 1");
+        }
+        else $this->line("Skipped: admin_user");
 
         $this->line("\nSite settings up to date!");
         

@@ -24,7 +24,8 @@ class CharacterDesignupdate extends Model
         'use_cropper', 'x0', 'x1', 'y0', 'y1',
         'hash', 'species_id', 'subtype_id', 'rarity_id', 
         'has_comments', 'has_image', 'has_addons', 'has_features',
-        'submitted_at', 'update_type'
+        'submitted_at', 'update_type', 'fullsize_hash', 
+        'approval_votes', 'rejection_votes'
     ];
 
     /**
@@ -213,7 +214,7 @@ class CharacterDesignupdate extends Model
         // This is for showing the addons page
         // just need to retrieve a list of stack IDs to tell which ones to check
 
-        return $this->data ? $this->data['stacks'] : [];
+        return $this->data && isset($this->data['user']['user_items']) ? $this->data['user']['user_items'] : [];
     }
 
     /**
@@ -324,6 +325,16 @@ class CharacterDesignupdate extends Model
     public function getUrlAttribute()
     {
         return url('designs/'.$this->id);
+    }
+
+    /**
+     * Gets the voting data of the design update request.
+     *
+     * @return string
+     */
+    public function getVoteDataAttribute()
+    {
+        return collect(json_decode($this->attributes['vote_data'], true));
     }
 
     /**********************************************************************************************

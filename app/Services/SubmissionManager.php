@@ -11,12 +11,14 @@ use Notifications;
 use Settings;
 
 use App\Models\User\User;
+use App\Models\User\UserItem;
 use App\Models\Character\Character;
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
 use App\Models\Currency\Currency;
 use App\Models\Item\Item;
 use App\Models\Loot\LootTable;
+use App\Models\Raffle\Raffle;
 use App\Models\Prompt\Prompt;
 
 class SubmissionManager extends Service
@@ -65,6 +67,42 @@ class SubmissionManager extends Service
             }
             else $characters = [];
 
+            $userAssets = createAssetsArray();
+
+            // Attach items. Technically, the user doesn't lose ownership of the item - we're just adding an additional holding field.
+            // We're also not going to add logs as this might add unnecessary fluff to the logs and the items still belong to the user.
+            if(isset($data['stack_id'])) {
+                foreach($data['stack_id'] as $key=>$stackId) {
+                    $stack = UserItem::with('item')->find($stackId);
+                    if(!$stack || $stack->user_id != $user->id) throw new \Exception("Invalid item selected.");
+                    $stack->submission_count += $data['stack_quantity'][$key];
+                    $stack->save();
+
+                    addAsset($userAssets, $stack, $data['stack_quantity'][$key]);
+                }
+            }
+
+            // Attach currencies.
+            if(isset($data['currency_id'])) {
+                foreach($data['currency_id'] as $holderKey=>$currencyIds) {
+                    $holder = explode('-', $holderKey);
+                    $holderType = $holder[0];
+                    $holderId = $holder[1];
+
+                    $holder = User::find($holderId);
+
+                    $currencyManager = new CurrencyManager;
+                    foreach($currencyIds as $key=>$currencyId) {
+                        $currency = Currency::find($currencyId);
+                        if(!$currency) throw new \Exception("Invalid currency selected.");
+                        if(!$currencyManager->debitCurrency($holder, null, null, null, $currency, $data['currency_quantity'][$holderKey][$key])) throw new \Exception("Invalid currency/quantity selected.");
+
+                        addAsset($userAssets, $currency, $data['currency_quantity'][$holderKey][$key]);
+                        
+                    }
+                }
+            }
+
             // Get a list of rewards, then create the submission itself
             $promptRewards = createAssetsArray();
             if(!$isClaim) 
@@ -80,7 +118,10 @@ class SubmissionManager extends Service
                 'url' => $data['url'],
                 'status' => 'Pending',
                 'comments' => $data['comments'],
-                'data' => json_encode(getDataReadyAssets($promptRewards)) // list of rewards
+                'data' => json_encode([
+                    'user' => array_only(getDataReadyAssets($userAssets), ['user_items','currencies']),
+                    'rewards' => getDataReadyAssets($promptRewards)
+                    ]) // list of rewards and addons
             ] + ($isClaim ? [] : ['prompt_id' => $prompt->id,]));
 
             // Retrieve all currency IDs for characters
@@ -160,6 +201,10 @@ class SubmissionManager extends Service
                             if (!$isStaff) break;
                             $reward = LootTable::find($data['rewardable_id'][$key]);
                             break;
+                        case 'Raffle':
+                            if (!$isStaff) break;
+                            $reward = Raffle::find($data['rewardable_id'][$key]);
+                            break;
                     }
                     if(!$reward) continue;
                     addAsset($assets, $reward, $data['quantity'][$key]);
@@ -187,6 +232,29 @@ class SubmissionManager extends Service
             elseif($data['submission']->status == 'Pending') $submission = $data['submission'];
             else $submission = null;
             if(!$submission) throw new \Exception("Invalid submission.");
+
+            // Return all added items
+            $addonData = $submission->data['user'];
+            if(isset($addonData['user_items'])) {
+                foreach($addonData['user_items'] as $userItemId => $quantity) {
+                    $userItemRow = UserItem::find($userItemId);
+                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
+                    if($userItemRow->submission_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
+                    $userItemRow->submission_count -= $quantity;
+                    $userItemRow->save();
+                }
+            }
+
+            // And currencies
+            $currencyManager = new CurrencyManager;
+            if(isset($addonData['currencies']) && $addonData['currencies'])
+            {
+                foreach($addonData['currencies'] as $currencyId=>$quantity) {
+                    $currency = Currency::find($currencyId);
+                    if(!$currency) throw new \Exception("Cannot return an invalid currency. (".$currencyId.")");
+                    if(!$currencyManager->creditCurrency(null, $submission->user, null, null, $currency, $quantity)) throw new \Exception("Could not return currency to user. (".$currencyId.")");                    
+                }
+            }
 			
 			if(isset($data['staff_comments']) && $data['staff_comments']) $data['parsed_staff_comments'] = parse($data['staff_comments']);
 			else $data['parsed_staff_comments'] = null;
@@ -231,6 +299,44 @@ class SubmissionManager extends Service
             // 2. check that the submission is pending
             $submission = Submission::where('status', 'Pending')->where('id', $data['id'])->first();
             if(!$submission) throw new \Exception("Invalid submission.");
+
+            // Remove any added items, hold counts, and add logs
+            $addonData = $submission->data['user'];
+            $inventoryManager = new InventoryManager;
+            if(isset($addonData['user_items'])) {
+                $stacks = $addonData['user_items'];
+                foreach($addonData['user_items'] as $userItemId => $quantity) {
+                    $userItemRow = UserItem::find($userItemId);
+                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
+                    if($userItemRow->submission_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
+                    $userItemRow->submission_count -= $quantity;
+                    $userItemRow->save();
+                }
+
+                // Workaround for user not being unset after inventory shuffling, preventing proper staff ID assignment
+                $staff = $user;
+                
+                foreach($stacks as $stackId=>$quantity) {
+                    $stack = UserItem::find($stackId);
+                    $user = User::find($submission->user_id);
+                    if(!$inventoryManager->debitStack($user, $submission->prompt_id ? 'Prompt Approved' : 'Claim Approved', ['data' => 'Item used in submission (<a href="'.$submission->viewUrl.'">#'.$submission->id.'</a>)'], $stack, $quantity)) throw new \Exception("Failed to create log for item stack.");
+                }
+
+                // Set user back to the processing staff member, now that addons have been properly processed.
+                $user = $staff;
+            }
+
+            // Log currency removal, etc.
+            $currencyManager = new CurrencyManager;
+            if(isset($addonData['currencies']) && $addonData['currencies'])
+            {
+                foreach($addonData['currencies'] as $currencyId=>$quantity) {
+                    $currency = Currency::find($currencyId);
+                    if(!$currencyManager->createLog($user->id, 'User', null, null, 
+                    $submission->prompt_id ? 'Prompt Approved' : 'Claim Approved', 'Used in ' . ($submission->prompt_id ? 'prompt' : 'claim') . ' (<a href="'.$submission->viewUrl.'">#'.$submission->id.'</a>)', $currencyId, $quantity)) 
+                        throw new \Exception("Failed to create currency log.");
+                }
+            }
 
             // The character identification comes in both the slug field and as character IDs
             // that key the reward ID/quantity arrays. 
@@ -300,7 +406,10 @@ class SubmissionManager extends Service
 				'parsed_staff_comments' => $data['parsed_staff_comments'],
                 'staff_id' => $user->id,
                 'status' => 'Approved',
-                'data' => json_encode(getDataReadyAssets($rewards))
+                'data' => json_encode([
+                    'user' => $addonData,
+                    'rewards' => getDataReadyAssets($rewards)
+                    ]) // list of rewards
             ]);
 
             Notifications::create($submission->prompt_id ? 'SUBMISSION_APPROVED' : 'CLAIM_APPROVED', $submission->user, [
