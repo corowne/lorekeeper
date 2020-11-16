@@ -32,7 +32,6 @@ Please see the associated wiki page for each extension for more information on t
 - [itinerare](https://github.com/itinerare) : [Submission Addons](http://wiki.lorekeeper.me/index.php?title=Extensions:Submission_Addons)
 - [itinerare](https://github.com/itinerare) : [Character Items](http://wiki.lorekeeper.me/index.php?title=Extensions:Character_Items)
 - [Preimpression](https://github.com/preimpression) : [Bootstrap Tables](http://wiki.lorekeeper.me/index.php?title=Extensions:Bootstrap_Tables)
-- [itinerare](https://github.com/itinerare) : [Item Entry Expansion (Stacked Inventories version)](http://wiki.lorekeeper.me/index.php?title=Extensions:Item_Entry_Expansion)
 - [itinerare](https://github.com/itinerare) : [Watermarking](http://wiki.lorekeeper.me/index.php?title=Extensions:Watermarking)
 - [itinerare](https://github.com/itinerare) : [Separate Prompts](http://wiki.lorekeeper.me/index.php?title=Extensions:Separate_Prompts)
 - [Preimpression](https://github.com/preimpression) & [Ne-wt](https://github.com/Ne-wt) : [Comments](http://wiki.lorekeeper.me/index.php?title=Extensions:Comments)
@@ -49,6 +48,7 @@ These extensions are included within this branch, but are opt-in and must be ena
 - [Junijwi](https://github.com/junijwi) : [Character Status Badges](http://wiki.lorekeeper.me/index.php?title=Extensions:Character_Status_Badges)
 - [Junijwi](https://github.com/junijwi) : [Character TH Profile Link](http://wiki.lorekeeper.me/index.php?title=Extensions:Character_TH_Profile_Link)
 - [itinerare](https://github.com/itinerare) : [Design Update Voting](http://wiki.lorekeeper.me/index.php?title=Extensions:Design_Update_Voting)
+- [itinerare](https://github.com/itinerare) : [Item Entry Expansion (Stacked Inventories version)](http://wiki.lorekeeper.me/index.php?title=Extensions:Item_Entry_Expansion)
 
 # Setup
 
