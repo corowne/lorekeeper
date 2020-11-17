@@ -5,13 +5,15 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 
 use DB;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 
 use App\Models\User\User;
 use App\Models\User\UserAlias;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterImageCreator;
 
-class AssignArtCreditsToIds extends Command
+class MigrateAliases extends Command
 {
     /**
      * The name and signature of the console command.
@@ -76,14 +78,14 @@ class AssignArtCreditsToIds extends Command
         // Get characters with an owner identified by alias
         $aliasCharacters = Character::whereNotNull('owner_alias')->get();
         
-        foreach($aliasCharacters as $characters) {
+        foreach($aliasCharacters as $character) {
             // Just in case, check to update character ownership
-            $user = User::find(UserAlias::where('site', 'dA')->where('alias', $character->alias)->first()->user_id);
-            if($user) {
-                $character->update(['owner_alias' => null, 'user_id' => $user->id]);
+            $userAlias = UserAlias::where('site', 'dA')->where('alias', $character->owner_alias)->first();
+            if($userAlias) {
+                $character->update(['owner_alias' => null, 'user_id' => $userAlias->user_id]);
             }
-            elseif(!$user) {
-                $alias = $character->alias;
+            elseif(!$userAlias) {
+                $alias = $character->owner_alias;
                 $character->update(['owner_alias' => null, 'owner_url' => 'https://deviantart.com/'.$alias]);
             }
         }
@@ -94,14 +96,27 @@ class AssignArtCreditsToIds extends Command
         $aliasImageCreators = CharacterImageCreator::whereNotNull('alias')->get();
 
         foreach($aliasImageCreators as $creator) {
-            $user = User::find(UserAlias::where('site', 'dA')->where('alias', $creator->alias)->first()->user_id);
-            if($user) {
-                $creator->update(['alias' => null, 'user_id' => $user->id]);
+            $userAlias = UserAlias::where('site', 'dA')->where('alias', $creator->alias)->first();
+            if($userAlias) {
+                $creator->update(['alias' => null, 'user_id' => $userAlias->user_id]);
             }
-            elseif(!$user) {
+            elseif(!$userAlias) {
                 $alias = $creator->alias;
                 $creator->update(['alias' => null, 'url' => 'https://deviantart.com/'.$alias]);
             }
         }
+
+        /** 
+        // Drop alias columns from the impacted tables
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('alias');
+        });
+        Schema::table('characters', function (Blueprint $table) {
+            $table->dropColumn('owner_alias');
+        });
+        Schema::table('character_image_creators', function (Blueprint $table) {
+            $table->dropColumn('alias');
+        });
+        */
     }
 }

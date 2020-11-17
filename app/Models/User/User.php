@@ -416,19 +416,21 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if(!$this->hasAlias) return;
 
-        // Find any uncredited characters and credit them.
-        if(Character::where('owner_alias', $this->alias)->update([
-            'owner_alias' => null,
-            'user_id' => $this->id
-        ])) {
-            $count = $this->characters->count();
-            if($count || $$myoCount) {
-                if($count) {
-                    $this->settings->is_fto = 0;
-                }
-                $this->settings->save();
-            }
+        // Pluck alias from url and check for matches
+        $urlCharacters = Character::whereNotNull('owner_url')->pluck('owner_url','id');
+        $matches = null; $count = 0;
+        foreach($this->aliases as $alias) {
+            // Find all urls from the same site as this alias
+            foreach($urlCharacters as $key=>$character) preg_match_all(Config::get('lorekeeper.sites.'.$alias->site.'.regex'), $character, $matches[$key]);
+            // Find all alias matches within those, and update the character's owner
+            foreach($matches as $key=>$match) if($match[1] != [] && $match[1][0] == $alias->alias) {Character::find($key)->update(['owner_url' => null, 'user_id' => $this->id]); $count += 1;}
         }
+
+        // 
+        if($count > 0) {
+            $this->settings->is_fto = 0;
+        }
+        $this->settings->save();
     }
 
     /**     
@@ -438,17 +440,14 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if(!$this->hasAlias) return;
         
-        // Find any art credited to this alias and update credit to this account.
-        if(CharacterImageCreator::where('alias', $this->alias)->update(['alias' => null, 'user_id' => $this->id]));
-
-        // Perform the same operation, plucking alias from url
+        // Pluck alias from url and check for matches
         $urlCreators = CharacterImageCreator::whereNotNull('url')->pluck('url','id');
-        if(count($urlCreators)) {
-            $matches = null;
-            // Find all deviantArt urls
-            foreach($urlCreators as $key=>$creator) preg_match_all(Config::get('lorekeeper.sites.dA.regex'), $creator, $matches[$key]);
+        $matches = null;
+        foreach($this->aliases as $alias) {
+            // Find all urls from the same site as this alias
+            foreach($urlCreators as $key=>$creator) preg_match_all(Config::get('lorekeeper.sites.'.$alias->site.'.regex'), $creator, $matches[$key]);
             // Find all alias matches within those, and update the relevant CharacterImageCreator
-            foreach($matches as $key=>$match) if($match[1] != [] && $match[1][0] == $this->alias) CharacterImageCreator::find($key)->update(['url' => null, 'user_id' => $this->id]);
+            foreach($matches as $key=>$match) if($match[1] != [] && $match[1][0] == $alias->alias) CharacterImageCreator::find($key)->update(['url' => null, 'user_id' => $this->id]);
         }
     }
 
