@@ -89,7 +89,7 @@ class CharacterManager extends Service
         try {
             if(!$isMyo && Character::where('slug', $data['slug'])->exists()) throw new \Exception("Please enter a unique character code.");
 
-            if(!(isset($data['user_id']) && $data['user_id']) && !(isset($data['owner_alias']) && $data['owner_alias'])) 
+            if(!(isset($data['user_id']) && $data['user_id']) && !(isset($data['owner_url']) && $data['owner_url'])) 
                 throw new \Exception("Please select an owner.");
             if(!$isMyo)
             {
@@ -105,18 +105,17 @@ class CharacterManager extends Service
             else $data['subtype_id'] = null;
 
             // Get owner info
-            $recipient = null;
+            $url = null;
             $recipientId = null;
-            $alias = null;
             if(isset($data['user_id']) && $data['user_id']) $recipient = User::find($data['user_id']);
-            elseif(isset($data['owner_alias']) && $data['owner_alias']) $recipient = User::where('alias', $data['owner_alias'])->first();
+            elseif(isset($data['owner_url']) && $data['owner_url']) $recipient = checkAlias($data['owner_url']);
 
-            if($recipient) {
+            if(is_object($recipient)) {
                 $recipientId = $recipient->id;
                 $data['user_id'] = $recipient->id;
             }
             else {
-                $alias = $data['owner_alias'];
+                $url = $recipient;
             }
 
             // Create character
@@ -134,23 +133,22 @@ class CharacterManager extends Service
             
             // Add a log for the character
             // This logs all the updates made to the character
-            $this->createLog($user->id, null, $recipientId, $alias, $character->id, $isMyo ? 'MYO Slot Created' : 'Character Created', 'Initial upload', 'character');
+            $this->createLog($user->id, null, $recipientId, $url, $character->id, $isMyo ? 'MYO Slot Created' : 'Character Created', 'Initial upload', 'character');
 
             // Add a log for the user
             // This logs ownership of the character
-            $this->createLog($user->id, null, $recipientId, $alias, $character->id, $isMyo ? 'MYO Slot Created' : 'Character Created', 'Initial upload', 'user');
+            $this->createLog($user->id, null, $recipientId, $url, $character->id, $isMyo ? 'MYO Slot Created' : 'Character Created', 'Initial upload', 'user');
 
             // Update the user's FTO status and character count
-            if($recipient) {
+            if(is_object($recipient)) {
                 if(!$isMyo) {
                     $recipient->settings->is_fto = 0; // MYO slots don't affect the FTO status - YMMV
                 }
                 $recipient->settings->save();
             }
 
-
             // If the recipient has an account, send them a notification
-            if($recipient && $user->id != $recipient->id) {
+            if(is_object($recipient) && $user->id != $recipient->id) {
                 Notifications::create($isMyo ? 'MYO_GRANT' : 'CHARACTER_UPLOAD', $recipient, [
                     'character_url' => $character->url,
                 ] + ($isMyo ? 
@@ -193,7 +191,7 @@ class CharacterManager extends Service
             ]);
             
             $characterData['name'] = ($isMyo && isset($data['name'])) ? $data['name'] : null;
-            $characterData['owner_alias'] = isset($characterData['user_id']) ? null : $data['owner_alias'];
+            $characterData['owner_url'] = isset($characterData['user_id']) ? null : $data['owner_url'];
             $characterData['is_sellable'] = isset($data['is_sellable']);
             $characterData['is_tradeable'] = isset($data['is_tradeable']);
             $characterData['is_giftable'] = isset($data['is_giftable']);
@@ -262,13 +260,13 @@ class CharacterManager extends Service
             $image = CharacterImage::create($imageData);
 
             // Check that users with the specified id(s) exist on site
-            foreach($data['designer_alias'] as $id) {
+            foreach($data['designer_id'] as $id) {
                 if(isset($id) && $id) {
                     $user = User::find($id);
                     if(!$user) throw new \Exception('One or more designers is invalid.');
                 }
             }
-            foreach($data['artist_alias'] as $id) {
+            foreach($data['artist_id'] as $id) {
                 if(isset($id) && $id) {
                     $user = $user = User::find($id);
                     if(!$user) throw new \Exception('One or more artists is invalid.');
@@ -276,7 +274,7 @@ class CharacterManager extends Service
             }
 
             // Attach artists/designers
-            foreach($data['designer_alias'] as $key => $id) {
+            foreach($data['designer_id'] as $key => $id) {
                 if($id || $data['designer_url'][$key])
                     DB::table('character_image_creators')->insert([
                         'character_image_id' => $image->id,
@@ -285,7 +283,7 @@ class CharacterManager extends Service
                         'user_id' => $id
                     ]);
             }
-            foreach($data['artist_alias'] as $key => $id) {
+            foreach($data['artist_id'] as $key => $id) {
                 if($id || $data['artist_url'][$key])
                     DB::table('character_image_creators')->insert([
                         'character_image_id' => $image->id,
@@ -344,8 +342,9 @@ class CharacterManager extends Service
      * Creates a character log.
      *
      * @param  int     $senderId
+     * @param  string  $senderUrl
      * @param  int     $recipientId
-     * @param  string  $recipientAlias
+     * @param  string  $recipientUrl
      * @param  int     $characterId
      * @param  string  $type 
      * @param  string  $data 
@@ -355,14 +354,14 @@ class CharacterManager extends Service
      * @param  string  $newData
      * @return bool
      */
-    public function createLog($senderId, $senderAlias, $recipientId, $recipientAlias, $characterId, $type, $data, $logType, $isUpdate = false, $oldData = null, $newData = null)
+    public function createLog($senderId, $senderUrl, $recipientId, $recipientUrl, $characterId, $type, $data, $logType, $isUpdate = false, $oldData = null, $newData = null)
     {
         return DB::table($logType == 'character' ? 'character_log' : 'user_character_log')->insert(
             [
                 'sender_id' => $senderId,
-                'sender_alias' => $senderAlias,
+                'sender_url' => $senderUrl,
                 'recipient_id' => $recipientId,
-                'recipient_alias' => $recipientAlias,
+                'recipient_url' => $recipientUrl,
                 'character_id' => $characterId,
                 'log' => $type . ($data ? ' (' . $data . ')' : ''),
                 'log_type' => $type,
@@ -417,7 +416,7 @@ class CharacterManager extends Service
             
             // Add a log for the character
             // This logs all the updates made to the character
-            $this->createLog($user->id, null, $character->user_id, $character->user_id ? $character->user->alias : $character->owner_alias, $character->id, 'Character Image Uploaded', '[#'.$image->id.']', 'character');
+            $this->createLog($user->id, null, $character->user_id, ($character->user_id ? null : $character->owner_url), $character->id, 'Character Image Uploaded', '[#'.$image->id.']', 'character');
             
             // If the recipient has an account, send them a notification
             if($character->user && $user->id != $character->user_id && $character->is_visible) {
@@ -569,13 +568,13 @@ class CharacterManager extends Service
             $image->creators()->delete();
 
             // Check that users with the specified id(s) exist on site
-            foreach($data['designer_alias'] as $id) {
+            foreach($data['designer_id'] as $id) {
                 if(isset($id) && $id) {
                     $user = User::find($id);
                     if(!$user) throw new \Exception('One or more designers is invalid.');
                 }
             }
-            foreach($data['artist_alias'] as $id) {
+            foreach($data['artist_id'] as $id) {
                 if(isset($id) && $id) {
                     $user = $user = User::find($id);
                     if(!$user) throw new \Exception('One or more artists is invalid.');
@@ -583,7 +582,7 @@ class CharacterManager extends Service
             }
 
             // Attach artists/designers
-            foreach($data['designer_alias'] as $key => $id) {
+            foreach($data['designer_id'] as $key => $id) {
                 if($id || $data['designer_url'][$key])
                     DB::table('character_image_creators')->insert([
                         'character_image_id' => $image->id,
@@ -592,7 +591,7 @@ class CharacterManager extends Service
                         'user_id' => $id
                     ]);
             }
-            foreach($data['artist_alias'] as $key => $id) {
+            foreach($data['artist_id'] as $key => $id) {
                 if($id || $data['artist_url'][$key])
                     DB::table('character_image_creators')->insert([
                         'character_image_id' => $image->id,
@@ -1159,9 +1158,9 @@ class CharacterManager extends Service
                 if(!$recipient) throw new \Exception("Invalid user selected.");
                 if($character->user_id == $recipient->id) throw new \Exception("Cannot transfer a character to the same user.");
             }
-            else if(isset($data['recipient_alias']) && $data['recipient_alias']) {
-                // Transferring to a dA user
-                $recipient = $data['recipient_alias'];
+            else if(isset($data['recipient_url']) && $data['recipient_url']) {
+                // Transferring to an off-site user
+                $recipient = checkAlias($data['recipient_url']);
             }
             else throw new \Exception("Please enter a recipient for the transfer.");
 
@@ -1184,8 +1183,8 @@ class CharacterManager extends Service
                     'character_slug' => $character->slug,
                     'sender_name' => $user->name,
                     'sender_url' => $user->url,
-                    'recipient_name' => is_object($recipient) ? $recipient->name : $recipient . '@dA',
-                    'recipient_url' => is_object($recipient) ? $recipient->url : 'http://www.deviantart.com/' . $recipient,
+                    'recipient_name' => is_object($recipient) ? $recipient->name : prettyProfileName($recipient),
+                    'recipient_url' => is_object($recipient) ? $recipient->url : $recipient,
                 ]);
             }
             if(is_object($recipient)) {
@@ -1395,9 +1394,10 @@ class CharacterManager extends Service
     public function moveCharacter($character, $recipient, $data, $cooldown = -1, $logType = null)
     {
         $sender = $character->user;
+        if(!$sender) $sender = $character->owner_url;
 
         // Update character counts if the sender has an account
-        if($sender) {
+        if(is_object($sender)) {
             $sender->settings->save();
         }
 
@@ -1410,10 +1410,10 @@ class CharacterManager extends Service
         $character->sort = 0;
         if(is_object($recipient)) {
             $character->user_id = $recipient->id;
-            $character->owner_alias = null;
+            $character->owner_url = null;
         }
         else {
-            $character->owner_alias = $recipient;
+            $character->owner_url = $recipient;
             $character->user_id = null;
         }
         if ($cooldown < 0) {
@@ -1452,10 +1452,10 @@ class CharacterManager extends Service
 
         // Add a log for the ownership change
         $this->createLog(
-            $sender ? $sender->id : null, 
-            $sender ? null : $character->owner_alias, 
+            is_object($sender) ? $sender->id : null, 
+            is_object($sender) ? null : $sender, 
             $recipient && is_object($recipient) ? $recipient->id : null, 
-            $recipient && is_object($recipient) ? $recipient->alias : ($recipient ? : null), 
+            $recipient && is_object($recipient) ? $recipient->url : ($recipient ? : null), 
             $character->id, $logType ? $logType : ($character->is_myo_slot ? 'MYO Slot Transferred' : 'Character Transferred'), $data, 'user');
     }
 
@@ -1583,13 +1583,13 @@ class CharacterManager extends Service
             $request->artists()->delete();
 
             // Check that users with the specified id(s) exist on site
-            foreach($data['designer_alias'] as $id) {
+            foreach($data['designer_id'] as $id) {
                 if(isset($id) && $id) {
                     $user = User::find($id);
                     if(!$user) throw new \Exception('One or more designers is invalid.');
                 }
             }
-            foreach($data['artist_alias'] as $id) {
+            foreach($data['artist_id'] as $id) {
                 if(isset($id) && $id) {
                     $user = $user = User::find($id);
                     if(!$user) throw new \Exception('One or more artists is invalid.');
@@ -1597,7 +1597,7 @@ class CharacterManager extends Service
             }
 
             // Attach artists/designers
-            foreach($data['designer_alias'] as $key => $id) {
+            foreach($data['designer_id'] as $key => $id) {
                 if($id || $data['designer_url'][$key])
                     DB::table('character_image_creators')->insert([
                         'character_image_id' => $request->id,
@@ -1607,7 +1607,7 @@ class CharacterManager extends Service
                         'user_id' => $id
                     ]);
             }
-            foreach($data['artist_alias'] as $key => $id) {
+            foreach($data['artist_id'] as $key => $id) {
                 if($id || $data['artist_url'][$key])
                     DB::table('character_image_creators')->insert([
                         'character_image_id' => $request->id,
@@ -1948,8 +1948,8 @@ class CharacterManager extends Service
             $request->save();
 
             // Add a log for the character and user
-            $this->createLog($user->id, null, $request->character->user_id, $request->character->user->alias, $request->character->id, $request->update_type == 'MYO' ? 'MYO Design Approved' : 'Character Design Updated', '[#'.$image->id.']', 'character');
-            $this->createLog($user->id, null, $request->character->user_id, $request->character->user->alias, $request->character->id, $request->update_type == 'MYO' ? 'MYO Design Approved' : 'Character Design Updated', '[#'.$image->id.']', 'user');
+            $this->createLog($user->id, null, $request->character->user_id, $request->character->user->url, $request->character->id, $request->update_type == 'MYO' ? 'MYO Design Approved' : 'Character Design Updated', '[#'.$image->id.']', 'character');
+            $this->createLog($user->id, null, $request->character->user_id, $request->character->user->url, $request->character->id, $request->update_type == 'MYO' ? 'MYO Design Approved' : 'Character Design Updated', '[#'.$image->id.']', 'user');
             
             // If this is for a MYO, set user's FTO status and the MYO status of the slot
             // and clear the character's name

@@ -267,7 +267,7 @@ class Character extends Model
     public function getDisplayOwnerAttribute()
     {
         if($this->user_id) return $this->user->displayName;
-        else return '<a href="https://www.deviantart.com/'.$this->owner_alias.'">'.$this->owner_alias.'@dA</a>';
+        else return prettyProfileLink($this->owner_url);
     }
 
     /**
@@ -350,10 +350,10 @@ class Character extends Model
         if($this->user_id) return;
 
         // Check if the owner has an account and update the character's user ID for them.
-        $owner = User::where('alias', $this->owner_alias)->first();
-        if($owner) {
+        $owner = checkAlias($this->owner_url);
+        if(is_object($owner)) {
             $this->user_id = $owner->id;
-            $this->owner_alias = null;
+            $this->owner_url = null;
             $this->save();
 
             $owner->settings->is_fto = 0;

@@ -418,7 +418,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
         // Pluck alias from url and check for matches
         $urlCharacters = Character::whereNotNull('owner_url')->pluck('owner_url','id');
-        $matches = null; $count = 0;
+        $matches = []; $count = 0;
         foreach($this->aliases as $alias) {
             // Find all urls from the same site as this alias
             foreach($urlCharacters as $key=>$character) preg_match_all(Config::get('lorekeeper.sites.'.$alias->site.'.regex'), $character, $matches[$key]);
@@ -442,7 +442,7 @@ class User extends Authenticatable implements MustVerifyEmail
         
         // Pluck alias from url and check for matches
         $urlCreators = CharacterImageCreator::whereNotNull('url')->pluck('url','id');
-        $matches = null;
+        $matches = [];
         foreach($this->aliases as $alias) {
             // Find all urls from the same site as this alias
             foreach($urlCreators as $key=>$creator) preg_match_all(Config::get('lorekeeper.sites.'.$alias->site.'.regex'), $creator, $matches[$key]);
