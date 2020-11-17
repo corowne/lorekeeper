@@ -51,5 +51,10 @@ return [
         'name' => 'Meta Tag Image',
         'description' => 'The image displayed in meta tag previews on social media, discord, and the like. PNG format, no size restriction.',
         'filename' => 'meta-image.png'
-    ]
+    ],
+    'watermark' => [
+        'name' => 'Watermark Image',
+        'description' => 'Watermark for applying to masterlist images.',
+        'filename' => 'watermark.png'
+    ],
 ];

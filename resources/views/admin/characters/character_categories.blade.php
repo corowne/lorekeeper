@@ -15,6 +15,14 @@
     <p>No character categories found.</p>
 @else 
     <table class="table table-sm category-table">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Code</th>
+                <th>Sub Masterlist</th>
+                <th></th>
+            </tr>
+        </thead>
         <tbody id="sortable" class="sortable">
             @foreach($categories as $category)
                 <tr class="sort-item" data-id="{{ $category->id }}">
@@ -24,6 +32,9 @@
                     </td>
                     <td>
                         {{ $category->code }}
+                    </td>
+                    <td>
+                    @if(isset($category->sublist->name)) {{ $category->sublist->name  }} @else -- @endif
                     </td>
                     <td class="text-right">
                         <a href="{{ url('admin/data/character-categories/edit/'.$category->id) }}" class="btn btn-primary">Edit</a>

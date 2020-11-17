@@ -8,6 +8,9 @@ $( document ).ready(function() {
     @if($showLootTables)
         var $tableSelect = $('#lootRowData').find('.table-select');
     @endif
+    @if($showRaffles)
+        var $raffleSelect = $('#lootRowData').find('.raffle-select');
+    @endif
 
     $('#lootTableBody .selectize').selectize();
     attachRemoveListener($('#lootTableBody .remove-loot-button'));
@@ -30,6 +33,9 @@ $( document ).ready(function() {
         @if($showLootTables)
             else if (val == 'LootTable') $clone = $tableSelect.clone();
         @endif
+        @if($showRaffles)
+            else if (val == 'Raffle') $clone = $raffleSelect.clone();
+        @endif
 
         $cell.html('');
         $cell.append($clone);
@@ -45,6 +51,9 @@ $( document ).ready(function() {
             else if (val == 'Currency') $clone = $currencySelect.clone();
             @if($showLootTables)
                 else if (val == 'LootTable') $clone = $tableSelect.clone();
+            @endif
+            @if($showRaffles)
+                else if (val == 'Raffle') $clone = $raffleSelect.clone();
             @endif
 
             $cell.html('');

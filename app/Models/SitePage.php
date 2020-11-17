@@ -5,15 +5,19 @@ namespace App\Models;
 use Config;
 use App\Models\Model;
 
+use App\Traits\Commentable;
+
 class SitePage extends Model
 {
+    use Commentable;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'key', 'title', 'text', 'parsed_text', 'is_visible'
+        'key', 'title', 'text', 'parsed_text', 'is_visible', 'can_comment'
     ];
 
     /**
@@ -60,5 +64,15 @@ class SitePage extends Model
     public function getUrlAttribute()
     {
         return url('info/'.$this->key);
+    }
+
+    /**
+     * Displays the news post title, linked to the news post itself.
+     *
+     * @return string
+     */
+    public function getDisplayNameAttribute()
+    {
+        return '<a href="'.$this->url.'">'.$this->title.'</a>';
     }
 }

@@ -49,7 +49,11 @@
         @else 
             <p>Note that any rewards added here are <u>in addition</u> to the default prompt rewards. If you do not require any additional rewards, you can leave this blank.</p>
         @endif
-        @include('widgets._loot_select', ['loots' => null, 'showLootTables' => false])
+        @if($isClaim)
+            @include('widgets._loot_select', ['loots' => null, 'showLootTables' => false, 'showRaffles' => true])
+        @else
+            @include('widgets._loot_select', ['loots' => null, 'showLootTables' => false, 'showRaffles' => false])
+        @endif
         @if(!$isClaim)
             <div id="rewards" class="mb-3"></div>
         @endif
@@ -64,14 +68,24 @@
             <a href="#" class="btn btn-outline-info" id="addCharacter">Add Character</a>
         </div>
 
+        <h2>Add-Ons</h2>
+        <p>If your {{ $isClaim ? 'claim' : 'submission' }} consumes items, attach them here. Otherwise, this section can be left blank. These items will be removed from your inventory but refunded if your {{ $isClaim ? 'claim' : 'submission' }} is rejected.</p>
+        <div id="addons" class="mb-3">
+        @include('widgets._inventory_select', ['user' => Auth::user(), 'inventory' => $inventory, 'categories' => $categories, 'selected' => [], 'page' => $page])
+        @include('widgets._bank_select', ['owner' => Auth::user(), 'selected' => null])
+        </div>
+
         <div class="text-right">
             <a href="#" class="btn btn-primary" id="submitButton">Submit</a>
         </div>
     {!! Form::close() !!}
 
     @include('widgets._character_select', ['characterCurrencies' => $characterCurrencies])
-    @include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'showLootTables' => false])
-
+    @if($isClaim)
+        @include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'showLootTables' => false, 'showRaffles' => true])
+    @else
+        @include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'showLootTables' => false, 'showRaffles' => false])
+    @endif
 
     <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -81,7 +95,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <p>This will submit the form and put it into the {{ $isClaim ? 'claims' : 'prompt' }} approval queue. You will not be able to edit the contents after the  {{ $isClaim ? 'claim' : 'submission' }} has been made. Click the Confirm button to complete the  {{ $isClaim ? 'claim' : 'submission' }}.</p>
+                    <p>This will submit the form and put it into the {{ $isClaim ? 'claims' : 'prompt' }} approval queue. You will not be able to edit the contents after the {{ $isClaim ? 'claim' : 'submission' }} has been made. Click the Confirm button to complete the  {{ $isClaim ? 'claim' : 'submission' }}.</p>
                     <div class="text-right">
                         <a href="#" id="formSubmit" class="btn btn-primary">Confirm</a>
                     </div>
@@ -95,8 +109,15 @@
 @section('scripts')
 @parent 
 @if(!$closed)
-    @include('js._loot_js', ['showLootTables' => false])
+    @if($isClaim)
+        @include('js._loot_js', ['showLootTables' => false, 'showRaffles' => true])
+    @else
+        @include('js._loot_js', ['showLootTables' => false, 'showRaffles' => false])
+    @endif
     @include('js._character_select_js')
+    @include('widgets._inventory_select_js', ['readOnly' => true])
+    @include('widgets._bank_select_row', ['owners' => [Auth::user()]])
+    @include('widgets._bank_select_js', [])
 
     <script>
         $(document).ready(function() {
