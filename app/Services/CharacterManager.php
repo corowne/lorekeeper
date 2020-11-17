@@ -251,10 +251,11 @@ class CharacterManager extends Service
             $imageData['description'] = isset($data['image_description']) ? $data['image_description'] : null;
             $imageData['parsed_description'] = parse($imageData['description']);
             $imageData['hash'] = randomString(10);
+            $imageData['fullsize_hash'] = randomString(15);
             $imageData['sort'] = 0;
             $imageData['is_valid'] = isset($data['is_valid']);
             $imageData['is_visible'] = isset($data['is_visible']);
-            $imageData['extension'] = isset($data['extension']) ? $data['extension'] : $data['image']->getClientOriginalExtension();
+            $imageData['extension'] = (Config::get('lorekeeper.settings.masterlist_image_format') ? Config::get('lorekeeper.settings.masterlist_image_format') : (isset($data['extension']) ? $data['extension'] : $data['image']->getClientOriginalExtension()));
             $imageData['character_id'] = $character->id;
 
             $image = CharacterImage::create($imageData);
@@ -296,9 +297,12 @@ class CharacterManager extends Service
             // Save image
             $this->handleImage($data['image'], $image->imageDirectory, $image->imageFileName, null, isset($data['default_image']));
             
-            // Save thumbnail
-            if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image);
+            // Save thumbnail first before processing full image
+            if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image, $isMyo);
             else $this->handleImage($data['thumbnail'], $image->imageDirectory, $image->thumbnailFileName, null, isset($data['default_image']));
+
+            // Process and save the image itself
+            if(!$isMyo) $this->processImage($image);
             
             // Attach features
             foreach($data['feature_id'] as $key => $featureId) {
@@ -316,26 +320,184 @@ class CharacterManager extends Service
     }
 
     /**
+     * Trims and optionally resizes and watermarks an image.
+     *
+     * 
+     * @param  \App\Models\Character\CharacterImage  $characterImage
+     */
+    private function processImage($characterImage)
+    {
+        // Trim transparent parts of image.
+        $image = Image::make($characterImage->imagePath . '/' . $characterImage->imageFileName)->trim('transparent');
+
+        if(Config::get('lorekeeper.settings.masterlist_image_format') != 'png' && Config::get('lorekeeper.settings.masterlist_image_format') != null && Config::get('lorekeeper.settings.masterlist_image_background') != null) {
+            $canvas = Image::canvas($image->width(), $image->height(), Config::get('lorekeeper.settings.masterlist_image_background'));
+            $image = $canvas->insert($image, 'center');
+        }
+
+        if(Config::get('lorekeeper.settings.store_masterlist_fullsizes') == 1) {
+            // Generate fullsize hash if not already generated,
+            // then save the full-sized image
+            if(!$characterImage->fullsize_hash) {
+                $characterImage->fullsize_hash = randomString(15);
+                $characterImage->save();
+            }
+
+            if(Config::get('lorekeeper.settings.masterlist_fullsizes_cap') != 0) {
+                $imageWidth = $image->width();
+                $imageHeight = $image->height();
+
+                if( $imageWidth > $imageHeight) {
+                    // Landscape
+                    $image->resize(Config::get('lorekeeper.settings.masterlist_fullsizes_cap'), null, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                }
+                else {
+                    // Portrait
+                    $image->resize(null, Config::get('lorekeeper.settings.masterlist_fullsizes_cap'), function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                }
+            }
+
+            // Save the processed image
+            $image->save($characterImage->imagePath . '/' . $characterImage->fullsizeFileName, 100, Config::get('lorekeeper.settings.masterlist_image_format'));
+        }
+        else {
+            // Delete fullsize if it was previously created.
+            if(isset($characterImage->fullsize_hash) ? file_exists( public_path($characterImage->imageDirectory.'/'.$characterImage->fullsizeFileName)) : FALSE) unlink($characterImage->imagePath . '/' . $characterImage->fullsizeFileName);
+        }
+
+        // Resize image if desired
+        if(Config::get('lorekeeper.settings.masterlist_image_dimension') != 0) {
+            $imageWidth = $image->width();
+            $imageHeight = $image->height();
+
+            if( $imageWidth > $imageHeight) {
+                // Landscape
+                $image->resize(null, Config::get('lorekeeper.settings.masterlist_image_dimension'), function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+            }
+            else {
+                // Portrait
+                $image->resize(Config::get('lorekeeper.settings.masterlist_image_dimension'), null, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+            }
+        }
+        // Watermark the image if desired
+        if(Config::get('lorekeeper.settings.watermark_masterlist_images') == 1) {
+            $watermark = Image::make('images/watermark.png');
+            $image->insert($watermark, 'center');
+        }
+
+        // Save the processed image
+        $image->save($characterImage->imagePath . '/' . $characterImage->imageFileName, 100, Config::get('lorekeeper.settings.masterlist_image_format'));
+    }
+
+    /**
      * Crops a thumbnail for the given image.
      *
      * @param  array                                 $points
      * @param  \App\Models\Character\CharacterImage  $characterImage
      */
-    private function cropThumbnail($points, $characterImage)
+    private function cropThumbnail($points, $characterImage, $isMyo = false)
     {
-        $cropWidth = $points['x1'] - $points['x0'];
-        $cropHeight = $points['y1'] - $points['y0'];
-
         $image = Image::make($characterImage->imagePath . '/' . $characterImage->imageFileName);
-        
-        // Crop according to the selected area
-        $image->crop($cropWidth, $cropHeight, $points['x0'], $points['y0']);
 
-        // Resize to fit the thumbnail size
-        $image->resize(Config::get('lorekeeper.settings.masterlist_thumbnails.width'), Config::get('lorekeeper.settings.masterlist_thumbnails.height'));
+        if(Config::get('lorekeeper.settings.masterlist_image_format') != 'png' && Config::get('lorekeeper.settings.masterlist_image_format') != null && Config::get('lorekeeper.settings.masterlist_image_background') != null) {
+            $canvas = Image::canvas($image->width(), $image->height(), Config::get('lorekeeper.settings.masterlist_image_background'));
+            $image = $canvas->insert($image, 'center');
+            $trimColor = TRUE;
+        }
+
+        if(Config::get('lorekeeper.settings.watermark_masterlist_thumbnails') == 1 && !$isMyo) {
+            // Trim transparent parts of image.
+            $image->trim(isset($trimColor) && $trimColor ? 'top-left' : 'transparent');
+
+            $cropWidth = Config::get('lorekeeper.settings.masterlist_thumbnails.width');
+            $cropHeight = Config::get('lorekeeper.settings.masterlist_thumbnails.height');
+
+            $imageWidthOld = $image->width();
+            $imageHeightOld = $image->height();
+
+            $trimOffsetX = $imageWidthOld - $image->width();
+            $trimOffsetY = $imageHeightOld - $image->height();
+
+            if(Config::get('lorekeeper.settings.watermark_masterlist_images') == 1) {
+                // Resize image if desired, so that the watermark is applied to the correct size of image
+                if(Config::get('lorekeeper.settings.masterlist_image_dimension') != 0) {
+                    $imageWidth = $image->width();
+                    $imageHeight = $image->height();
+
+                    if( $imageWidth > $imageHeight) {
+                        // Landscape
+                        $image->resize(null, Config::get('lorekeeper.settings.masterlist_image_dimension'), function ($constraint) {
+                            $constraint->aspectRatio();
+                            $constraint->upsize();
+                        });
+                    }
+                    else {
+                        // Portrait
+                        $image->resize(Config::get('lorekeeper.settings.masterlist_image_dimension'), null, function ($constraint) {
+                            $constraint->aspectRatio();
+                            $constraint->upsize();
+                        });
+                    }
+                }
+            // Watermark the image
+                $watermark = Image::make('images/watermark.png');
+                $image->insert($watermark, 'center');
+            }
+            // Now shrink the image
+            {
+                $imageWidth = $image->width();
+                $imageHeight = $image->height();
+
+                if( $imageWidth > $imageHeight) {
+                    // Landscape
+                    $image->resize(null, $cropWidth, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                }
+                else {
+                    // Portrait
+                    $image->resize($cropHeight, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                }
+            }
+            $xOffset = 0 + (($points['x0'] - $trimOffsetX) > 0 ? ($points['x0'] - $trimOffsetX) : 0);
+            if(($xOffset + $cropWidth) > $image->width()) $xOffsetNew = $cropWidth - ($image->width() - $xOffset);
+            if(isset($xOffsetNew)) if(($xOffsetNew + $cropWidth) > $image->width()) $xOffsetNew = $image->width() - $cropWidth;
+            $yOffset = 0 + (($points['y0'] - $trimOffsetY) > 0 ? ($points['y0'] - $trimOffsetY) : 0);
+            if(($yOffset + $cropHeight) > $image->height()) $yOffsetNew = $cropHeight - ($image->height() - $yOffset);
+            if(isset($yOffsetNew)) if(($yOffsetNew + $cropHeight) > $image->height()) $yOffsetNew = $image->height() - $cropHeight;
+
+            // Crop according to the selected area
+            $image->crop($cropWidth, $cropHeight, isset($xOffsetNew) ? $xOffsetNew : $xOffset, isset($yOffsetNew) ? $yOffsetNew : $yOffset);
+        }
+        else {
+            $cropWidth = $points['x1'] - $points['x0'];
+            $cropHeight = $points['y1'] - $points['y0'];
+
+            // Crop according to the selected area
+            $image->crop($cropWidth, $cropHeight, $points['x0'], $points['y0']);
+
+            // Resize to fit the thumbnail size
+            $image->resize(Config::get('lorekeeper.settings.masterlist_thumbnails.width'), Config::get('lorekeeper.settings.masterlist_thumbnails.height'));
+        }
 
         // Save the thumbnail
-        $image->save($characterImage->thumbnailPath . '/' . $characterImage->thumbnailFileName);
+        $image->save($characterImage->thumbnailPath . '/' . $characterImage->thumbnailFileName, 100, Config::get('lorekeeper.settings.masterlist_image_format'));
     }
 
     /**
@@ -641,12 +803,32 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            if(Config::get('lorekeeper.settings.masterlist_image_format') != null) {
+                // Remove old versions so that images in various filetypes don't pile up
+                unlink($image->imagePath . '/' . $image->imageFileName);
+                if(isset($image->fullsize_hash) ? file_exists( public_path($image->imageDirectory.'/'.$image->fullsizeFileName)) : FALSE) unlink($image->imagePath . '/' . $image->fullsizeFileName);
+                unlink($image->imagePath . '/' . $image->thumbnailFileName);
+
+                // Set the image's extension in the DB as defined in settings
+                $image->extension = Config::get('lorekeeper.settings.masterlist_image_format');
+                $image->save();
+            }
+            else {
+                // Get uploaded image's extension and save it to the DB
+                $image->extension = $data['image']->getClientOriginalExtension();
+                $image->save();
+            }
+            
             // Save image
             $this->handleImage($data['image'], $image->imageDirectory, $image->imageFileName);
             
+            $isMyo = $image->character->is_myo_slot ? true : false;
             // Save thumbnail
-            if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image);
+            if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image, $isMyo);
             else $this->handleImage($data['thumbnail'], $image->thumbnailPath, $image->thumbnailFileName);
+
+            // Process and save the image itself
+            if(!$isMyo) $this->processImage($image);
             
             // Add a log for the character
             // This logs all the updates made to the character
@@ -679,6 +861,7 @@ class CharacterManager extends Service
 
             // Delete the image files
             unlink($image->imagePath . '/' . $image->imageFileName);
+            if(isset($image->fullsize_hash) ? file_exists( public_path($image->imageDirectory.'/'.$image->fullsizeFileName)) : FALSE) unlink($image->imagePath . '/' . $image->fullsizeFileName);
             unlink($image->imagePath . '/' . $image->thumbnailFileName);
             
             // Add a log for the character
@@ -1020,6 +1203,9 @@ class CharacterManager extends Service
             // Update the character's profile
             if(!$character->is_myo_slot) $character->name = $data['name'];
             $character->save();
+
+            if(!$character->is_myo_slot && Config::get('lorekeeper.extensions.character_TH_profile_link')) $character->profile->link = $data['link'];
+            $character->profile->save();
 
             $character->profile->text = $data['text'];
             $character->profile->parsed_text = parse($data['text']);
@@ -1480,6 +1666,7 @@ class CharacterManager extends Service
                 'character_id' => $character->id,
                 'status' => 'Draft',
                 'hash' => randomString(10),
+                'fullsize_hash' => randomString(15),
                 'update_type' => $character->is_myo_slot ? 'MYO' : 'Character',
                 
                 // Set some data based on the character's existing stats
@@ -1573,7 +1760,7 @@ class CharacterManager extends Service
                     $imageData['use_cropper'] = isset($data['use_cropper']);
                 }
                 if(!$isAdmin && isset($data['image'])) {
-                    $imageData['extension'] = isset($data['extension']) ? $data['extension'] : $data['image']->getClientOriginalExtension();
+                    $imageData['extension'] = (Config::get('lorekeeper.settings.masterlist_image_format') ? Config::get('lorekeeper.settings.masterlist_image_format') : (isset($data['extension']) ? $data['extension'] : $data['image']->getClientOriginalExtension()));
                     $imageData['has_image'] = true;
                 }
                 $request->update($imageData);
@@ -1648,13 +1835,21 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            $requestData = $request->data;
             // First return any item stacks associated with this request
-            DB::table('user_items')->where('holding_type', 'Update')->where('holding_id', $request->id)->update(['holding_id' => null, 'holding_type' => null]);
+            if(isset($requestData['user']) && isset($requestData['user']['user_items'])) {
+                foreach($requestData['user']['user_items'] as $userItemId=>$quantity) {
+                    $userItemRow = UserItem::find($userItemId);
+                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
+                    if($userItemRow->update_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
+                    $userItemRow->update_count -= $quantity;
+                    $userItemRow->save();
+                }
+            }
 
             // Also return any currency associated with this request
             // This is stored in the data attribute
             $currencyManager = new CurrencyManager;
-            $requestData = $request->data;
             if(isset($requestData['user']) && isset($requestData['user']['currencies'])) {
                 foreach($requestData['user']['currencies'] as $currencyId=>$quantity) {
                     $currencyManager->creditCurrency(null, $request->user, null, null, $currencyId, $quantity);
@@ -1673,14 +1868,13 @@ class CharacterManager extends Service
             // We're also not going to add logs as this might add unnecessary fluff to the logs and the items still belong to the user. 
             // Perhaps later I'll add a way to locate items that are being held by updates/trades. 
             if(isset($data['stack_id'])) {
-                foreach($data['stack_id'] as $stackId) {
-                    $stack = UserItem::with('item')->where('id', $stackId)->whereNull('holding_type')->first();
+                foreach($data['stack_id'] as $key=>$stackId) {
+                    $stack = UserItem::with('item')->find($stackId);
                     if(!$stack || $stack->user_id != $request->user_id) throw new \Exception("Invalid item selected.");
-                    $stack->holding_type = 'Update';
-                    $stack->holding_id = $request->id;
+                    $stack->update_count += $data['stack_quantity'][$key];
                     $stack->save();
 
-                    //addAsset($userAssets, $stack->item, 1);
+                    addAsset($userAssets, $stack, $data['stack_quantity'][$key]);
                 }
             }
 
@@ -1710,9 +1904,8 @@ class CharacterManager extends Service
 
             $request->has_addons = 1;
             $request->data = json_encode([
-                'user' => array_only(getDataReadyAssets($userAssets), ['currencies']),
-                'character' => array_only(getDataReadyAssets($characterAssets), ['currencies']),
-                'stacks' => isset($data['stack_id']) ? $data['stack_id'] : []
+                'user' => array_only(getDataReadyAssets($userAssets), ['user_items','currencies']),
+                'character' => array_only(getDataReadyAssets($characterAssets), ['currencies'])
             ]);
             $request->save();
 
@@ -1834,12 +2027,24 @@ class CharacterManager extends Service
             // However logs need to be added for each of these
             $requestData = $request->data;
             $inventoryManager = new InventoryManager;
-            $stacks = UserItem::where('holding_type', 'Update')->where('holding_id', $request->id)->get();
-            foreach($stacks as $stack) {
-                if(!$inventoryManager->createLog($request->user_id, null, $stack->id, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', 'Item used in ' . ($request->character->is_myo_slot ? 'MYO design approval' : 'character design update') . ' (<a href="'.$request->url.'">#'.$request->id.'</a>)', $stack->item_id, $stack->count)) throw new \Exception("Failed to create log for item stack.");
-            }
-            UserItem::where('holding_type', 'Update')->where('holding_id', $request->id)->delete();
+            if(isset($requestData['user']) && isset($requestData['user']['user_items'])) {
+                $stacks = $requestData['user']['user_items'];
+                foreach($requestData['user']['user_items'] as $userItemId=>$quantity) {
+                    $userItemRow = UserItem::find($userItemId);
+                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
+                    if($userItemRow->update_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
+                    $userItemRow->update_count -= $quantity;
+                    $userItemRow->save();
+                }
 
+                $staff = $user;
+                foreach($stacks as $stackId=>$quantity) {
+                    $stack = UserItem::find($stackId);
+                    $user = User::find($request->user_id);
+                    if(!$inventoryManager->debitStack($user, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', ['data' => 'Item used in ' . ($request->character->is_myo_slot ? 'MYO design approval' : 'Character design update') . ' (<a href="'.$request->url.'">#'.$request->id.'</a>)'], $stack, $quantity)) throw new \Exception("Failed to create log for item stack.");
+                }
+                $user = $staff;
+            }
             $currencyManager = new CurrencyManager;
             if(isset($requestData['user']['currencies']) && $requestData['user']['currencies'])
             {
@@ -1864,12 +2069,15 @@ class CharacterManager extends Service
                 }
             }
 
+            $extension = Config::get('lorekeeper.settings.masterlist_image_format') != null ? Config::get('lorekeeper.settings.masterlist_image_format') : $request->extension;
+
             // Create a new image with the request data
             $image = CharacterImage::create([
                 'character_id' => $request->character_id,
                 'is_visible' => 1,
                 'hash' => $request->hash,
-                'extension' => $request->extension,
+                'fullsize_hash' => $request->fullsize_hash ? $request->fullsize_hash : randomString(15),
+                'extension' => $extension,
                 'use_cropper' => $request->use_cropper,
                 'x0' => $request->x0,
                 'x1' => $request->x1,
@@ -1893,7 +2101,7 @@ class CharacterManager extends Service
                     CharacterFeature::create(['character_image_id' => $image->id, 'feature_id' => $feature->feature_id, 'data' => $feature->data, 'character_type' => 'Character']);
                 }
             }
-            
+
             // Shift the image features over to the new image
             $request->rawFeatures()->update(['character_image_id' => $image->id, 'character_type' => 'Character']);
 
@@ -1907,9 +2115,13 @@ class CharacterManager extends Service
                 }
                 chmod($image->imagePath, 0755);
             }
-
+            
             // Move the image file to the new image
             File::move($request->imagePath . '/' . $request->imageFileName, $image->imagePath . '/' . $image->imageFileName);
+            // Process and save the image
+            $this->processImage($image);
+
+            // The thumbnail is already generated, so it can just be moved without processing
             File::move($request->thumbnailPath . '/' . $request->thumbnailFileName, $image->thumbnailPath . '/' . $image->thumbnailFileName);
 
             // Set character data and other info such as cooldown time, resell cost and terms etc.
@@ -2006,9 +2218,18 @@ class CharacterManager extends Service
             // and the user will need to open a new request to resubmit.
             // Use when rejecting a request the user shouldn't have submitted at all.
 
-            // Return all added items/currency
-            UserItem::where('holding_type', 'Update')->where('holding_id', $request->id)->update(['holding_type' => null, 'holding_id' => null]);
             $requestData = $request->data;
+            // Return all added items/currency
+            if(isset($requestData['user']) && isset($requestData['user']['user_items'])) {
+                foreach($requestData['user']['user_items'] as $userItemId=>$quantity) {
+                    $userItemRow = UserItem::find($userItemId);
+                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
+                    if($userItemRow->update_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
+                    $userItemRow->update_count -= $quantity;
+                    $userItemRow->save();
+                }
+            }
+
             $currencyManager = new CurrencyManager;
             if(isset($requestData['user']['currencies']) && $requestData['user']['currencies'])
             {
@@ -2106,9 +2327,18 @@ class CharacterManager extends Service
             // Characters with an open draft request cannot be transferred (due to attached items/currency),
             // so this is necessary to transfer a character
 
-            // Return all added items/currency
-            UserItem::where('holding_type', 'Update')->where('holding_id', $request->id)->update(['holding_type' => null, 'holding_id' => null]);
             $requestData = $request->data;
+            // Return all added items/currency
+            if(isset($requestData['user']) && isset($requestData['user']['user_items'])) {
+                foreach($requestData['user']['user_items'] as $userItemId=>$quantity) {
+                    $userItemRow = UserItem::find($userItemId);
+                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
+                    if($userItemRow->update_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
+                    $userItemRow->update_count -= $quantity;
+                    $userItemRow->save();
+                }
+            }
+
             $currencyManager = new CurrencyManager;
             if(isset($requestData['user']['currencies']) && $requestData['user']['currencies'])
             {
@@ -2129,6 +2359,48 @@ class CharacterManager extends Service
 
             // Delete the request
             $request->delete();
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Votes on a a character design update request.
+     *
+     * @param  string                                       $action
+     * @param  \App\Models\Character\CharacterDesignUpdate  $request
+     * @param  \App\Models\User\User                        $user
+     * @return  bool
+     */
+    public function voteRequest($action, $request, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            if($request->status != 'Pending') throw new \Exception("This request cannot be processed.");
+            if(!Config::get('lorekeeper.extensions.design_update_voting')) throw new \Exception('This extension is not currently enabled.');
+
+            switch($action) {
+                default:
+                    flash('Invalid action.')->error();
+                    break;
+                case 'approve':
+                    $vote = 2;
+                    break;
+                case 'reject':
+                    $vote = 1;
+                    break;
+            }
+
+            $voteData = (isset($request->vote_data) ? collect(json_decode($request->vote_data, true)) : collect([]));
+            $voteData->get($user->id) ? $voteData->pull($user->id) : null;
+            $voteData->put($user->id, $vote);
+            $request->vote_data = $voteData->toJson();
+            
+            $request->save();
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 

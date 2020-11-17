@@ -85,9 +85,12 @@
                 </div>
                 <div class="main-content col-lg-8 p-4">
                     <div>
-                        @if(Auth::check())
+                        @if(Auth::check() && !Config::get('lorekeeper.extensions.navbar_news_notif'))
                             @if(Auth::user()->is_news_unread)
                                 <div class="alert alert-info"><a href="{{ url('news') }}">There is a new news post!</a></div>
+                            @endif
+                            @if(Auth::user()->is_sales_unread)
+                                <div class="alert alert-info"><a href="{{ url('sales') }}">There is a new sales post!</a></div>
                             @endif
                         @endif
                         @include('flash::message')
@@ -104,7 +107,7 @@
 
 
         <div class="modal fade" id="modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <span class="modal-title h5 mb-0"></span>
