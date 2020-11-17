@@ -20,7 +20,7 @@ class MigrateAliases extends Command
      *
      * @var string
      */
-    protected $signature = 'migrate-aliases';
+    protected $signature = 'migrate-aliases {--drop-columns : Whether the alias columns should be dropped after moving data from them}';
 
     /**
      * The console command description.
@@ -106,17 +106,17 @@ class MigrateAliases extends Command
             }
         }
 
-        /** 
-        // Drop alias columns from the impacted tables
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('alias');
-        });
-        Schema::table('characters', function (Blueprint $table) {
-            $table->dropColumn('owner_alias');
-        });
-        Schema::table('character_image_creators', function (Blueprint $table) {
-            $table->dropColumn('alias');
-        });
-        */
+        if($this->option('drop-columns')) {
+            // Drop alias columns from the impacted tables.
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('alias');
+            });
+            Schema::table('characters', function (Blueprint $table) {
+                $table->dropColumn('owner_alias');
+            });
+            Schema::table('character_image_creators', function (Blueprint $table) {
+                $table->dropColumn('alias');
+            });
+        }
     }
 }
