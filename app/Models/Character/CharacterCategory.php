@@ -13,7 +13,7 @@ class CharacterCategory extends Model
      * @var array
      */
     protected $fillable = [
-        'code', 'name', 'sort', 'has_image', 'description', 'parsed_description'
+        'code', 'name', 'sort', 'has_image', 'description', 'parsed_description', 'masterlist_sub_id'
     ];
 
     /**
@@ -46,6 +46,20 @@ class CharacterCategory extends Model
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
+
+    /**********************************************************************************************
+    
+        RELATIONS
+
+    **********************************************************************************************/
+    
+    /**
+     * Get the sub masterlist for this species.
+     */
+    public function sublist() 
+    {
+        return $this->belongsTo('App\Models\Character\Sublist', 'masterlist_sub_id');
+    }
 
     /**********************************************************************************************
     
@@ -121,6 +135,9 @@ class CharacterCategory extends Model
      */
     public function getSearchUrlAttribute()
     {
+        if($this->masterlist_sub_id != 0 && $this->sublist->show_main == 0)
+        return url('sublist/'.$this->sublist->key.'?character_category_id='.$this->id);
+        else
         return url('masterlist?character_category_id='.$this->id);
     }
 }

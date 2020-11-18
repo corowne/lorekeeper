@@ -17,7 +17,7 @@ class CharacterImageCreator extends Model
      * @var array
      */
     protected $fillable = [
-        'character_image_id', 'type', 'url', 'alias', 'character_type'
+        'character_image_id', 'type', 'url', 'alias', 'character_type', 'user_id'
     ];
 
     /**
@@ -48,6 +48,14 @@ class CharacterImageCreator extends Model
         return $this->belongsTo('App\Models\Character\CharacterImage', 'character_image_id');
     }
 
+    /**
+     * Get the user associated with this record.
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User\User', 'user_id');
+    }
+
     /**********************************************************************************************
     
         OTHER FUNCTIONS
@@ -61,9 +69,14 @@ class CharacterImageCreator extends Model
      */
     public function displayLink()
     {
-        if ($this->url)
+        if($this->user_id)
         {
-            return '<a href="'.$this->url.'" class="display-creator">'. ($this->alias ? : $this->url) .'</a>';
+            $user = User::find($this->user_id);
+            return $user->displayName;
+        }
+        else if ($this->url)
+        {
+            return prettyProfileLink($this->url);
         }
         else if($this->alias)
         {

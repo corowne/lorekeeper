@@ -32,17 +32,19 @@
                                 <p><strong>Category:</strong> {!! $item->category->name !!}</p>
                             </div>
                         @endif
-                        @if(isset($item->rarity) && $item->rarity)
-                            <div class="col-md">
-                                <p><strong>Rarity:</strong> {!! $item->rarity !!}</p>
-                            </div>
+                        @if(Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields'))
+                            @if(isset($item->rarity) && $item->rarity)
+                                <div class="col-md">
+                                    <p><strong>Rarity:</strong> {!! $item->rarity !!}</p>
+                                </div>
+                            @endif
+                            @if(isset($item->artist) && $item->artist)
+                                <div class="col-md">
+                                    <p><strong>Artist:</strong> {!! $item->artist !!}</p>
+                                </div>
+                            @endif
                         @endif
-                        @if(isset($item->artist) && $item->artist)
-                            <div class="col-md">
-                                <p><strong>Artist:</strong> {!! $item->artist !!}</p>
-                            </div>
-                        @endif
-                        @if(isset($item->data['resell']) && $item->data['resell'])
+                        @if(isset($item->data['resell']) && $item->data['resell'] && Config::get('lorekeeper.extensions.item_entry_expansion.resale_function'))
                             <div class="col-md">
                                 <p><strong>Resale Value:</strong> {!! App\Models\Currency\Currency::find($item->resell->flip()->pop())->display($item->resell->pop()) !!}</p>
                             </div>
@@ -60,9 +62,9 @@
                             </div>
                         </div>
                         <div class="world-entry-text">
-                            @if(isset($item->reference_url) && $item->reference_url)  <p><strong>Wiki Link:</strong> <a href="{{ $item->reference_url }}">{{ $item->reference_url }}</a></p> @endif
+                            @if(isset($item->reference) && $item->reference && Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields'))  <p><strong>Reference Link:</strong> <a href="{{ $item->reference }}">{{ $item->reference }}</a></p> @endif
                             {!! $description !!}
-                            @if(isset($item->uses) && $item->uses || isset($item->source) && $item->source || isset($item->data['shops']) && $item->data['shops'] || isset($item->data['prompts']) && $item->data['prompts'])
+                            @if((isset($item->uses) && $item->uses || isset($item->source) && $item->source || isset($item->data['shops']) && $item->data['shops'] || isset($item->data['prompts']) && $item->data['prompts']) && Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields'))
                             
                                 @if(isset($item->uses) && $item->uses)  <p><strong>Uses:</strong> {!! $item->uses !!}</p> @endif
                                 @if(isset($item->source) && $item->source || isset($item->data['shops']) && $item->data['shops'] || isset($item->data['prompts']) && $item->data['prompts'])

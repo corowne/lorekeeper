@@ -30,11 +30,11 @@
                     {!! Form::text('username', Request::get('username'), ['class' => 'form-control']) !!}
                 </div>
                 <div class="masterlist-search-field">
-                    {!! Form::label('artist', 'Artist Alias: ') !!}
+                    {!! Form::label('artist', 'Artist Username: ') !!}
                     {!! Form::text('artist', Request::get('artist'), ['class' => 'form-control']) !!}
                 </div>
                 <div class="masterlist-search-field">
-                    {!! Form::label('designer', 'Designer Alias: ') !!}
+                    {!! Form::label('designer', 'Designer Username: ') !!}
                     {!! Form::text('designer', Request::get('designer'), ['class' => 'form-control']) !!}
                 </div>
                 <hr />

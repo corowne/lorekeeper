@@ -187,3 +187,22 @@ function randomString($characters)
     for ($i = 0; $i < $characters; $i++) $code .= $src[mt_rand(0, strlen($src) - 1)];
     return $code;
 }
+
+/**
+ * Prettifies links to user profiles on various sites in a "user@site" format.
+ *
+ * @param  string  $url
+ * @return string
+ */
+function prettyProfileLink($url)
+{
+    $matches = [];
+    // Check different sites and return site if a match is made, plus username (retreived from the URL)
+    foreach(Config::get('lorekeeper.sites') as $siteName=>$siteInfo) {
+        if(preg_match_all($siteInfo['regex'], $url, $matches)) {$site = $siteName; $name = $matches[1][0]; $link = $matches[0][0]; break;}
+    }
+
+    // Return formatted link if possible; failing that, an unformatted link
+    if(isset($name) && isset($site) && isset($link)) return '<a href="https://'.$link.'">'.$name.'@'.$site.'</a>';
+    else return '<a href="'.$url.'">'.$url.'</a>';
+}
