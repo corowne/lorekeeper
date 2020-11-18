@@ -2,6 +2,10 @@
 
 @section('title') MYO Slot Masterlist @endsection
 
+@section('sidebar')
+    @include('browse._sidebar')
+@endsection
+
 @section('content')
 {!! breadcrumbs(['MYO Slot Masterlist' => 'myos']) !!}
 <h1>MYO Slot Masterlist</h1>

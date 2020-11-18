@@ -35,28 +35,23 @@
         </div>
     {!! Form::close() !!}
 </div>
-
 {!! $users->render() !!}
-<table class="users-table table table-sm table-responsive-xs">
-    <thead>
-        <tr>
-            <th>Username</th>
-            <th>Alias</th>
-            <th>Rank</th>
-            <th>Joined</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($users as $user)
-            <tr>
-                <td>{!! $user->displayName !!}</td>
-                <td>{!! $user->displayAlias !!}</td>
-                <td>{!! $user->rank->displayName !!}</td>
-                <td>{!! format_date($user->created_at, false) !!}</td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
+  <div class="row ml-md-2">
+    <div class="d-flex row flex-wrap col-12 pb-1 px-0 ubt-bottom">
+      <div class="col-12 col-md-4 font-weight-bold">Username</div>
+      <div class="col-4 col-md-3 font-weight-bold">Primary Alias</div>
+      <div class="col-4 col-md-2 font-weight-bold">Rank</div>
+      <div class="col-4 col-md-3 font-weight-bold">Joined</div>
+    </div>
+    @foreach($users as $user)
+    <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-top">
+      <div class="col-12 col-md-4 ">{!! $user->displayName !!}</div>
+      <div class="col-4 col-md-3">{!! $user->displayAlias !!}</div>
+      <div class="col-4 col-md-2">{!! $user->rank->displayName !!}</div>
+      <div class="col-4 col-md-3">{!! pretty_date($user->created_at, false) !!}</div>
+    </div>
+    @endforeach
+  </div>
 {!! $users->render() !!}
 
 <div class="text-center mt-4 small text-muted">{{ $users->total() }} result{{ $users->total() == 1 ? '' : 's' }} found.</div>

@@ -2,6 +2,10 @@
 
 @section('title') Character Masterlist @endsection
 
+@section('sidebar')
+    @include('browse._sidebar')
+@endsection
+
 @section('content')
 {!! breadcrumbs(['Character Masterlist' => 'masterlist']) !!}
 <h1>Character Masterlist</h1>

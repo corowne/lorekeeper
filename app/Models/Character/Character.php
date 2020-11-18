@@ -10,13 +10,20 @@ use App\Models\Model;
 
 use App\Models\User\User;
 use App\Models\User\UserCharacterLog;
+
 use App\Models\Character\Character;
 use App\Models\Character\CharacterCategory;
-use App\Models\Character\CharacterCurrency;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Character\CharacterBookmark;
+
+use App\Models\Character\CharacterCurrency;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
+
+use App\Models\Character\CharacterItem;
+use App\Models\Item\Item;
+use App\Models\Item\ItemLog;
+
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -36,7 +43,7 @@ class Character extends Model
         'is_sellable', 'is_tradeable', 'is_giftable',
         'sale_value', 'transferrable_at', 'is_visible',
         'is_gift_art_allowed', 'is_gift_writing_allowed', 'is_trading', 'sort',
-        'is_myo_slot', 'name', 'trade_id'
+        'is_myo_slot', 'name', 'trade_id', 'owner_url'
     ];
 
     /**
@@ -184,6 +191,14 @@ class Character extends Model
         return $this->belongsTo('App\Models\Rarity', 'rarity_id');
     }
 
+    /**
+     * Get the character's items.
+     */
+    public function items()
+    {
+        return $this->belongsToMany('App\Models\Item\Item', 'character_items')->withPivot('count', 'data', 'updated_at', 'id')->whereNull('character_items.deleted_at');
+    }
+
     /**********************************************************************************************
     
         SCOPES
@@ -267,7 +282,7 @@ class Character extends Model
     public function getDisplayOwnerAttribute()
     {
         if($this->user_id) return $this->user->displayName;
-        else return '<a href="https://www.deviantart.com/'.$this->owner_alias.'">'.$this->owner_alias.'@dA</a>';
+        else return prettyProfileLink($this->owner_url);
     }
 
     /**
@@ -350,10 +365,10 @@ class Character extends Model
         if($this->user_id) return;
 
         // Check if the owner has an account and update the character's user ID for them.
-        $owner = User::where('alias', $this->owner_alias)->first();
-        if($owner) {
+        $owner = checkAlias($this->owner_url);
+        if(is_object($owner)) {
             $this->user_id = $owner->id;
-            $this->owner_alias = null;
+            $this->owner_url = null;
             $this->save();
 
             $owner->settings->is_fto = 0;
@@ -414,6 +429,26 @@ class Character extends Model
         })->orWhere(function($query) use ($character) {
             $query->with('recipient.rank')->where('recipient_type', 'Character')->where('recipient_id', $character->id)->where('log_type', '!=', 'Staff Removal');
         })->orderBy('id', 'DESC');
+        if($limit) return $query->take($limit)->get();
+        else return $query->paginate(30);
+    }
+
+    /**
+     * Get the character's item logs.
+     *
+     * @param  int  $limit
+     * @return \Illuminate\Support\Collection|\Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getItemLogs($limit = 10)
+    {
+        $character = $this;
+
+        $query = ItemLog::with('item')->where(function($query) use ($character) {
+            $query->with('sender.rank')->where('sender_type', 'Character')->where('sender_id', $character->id)->where('log_type', '!=', 'Staff Grant');
+        })->orWhere(function($query) use ($character) {
+            $query->with('recipient.rank')->where('recipient_type', 'Character')->where('recipient_id', $character->id)->where('log_type', '!=', 'Staff Removal');
+        })->orderBy('id', 'DESC');
+
         if($limit) return $query->take($limit)->get();
         else return $query->paginate(30);
     }

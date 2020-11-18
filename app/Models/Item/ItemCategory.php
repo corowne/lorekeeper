@@ -13,7 +13,7 @@ class ItemCategory extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description'
+        'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_character_owned', 'character_limit', 'can_name'
     ];
 
     /**

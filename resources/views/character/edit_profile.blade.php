@@ -5,7 +5,11 @@
 @section('meta-img') {{ $character->image->thumbnailUrl }} @endsection
 
 @section('profile-content')
-{!! breadcrumbs([($character->is_myo_slot ? 'MYO Slot Masterlist' : 'Character Masterlist') => ($character->is_myo_slot ? 'myos' : 'masterlist'), $character->fullName => $character->url, 'Editing Profile' => $character->url . '/profile/edit']) !!}
+@if($character->is_myo_slot)
+{!! breadcrumbs(['MYO Slot Masterlist' => 'myos', $character->fullName => $character->url, 'Editing Profile' => $character->url . '/profile/edit']) !!}
+@else
+{!! breadcrumbs([($character->category->masterlist_sub_id ? $character->category->sublist->name.' Masterlist' : 'Character masterlist') => ($character->category->masterlist_sub_id ? 'sublist/'.$character->category->sublist->key : 'masterlist' ), $character->fullName => $character->url, 'Editing Profile' => $character->url . '/profile/edit']) !!}
+@endif
 
 @include('character._header', ['character' => $character])
 
@@ -21,6 +25,12 @@
         {!! Form::label('name', 'Name') !!}
         {!! Form::text('name', $character->name, ['class' => 'form-control']) !!}
     </div>
+    @if(Config::get('lorekeeper.extensions.character_TH_profile_link'))
+        <div class="form-group">
+            {!! Form::label('link', 'Profile Link') !!}
+            {!! Form::text('link', $character->profile->link, ['class' => 'form-control']) !!}
+        </div>
+    @endif
 @endif
 <div class="form-group">
     {!! Form::label('text', 'Profile Content') !!}

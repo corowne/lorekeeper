@@ -10,20 +10,21 @@
 </h1>
 
 {!! $logs->render() !!}
-<table class="table table-sm">
-    <thead>
-        <th>Item</th>
-        <th>Shop</th>
-        <th>Character</th>
-        <th>Cost</th>
-        <th>Date</th>
-    </thead>
-    <tbody>
-        @foreach($logs as $log)
-            @include('shops._purchase_history_row', ['log' => $log])
-        @endforeach
-    </tbody>
-</table>
+
+
+<div class="row ml-md-2">
+  <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-bottom">
+    <div class="col-12 col-md-2 font-weight-bold">Item</div>
+    <div class="col-6 col-md-2 font-weight-bold">Quantity</div>
+    <div class="col-6 col-md-2 font-weight-bold">Shop</div>
+    <div class="col-6 col-md-2 font-weight-bold">Character</div>
+    <div class="col-6 col-md-2 font-weight-bold">Cost</div>
+    <div class="col-6 col-md-2 font-weight-bold">Date</div>
+  </div>
+    @foreach($logs as $log)
+        @include('shops._purchase_history_row', ['log' => $log])
+    @endforeach
+</div>
 {!! $logs->render() !!}
 
 @endsection

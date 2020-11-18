@@ -25,7 +25,7 @@
     @endif
 
     <div class="alert alert-info">
-        Fill in either of the owner fields - you can select a user from the list if they have registered for the site, or enter their deviantART username if they don't have an account. If the owner registers an account later and links their dA account, {{ $isMyo ? 'MYO slot' : 'character' }}s with their dA alias listed will automatically be credited to their site account. If both fields are filled, the alias field will be ignored.
+        Fill in either of the owner fields - you can select a user from the list if they have registered for the site, or enter the url of their off-site profile, such as their deviantArt profile, if they don't have an account. If the owner registers an account later and links their account, {{ $isMyo ? 'MYO slot' : 'character' }}s linked to that account's profile will automatically be credited to their site account. If both fields are filled, the url field will be ignored.
     </div>
 
     <div class="row">
@@ -37,8 +37,8 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                {!! Form::label('Owner Alias (Optional)') !!}
-                {!! Form::text('owner_alias', old('owner_alias'), ['class' => 'form-control']) !!}
+                {!! Form::label('Owner Url (Optional)') !!}
+                {!! Form::text('owner_url', old('owner_url'), ['class' => 'form-control']) !!}
             </div>
         </div>
     </div>
@@ -153,19 +153,19 @@
         </div>
     </div>
     <p class="alert alert-info">
-        This section is for crediting the image creators. The first box is for the designer's deviantART name (if any). If the designer has an account on the site, it will link to their site profile; if not, it will link to their dA page. The second is for a custom URL if they don't use dA. Both are optional - you can fill in the alias and ignore the URL, or vice versa. If you fill in both, it will link to the given URL, but use the alias field as the link name.
+        This section is for crediting the image creators. The first box is for the designer or artist's on-site username (if any). The second is for a link to the designer or artist if they don't have an account on the site.
     </p>
     <div class="form-group">
         {!! Form::label('Designer(s)') !!}
         <div id="designerList">
             <div class="mb-2 d-flex">
-                {!! Form::text('designer_alias[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Designer Alias']) !!}
+                {!! Form::select('designer_id[]', $userOptions, null, ['class'=> 'form-control mr-2 selectize', 'placeholder' => 'Select a Designer']) !!}
                 {!! Form::text('designer_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Designer URL']) !!}
                 <a href="#" class="add-designer btn btn-link" data-toggle="tooltip" title="Add another designer">+</a>
             </div>
         </div>
         <div class="designer-row hide mb-2">
-            {!! Form::text('designer_alias[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Designer Alias']) !!}
+            {!! Form::select('designer_id[]', $userOptions, null, ['class'=> 'form-control mr-2 designer-select', 'placeholder' => 'Select a Designer']) !!}
             {!! Form::text('designer_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Designer URL']) !!}
             <a href="#" class="add-designer btn btn-link" data-toggle="tooltip" title="Add another designer">+</a>
         </div>
@@ -174,13 +174,13 @@
         {!! Form::label('Artist(s)') !!}
         <div id="artistList">
             <div class="mb-2 d-flex">
-                {!! Form::text('artist_alias[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Artist Alias']) !!}
+                {!! Form::select('artist_id[]', $userOptions, null, ['class'=> 'form-control mr-2 selectize', 'placeholder' => 'Select an Artist']) !!}
                 {!! Form::text('artist_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Artist URL']) !!}
                 <a href="#" class="add-artist btn btn-link" data-toggle="tooltip" title="Add another artist">+</a>
             </div>
         </div>
         <div class="artist-row hide mb-2">
-            {!! Form::text('artist_alias[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Artist Alias']) !!}
+            {!! Form::select('artist_id[]', $userOptions, null, ['class'=> 'form-control mr-2 artist-select', 'placeholder' => 'Select an Artist']) !!}
             {!! Form::text('artist_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Artist URL']) !!}
             <a href="#" class="add-artist btn btn-link mb-2" data-toggle="tooltip" title="Add another artist">+</a>
         </div>

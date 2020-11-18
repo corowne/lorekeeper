@@ -71,19 +71,24 @@ class ShopController extends Controller
     public function getShopStock(ShopManager $service, $id, $stockId)
     {
         $shop = Shop::where('id', $id)->where('is_active', 1)->first();
-        if(!$shop) abort(404);
-
         $stock = ShopStock::with('item')->where('id', $stockId)->where('shop_id', $id)->first();
 
-        if(Auth::user()){
+        $user = Auth::user();
+        $quantityLimit = 0; $userPurchaseCount = 0; $purchaseLimitReached = false;
+        if($user){
+            $quantityLimit = $service->getStockPurchaseLimit($stock, Auth::user());
+            $userPurchaseCount = $service->checkUserPurchases($stock, Auth::user());
             $purchaseLimitReached = $service->checkPurchaseLimitReached($stock, Auth::user());
-        } else $purchaseLimitReached = false;
+        }
 
+        if(!$shop) abort(404);
         return view('shops._stock_modal', [
             'shop' => $shop,
             'stock' => $stock,
+            'quantityLimit' => $quantityLimit,
+            'userPurchaseCount' => $userPurchaseCount,
             'purchaseLimitReached' => $purchaseLimitReached
-        ]);
+		]);
     }
 
     /**
@@ -96,7 +101,7 @@ class ShopController extends Controller
     public function postBuy(Request $request, ShopManager $service)
     {
         $request->validate(ShopLog::$createRules);
-        if($service->buyStock($request->only(['stock_id', 'shop_id', 'slug', 'bank']), Auth::user())) {
+        if($service->buyStock($request->only(['stock_id', 'shop_id', 'slug', 'bank', 'quantity']), Auth::user())) {
             flash('Successfully purchased item.')->success();
         }
         else {

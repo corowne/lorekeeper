@@ -9,6 +9,7 @@ use Auth;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
 use App\Models\Character\CharacterDropData;
+use App\Models\Character\Sublist;
 
 use App\Services\SpeciesService;
 
@@ -45,7 +46,8 @@ class SpeciesController extends Controller
     public function getCreateSpecies()
     {
         return view('admin.specieses.create_edit_species', [
-            'species' => new Species
+            'species' => new Species,
+            'sublists' => [0 => 'No Sublist'] + Sublist::orderBy('name', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
     
@@ -60,7 +62,8 @@ class SpeciesController extends Controller
         $species = Species::find($id);
         if(!$species) abort(404);
         return view('admin.specieses.create_edit_species', [
-            'species' => $species
+            'species' => $species,
+            'sublists' => [0 => 'No Sublist'] + Sublist::orderBy('name', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
 
@@ -76,7 +79,7 @@ class SpeciesController extends Controller
     {
         $id ? $request->validate(Species::$updateRules) : $request->validate(Species::$createRules);
         $data = $request->only([
-            'name', 'description', 'image', 'remove_image'
+            'name', 'description', 'image', 'remove_image', 'masterlist_sub_id'
         ]);
         if($id && $service->updateSpecies(Species::find($id), $data, Auth::user())) {
             flash('Species updated successfully.')->success();

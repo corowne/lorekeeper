@@ -6,6 +6,7 @@ use Auth;
 use Config;
 use Illuminate\Http\Request;
 
+use App\Models\User\User;
 use App\Models\Item\Item;
 use App\Models\Currency\Currency;
 
@@ -24,6 +25,7 @@ class GrantController extends Controller
     public function getUserCurrency()
     {
         return view('admin.grants.user_currency', [
+            'users' => User::orderBy('id')->pluck('name', 'id'),
             'userCurrencies' => Currency::where('is_user_owned', 1)->orderBy('sort_user', 'DESC')->pluck('name', 'id')
         ]);
     }
@@ -55,6 +57,7 @@ class GrantController extends Controller
     public function getItems()
     {
         return view('admin.grants.items', [
+            'users' => User::orderBy('id')->pluck('name', 'id'),
             'items' => Item::orderBy('name')->pluck('name', 'id')
         ]);
     }
@@ -63,12 +66,12 @@ class GrantController extends Controller
      * Grants or removes items from multiple users.
      *
      * @param  \Illuminate\Http\Request        $request
-     * @param  App\Services\InvenntoryManager  $service
+     * @param  App\Services\InventoryManager  $service
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postItems(Request $request, InventoryManager $service)
     {
-        $data = $request->only(['names', 'item_id', 'quantity', 'data', 'disallow_transfer', 'notes']);
+        $data = $request->only(['names', 'item_ids', 'quantities', 'data', 'disallow_transfer', 'notes']);
         if($service->grantItems($data, Auth::user())) {
             flash('Items granted successfully.')->success();
         }
