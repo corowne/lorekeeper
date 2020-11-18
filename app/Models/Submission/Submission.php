@@ -5,7 +5,6 @@ namespace App\Models\Submission;
 use Config;
 use DB;
 use Carbon\Carbon;
-use App\Models\Prompt\Prompt;
 use App\Models\Model;
 
 class Submission extends Model
