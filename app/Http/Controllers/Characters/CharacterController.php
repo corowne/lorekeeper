@@ -115,7 +115,7 @@ class CharacterController extends Controller
         $isOwner = ($this->character->user_id == Auth::user()->id);
         if(!$isMod && !$isOwner) abort(404);
         
-        if($service->updateCharacterProfile($request->only(['name', 'text', 'is_gift_art_allowed', 'is_trading', 'alert_user']), $this->character, Auth::user(), !$isOwner)) {
+        if($service->updateCharacterProfile($request->only(['name', 'text', 'is_gift_art_allowed', 'is_gift_writing_allowed', 'is_trading', 'alert_user']), $this->character, Auth::user(), !$isOwner)) {
             flash('Profile edited successfully.')->success();
         }
         else {
@@ -133,6 +133,7 @@ class CharacterController extends Controller
     public function getCharacterImages($slug)
     {
         return view('character.images', [
+            'user' => Auth::check() ? Auth::user() : null,
             'character' => $this->character,
         ]);
     }

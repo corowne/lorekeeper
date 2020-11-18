@@ -10,7 +10,7 @@
 @include('character._header', ['character' => $character])
 
 <div class="tab-content">
-    @foreach($character->images()->with('features.feature')->with('species')->with('rarity')->get() as $image)
+    @foreach($character->images($user)->with('features.feature')->with('species')->with('rarity')->get() as $image)
         <div class="tab-pane fade {{ $image->id == $character->character_image_id ? 'show active' : '' }}" id="image-{{ $image->id }}">
             <div class="row mb-3">
                 <div class="text-center col-md-7">
@@ -32,7 +32,7 @@
 </h3>
 
 <ul class="row nav image-nav mb-2" @if($canManage) id="sortable" @endif>
-    @foreach($character->images as $image)
+    @foreach($character->images($user)->get() as $image)
         <li class="col-md-3 col-6 text-center nav-item sort-item" data-id="{{ $image->id }}">
             <a id="thumbnail-{{ $image->id }}" data-toggle="tab" href="#image-{{ $image->id }}" role="tab" class="{{ $image->id == $character->character_image_id ? 'active' : '' }}"><img src="{{ $image->thumbnailUrl }}" class="img-thumbnail" /></a>
         </li>
