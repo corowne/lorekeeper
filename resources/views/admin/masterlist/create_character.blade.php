@@ -159,13 +159,13 @@
         {!! Form::label('Designer(s)') !!}
         <div id="designerList">
             <div class="mb-2 d-flex">
-                {!! Form::text('designer_alias[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Designer Alias']) !!}
+                {!! Form::select('designer_alias[]', $userOptions, null, ['class'=> 'form-control mr-2 selectize', 'placeholder' => 'Select a Designer']) !!}
                 {!! Form::text('designer_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Designer URL']) !!}
                 <a href="#" class="add-designer btn btn-link" data-toggle="tooltip" title="Add another designer">+</a>
             </div>
         </div>
         <div class="designer-row hide mb-2">
-            {!! Form::text('designer_alias[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Designer Alias']) !!}
+            {!! Form::select('designer_alias[]', $userOptions, null, ['class'=> 'form-control mr-2 designer-select', 'placeholder' => 'Select a Designer']) !!}
             {!! Form::text('designer_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Designer URL']) !!}
             <a href="#" class="add-designer btn btn-link" data-toggle="tooltip" title="Add another designer">+</a>
         </div>
@@ -174,13 +174,13 @@
         {!! Form::label('Artist(s)') !!}
         <div id="artistList">
             <div class="mb-2 d-flex">
-                {!! Form::text('artist_alias[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Artist Alias']) !!}
+                {!! Form::select('artist_alias[]', $userOptions, null, ['class'=> 'form-control mr-2 selectize', 'placeholder' => 'Select an Artist']) !!}
                 {!! Form::text('artist_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Artist URL']) !!}
                 <a href="#" class="add-artist btn btn-link" data-toggle="tooltip" title="Add another artist">+</a>
             </div>
         </div>
         <div class="artist-row hide mb-2">
-            {!! Form::text('artist_alias[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Artist Alias']) !!}
+            {!! Form::select('artist_alias[]', $userOptions, null, ['class'=> 'form-control mr-2 artist-select', 'placeholder' => 'Select an Artist']) !!}
             {!! Form::text('artist_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Artist URL']) !!}
             <a href="#" class="add-artist btn btn-link mb-2" data-toggle="tooltip" title="Add another artist">+</a>
         </div>
