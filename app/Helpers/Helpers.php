@@ -193,9 +193,10 @@ function randomString($characters)
  * and if it belongs to a user.
  *
  * @param  string                  $url
+ * @param  bool                    $failOnError
  * @return \App\Models\User\User|string
  */
-function checkAlias($url)
+function checkAlias($url, $failOnError = true)
 {
     $recipient = null;
     $matches = [];
@@ -204,11 +205,11 @@ function checkAlias($url)
         preg_match_all($site['regex'], $url, $matches); 
         if($matches != []) {$urlSite = $key; break;}
     }
-    if($matches[0] == []) throw new \Exception('This URL is from an invalid site. Please provide a URL for a user profile from a site used for authentication.');
+    if($matches[0] == [] && $failOnError) throw new \Exception('This URL is from an invalid site. Please provide a URL for a user profile from a site used for authentication.');
 
     // and 2. if it contains an alias associated with a user on-site.
     if($matches[1] != [] && isset($matches[1][0])) {
-        $alias = App\Models\User\UserAlias::where('site', $urlSite)->where('alias', $matches[1][0])->first();
+        $alias = App\Models\User\UserAlias::where('site', $urlSite)->where('alias', 'ilike', '%' . $matches[1][0] . '%')->first();
         if($alias) $recipient = App\Models\User\User::find($alias->user_id);
         else $recipient = $url;
     }

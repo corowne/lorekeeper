@@ -260,6 +260,22 @@ class CharacterManager extends Service
 
             $image = CharacterImage::create($imageData);
 
+            // Check if entered url(s) have aliases associated with any on-site users
+            foreach($data['designer_url'] as $key=>$url) {
+                $recipient = checkAlias($url, false);
+                if(is_object($recipient)) {
+                    $data['designer_id'][$key] = $recipient->id;
+                    $data['designer_url'][$key] = null;
+                }
+            }
+            foreach($data['artist_url'] as $key=>$url) {
+                $recipient = checkAlias($url, false);
+                if(is_object($recipient)) {
+                    $data['artist_id'][$key] = $recipient->id;
+                    $data['artist_url'][$key] = null;
+                }
+            }
+
             // Check that users with the specified id(s) exist on site
             foreach($data['designer_id'] as $id) {
                 if(isset($id) && $id) {
@@ -728,6 +744,22 @@ class CharacterManager extends Service
 
             // Clear old artists/designers
             $image->creators()->delete();
+
+            // Check if entered url(s) have aliases associated with any on-site users
+            foreach($data['designer_url'] as $key=>$url) {
+                $recipient = checkAlias($url, false);
+                if(is_object($recipient)) {
+                    $data['designer_id'][$key] = $recipient->id;
+                    $data['designer_url'][$key] = null;
+                }
+            }
+            foreach($data['artist_url'] as $key=>$url) {
+                $recipient = checkAlias($url, false);
+                if(is_object($recipient)) {
+                    $data['artist_id'][$key] = $recipient->id;
+                    $data['artist_url'][$key] = null;
+                }
+            }
 
             // Check that users with the specified id(s) exist on site
             foreach($data['designer_id'] as $id) {
