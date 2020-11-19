@@ -107,6 +107,7 @@ class PromptService extends Service
     private function populateCategoryData($data, $category = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
+        elseif(!isset($data['description']) && !$data['description']) $data['parsed_description'] = null;
         
         if(isset($data['remove_image']))
         {
