@@ -92,7 +92,7 @@ class CharacterDropService extends Service
                             if(!$minQuantity && $maxQuantity) $minQuantity = $maxQuantity;
                         }
 
-                        $data['data']['items'][$key][$param] = ['item_id' => $itemId, 'min_quantity' => $minQuantity, 'max_quantity' => $maxQuantity];
+                        $data['data']['items'][$key][$param] = ['item_id' => $itemId, 'min' => $minQuantity, 'max' => $maxQuantity];
                     }
                 }
             }

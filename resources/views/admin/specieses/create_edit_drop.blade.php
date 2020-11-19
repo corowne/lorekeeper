@@ -72,8 +72,8 @@ Select how often drops should occur.
                     <div id="itemList">
                         <div class="d-flex mb-2">
                             {!! Form::select('item_id[species]['.$label.']', $items, isset($drop->data['items']['species'][$label]) ? $drop->data['items']['species'][$label]['item_id'] : null, ['class' => 'form-control mr-2 default item-select', 'placeholder' => 'Select Item']) !!}
-                            {!! Form::number('min_quantity[species]['.$label.']', isset($drop->data['items']['species'][$label]) ? $drop->data['items']['species'][$label]['min_quantity'] : null, ['class' => 'form-control mr-2', 'placeholder' => 'Minimum Quantity']) !!}
-                            {!! Form::number('max_quantity[species]['.$label.']', isset($drop->data['items']['species'][$label]) ?  $drop->data['items']['species'][$label]['max_quantity'] : null, ['class' => 'form-control mr-2', 'placeholder' => 'Maximum Quantity']) !!}
+                            {!! Form::number('min_quantity[species]['.$label.']', isset($drop->data['items']['species'][$label]) ? $drop->data['items']['species'][$label]['min'] : null, ['class' => 'form-control mr-2', 'placeholder' => 'Minimum Quantity']) !!}
+                            {!! Form::number('max_quantity[species]['.$label.']', isset($drop->data['items']['species'][$label]) ?  $drop->data['items']['species'][$label]['max'] : null, ['class' => 'form-control mr-2', 'placeholder' => 'Maximum Quantity']) !!}
                         </div>
                     </div>
                 </div>
@@ -96,8 +96,8 @@ Select how often drops should occur.
                             <div id="itemList">
                                 <div class="d-flex mb-2">
                                     {!! Form::select('item_id['.$subtype->id.']['.$label.']', $items, isset($drop->data['items'][$subtype->id][$label]) ? $drop->data['items'][$subtype->id][$label]['item_id'] : null, ['class' => 'form-control mr-2 default item-select', 'placeholder' => 'Select Item']) !!}
-                                    {!! Form::number('min_quantity['.$subtype->id.']['.$label.']', isset($drop->data['items'][$subtype->id][$label]) ? $drop->data['items'][$subtype->id][$label]['min_quantity'] : null, ['class' => 'form-control mr-2', 'placeholder' => 'Minimum Quantity']) !!}
-                                    {!! Form::number('max_quantity['.$subtype->id.']['.$label.']', isset($drop->data['items'][$subtype->id][$label]) ? $drop->data['items'][$subtype->id][$label]['max_quantity'] : null, ['class' => 'form-control mr-2', 'placeholder' => 'Maximum Quantity']) !!}
+                                    {!! Form::number('min_quantity['.$subtype->id.']['.$label.']', isset($drop->data['items'][$subtype->id][$label]) ? $drop->data['items'][$subtype->id][$label]['min'] : null, ['class' => 'form-control mr-2', 'placeholder' => 'Minimum Quantity']) !!}
+                                    {!! Form::number('max_quantity['.$subtype->id.']['.$label.']', isset($drop->data['items'][$subtype->id][$label]) ? $drop->data['items'][$subtype->id][$label]['max'] : null, ['class' => 'form-control mr-2', 'placeholder' => 'Maximum Quantity']) !!}
                                 </div>
                             </div>
                         </div>
