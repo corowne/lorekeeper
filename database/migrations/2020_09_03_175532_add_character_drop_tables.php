@@ -17,10 +17,7 @@ class AddCharacterDropTables extends Migration
         Schema::create('character_drop_data', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-
-            // If subtype is selected, drops will be available only for that subtype.
             $table->integer('species_id')->unsigned();
-            $table->integer('subtype_id')->unsigned()->nullable();
 
             // Will hold defined parameters and item data.
             $table->text('parameters')->nullable()->default(null);
