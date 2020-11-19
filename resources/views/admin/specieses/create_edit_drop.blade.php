@@ -13,7 +13,7 @@
 
 {!! Form::open(['url' => $drop->id ? 'admin/data/character-drops/edit/'.$drop->id : 'admin/data/character-drops/create']) !!}
 
-<h3>Basic Information</h3>
+<h2>Basic Information</h2>
 
 <div class="form-group">
     {!! Form::label('Species') !!}
@@ -36,10 +36,10 @@
     </thead>
     <tbody id="lootTableBody">
         @if($drop->id)
-            @foreach($drop->parameters as $parameter)
+            @foreach($drop->parameters as $label=>$weight)
                 <tr class="drop-row">
-                    <td class="drop-row-select">{!! Form::text('label[]', $parameter->label, ['class' => 'form-control']) !!}</td>
-                    <td class="drop-row-weight">{!! Form::text('weight[]', $parameter->weight, ['class' => 'form-control drop-weight']) !!}</td>
+                    <td class="drop-row-select">{!! Form::text('label[]', $label, ['class' => 'form-control']) !!}</td>
+                    <td class="drop-row-weight">{!! Form::text('weight[]', $weight, ['class' => 'form-control drop-weight']) !!}</td>
                     <td class="drop-row-chance"></td>
                     <td class="text-right"><a href="#" class="btn btn-danger remove-drop-button">Remove</a></td>
                 </tr>
@@ -47,6 +47,68 @@
         @endif
     </tbody>
 </table>
+
+<h4>Drop Frequency</h4>
+Select how often drops should occur.
+<div class="d-flex my-2">
+    {!! Form::number('drop_frequency', $drop->data['frequency']['frequency'], ['class' => 'form-control mr-2', 'placeholder' => 'Drop Frequency']) !!}
+    {!! Form::select('drop_interval', ['hour' => 'Hour', 'day' => 'Day', 'month' => 'Month', 'year' => 'Year'], $drop->data['frequency']['interval'], ['class' => 'form-control mr-2 default item-select', 'placeholder' => 'Drop Interval']) !!}
+</div>
+
+<div class="form-group">
+    {!! Form::checkbox('is_active', 1, $drop->id ? $drop->data['is_active'] : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+    {!! Form::label('is_active', 'Is Active', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Whether or not drops for this species are active. Impacts subtypes as well.') !!}
+</div>
+
+@if($drop->id)
+    <h2>Dropped Items</h2>
+    Select an item for each group of this species to drop, and/or for each group to drop per subtype of this species. Leave the item field blank to disable drops for the group.
+    <div class="card card-body my-2">
+        @foreach($drop->parameters as $label=>$weight)
+            <div class="mb-2">
+                <h5>{{ $label }}</h5>
+                <div class="form-group">
+                    {!! Form::label('Item and Min/Max Quantity Dropped') !!} {!! add_help('Select an item for this group to drop, and the minimum and maximum quantity that should be dropped. If only one quantity is set, or they are both the same number, the same quantity will be dropped each time.') !!}
+                    <div id="itemList">
+                        <div class="d-flex mb-2">
+                            {!! Form::select('item_id[species]['.$label.']', $items, isset($drop->data['items']['species'][$label]) ? $drop->data['items']['species'][$label]['item_id'] : null, ['class' => 'form-control mr-2 default item-select', 'placeholder' => 'Select Item']) !!}
+                            {!! Form::number('min_quantity[species]['.$label.']', isset($drop->data['items']['species'][$label]) ? $drop->data['items']['species'][$label]['min_quantity'] : null, ['class' => 'form-control mr-2', 'placeholder' => 'Minimum Quantity']) !!}
+                            {!! Form::number('max_quantity[species]['.$label.']', isset($drop->data['items']['species'][$label]) ?  $drop->data['items']['species'][$label]['max_quantity'] : null, ['class' => 'form-control mr-2', 'placeholder' => 'Maximum Quantity']) !!}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+    
+    <h3>Subtypes</h3>
+    @if($drop->species->subtypes->count())
+        @foreach($drop->species->subtypes as $subtype)
+            <div class="card card-body mb-2">
+                <div class="card-title">
+                    <h4>{{ $subtype->name.' '.$subtype->species->name }}</h4>
+                </div>
+                @foreach($drop->parameters as $label=>$weight)
+                    <div class="mb-2">
+                        <h5>{{ $label }}</h5>
+                        <div class="form-group">
+                            {!! Form::label('Item and Min/Max Quantity Dropped') !!} {!! add_help('Select an item for this group to drop, and the minimum and maximum quantity that should be dropped. If only one quantity is set, or they are both the same number, the same quantity will be dropped each time.') !!}
+                            <div id="itemList">
+                                <div class="d-flex mb-2">
+                                    {!! Form::select('item_id['.$subtype->id.']['.$label.']', $items, isset($drop->data['items'][$subtype->id][$label]) ? $drop->data['items'][$subtype->id][$label]['item_id'] : null, ['class' => 'form-control mr-2 default item-select', 'placeholder' => 'Select Item']) !!}
+                                    {!! Form::number('min_quantity['.$subtype->id.']['.$label.']', isset($drop->data['items'][$subtype->id][$label]) ? $drop->data['items'][$subtype->id][$label]['min_quantity'] : null, ['class' => 'form-control mr-2', 'placeholder' => 'Minimum Quantity']) !!}
+                                    {!! Form::number('max_quantity['.$subtype->id.']['.$label.']', isset($drop->data['items'][$subtype->id][$label]) ? $drop->data['items'][$subtype->id][$label]['max_quantity'] : null, ['class' => 'form-control mr-2', 'placeholder' => 'Maximum Quantity']) !!}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endforeach
+    @else
+        <p>No subtypes found for this species.</p>
+    @endif
+@endif
 
 <div class="text-right">
     {!! Form::submit($drop->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
@@ -65,7 +127,7 @@
             </tr>
         </tbody>
     </table>
-    {!! Form::select('rewardable_id[]', [1 => 'No reward given.'], null, ['class' => 'form-control none-select']) !!}
+</div>
 
 @endsection
 
@@ -159,6 +221,8 @@ $( document ).ready(function() {
             $(this).html(current.toString() + '%');
         });
     }
+
+    $('.default.item-select').selectize();
 });
     
 </script>

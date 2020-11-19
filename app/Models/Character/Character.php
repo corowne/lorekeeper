@@ -199,6 +199,14 @@ class Character extends Model
         return $this->belongsToMany('App\Models\Item\Item', 'character_items')->withPivot('count', 'data', 'updated_at', 'id')->whereNull('character_items.deleted_at');
     }
 
+    /**
+     * Get the character's character drop data.
+     */
+    public function drops() 
+    {
+        return $this->hasOne('App\Models\Character\CharacterDrop', 'character_id');
+    }
+
     /**********************************************************************************************
     
         SCOPES

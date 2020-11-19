@@ -39,8 +39,9 @@ class CharacterDropData extends Model
      * @var array
      */
     public static $createRules = [
-        'species_id' => 'required',
-        'subtype_id' => 'nullable',
+        'species_id' => 'required|unique:character_drops',
+        'drop_frequency' => 'required',
+        'drop_interval' => 'required'
     ];
     
     /**
@@ -50,7 +51,8 @@ class CharacterDropData extends Model
      */
     public static $updateRules = [
         'species_id' => 'required',
-        'subtype_id' => 'nullable',
+        'drop_frequency' => 'required',
+        'drop_interval' => 'required'
     ];
 
     /**********************************************************************************************
@@ -66,21 +68,6 @@ class CharacterDropData extends Model
     {
         return $this->belongsTo('App\Models\Species\Species', 'species_id');
     }
-    
-    /**
-     * Get the subtype to which the data pertains, if set.
-     */
-    public function subtype() 
-    {
-        if($this->subtype_id) return $this->belongsTo('App\Models\Species\Subtype', 'subtype_id');
-        else return null;
-    }
-
-    /**********************************************************************************************
-    
-        SCOPES
-
-    **********************************************************************************************/
 
     /**********************************************************************************************
     
@@ -89,13 +76,13 @@ class CharacterDropData extends Model
     **********************************************************************************************/
 
     /**
-     * Gets the character's page's URL.
+     * Get the parameter attribute as an associative array.
      *
-     * @return string
+     * @return array
      */
-    public function getUrlAttribute()
+    public function getParametersAttribute()
     {
-        return url('admin/data/character-drops/'.$this->id);
+        return json_decode($this->attributes['parameters'], true);
     }
 
     /**
@@ -103,16 +90,9 @@ class CharacterDropData extends Model
      *
      * @return array
      */
-    public function getParameterAttribute()
+    public function getDataAttribute()
     {
-        return json_decode($this->attributes['parameters'], true);
+        return json_decode($this->attributes['data'], true);
     }
-
-    /**********************************************************************************************
-    
-        OTHER FUNCTIONS
-
-    **********************************************************************************************/
-
 
 }
