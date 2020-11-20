@@ -70,22 +70,36 @@
                 {!! Form::label('modify_thumbnail', 'Modify Thumbnail', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Toggle this option to modify the thumbnail, otherwise only the credits will be saved.') !!}
             </div>
         @endif
+@if (Config::get('lorekeeper.settings.masterlist_image_automation') === 1)
         <div class="form-group">
             {!! Form::checkbox('use_cropper', 1, 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'useCropper']) !!}
-            {!! Form::label('use_cropper', 'Use Image Cropper', ['class' => 'form-check-label ml-3']) !!} {!! add_help('A thumbnail is required for the upload (used for the masterlist). You can use the image cropper (crop dimensions can be adjusted in the site code), or upload a custom thumbnail.') !!}
+			{!! Form::label('use_cropper', 'Use Thumbnail Automation', ['class' => 'form-check-label ml-3']) !!} {!! add_help('A thumbnail is required for the upload (used for the masterlist). You can use the Thumbnail Automation, or upload a custom thumbnail.') !!}
         </div>
         <div class="card mb-3" id="thumbnailCrop">
             <div class="card-body">
-                @if($request->status == 'Draft' && $request->user_id == Auth::user()->id)
-                    <div id="cropSelect">Select an image to use the thumbnail cropper.</div>
-                @endif
-                <img src="#" id="cropper" class="hide" {{ ($request->status == 'Pending' && Auth::user()->hasPower('manage_characters')) ? 'data-url='.$request->imageUrl : '' }} />
-                {!! Form::hidden('x0', $request->x0, ['id' => 'cropX0']) !!}
-                {!! Form::hidden('x1', $request->x1, ['id' => 'cropX1']) !!}
-                {!! Form::hidden('y0', $request->y0, ['id' => 'cropY0']) !!}
-                {!! Form::hidden('y1', $request->y1, ['id' => 'cropY1']) !!}
+				<div id="cropSelect">By using this function, the thumbnail will be automatically generated from the full image.</div>
+                {!! Form::hidden('x0', 1) !!}
+                {!! Form::hidden('x1', 1) !!}
+                {!! Form::hidden('y0', 1) !!}
+                {!! Form::hidden('y1', 1) !!}
             </div>
         </div>
+@else
+        <div class="form-group">
+            {!! Form::checkbox('use_cropper', 1, 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'useCropper']) !!}
+			{!! Form::label('use_cropper', 'Use Image Cropper', ['class' => 'form-check-label ml-3']) !!} {!! add_help('A thumbnail is required for the upload (used for the masterlist). You can use the image cropper (crop dimensions can be adjusted in the site code), or upload a custom thumbnail.') !!}
+        </div>
+        <div class="card mb-3" id="thumbnailCrop">
+            <div class="card-body">
+				<div id="cropSelect">Select an image to use the thumbnail cropper.</div>
+                <img src="#" id="cropper" class="hide" />
+                {!! Form::hidden('x0', null, ['id' => 'cropX0']) !!}
+                {!! Form::hidden('x1', null, ['id' => 'cropX1']) !!}
+                {!! Form::hidden('y0', null, ['id' => 'cropY0']) !!}
+                {!! Form::hidden('y1', null, ['id' => 'cropY1']) !!}
+            </div>
+        </div>
+@endif
         <div class="card mb-3" id="thumbnailUpload">
             <div class="card-body">
                 {!! Form::label('Thumbnail Image') !!} {!! add_help('This image is shown on the masterlist page.') !!}

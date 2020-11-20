@@ -332,6 +332,24 @@ class CharacterManager extends Service
         // Trim transparent parts of image.
         $image = Image::make($characterImage->imagePath . '/' . $characterImage->imageFileName)->trim('transparent');
 
+		if (Config::get('lorekeeper.settings.masterlist_image_automation') == 1)
+		{
+	        // Make the image be square
+			$imageWidth = $image->width();
+			$imageHeight = $image->height();
+
+			if( $imageWidth > $imageHeight) {
+				// Landscape
+				$canvas = Image::canvas($image->width(), $image->width());
+				$image = $canvas->insert($image, 'center');
+			}
+			else {
+				// Portrait
+				$canvas = Image::canvas($image->height(), $image->height());
+				$image = $canvas->insert($image, 'center');
+			}
+		}
+
         if(Config::get('lorekeeper.settings.masterlist_image_format') != 'png' && Config::get('lorekeeper.settings.masterlist_image_format') != null && Config::get('lorekeeper.settings.masterlist_image_background') != null) {
             $canvas = Image::canvas($image->width(), $image->height(), Config::get('lorekeeper.settings.masterlist_image_background'));
             $image = $canvas->insert($image, 'center');
@@ -423,6 +441,24 @@ class CharacterManager extends Service
             // Trim transparent parts of image.
             $image->trim(isset($trimColor) && $trimColor ? 'top-left' : 'transparent');
 
+			if (Config::get('lorekeeper.settings.masterlist_image_automation') == 1)
+			{
+				// Make the image be square
+				$imageWidth = $image->width();
+				$imageHeight = $image->height();
+
+				if( $imageWidth > $imageHeight) {
+					// Landscape
+					$canvas = Image::canvas($image->width(), $image->width());
+					$image = $canvas->insert($image, 'center');
+				}
+				else {
+					// Portrait
+					$canvas = Image::canvas($image->height(), $image->height());
+					$image = $canvas->insert($image, 'center');
+				}
+			}
+
             $cropWidth = Config::get('lorekeeper.settings.masterlist_thumbnails.width');
             $cropHeight = Config::get('lorekeeper.settings.masterlist_thumbnails.height');
 
@@ -477,22 +513,28 @@ class CharacterManager extends Service
                     });
                 }
             }
-            $xOffset = 0 + (($points['x0'] - $trimOffsetX) > 0 ? ($points['x0'] - $trimOffsetX) : 0);
-            if(($xOffset + $cropWidth) > $image->width()) $xOffsetNew = $cropWidth - ($image->width() - $xOffset);
-            if(isset($xOffsetNew)) if(($xOffsetNew + $cropWidth) > $image->width()) $xOffsetNew = $image->width() - $cropWidth;
-            $yOffset = 0 + (($points['y0'] - $trimOffsetY) > 0 ? ($points['y0'] - $trimOffsetY) : 0);
-            if(($yOffset + $cropHeight) > $image->height()) $yOffsetNew = $cropHeight - ($image->height() - $yOffset);
-            if(isset($yOffsetNew)) if(($yOffsetNew + $cropHeight) > $image->height()) $yOffsetNew = $image->height() - $cropHeight;
+			if (Config::get('lorekeeper.settings.masterlist_image_automation') == 0)
+			{
+				$xOffset = 0 + (($points['x0'] - $trimOffsetX) > 0 ? ($points['x0'] - $trimOffsetX) : 0);
+				if(($xOffset + $cropWidth) > $image->width()) $xOffsetNew = $cropWidth - ($image->width() - $xOffset);
+				if(isset($xOffsetNew)) if(($xOffsetNew + $cropWidth) > $image->width()) $xOffsetNew = $image->width() - $cropWidth;
+				$yOffset = 0 + (($points['y0'] - $trimOffsetY) > 0 ? ($points['y0'] - $trimOffsetY) : 0);
+				if(($yOffset + $cropHeight) > $image->height()) $yOffsetNew = $cropHeight - ($image->height() - $yOffset);
+				if(isset($yOffsetNew)) if(($yOffsetNew + $cropHeight) > $image->height()) $yOffsetNew = $image->height() - $cropHeight;
 
-            // Crop according to the selected area
-            $image->crop($cropWidth, $cropHeight, isset($xOffsetNew) ? $xOffsetNew : $xOffset, isset($yOffsetNew) ? $yOffsetNew : $yOffset);
+				// Crop according to the selected area
+				$image->crop($cropWidth, $cropHeight, isset($xOffsetNew) ? $xOffsetNew : $xOffset, isset($yOffsetNew) ? $yOffsetNew : $yOffset);
+			}
         }
         else {
             $cropWidth = $points['x1'] - $points['x0'];
             $cropHeight = $points['y1'] - $points['y0'];
 
-            // Crop according to the selected area
-            $image->crop($cropWidth, $cropHeight, $points['x0'], $points['y0']);
+			if (Config::get('lorekeeper.settings.masterlist_image_automation') == 0)
+			{
+				// Crop according to the selected area
+				$image->crop($cropWidth, $cropHeight, $points['x0'], $points['y0']);
+			}
 
             // Resize to fit the thumbnail size
             $image->resize(Config::get('lorekeeper.settings.masterlist_thumbnails.width'), Config::get('lorekeeper.settings.masterlist_thumbnails.height'));
