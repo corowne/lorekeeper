@@ -88,6 +88,11 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() 
 
     Route::post('{slug}/approval', 'CharacterController@postCharacterApproval');
     Route::get('{slug}/approval', 'CharacterController@getCharacterApproval');
+
+    Route::get('{slug}/profile/edit', 'CharacterController@getEditCharacterProfile');
+    Route::post('{slug}/profile/edit', 'CharacterController@postEditCharacterProfile');
+
+    Route::post('{slug}/drops', 'CharacterController@postClaimCharacterDrops');
 });
 Route::group(['prefix' => 'myo', 'namespace' => 'Characters'], function() {
     Route::get('{id}/profile/edit', 'MyoController@getEditCharacterProfile');

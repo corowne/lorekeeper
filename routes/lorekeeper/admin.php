@@ -345,6 +345,8 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware'
     Route::get('{slug}/profile', 'CharacterController@getEditCharacterProfile');
     Route::post('{slug}/profile', 'CharacterController@postEditCharacterProfile');
 
+    Route::post('{slug}/drops', 'CharacterController@postEditCharacterDrop');
+
     Route::get('{slug}/delete', 'CharacterController@getCharacterDelete');
     Route::post('{slug}/delete', 'CharacterController@postCharacterDelete');
 
