@@ -77,6 +77,14 @@ class Species extends Model
         return $this->hasMany('App\Models\Feature\Feature');
     }
 
+    /**
+     * Get the drop data associated with this species.
+     */
+    public function dropData() 
+    {
+        return $this->hasOne('App\Models\Character\CharacterDropData');
+    }
+
     /**********************************************************************************************
     
         ACCESSORS
@@ -165,5 +173,16 @@ class Species extends Model
     public function getVisualTraitsUrlAttribute()
     {
         return url('/world/species/'.$this->id.'/traits');
+    }
+
+    /**
+     * Gets whether or not the .
+     *
+     * @return string
+     */
+    public function getHasDropsAttribute()
+    {
+        if($this->dropData->exists()) return 1;
+        else return 0;
     }
 }

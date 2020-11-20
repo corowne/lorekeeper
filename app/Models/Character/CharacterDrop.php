@@ -23,7 +23,7 @@ class CharacterDrop extends Model
      * @var array
      */
     protected $fillable = [
-        'drop_id', 'character_id', 'parameters', 'drops_available'
+        'drop_id', 'character_id', 'parameters', 'drops_available', 'next_day'
     ];
 
     /**
@@ -38,7 +38,7 @@ class CharacterDrop extends Model
      *
      * @var array
      */
-    public $dates = ['drops_available'];
+    public $dates = ['next_day'];
 
     /**********************************************************************************************
     
@@ -59,7 +59,7 @@ class CharacterDrop extends Model
      */
     public function dropData() 
     {
-        return $this->belongsTo('App\Models\CharacterDropData', 'drop_id');
+        return $this->belongsTo('App\Models\Character\CharacterDropData', 'drop_id');
     }
 
     /**********************************************************************************************
@@ -68,11 +68,90 @@ class CharacterDrop extends Model
 
     **********************************************************************************************/
 
+    /**
+     * Scope a query to only include drops that require updating.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeRequiresUpdate($query)
+    {
+        return $query->where('next_day', '>', Carbon::now());
+    }
+
     /**********************************************************************************************
     
         ACCESSORS
 
     **********************************************************************************************/
+
+    /**
+     * Get the item(s) a given character should be dropping.
+     *
+     */
+    public function getSpeciesItemAttribute()
+    {
+        // Collect data from the drop data about what item this species drops.
+        $itemsData = $this->dropData->data['items'];
+        $speciesItem = isset($itemsData['species']) && isset($itemsData['species'][$this->parameters]) ? Item::find($itemsData['species'][$this->parameters]['item_id']) : null;
+        if($speciesItem) return $speciesItem;
+    }
+
+    /**
+     * Get quantity or quantity range for species drop.
+     *
+     */
+    public function getSpeciesQuantityAttribute()
+    {
+        if($this->speciesItem) {
+            $itemsData = $this->dropData->data['items'];
+            $min = $itemsData['species'][$this->parameters]['min'];
+            $max = $itemsData['species'][$this->parameters]['max'];
+            if($min == $max) return $min;
+            else return $min.'-'.$max;
+        }
+    }
+
+    /**
+     * Get the item(s) a given character should be dropping.
+     *
+     */
+    public function getSubtypeItemAttribute()
+    {
+        // Collect data from the drop data about what item this species drops.
+        $itemsData = $this->dropData->data['items'];
+        $subtypeItem = isset($this->character->image->subtype_id) && isset($itemsData[$this->character->image->subtype_id][$this->parameters]) ? Item::find($itemsData[$this->character->image->subtype_id][$this->parameters]['item_id']) : null;
+        if($subtypeItem) return $subtypeItem;
+    }
+
+    /**
+     * Get quantity or quantity range for species drop.
+     *
+     */
+    public function getSubtypeQuantityAttribute()
+    {
+        if($this->subtypeItem) {
+            $itemsData = $this->dropData->data['items'];
+            $min = $itemsData[$this->character->image->subtype_id][$this->parameters]['min'];
+            $max = $itemsData[$this->character->image->subtype_id][$this->parameters]['max'];
+            if($min == $max) return $min;
+            else return $min.'-'.$max;
+        }
+    }
+
+    /**
+     * Get the item(s) a given character should be dropping.
+     *
+     */
+    public function getItemsAttribute()
+    {
+        // Collect resulting items
+        $items = collect([]);
+        if($this->speciesItem) $items = $items->concat([$this->speciesItem]);
+        if($this->subtypeItem) $items = $items->concat([$this->subtypeItem]);
+        
+        return $items;
+    }
 
     /**********************************************************************************************
     
@@ -80,4 +159,21 @@ class CharacterDrop extends Model
 
     **********************************************************************************************/
 
+    /**
+     * Create drop info for a character.
+     * 
+     * @param int              $id
+     */
+    public function createDrop($id) 
+    {
+        $character = Character::find($id);
+        $dropData = $character->image->species->dropData;
+        $drop = $this->create([
+            'drop_id' => $dropData->id,
+            'character_id' => $id,
+            'parameters' => $dropData->rollParameters(),
+            'drops_available' => 0,
+            'next_day' => Carbon::now()->add($dropData->data['frequency']['frequency'], $dropData->data['frequency']['interval']),
+        ]);
+    }
 }

@@ -111,12 +111,12 @@ class CharacterDropService extends Service
     }
 
     /**
-     * Deletes a loot table.
+     * Deletes character drop data.
      *
-     * @param  \App\Models\Loot\LootTable  $table
+     * @param  \App\Models\Character\CharacterDropData  $drop
      * @return bool
      */
-    public function deleteLootTable($table)
+    public function deleteCharacterDrop($drop)
     {
         DB::beginTransaction();
 
@@ -124,10 +124,10 @@ class CharacterDropService extends Service
             // Check first if the table is currently in use
             // - Prompts
             // - Box rewards (unfortunately this can't be checked easily)
-            if(PromptReward::where('rewardable_type', 'LootTable')->where('rewardable_id', $table->id)->exists()) throw new \Exception("A prompt uses this table to distribute rewards. Please remove it from the rewards list first.");
+            if(CharacterDrop::where('drop_id', $drop->id)->exists()) throw new \Exception('A character has drops using this data. Consider disabling drops instead.');
             
-            $table->loot()->delete();
-            $table->delete();
+            $drop->characterDrops()->delete();
+            $drop->delete();
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 

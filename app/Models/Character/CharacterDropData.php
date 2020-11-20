@@ -69,6 +69,14 @@ class CharacterDropData extends Model
         return $this->belongsTo('App\Models\Species\Species', 'species_id');
     }
 
+    /**
+     * Get any character drops using this data.
+     */
+    public function characterDrops() 
+    {
+        return $this->hasMany('App\Models\Character\CharacterDrop', 'drop_id');
+    }
+
     /**********************************************************************************************
     
         ACCESSORS
@@ -86,6 +94,17 @@ class CharacterDropData extends Model
     }
 
     /**
+     * Get the parameter attribute as an array with the keys and values the same.
+     *
+     * @return array
+     */
+    public function getParameterArrayAttribute()
+    {
+        foreach($this->parameters as $parameter=>$weight) $paramArray[$parameter] = $parameter;
+        return $paramArray;
+    }
+
+    /**
      * Get the parameter attribute as an associative array.
      *
      * @return array
@@ -93,6 +112,45 @@ class CharacterDropData extends Model
     public function getDataAttribute()
     {
         return json_decode($this->attributes['data'], true);
+    }
+
+    /**********************************************************************************************
+    
+        OTHER FUNCTIONS
+
+    **********************************************************************************************/
+
+    /**
+     * Rolls a group for a character.
+     *
+     * @return string
+     */
+    public function rollParameters() 
+    {
+        $parameters = $this->parameters;
+        $totalWeight = 0;
+        foreach($parameters as $parameter=>$weight) $totalWeight += $weight;
+
+        for($i = 0; $i < 1; $i++)
+        {
+            $roll = mt_rand(0, $totalWeight - 1); 
+            $result = null;
+            $prev = null;
+            $count = 0;
+            foreach($parameters as $parameter=>$weight)
+            { 
+                $count += $weight;
+
+                if($roll < $count)
+                {
+                    $result = $parameter;
+                    break;
+                }
+                $prev = $parameter;
+            }
+            if(!$result) $result = $prev;
+        }
+        return $result;
     }
 
 }

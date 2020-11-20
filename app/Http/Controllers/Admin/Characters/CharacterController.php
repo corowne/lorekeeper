@@ -386,6 +386,30 @@ class CharacterController extends Controller
     }
 
     /**
+     * Edits character drops.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  string                         $slug
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postEditCharacterDrop(Request $request, $slug)
+    {
+        if(!Auth::check()) abort(404);
+        $this->character = Character::where('slug', $slug)->first();
+        if(!$this->character) abort(404);
+        $drops = $this->character->drops;
+
+        if ($drops->update(['parameters' => $request['parameters'], 'drops_available' => $request['drops_available']])) {
+            flash('Character drops updated successfully.')->success();
+            return redirect()->to($this->character->url.'/drops');
+        }
+        else {
+            flash('Failed to update character drops.')->error();
+        }
+        return redirect()->back()->withInput();
+    }
+
+    /**
      * Shows the delete character modal.
      *
      * @param  string  $slug

@@ -3,11 +3,11 @@
 @section('admin-title') {{ $drop->id ? 'Edit' : 'Create' }} Character Drop @endsection
 
 @section('admin-content')
-{!! breadcrumbs(['Admin Panel' => 'admin', 'Character Drops' => 'admin/data/character-drops', ($drop->id ? 'Edit' : 'Create').' Drop' => $drop->id ? 'admin/data/character-drops/edit/'.$drop->id : 'admin/data/character-drops/create']) !!}
+{!! breadcrumbs(['Admin Panel' => 'admin', 'Character Drops' => 'admin/data/character-drops', ($drop->id ? 'Edit' : 'Create').' Drop Data' => $drop->id ? 'admin/data/character-drops/edit/'.$drop->id : 'admin/data/character-drops/create']) !!}
 
-<h1>{{ $drop->id ? 'Edit' : 'Create' }} Character Drop
+<h1>{{ $drop->id ? 'Edit' : 'Create' }} Character Drop Data
     @if($drop->id)
-        <a href="#" class="btn btn-danger float-right delete-subtype-button">Delete Drop</a>
+        <a href="#" class="btn btn-danger float-right delete-drop-button">Delete Drop</a>
     @endif
 </h1>
 
@@ -20,16 +20,18 @@
     {!! Form::select('species_id', $specieses, $drop->species_id, ['class' => 'form-control']) !!}
 </div>
 
-<h4>Parameters</h4>
+<h4>Groups</h4>
+<p>
+    Groups into which characters within this species may be sorted. Characters of this species can be assigned a group or be randomly assigned one upon creation, or may be manually assigned or reassigned a group after the fact.
+</p>
 <div class="float-right mb-3">
     <a href="#" class="btn btn-info" id="addLoot">Add Parameter</a>
 </div>
-    <p>Groups into which characters within this species may be sorted.</p>
 <table class="table table-sm" id="lootTable">
     <thead>
         <tr>
             <th width="25%">Label {!! add_help('This label will be shown to users.') !!}</th>
-            <th width="10%">Weight {!! add_help('A higher weight means a reward is more likely to be rolled. Weights have to be integers above 0 (round positive number, no decimals) and do not have to add up to be a particular number.') !!}</th>
+            <th width="10%">Weight {!! add_help('A higher weight means a group is more likely to be rolled. Weights have to be integers above 0 (round positive number, no decimals) and do not have to add up to be a particular number.') !!}</th>
             <th width="20%">Chance</th>
             <th width="10%"></th>
         </tr>

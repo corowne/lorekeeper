@@ -23,6 +23,7 @@ use App\Models\Currency\CurrencyLog;
 use App\Models\Character\CharacterItem;
 use App\Models\Item\Item;
 use App\Models\Item\ItemLog;
+use App\Models\Character\CharacterDrop;
 
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
@@ -204,6 +205,10 @@ class Character extends Model
      */
     public function drops() 
     {
+        if(!CharacterDrop::where('character_id', $this->id)->first()) {
+            $drop = new CharacterDrop;
+            $drop->createDrop($this->id);
+        }
         return $this->hasOne('App\Models\Character\CharacterDrop', 'character_id');
     }
 

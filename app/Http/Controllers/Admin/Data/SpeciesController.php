@@ -338,7 +338,7 @@ class SpeciesController extends Controller
     }
     
     /**
-     * Gets the subtype deletion modal.
+     * Gets the character drop data deletion modal.
      *
      * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable

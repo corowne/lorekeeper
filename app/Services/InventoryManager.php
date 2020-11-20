@@ -242,6 +242,61 @@ class InventoryManager extends Service
     }
 
     /**
+     * Transfers items between user stacks.
+     *
+     * @param  \App\Models\Character\Character      $sender
+     * @param  \App\Models\User\User                $recipient
+     * @param  \App\Models\Character\CharacterDrop  $drops
+     * @param  int                                  $quantities
+     * @return bool
+     */
+    public function claimCharacterDrops($character, $user, $drops)
+    {
+        DB::beginTransaction();
+
+        try {
+            if(!$drops->drops_available) throw new \Exception('This character doesn\'t have any available drops.');
+
+            // Assemble data
+            $type = 'Character Drop';
+            $data = [
+                'data' => 'Collected from '.$character->displayName,
+                'notes' => 'Collected ' . format_date(Carbon::now())
+            ];
+
+            // Determine Quantitie(s)
+            if($drops->speciesItem) {
+                if(is_numeric($drops->speciesQuantity)) $quantity['species'] = $drops->speciesQuantity * $drops->drops_available;
+                else {
+                    $itemData = $drops->dropData->data['items']['species'][$drops->parameters];
+                    $quantity['species'] = mt_rand($itemData['min'], $itemData['max']);
+                }
+            }
+            if($drops->subtypeItem) {
+                if(is_numeric($drops->subtypeQuantity)) $quantity['subtype'] = $drops->subtypeQuantity * $drops->drops_available;
+                else {
+                    $itemData = $drops->dropData->data['items'][$character->image->subtype_id][$drops->parameters];
+                    $quantity['subtype'] = mt_rand($itemData['min'], $itemData['max']);
+                }
+            }
+
+            // Credit item(s)
+            $successes = 0;
+            if($drops->speciesItem && $this->creditItem(null, Auth::user(), $type, $data, $drops->speciesItem, $quantity['species'])) $successes += 1;
+            if($drops->subtypeItem && $this->creditItem(null, Auth::user(), $type, $data, $drops->subtypeItem, $quantity['subtype'])) $successes += 1;
+            if($successes != $drops->items->count()) throw new \Exception('Failed to collect all drops.');
+
+            // Clear the number of available drops
+            $drops->update(['drops_available' => 0]);
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
      * Deletes items from stack.
      *
      * @param  \App\Models\User\User|\App\Models\Character\Character          $owner
