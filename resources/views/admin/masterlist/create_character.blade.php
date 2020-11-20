@@ -153,11 +153,11 @@
     <div class="card mb-3" id="thumbnailCrop">
         <div class="card-body">
             <div id="cropSelect">Select an image to use the thumbnail cropper.</div>
-			<img src="#" id="cropper" class="hide" />
-			{!! Form::hidden('x0', null, ['id' => 'cropX0']) !!}
-			{!! Form::hidden('x1', null, ['id' => 'cropX1']) !!}
-			{!! Form::hidden('y0', null, ['id' => 'cropY0']) !!}
-			{!! Form::hidden('y1', null, ['id' => 'cropY1']) !!}
+            <img src="#" id="cropper" class="hide" />
+            {!! Form::hidden('x0', null, ['id' => 'cropX0']) !!}
+            {!! Form::hidden('x1', null, ['id' => 'cropX1']) !!}
+            {!! Form::hidden('y0', null, ['id' => 'cropY0']) !!}
+            {!! Form::hidden('y1', null, ['id' => 'cropY1']) !!}
         </div>
     </div>
 @endif

@@ -27,11 +27,11 @@
 @if (Config::get('lorekeeper.settings.masterlist_image_automation') === 1)
 <div class="form-group">
     {!! Form::checkbox('use_cropper', 1, 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'useCropper']) !!}
-	{!! Form::label('use_cropper', 'Use Thumbnail Automation', ['class' => 'form-check-label ml-3']) !!} {!! add_help('A thumbnail is required for the upload (used for the masterlist). You can use the Thumbnail Automation, or upload a custom thumbnail.') !!}
+    {!! Form::label('use_cropper', 'Use Thumbnail Automation', ['class' => 'form-check-label ml-3']) !!} {!! add_help('A thumbnail is required for the upload (used for the masterlist). You can use the Thumbnail Automation, or upload a custom thumbnail.') !!}
 </div>
 <div class="card mb-3" id="thumbnailCrop">
     <div class="card-body">
-		<div id="cropSelect">By using this function, the thumbnail will be automatically generated from the full image.</div>
+        <div id="cropSelect">By using this function, the thumbnail will be automatically generated from the full image.</div>
         {!! Form::hidden('x0', 1) !!}
         {!! Form::hidden('x1', 1) !!}
         {!! Form::hidden('y0', 1) !!}
@@ -41,16 +41,16 @@
 @else
 <div class="form-group">
     {!! Form::checkbox('use_cropper', 1, 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'useCropper']) !!}
-		{!! Form::label('use_cropper', 'Use Image Cropper', ['class' => 'form-check-label ml-3']) !!} {!! add_help('A thumbnail is required for the upload (used for the masterlist). You can use the image cropper (crop dimensions can be adjusted in the site code), or upload a custom thumbnail.') !!}
+        {!! Form::label('use_cropper', 'Use Image Cropper', ['class' => 'form-check-label ml-3']) !!} {!! add_help('A thumbnail is required for the upload (used for the masterlist). You can use the image cropper (crop dimensions can be adjusted in the site code), or upload a custom thumbnail.') !!}
 </div>
 <div class="card mb-3" id="thumbnailCrop">
-	<div class="card-body">
-		<div id="cropSelect">Select an image to use the thumbnail cropper.</div>
-		<img src="#" id="cropper" class="hide" />
-		{!! Form::hidden('x0', null, ['id' => 'cropX0']) !!}
-		{!! Form::hidden('x1', null, ['id' => 'cropX1']) !!}
-		{!! Form::hidden('y0', null, ['id' => 'cropY0']) !!}
-		{!! Form::hidden('y1', null, ['id' => 'cropY1']) !!}
+    <div class="card-body">
+        <div id="cropSelect">Select an image to use the thumbnail cropper.</div>
+        <img src="#" id="cropper" class="hide" />
+        {!! Form::hidden('x0', null, ['id' => 'cropX0']) !!}
+        {!! Form::hidden('x1', null, ['id' => 'cropX1']) !!}
+        {!! Form::hidden('y0', null, ['id' => 'cropY0']) !!}
+        {!! Form::hidden('y1', null, ['id' => 'cropY1']) !!}
     </div>
 </div>
 @endif
