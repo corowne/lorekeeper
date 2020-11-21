@@ -52,6 +52,10 @@
             e.preventDefault();
             loadModal("{{ url($character->is_myo_slot ? 'admin/myo/' : 'admin/character/') }}/"+$(this).data('{{ $character->is_myo_slot ? 'id' : 'slug' }}')+"/stats", 'Edit Character Stats');
         });
+        $('.edit-lineage').on('click', function(e) {
+            e.preventDefault();
+            loadModal("{{ url($character->is_myo_slot ? 'admin/myo/' : 'admin/character/') }}/"+$(this).data('{{ $character->is_myo_slot ? 'id' : 'slug' }}')+"/lineage", 'Edit Character Lineage');
+        });
         $('.edit-description').on('click', function(e) {
             e.preventDefault();
             $( "div.descriptioneditingparse" ).load("{{ url($character->is_myo_slot ? 'admin/myo/' : 'admin/character/') }}/"+$(this).data('{{ $character->is_myo_slot ? 'id' : 'slug' }}')+"/description", function() {

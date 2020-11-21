@@ -15,6 +15,7 @@ use App\Models\Character\Character;
 use App\Models\Character\CharacterCategory;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Character\CharacterBookmark;
+use App\Models\Character\CharacterLineage;
 
 use App\Models\Character\CharacterCurrency;
 use App\Models\Currency\Currency;
@@ -199,8 +200,16 @@ class Character extends Model
         return $this->belongsToMany('App\Models\Item\Item', 'character_items')->withPivot('count', 'data', 'updated_at', 'id')->whereNull('character_items.deleted_at');
     }
 
+    /**
+     * Get the lineage of the character.
+     */
+    public function lineage()
+    {
+        return $this->hasOne('App\Models\Character\CharacterLineage', 'character_id');
+    }
+
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
