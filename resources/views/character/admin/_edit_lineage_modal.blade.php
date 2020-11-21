@@ -1,4 +1,4 @@
-{!! Form::open(['url' => 'admin/character/'.$character->slug.'/lineage']) !!}
+{!! Form::open(['url' => 'admin/'. ($isMyo ? 'myo/'.$character->id : 'character/'.$character->slug) .'/lineage']) !!}
     <div class="alert alert-warning">Custom ancestor names are only used when there is no live character ID set for that ancestor. DO NOT use it if there is no ancestor, leave it blank. Ancestor names and "unknown"s will be generated automatically.</div>
 
     <?php
