@@ -5,7 +5,12 @@
 @section('meta-img') {{ $character->image->thumbnailUrl }} @endsection
 
 @section('profile-content')
-{!! breadcrumbs([($character->is_myo_slot ? 'MYO Slot Masterlist' : 'Character Masterlist') => ($character->is_myo_slot ? 'myos' : 'masterlist'), $character->fullName => $character->url, ($character->is_myo_slot ? 'MYO Approval' : 'Design Update') => $character->url.'/approval']) !!}
+
+@if($character->is_myo_slot)
+{!! breadcrumbs(['MYO Slot Masterlist' => 'myos', $character->fullName => $character->url, ($character->is_myo_slot ? 'MYO Approval' : 'Design Update') => $character->url.'/approval']) !!}
+@else
+{!! breadcrumbs([($character->category->masterlist_sub_id ? $character->category->sublist->name.' Masterlist' : 'Character masterlist') => ($character->category->masterlist_sub_id ? 'sublist/'.$character->category->sublist->key : 'masterlist' ), $character->fullName => $character->url, ($character->is_myo_slot ? 'MYO Approval' : 'Design Update') => $character->url.'/approval']) !!}
+@endif
 
 @include('character._header', ['character' => $character])
 

@@ -1,2 +1,2 @@
 
-@include('js._loot_js', ['showLootTables' => true])
+@include('js._loot_js', ['showLootTables' => true, 'showRaffles' => true])

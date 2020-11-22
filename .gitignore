@@ -11,4 +11,6 @@ npm-debug.log
 yarn-error.log
 /composer.lock
 *.env
+clear_characters.sql
+.idea
 /.idea

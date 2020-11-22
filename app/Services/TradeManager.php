@@ -92,11 +92,14 @@ class TradeManager extends Service
     {
         DB::beginTransaction();
         try {
-            if(!isset($data['trade'])) $trade = Trade::where('status', 'Open')->where('id', $data['id'])->where(function($query) use ($user) {
+            if(!isset($data['trade'])) 
+                $trade = Trade::where('status', 'Open')->where('id', $data['id'])->where(function($query) use ($user) {
                 $query->where('sender_id', $user->id)->orWhere('recipient_id', $user->id);
-            })->first();
-            elseif($data['trade']->status == 'Open') $trade = $data['trade'];
-            else $trade = null;
+                })->first();
+            elseif($data['trade']->status == 'Open')
+                $trade = $data['trade'];
+            else
+                $trade = null;
             if(!$trade) throw new \Exception("Invalid trade.");
 
             if($assetData = $this->handleTradeAssets($trade, $data, $user)) {
@@ -110,7 +113,6 @@ class TradeManager extends Service
                 return $this->commitReturn($trade);
             }
             
-            return $this->commitReturn($trade);
         } catch(\Exception $e) { 
             $this->setError('error', $e->getMessage());
         }
@@ -129,24 +131,29 @@ class TradeManager extends Service
     {
         DB::beginTransaction();
         try {
+            $tradeData = $trade->data;
+            $isSender = $trade->sender_id == $user->id;
+            $type = ($isSender ? 'sender' : (($trade->recipient_id == $user->id) ? 'recipient' : null));
+            if(!$type) throw new \Exception("User not found.");
             // First return any item stacks attached to the trade
-            DB::table('user_items')->where('user_id', $user->id)->where('holding_type', 'Trade')->where('holding_id', $trade->id)->update(['holding_id' => null, 'holding_type' => null]);
+            
+            if(isset($tradeData[$type]['user_items'])) {
+                foreach($tradeData[$type]['user_items'] as $userItemId=>$quantity) {
+                    $userItemRow = UserItem::find($userItemId);
+                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
+                    if($userItemRow->trade_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
+                    $userItemRow->trade_count -= $quantity;
+                    $userItemRow->save();
+                }
+            }
 
             // Also return any currency attached to the trade
             // This is stored in the data attribute
             $currencyManager = new CurrencyManager;
-            $tradeData = $trade->data;
-            $isSender = ($trade->sender_id == $user->id);
-            if($isSender && isset($tradeData['sender']) && isset($tradeData['sender']['currencies'])) {
-                foreach($tradeData['sender']['currencies'] as $currencyId=>$quantity) {
+            if(isset($tradeData[$type]['currencies'])) {
+                foreach($tradeData[$type]['currencies'] as $currencyId=>$quantity) {
                     $currencyManager->creditCurrency(null, $user, null, null, $currencyId, $quantity);
                 }
-            }
-            else if(!$isSender && isset($tradeData['recipient']) && isset($tradeData['recipient']['currencies'])) {
-                foreach($tradeData['recipient']['currencies'] as $currencyId=>$quantity) {
-                    $currencyManager->creditCurrency(null, $user, null, null, $currencyId, $quantity);
-                }
-
             }
 
             // Unattach characters too
@@ -159,15 +166,14 @@ class TradeManager extends Service
             // Attach items. Technically, the user doesn't lose ownership of the item - we're just adding an additional holding field.
             // Unlike for design updates, we're keeping track of attached items here.
             if(isset($data['stack_id'])) {
-                foreach($data['stack_id'] as $stackId) {
-                    $stack = UserItem::with('item')->where('id', $stackId)->whereNull('holding_type')->first();
+                foreach($data['stack_id'] as $key=>$stackId) {
+                    $stack = UserItem::with('item')->find($stackId);
                     if(!$stack || $stack->user_id != $user->id) throw new \Exception("Invalid item selected.");
                     if(!$stack->item->allow_transfer || isset($stack->data['disallow_transfer'])) throw new \Exception("One or more of the selected items cannot be transferred.");
-                    $stack->holding_type = 'Trade';
-                    $stack->holding_id = $trade->id;
+                    $stack->trade_count += $data['stack_quantity'][$key];
                     $stack->save();
 
-                    addAsset($userAssets, $stack, 1);
+                    addAsset($userAssets, $stack, $data['stack_quantity'][$key]);
                     $assetCount++;
                 }
             }
@@ -476,10 +482,21 @@ class TradeManager extends Service
         DB::beginTransaction();
 
         try {
-            // Return all added items/currency/characters
-            UserItem::where('holding_type', 'Trade')->where('holding_id', $trade->id)->update(['holding_type' => null, 'holding_id' => null]);
-            Character::where('trade_id', $trade->id)->update(['trade_id' => null]);
             $tradeData = $trade->data;
+            // Return all added items/currency/characters
+            foreach(['sender', 'recipient'] as $type) {
+                if(isset($tradeData[$type]['user_items'])) {
+                    foreach($tradeData[$type]['user_items'] as $userItemId => $quantity) {
+                        $userItemRow = UserItem::find($userItemId);
+                        if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
+                        if($userItemRow->trade_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
+                        $userItemRow->trade_count -= $quantity;
+                        $userItemRow->save();
+                    }
+                }
+            }
+            
+            Character::where('trade_id', $trade->id)->update(['trade_id' => null]);
             $currencyManager = new CurrencyManager;
             foreach(['sender', 'recipient'] as $type) {
                 if(isset($tradeData[$type]['currencies'])) {
@@ -512,15 +529,39 @@ class TradeManager extends Service
             $inventoryManager = new InventoryManager;
 
             // Get all items
-            $senderStacks = UserItem::where('holding_type', 'Trade')->where('holding_id', $trade->id)->where('user_id', $trade->sender_id)->get();
-            $recipientStacks = UserItem::where('holding_type', 'Trade')->where('holding_id', $trade->id)->where('user_id', $trade->recipient_id)->get();
-            
-            foreach($senderStacks as $stack) $inventoryManager->moveStack($trade->sender, $trade->recipient, 'Trade', ['data' => 'Received in trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]'], $stack);
-        
-            foreach($recipientStacks as $stack) $inventoryManager->moveStack($trade->recipient, $trade->sender, 'Trade', ['data' => 'Received in trade [<a href="'.$trade->url.'">#'.$trade->id.']'], $stack);
+            $senderStacks = null;
+            $recipientStacks = null;
+            if(isset($trade->data['sender']['user_items']))
+            {
+                $senderStacks = UserItem::find(array_keys($trade->data['sender']['user_items']));
+            }
+            if(isset($trade->data['recipient']['user_items']))
+            {
+                $recipientStacks = UserItem::find(array_keys($trade->data['recipient']['user_items']));
+            }
 
-            UserItem::where('holding_type', 'Trade')->where('holding_id', $trade->id)->update(['holding_type' => null, 'holding_id' => null]);
-
+            if($senderStacks) {
+                foreach($senderStacks as $stack) {
+                    $quantity = $trade->data['sender']['user_items'][$stack->id];
+                    $inventoryManager->moveStack($trade->sender, $trade->recipient, 'Trade', ['data' => 'Received in trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]'], $stack, $quantity);
+                    $userItemRow = UserItem::find($stack->id);
+                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
+                    if($userItemRow->trade_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
+                    $userItemRow->trade_count -= $quantity;
+                    $userItemRow->save();
+                }
+            }
+            if($recipientStacks) {
+                foreach($recipientStacks as $stack) {
+                    $quantity = $trade->data['recipient']['user_items'][$stack->id];
+                    $inventoryManager->moveStack($trade->recipient, $trade->sender, 'Trade', ['data' => 'Received in trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]'], $stack, $quantity);
+                    $userItemRow = UserItem::find($stack->id);
+                    if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
+                    if($userItemRow->trade_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
+                    $userItemRow->trade_count -= $quantity;
+                    $userItemRow->save();
+                }
+            }
             $characterManager = new CharacterManager;
 
             // Transfer characters

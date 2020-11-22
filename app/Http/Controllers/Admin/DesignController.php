@@ -74,4 +74,26 @@ class DesignController extends Controller
         return redirect()->back();
     }
 
+    /**
+     * Casts a vote for a design's approval or denial.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function postVote($id, $action, Request $request, CharacterManager $service)
+    {
+        $r = CharacterDesignUpdate::where('id', $id)->where('status', 'Pending')->first();
+        if(!$r) throw new \Exception ("Invalid design update.");
+
+        if($action == 'reject' && $service->voteRequest($action, $r, Auth::user())) {
+            flash('Voted to reject successfully.')->success();
+        }
+        elseif($action == 'approve' && $service->voteRequest($action, $r, Auth::user())) {
+            flash('Voted to approve successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
 }

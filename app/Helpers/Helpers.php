@@ -70,8 +70,12 @@ function format_date($timestamp, $showTime = true) {
     return $timestamp->format('j F Y' . ($showTime ? ', H:i:s' : '')) . ($showTime ? ' <abbr data-toggle="tooltip" title="UTC'.$timestamp->timezone->toOffsetName().'">' . strtoupper($timestamp->timezone->getAbbreviatedName($timestamp->isDST())) . '</abbr>' : '');
 }
 
+function pretty_date($timestamp, $showTime = true) {
+   return '<abbr data-toggle="tooltip" title="' . $timestamp->format('F j Y' . ($showTime ? ', H:i:s' : '')) . ' ' . strtoupper($timestamp->timezone->getAbbreviatedName($timestamp->isDST())).'">' .$timestamp->diffForHumans() . '</abbr>';
+}
+
 /**
- * Formats a number to fit the number of digits given, 
+ * Formats a number to fit the number of digits given,
  * for generating masterlist numbers.
  *
  * @param  \Illuminate\Support\Carbon\Carbon  $timestamp
@@ -92,7 +96,7 @@ function parse($text, &$pings = null) {
     if(!$text) return null;
 
     require_once(base_path().'/vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php');
-    
+
     $config = HTMLPurifier_Config::createDefault();
     $config->set('Attr.EnableID', true);
     $config->set('HTML.DefinitionID', 'include');
@@ -104,9 +108,9 @@ function parse($text, &$pings = null) {
 		$def->addAttribute('a', 'aria-expanded', 'Enum#true,false');
 		$def->addAttribute('a', 'data-target', 'Text');
 		$def->addAttribute('div', 'data-parent', 'Text');
-		
+
     }
-    
+
     $purifier = new HTMLPurifier($config);
     $text = $purifier->purify($text);
 

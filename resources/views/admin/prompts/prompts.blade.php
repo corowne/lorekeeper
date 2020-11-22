@@ -7,7 +7,7 @@
 
 <h1>Prompts</h1>
 
-<p>This is a list of prompts users can submit to.</p> 
+<p>This is a list of prompts users can submit to.</p>
 
 <div class="text-right mb-3">
     <a class="btn btn-primary" href="{{ url('admin/data/prompt-categories') }}"><i class="fas fa-folder"></i> Prompt Categories</a>
@@ -22,49 +22,50 @@
         <div class="form-group mr-3 mb-3">
             {!! Form::select('prompt_category_id', $categories, Request::get('name'), ['class' => 'form-control']) !!}
         </div>
-        <div class="form-group mb-3">
-            {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
-        </div>
+        <div class="form-group mb-3">{!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}</div>
     {!! Form::close() !!}
 </div>
 
 @if(!count($prompts))
     <p>No prompts found.</p>
-@else 
+@else
     {!! $prompts->render() !!}
-    <table class="table table-sm category-table">
-        <thead>
-            <tr>
-                <th>Active</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Starts</th>
-                <th>Ends</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($prompts as $prompt)
-                <tr class="sort-prompt" data-id="{{ $prompt->id }}">
-                    <td class="text-center">{!! $prompt->is_active ? '<i class="text-success fas fa-check"></i>' : '' !!}</td>
-                    <td>
-                        {{ $prompt->name }}
-                    </td>
-                    <td>{{ $prompt->category ? $prompt->category->name : '' }}</td>
-                    <td>
-                        {!! $prompt->start_at ? format_date($prompt->start_at) : '' !!}
-                    </td>
-                    <td>
-                        {!! $prompt->end_at ? format_date($prompt->end_at) : '' !!}
-                    </td>
-                    <td class="text-right">
-                        <a href="{{ url('admin/data/prompts/edit/'.$prompt->id) }}" class="btn btn-primary">Edit</a>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+
+    <div class="row ml-md-2">
+      <div class="d-flex row flex-wrap col-12 pb-1 px-0 ubt-bottom">
+        <div class="col-4 col-md-1 font-weight-bold">Active</div>
+        <div class="col-4 col-md-3 font-weight-bold">Name</div>
+        <div class="col-4 col-md-3 font-weight-bold">Category</div>
+        <div class="col-4 col-md-2 font-weight-bold">Starts</div>
+        <div class="col-4 col-md-2 font-weight-bold">Ends</div>
+      </div>
+      @foreach($prompts as $prompt)
+      <div class="d-flex row flex-wrap col-12 mt-1 pt-2 px-0 ubt-top">
+        <div class="col-2 col-md-1">
+          {!! $prompt->is_active ? '<i class="text-success fas fa-check"></i>' : '' !!}
+        </div>
+        <div class="col-5 col-md-3 text-truncate">
+          {{ $prompt->name }}
+        </div>
+        <div class="col-5 col-md-3">
+          {{ $prompt->category ? $prompt->category->name : '-' }}
+        </div>
+        <div class="col-4 col-md-2">
+          {!! $prompt->start_at ? pretty_date($prompt->start_at) : '-' !!}
+        </div>
+        <div class="col-4 col-md-2">
+          {!! $prompt->end_at ? pretty_date($prompt->end_at) : '-' !!}
+        </div>
+        <div class="col-3 col-md-1 text-right">
+          <a href="{{ url('admin/data/prompts/edit/'.$prompt->id) }}"  class="btn btn-primary py-0 px-2">Edit</a>
+        </div>
+      </div>
+      @endforeach
+    </div>
+
     {!! $prompts->render() !!}
+
+    <div class="text-center mt-4 small text-muted">{{ $prompts->total() }} result{{ $prompts->total() == 1 ? '' : 's' }} found.</div>
 @endif
 
 @endsection
