@@ -1501,7 +1501,7 @@ class CharacterManager extends Service
                 }
             }
             // and we're done!
-            $character->lineage->save();
+            if(!$skipFlag) $character->lineage->save();
             return $this->commitReturn(true);
         } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
