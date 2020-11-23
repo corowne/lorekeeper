@@ -18,7 +18,7 @@
             'dam_dam_dam' =>    $line->getDisplayName('dam_dam_dam'),
         ]])
 @else
-    @include('character._lineage_tree', [
+    @include('character._tab_lineage_tree', [
         'line' => [
             'sire' => "Unknown",
             'sire_sire' => "Unknown",

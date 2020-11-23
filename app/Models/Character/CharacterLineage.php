@@ -115,12 +115,8 @@ class CharacterLineage extends Model
         return $this->belongsTo('App\Models\Character\Character');
     }
 
-    /*
-     * Getting the Display URLs or Text
-     */
-
     /**
-     * Gets the display URL and/or of an ancestor, or "Unknown" if there is none
+     * Gets the display URL and/or name of an ancestor, or "Unknown" if there is none
      * @param   string  $ancestor
      * @return  string
      */
