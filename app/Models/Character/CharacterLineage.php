@@ -119,141 +119,19 @@ class CharacterLineage extends Model
      * Getting the Display URLs or Text
      */
 
-    public function getDisplaySire()
+    /**
+     * Gets the display URL and/or of an ancestor, or "Unknown" if there is none
+     * @param   string  $ancestor
+     * @return  string
+     */
+    public function getDisplayName($ancestor)
     {
-        if(isset($this->sire_id))               return $this->sire->getDisplayNameAttribute();
-        if(isset($this->sire_name))             return $this->sire_name;
+        if(isset($this[$ancestor.'_id']))
+            return $this[$ancestor]->getDisplayNameAttribute();
+
+        if(isset($this[$ancestor.'_name']))
+            return $this[$ancestor.'_name'];
+        
         return "Unknown";
-    }
-
-    public function getDisplaySireSire()
-    {
-       if(isset($this->sire_sire_id))           return $this->sire_sire->getDisplayNameAttribute();
-       if(isset($this->sire_sire_name))         return $this->sire_sire_name;
-       return "Unknown";
-    }
-
-    public function getDisplaySireSireSire()
-    {
-       if(isset($this->sire_sire_sire_id))      return $this->sire_sire_sire->getDisplayNameAttribute();
-       if(isset($this->sire_sire_sire_name))    return $this->sire_sire_sire_name;
-       return "Unknown";
-    }
-
-    public function getDisplaySireSireDam()
-    {
-       if(isset($this->sire_sire_dam_id))       return $this->sire_sire_dam->getDisplayNameAttribute();
-       if(isset($this->sire_sire_dam_name))     return $this->sire_sire_dam_name;
-       return "Unknown";
-    }
-
-    public function getDisplaySireDam()
-    {
-       if(isset($this->sire_dam_id))            return $this->sire_dam->getDisplayNameAttribute();
-       if(isset($this->sire_dam_name))          return $this->sire_dam_name;
-       return "Unknown";
-    }
-
-    public function getDisplaySireDamSire()
-    {
-       if(isset($this->sire_dam_sire_id))        return $this->sire_dam_sire->getDisplayNameAttribute();
-       if(isset($this->sire_dam_sire_name))      return $this->sire_dam_sire_name;
-       return "Unknown";
-    }
-
-    public function getDisplaySireDamDam()
-    {
-       if(isset($this->sire_dam_dam_id))         return $this->sire_dam_dam->getDisplayNameAttribute();
-       if(isset($this->sire_dam_dam_name))       return $this->sire_dam_dam_name;
-       return "Unknown";
-    }
-
-    public function getDisplayDam()
-    {
-        if(isset($this->dam_id))               return $this->dam->getDisplayNameAttribute();
-        if(isset($this->dam_name))             return $this->dam_name;
-        return "Unknown";
-    }
-
-    public function getDisplayDamSire()
-    {
-       if(isset($this->dam_sire_id))           return $this->dam_sire->getDisplayNameAttribute();
-       if(isset($this->dam_sire_name))         return $this->dam_sire_name;
-       return "Unknown";
-    }
-
-    public function getDisplayDamSireSire()
-    {
-       if(isset($this->dam_sire_sire_id))      return $this->dam_sire_sire->getDisplayNameAttribute();
-       if(isset($this->dam_sire_sire_name))    return $this->dam_sire_sire_name;
-       return "Unknown";
-    }
-
-    public function getDisplayDamSireDam()
-    {
-       if(isset($this->dam_sire_dam_id))       return $this->dam_sire_dam->getDisplayNameAttribute();
-       if(isset($this->dam_sire_dam_name))     return $this->dam_sire_dam_name;
-       return "Unknown";
-    }
-
-    public function getDisplayDamDam()
-    {
-       if(isset($this->dam_dam_id))            return $this->dam_dam->getDisplayNameAttribute();
-       if(isset($this->dam_dam_name))          return $this->dam_dam_name;
-       return "Unknown";
-    }
-
-    public function getDisplayDamDamSire()
-    {
-       if(isset($this->dam_dam_sire_id))        return $this->dam_dam_sire->getDisplayNameAttribute();
-       if(isset($this->dam_dam_sire_name))      return $this->dam_dam_sire_name;
-       return "Unknown";
-    }
-
-    public function getDisplayDamDamDam()
-    {
-       if(isset($this->dam_dam_dam_id))         return $this->dam_dam_dam->getDisplayNameAttribute();
-       if(isset($this->dam_dam_dam_name))       return $this->dam_dam_dam_name;
-       return "Unknown";
-    }
-
-    /*
-     * TEST
-     */
-    //
-
-    //
-
-
-
-
-    /**
-     * Does this character have a sire?
-     *
-     * @return boolean
-     */
-    public function hasSire()
-    {
-        return isset($this->sire_id) || isset($this->sire_name);
-    }
-
-    /**
-     * Gets the Sire's ID or Name?
-     *
-     * @return integer/string
-     */
-    public function getSire()
-    {
-        return $this->hasSire() ? (isset($this->sire_id) ? $this->sire_id : $this->sire_name) : $unknown;
-    }
-
-    /**
-     * Does this character have a dam?
-     *
-     * @return boolean
-     */
-    public function hasDam()
-    {
-        return isset($this->dam_id) || isset($this->dam_name);
     }
 }

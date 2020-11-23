@@ -2,20 +2,20 @@
     <?php $line = $character->lineage; ?>
     @include('character._tab_lineage_tree', [
         'line' => [
-            'sire' =>           $line->getDisplaySire(),
-            'sire_sire' =>      $line->getDisplaySireSire(),
-            'sire_sire_sire' => $line->getDisplaySireSireSire(),
-            'sire_sire_dam' =>  $line->getDisplaySireSireDam(),
-            'sire_dam' =>       $line->getDisplaySireDam(),
-            'sire_dam_sire' =>  $line->getDisplaySireDamSire(),
-            'sire_dam_dam' =>   $line->getDisplaySireDamDam(),
-            'dam' =>            $line->getDisplayDam(),
-            'dam_sire' =>       $line->getDisplayDamSire(),
-            'dam_sire_sire' =>  $line->getDisplayDamSireSire(),
-            'dam_sire_dam' =>   $line->getDisplayDamSireDam(),
-            'dam_dam' =>        $line->getDisplayDamDam(),
-            'dam_dam_sire' =>   $line->getDisplayDamDamSire(),
-            'dam_dam_dam' =>    $line->getDisplayDamDamDam(),
+            'sire' =>           $line->getDisplayName('sire'),
+            'sire_sire' =>      $line->getDisplayName('sire_sire'),
+            'sire_sire_sire' => $line->getDisplayName('sire_sire_sire'),
+            'sire_sire_dam' =>  $line->getDisplayName('sire_sire_dam'),
+            'sire_dam' =>       $line->getDisplayName('sire_dam'),
+            'sire_dam_sire' =>  $line->getDisplayName('sire_dam_sire'),
+            'sire_dam_dam' =>   $line->getDisplayName('sire_dam_dam'),
+            'dam' =>            $line->getDisplayName('dam'),
+            'dam_sire' =>       $line->getDisplayName('dam_sire'),
+            'dam_sire_sire' =>  $line->getDisplayName('dam_sire_sire'),
+            'dam_sire_dam' =>   $line->getDisplayName('dam_sire_dam'),
+            'dam_dam' =>        $line->getDisplayName('dam_dam'),
+            'dam_dam_sire' =>   $line->getDisplayName('dam_dam_sire'),
+            'dam_dam_dam' =>    $line->getDisplayName('dam_dam_dam'),
         ]])
 @else
     @include('character._lineage_tree', [
