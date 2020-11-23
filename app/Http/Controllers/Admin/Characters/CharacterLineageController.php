@@ -30,12 +30,45 @@ class CharacterLineageController extends Controller
     |
     */
 
-
-    public function getLineagePage($id, $isMyo)
+    /**
+     * Shows the character lineage page.
+     *
+     * @param  string  $slug
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterLineagePage($slug)
     {
-        return view('character.admin._edit_lineage_modal', [
+        return $this->getLineagePage($slug, false);
+    }
+
+    /**
+     * Shows the MYO slot lineage page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getMyoLineagePage($id)
+    {
+        return $this->getLineagePage($id, true);
+    }
+
+    /**
+     * Shows the character's lineage page.
+     *
+     * @param  string  $slug
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getLineagePage($id, $isMyo = false)
+    {
+        $this->character = $isMyo ? Character::where('is_myo_slot', 1)->where('id', $id)->first() : Character::where('slug', $id)->first();
+        if(!$this->character) abort(404);
+
+        $hasLineage = $this->character->lineage !== null;
+        $line = $this->character->lineage;
+        return view('character.lineage', [
             'character' => $this->character,
             'hasLineage' => $hasLineage,
+            'lineage' => $line,
             'isMyo' => $isMyo,
         ]);
     }

@@ -127,7 +127,97 @@ class CharacterLineage extends Model
 
         if(isset($this[$ancestor.'_name']))
             return $this[$ancestor.'_name'];
-        
+
         return "Unknown";
+    }
+
+    /**
+     * Gets characters with this character as their sire or dam
+     *
+     * @return array
+     */
+    public function getChildren($limit = false)
+    {
+        return getChildrenStatic($this->character_id, $limit);
+    }
+
+    /**
+     * Gets characters with this character as their grand-sire or -dam
+     *
+     * @return array
+     */
+    public function getGrandchildren($limit = false)
+    {
+        return getGrandchildrenStatic($this->character_id, $limit);
+    }
+
+    /**
+     * Gets characters with this character as their great-grand-sire or -dam
+     *
+     * @return array
+     */
+    public function getGreatGrandchildren($limit = false)
+    {
+        return getGrandchildrenStatic($this->character_id, $limit);
+    }
+
+    /**
+     * Gets characters with this character as their sire or dam
+     *
+     * @return array
+     */
+    public static function getChildrenStatic($id, $limit = true)
+    {
+        $children_ids = CharacterLineage::where('sire_id', $id)->orWhere('dam_id', $id)->get()->pluck('character_id');
+        if(count($children_ids) == 0 || $children_ids == null) return null;
+
+        $children = Character::whereIn('id', $children_ids)->where('is_visible', true)->orderBy('is_myo_slot', 'asc');
+        if($limit) $children->take(4);
+
+        return $children->get();
+    }
+
+    /**
+     * Gets characters with this character as their grand-sire or -dam
+     *
+     * @return array
+     */
+    public static function getGrandchildrenStatic($id, $limit = true)
+    {
+        $children_ids = CharacterLineage::where('sire_sire_id', $id)
+            ->orWhere('sire_dam_id', $id)
+            ->orWhere('dam_sire_id', $id)
+            ->orWhere('dam_dam_id', $id)
+            ->get()->pluck('character_id');
+        if(count($children_ids) == 0 || $children_ids == null) return null;
+
+        $children = Character::whereIn('id', $children_ids)->where('is_visible', true)->orderBy('is_myo_slot', 'asc');
+        if($limit) $children->take(4);
+
+        return $children->get();
+    }
+
+    /**
+     * Gets characters with this character as their grand-sire or -dam
+     *
+     * @return array
+     */
+    public static function getGreatGrandchildrenStatic($id, $limit = true)
+    {
+        $children_ids = CharacterLineage::where('sire_sire_sire_id', $id)
+            ->orWhere('sire_sire_dam_id', $id)
+            ->orWhere('sire_dam_sire_id', $id)
+            ->orWhere('sire_dam_dam_id', $id)
+            ->orWhere('dam_sire_sire_id', $id)
+            ->orWhere('dam_sire_dam_id', $id)
+            ->orWhere('dam_dam_sire_id', $id)
+            ->orWhere('dam_dam_dam_id', $id)
+            ->get()->pluck('character_id');
+        if(count($children_ids) == 0 || $children_ids == null) return null;
+
+        $children = Character::whereIn('id', $children_ids)->where('is_visible', true)->orderBy('is_myo_slot', 'asc');
+        if($limit) $children->take(4);
+
+        return $children->get();
     }
 }
