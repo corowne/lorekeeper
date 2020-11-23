@@ -1,6 +1,6 @@
 @if($character->lineage !== null)
     <?php $line = $character->lineage; ?>
-    @include('character._lineage_tree', [
+    @include('character._tab_lineage_tree', [
         'line' => [
             'sire' =>           $line->getDisplaySire(),
             'sire_sire' =>      $line->getDisplaySireSire(),

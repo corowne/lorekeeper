@@ -1470,10 +1470,37 @@ class CharacterManager extends Service
 
             // if this request wants to update descendants
             if (isset($data['update_descendants'])) {
-                throw new \Exception('Sorry, cannot update descendants yet :(');
-            }
+                // TODO: See if there's a better way to query this, because it is HELL on the database.
 
-            //throw new \Exception("Error Message");
+                // find the descendants of this character
+                $children = CharacterLineage::query()
+                    ->where  ('sire_id',        $character->id)
+                    ->orWhere('sire_sire_id',   $character->id)
+                    ->orWhere('sire_dam_id',    $character->id)
+                    ->orWhere('dam_id',         $character->id)
+                    ->orWhere('dam_dam_id',     $character->id)
+                    ->orWhere('dam_sire_id',    $character->id)
+                    ->get();
+
+                // go through each descendant
+                foreach ($children as $child) {
+                    // search the lineage to find which ancestor this character is
+                    for ($k=0; $k < 6; $k++) {
+                        if ($child[$shortlist[$k]."_id"] == $character-> id) {
+                            for ($j=0; $j < 6; $j++) {
+                                $key = $shortlist[$k]."_".$shortlist[$j];
+                                if (in_array($key, $roots, true)) {
+                                    $child[$key."_id"] = $line[$shortlist[$j].'_id'];
+                                    $child[$key."_name"] = $line[$shortlist[$j].'_name'];
+                                }
+                            }
+                        }
+                    }
+                // save the changes
+                $child->save();
+                }
+            }
+            // and we're done!
             $character->lineage->save();
             return $this->commitReturn(true);
         } catch(\Exception $e) {

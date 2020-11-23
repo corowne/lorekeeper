@@ -72,7 +72,6 @@
             <input class="form-check-input" type="checkbox" name="update_descendants" value="true" id="update_descendants">
             <label class="form-check-label" for="update_descendants">
                 find all the descendants of this character and update their lineages with these changes?
-                <strong>UNIMPLEMENTED</strong>
             </label>
         </div>
     @endif
