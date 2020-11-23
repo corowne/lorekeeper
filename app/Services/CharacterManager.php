@@ -1407,6 +1407,7 @@ class CharacterManager extends Service
                 $line = $character->lineage;
             }
 
+            // If we have a lineage already, and didn't just create one, then update it.
             if(!$skipFlag){
                 // Checking inputs ?
                 for ($i=0; $i < 14; $i++) {
@@ -1423,9 +1424,15 @@ class CharacterManager extends Service
                     else if (isset($data[$roots[$i].'_name'])) {
                         $line[$roots[$i].'_name'] = $data[$roots[$i].'_name'];
                     }
+                    else {
+                        // EG. someone deleted it, so we erase it.
+                        $line[$roots[$i].'_id'] = null;
+                        $line[$roots[$i].'_name'] = null;
+                    }
                 }
             }
 
+            // If generate_ancestors is set and we didn't just create a new lineage ...
             if (!$skipFlag && isset($data['generate_ancestors'])) {
                 // for each of this character's shortlist of ancestors...
                 for ($j=0; $j < 6; $j++) {
@@ -1459,14 +1466,14 @@ class CharacterManager extends Service
                         }
                     }
                 }
-                //throw new \Exception('SkipFlag is False and Generate Ancestors is set.');
             }
 
-            if (isset($data['update_descendants']))
+            // if this request wants to update descendants
+            if (isset($data['update_descendants'])) {
                 throw new \Exception('Sorry, cannot update descendants yet :(');
+            }
 
-            //throw new \Exception(!$line ? 'No lineage' : 'Has lineage.');
-
+            //throw new \Exception("Error Message");
             $character->lineage->save();
             return $this->commitReturn(true);
         } catch(\Exception $e) {
