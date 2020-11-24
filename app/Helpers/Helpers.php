@@ -163,7 +163,7 @@ function parseCharacters($text, &$characters) {
     if($count) {
         $matches = array_unique($matches[1]);
         foreach($matches as $match) {
-            $character = \App\Models\Character\Character::where('slug', $match)->first();
+            $character = App\Models\Character\Character::where('slug', $match)->first();
             if($character) {
                 $characters[] = $character;
                 $text = preg_replace('/\[character='.$match.'\]/', $character->displayName, $text);
@@ -201,7 +201,7 @@ function checkAlias($url)
     $matches = [];
     // Check to see if url is 1. from a site used for auth
     foreach(Config::get('lorekeeper.sites') as $key=>$site) if(isset($site['auth']) && $site['auth']) {
-        preg_match_all($site['regex'], $url, $matches); 
+        preg_match_all($site['regex'], $url, $matches);
         if($matches != []) {$urlSite = $key; break;}
     }
     if($matches[0] == []) throw new \Exception('This URL is from an invalid site. Please provide a URL for a user profile from a site used for authentication.');

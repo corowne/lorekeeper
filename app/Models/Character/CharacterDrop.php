@@ -76,7 +76,7 @@ class CharacterDrop extends Model
      */
     public function scopeRequiresUpdate($query)
     {
-        return $query->where('next_day', '>', Carbon::now());
+        return $query->where('next_day', '<', Carbon::now());
     }
 
     /**********************************************************************************************
@@ -175,5 +175,15 @@ class CharacterDrop extends Model
             'drops_available' => 0,
             'next_day' => Carbon::now()->add($dropData->data['frequency']['frequency'], $dropData->data['frequency']['interval']),
         ]);
+    }
+
+    /**
+     * Cycle drop time.
+     * 
+     * @param int              $id
+     */
+    public function cycleTime($id) 
+    {
+        $this->update(['next_day' => Carbon::now()->add($dropData->data['frequency']['frequency'], $dropData->data['frequency']['interval'])]);
     }
 }
