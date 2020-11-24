@@ -26,7 +26,7 @@
                     </div>
                 @endif
                 <div class="masterlist-search-field">
-                    {!! Form::label('username', 'Owner Name: ') !!}
+                    {!! Form::label('username', 'Owner Username: ') !!}
                     {!! Form::text('username', Request::get('username'), ['class' => 'form-control']) !!}
                 </div>
                 <div class="masterlist-search-field">
@@ -92,7 +92,7 @@
                     {!! Form::checkbox('search_images', 1, Request::get('search_images'), ['class' => 'form-check-input mr-3',  'data-toggle' => 'toggle']) !!}
                     <span class="ml-2">Include all character images in search {!! add_help('Each character can have multiple images for each updated version of the character, which captures the traits on that character at that point in time. By default the search will only search on the most up-to-date image, but this option will retrieve characters that match the criteria on older images - you may get results that are outdated.') !!}</span>
                 </div>
-                
+
             </div>
 
         </div>
