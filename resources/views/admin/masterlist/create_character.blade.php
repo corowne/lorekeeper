@@ -25,7 +25,7 @@
     @endif
 
     <div class="alert alert-info">
-        Fill in either of the owner fields - you can select a user from the list if they have registered for the site, or enter the url of their off-site profile, such as their deviantArt profile, if they don't have an account. If the owner registers an account later and links their account, {{ $isMyo ? 'MYO slot' : 'character' }}s linked to that account's profile will automatically be credited to their site account. If both fields are filled, the url field will be ignored.
+        Fill in either of the owner fields - you can select a user from the list if they have registered for the site, or enter the URL of their off-site profile, such as their deviantArt profile, if they don't have an account. If the owner registers an account later and links their account, {{ $isMyo ? 'MYO slot' : 'character' }}s linked to that account's profile will automatically be credited to their site account. If both fields are filled, the URL field will be ignored.
     </div>
 
     <div class="row">
@@ -37,7 +37,7 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                {!! Form::label('Owner Url (Optional)') !!}
+                {!! Form::label('Owner URL (Optional)') !!}
                 {!! Form::text('owner_url', old('owner_url'), ['class' => 'form-control']) !!}
             </div>
         </div>
