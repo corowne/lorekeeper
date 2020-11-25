@@ -40,7 +40,7 @@ class Submission extends Model
      * @var array
      */
     public static $createRules = [
-        'url' => 'nullable',
+        'url' => 'nullable|url',
     ];
 
     /**
@@ -49,7 +49,7 @@ class Submission extends Model
      * @var array
      */
     public static $updateRules = [
-        'url' => 'nullable',
+        'url' => 'nullable|url',
     ];
 
     /**********************************************************************************************
@@ -115,10 +115,19 @@ class Submission extends Model
      */
     public function scopeViewable($query, $user)
     {
+        $forbiddenSubmissions = $this
+        ->whereHas('prompt', function($q) {
+            $q->where('hide_submissions', 1)->whereNotNull('end_at')->where('end_at', '>', Carbon::now());
+        })
+        ->orWhereHas('prompt', function($q) {
+            $q->where('hide_submissions', 2);
+        })
+        ->orWhere('status', '!=', 'Approved')->pluck('id')->toArray();
+
         if($user && $user->hasPower('manage_submissions')) return $query;
-        return $query->where(function($query) use ($user) {
-            if($user) $query->where('user_id', $user->id)->orWhere('status', 'Approved');
-            else $query->where('status', 'Approved');
+        else return $query->where(function($query) use ($user, $forbiddenSubmissions) {
+            if($user) $query->whereNotIn('id', $forbiddenSubmissions)->orWhere('user_id', $user->id);
+            else $query->whereNotIn('id', $forbiddenSubmissions);
         });
     }
 

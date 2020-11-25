@@ -252,7 +252,7 @@ class UserController extends Controller
     {
         return view('user.submission_logs', [
             'user' => $this->user,
-            'logs' => $this->user->getSubmissions(),
+            'logs' => $this->user->getSubmissions(Auth::check() ? Auth::user() : null),
             'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
