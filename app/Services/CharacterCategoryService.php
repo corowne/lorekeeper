@@ -7,6 +7,7 @@ use Config;
 
 use App\Models\Character\Character;
 use App\Models\Character\CharacterCategory;
+use App\Models\Character\CharacterLineageBlacklist;
 
 class CharacterCategoryService extends Service
 {
@@ -41,11 +42,12 @@ class CharacterCategoryService extends Service
             else $data['has_image'] = 0;
 
             $category = CharacterCategory::create($data);
+            $this->handleLineageBlacklist($data, $category);
 
             if ($image) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
 
             return $this->commitReturn($category);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -67,8 +69,9 @@ class CharacterCategoryService extends Service
             if(CharacterCategory::where('code', $data['code'])->where('id', '!=', $category->id)->exists()) throw new \Exception("The code has already been taken.");
 
             $data = $this->populateCategoryData($data, $category);
+            $blacklist = $this->handleLineageBlacklist($data, $category);
 
-            $image = null;            
+            $image = null;
             if(isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
                 $image = $data['image'];
@@ -80,7 +83,7 @@ class CharacterCategoryService extends Service
             if ($category) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
 
             return $this->commitReturn($category);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -96,13 +99,13 @@ class CharacterCategoryService extends Service
     private function populateCategoryData($data, $category = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
-        
+
         if(isset($data['remove_image']))
         {
-            if($category && $category->has_image && $data['remove_image']) 
-            { 
-                $data['has_image'] = 0; 
-                $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
+            if($category && $category->has_image && $data['remove_image'])
+            {
+                $data['has_image'] = 0;
+                $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName);
             }
             unset($data['remove_image']);
         }
@@ -123,12 +126,16 @@ class CharacterCategoryService extends Service
         try {
             // Check first if the category is currently in use
             if(Character::where('character_category_id', $category->id)->exists()) throw new \Exception("An character with this category exists. Please change its category first.");
-            
-            if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
+
+            if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName);
             $category->delete();
 
+            // delete associated blacklist, if one exists.
+            $blacklistEntry = CharacterLineageBlacklist::where('type', 'category')->where('type_id', $category->id)->get()->first();
+            if($blacklistEntry) $blacklistEntry->delete();
+
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -153,10 +160,41 @@ class CharacterCategoryService extends Service
             }
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Handles the lineage blacklist creation, deletion and updates.
+     *
+     * @param  array  $data
+     * @param  $category
+     */
+    public function handleLineageBlacklist($data, $category)
+    {
+        $blacklistEntry = CharacterLineageBlacklist::where('type', 'category')->where('type_id', $category->id)->get()->first();
+        $blacklist = false;
+        if(isset($data['lineage-blacklist'])) $blacklist = ($data['lineage-blacklist'] == 1 || $data['lineage-blacklist'] == 2);
+
+        if($blacklist) {
+            // should have a blacklist, search and create or update
+            if($blacklistEntry) {
+                $blacklistEntry->complete_removal = ($data['lineage-blacklist'] == 2);
+                $blacklistEntry->save();
+            } else {
+                $blacklistEntry = CharacterLineageBlacklist::create([
+                    'type' => 'category',
+                    'type_id' => $category->id,
+                    'complete_removal' => ($data['lineage-blacklist'] == 2),
+                ], false);
+            }
+            return $blacklistEntry;
+        } else {
+            // should have no blacklist, search and destroy
+            if($blacklistEntry) $blacklistEntry->delete();
+            return null;
+        }
+    }
 }
