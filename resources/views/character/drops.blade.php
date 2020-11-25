@@ -25,10 +25,10 @@
                 <a href="#" class="float-right btn btn-outline-info btn-sm" id="paramsButton" data-toggle="modal" data-target="#paramsModal"><i class="fas fa-cog"></i> Admin</a>
             @endif
         </h2>
-        
+
         <div class="card card-body mb-4">
-            @if($drops->speciesItem || $drops->subtypeItem) 
-                <p>This character produces these drops, based on their species and/or subtype:</p>   
+            @if($drops->speciesItem || $drops->subtypeItem)
+                <p>This character produces these drops, based on their species and/or subtype:</p>
                 @if($drops->speciesItem)
                     <div class="row">
                     <div class="col-md align-self-center">
@@ -66,7 +66,7 @@
             </div>
             @if(Auth::check() && Auth::user()->id == $character->user_id && $drops->drops_available > 0)
                 {!! Form::open(['url' => 'character/'.$character->slug.'/drops']) !!}
-                    {!! Form::submit('Claim Drop'.($drops->drops_available > 1 ? 's' : ''), ['class' => 'btn btn-primary']) !!}
+                    {!! Form::submit('Collect Drop'.($drops->drops_available > 1 ? 's' : ''), ['class' => 'btn btn-primary']) !!}
                 {!! Form::close() !!}
             @endif
         @endif

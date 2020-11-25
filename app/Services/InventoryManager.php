@@ -75,7 +75,7 @@ class InventoryManager extends Service
                 }
             }
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -113,7 +113,7 @@ class InventoryManager extends Service
                 if(!$i->category->is_character_owned) throw new \Exception("One of these items cannot be owned by characters.");
             }
             if(!count($items)) throw new \Exception("No valid items found.");
-            
+
             foreach($items as $item) {
                 $this->creditItem($staff, $character, 'Staff Grant', array_only($data, ['data', 'disallow_transfer', 'notes']), $item, $keyed_quantities[$item->id]);
                 if($character->is_visible && $character->user_id) {
@@ -127,9 +127,9 @@ class InventoryManager extends Service
                     ]);
                 }
             }
-            
+
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -161,9 +161,9 @@ class InventoryManager extends Service
                 if(!$stacks) throw new \Exception("Invalid stack selected.");
                 if($sender->logType == 'Character' && $quantity <= 0 && $stack->count > 0) $quantity = $stack->count;
                 if($quantity <= 0) throw new \Exception("Invalid quantity entered.");
-                
+
                 if(($recipient->logType == 'Character' && !$sender->hasPower('edit_inventories') && !Auth::user() == $recipient->user) || ($recipient->logType == 'User' && !Auth::user()->hasPower('edit_inventories') && !Auth::user() == $sender->user)) throw new \Exception("Cannot transfer items to/from a character you don't own.");
-                
+
                 if($recipient->logType == 'Character' && !$stack->item->category->is_character_owned) throw new \Exception("One of the selected items cannot be owned by characters.");
                 if((!$stack->item->allow_transfer || isset($stack->data['disallow_transfer'])) && !Auth::user()->hasPower('edit_inventories')) throw new \Exception("One of the selected items cannot be transferred.");
                 if($stack->count < $quantity) throw new \Exception("Quantity to transfer exceeds item count.");
@@ -184,7 +184,7 @@ class InventoryManager extends Service
                 $stack->save();
             }
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -217,7 +217,7 @@ class InventoryManager extends Service
                 if($stack->count < $quantity) throw new \Exception("Quantity to transfer exceeds item count.");
 
                 $oldUser = $stack->user;
-                if($this->moveStack($stack->user, $recipient, ($stack->user_id == $sender->id ? 'User Transfer' : 'Staff Transfer'), ['data' => ($stack->user_id != $sender->id ? 'Transferred by '.$sender->displayName : '')], $stack, $quantity)) 
+                if($this->moveStack($stack->user, $recipient, ($stack->user_id == $sender->id ? 'User Transfer' : 'Staff Transfer'), ['data' => ($stack->user_id != $sender->id ? 'Transferred by '.$sender->displayName : '')], $stack, $quantity))
                 {
                     Notifications::create('ITEM_TRANSFER', $recipient, [
                         'item_name' => $stack->item->name,
@@ -225,7 +225,7 @@ class InventoryManager extends Service
                         'sender_url' => $sender->url,
                         'sender_name' => $sender->name
                     ]);
-                    if($stack->user_id != $sender->id) 
+                    if($stack->user_id != $sender->id)
                         Notifications::create('FORCED_ITEM_TRANSFER', $oldUser, [
                             'item_name' => $stack->item->name,
                             'item_quantity' => $quantity,
@@ -235,7 +235,7 @@ class InventoryManager extends Service
                 }
             }
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -264,33 +264,26 @@ class InventoryManager extends Service
                 'notes' => 'Collected ' . format_date(Carbon::now())
             ];
 
-            // Determine Quantitie(s)
-            if($drops->speciesItem) {
-                if(is_numeric($drops->speciesQuantity)) $quantity['species'] = $drops->speciesQuantity * $drops->drops_available;
-                else {
-                    $itemData = $drops->dropData->data['items']['species'][$drops->parameters];
-                    $quantity['species'] = mt_rand($itemData['min'], $itemData['max']);
-                }
-            }
-            if($drops->subtypeItem) {
-                if(is_numeric($drops->subtypeQuantity)) $quantity['subtype'] = $drops->subtypeQuantity * $drops->drops_available;
-                else {
-                    $itemData = $drops->dropData->data['items'][$character->image->subtype_id][$drops->parameters];
-                    $quantity['subtype'] = mt_rand($itemData['min'], $itemData['max']);
-                }
-            }
-
-            // Credit item(s)
+            // Credit item(s), calulating quantity for each individual drop if relevant
+            $itemData = $drops->dropData->data['items'];
             $successes = 0;
-            if($drops->speciesItem && $this->creditItem(null, Auth::user(), $type, $data, $drops->speciesItem, $quantity['species'])) $successes += 1;
-            if($drops->subtypeItem && $this->creditItem(null, Auth::user(), $type, $data, $drops->subtypeItem, $quantity['subtype'])) $successes += 1;
-            if($successes != $drops->items->count()) throw new \Exception('Failed to collect all drops.');
+            for($i = $drops->drops_available; $i > 0; $i--) if($drops->speciesItem && $this->creditItem(null, Auth::user(), $type, $data, $drops->speciesItem,
+                is_numeric($drops->speciesQuantity) ?
+                $drops->speciesQuantity :
+                mt_rand($itemData['species'][$drops->parameters]['min'], $itemData['species'][$drops->parameters]['max'])
+            )) $successes += 1;
+            for($i = $drops->drops_available; $i > 0; $i--) if($drops->subtypeItem && $this->creditItem(null, Auth::user(), $type, $data, $drops->subtypeItem,
+                is_numeric($drops->subtypeQuantity) ?
+                $drops->subtypeQuantity :
+                mt_rand($itemData[$character->image->subtype_id][$drops->parameters]['min'], $itemData[$character->image->subtype_id][$drops->parameters]['max'])
+            )) $successes += 1;
+            if($successes != $drops->items->count() * $drops->drops_available) throw new \Exception('Failed to collect all drops.');
 
             // Clear the number of available drops
             $drops->update(['drops_available' => 0]);
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -317,12 +310,12 @@ class InventoryManager extends Service
                     if(!$stack) throw new \Exception("An invalid item was selected.");
                     if($stack->user_id != $owner->id && !$user->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected items.");
                     if($stack->count < $quantity) throw new \Exception("Quantity to delete exceeds item count.");
-                    
+
                     $oldUser = $stack->user;
 
-                    if($this->debitStack($stack->user, ($stack->user_id == $user->id ? 'User Deleted' : 'Staff Deleted'), ['data' => ($stack->user_id != $user->id ? 'Deleted by '.$user->displayName : '')], $stack, $quantity)) 
+                    if($this->debitStack($stack->user, ($stack->user_id == $user->id ? 'User Deleted' : 'Staff Deleted'), ['data' => ($stack->user_id != $user->id ? 'Deleted by '.$user->displayName : '')], $stack, $quantity))
                     {
-                        if($stack->user_id != $user->id) 
+                        if($stack->user_id != $user->id)
                             Notifications::create('ITEM_REMOVAL', $oldUser, [
                                 'item_name' => $stack->item->name,
                                 'item_quantity' => $quantity,
@@ -341,7 +334,7 @@ class InventoryManager extends Service
                     if($stack->character->user_id != $user->id && !$user->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected items.");
                     if($stack->count < $quantity) throw new \Exception("Quantity to delete exceeds item count.");
 
-                    if($this->debitStack($stack->character, ($stack->character->user_id == $user->id ? 'User Deleted' : 'Staff Deleted'), ['data' => ($stack->character->user_id != $user->id ? 'Deleted by '.$user->displayName : '')], $stack, $quantity)) 
+                    if($this->debitStack($stack->character, ($stack->character->user_id == $user->id ? 'User Deleted' : 'Staff Deleted'), ['data' => ($stack->character->user_id != $user->id ? 'Deleted by '.$user->displayName : '')], $stack, $quantity))
                     {
                         if($stack->character->user_id != $user->id && $stack->character->is_visible && $stack->character->user_id)
                             Notifications::create('CHARACTER_ITEM_REMOVAL', $stack->character->user, [
@@ -356,7 +349,7 @@ class InventoryManager extends Service
                 }
             }
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -383,7 +376,7 @@ class InventoryManager extends Service
                 if($stack->count < $quantity) throw new \Exception("Quantity to sell exceeds item count.");
                 if(!isset($stack->item->data['resell'])) throw new \Exception ("This item cannot be sold.");
                 if(!Config::get('lorekeeper.extensions.item_entry_expansion.resale_function')) throw new \Exception("This function is not currently enabled.");
-                
+
                 $oldUser = $stack->user;
 
                 $currencyManager = new CurrencyManager;
@@ -392,13 +385,13 @@ class InventoryManager extends Service
                     $currency = $stack->item->resell->flip()->pop();
                     $currencyQuantity = $stack->item->resell->pop() * $quantity;
 
-                    if(!$currencyManager->creditCurrency(null, $oldUser, 'Sold Item', 'Sold '.$stack->item->displayName.' ×'.$quantity, $currency, $currencyQuantity)) 
+                    if(!$currencyManager->creditCurrency(null, $oldUser, 'Sold Item', 'Sold '.$stack->item->displayName.' ×'.$quantity, $currency, $currencyQuantity))
                             throw new \Exception("Failed to credit currency.");
                 }
 
-                if($this->debitStack($stack->user, ($stack->user_id == $user->id ? 'Sold by User' : 'Sold by Staff'), ['data' => ($stack->user_id != $user->id ? 'Sold by '.$user->displayName : '')], $stack, $quantity)) 
+                if($this->debitStack($stack->user, ($stack->user_id == $user->id ? 'Sold by User' : 'Sold by Staff'), ['data' => ($stack->user_id != $user->id ? 'Sold by '.$user->displayName : '')], $stack, $quantity))
                 {
-                    if($stack->user_id != $user->id) 
+                    if($stack->user_id != $user->id)
                         Notifications::create('ITEM_REMOVAL', $oldUser, [
                             'item_name' => $stack->item->name,
                             'item_quantity' => $quantity,
@@ -408,7 +401,7 @@ class InventoryManager extends Service
                 }
             }
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -419,7 +412,7 @@ class InventoryManager extends Service
      *
      * @param  \App\Models\User\User|\App\Models\Character\Character  $sender
      * @param  \App\Models\User\User|\App\Models\Character\Character  $recipient
-     * @param  string                                                 $type 
+     * @param  string                                                 $type
      * @param  array                                                  $data
      * @param  \App\Models\Item\Item                                  $item
      * @param  int                                                    $quantity
@@ -438,7 +431,7 @@ class InventoryManager extends Service
                     ['item_id', '=', $item->id],
                     ['data', '=', $encoded_data]
                 ])->first();
-                
+
                 if(!$recipient_stack)
                     $recipient_stack = UserItem::create(['user_id' => $recipient->id, 'item_id' => $item->id, 'data' => $encoded_data]);
                 $recipient_stack->count += $quantity;
@@ -450,7 +443,7 @@ class InventoryManager extends Service
                     ['item_id', '=', $item->id],
                     ['data', '=', $encoded_data]
                 ])->first();
-                
+
                 if(!$recipient_stack)
                     $recipient_stack = CharacterItem::create(['character_id' => $recipient->id, 'item_id' => $item->id, 'data' => $encoded_data]);
                 $recipient_stack->count += $quantity;
@@ -459,7 +452,7 @@ class InventoryManager extends Service
             if($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, $recipient ? $recipient->id : null, $recipient ? $recipient->logType : null, null, $type, $data['data'], $item->id, $quantity)) throw new \Exception("Failed to create log.");
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -470,7 +463,7 @@ class InventoryManager extends Service
      *
      * @param  \App\Models\User\User|\App\Models\Character\Character          $sender
      * @param  \App\Models\User\User|\App\Models\Character\Character          $recipient
-     * @param  string                                                         $type 
+     * @param  string                                                         $type
      * @param  array                                                          $data
      * @param  \App\Models\User\UserItem|\App\Models\Character\CharacterItem  $item
      * @return bool
@@ -488,7 +481,7 @@ class InventoryManager extends Service
 
             if(!$recipient_stack)
                 $recipient_stack = UserItem::create(['user_id' => $recipient->id, 'item_id' => $stack->item_id, 'data' => json_encode($stack->data)]);
-                
+
             $stack->count -= $quantity;
             $recipient_stack->count += $quantity;
             $stack->save();
@@ -497,7 +490,7 @@ class InventoryManager extends Service
             if($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, $recipient->id, $recipient ? $recipient->logType : null, $stack->id, $type, $data['data'], $stack->item_id, $quantity)) throw new \Exception("Failed to create log.");
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -507,7 +500,7 @@ class InventoryManager extends Service
      * Debits an item from a user or character.
      *
      * @param  \App\Models\User\User|\App\Models\Character\Character  $owner
-     * @param  string                                                 $type 
+     * @param  string                                                 $type
      * @param  array                                                  $data
      * @param  \App\Models\Item\UserItem                              $stack
      * @return bool
@@ -520,10 +513,10 @@ class InventoryManager extends Service
             $stack->count -= $quantity;
             $stack->save();
 
-            if($type && !$this->createLog($owner ? $owner->id : null, $owner ? $owner->logType : null, null, null, $stack->id, $type, $data['data'], $stack->item->id, $quantity)) throw new \Exception("Failed to create log."); 
+            if($type && !$this->createLog($owner ? $owner->id : null, $owner ? $owner->logType : null, null, null, $stack->id, $type, $data['data'], $stack->item->id, $quantity)) throw new \Exception("Failed to create log.");
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -552,7 +545,7 @@ class InventoryManager extends Service
                 $stack->save();
             }
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -566,14 +559,14 @@ class InventoryManager extends Service
      * @param  int     $recipientId
      * @param  string  $recipientType
      * @param  int     $stackId
-     * @param  string  $type 
+     * @param  string  $type
      * @param  string  $data
      * @param  int     $quantity
      * @return  int
      */
     public function createLog($senderId, $senderType, $recipientId, $recipientType, $stackId, $type, $data, $itemId, $quantity)
     {
-        
+
         return DB::table('items_log')->insert(
             [
                 'sender_id' => $senderId,

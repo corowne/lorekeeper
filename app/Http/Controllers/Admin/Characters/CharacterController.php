@@ -398,6 +398,7 @@ class CharacterController extends Controller
         $this->character = Character::where('slug', $slug)->first();
         if(!$this->character) abort(404);
         $drops = $this->character->drops;
+        if(!$request['drops_available']) $request['drops_available'] = 0;
 
         if ($drops->update(['parameters' => $request['parameters'], 'drops_available' => $request['drops_available']])) {
             flash('Character drops updated successfully.')->success();
@@ -638,7 +639,7 @@ class CharacterController extends Controller
                 }
             }
         }
-        
+
         return view('admin.masterlist.character_trades', [
             'trades' => $trades->orderBy('id', 'DESC')->paginate(20),
             'tradesQueue' => Settings::get('open_transfers_queue'),

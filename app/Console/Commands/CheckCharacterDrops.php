@@ -2,7 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Carbon;
+use DB;
+use Carbon\Carbon;
 use App\Models\Character\CharacterDrop;
 
 use Illuminate\Console\Command;
@@ -42,14 +43,12 @@ class CheckCharacterDrops extends Command
     public function handle()
     {
         //
-        $updateDrops = CharacterDrop::requiresUpdate();
+        $updateDrops = CharacterDrop::requiresUpdate()->get();
         foreach ($updateDrops as $drop) {
-            $frequency = $drop->dropData->data['frequency']['frequency'];
-            $interval = $drop->dropData->data['frequency']['interval'];
             $drop->update([
-                'available_drops' => $drop->available_drops + 1,
+                'drops_available' => DB::raw('drops_available+1'),
                 'next_day' => Carbon::now()->add(
-                    $frequency,
+                    $drop->dropData->data['frequency']['frequency'],
                     $drop->dropData->data['frequency']['interval']
                 )
             ]);

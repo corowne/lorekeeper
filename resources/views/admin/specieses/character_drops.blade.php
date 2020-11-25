@@ -12,7 +12,7 @@
 <div class="text-right mb-3"><a class="btn btn-primary" href="{{ url('admin/data/character-drops/create') }}"><i class="fas fa-plus"></i> Create New Character Drop</a></div>
 @if(!count($drops))
     <p>No character drops found.</p>
-@else 
+@else
     {!! $drops->render() !!}
 
     <div class="row ml-md-2">
