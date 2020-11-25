@@ -65,7 +65,7 @@ if (isset($lineageBlacklist))
 <div class="form-check mb-1">
   <label class="form-check-label">
     {!! Form::radio('lineage-blacklist', '1', $vals[1], ['class' => 'mr-1']) !!}
-    Characters in this category can have ancestors but not descendants. <span class="text-muted font-italic">Such as mules, hybrids, etc.</span>
+    Characters in this category can have ancestors but not descendants. <span class="text-muted font-italic">Such as mules, hybrids, children, etc.</span>
   </label>
 </div>
 <div class="form-check disabled mb-2">
@@ -95,12 +95,12 @@ if (isset($lineageBlacklist))
 @section('scripts')
 @parent
 <script>
-$( document ).ready(function() {    
+$( document ).ready(function() {
     $('.delete-category-button').on('click', function(e) {
         e.preventDefault();
         loadModal("{{ url('admin/data/character-categories/delete') }}/{{ $category->id }}", 'Delete Category');
     });
 });
-    
+
 </script>
 @endsection

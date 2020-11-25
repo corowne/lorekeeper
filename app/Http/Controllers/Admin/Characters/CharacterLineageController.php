@@ -9,6 +9,7 @@ use Auth;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterImage;
 use App\Models\Character\CharacterCategory;
+use App\Models\Character\CharacterLineageBlacklist;
 use App\Models\Rarity;
 use App\Models\User\User;
 use App\Models\Species\Species;
@@ -110,7 +111,7 @@ class CharacterLineageController extends Controller
         $line = $this->character->lineage;
         return view('character.admin._edit_lineage_modal', [
             'character' => $this->character,
-            'characterOptions' => Character::query()->where('is_myo_slot', false)->orderBy('slug')->pluck('slug', 'id')->toArray(),
+            'characterOptions' => CharacterLineageBlacklist::getAncestorOptions(),
             'isMyo' => $isMyo,
             'hasLineage' => $hasLineage,
             'lineage' => [
