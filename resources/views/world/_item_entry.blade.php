@@ -16,9 +16,9 @@
                         <p><strong>Rarity:</strong> {!! $item->rarity !!}</p>
                     </div>
                 @endif
-                @if(isset($item->artist) && $item->artist)
+                @if(isset($item->itemArtist) && $item->itemArtist)
                     <div class="col-md">
-                        <p><strong>Artist:</strong> {!! $item->artist !!}</p>
+                        <p><strong>Artist:</strong> {!! $item->itemArtist !!}</p>
                     </div>
                 @endif
             @endif
@@ -51,7 +51,7 @@
                 <div class="row">
                     @if(isset($item->source) && $item->source)
                         <div class="col">
-                            <p><strong>Source:</strong></p> 
+                            <p><strong>Source:</strong></p>
                             <p>{!! $item->source !!}</p>
                         </div>
                     @endif

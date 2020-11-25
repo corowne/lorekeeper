@@ -20,7 +20,7 @@ class Item extends Model
      */
     protected $fillable = [
         'item_category_id', 'name', 'has_image', 'description', 'parsed_description', 'allow_transfer',
-        'data', 'reference_url', 'artist_alias', 'artist_url'
+        'data', 'reference_url', 'artist_alias', 'artist_url', 'artist_id'
     ];
 
     protected $appends = ['image_url'];
@@ -31,7 +31,7 @@ class Item extends Model
      * @var string
      */
     protected $table = 'items';
-    
+
     /**
      * Validation rules for creation.
      *
@@ -48,7 +48,7 @@ class Item extends Model
         'release' => 'nullable|between:3,100',
         'currency_quantity' => 'nullable|integer|min:1',
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -66,7 +66,7 @@ class Item extends Model
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -74,7 +74,7 @@ class Item extends Model
     /**
      * Get the category the item belongs to.
      */
-    public function category() 
+    public function category()
     {
         return $this->belongsTo('App\Models\Item\ItemCategory', 'item_category_id');
     }
@@ -82,13 +82,21 @@ class Item extends Model
     /**
      * Get the item's tags.
      */
-    public function tags() 
+    public function tags()
     {
         return $this->hasMany('App\Models\Item\ItemTag', 'item_id');
     }
 
+    /**
+     * Get the user that drew the item art.
+     */
+    public function artist()
+    {
+        return $this->belongsTo('App\Models\User\User', 'artist_id');
+    }
+
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -140,11 +148,11 @@ class Item extends Model
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
-    
+
     /**
      * Displays the model's name, linked to its encyclopedia page.
      *
@@ -184,7 +192,7 @@ class Item extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
@@ -228,21 +236,19 @@ class Item extends Model
 
     /**
      * Get the artist of the item's image.
-     * 
+     *
      * @return string
      */
-    public function getArtistAttribute() 
+    public function getItemArtistAttribute()
     {
-        if(!$this->artist_url && !$this->artist_alias) return null;
-        if ($this->artist_url)
+        if(!$this->artist_url && !$this->artist_id) return null;
+        if($this->artist_id)
         {
-            return '<a href="'.$this->artist_url.'" class="display-creator">'. ($this->artist_alias ? : $this->artist_url) .'</a>';
+            return $this->artist->displayName;
         }
-        else if($this->artist_alias)
+        else if ($this->artist_url)
         {
-            $user = User::where('alias', trim($this->artist_alias))->first();
-            if($user) return $user->displayName;
-            else return '<a href="https://www.deviantart.com/'.$this->artist_alias.'">'.$this->artist_alias.'@dA</a>';
+            return prettyProfileLink($this->artist_url);
         }
     }
 
@@ -251,7 +257,7 @@ class Item extends Model
      *
      * @return string
      */
-    public function getReferenceAttribute() 
+    public function getReferenceAttribute()
     {
         if (!$this->reference_url) return null;
         return $this->reference_url;
@@ -262,7 +268,7 @@ class Item extends Model
      *
      * @return array
      */
-    public function getDataAttribute() 
+    public function getDataAttribute()
     {
         if (!$this->id) return null;
         return json_decode($this->attributes['data'], true);
@@ -273,7 +279,7 @@ class Item extends Model
      *
      * @return string
      */
-    public function getRarityAttribute() 
+    public function getRarityAttribute()
     {
         if (!$this->data) return null;
         return $this->data['rarity'];
@@ -284,7 +290,7 @@ class Item extends Model
      *
      * @return string
      */
-    public function getUsesAttribute() 
+    public function getUsesAttribute()
     {
         if (!$this->data) return null;
         return $this->data['uses'];
@@ -295,7 +301,7 @@ class Item extends Model
      *
      * @return string
      */
-    public function getSourceAttribute() 
+    public function getSourceAttribute()
     {
         if (!$this->data) return null;
         return $this->data['release'];
@@ -306,7 +312,7 @@ class Item extends Model
      *
      * @return string
      */
-    public function getResellAttribute() 
+    public function getResellAttribute()
     {
         if (!$this->data) return null;
         return collect($this->data['resell']);
@@ -317,7 +323,7 @@ class Item extends Model
      *
      * @return array
      */
-    public function getShopsAttribute() 
+    public function getShopsAttribute()
     {
         if (!$this->data) return null;
         $itemShops = $this->data['shops'];
@@ -329,7 +335,7 @@ class Item extends Model
      *
      * @return array
      */
-    public function getPromptsAttribute() 
+    public function getPromptsAttribute()
     {
         if (!$this->data) return null;
         $itemPrompts = $this->data['prompts'];
@@ -337,7 +343,7 @@ class Item extends Model
     }
 
     /**********************************************************************************************
-    
+
         OTHER FUNCTIONS
 
     **********************************************************************************************/

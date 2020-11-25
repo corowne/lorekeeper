@@ -14,6 +14,7 @@ use App\Models\Character\Character;
 use App\Models\Character\CharacterImageCreator;
 use App\Models\Character\CharacterLog;
 use App\Models\User\UserCharacterLog;
+use App\Models\Item\Item;
 
 class MigrateAliases extends Command
 {
@@ -48,32 +49,43 @@ class MigrateAliases extends Command
      */
     public function handle()
     {
+        $this->info('*****************************');
+        $this->info('* MIGRATE ALIAS INFORMATION *');
+        $this->info('*****************************'."\n");
+
+        $this->line("Migrating aliases...\n");
+
         /** MOVE USER ALIASES */
         if(Schema::hasColumn('users', 'alias')) {
             // Get users with a set alias
             $aliasUsers = User::whereNotNull('alias')->get();
 
-            foreach($aliasUsers as $user) {
-                if(!DB::table('user_aliases')->where('user_id', $user->id)->where('site', 'dA')->where('alias', $user->alias)->exists()) {
-                    // Create a new row for the user's current dA alias
-                    DB::table('user_aliases')->insert([
-                        [
-                            'user_id' => $user->id,
-                            'site' => 'dA',
-                            'alias' => $user->alias,
-                            'is_visible' => 1,
-                            'is_primary_alias' => 1,
-                        ]
-                    ]);
+            if($aliasUsers->count()) {
+                foreach($aliasUsers as $user) {
+                    if(!DB::table('user_aliases')->where('user_id', $user->id)->where('site', 'dA')->where('alias', $user->alias)->exists()) {
+                        // Create a new row for the user's current dA alias
+                        DB::table('user_aliases')->insert([
+                            [
+                                'user_id' => $user->id,
+                                'site' => 'dA',
+                                'alias' => $user->alias,
+                                'is_visible' => 1,
+                                'is_primary_alias' => 1,
+                            ]
+                        ]);
 
-                    // Clear the user's alias in the users table and set the has_alias bool in its place
-                    $user->update([
-                        'alias' => null,
-                        'has_alias' => 1
-                    ]);
+                        // Clear the user's alias in the users table and set the has_alias bool in its place
+                        $user->update([
+                            'alias' => null,
+                            'has_alias' => 1
+                        ]);
+                    }
                 }
+                $this->info("Migrated: User aliases");
             }
+            else $this->line("Skipped: User aliases (nothing to migrate)");
         }
+        else $this->line("Skipped: User aliases (column no longer exists)");
 
         /** MOVE CHARACTER OWNER ALIASES */
         if(Schema::hasColumn('characters', 'owner_alias')) {
@@ -81,37 +93,49 @@ class MigrateAliases extends Command
 
             // Get characters with an owner identified by alias
             $aliasCharacters = Character::whereNotNull('owner_alias')->get();
-            
-            foreach($aliasCharacters as $character) {
-                // Just in case, check to update character ownership
-                $userAlias = UserAlias::where('site', 'dA')->where('alias', $character->owner_alias)->first();
-                if($userAlias) {
-                    $character->update(['owner_alias' => null, 'user_id' => $userAlias->user_id]);
+
+            if($aliasCharacters->count()) {
+                foreach($aliasCharacters as $character) {
+                    // Just in case, check to update character ownership
+                    $userAlias = UserAlias::where('site', 'dA')->where('alias', $character->owner_alias)->first();
+                    if($userAlias) {
+                        $character->update(['owner_alias' => null, 'user_id' => $userAlias->user_id]);
+                    }
+                    elseif(!$userAlias) {
+                        $alias = $character->owner_alias;
+                        $character->update(['owner_alias' => null, 'owner_url' => 'https://deviantart.com/'.$alias]);
+                    }
                 }
-                elseif(!$userAlias) {
-                    $alias = $character->owner_alias;
-                    $character->update(['owner_alias' => null, 'owner_url' => 'https://deviantart.com/'.$alias]);
-                }
+
+                $this->info("Migrated: Character owner aliases");
             }
+            else $this->line("Skipped: Character owner aliases (nothing to migrate)");
         }
-        
+        else $this->line("Skipped: Character owner aliases (column no longer exists)");
+
         if(Schema::hasColumn('character_image_creators', 'alias')) {
             /** MOVE CHARACTER IMAGE CREATOR ALIASES */
 
             // Get character image creators with a set alias
             $aliasImageCreators = CharacterImageCreator::whereNotNull('alias')->get();
 
-            foreach($aliasImageCreators as $creator) {
-                $userAlias = UserAlias::where('site', 'dA')->where('alias', $creator->alias)->first();
-                if($userAlias) {
-                    $creator->update(['alias' => null, 'user_id' => $userAlias->user_id]);
+            if($aliasImageCreators->count()){
+                foreach($aliasImageCreators as $creator) {
+                    $userAlias = UserAlias::where('site', 'dA')->where('alias', $creator->alias)->first();
+                    if($userAlias) {
+                        $creator->update(['alias' => null, 'user_id' => $userAlias->user_id]);
+                    }
+                    elseif(!$userAlias) {
+                        $alias = $creator->alias;
+                        $creator->update(['alias' => null, 'url' => 'https://deviantart.com/'.$alias]);
+                    }
                 }
-                elseif(!$userAlias) {
-                    $alias = $creator->alias;
-                    $creator->update(['alias' => null, 'url' => 'https://deviantart.com/'.$alias]);
-                }
+
+                $this->info("Migrated: Character image creator aliases");
             }
+            else $this->line("Skipped: Character image creator aliases (nothing to migrate)");
         }
+        else $this->line("Skipped: Character image creator aliases (column no longer exists)");
 
         /** MOVE CHARACTER LOG ALIASES */
 
@@ -119,33 +143,67 @@ class MigrateAliases extends Command
             // Get character logs with a set recipient alias
             $aliasCharacterLogs = CharacterLog::whereNotNull('recipient_alias')->get();
 
-            foreach($aliasCharacterLogs as $characterLog) {
-                $userAlias = UserAlias::where('site', 'dA')->where('alias', $characterLog->recipient_alias)->first();
-                if($userAlias) {
-                    $characterLog->update(['recipient_alias' => null, 'recipient_id' => $userAlias->user_id]);
+            if($aliasCharacterLogs->count()) {
+                foreach($aliasCharacterLogs as $characterLog) {
+                    $userAlias = UserAlias::where('site', 'dA')->where('alias', $characterLog->recipient_alias)->first();
+                    if($userAlias) {
+                        $characterLog->update(['recipient_alias' => null, 'recipient_id' => $userAlias->user_id]);
+                    }
+                    elseif(!$userAlias) {
+                        $alias = $characterLog->recipient_alias;
+                        $characterLog->update(['recipient_alias' => null, 'recipient_url' => 'https://deviantart.com/'.$alias]);
+                    }
                 }
-                elseif(!$userAlias) {
-                    $alias = $characterLog->recipient_alias;
-                    $characterLog->update(['recipient_alias' => null, 'recipient_url' => 'https://deviantart.com/'.$alias]);
-                }
+
+                $this->info("Migrated: Character log aliases");
             }
+            else $this->line("Skipped: Character log aliases (nothing to migrate)");
         }
+        else $this->line("Skipped: Character log aliases (column no longer exists)");
 
         if(Schema::hasColumn('user_character_log', 'recipient_alias')) {
             // Get character logs with a set recipient alias
             $aliasUserCharacterLogs = UserCharacterLog::whereNotNull('recipient_alias')->get();
 
-            foreach($aliasUserCharacterLogs as $characterLog) {
-                $userAlias = UserAlias::where('site', 'dA')->where('alias', $characterLog->recipient_alias)->first();
-                if($userAlias) {
-                    $characterLog->update(['recipient_alias' => null, 'recipient_id' => $userAlias->user_id]);
+            if($aliasUserCharacterLogs->count()) {
+                foreach($aliasUserCharacterLogs as $characterLog) {
+                    $userAlias = UserAlias::where('site', 'dA')->where('alias', $characterLog->recipient_alias)->first();
+                    if($userAlias) {
+                        $characterLog->update(['recipient_alias' => null, 'recipient_id' => $userAlias->user_id]);
+                    }
+                    elseif(!$userAlias) {
+                        $alias = $characterLog->recipient_alias;
+                        $characterLog->update(['recipient_alias' => null, 'recipient_url' => 'https://deviantart.com/'.$alias]);
+                    }
                 }
-                elseif(!$userAlias) {
-                    $alias = $characterLog->recipient_alias;
-                    $characterLog->update(['recipient_alias' => null, 'recipient_url' => 'https://deviantart.com/'.$alias]);
-                }
+
+                $this->info("Migrated: User character log aliases");
             }
+            else $this->line("Skipped: User character log aliases (nothing to migrate)");
         }
+        else $this->line("Skipped: User character log aliases (column no longer exists)");
+
+        if(Schema::hasColumn('items', 'artist_alias')) {
+            // Get character logs with a set recipient alias
+            $aliasItemArtists = Item::whereNotNull('artist_alias')->get();
+
+            if($aliasItemArtists->count()) {
+                foreach($aliasItemArtists as $itemArtist) {
+                    $userAlias = UserAlias::where('site', 'dA')->where('alias', $itemArtist->artist_alias)->first();
+                    if($userAlias) {
+                        $itemArtist->update(['artist_alias' => null, 'artist_id' => $userAlias->user_id]);
+                    }
+                    elseif(!$userAlias) {
+                        $alias = $itemArtist->artist_alias;
+                        $itemArtist->update(['artist_alias' => null, 'artist_url' => 'https://deviantart.com/'.$alias]);
+                    }
+                }
+
+                $this->info("Migrated: Item artist aliases");
+            }
+            else $this->line("Skipped: Item artist aliases (nothing to migrate)");
+        }
+        else $this->line("Skipped: Item artist aliases (column no longer exists)");
 
         if($this->option('drop-columns')) {
             // Drop alias columns from the impacted tables.
@@ -168,6 +226,14 @@ class MigrateAliases extends Command
                 $table->dropColumn('sender_alias');
                 $table->dropColumn('recipient_alias');
             });
+            Schema::table('items', function (Blueprint $table) {
+                //
+                $table->dropColumn('artist_alias');
+            });
         }
+        else $this->line("Skipped: Dropping alias columns");
+
+        $this->line("\nAlias information migrated!");
+        $this->line("After checking that all data has been moved from them,\nrun again with --drop-columns to drop alias columns if desired.");
     }
 }
