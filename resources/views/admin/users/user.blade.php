@@ -51,15 +51,13 @@
 <p>As users are supposed to verify that they own their account(s) themselves, aliases cannot be edited directly. If a user wants to change their alias, clear it here and ask them to go through the verification process again while logged into their new account.</p>
 @if($user->aliases->count())
     @foreach($user->aliases as $alias)
-    <div class="form-group row">
-        <label class="col-md-2 col-form-label">Alias{{ $alias->is_primary_alias ? ' (Primary)' : '' }}</label>
-        <div class="col-md-10">
-            {!! Form::text('alias', $alias->alias.'@'.$alias->site, ['class' => 'form-control', 'disabled']) !!}
-        </div>
+    <div class="form-group d-flex">
+        <label class="mr-2">Alias{{ $alias->is_primary_alias ? ' (Primary)' : '' }}</label>
+        {!! Form::text('alias', $alias->alias.'@'.$alias->site, ['class' => 'form-control', 'disabled']) !!}
+        {!! Form::open(['url' => 'admin/users/'.$user->name.'/alias/'.$alias->id]) !!}
+        <div class="text-right ml-2">{!! Form::submit('Clear Alias', ['class' => 'btn btn-danger']) !!}</div>
+        {!! Form::close() !!}
     </div>
-    {!! Form::open(['url' => 'admin/users/'.$user->name.'/alias/'.$alias->id]) !!}
-        <div class="text-right">{!! Form::submit('Clear Alias', ['class' => 'btn btn-danger']) !!}</div>
-    {!! Form::close() !!}
     @endforeach
 @else
     <p>No aliases found.</p>
