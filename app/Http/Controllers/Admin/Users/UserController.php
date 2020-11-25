@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 use App\Models\User\User;
+use App\Models\User\UserAlias;
 use App\Models\Rank\Rank;
 use App\Models\User\UserUpdateLog;
 
@@ -110,19 +111,23 @@ class UserController extends Controller
         }
         return redirect()->to($user->adminUrl);
     }
-    
-    public function postUserAlias(Request $request, $name)
+
+    public function postUserAlias(Request $request, $name, $id)
     {
         $user = User::where('name', $name)->first();
-        
-        $logData = ['old_alias' => $user ? $user->alias : null];
+        $alias = UserAlias::find($id);
+
+        $logData = ['old_alias' => $user ? $alias : null];
         if(!$user) {
             flash('Invalid user.')->error();
+        }
+        if(!$alias) {
+            flash('Invalid alias.')->error();
         }
         else if (!Auth::user()->canEditRank($user->rank)) {
             flash('You cannot edit the information of a user that has a higher rank than yourself.')->error();
         }
-        else if($user->alias && $user->update(['alias' => null])) {
+        else if($alias && $alias->delete()) {
             UserUpdateLog::create(['staff_id' => Auth::user()->id, 'user_id' => $user->id, 'data' => json_encode($logData), 'type' => 'Clear Alias']);
             flash('Cleared user\'s alias successfully.')->success();
         }
@@ -132,11 +137,11 @@ class UserController extends Controller
         return redirect()->back();
     }
 
-    
+
     public function postUserAccount(Request $request, $name)
     {
         $user = User::where('name', $name)->first();
-        
+
         if(!$user) {
             flash('Invalid user.')->error();
         }
@@ -152,7 +157,7 @@ class UserController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Show a user's account update log.
      *
@@ -169,7 +174,7 @@ class UserController extends Controller
             'logs' => UserUpdateLog::where('user_id', $user->id)->orderBy('id', 'DESC')->paginate(50)
         ]);
     }
-    
+
     /**
      * Show a user's ban page.
      *
@@ -185,7 +190,7 @@ class UserController extends Controller
             'user' => $user
         ]);
     }
-    
+
     /**
      * Show a user's ban confirmation page.
      *
@@ -201,7 +206,7 @@ class UserController extends Controller
             'user' => $user
         ]);
     }
-    
+
     public function postBan(Request $request, UserService $service, $name)
     {
         $user = User::where('name', $name)->with('settings')->first();
@@ -220,7 +225,7 @@ class UserController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Show a user's unban confirmation page.
      *
@@ -236,11 +241,11 @@ class UserController extends Controller
             'user' => $user
         ]);
     }
-    
+
     public function postUnban(Request $request, UserService $service, $name)
     {
         $user = User::where('name', $name)->first();
-        
+
         if(!$user) {
             flash('Invalid user.')->error();
         }

@@ -19,7 +19,7 @@ Route::group(['prefix' => 'users', 'namespace' => 'Users'], function() {
 
         Route::get('{name}/edit', 'UserController@getUser');
         Route::post('{name}/basic', 'UserController@postUserBasicInfo');
-        Route::post('{name}/alias', 'UserController@postUserAlias');
+        Route::post('{name}/alias/{id}', 'UserController@postUserAlias');
         Route::post('{name}/account', 'UserController@postUserAccount');
         Route::get('{name}/updates', 'UserController@getUserUpdates');
         Route::get('{name}/ban', 'UserController@getBan');
@@ -187,7 +187,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('sublists/edit/{id?}', 'SublistController@postCreateEditSublist');
     Route::post('sublists/delete/{id}', 'SublistController@postDeleteSublist');
     Route::post('sublists/sort', 'SublistController@postSortSublist');
-    
+
     # LOOT TABLES
     Route::get('loot-tables', 'LootTableController@getIndex');
     Route::get('loot-tables/create', 'LootTableController@getCreateLootTable');
