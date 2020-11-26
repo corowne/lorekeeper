@@ -228,15 +228,22 @@ class CharacterLineage extends Model
      */
     public static function getFilteredDescendants($children_ids)
     {
-        if(count($children_ids) == 0 || $children_ids == null) return null;
-
         return Character::whereIn('characters.id', $children_ids)
             ->where('characters.is_visible', true)
-            ->whereNotIn('character_category_id', CharacterLineageBlacklist::getBlacklistCategories(true))
+            ->where(function($query) {
+                $query->whereNull('character_category_id')
+                      ->orWhereNotIn('character_category_id', CharacterLineageBlacklist::getBlacklistCategories(true));
+            })
             ->whereNotIn('rarity_id', CharacterLineageBlacklist::getBlacklistRarities(true))
             ->join('character_images', 'characters.character_image_id', '=', 'character_images.id')
-            ->whereNotIn('species_id', CharacterLineageBlacklist::getBlacklistSpecies(true))
-            ->whereNotIn('suptype_id', CharacterLineageBlacklist::getBlacklistSubtypes(true))
+            ->where(function($query) {
+                $query->whereNull('species_id')
+                      ->orWhereNotIn('species_id', CharacterLineageBlacklist::getBlacklistSpecies(true));
+            })
+            ->where(function($query) {
+                $query->whereNull('subtype_id')
+                      ->orWhereNotIn('subtype_id', CharacterLineageBlacklist::getBlacklistSubtypes(true));
+            })
             ->orderBy('is_myo_slot', 'asc');
     }
 }
