@@ -63,6 +63,8 @@ class CharacterLineageController extends Controller
     {
         $this->character = $isMyo ? Character::where('is_myo_slot', 1)->where('id', $id)->first() : Character::where('slug', $id)->first();
         if(!$this->character) abort(404);
+        // if they haven't got the option to have descendents...
+        if($this->character->getLineageBlacklistLevel() > 0) abort(404);
 
         $hasLineage = $this->character->lineage !== null;
         $line = $this->character->lineage;
@@ -121,6 +123,7 @@ class CharacterLineageController extends Controller
     {
         $this->character = $isMyo ? Character::where('is_myo_slot', 1)->where('id', $id)->first() : Character::where('slug', $id)->first();
         if(!$this->character) abort(404);
+        if($this->character->getLineageBlacklistLevel() > 0) abort(404);
 
         $children = $isMyo ? null : CharacterLineage::getChildrenStatic($this->character->id, false);
         return $this->getDescendantDisplay($this->character, "Children", $children, $isMyo);
@@ -136,6 +139,7 @@ class CharacterLineageController extends Controller
     {
         $this->character = $isMyo ? Character::where('is_myo_slot', 1)->where('id', $id)->first() : Character::where('slug', $id)->first();
         if(!$this->character) abort(404);
+        if($this->character->getLineageBlacklistLevel() > 0) abort(404);
 
         $children = $isMyo ? null : CharacterLineage::getGrandchildrenStatic($this->character->id, false);
         return $this->getDescendantDisplay($this->character, "Grandchildren", $children, $isMyo);
@@ -151,6 +155,7 @@ class CharacterLineageController extends Controller
     {
         $this->character = $isMyo ? Character::where('is_myo_slot', 1)->where('id', $id)->first() : Character::where('slug', $id)->first();
         if(!$this->character) abort(404);
+        if($this->character->getLineageBlacklistLevel() > 0) abort(404);
 
         $children = $isMyo ? null : CharacterLineage::getGreatGrandchildrenStatic($this->character->id, false);
         return $this->getDescendantDisplay($this->character, "Great-Grandchildren", $children, $isMyo);

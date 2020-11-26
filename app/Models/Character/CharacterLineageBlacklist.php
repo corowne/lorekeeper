@@ -86,16 +86,65 @@ class CharacterLineageBlacklist extends Model
     }
 
     /**
+     * returns true if can have children
+     *
+     * @param  App\Models\Character\Character $character
+     * @return boolean
+     */
+    public static function canHaveChildren($character)
+    {
+        return CharacterLineageBlacklist::getBlacklistLevel($character, 1) < 1;
+    }
+
+    /**
+     * returns true if can have ancestors
+     *
+     * @param  App\Models\Character\Character $character
+     * @return boolean
+     */
+    public static function canHaveLineage($character)
+    {
+        return CharacterLineageBlacklist::getBlacklistLevel($character, 2) < 2;
+    }
+
+    /**
      * Grabs the blacklist level of the character.
      * Returns 2 if blacklisted.
      * Returns 1 if greylisted.
      * Returns 0 if not blacklisted.
+     * May optionally set a min level to look for (1 or 2)
      *
-     * @return boolean|null
+     * @param  App\Models\Character\Character $character
+     * @param  int                            $level
+     * @return int
      */
-    public static function getBlacklistLevel($character)
+    public static function getBlacklistLevel($character, $maxLevel = 2)
     {
-        return 0;
+        if(!$character) return 0;
+        $level = [
+            $character->is_myo_slot ? 1 : 0,
+            0,
+            0,
+            0
+        ];
+        $parts = [
+            'category' => $character->character_category_id,
+            'rarity'   => $character->rarity_id,
+            'species'  => $character->image->species_id,
+            'subtype'  => $character->image->subtype_id,
+        ];
+
+        $i = 0;
+        foreach ($parts as $type => $id) {
+            if (max($level) == $maxLevel) return $maxLevel;
+            if (max($level) > 1) return 2;
+
+            $entry = CharacterLineageBlacklist::where('type', $type)->where('type_id', $id)->get()->first();
+            if ($entry) $level[$i] = $entry->complete_removal ? 2 : 1;
+
+            $i++;
+        }
+        return max($level);
     }
 
     /**
