@@ -46,11 +46,11 @@ class CheckCharacterDrops extends Command
         $updateDrops = CharacterDrop::requiresUpdate()->get();
         foreach ($updateDrops as $drop) {
             $drop->update([
-                'drops_available' => DB::raw('drops_available+1'),
+                'drops_available' => $drop->drops_available += 1,
                 'next_day' => Carbon::now()->add(
                     $drop->dropData->data['frequency']['frequency'],
                     $drop->dropData->data['frequency']['interval']
-                )
+                )->startOf($drop->dropData->data['frequency']['interval'])
             ]);
         }
     }

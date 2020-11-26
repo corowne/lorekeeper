@@ -41,29 +41,29 @@ class CharacterDrop extends Model
     public $dates = ['next_day'];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the associated character.
      */
-    public function character() 
+    public function character()
     {
         return $this->belongsTo('App\Models\Character\Character', 'character_id');
     }
-    
+
     /**
      * Get the category the character belongs to.
      */
-    public function dropData() 
+    public function dropData()
     {
         return $this->belongsTo('App\Models\Character\CharacterDropData', 'drop_id');
     }
 
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -80,7 +80,7 @@ class CharacterDrop extends Model
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -149,22 +149,22 @@ class CharacterDrop extends Model
         $items = collect([]);
         if($this->speciesItem) $items = $items->concat([$this->speciesItem]);
         if($this->subtypeItem) $items = $items->concat([$this->subtypeItem]);
-        
+
         return $items;
     }
 
     /**********************************************************************************************
-    
+
         OTHER FUNCTIONS
 
     **********************************************************************************************/
 
     /**
      * Create drop info for a character.
-     * 
+     *
      * @param int              $id
      */
-    public function createDrop($id) 
+    public function createDrop($id)
     {
         $character = Character::find($id);
         $dropData = $character->image->species->dropData;
@@ -173,17 +173,7 @@ class CharacterDrop extends Model
             'character_id' => $id,
             'parameters' => $dropData->rollParameters(),
             'drops_available' => 0,
-            'next_day' => Carbon::now()->add($dropData->data['frequency']['frequency'], $dropData->data['frequency']['interval']),
+            'next_day' => Carbon::now()->add($dropData->data['frequency']['frequency'], $dropData->data['frequency']['interval'])->startOf($dropData->data['frequency']['interval']),
         ]);
-    }
-
-    /**
-     * Cycle drop time.
-     * 
-     * @param int              $id
-     */
-    public function cycleTime($id) 
-    {
-        $this->update(['next_day' => Carbon::now()->add($dropData->data['frequency']['frequency'], $dropData->data['frequency']['interval'])]);
     }
 }
