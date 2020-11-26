@@ -32,7 +32,7 @@ class CharacterDropData extends Model
      * @var string
      */
     protected $table = 'character_drop_data';
-    
+
     /**
      * Validation rules for character creation.
      *
@@ -43,7 +43,7 @@ class CharacterDropData extends Model
         'drop_frequency' => 'required',
         'drop_interval' => 'required'
     ];
-    
+
     /**
      * Validation rules for character updating.
      *
@@ -56,15 +56,15 @@ class CharacterDropData extends Model
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the species to which the data pertains.
      */
-    public function species() 
+    public function species()
     {
         return $this->belongsTo('App\Models\Species\Species', 'species_id');
     }
@@ -72,13 +72,13 @@ class CharacterDropData extends Model
     /**
      * Get any character drops using this data.
      */
-    public function characterDrops() 
+    public function characterDrops()
     {
         return $this->hasMany('App\Models\Character\CharacterDrop', 'drop_id');
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -114,8 +114,18 @@ class CharacterDropData extends Model
         return json_decode($this->attributes['data'], true);
     }
 
+    /**
+     * Get the parameter attribute as an associative array.
+     *
+     * @return array
+     */
+    public function getIsActiveAttribute()
+    {
+        return $this->data['is_active'];
+    }
+
     /**********************************************************************************************
-    
+
         OTHER FUNCTIONS
 
     **********************************************************************************************/
@@ -125,7 +135,7 @@ class CharacterDropData extends Model
      *
      * @return string
      */
-    public function rollParameters() 
+    public function rollParameters()
     {
         $parameters = $this->parameters;
         $totalWeight = 0;
@@ -133,12 +143,12 @@ class CharacterDropData extends Model
 
         for($i = 0; $i < 1; $i++)
         {
-            $roll = mt_rand(0, $totalWeight - 1); 
+            $roll = mt_rand(0, $totalWeight - 1);
             $result = null;
             $prev = null;
             $count = 0;
             foreach($parameters as $parameter=>$weight)
-            { 
+            {
                 $count += $weight;
 
                 if($roll < $count)

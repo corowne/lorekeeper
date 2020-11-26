@@ -256,6 +256,7 @@ class InventoryManager extends Service
 
         try {
             if(!$drops->drops_available) throw new \Exception('This character doesn\'t have any available drops.');
+            if(!$drops->dropData->isActive) throw new \Exception('Drops are not currently active for this species.');
 
             // Assemble data
             $type = 'Character Drop';
