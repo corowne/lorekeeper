@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Auth;
 
 use App\Models\Rarity;
+use App\Models\Character\CharacterLineageBlacklist;
 
 use App\Services\RarityService;
 
@@ -43,6 +44,7 @@ class RarityController extends Controller
     public function getCreateRarity()
     {
         return view('admin.rarities.create_edit_rarity', [
+            'lineageBlacklist' => null,
             'rarity' => new Rarity
         ]);
     }
@@ -58,6 +60,7 @@ class RarityController extends Controller
         $rarity = Rarity::find($id);
         if(!$rarity) abort(404);
         return view('admin.rarities.create_edit_rarity', [
+            'lineageBlacklist' => CharacterLineageBlacklist::where('type', 'rarity')->where('type_id', $id)->get()->first(),
             'rarity' => $rarity
         ]);
     }
@@ -74,6 +77,7 @@ class RarityController extends Controller
     {
         $id ? $request->validate(Rarity::$updateRules) : $request->validate(Rarity::$createRules);
         $data = $request->only([
+            'lineage-blacklist',
             'name', 'color', 'description', 'image', 'remove_image'
         ]);
         if($id && $service->updateRarity(Rarity::find($id), $data, Auth::user())) {

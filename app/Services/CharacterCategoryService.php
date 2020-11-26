@@ -131,8 +131,7 @@ class CharacterCategoryService extends Service
             $category->delete();
 
             // delete associated blacklist, if one exists.
-            $blacklistEntry = CharacterLineageBlacklist::where('type', 'category')->where('type_id', $category->id)->get()->first();
-            if($blacklistEntry) $blacklistEntry->delete();
+            CharacterLineageBlacklist::searchAndSet(0, 'category', $category->id);
 
             return $this->commitReturn(true);
         } catch(\Exception $e) {

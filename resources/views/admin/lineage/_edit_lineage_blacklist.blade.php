@@ -22,14 +22,16 @@ $opts = array_values($opts);
     </label>
 </div>
 <div class="form-check mb-1">
-  <label class="form-check-label">
-    {!! Form::radio('lineage-blacklist', '1', $vals[1], ['class' => 'mr-1']) !!}
-    Characters with this {{ $type }} can have ancestors but not descendants. <span class="text-muted font-italic">Such as mules, hybrids, children, etc.</span>
-  </label>
+    <label class="form-check-label">
+        {!! Form::radio('lineage-blacklist', '1', $vals[1], ['class' => 'mr-1']) !!}
+        Characters with this {{ $type }} can have ancestors but not descendants.
+        <span class="text-muted font-italic">Such as mules, hybrids, children, etc.</span>
+    </label>
 </div>
 <div class="form-check disabled mb-2">
-  <label class="form-check-label">
-    {!! Form::radio('lineage-blacklist', '2', $vals[2], ['class' => 'mr-1']) !!}
-    Characters with this {{ $type }} cannot have lineages at all. <span class="text-muted font-italic">Such as locations, artifacts, etc.</span>
-  </label>
+    <label class="form-check-label">
+        {!! Form::radio('lineage-blacklist', '2', $vals[2], ['class' => 'mr-1']) !!}
+        Characters with this {{ $type }} cannot have lineages at all.
+        <span class="text-muted font-italic">Such as locations, artifacts, etc.</span>
+    </label>
 </div>

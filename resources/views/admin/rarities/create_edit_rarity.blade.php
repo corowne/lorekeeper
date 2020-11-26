@@ -47,6 +47,11 @@
     {!! Form::textarea('description', $rarity->description, ['class' => 'form-control wysiwyg']) !!}
 </div>
 
+@include('admin.lineage._edit_lineage_blacklist', [
+    'lineageBlacklist' => $lineageBlacklist,
+    'type' => 'rarity'
+])
+
 <div class="text-right">
     {!! Form::submit($rarity->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
 </div>

@@ -42,6 +42,11 @@
     {!! Form::textarea('description', $subtype->description, ['class' => 'form-control wysiwyg']) !!}
 </div>
 
+@include('admin.lineage._edit_lineage_blacklist', [
+    'lineageBlacklist' => $lineageBlacklist,
+    'type' => 'subtype'
+])
+
 <div class="text-right">
     {!! Form::submit($subtype->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
 </div>

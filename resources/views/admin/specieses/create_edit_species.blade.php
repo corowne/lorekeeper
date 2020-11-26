@@ -42,6 +42,11 @@
     {!! Form::textarea('description', $species->description, ['class' => 'form-control wysiwyg']) !!}
 </div>
 
+@include('admin.lineage._edit_lineage_blacklist', [
+    'lineageBlacklist' => $lineageBlacklist,
+    'type' => 'species'
+])
+
 <div class="text-right">
     {!! Form::submit($species->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
 </div>

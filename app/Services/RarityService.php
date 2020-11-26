@@ -8,6 +8,7 @@ use Config;
 use App\Models\Rarity;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterImage;
+use App\Models\Character\CharacterLineageBlacklist;
 
 class RarityService extends Service
 {
@@ -43,6 +44,7 @@ class RarityService extends Service
             else $data['has_image'] = 0;
 
             $rarity = Rarity::create($data);
+            $blacklist = CharacterLineageBlacklist::searchAndSet($data['lineage-blacklist'], 'rarity', $rarity->id);
 
             if ($image) $this->handleImage($image, $rarity->rarityImagePath, $rarity->rarityImageFileName);
 
@@ -79,6 +81,7 @@ class RarityService extends Service
             }
 
             $rarity->update($data);
+            $blacklist = CharacterLineageBlacklist::searchAndSet($data['lineage-blacklist'], 'rarity', $rarity->id);
 
             if ($rarity) $this->handleImage($image, $rarity->rarityImagePath, $rarity->rarityImageFileName);
 
@@ -129,11 +132,12 @@ class RarityService extends Service
             // Check first if characters with this rarity exist
             if(CharacterImage::where('rarity_id', $rarity->id)->exists() || Character::where('rarity_id', $rarity->id)->exists()) throw new \Exception("A character or character image with this rarity exists. Please change its rarity first.");
 
-            if($rarity->has_image) $this->deleteImage($rarity->rarityImagePath, $rarity->rarityImageFileName); 
+            if($rarity->has_image) $this->deleteImage($rarity->rarityImagePath, $rarity->rarityImageFileName);
             $rarity->delete();
+            CharacterLineageBlacklist::searchAndSet(0, 'rarity', $rarity->id);
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);

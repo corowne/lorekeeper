@@ -34,7 +34,7 @@ class CharacterCategoryController extends Controller
             'categories' => CharacterCategory::orderBy('sort', 'DESC')->get()
         ]);
     }
-    
+
     /**
      * Shows the create character category page.
      *
@@ -43,11 +43,12 @@ class CharacterCategoryController extends Controller
     public function getCreateCharacterCategory()
     {
         return view('admin.characters.create_edit_character_category', [
+            'lineageBlacklist' => null,
             'category' => new CharacterCategory,
             'sublists' => [0 => 'No Sublist'] + Sublist::orderBy('name', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
-    
+
     /**
      * Shows the edit character category page.
      *
@@ -94,7 +95,7 @@ class CharacterCategoryController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Gets the character category deletion modal.
      *
