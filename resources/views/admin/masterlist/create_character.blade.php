@@ -199,6 +199,13 @@
         {!! Form::select('species_id', $specieses, old('species_id'), ['class' => 'form-control', 'id' => 'species']) !!}
     </div>
 
+    <div class="card mb-3 hide" id="dropOptions">
+        <div class="card-body" id="groups">
+            {!! Form::label('Group (Optional)') !!} {!! add_help('This is used for character drops. If no value is set, it will be randomly rolled from the species\' groups.') !!}
+            {!! Form::select('parameters', $parameters, old('parameters'), ['class' => 'form-control', 'id' => 'parameter']) !!}
+        </div>
+    </div>
+
     <div class="form-group" id="subtypes">
         {!! Form::label('Subtype (Optional)') !!} @if($isMyo) {!! add_help('This will lock the slot into a particular subtype. Leave it blank if you would like to give the user a choice, or not select a subtype. The subtype must match the species selected above, and if no species is specified, the subtype will not be applied.') !!} @endif
         {!! Form::select('subtype_id', $subtypes, old('subtype_id'), ['class' => 'form-control disabled', 'id' => 'subtype']) !!}
@@ -244,6 +251,16 @@
       $.ajax({
         type: "GET", url: "{{ url('admin/masterlist/check-subtype') }}?species="+species+"&myo="+myo, dataType: "text"
       }).done(function (res) { $("#subtypes").html(res); }).fail(function (jqXHR, textStatus, errorThrown) { alert("AJAX call failed: " + textStatus + ", " + errorThrown); });
+
+      var $dropOptions = $('#dropOptions');
+      var $dropSpecieses = '<?php echo(json_encode($dropSpecies)); ?>';
+      if($dropSpecieses.includes(species)) {
+          $dropOptions.removeClass('hide');
+          $.ajax({
+            type: "GET", url: "{{ url('admin/masterlist/check-group') }}?species="+species+"&myo="+myo, dataType: "text"
+            }).done(function (res) { $("#groups").html(res); }).fail(function (jqXHR, textStatus, errorThrown) { alert("AJAX call failed: " + textStatus + ", " + errorThrown); });
+        }
+      else $dropOptions.addClass('hide');
     });
 </script>
 

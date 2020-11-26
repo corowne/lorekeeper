@@ -164,14 +164,14 @@ class CharacterDrop extends Model
      *
      * @param int              $id
      */
-    public function createDrop($id)
+    public function createDrop($id, $parameters = null)
     {
         $character = Character::find($id);
         $dropData = $character->image->species->dropData;
         $drop = $this->create([
             'drop_id' => $dropData->id,
             'character_id' => $id,
-            'parameters' => $dropData->rollParameters(),
+            'parameters' => $parameters ? $parameters : $dropData->rollParameters(),
             'drops_available' => 0,
             'next_day' => Carbon::now()->add($dropData->data['frequency']['frequency'], $dropData->data['frequency']['interval'])->startOf($dropData->data['frequency']['interval']),
         ]);
