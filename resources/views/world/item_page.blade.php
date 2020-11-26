@@ -67,7 +67,7 @@
                             @if((isset($item->uses) && $item->uses || isset($item->source) && $item->source || $shops->count() || isset($item->data['prompts']) && $item->data['prompts']) && Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields'))
 
                                 @if(isset($item->uses) && $item->uses)  <p><strong>Uses:</strong> {!! $item->uses !!}</p> @endif
-                                @if(isset($item->source) && $item->source || isset($item->data['shops']) && $item->data['shops'] || isset($item->data['prompts']) && $item->data['prompts'])
+                                @if(isset($item->source) && $item->source || $shops->count() || isset($item->data['prompts']) && $item->data['prompts'])
                                 <h5>Availability</h5>
                                 <div class="row">
                                     @if(isset($item->data['release']) && $item->data['release'])
