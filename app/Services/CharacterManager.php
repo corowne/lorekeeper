@@ -126,7 +126,6 @@ class CharacterManager extends Service
 
             // Create character lineage
             $lineage = $this->handleCharacterLineage($data, $character, $isMyo);
-            if(!$lineage) throw new \Exception("Error happened while trying to create lineage.");
 
             // Create character image
             $data['is_valid'] = true; // New image of new characters are always valid
@@ -395,6 +394,9 @@ class CharacterManager extends Service
                 'dam_dam',
             ];
 
+            // check if lineage is empty ...
+            $isEmpty = true;
+
             // Checking inputs ?
             for ($i=0; $i < 14; $i++) {
                 // if isset Data key_id, set Lineage key_id and check if that character exists?
@@ -406,14 +408,16 @@ class CharacterManager extends Service
 
                     // TODO Set name to be the slug of the character.
                     $lineageData[$roots[$i].'_name'] = $char->slug;
+                    $isEmpty = false;
                 }
                 else if (isset($data[$roots[$i].'_name'])) {
                     $lineageData[$roots[$i].'_name'] = $data[$roots[$i].'_name'];
+                    $isEmpty = $data[$roots[$i].'_name'] == "" ? $isEmpty : false;
                 }
             }
 
             //TODO: Fill from ancestor(s) IF ancestor fill is checked.
-            if (isset($data['generate_ancestors']))
+            if (isset($data['generate_ancestors']) && !$isEmpty)
             {
                 for ($j=0; $j < 6; $j++) {
                     $key = $shortlist[$j];
@@ -444,7 +448,7 @@ class CharacterManager extends Service
             }
             // throw new \Exception('Everything went right, we hope.');
 
-            $lineage = CharacterLineage::create($lineageData);
+            $lineage = $isEmpty ? null : CharacterLineage::create($lineageData);
             return $lineage;
         } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
