@@ -38,9 +38,9 @@ class CharacterLineageBlacklist extends Model
      *
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public static function getBlacklistCategories()
+    public static function getBlacklistCategories($level = "*")
     {
-        return CharacterLineageBlacklist::getIdList('category');
+        return CharacterLineageBlacklist::getIdList('category', $level);
     }
 
     /**
@@ -48,9 +48,9 @@ class CharacterLineageBlacklist extends Model
      *
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public static function getBlacklistSpecies()
+    public static function getBlacklistSpecies($level = "*")
     {
-        return CharacterLineageBlacklist::getIdList('species');
+        return CharacterLineageBlacklist::getIdList('species', $level);
     }
 
     /**
@@ -58,9 +58,9 @@ class CharacterLineageBlacklist extends Model
      *
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public static function getBlacklistSubtypes()
+    public static function getBlacklistSubtypes($level = "*")
     {
-        return CharacterLineageBlacklist::getIdList('subtype');
+        return CharacterLineageBlacklist::getIdList('subtype', $level);
     }
 
     /**
@@ -68,9 +68,9 @@ class CharacterLineageBlacklist extends Model
      *
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public static function getBlacklistRarities()
+    public static function getBlacklistRarities($level = "*")
     {
-        return CharacterLineageBlacklist::getIdList('rarity');
+        return CharacterLineageBlacklist::getIdList('rarity', $level);
     }
 
     /**
@@ -78,9 +78,10 @@ class CharacterLineageBlacklist extends Model
      *
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public static function getIdList($type)
+    public static function getIdList($type, $level)
     {
         return CharacterLineageBlacklist::where('type', $type)
+            ->where('complete_removal', $level)
             ->pluck('type_id')
             ->toArray();
     }

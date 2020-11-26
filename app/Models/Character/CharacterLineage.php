@@ -171,7 +171,7 @@ class CharacterLineage extends Model
         $children_ids = CharacterLineage::where('sire_id', $id)->orWhere('dam_id', $id)->get()->pluck('character_id');
         if(count($children_ids) == 0 || $children_ids == null) return null;
 
-        $children = Character::whereIn('id', $children_ids)->where('is_visible', true)->orderBy('is_myo_slot', 'asc');
+        $children = CharacterLineage::getFilteredDescendants($children_ids);
         if($limit) $children->take(4);
 
         return $children->get();
@@ -191,7 +191,7 @@ class CharacterLineage extends Model
             ->get()->pluck('character_id');
         if(count($children_ids) == 0 || $children_ids == null) return null;
 
-        $children = Character::whereIn('id', $children_ids)->where('is_visible', true)->orderBy('is_myo_slot', 'asc');
+        $children = CharacterLineage::getFilteredDescendants($children_ids);
         if($limit) $children->take(4);
 
         return $children->get();
@@ -215,9 +215,28 @@ class CharacterLineage extends Model
             ->get()->pluck('character_id');
         if(count($children_ids) == 0 || $children_ids == null) return null;
 
-        $children = Character::whereIn('id', $children_ids)->where('is_visible', true)->orderBy('is_myo_slot', 'asc');
+        $children = CharacterLineage::getFilteredDescendants($children_ids);
         if($limit) $children->take(4);
 
         return $children->get();
+    }
+
+    /**
+     * Gets filtered descendents from id array
+     *
+     * @return array
+     */
+    public static function getFilteredDescendants($children_ids)
+    {
+        if(count($children_ids) == 0 || $children_ids == null) return null;
+
+        return Character::whereIn('characters.id', $children_ids)
+            ->where('characters.is_visible', true)
+            ->whereNotIn('character_category_id', CharacterLineageBlacklist::getBlacklistCategories(true))
+            ->whereNotIn('rarity_id', CharacterLineageBlacklist::getBlacklistRarities(true))
+            ->join('character_images', 'characters.character_image_id', '=', 'character_images.id')
+            ->whereNotIn('species_id', CharacterLineageBlacklist::getBlacklistSpecies(true))
+            ->whereNotIn('suptype_id', CharacterLineageBlacklist::getBlacklistSubtypes(true))
+            ->orderBy('is_myo_slot', 'asc');
     }
 }
