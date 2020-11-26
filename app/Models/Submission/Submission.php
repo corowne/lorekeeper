@@ -33,65 +33,65 @@ class Submission extends Model
      * @var string
      */
     public $timestamps = true;
-    
+
     /**
      * Validation rules for submission creation.
      *
      * @var array
      */
     public static $createRules = [
-        'url' => 'required',
+        'url' => 'required|url',
     ];
-    
+
     /**
      * Validation rules for submission updating.
      *
      * @var array
      */
     public static $updateRules = [
-        'url' => 'required',
+        'url' => 'required|url',
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the prompt this submission is for.
      */
-    public function prompt() 
+    public function prompt()
     {
         return $this->belongsTo('App\Models\Prompt\Prompt', 'prompt_id');
     }
-    
+
     /**
      * Get the user who made the submission.
      */
-    public function user() 
+    public function user()
     {
         return $this->belongsTo('App\Models\User\User', 'user_id');
     }
-    
+
     /**
      * Get the staff who processed the submission.
      */
-    public function staff() 
+    public function staff()
     {
         return $this->belongsTo('App\Models\User\User', 'staff_id');
     }
-    
+
     /**
      * Get the characters attached to the submission.
      */
-    public function characters() 
+    public function characters()
     {
         return $this->hasMany('App\Models\Submission\SubmissionCharacter', 'submission_id');
     }
 
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -145,7 +145,7 @@ class Submission extends Model
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
