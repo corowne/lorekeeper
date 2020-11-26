@@ -87,15 +87,15 @@ class CharacterLineageBlacklist extends Model
 
     /**
      * Grabs the blacklist level of the character.
-     * Returns true if blacklisted.
-     * Returns false if greylisted.
-     * Returns null if not blacklisted.
+     * Returns 2 if blacklisted.
+     * Returns 1 if greylisted.
+     * Returns 0 if not blacklisted.
      *
      * @return boolean|null
      */
     public static function getBlacklistLevel($character)
     {
-        return null;
+        return 0;
     }
 
     /**
@@ -119,5 +119,40 @@ class CharacterLineageBlacklist extends Model
             ->toArray();
 
         return $query;
+    }
+
+    /**
+     * Adds, update or removes a blacklist entry for the specified type and ID.
+     *
+     * @param  int     $level
+     * @param  string  $type
+     * @param  int     $typeID
+     *
+     * @return App\Models\Character\CharacterLineageBlacklist|null
+     */
+    public static function searchAndSet($level, $type, $typeID)
+    {
+        $blacklistEntry = CharacterLineageBlacklist::where('type', $type)->where('type_id', $typeID)->get()->first();
+        $blacklist = false;
+        if(isset($level)) $blacklist = ($level == 1 || $level == 2);
+
+        if($blacklist) {
+            // should have a blacklist, search and create or update
+            if($blacklistEntry) {
+                $blacklistEntry->complete_removal = ($level == 2);
+                $blacklistEntry->save();
+            } else {
+                $blacklistEntry = CharacterLineageBlacklist::create([
+                    'type' => $type,
+                    'type_id' => $typeID,
+                    'complete_removal' => ($level == 2),
+                ], false);
+            }
+            return $blacklistEntry;
+        } else {
+            // should have no blacklist, search and destroy
+            if($blacklistEntry) $blacklistEntry->delete();
+            return null;
+        }
     }
 }

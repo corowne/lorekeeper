@@ -42,7 +42,7 @@ class CharacterCategoryService extends Service
             else $data['has_image'] = 0;
 
             $category = CharacterCategory::create($data);
-            $this->handleLineageBlacklist($data, $category);
+            CharacterLineageBlacklist::searchAndSet($data['lineage-blacklist'], 'category', $category->id);
 
             if ($image) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
 
@@ -69,7 +69,7 @@ class CharacterCategoryService extends Service
             if(CharacterCategory::where('code', $data['code'])->where('id', '!=', $category->id)->exists()) throw new \Exception("The code has already been taken.");
 
             $data = $this->populateCategoryData($data, $category);
-            $blacklist = $this->handleLineageBlacklist($data, $category);
+            $blacklist = CharacterLineageBlacklist::searchAndSet($data['lineage-blacklist'], 'category', $category->id);
 
             $image = null;
             if(isset($data['image']) && $data['image']) {
@@ -164,37 +164,5 @@ class CharacterCategoryService extends Service
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
-    }
-
-    /**
-     * Handles the lineage blacklist creation, deletion and updates.
-     *
-     * @param  array  $data
-     * @param  $category
-     */
-    public function handleLineageBlacklist($data, $category)
-    {
-        $blacklistEntry = CharacterLineageBlacklist::where('type', 'category')->where('type_id', $category->id)->get()->first();
-        $blacklist = false;
-        if(isset($data['lineage-blacklist'])) $blacklist = ($data['lineage-blacklist'] == 1 || $data['lineage-blacklist'] == 2);
-
-        if($blacklist) {
-            // should have a blacklist, search and create or update
-            if($blacklistEntry) {
-                $blacklistEntry->complete_removal = ($data['lineage-blacklist'] == 2);
-                $blacklistEntry->save();
-            } else {
-                $blacklistEntry = CharacterLineageBlacklist::create([
-                    'type' => 'category',
-                    'type_id' => $category->id,
-                    'complete_removal' => ($data['lineage-blacklist'] == 2),
-                ], false);
-            }
-            return $blacklistEntry;
-        } else {
-            // should have no blacklist, search and destroy
-            if($blacklistEntry) $blacklistEntry->delete();
-            return null;
-        }
     }
 }
