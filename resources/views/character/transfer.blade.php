@@ -51,7 +51,10 @@
             {!! Form::label('recipient_id', 'Recipient') !!}
             {!! Form::select('recipient_id', $userOptions, old('recipient_id'), ['class' => 'form-control selectize', 'placeholder' => 'Select User']) !!}
         </div>
-
+        <div class="form-group">
+            {!! Form::label('user_reason', 'Reason for Transfer (Required)') !!}
+            {!! Form::text('user_reason', '', ['class' => 'form-control']) !!}
+        </div>
         <div class="text-right">
             {!! Form::submit('Send Transfer', ['class' => 'btn btn-primary']) !!}
         </div>
