@@ -48,12 +48,12 @@
 {!! Form::close() !!}
 
 <h3>Aliases</h3>
-<p>As users are supposed to verify that they own their account(s) themselves, aliases cannot be edited directly. If a user wants to change their alias, clear it here and ask them to go through the verification process again while logged into their new account.</p>
+<p>As users are supposed to verify that they own their account(s) themselves, aliases cannot be edited directly. If a user wants to change their alias, clear it here and ask them to go through the verification process again while logged into their new account. If the alias is the user's primary alias, their remaining aliases will be checked to see if they have a valid primary alias. If they do, it will become their new primary alias.</p>
 @if($user->aliases->count())
     @foreach($user->aliases as $alias)
     <div class="form-group d-flex">
         <label class="mr-2">Alias{{ $alias->is_primary_alias ? ' (Primary)' : '' }}</label>
-        {!! Form::text('alias', $alias->alias.'@'.$alias->site, ['class' => 'form-control', 'disabled']) !!}
+        {!! Form::text('alias', $alias->alias.'@'.$alias->site.(!$alias->is_visible ? ' (Hidden)' : ''), ['class' => 'form-control', 'disabled']) !!}
         {!! Form::open(['url' => 'admin/users/'.$user->name.'/alias/'.$alias->id]) !!}
         <div class="text-right ml-2">{!! Form::submit('Clear Alias', ['class' => 'btn btn-danger']) !!}</div>
         {!! Form::close() !!}

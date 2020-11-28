@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Users;
 
 use DB;
 use Auth;
+use Config;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -118,16 +119,30 @@ class UserController extends Controller
         $alias = UserAlias::find($id);
 
         $logData = ['old_alias' => $user ? $alias : null];
-        if(!$user) {
-            flash('Invalid user.')->error();
-        }
-        if(!$alias) {
-            flash('Invalid alias.')->error();
-        }
+        $isPrimary = $alias->is_primary_alias;
+
+        if(!$user) flash('Invalid user.')->error();
+        else if(!$alias) flash('Invalid alias.')->error();
         else if (!Auth::user()->canEditRank($user->rank)) {
             flash('You cannot edit the information of a user that has a higher rank than yourself.')->error();
         }
         else if($alias && $alias->delete()) {
+            // If this was the user's primary alias, check if they have any remaining valid primary aliases
+            // or any remaining aliases at all, and update accordingly
+            if($isPrimary) {
+                if(!$user->aliases->count()) $user->update(['has_alias' => 0]);
+                else {
+                    // Hidden aliases are excluded as a courtesy measure (users may not want them forced visible for any number of reasons)
+                    foreach($user->aliases as $alias) {
+                        if(Config::get('lorekeeper.sites.'.$alias->site.'.auth') && Config::get('lorekeeper.sites.'.$alias->site.'.primary_alias') && $alias->is_visible) {
+                            $alias->update(['is_primary_alias' => 1]);
+                            break;
+                        }
+                    }
+                    // If the user does not have a remaining valid primary alias after this check, update accordingly
+                    if(!$user->primaryAlias) $user->update(['has_alias' => 0]);
+                }
+            }
             UserUpdateLog::create(['staff_id' => Auth::user()->id, 'user_id' => $user->id, 'data' => json_encode($logData), 'type' => 'Clear Alias']);
             flash('Cleared user\'s alias successfully.')->success();
         }
