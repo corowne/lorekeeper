@@ -61,7 +61,7 @@ class UserController extends Controller
     {
         return view('user.profile', [
             'user' => $this->user,
-            'items' => $this->user->items()->orderBy('user_items.updated_at', 'DESC')->where('count', '>', 0)->take(4)->get(),
+            'items' => $this->user->items()->where('count', '>', 0)->orderBy('user_items.updated_at', 'DESC')->take(4)->get(),
             'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
