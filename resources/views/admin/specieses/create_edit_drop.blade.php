@@ -53,8 +53,8 @@
 <h4>Drop Frequency</h4>
 Select how often drops should occur.
 <div class="d-flex my-2">
-    {!! Form::number('drop_frequency', $drop->data['frequency']['frequency'], ['class' => 'form-control mr-2', 'placeholder' => 'Drop Frequency']) !!}
-    {!! Form::select('drop_interval', ['hour' => 'Hour', 'day' => 'Day', 'month' => 'Month', 'year' => 'Year'], $drop->data['frequency']['interval'], ['class' => 'form-control mr-2 default item-select', 'placeholder' => 'Drop Interval']) !!}
+    {!! Form::number('drop_frequency', $drop->id ? $drop->data['frequency']['frequency'] : null, ['class' => 'form-control mr-2', 'placeholder' => 'Drop Frequency']) !!}
+    {!! Form::select('drop_interval', ['hour' => 'Hour', 'day' => 'Day', 'month' => 'Month', 'year' => 'Year'], $drop->id ? $drop->data['frequency']['interval'] : null, ['class' => 'form-control mr-2 default item-select', 'placeholder' => 'Drop Interval']) !!}
 </div>
 
 <div class="form-group">
@@ -82,7 +82,7 @@ Select how often drops should occur.
             </div>
         @endforeach
     </div>
-    
+
     <h3>Subtypes</h3>
     @if($drop->species->subtypes->count())
         @foreach($drop->species->subtypes as $subtype)
@@ -136,7 +136,7 @@ Select how often drops should occur.
 @section('scripts')
 @parent
 <script>
-$( document ).ready(function() {    
+$( document ).ready(function() {
     $('.delete-drop-button').on('click', function(e) {
         e.preventDefault();
         loadModal("{{ url('admin/data/character-drops/delete') }}/{{ $drop->id }}", 'Delete Drop');
@@ -217,7 +217,7 @@ $( document ).ready(function() {
             weights.push(current);
         });
 
-        
+
         $('#lootTableBody .drop-row-chance').each(function( index ) {
             var current = (weights[index] / total) * 100;
             $(this).html(current.toString() + '%');
@@ -226,6 +226,6 @@ $( document ).ready(function() {
 
     $('.default.item-select').selectize();
 });
-    
+
 </script>
 @endsection
