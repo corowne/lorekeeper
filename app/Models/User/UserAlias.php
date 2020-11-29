@@ -25,21 +25,21 @@ class UserAlias extends Model
     protected $table = 'user_aliases';
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the user this set of settings belongs to.
      */
-    public function user() 
+    public function user()
     {
         return $this->belongsTo('App\Models\User\User', 'user_id');
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -56,7 +56,7 @@ class UserAlias extends Model
     }
 
     /**
-     * Displays the user's alias, linked to the appripriate site.
+     * Displays the user's alias, linked to the appropriate site.
      *
      * @return string
      */

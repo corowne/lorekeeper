@@ -68,7 +68,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public $timestamps = true;
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -76,7 +76,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get user settings.
      */
-    public function settings() 
+    public function settings()
     {
         return $this->hasOne('App\Models\User\UserSettings');
     }
@@ -84,23 +84,23 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get user-editable profile data.
      */
-    public function profile() 
+    public function profile()
     {
         return $this->hasOne('App\Models\User\UserProfile');
     }
 
     /**
-     * Get the user's notifications.
+     * Get the user's aliases.
      */
-    public function aliases() 
+    public function aliases()
     {
         return $this->hasMany('App\Models\User\UserAlias');
     }
 
     /**
-     * Get the user's notifications.
+     * Get the user's primary alias.
      */
-    public function primaryAlias() 
+    public function primaryAlias()
     {
         return $this->hasOne('App\Models\User\UserAlias')->where('is_primary_alias', 1);
     }
@@ -108,43 +108,43 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get the user's notifications.
      */
-    public function notifications() 
+    public function notifications()
     {
         return $this->hasMany('App\Models\Notification');
     }
-    
+
     /**
      * Get all the user's characters, regardless of whether they are full characters of myo slots.
      */
-    public function allCharacters() 
+    public function allCharacters()
     {
         return $this->hasMany('App\Models\Character\Character')->orderBy('sort', 'DESC');
     }
-    
+
     /**
      * Get the user's characters.
      */
-    public function characters() 
+    public function characters()
     {
         return $this->hasMany('App\Models\Character\Character')->where('is_myo_slot', 0)->orderBy('sort', 'DESC');
     }
-    
+
     /**
      * Get the user's MYO slots.
      */
-    public function myoSlots() 
+    public function myoSlots()
     {
         return $this->hasMany('App\Models\Character\Character')->where('is_myo_slot', 1)->orderBy('id', 'DESC');
     }
-    
+
     /**
      * Get the user's rank data.
      */
-    public function rank() 
+    public function rank()
     {
         return $this->belongsTo('App\Models\Rank\Rank');
     }
-    
+
     /**
      * Get the user's items.
      */
@@ -154,7 +154,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -171,7 +171,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -191,7 +191,7 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @return bool
      */
-    public function getHasAliasAttribute() 
+    public function getHasAliasAttribute()
     {
         return $this->attributes['has_alias'];
     }
@@ -223,7 +223,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function hasPower($power)
     {
-        return $this->rank->hasPower($power); 
+        return $this->rank->hasPower($power);
     }
 
     /**
@@ -308,7 +308,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**********************************************************************************************
-    
+
         OTHER FUNCTIONS
 
     **********************************************************************************************/
@@ -444,23 +444,23 @@ class User extends Authenticatable implements MustVerifyEmail
             // Find all urls from the same site as this alias
             foreach($urlCharacters as $key=>$character) preg_match_all(Config::get('lorekeeper.sites.'.$alias->site.'.regex'), $character, $matches[$key]);
             // Find all alias matches within those, and update the character's owner
-            foreach($matches as $key=>$match) if($match[1] != [] && $match[1][0] == $alias->alias) {Character::find($key)->update(['owner_url' => null, 'user_id' => $this->id]); $count += 1;}
+            foreach($matches as $key=>$match) if($match[1] != [] && strtolower($match[1][0]) == strtolower($alias->alias)) {Character::find($key)->update(['owner_url' => null, 'user_id' => $this->id]); $count += 1;}
         }
 
-        // 
+        //
         if($count > 0) {
             $this->settings->is_fto = 0;
         }
         $this->settings->save();
     }
 
-    /**     
+    /**
      * Checks if there are art or design credits credited to the user's alias and credits them to their account accordingly.
-     */    
-    public function updateArtDesignCredits()    
+     */
+    public function updateArtDesignCredits()
     {
         if(!$this->hasAlias) return;
-        
+
         // Pluck alias from url and check for matches
         $urlCreators = CharacterImageCreator::whereNotNull('url')->pluck('url','id');
         $matches = [];
@@ -468,7 +468,7 @@ class User extends Authenticatable implements MustVerifyEmail
             // Find all urls from the same site as this alias
             foreach($urlCreators as $key=>$creator) preg_match_all(Config::get('lorekeeper.sites.'.$alias->site.'.regex'), $creator, $matches[$key]);
             // Find all alias matches within those, and update the relevant CharacterImageCreator
-            foreach($matches as $key=>$match) if($match[1] != [] && $match[1][0] == $alias->alias) CharacterImageCreator::find($key)->update(['url' => null, 'user_id' => $this->id]);
+            foreach($matches as $key=>$match) if($match[1] != [] && strtolower($match[1][0]) == strtolower($alias->alias)) CharacterImageCreator::find($key)->update(['url' => null, 'user_id' => $this->id]);
         }
     }
 
@@ -477,9 +477,9 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getSubmissions()
+    public function getSubmissions($user = null)
     {
-        return Submission::with('user')->with('prompt')->where('status', 'Approved')->where('user_id', $this->id)->orderBy('id', 'DESC')->paginate(30);
+        return Submission::with('user')->with('prompt')->viewable($user ? $user : null)->where('user_id', $this->id)->orderBy('id', 'DESC')->paginate(30);
     }
 
     /**

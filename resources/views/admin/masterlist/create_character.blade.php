@@ -25,7 +25,7 @@
     @endif
 
     <div class="alert alert-info">
-        Fill in either of the owner fields - you can select a user from the list if they have registered for the site, or enter the url of their off-site profile, such as their deviantArt profile, if they don't have an account. If the owner registers an account later and links their account, {{ $isMyo ? 'MYO slot' : 'character' }}s linked to that account's profile will automatically be credited to their site account. If both fields are filled, the url field will be ignored.
+        Fill in either of the owner fields - you can select a user from the list if they have registered for the site, or enter the URL of their off-site profile, such as their deviantArt profile, if they don't have an account. If the owner registers an account later and links their account, {{ $isMyo ? 'MYO slot' : 'character' }}s linked to that account's profile will automatically be credited to their site account. If both fields are filled, the URL field will be ignored.
     </div>
 
     <div class="row">
@@ -37,7 +37,7 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                {!! Form::label('Owner Url (Optional)') !!}
+                {!! Form::label('Owner URL (Optional)') !!}
                 {!! Form::text('owner_url', old('owner_url'), ['class' => 'form-control']) !!}
             </div>
         </div>
@@ -131,6 +131,21 @@
         @endif
         <div>{!! Form::file('image', ['id' => 'mainImage']) !!}</div>
     </div>
+@if (Config::get('lorekeeper.settings.masterlist_image_automation') === 1)
+    <div class="form-group">
+        {!! Form::checkbox('use_cropper', 1, 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'useCropper']) !!}
+        {!! Form::label('use_cropper', 'Use Thumbnail Automation', ['class' => 'form-check-label ml-3']) !!} {!! add_help('A thumbnail is required for the upload (used for the masterlist). You can use the Thumbnail Automation, or upload a custom thumbnail.') !!}
+    </div>
+    <div class="card mb-3" id="thumbnailCrop">
+        <div class="card-body">
+            <div id="cropSelect">By using this function, the thumbnail will be automatically generated from the full image.</div>
+            {!! Form::hidden('x0', 1) !!}
+            {!! Form::hidden('x1', 1) !!}
+            {!! Form::hidden('y0', 1) !!}
+            {!! Form::hidden('y1', 1) !!}
+        </div>
+    </div>
+@else
     <div class="form-group">
         {!! Form::checkbox('use_cropper', 1, 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'useCropper']) !!}
         {!! Form::label('use_cropper', 'Use Image Cropper', ['class' => 'form-check-label ml-3']) !!} {!! add_help('A thumbnail is required for the upload (used for the masterlist). You can use the image cropper (crop dimensions can be adjusted in the site code), or upload a custom thumbnail.') !!}
@@ -145,6 +160,7 @@
             {!! Form::hidden('y1', null, ['id' => 'cropY1']) !!}
         </div>
     </div>
+@endif
     <div class="card mb-3" id="thumbnailUpload">
         <div class="card-body">
             {!! Form::label('Thumbnail Image') !!} {!! add_help('This image is shown on the masterlist page.') !!}

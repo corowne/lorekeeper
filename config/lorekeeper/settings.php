@@ -166,6 +166,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Masterlist Image Automation Replacing Cropper
+    |--------------------------------------------------------------------------
+    |
+    | This feature will replace the thumbnail cropper as option at image uploads.
+    | It will automatically add transparent borders to the images to make them square,
+    | based on the bigger dimension (between width/height).
+    | Thumbnails will effectively be small previews of the full masterlist images.
+    | This feature will not replace the manual uploading of thumbnails.
+    |
+    | Simply change to "1" to enable, or keep at "0" to disable.
+    |
+    */
+    'masterlist_image_automation' => 0,
+
+    /*
+    |--------------------------------------------------------------------------
     | Trade Asset Limit
     |--------------------------------------------------------------------------
     |

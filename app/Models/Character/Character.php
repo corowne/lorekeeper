@@ -39,8 +39,8 @@ class Character extends Model
      * @var array
      */
     protected $fillable = [
-        'character_image_id', 'character_category_id', 'rarity_id', 'user_id', 
-        'owner_alias', 'number', 'slug', 'description', 'parsed_description', 
+        'character_image_id', 'character_category_id', 'rarity_id', 'user_id',
+        'owner_alias', 'number', 'slug', 'description', 'parsed_description',
         'is_sellable', 'is_tradeable', 'is_giftable',
         'sale_value', 'transferrable_at', 'is_visible',
         'is_gift_art_allowed', 'is_gift_writing_allowed', 'is_trading', 'sort',
@@ -74,7 +74,7 @@ class Character extends Model
      * @var array
      */
     public $appends = ['is_available'];
-    
+
     /**
      * Validation rules for character creation.
      *
@@ -90,8 +90,9 @@ class Character extends Model
         'sale_value' => 'nullable',
         'image' => 'required|mimes:jpeg,gif,png|max:20000',
         'thumbnail' => 'nullable|mimes:jpeg,gif,png|max:20000',
+        'owner_url' => 'url|nullable',
     ];
-    
+
     /**
      * Validation rules for character updating.
      *
@@ -104,7 +105,7 @@ class Character extends Model
         'description' => 'nullable',
         'sale_value' => 'nullable',
     ];
-    
+
     /**
      * Validation rules for MYO slots.
      *
@@ -123,39 +124,39 @@ class Character extends Model
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the user who owns the character.
      */
-    public function user() 
+    public function user()
     {
         return $this->belongsTo('App\Models\User\User', 'user_id');
     }
-    
+
     /**
      * Get the category the character belongs to.
      */
-    public function category() 
+    public function category()
     {
         return $this->belongsTo('App\Models\Character\CharacterCategory', 'character_category_id');
     }
-    
+
     /**
      * Get the masterlist image of the character.
      */
-    public function image() 
+    public function image()
     {
         return $this->belongsTo('App\Models\Character\CharacterImage', 'character_image_id');
     }
-    
+
     /**
      * Get all images associated with the character.
      */
-    public function images($user = null) 
+    public function images($user = null)
     {
         return $this->hasMany('App\Models\Character\CharacterImage', 'character_id')->images($user);
     }
@@ -163,7 +164,7 @@ class Character extends Model
     /**
      * Get the user-editable profile data of the character.
      */
-    public function profile() 
+    public function profile()
     {
         return $this->hasOne('App\Models\Character\CharacterProfile', 'character_id');
     }
@@ -171,23 +172,23 @@ class Character extends Model
     /**
      * Get the character's active design update.
      */
-    public function designUpdate() 
+    public function designUpdate()
     {
         return $this->hasMany('App\Models\Character\CharacterDesignUpdate', 'character_id');
     }
-    
+
     /**
      * Get the trade this character is attached to.
      */
-    public function trade() 
+    public function trade()
     {
         return $this->belongsTo('App\Models\Trade', 'trade_id');
     }
-    
+
     /**
      * Get the rarity of this character.
      */
-    public function rarity() 
+    public function rarity()
     {
         return $this->belongsTo('App\Models\Rarity', 'rarity_id');
     }
@@ -213,7 +214,7 @@ class Character extends Model
     }
 
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -268,7 +269,7 @@ class Character extends Model
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -285,9 +286,9 @@ class Character extends Model
         if(CharacterTransfer::active()->where('character_id', $this->id)->exists()) return false;
         return true;
     }
-    
+
     /**
-     * Display the owner's name. 
+     * Display the owner's name.
      * If the owner is not a registered user on the site, this displays the owner's dA name.
      *
      * @return string
@@ -309,7 +310,7 @@ class Character extends Model
         if($this->is_myo_slot) return $this->name;
         else return $this->attributes['slug'];
     }
-    
+
     /**
      * Displays the character's name, linked to their character page.
      *
@@ -364,7 +365,7 @@ class Character extends Model
     }
 
     /**********************************************************************************************
-    
+
         OTHER FUNCTIONS
 
     **********************************************************************************************/
@@ -388,7 +389,7 @@ class Character extends Model
             $owner->settings->save();
         }
     }
-    
+
     /**
      * Get the character's held currencies.
      *
@@ -427,7 +428,7 @@ class Character extends Model
     {
         return CharacterCurrency::where('character_id', $this->id)->leftJoin('currencies', 'character_currencies.currency_id', '=', 'currencies.id')->orderBy('currencies.sort_character', 'DESC')->get()->pluck('name_with_quantity', 'currency_id')->toArray();
     }
-    
+
     /**
      * Get the character's currency logs.
      *
@@ -501,10 +502,10 @@ class Character extends Model
         //$character = $this;
         //return Submission::where('status', 'Approved')->with(['characters' => function($query) use ($character) {
         //    $query->where('submission_characters.character_id', 1);
-        //}])  
+        //}])
         //->whereHas('characters', function($query) use ($character) {
         //    $query->where('submission_characters.character_id', 1);
-        //});  
+        //});
         //return Submission::where('status', 'Approved')->where('user_id', $this->id)->orderBy('id', 'DESC')->paginate(30);
     }
 
@@ -538,7 +539,7 @@ class Character extends Model
             // they still have a bookmark on the character after it was transferred to them
             $bookmarkers = CharacterBookmark::where('character_id', $this->id)->where('user_id', '!=', $this->user_id);
             if($column) $bookmarkers = $bookmarkers->where($column, 1);
-            
+
             $bookmarkers = User::whereIn('id', $bookmarkers->pluck('user_id')->toArray())->get();
 
             // This may have to be redone more efficiently in the case of large numbers of bookmarkers,
@@ -548,6 +549,6 @@ class Character extends Model
                     'character_url' => $this->url,
                     'character_name' => $this->fullName
                 ]);
-        }        
+        }
     }
 }
