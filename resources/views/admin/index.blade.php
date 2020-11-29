@@ -99,7 +99,7 @@
       @endif
     @endif
     @if (Auth::user()->hasPower('manage_reports'))
-      <div class="col-sm-6">        
+      <div class="col-sm-6">
         <div class="card mb-3">
             <div class="card-body">
                 <h5 class="card-title">Reports @if($reportCount||$assignedReportCount)<span class="badge badge-primary">{{ $reportCount + $assignedReportCount }}</span>@endif</h5>
@@ -108,7 +108,7 @@
                         @if($reportCount)
                             {{ $reportCount }} report{{ $reportCount == 1 ? '' : 's' }} awaiting assignment.
                         @endif
-                        {{ $reportCount && $assignedReportCount ? '<br/>' : '' }}
+                        {!! $reportCount && $assignedReportCount ? '<br/>' : '' !!}
                         @if($assignedReportCount)
                             {{ $assignedReportCount }} report{{ $assignedReportCount == 1 ? '' : 's' }} awaiting processing.
                         @endif

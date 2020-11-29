@@ -58,11 +58,11 @@
             </div>
         </div>
         <div class="col-md">
-        {!! Form::label('Item Artist (Optional)') !!} {!! add_help('Provide the artist\'s dA alias or, failing that, a link. If both are provided, the alias will be used as the display name for the link.') !!}
+        {!! Form::label('Item Artist (Optional)') !!} {!! add_help('Provide the artist\'s username if they are on site or, failing that, a link.') !!}
             <div class="row">
                 <div class="col-md">
                     <div class="form-group">
-                        {!! Form::text('artist_alias', $item && $item->artist_alias ? $item->artist_alias : '', ['class' => 'form-control mr-2', 'placeholder' => 'Artist Alias']) !!}
+                        {!! Form::select('artist_id', $userOptions, $item && $item->artist_id ? $item->artist_id : null, ['class'=> 'form-control mr-2 selectize', 'placeholder' => 'Select a User']) !!}
                     </div>
                 </div>
                 <div class="col-md">
@@ -116,7 +116,7 @@
     <div class="row">
         <div class="col-md">
             <div class="form-group">
-                {!! Form::label('currency_id', 'Currency') !!} 
+                {!! Form::label('currency_id', 'Currency') !!}
                 {!! Form::select('currency_id', $userCurrencies, isset($item->data['resell']) ? $item->resell->flip()->pop() : null, ['class' => 'form-control']) !!}
             </div>
         </div>
@@ -155,13 +155,13 @@
                 </tr>
             @endforeach
         </table>
-    @else 
-        <p>No item tags attached to this item.</p> 
+    @else
+        <p>No item tags attached to this item.</p>
     @endif
     <div class="text-right">
         <a href="{{ url('admin/data/items/tag/'.$item->id) }}" class="btn btn-outline-primary">Add a Tag</a>
     </div>
-    
+
     <h3>Preview</h3>
     <div class="card mb-3">
         <div class="card-body">
@@ -175,20 +175,18 @@
 @section('scripts')
 @parent
 <script>
-$( document ).ready(function() {    
-    $('#shopsList').selectize({
-            maxItems: 10
-        });
+$( document ).ready(function() {
+    $('.selectize').selectize();
 
     $('#promptsList').selectize({
         maxItems: 10
     });
-    
+
     $('.delete-item-button').on('click', function(e) {
         e.preventDefault();
         loadModal("{{ url('admin/data/items/delete') }}/{{ $item->id }}", 'Delete Item');
     });
 });
-    
+
 </script>
 @endsection

@@ -27,7 +27,7 @@
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-md-2 col-form-label">Rank 
+        <label class="col-md-2 col-form-label">Rank
             @if($user->isAdmin)
                 {!! add_help('The rank of the admin user cannot be edited.') !!}
             @elseif(!Auth::user()->canEditRank($user->rank))
@@ -47,17 +47,21 @@
     </div>
 {!! Form::close() !!}
 
-<h3>Alias</h3>
-<p>As users are supposed to verify that they own the deviantART account themselves, aliases cannot be edited directly. If a user wants to change their alias, clear it here and ask them to go through the verification process again while logged into their new account.</p>
-<div class="form-group row">
-    <label class="col-md-2 col-form-label">Alias</label>
-    <div class="col-md-10">
-        {!! Form::text('alias', $user->alias, ['class' => 'form-control', 'disabled']) !!}
+<h3>Aliases</h3>
+<p>As users are supposed to verify that they own their account(s) themselves, aliases cannot be edited directly. If a user wants to change their alias, clear it here and ask them to go through the verification process again while logged into their new account. If the alias is the user's primary alias, their remaining aliases will be checked to see if they have a valid primary alias. If they do, it will become their new primary alias.</p>
+@if($user->aliases->count())
+    @foreach($user->aliases as $alias)
+    <div class="form-group d-flex">
+        <label class="mr-2">Alias{{ $alias->is_primary_alias ? ' (Primary)' : '' }}</label>
+        {!! Form::text('alias', $alias->alias.'@'.$alias->site.(!$alias->is_visible ? ' (Hidden)' : ''), ['class' => 'form-control', 'disabled']) !!}
+        {!! Form::open(['url' => 'admin/users/'.$user->name.'/alias/'.$alias->id]) !!}
+        <div class="text-right ml-2">{!! Form::submit('Clear Alias', ['class' => 'btn btn-danger']) !!}</div>
+        {!! Form::close() !!}
     </div>
-</div>
-{!! Form::open(['url' => 'admin/users/'.$user->name.'/alias']) !!}
-    <div class="text-right">{!! Form::submit('Clear Alias', ['class' => 'btn btn-danger']) !!}</div>
-{!! Form::close() !!}
+    @endforeach
+@else
+    <p>No aliases found.</p>
+@endif
 
 <h3>Account</h3>
 
@@ -80,7 +84,7 @@
             <div class="form-check form-control-plaintext">
                 {!! Form::checkbox('is_fto', 1, $user->settings->is_fto, ['class' => 'form-check-input', 'id' => 'checkFTO']) !!}
             </div>
-            
+
         </div>
     </div>
     <div class="text-right">
