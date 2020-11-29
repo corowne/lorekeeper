@@ -14,7 +14,7 @@ class UserCharacterLog extends Model
      */
     protected $fillable = [
         'character_id', 'sender_id', 'sender_alias', 'recipient_id', 'recipient_alias',
-        'log', 'log_type', 'data',
+        'log', 'log_type', 'data', 'sender_url', 'recipient_url'
     ];
 
     /**
@@ -68,13 +68,23 @@ class UserCharacterLog extends Model
     **********************************************************************************************/
 
     /**
-     * Displays the recipient's alias, linked to their deviantART page.
+     * Displays the sender's alias, linked to their profile.
+     *
+     * @return string
+     */
+    public function getDisplaySenderAliasAttribute()
+    {
+        return prettyProfileLink($this->sender_url);
+    }
+    
+    /**
+     * Displays the recipient's alias, linked to their profile.
      *
      * @return string
      */
     public function getDisplayRecipientAliasAttribute()
     {
-        return '<a href="http://www.deviantart.com/'.$this->recipient_alias.'">'.$this->recipient_alias.'@dA</a>';
+        return prettyProfileLink($this->recipient_url);
     }
 
 }
