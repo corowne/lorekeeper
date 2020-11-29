@@ -39,7 +39,7 @@ class CharacterDropData extends Model
      * @var array
      */
     public static $createRules = [
-        'species_id' => 'required|unique:character_drops',
+        'species_id' => 'required|unique:character_drop_data',
         'drop_frequency' => 'required',
         'drop_interval' => 'required'
     ];
