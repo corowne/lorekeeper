@@ -17,19 +17,17 @@
 
     <div class="row ml-md-2">
     <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-bottom">
+        <div class="col-6 col-md-2 font-weight-bold">Active</div>
         <div class="col-12 col-md-3 font-weight-bold">Species</div>
-        <div class="col-6 col-md-2 font-weight-bold">Subtype</div>
-        <div class="col-6 col-md-2 font-weight-bold">Parameters</div>
-        <div class="col-6 col-md-2 font-weight-bold">Drop</div>
+        <div class="col-6 col-md-2 font-weight-bold">Groups</div>
     </div>
 
     @foreach($drops as $drop)
         <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-top">
+        <div class="col-6 col-md-2">{!! $drop->isActive ? '<i class="text-success fas fa-check"></i>' : '' !!}</div>
         <div class="col-12 col-md-3">{!! $drop->species->displayName !!}</div>
-        <div class="col-6 col-md-2">{!! $drop->subtype_id ? $drop->subtype->displayName : '-' !!}</div>
-        <div class="col-6 col-md-2">{!! $drop->parameters !!}</div>
-        <div class="col-6 col-md-2">{!! $drop->data !!}</div>
-        <div class="col-3 col-md-1"><a href="{{ $drop->url }}" class="btn btn-primary btn-sm py-0 px-1">Edit</a></div>
+        <div class="col-6 col-md-2">{!! implode(', ',$drop->parameterArray) !!}</div>
+        <div class="col-3 col-md text-right"><a href="{{ $drop->url }}" class="btn btn-primary btn-sm py-0 px-1">Edit</a></div>
         </div>
     @endforeach
 
