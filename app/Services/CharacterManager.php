@@ -133,7 +133,7 @@ class CharacterManager extends Service
             $character->save();
 
             // Create drop information for the character, if relevant
-            if($character->image->species->dropData) {
+            if($character->image->species && $character->image->species->dropData) {
                 $drop = new CharacterDrop;
                 if($drop->createDrop($character->id, isset($data['parameters']) && $data['parameters'] ? $data['parameters'] : null)) throw new \Exception('Failed to create character drop.');
             }
