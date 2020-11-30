@@ -52,22 +52,22 @@
         <strong>Extension Tracker</strong> by <a href="https://github.com/preimpression">Preimpression</a> (This page/the section below!)
     </p>
     <p class="mb-0">
-        <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Navbar_News_Notif"><strong>Navbar News Notif</strong></a> by <a href="https://github.com/junijwi">Junijwi</a> ({{ Config::get('navbar_news_notif') ? 'Enabled' : 'Disabled' }})
+        <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Navbar_News_Notif"><strong>Navbar News Notif</strong></a> by <a href="https://github.com/junijwi">Junijwi</a> ({{ Config::get('lorekeeper.extensions.navbar_news_notif') ? 'Enabled' : 'Disabled' }})
     </p>
     <p class="mb-0">
-        <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Species_Trait_Index"><strong>Species Trait Index</strong></a> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('species_trait_index') ? 'Enabled' : 'Disabled' }})
+        <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Species_Trait_Index"><strong>Species Trait Index</strong></a> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('lorekeeper.extensions.species_trait_index') ? 'Enabled' : 'Disabled' }})
     </p>
     <p class="mb-0">
-        <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Character_Status_Badges"><strong>Character Status Badges</strong></a> by <a href="https://github.com/junijwi">Junijwi</a> ({{ Config::get('character_status_badges') ? 'Enabled' : 'Disabled' }})
+        <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Character_Status_Badges"><strong>Character Status Badges</strong></a> by <a href="https://github.com/junijwi">Junijwi</a> ({{ Config::get('lorekeeper.extensions.character_status_badges') ? 'Enabled' : 'Disabled' }})
     </p>
     <p class="mb-0">
-        <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Character_TH_Profile_Link"><strong>Character TH Profile Link</strong></a> by <a href="https://github.com/junijwi">Junijwi</a> ({{ Config::get('character_TH_profile_link') ? 'Enabled' : 'Disabled' }})
+        <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Character_TH_Profile_Link"><strong>Character TH Profile Link</strong></a> by <a href="https://github.com/junijwi">Junijwi</a> ({{ Config::get('lorekeeper.extensions.character_TH_profile_link') ? 'Enabled' : 'Disabled' }})
     </p>
     <p class="mb-0">
-        <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Design_Update_Voting"><strong>Design Update Voting</strong></a> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('design_update_voting') ? 'Enabled' : 'Disabled' }})
+        <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Design_Update_Voting"><strong>Design Update Voting</strong></a> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('lorekeeper.extensions.design_update_voting') ? 'Enabled' : 'Disabled' }})
     </p>
     <p class="mb-0">
-        <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Item_Entry_Expansion"><strong>Item Entry Expansion</strong></a> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('design_update_voting.extra_fields') ? 'Enabled' : 'Disabled' }}/{{ Config::get('design_update_voting.resale_function') ? 'Enabled' : 'Disabled' }})
+        <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Item_Entry_Expansion"><strong>Item Entry Expansion</strong></a> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields') ? 'Enabled' : 'Disabled' }}/{{ Config::get('lorekeeper.extensions.item_entry_expansion.resale_function') ? 'Enabled' : 'Disabled' }})
     </p>
 </div>
 
