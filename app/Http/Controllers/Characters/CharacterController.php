@@ -334,7 +334,7 @@ class CharacterController extends Controller
      */
     public function getCharacterDrops($slug)
     {
-        if(!$this->character->image->species->hasDrops || !$this->character->drops->dropData->isActive) abort(404);
+        if(!$this->character->image->species->hasDrops || (!$this->character->drops->dropData->isActive && (!Auth::check() || !Auth::user()->hasPower('manage_characters')))) abort(404);
         return view('character.drops', [
             'character' => $this->character,
             'drops' => $this->character->drops
