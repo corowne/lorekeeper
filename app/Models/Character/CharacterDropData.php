@@ -88,6 +88,16 @@ class CharacterDropData extends Model
      *
      * @return array
      */
+    public function getUrlAttribute()
+    {
+        return url('admin/data/character-drops/'.$this->id);
+    }
+
+    /**
+     * Get the parameter attribute as an associative array.
+     *
+     * @return array
+     */
     public function getParametersAttribute()
     {
         return json_decode($this->attributes['parameters'], true);
