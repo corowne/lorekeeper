@@ -90,7 +90,7 @@ class CharacterDropData extends Model
      */
     public function getUrlAttribute()
     {
-        return url('admin/data/character-drops/'.$this->id);
+        return url('admin/data/character-drops/edit/'.$this->id);
     }
 
     /**
