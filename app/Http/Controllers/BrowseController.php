@@ -143,15 +143,10 @@ class BrowseController extends Controller
         if($request->get('is_tradeable')) $query->where('is_tradeable', 1);
         if($request->get('is_giftable')) $query->where('is_giftable', 1);
 
-        if($request->get('username')) {
-            $name = $request->get('username');
-
-            // Usernames are prevented from containing spaces, but this is to deal with previously made accounts with spaces in names
-            $name = str_replace('%20', ' ', $name);
-
-            $owners = User::where('name', 'LIKE', '%' . $name . '%')->orWhere('alias', 'LIKE', '%' . $name . '%')->pluck('id')->toArray();
-            $query->where(function($query) use ($owners, $name) {
-                $query->whereIn('user_id', $owners)->orWhere('owner_alias', 'LIKE', '%' . $name . '%');
+        if($request->get('owner')) {
+            $owner = User::find($request->get('owner'));
+            $query->where(function($query) use ($owner) {
+                $query->where('user_id', $owner->id);
             });
         }
 
@@ -172,21 +167,15 @@ class BrowseController extends Controller
             }
         }
         if($request->get('artist')) {
-            $artistName = $request->get('artist');
-            // Usernames are prevented from containing spaces, but this is to deal with previously made accounts with spaces in names
-            $artistName = str_replace('%20', ' ', $artistName);
-            $artists = User::where('name', 'LIKE', '%' . $artistName . '%')->pluck('id')->toArray();
-            $imageQuery->whereHas('artists', function($query) use ($artists) {
-                $query->whereIn('user_id', $artists);
+            $artist = User::find($request->get('artist'));
+            $imageQuery->whereHas('artists', function($query) use ($artist) {
+                $query->where('user_id', $artist->id);
             });
         }
         if($request->get('designer')) {
-            $designerName = $request->get('designer');
-            // Usernames are prevented from containing spaces, but this is to deal with previously made accounts with spaces in names
-            $designerName = str_replace('%20', ' ', $designerName);
-            $designers = User::where('name', 'LIKE', '%' . $designerName . '%')->pluck('id')->toArray();
-            $imageQuery->whereHas('designers', function($query) use ($designers) {
-                $query->whereIn('user_id', $designers);
+            $designer = User::find($request->get('designer'));
+            $imageQuery->whereHas('designers', function($query) use ($designer) {
+                $query->where('user_id', $designer->id);
             });
         }
 
@@ -248,7 +237,8 @@ class BrowseController extends Controller
             'subtypes' => [0 => 'Any Subtype'] + Subtype::orderBy('subtypes.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities' => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features' => Feature::orderBy('features.name')->pluck('name', 'id')->toArray(),
-            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get(),
+            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray()
         ]);
     }
 
