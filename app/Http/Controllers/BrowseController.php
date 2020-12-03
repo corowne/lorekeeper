@@ -267,15 +267,10 @@ class BrowseController extends Controller
         if($request->get('is_tradeable')) $query->where('is_tradeable', 1);
         if($request->get('is_giftable')) $query->where('is_giftable', 1);
 
-        if($request->get('username')) {
-            $name = $request->get('username');
-
-            // Usernames are prevented from containing spaces, but this is to deal with previously made accounts with spaces in names
-            $name = str_replace('%20', ' ', $name);
-
-            $owners = User::where('name', 'LIKE', '%' . $name . '%')->orWhere('alias', 'LIKE', '%' . $name . '%')->pluck('id')->toArray();
-            $query->where(function($query) use ($owners, $name) {
-                $query->whereIn('user_id', $owners)->orWhere('owner_alias', 'LIKE', '%' . $name . '%');
+        if($request->get('owner')) {
+            $owner = User::find($request->get('owner'));
+            $query->where(function($query) use ($owner) {
+                $query->where('user_id', $owner->id);
             });
         }
 
@@ -398,15 +393,10 @@ class BrowseController extends Controller
         if($request->get('is_tradeable')) $query->where('is_tradeable', 1);
         if($request->get('is_giftable')) $query->where('is_giftable', 1);
 
-        if($request->get('username')) {
-            $name = $request->get('username');
-
-            // Usernames are prevented from containing spaces, but this is to deal with previously made accounts with spaces in names
-            $name = str_replace('%20', ' ', $name);
-
-            $owners = User::where('name', 'LIKE', '%' . $name . '%')->orWhere('alias', 'LIKE', '%' . $name . '%')->pluck('id')->toArray();
-            $query->where(function($query) use ($owners, $name) {
-                $query->whereIn('user_id', $owners)->orWhere('owner_alias', 'LIKE', '%' . $name . '%');
+        if($request->get('owner')) {
+            $owner = User::find($request->get('owner'));
+            $query->where(function($query) use ($owner) {
+                $query->where('user_id', $owner->id);
             });
         }
 

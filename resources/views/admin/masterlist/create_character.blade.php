@@ -25,7 +25,7 @@
     @endif
 
     <div class="alert alert-info">
-        Fill in either of the owner fields - you can select a user from the list if they have registered for the site, or enter their deviantART username if they don't have an account. If the owner registers an account later and links their dA account, {{ $isMyo ? 'MYO slot' : 'character' }}s with their dA alias listed will automatically be credited to their site account. If both fields are filled, the alias field will be ignored.
+        Fill in either of the owner fields - you can select a user from the list if they have registered for the site, or enter the URL of their off-site profile, such as their deviantArt profile, if they don't have an account. If the owner registers an account later and links their account, {{ $isMyo ? 'MYO slot' : 'character' }}s linked to that account's profile will automatically be credited to their site account. If both fields are filled, the URL field will be ignored.
     </div>
 
     <div class="row">
@@ -37,8 +37,8 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                {!! Form::label('Owner Alias (Optional)') !!}
-                {!! Form::text('owner_alias', old('owner_alias'), ['class' => 'form-control']) !!}
+                {!! Form::label('Owner URL (Optional)') !!}
+                {!! Form::text('owner_url', old('owner_url'), ['class' => 'form-control']) !!}
             </div>
         </div>
     </div>
@@ -175,13 +175,13 @@
         {!! Form::label('Designer(s)') !!}
         <div id="designerList">
             <div class="mb-2 d-flex">
-                {!! Form::select('designer_alias[]', $userOptions, null, ['class'=> 'form-control mr-2 selectize', 'placeholder' => 'Select a Designer']) !!}
+                {!! Form::select('designer_id[]', $userOptions, null, ['class'=> 'form-control mr-2 selectize', 'placeholder' => 'Select a Designer']) !!}
                 {!! Form::text('designer_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Designer URL']) !!}
                 <a href="#" class="add-designer btn btn-link" data-toggle="tooltip" title="Add another designer">+</a>
             </div>
         </div>
         <div class="designer-row hide mb-2">
-            {!! Form::select('designer_alias[]', $userOptions, null, ['class'=> 'form-control mr-2 designer-select', 'placeholder' => 'Select a Designer']) !!}
+            {!! Form::select('designer_id[]', $userOptions, null, ['class'=> 'form-control mr-2 designer-select', 'placeholder' => 'Select a Designer']) !!}
             {!! Form::text('designer_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Designer URL']) !!}
             <a href="#" class="add-designer btn btn-link" data-toggle="tooltip" title="Add another designer">+</a>
         </div>
@@ -190,13 +190,13 @@
         {!! Form::label('Artist(s)') !!}
         <div id="artistList">
             <div class="mb-2 d-flex">
-                {!! Form::select('artist_alias[]', $userOptions, null, ['class'=> 'form-control mr-2 selectize', 'placeholder' => 'Select an Artist']) !!}
+                {!! Form::select('artist_id[]', $userOptions, null, ['class'=> 'form-control mr-2 selectize', 'placeholder' => 'Select an Artist']) !!}
                 {!! Form::text('artist_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Artist URL']) !!}
                 <a href="#" class="add-artist btn btn-link" data-toggle="tooltip" title="Add another artist">+</a>
             </div>
         </div>
         <div class="artist-row hide mb-2">
-            {!! Form::select('artist_alias[]', $userOptions, null, ['class'=> 'form-control mr-2 artist-select', 'placeholder' => 'Select an Artist']) !!}
+            {!! Form::select('artist_id[]', $userOptions, null, ['class'=> 'form-control mr-2 artist-select', 'placeholder' => 'Select an Artist']) !!}
             {!! Form::text('artist_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Artist URL']) !!}
             <a href="#" class="add-artist btn btn-link mb-2" data-toggle="tooltip" title="Add another artist">+</a>
         </div>
