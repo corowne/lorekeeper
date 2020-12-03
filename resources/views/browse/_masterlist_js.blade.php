@@ -1,6 +1,6 @@
 <script>
     $(document).ready(function() {
-        $('.selectize').selectize();
+        $('.userselectize').selectize();
 
         var $gridButton = $('.grid-view-button');
         var $gridView = $('#gridView');
