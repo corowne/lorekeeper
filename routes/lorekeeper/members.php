@@ -81,6 +81,8 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() 
     Route::get('{slug}/profile/edit', 'CharacterController@getEditCharacterProfile');
     Route::post('{slug}/profile/edit', 'CharacterController@postEditCharacterProfile');
 
+    Route::post('{slug}/inventory/edit', 'CharacterController@postInventoryEdit');
+
     Route::post('{slug}/bank/transfer', 'CharacterController@postCurrencyTransfer');
     Route::get('{slug}/transfer', 'CharacterController@getTransfer');
     Route::post('{slug}/transfer', 'CharacterController@postTransfer');

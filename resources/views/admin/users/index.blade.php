@@ -25,7 +25,7 @@
                 'alias-reverse'  => 'Sort by Alias (Z-A)',
                 'rank'           => 'Sort by Rank (Default)',
                 'newest'         => 'Newest First',
-                'oldest'         => 'Oldest First'    
+                'oldest'         => 'Oldest First'
             ], Request::get('sort') ? : 'category', ['class' => 'form-control']) !!}
         </div>
         <div class="form-group mb-3">
@@ -44,7 +44,7 @@
     </div>
     @foreach($users as $user)
     <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-top">
-      <div class="col-12 col-md-4 ">{!! $user->displayName !!}</div>
+      <div class="col-12 col-md-4 "><a href="{{ $user->adminUrl }}">{!! $user->is_banned ? '<strike>' : '' !!}{{ $user->name }}{!! $user->is_banned ? '</strike>' : '' !!}</a></div>
       <div class="col-4 col-md-3">{!! $user->displayAlias !!}</div>
       <div class="col-4 col-md-2">{!! $user->rank->displayName !!}</div>
       <div class="col-4 col-md-3">{!! pretty_date($user->created_at) !!}</div>

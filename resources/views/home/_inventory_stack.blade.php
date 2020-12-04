@@ -91,7 +91,7 @@
                         </div>
                     </li>
                 @endif
-                @if(isset($item->data['resell']))
+                @if(isset($item->data['resell']) && Config::get('lorekeeper.extensions.item_entry_expansion.resale_function'))
                     <li class="list-group-item">
                         <a class="card-title h5 collapse-title" data-toggle="collapse" href="#resellForm">@if($stack->first()->user_id != $user->id) [ADMIN] @endif Sell Item</a>
                         <div id="resellForm" class="collapse">

@@ -65,11 +65,11 @@ class UserController extends Controller
     {
         return view('user.profile', [
             'user' => $this->user,
-            'items' => $this->user->items()->orderBy('user_items.updated_at', 'DESC')->take(4)->get(),
+            'items' => $this->user->items()->where('count', '>', 0)->orderBy('user_items.updated_at', 'DESC')->take(4)->get(),
             'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
-    
+
     /**
      * Shows a user's characters.
      *
@@ -80,7 +80,7 @@ class UserController extends Controller
     {
         $query = Character::myo(0)->visible()->where('user_id', $this->user->id);
         $imageQuery = CharacterImage::images(Auth::check() ? Auth::user() : null)->with('features')->with('rarity')->with('species')->with('features');
-        
+
         if($sublists = Sublist::where('show_main', 0)->get())
         $subCategories = []; $subSpecies = [];
         {   foreach($sublists as $sublist)
@@ -101,7 +101,7 @@ class UserController extends Controller
             'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
-    
+
     /**
      * Shows a user's sublist characters.
      *
@@ -112,7 +112,7 @@ class UserController extends Controller
     {
         $query = Character::myo(0)->visible()->where('user_id', $this->user->id);
         $imageQuery = CharacterImage::images(Auth::check() ? Auth::user() : null)->with('features')->with('rarity')->with('species')->with('features');
-        
+
         $sublist = Sublist::where('key', $key)->first();
         if(!$sublist) abort(404);
         $subCategories = $sublist->categories->pluck('id')->toArray();
@@ -130,7 +130,7 @@ class UserController extends Controller
             'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
-    
+
     /**
      * Shows a user's MYO slots.
      *
@@ -145,7 +145,7 @@ class UserController extends Controller
             'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
-    
+
     /**
      * Shows a user's inventory.
      *
@@ -155,7 +155,7 @@ class UserController extends Controller
     public function getUserInventory($name)
     {
         $categories = ItemCategory::orderBy('sort', 'DESC')->get();
-        $items = count($categories) ? 
+        $items = count($categories) ?
             $this->user->items()
                 ->where('count', '>', 0)
                 ->orderByRaw('FIELD(item_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
@@ -256,7 +256,7 @@ class UserController extends Controller
     {
         return view('user.submission_logs', [
             'user' => $this->user,
-            'logs' => $this->user->getSubmissions(),
+            'logs' => $this->user->getSubmissions(Auth::check() ? Auth::user() : null),
             'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
