@@ -22,7 +22,7 @@
         @if($closed) Gallery submissions are currently closed.
         @else You can't submit to this gallery. @endif
     </div>
-@else 
+@else
     {!! Form::open(['url' => $submission->id ? 'gallery/edit/'.$submission->id : 'gallery/submit', 'id' => 'gallerySubmissionForm', 'files' => true]) !!}
 
         <h2>Main Content</h2>
@@ -186,8 +186,27 @@
                         </div>
                         <div class="card-body">
                             <p>Please select options as appropriate for this piece. This will help the staff processing your submission award {!! $currency->displayName !!} for it. You <strong>will not</strong> be able to edit this after creating the submission.</p>
-                            {!! form_row($form->start) !!}
-                            {!!  form_rest($form) !!}
+
+                            @foreach(Config::get('lorekeeper.group_currency_form') as $key=>$field)
+                                <div class="form-group">
+                                    @if($field['type'] == 'checkbox')
+                                        <input class="form-check-input ml-0 pr-4" name="{{ $key }}" type="checkbox" value="{{ isset($field['value']) ? $field['value'] : 1 }}">
+                                    @endif
+                                    @if(isset($field['label']))
+                                        {!! Form::label((isset($field['multiple']) && $field['multiple'] ? $key.'[]' : $key), $field['label'], ['class' => 'label-class'.($field['type'] == 'checkbox' ? ' ml-3' : '').(isset($field['rules']) && $field['rules'] ? ' '.$field['rules'] : '' )]) !!}
+                                    @endif
+                                    @if($field['type'] == 'choice' && isset($field['choices']))
+                                        @foreach($field['choices'] as $value=>$choice)
+                                            <div class="choice-wrapper">
+                                                <input class="form-check-input ml-0 pr-4" name="{{ isset($field['multiple']) && $field['multiple'] ? $key.'[]' : $key }}" id="{{ isset($field['multiple']) && $field['multiple'] ? $key.'[]' : $key.'_'.$value }}" type="{{ isset($field['multiple']) && $field['multiple'] ? 'checkbox' : 'radio' }}" value="{{ $value }}">
+                                                <label for="{{ $key }}[]" class="label-class ml-3">{{ $choice }}</label>
+                                            </div>
+                                        @endforeach
+                                    @elseif($field['type'] != 'checkbox')
+                                        <input class="form-control" name="{{ $key }}" type="{{ $field['type'] }}" id="{{ $key }}">
+                                    @endif
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 @endif
@@ -247,12 +266,12 @@
     </div>
 @endif
 
-<?php $galleryPage = true; 
+<?php $galleryPage = true;
 $sideGallery = $gallery ?>
 @endsection
 
 @section('scripts')
-@parent 
+@parent
 @if(!$closed || ($submission->id && $submission->status != 'Rejected'))
     @include('galleries._character_select_js')
 
@@ -262,7 +281,7 @@ $sideGallery = $gallery ?>
             var $confirmationModal = $('#confirmationModal');
             var $formSubmit = $('#formSubmit');
             var $gallerySubmissionForm = $('#gallerySubmissionForm');
-            
+
             $submitButton.on('click', function(e) {
                 e.preventDefault();
                 $confirmationModal.modal('show');
@@ -339,7 +358,7 @@ $sideGallery = $gallery ?>
             $("#mainImage").change(function() {
                 readURL(this);
             });
-            
+
             $('.original.gallery-select').selectize();
         });
     </script>

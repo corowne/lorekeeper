@@ -3,7 +3,7 @@
 use Settings;
 use Config;
 use Auth;
-use Illuminate\Http\Request; 
+use Illuminate\Http\Request;
 use App\Models\Gallery\Gallery;
 use App\Models\Gallery\GallerySubmission;
 
@@ -14,8 +14,6 @@ use App\Models\Currency\Currency;
 use App\Models\Comment;
 
 use App\Services\GalleryManager;
-
-use Kris\LaravelFormBuilder\FormBuilder;
 
 class GalleryController extends Controller
 {
@@ -60,7 +58,7 @@ class GalleryController extends Controller
         });
         if($request->get('prompt_id')) $query->where('prompt_id', $request->get('prompt_id'));
 
-        if(isset($sort['sort'])) 
+        if(isset($sort['sort']))
         {
             switch($sort['sort']) {
                 case 'alpha':
@@ -82,7 +80,7 @@ class GalleryController extends Controller
                     $query->orderBy('created_at', 'ASC');
                     break;
             }
-        } 
+        }
         else $query->orderBy('created_at', 'DESC');
 
         return view('galleries.gallery', [
@@ -165,7 +163,7 @@ class GalleryController extends Controller
     {
         $submissions = GallerySubmission::userSubmissions(Auth::user());
         if(!$type) $type = 'Pending';
-        
+
         $submissions = $submissions->where('status', ucfirst($type));
 
         return view('galleries.submissions', [
@@ -180,7 +178,7 @@ class GalleryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getNewGallerySubmission(Request $request, $id, FormBuilder $formBuilder)
+    public function getNewGallerySubmission(Request $request, $id)
     {
         if(!Auth::check()) abort(404);
         $gallery = Gallery::find($id);
@@ -192,7 +190,6 @@ class GalleryController extends Controller
             'submission' => new GallerySubmission,
             'prompts' => Prompt::active()->sortAlphabetical()->pluck('name', 'id')->toArray(),
             'users' => User::visible()->orderBy('name')->pluck('name', 'id')->toArray(),
-            'form' => $formBuilder->create('App\Forms\GroupCurrencyForm'),
             'currency' => Currency::find(Settings::get('group_currency')),
         ]));
     }
@@ -269,7 +266,7 @@ class GalleryController extends Controller
 
         if(!$id && Settings::get('gallery_submissions_reward_currency')) $currencyFormData = $request->only(collect(Config::get('lorekeeper.group_currency_form'))->keys()->toArray());
         else $currencyFormData = null;
-        
+
         if($id && $service->updateSubmission(GallerySubmission::find($id), $data, Auth::user())) {
             flash('Submission updated successfully.')->success();
         }

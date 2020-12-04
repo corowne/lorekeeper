@@ -19,7 +19,7 @@ use App\Models\Character\Character;
 use App\Models\Prompt\Prompt;
 use App\Models\Currency\Currency;
 
-class GalleryManager extends Service 
+class GalleryManager extends Service
 {
     /*
     |--------------------------------------------------------------------------
@@ -33,7 +33,7 @@ class GalleryManager extends Service
     /**
      * Creates a new gallery submission.
      *
-     * @param  array                  $data 
+     * @param  array                  $data
      * @param  array                  $currencyFormData
      * @param  \App\Models\User\User  $user
      * @return bool|\App\Models\Gallery\GallerySubmission
@@ -143,7 +143,7 @@ class GalleryManager extends Service
             if(!$submission->collaborators->count() && (!Settings::get('gallery_submissions_require_approval') || (Settings::get('gallery_submissions_require_approval') && $submission->gallery->votes_required == 0))) $this->acceptSubmission($submission);
 
             return $this->commitReturn($submission);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -153,7 +153,7 @@ class GalleryManager extends Service
      * Updates a gallery submission.
      *
      * @param  \App\Models\Gallery\GallerySubmission  $submission
-     * @param  array                                  $data 
+     * @param  array                                  $data
      * @param  \App\Models\User\User                  $user
      * @return bool|\App\Models\Gallery\GallerySubmission
      */
@@ -164,12 +164,12 @@ class GalleryManager extends Service
         try {
             // Check that the user can edit the submission
             if(!$submission->user_id == $user->id && !$user->hasPower('manage_submissions')) throw new \Exception("You can't edit this submission.");
-            
+
             // Check that there is text and/or an image, including if there is an existing image (via the existence of a hash)
             if((!isset($data['image']) && !isset($submission->hash)) && !$data['text']) throw new \Exception("Please submit either text or an image.");
-            
+
             // If still pending, perform validation on and process collaborators and participants
-            if($submission->status == 'Pending') { 
+            if($submission->status == 'Pending') {
                 // Check that associated collaborators exist
                 if(isset($data['collaborator_id'])) {
                     $collaborators = User::whereIn('id', $data['collaborator_id'])->get();
@@ -278,7 +278,7 @@ class GalleryManager extends Service
             $submission->update($data);
 
             return $this->commitReturn($submission);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -317,7 +317,7 @@ class GalleryManager extends Service
 
         // Save image itself
         $this->handleImage($data['image'], $submission->imageDirectory, $submission->imageFileName);
-        
+
         // Process thumbnail
         $thumbnail = Image::make($submission->imagePath . '/' .  $submission->imageFileName);
         // Resize
@@ -346,7 +346,7 @@ class GalleryManager extends Service
         try {
             // Check that the submission is pending and the user is a collaborator on it
             if(!$submission->status == 'Pending') throw new \Exception("This submission isn't pending.");
-            if($submission->collaborators->where('user_id', $user->id)->first() == null) throw new \Exception("You aren't a collaborator on this submission."); 
+            if($submission->collaborators->where('user_id', $user->id)->first() == null) throw new \Exception("You aren't a collaborator on this submission.");
 
             // Check if the user has requested to be removed from the submission
             if(isset($data['remove_user']) && $data['remove_user']) {
@@ -374,7 +374,7 @@ class GalleryManager extends Service
             }
 
             return $this->commitReturn($submission);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -414,7 +414,7 @@ class GalleryManager extends Service
             $voteData->get($user->id) ? $voteData->pull($user->id) : null;
             $voteData->put($user->id, $vote);
             $submission->vote_data = $voteData->toJson();
-            
+
             $submission->save();
 
             // Count up the existing votes to see if the required number has been reached
@@ -426,12 +426,12 @@ class GalleryManager extends Service
             }
 
             // And if so, process the submission
-            if($action == 'reject' && $rejectSum >= $submission->gallery->votes_required) 
+            if($action == 'reject' && $rejectSum >= $submission->gallery->votes_required)
             $this->rejectSubmission($submission);
             if($action == 'accept' && $approveSum >= $submission->gallery->votes_required) $this->acceptSubmission($submission);
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -473,7 +473,7 @@ class GalleryManager extends Service
             }
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -492,7 +492,7 @@ class GalleryManager extends Service
         try {
             // Check that the submission exists and is pending
             if(!$submission) throw new \Exception("Invalid submission selected.");
-            if($submission->status != 'Pending') throw new \Exception("This submission isn't pending."); 
+            if($submission->status != 'Pending') throw new \Exception("This submission isn't pending.");
 
             $submission->update(['status' => 'Accepted']);
 
@@ -535,7 +535,7 @@ class GalleryManager extends Service
             }
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -554,7 +554,7 @@ class GalleryManager extends Service
         try {
             // Check that the submission exists and is pending
             if(!$submission) throw new \Exception("Invalid submission selected.");
-            if($submission->status != 'Pending') throw new \Exception("This submission isn't pending."); 
+            if($submission->status != 'Pending') throw new \Exception("This submission isn't pending.");
 
             $submission->update(['status' => 'Rejected']);
 
@@ -564,7 +564,7 @@ class GalleryManager extends Service
             ]);
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -580,7 +580,7 @@ class GalleryManager extends Service
     {
         DB::beginTransaction();
 
-        try {         
+        try {
             if(!$submission) throw new \Exception("Invalid submission selected.");
             if($submission->user->id != $user->id && !$user->hasPower('manage_submissions')) throw new \Exception("You can't archive this submission.");
 
@@ -588,7 +588,7 @@ class GalleryManager extends Service
             else $submission->update(['is_visible' => 1]);
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -619,7 +619,7 @@ class GalleryManager extends Service
 
                 $awardType = 'Gallery Submission Reward';
                 $awardData = 'Received reward for gallery submission (<a href="'.$submission->url.'">#'.$submission->id.'</a>)';
-                
+
                 $grantedList = [];
                 $awardQuantity = [];
 
@@ -658,8 +658,8 @@ class GalleryManager extends Service
 
                 // Collect and json encode existing as well as new data for storage
                 if(isset($submission->data['total'])) $valueData = collect([
-                    'currencyData' => $submission->data['currencyData'], 
-                    'total' => $submission->data['total'], 
+                    'currencyData' => $submission->data['currencyData'],
+                    'total' => $submission->data['total'],
                     'value' => $data['value'],
                     'staff' => $user->id,
                 ])->toJson();
@@ -684,8 +684,8 @@ class GalleryManager extends Service
             else {
                 // Collect and json encode existing as well as new data for storage
                 if(isset($submission->data['total'])) $valueData = collect([
-                    'currencyData' => $submission->data['currencyData'], 
-                    'total' => $submission->data['total'], 
+                    'currencyData' => $submission->data['currencyData'],
+                    'total' => $submission->data['total'],
                     'ineligible' => 1,
                     'staff' => $user->id,
                 ])->toJson();
@@ -700,7 +700,7 @@ class GalleryManager extends Service
             }
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -720,7 +720,7 @@ class GalleryManager extends Service
         try {
             // Check that the submission can be favorited
             if(!$submission->isVisible) throw new \Exception("This submission isn't visible to be favorited.");
-            if($submission->user->id == $user->id || $submission->collaborators->where('user_id', $user->id)->first() != null) throw new \Exception("You can't favorite your own submission!"); 
+            if($submission->user->id == $user->id || $submission->collaborators->where('user_id', $user->id)->first() != null) throw new \Exception("You can't favorite your own submission!");
 
             // Check if the user has an existing favorite, and if so, delete it
             // or else create one.
@@ -744,7 +744,7 @@ class GalleryManager extends Service
             }
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
