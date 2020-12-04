@@ -22,7 +22,7 @@ class GalleryService extends Service
     /**
      * Creates a new gallery.
      *
-     * @param  array                  $data 
+     * @param  array                  $data
      * @param  \App\Models\User\User  $user
      * @return bool|\App\Models\Gallery
      */
@@ -34,11 +34,12 @@ class GalleryService extends Service
             if(!isset($data['submissions_open'])) $data['submissions_open'] = 0;
             if(!isset($data['currency_enabled'])) $data['currency_enabled'] = 0;
             if(!isset($data['votes_required'])) $data['votes_required'] = 0;
+            if(!isset($data['hide_before_start'])) $data['hide_before_start'] = 0;
 
             $gallery = Gallery::create($data);
 
             return $this->commitReturn($gallery);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -48,7 +49,7 @@ class GalleryService extends Service
      * Updates a gallery.
      *
      * @param  \App\Models\Gallery    $gallery
-     * @param  array                  $data 
+     * @param  array                  $data
      * @param  \App\Models\User\User  $user
      * @return bool|\App\Models\Gallery
      */
@@ -62,16 +63,18 @@ class GalleryService extends Service
 
             if(!isset($data['submissions_open'])) $data['submissions_open'] = 0;
             if(!isset($data['currency_enabled'])) $data['currency_enabled'] = 0;
+            if(!isset($data['votes_required'])) $data['votes_required'] = 0;
+            if(!isset($data['hide_before_start'])) $data['hide_before_start'] = 0;
 
             $gallery->update($data);
 
             return $this->commitReturn($gallery);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
-    
+
     /**
      * Deletes a gallery.
      *
@@ -82,14 +85,14 @@ class GalleryService extends Service
     {
         DB::beginTransaction();
 
-        try {         
+        try {
             // Check first if submissions exist in this gallery, or the gallery has children
             if(GallerySubmission::where('gallery_id', $gallery->id)->exists() || Gallery::where('parent_id', $gallery->id)->exists()) throw new \Exception("A gallery or submissions in this gallery exist. Consider setting the gallery's submissions to closed instead.");
 
             $gallery->delete();
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);

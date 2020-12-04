@@ -34,7 +34,7 @@ class GalleryController extends Controller
     public function getGalleryIndex()
     {
         return view('galleries.index', [
-            'galleries' => Gallery::sort()->whereNull('parent_id')->paginate(10),
+            'galleries' => Gallery::sort()->active()->whereNull('parent_id')->paginate(10),
         ]);
     }
 

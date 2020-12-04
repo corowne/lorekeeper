@@ -16,8 +16,9 @@ class Gallery extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'parent_id', 'name', 'sort', 'description', 
-        'currency_enabled', 'votes_required', 'submissions_open'
+        'id', 'parent_id', 'name', 'sort', 'description',
+        'currency_enabled', 'votes_required', 'submissions_open',
+        'start_at', 'end_at', 'hide_before_start'
     ];
 
     /**
@@ -26,7 +27,14 @@ class Gallery extends Model
      * @var string
      */
     protected $table = 'galleries';
-    
+
+    /**
+     * Dates on the model to convert to Carbon instances.
+     *
+     * @var array
+     */
+    public $dates = ['start_at', 'end_at'];
+
     /**
      * Validation rules for character creation.
      *
@@ -36,7 +44,7 @@ class Gallery extends Model
         'name' => 'required|unique:galleries|between:3,50',
         'description' => 'nullable',
     ];
-    
+
     /**
      * Validation rules for character updating.
      *
@@ -48,15 +56,15 @@ class Gallery extends Model
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the parent gallery.
      */
-    public function parent() 
+    public function parent()
     {
         return $this->belongsTo('App\Models\Gallery\Gallery', 'parent_id');
     }
@@ -64,21 +72,21 @@ class Gallery extends Model
     /**
      * Get the child galleries of this gallery.
      */
-    public function children() 
+    public function children()
     {
         return $this->hasMany('App\Models\Gallery\Gallery', 'parent_id')->sort();
     }
-    
+
     /**
      * Get the submissions made to this gallery.
      */
-    public function submissions() 
+    public function submissions()
     {
         return $this->hasMany('App\Models\Gallery\GallerySubmission', 'gallery_id')->visible()->orderBy('created_at', 'DESC');
     }
 
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -94,12 +102,33 @@ class Gallery extends Model
         return $query->orderByRaw('ISNULL(sort), sort ASC')->orderBy('name', 'ASC');
     }
 
+    /**
+     * Scope a query to only include active galleries.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeActive($query)
+    {
+        return $query
+            ->where(function($query) {
+                $query->whereNull('start_at')->orWhere('start_at', '<', Carbon::now())->orWhere(function($query) {
+                    $query->where('start_at', '>=', Carbon::now())->where('hide_before_start', 0);
+                });
+        })->where(function($query) {
+                $query->whereNull('end_at')->orWhere('end_at', '>', Carbon::now())->orWhere(function($query) {
+                    $query->where('end_at', '<=', Carbon::now());
+                });
+        });
+
+    }
+
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
-    
+
     /**
      * Displays the model's name, linked to its encyclopedia page.
      *
@@ -127,7 +156,11 @@ class Gallery extends Model
      */
     public function canSubmit($user = null)
     {
-        if(Settings::get('gallery_submissions_open')) if($user && ($this->submissions_open || $user->hasPower('manage_submissions'))) return true;
+        if(Settings::get('gallery_submissions_open')) {
+            if((isset($this->start_at) && $this->start_at->isFuture()) || (isset($this->end_at) && $this->end_at->isPast())) return false;
+            elseif($user && $user->hasPower('manage_submissions')) return true;
+            elseif($this->submissions_open) return true;
+        }
         else return false;
     }
 

@@ -9,6 +9,17 @@
     {{ $gallery->name }}
     @if(Auth::check() && $gallery->canSubmit(Auth::user())) <a href="{{ url('gallery/submit/'.$gallery->id) }}" class="btn btn-primary float-right"><i class="fas fa-plus mr-1"></i> Submit</a> @endif
 </h1>
+@if(isset($gallery->start_at) || isset($gallery->end_at))
+    <p>
+        @if($gallery->start_at)
+            <strong>Open{{ $gallery->start_at->isFuture() ? 's' : 'ed' }}: </strong>{!! pretty_date($gallery->start_at) !!}
+        @endif
+        {{ $gallery->start_at && $gallery->end_at ? ' ・ ' : '' }}
+        @if($gallery->end_at)
+            <strong>Close{{ $gallery->end_at->isFuture() ? 's' : 'ed' }}: </strong>{!! pretty_date($gallery->end_at) !!}
+        @endif
+    </p>
+@endif
 <p>{!! $gallery->description !!}</p>
 
 <div>
@@ -26,7 +37,7 @@
                 'alpha'          => 'Sort Alphabetically (A-Z)',
                 'alpha-reverse'  => 'Sort Alphabetically (Z-A)',
                 'prompt'         => 'Sort by Prompt (Newest to Oldest)',
-                'prompt-reverse' => 'Sort by Prompt (Oldest to Newest)',    
+                'prompt-reverse' => 'Sort by Prompt (Oldest to Newest)',
             ], Request::get('sort') ? : 'category', ['class' => 'form-control']) !!}
         </div>
         <div class="form-group mb-3">
@@ -49,6 +60,6 @@
     <p>No submissions found!</p>
 @endif
 
-<?php $galleryPage = true; 
+<?php $galleryPage = true;
 $sideGallery = $gallery ?>
 @endsection

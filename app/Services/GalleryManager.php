@@ -49,6 +49,7 @@ class GalleryManager extends Service
             $gallery = Gallery::find($data['gallery_id']);
             if(!$gallery) throw new \Exception ("Invalid gallery selected.");
             if(!$gallery->submissions_open && !$user->hasPower('manage_submissions')) throw new \Exception("You cannot submit to this gallery.");
+            if((isset($gallery->start_at) && $gallery->start_at->isFuture()) || (isset($gallery->end_at) && $gallery->end_at->isPast())) throw new \Exception('This gallery\'s submissions aren\'t open.');
 
             // Check that associated collaborators exist
             if(isset($data['collaborator_id'])) {
