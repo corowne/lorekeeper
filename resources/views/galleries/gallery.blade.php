@@ -21,6 +21,9 @@
     </p>
 @endif
 <p>{!! $gallery->description !!}</p>
+@if(!$gallery->submissions->count() && $gallery->children->count() && $childSubmissions->count())
+    <p>This gallery has no submissions; instead, displayed is a selection of the most recent submissions from its sub-galleries. Please navigate to one of the sub-galleries to view more.</p>
+@endif
 
 <div>
     {!! Form::open(['method' => 'GET', 'class' => 'form-inline justify-content-end']) !!}
@@ -56,6 +59,10 @@
 </div>
 
     {!! $submissions->render() !!}
+@elseif(App\Models\Gallery\GallerySubmission::whereIn('gallery_id', $gallery->children->pluck('id')->toArray())->where('is_visible', 1)->where('status', 'Accepted')->count())
+    @foreach(App\Models\Gallery\GallerySubmission::whereIn('gallery_id', $gallery->children->pluck('id')->toArray())->where('is_visible', 1)->where('status', 'Accepted')->orderBy('created_at', 'DESC')->get()->take(20) as $submission)
+        @include('galleries._thumb', ['submission' => $submission, 'gallery' => false])
+    @endforeach
 @else
     <p>No submissions found!</p>
 @endif
