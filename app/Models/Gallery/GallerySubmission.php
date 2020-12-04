@@ -7,6 +7,8 @@ use DB;
 use Settings;
 use Carbon\Carbon;
 use App\Models\Currency\Currency;
+use App\Models\Prompt\Prompt;
+use App\Models\Submission\Submission;
 use App\Models\Model;
 
 use App\Traits\Commentable;
@@ -21,10 +23,10 @@ class GallerySubmission extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'gallery_id', 'hash', 'extension', 
+        'user_id', 'gallery_id', 'hash', 'extension',
         'text', 'parsed_text', 'content_warning',
         'title', 'description', 'parsed_description',
-        'prompt_id', 'data', 'is_visible', 'status', 
+        'prompt_id', 'data', 'is_visible', 'status',
         'vote_data', 'staff_id', 'is_valued',
         'staff_comments', 'parsed_staff_comments'
     ];
@@ -54,7 +56,7 @@ class GallerySubmission extends Model
         'text' => 'required_without:image',
         'description' => 'nullable',
     ];
-    
+
     /**
      * Validation rules for character updating.
      *
@@ -67,15 +69,15 @@ class GallerySubmission extends Model
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the user who made the submission.
      */
-    public function user() 
+    public function user()
     {
         return $this->belongsTo('App\Models\User\User', 'user_id');
     }
@@ -83,7 +85,7 @@ class GallerySubmission extends Model
     /**
      * Get the staff member who last edited the submission's comments.
      */
-    public function staff() 
+    public function staff()
     {
         return $this->belongsTo('App\Models\User\User', 'staff_id');
     }
@@ -91,7 +93,7 @@ class GallerySubmission extends Model
     /**
      * Get the collaborating users on the submission.
      */
-    public function collaborators() 
+    public function collaborators()
     {
         return $this->hasMany('App\Models\Gallery\GalleryCollaborator', 'gallery_submission_id')->where('type', 'Collab');
     }
@@ -99,7 +101,7 @@ class GallerySubmission extends Model
     /**
      * Get the user(s) who are related to the submission in some way.
      */
-    public function participants() 
+    public function participants()
     {
         return $this->hasMany('App\Models\Gallery\GalleryCollaborator', 'gallery_submission_id')->where('type', '!=', 'Collab');
     }
@@ -107,7 +109,7 @@ class GallerySubmission extends Model
     /**
      * Get the characters associated with the submission.
      */
-    public function characters() 
+    public function characters()
     {
         return $this->hasMany('App\Models\Gallery\GalleryCharacter', 'gallery_submission_id');
     }
@@ -115,7 +117,7 @@ class GallerySubmission extends Model
     /**
      * Get any favorites on the submission.
      */
-    public function favorites() 
+    public function favorites()
     {
         return $this->hasMany('App\Models\Gallery\GalleryFavorite', 'gallery_submission_id');
     }
@@ -123,7 +125,7 @@ class GallerySubmission extends Model
     /**
      * Get the gallery this submission is in.
      */
-    public function gallery() 
+    public function gallery()
     {
         return $this->belongsTo('App\Models\Gallery\Gallery', 'gallery_id');
     }
@@ -131,13 +133,13 @@ class GallerySubmission extends Model
     /**
      * Get the prompt this submission is for if relevant.
      */
-    public function prompt() 
+    public function prompt()
     {
         return $this->belongsTo('App\Models\Prompt\Prompt', 'prompt_id');
     }
 
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -223,7 +225,7 @@ class GallerySubmission extends Model
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -257,7 +259,7 @@ class GallerySubmission extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
@@ -288,7 +290,7 @@ class GallerySubmission extends Model
     {
         return $this->imagePath;
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
@@ -309,7 +311,7 @@ class GallerySubmission extends Model
     {
         if(isset($this->content_warning)) return '<img class="img-thumbnail" src="'.asset('/images/content_warning.png').'"/>';
         if(isset($this->hash)) return '<img class="img-thumbnail" src="'.$this->thumbnailUrl.'"/>';
-        return 
+        return
         '<div class="mx-auto img-thumbnail text-left" style="height:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.height')+8).'px; width:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.width')+4).'px;">
             <span class="badge-primary px-2 py-1" style="border-radius:0 0 .5em 0; position:absolute; z-index:5;">Literature</span>
             <div class="container-'.$this->id.' parsed-text pb-2 pr-2" style="height:'.Config::get('lorekeeper.settings.masterlist_thumbnails.height').'px; width:'.Config::get('lorekeeper.settings.masterlist_thumbnails.width').'px; overflow:hidden;">
@@ -380,9 +382,9 @@ class GallerySubmission extends Model
     public function getPrefixAttribute()
     {
         $currencyName = Currency::find(Settings::get('group_currency'))->abbreviation ? Currency::find(Settings::get('group_currency'))->abbreviation : Currency::find(Settings::get('group_currency'))->name;
-        
+
         $prefixList = [];
-        if($this->prompt && isset($this->prompt->prefix)) $prefixList[] = $this->prompt->prefix;
+        if($this->promptSubmissions->count()) foreach($this->prompts as $prompt) $prefixList[] = isset($prompt->prefix) ? $prompt->prefix : null;
         foreach($this->participants as $participant) {
             switch($participant->type) {
                 case 'Collab':
@@ -467,6 +469,30 @@ class GallerySubmission extends Model
     {
         if($this->collaborators->where('has_approved', 0)->count()) return false;
         return true;
+    }
+
+    /**
+     * Gets prompt submissions associated with this gallery submission.
+     *
+     * @return array
+     */
+    public function getPromptSubmissionsAttribute()
+    {
+        // Only returns submissions which are viewable to everyone,
+        // but given that this is for the sake of public display, that's fine
+        return Submission::viewable()->whereNotNull('prompt_id')->where('url', $this->url)->get();
+    }
+
+    /**
+     * Gets prompts associated with this gallery submission.
+     *
+     * @return array
+     */
+    public function getPromptsAttribute()
+    {
+        // Only returns submissions which are viewable to everyone,
+        // but given that this is for the sake of public display, that's fine
+        return Prompt::whereIn('id', $this->promptSubmissions->pluck('prompt_id'))->get();
     }
 
 }

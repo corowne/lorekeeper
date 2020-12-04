@@ -11,22 +11,22 @@
     @if(!$submission->isVisible) <i class="fas fa-eye-slash"></i> @endif {{ $submission->displayTitle }}
     <div class="float-right">
         @if(Auth::check())
-            {!! Form::open(['url' => '/gallery/favorite/'.$submission->id]) !!} 
+            {!! Form::open(['url' => '/gallery/favorite/'.$submission->id]) !!}
                 @if($submission->user->id != Auth::user()->id && $submission->collaborators->where('user_id', Auth::user()->id)->first() == null && $submission->isVisible)
                     {!! Form::button('<i class="fas fa-star"></i> ', ['class' => 'btn '. ($submission->favorites->where('user_id', Auth::user()->id)->first() == null ? 'btn-outline-primary' : 'btn-primary'), 'data-toggle' => 'tooltip', 'title' => ($submission->favorites->where('user_id', Auth::user()->id)->first() == null ? 'Add to' : 'Remove from').' your Favorites', 'type' => 'submit']) !!}
-                @endif     
+                @endif
                 @if($submission->user->id == Auth::user()->id || Auth::user()->hasPower('manage_submissions'))
-                    <a class="btn btn-outline-primary" href="/gallery/queue/{{ $submission->id }}" data-toggle="tooltip" title="View Log Details"><i class="fas fa-clipboard-list"></i></a>    
+                    <a class="btn btn-outline-primary" href="/gallery/queue/{{ $submission->id }}" data-toggle="tooltip" title="View Log Details"><i class="fas fa-clipboard-list"></i></a>
                     <a class="btn btn-outline-primary" href="/gallery/edit/{{ $submission->id }}"><i class="fas fa-edit"></i> Edit</a>
                 @endif
             {!! Form::close() !!}
         @endif
     </div>
 </h1>
-<div class="mb-3 mb-sm-4"> 
+<div class="mb-3 mb-sm-4">
     <div class="row">
         <div class="col-md">
-            In {!! $submission->gallery->displayName !!} ・ 
+            In {!! $submission->gallery->displayName !!} ・
             By {!! $submission->credits !!}
         </div>
         <div class="col-md text-right">
@@ -63,7 +63,7 @@
                         <a class="float-right" href="{{ url('reports/new?url=') . $submission->url }}"><i class="fas fa-exclamation-triangle" data-toggle="tooltip" title="Click here to report this submission." style="opacity: 50%;"></i></a></h5>
                         <div class="float-right">
                             @if(Auth::check() && ($submission->user->id != Auth::user()->id && $submission->collaborators->where('user_id', Auth::user()->id)->first() == null) && $submission->isVisible)
-                                {!! Form::open(['url' => '/gallery/favorite/'.$submission->id]) !!} 
+                                {!! Form::open(['url' => '/gallery/favorite/'.$submission->id]) !!}
                                     {{ $submission->favorites->count() }} {!! Form::button('<i class="fas fa-star"></i> ', ['style' => 'border:0; border-radius:.5em;', 'class' => ($submission->favorites->where('user_id', Auth::user()->id)->first() != null ? 'btn-success' : ''), 'data-toggle' => 'tooltip', 'title' => ($submission->favorites->where('user_id', Auth::user()->id)->first() == null ? 'Add to' : 'Remove from').' your Favorites', 'type' => 'submit']) !!} ・ {{ $commentCount }} <i class="fas fa-comment"></i>
                                 {!! Form::close() !!}
                             @else
@@ -81,14 +81,11 @@
                         <hr/>
                         <p>
                             <strong>Submitted By</strong> {!! $submission->user->displayName !!}
-                            @if($submission->prompt_id)
-                                <strong>for</strong> {!! $submission->prompt->displayName !!}
-                            @endif
                             @if($submission->favorites->count())
                                  ・ <a class="view-favorites" href="#">View Favorites</a>
                             @endif
                             <br/>
-                            <strong>Submitted:</strong> {!! pretty_date($submission->created_at) !!} ・ 
+                            <strong>Submitted:</strong> {!! pretty_date($submission->created_at) !!} ・
                             <strong>Last Updated:</strong> {!! pretty_date($submission->updated_at) !!}
                         </p>
                     </div>
@@ -169,6 +166,18 @@
                 </div>
             </div>
         @endif
+        @if($submission->promptSubmissions->count())
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Prompt Submissions</h5>
+                </div>
+                <div class="card-body">
+                    @foreach($submission->promptSubmissions as $promptSubmission)
+                        <strong><a href="{{ $promptSubmission->viewUrl }}">#{{ $promptSubmission->id }} for {!! $promptSubmission->prompt->name !!}</a></strong> by {!! $promptSubmission->user->displayName !!}
+                    @endforeach
+                </div>
+            </div>
+        @endif
         <div class="card mb-4">
             <div class="card-header">
                 <h5>Mention This</h5>
@@ -200,13 +209,13 @@
     </div>
 @endif
 
-<?php $galleryPage = true; 
+<?php $galleryPage = true;
 $sideGallery = $submission->gallery ?>
 
 @endsection
 
 @section('scripts')
-@parent 
+@parent
 <script>
     $(document).ready(function() {
         $('.view-favorites').on('click', function(e) {
