@@ -509,7 +509,7 @@ class GalleryManager extends Service
                 // Send a notification to included characters' owners now that the submission is accepted
                 // but not for the submitting user's own characters
                 foreach($submission->characters as $character) {
-                    if($character->character->user->id != $submission->user->id) {
+                    if($character->user && $character->character->user->id != $submission->user->id) {
                         Notifications::create('GALLERY_SUBMISSION_CHARACTER', $character->character->user, [
                             'sender' => $submission->user->name,
                             'sender_url' => $submission->user->url,
