@@ -130,7 +130,7 @@ class Gallery extends Model
     **********************************************************************************************/
 
     /**
-     * Displays the model's name, linked to its encyclopedia page.
+     * Displays the gallery's display name.
      *
      * @return string
      */
@@ -140,7 +140,7 @@ class Gallery extends Model
     }
 
     /**
-     * Gets the URL of the model's encyclopedia page.
+     * Gets the gallery's URL.
      *
      * @return string
      */

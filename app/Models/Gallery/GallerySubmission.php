@@ -189,7 +189,7 @@ class GallerySubmission extends Model
     }
 
     /**
-     * Scope a query to only include submissions that require currecy awards.
+     * Scope a query to only include submissions that require currency awards.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder

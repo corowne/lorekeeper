@@ -122,22 +122,4 @@ class GalleryController extends Controller
         }
         return redirect()->to('admin/data/galleries');
     }
-
-    /**
-     * Sorts rarities.
-     *
-     * @param  \Illuminate\Http\Request    $request
-     * @param  App\Services\GalleryService $service
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function postSortGallery(Request $request, GalleryService $service)
-    {
-        if($service->sortGallery($request->get('sort'))) {
-            flash('Gallery order updated successfully.')->success();
-        }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
-        return redirect()->back();
-    }
 }

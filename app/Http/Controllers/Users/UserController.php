@@ -291,7 +291,7 @@ class UserController extends Controller
     }
 
     /**
-     * Shows a user's gallery submission favorites.
+     * Shows a user's gallery submission favorites that contain characters they own.
      *
      * @param  string  $name
      * @return \Illuminate\Contracts\Support\Renderable
@@ -301,7 +301,7 @@ class UserController extends Controller
         $user = $this->user;
         $userCharacters = $user->characters()->pluck('id')->toArray();
         $userFavorites = $user->galleryFavorites()->pluck('gallery_submission_id')->toArray();
-        
+
         return view('user.favorites', [
             'user' => $this->user,
             'characters' => true,
