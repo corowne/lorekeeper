@@ -2,7 +2,7 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md mb-4 text-center">
-                <a href="{{ $submission->url }}">{!! $submission->thumbnail !!}</a>
+                <a href="{{ $submission->url }}">@include('widgets._gallery_thumb', ['submission' => $submission])</a>
             </div>
             <div class="col-md text-center align-self-center">
                 <h5>{!! $submission->displayName !!}</h5>
@@ -10,11 +10,11 @@
                     <p><span class="text-danger"><strong>Content Warning:</strong></span> {!! nl2br(htmlentities($submission->content_warning)) !!}</p>
                 @endif
                 @if(isset($queue) && $queue)
-                <span style="font-size:95%;" class="badge badge-{{ $submission->status == 'Accepted' ? 'success' : ($submission->status == 'Rejected' ? 'danger' : 'secondary') }}">{{ $submission->status }}</span> ・ 
+                <span style="font-size:95%;" class="badge badge-{{ $submission->status == 'Accepted' ? 'success' : ($submission->status == 'Rejected' ? 'danger' : 'secondary') }}">{{ $submission->status }}</span> ・
                 @endif
                 In {!! $submission->gallery->displayName !!} ・ By {!! $submission->credits !!}<br/>
                 Submitted {!! pretty_date($submission->created_at) !!} ・ Last updated {!! pretty_date($submission->updated_at) !!}
-                
+
                 @if($submission->status == 'Pending' && $submission->collaboratorApproved && Auth::user()->hasPower('manage_submissions'))
                     <?php
                         $rejectSum[$key] = 0;

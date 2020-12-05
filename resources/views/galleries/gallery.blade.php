@@ -59,8 +59,8 @@
 </div>
 
     {!! $submissions->render() !!}
-@elseif(App\Models\Gallery\GallerySubmission::whereIn('gallery_id', $gallery->children->pluck('id')->toArray())->where('is_visible', 1)->where('status', 'Accepted')->count())
-    @foreach(App\Models\Gallery\GallerySubmission::whereIn('gallery_id', $gallery->children->pluck('id')->toArray())->where('is_visible', 1)->where('status', 'Accepted')->orderBy('created_at', 'DESC')->get()->take(20) as $submission)
+@elseif($childSubmissions->count())
+    @foreach($childSubmissions->orderBy('created_at', 'DESC')->get()->take(20) as $submission)
         @include('galleries._thumb', ['submission' => $submission, 'gallery' => false])
     @endforeach
 @else
