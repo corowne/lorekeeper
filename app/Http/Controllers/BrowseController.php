@@ -42,7 +42,7 @@ class BrowseController extends Controller
         $sort = $request->only(['sort']);
 
         if($request->get('name')) $query->where(function($query) use ($request) {
-            $query->where('users.name', 'LIKE', '%' . $request->get('name') . '%')->orWhere('users.alias', 'LIKE', '%' . $request->get('name') . '%');
+            $query->where('users.name', 'LIKE', '%' . $request->get('name') . '%');
         });
         if($request->get('rank_id')) $query->where('rank_id', $request->get('rank_id'));
 
@@ -55,12 +55,6 @@ class BrowseController extends Controller
                 break;
             case 'alpha-reverse':
                 $query->orderBy('name', 'DESC');
-                break;
-            case 'alias':
-                $query->orderBy('alias', 'ASC');
-                break;
-            case 'alias-reverse':
-                $query->orderBy('alias', 'DESC');
                 break;
             case 'rank':
                 $query->orderBy('ranks.sort', 'DESC')->orderBy('name');
@@ -149,15 +143,10 @@ class BrowseController extends Controller
         if($request->get('is_tradeable')) $query->where('is_tradeable', 1);
         if($request->get('is_giftable')) $query->where('is_giftable', 1);
 
-        if($request->get('username')) {
-            $name = $request->get('username');
-
-            // Usernames are prevented from containing spaces, but this is to deal with previously made accounts with spaces in names
-            $name = str_replace('%20', ' ', $name);
-
-            $owners = User::where('name', 'LIKE', '%' . $name . '%')->pluck('id')->toArray();
-            $query->where(function($query) use ($owners, $name) {
-                $query->whereIn('user_id', $owners);
+        if($request->get('owner')) {
+            $owner = User::find($request->get('owner'));
+            $query->where(function($query) use ($owner) {
+                $query->where('user_id', $owner->id);
             });
         }
 
@@ -178,21 +167,15 @@ class BrowseController extends Controller
             }
         }
         if($request->get('artist')) {
-            $artistName = $request->get('artist');
-            // Usernames are prevented from containing spaces, but this is to deal with previously made accounts with spaces in names
-            $artistName = str_replace('%20', ' ', $artistName);
-            $artists = User::where('name', 'LIKE', '%' . $artistName . '%')->pluck('id')->toArray();
-            $imageQuery->whereHas('artists', function($query) use ($artists) {
-                $query->whereIn('user_id', $artists);
+            $artist = User::find($request->get('artist'));
+            $imageQuery->whereHas('artists', function($query) use ($artist) {
+                $query->where('user_id', $artist->id);
             });
         }
         if($request->get('designer')) {
-            $designerName = $request->get('designer');
-            // Usernames are prevented from containing spaces, but this is to deal with previously made accounts with spaces in names
-            $designerName = str_replace('%20', ' ', $designerName);
-            $designers = User::where('name', 'LIKE', '%' . $designerName . '%')->pluck('id')->toArray();
-            $imageQuery->whereHas('designers', function($query) use ($designers) {
-                $query->whereIn('user_id', $designers);
+            $designer = User::find($request->get('designer'));
+            $imageQuery->whereHas('designers', function($query) use ($designer) {
+                $query->where('user_id', $designer->id);
             });
         }
 
@@ -254,7 +237,8 @@ class BrowseController extends Controller
             'subtypes' => [0 => 'Any Subtype'] + Subtype::orderBy('subtypes.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities' => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features' => Feature::orderBy('features.name')->pluck('name', 'id')->toArray(),
-            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get(),
+            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray()
         ]);
     }
 
@@ -283,15 +267,10 @@ class BrowseController extends Controller
         if($request->get('is_tradeable')) $query->where('is_tradeable', 1);
         if($request->get('is_giftable')) $query->where('is_giftable', 1);
 
-        if($request->get('username')) {
-            $name = $request->get('username');
-
-            // Usernames are prevented from containing spaces, but this is to deal with previously made accounts with spaces in names
-            $name = str_replace('%20', ' ', $name);
-
-            $owners = User::where('name', 'LIKE', '%' . $name . '%')->pluck('id')->toArray();
-            $query->where(function($query) use ($owners, $name) {
-                $query->whereIn('user_id', $owners);
+        if($request->get('owner')) {
+            $owner = User::find($request->get('owner'));
+            $query->where(function($query) use ($owner) {
+                $query->where('user_id', $owner->id);
             });
         }
 
@@ -354,7 +333,8 @@ class BrowseController extends Controller
             'specieses' => [0 => 'Any Species'] + Species::orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities' => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features' => Feature::orderBy('features.name')->pluck('name', 'id')->toArray(),
-            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get(),
+            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray()
         ]);
     }
 
@@ -413,15 +393,10 @@ class BrowseController extends Controller
         if($request->get('is_tradeable')) $query->where('is_tradeable', 1);
         if($request->get('is_giftable')) $query->where('is_giftable', 1);
 
-        if($request->get('username')) {
-            $name = $request->get('username');
-
-            // Usernames are prevented from containing spaces, but this is to deal with previously made accounts with spaces in names
-            $name = str_replace('%20', ' ', $name);
-
-            $owners = User::where('name', 'LIKE', '%' . $name . '%')->pluck('id')->toArray();
-            $query->where(function($query) use ($owners, $name) {
-                $query->whereIn('user_id', $owners);
+        if($request->get('owner')) {
+            $owner = User::find($request->get('owner'));
+            $query->where(function($query) use ($owner) {
+                $query->where('user_id', $owner->id);
             });
         }
 
@@ -494,7 +469,8 @@ class BrowseController extends Controller
             'rarities' => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features' => Feature::orderBy('features.name')->pluck('name', 'id')->toArray(),
             'sublist' => $sublist,
-            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get(),
+            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray()
         ]);
     }
 }
