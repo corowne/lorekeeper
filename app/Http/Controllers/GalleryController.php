@@ -35,7 +35,7 @@ class GalleryController extends Controller
     public function __construct()
     {
         parent::__construct();
-        View::share('galleries', Gallery::whereNull('parent_id')->active()->sort()->get());
+        View::share('sidebarGalleries', Gallery::whereNull('parent_id')->active()->sort()->get());
     }
 
     /**

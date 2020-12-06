@@ -21,7 +21,7 @@
 
     <li class="sidebar-section">
         <div class="sidebar-section-header">Galleries</div>
-        @foreach($galleries as $gallery)
+        @foreach($sidebarGalleries as $gallery)
             <div class="sidebar-item"><a href="{{ url('gallery/'.$gallery->id) }}" class="{{ set_active('gallery/.$gallery->id') }}">{{ $gallery->name }}</a></div>
         @endforeach
     </li>
