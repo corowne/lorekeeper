@@ -242,6 +242,15 @@ class Item extends Model
     public function getItemArtistAttribute()
     {
         if(!$this->artist_url && !$this->artist_id) return null;
+
+        // Check to see if the artist exists on site
+        $artist = checkAlias($this->artist_url, false);
+        if(is_object($artist)) {
+            $this->artist_id = $artist->id;
+            $this->artist_url = null;
+            $this->save();
+        }
+
         if($this->artist_id)
         {
             return $this->artist->displayName;

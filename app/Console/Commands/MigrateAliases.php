@@ -139,9 +139,10 @@ class MigrateAliases extends Command
 
         /** MOVE CHARACTER LOG ALIASES */
 
-        if(Schema::hasColumn('character_log', 'recipient_alias')) {
+        if(Schema::hasColumn('character_log', 'recipient_alias') || Schema::hasColumn('character_log', 'sender_alias')) {
             // Get character logs with a set recipient alias
             $aliasCharacterLogs = CharacterLog::whereNotNull('recipient_alias')->get();
+            $aliasCharacterLogsSender = CharacterLog::whereNotNull('sender_alias')->get();
 
             if($aliasCharacterLogs->count()) {
                 foreach($aliasCharacterLogs as $characterLog) {
@@ -155,17 +156,29 @@ class MigrateAliases extends Command
                     }
                 }
 
+                foreach($aliasCharacterLogsSender as $characterLog) {
+                    $userAlias = UserAlias::where('site', 'dA')->where('alias', $characterLog->sender_alias)->first();
+                    if($userAlias) {
+                        $characterLog->update(['sender_alias' => null, 'sender_id' => $userAlias->user_id]);
+                    }
+                    elseif(!$userAlias) {
+                        $alias = $characterLog->sender_alias;
+                        $characterLog->update(['sender_alias' => null, 'sender_url' => 'https://deviantart.com/'.$alias]);
+                    }
+                }
+
                 $this->info("Migrated: Character log aliases");
             }
             else $this->line("Skipped: Character log aliases (nothing to migrate)");
         }
         else $this->line("Skipped: Character log aliases (column no longer exists)");
 
-        if(Schema::hasColumn('user_character_log', 'recipient_alias')) {
+        if(Schema::hasColumn('user_character_log', 'recipient_alias') || Schema::hasColumn('user_character_log', 'sender_alias')) {
             // Get character logs with a set recipient alias
             $aliasUserCharacterLogs = UserCharacterLog::whereNotNull('recipient_alias')->get();
+            $aliasUserCharacterLogsSender = UserCharacterLog::whereNotNull('sender_alias')->get();
 
-            if($aliasUserCharacterLogs->count()) {
+            if($aliasUserCharacterLogs->count() || $aliasUserCharacterLogsSender->count()) {
                 foreach($aliasUserCharacterLogs as $characterLog) {
                     $userAlias = UserAlias::where('site', 'dA')->where('alias', $characterLog->recipient_alias)->first();
                     if($userAlias) {
@@ -174,6 +187,17 @@ class MigrateAliases extends Command
                     elseif(!$userAlias) {
                         $alias = $characterLog->recipient_alias;
                         $characterLog->update(['recipient_alias' => null, 'recipient_url' => 'https://deviantart.com/'.$alias]);
+                    }
+                }
+
+                foreach($aliasUserCharacterLogsSender as $characterLog) {
+                    $userAlias = UserAlias::where('site', 'dA')->where('alias', $characterLog->sender_alias)->first();
+                    if($userAlias) {
+                        $characterLog->update(['sender_alias' => null, 'sender_id' => $userAlias->user_id]);
+                    }
+                    elseif(!$userAlias) {
+                        $alias = $characterLog->sender_alias;
+                        $characterLog->update(['sender_alias' => null, 'sender_url' => 'https://deviantart.com/'.$alias]);
                     }
                 }
 
@@ -230,10 +254,11 @@ class MigrateAliases extends Command
                 //
                 $table->dropColumn('artist_alias');
             });
+            $this->info("Dropped alias columns");
         }
         else $this->line("Skipped: Dropping alias columns");
 
         $this->line("\nAlias information migrated!");
-        $this->line("After checking that all data has been moved from them,\nrun again with --drop-columns to drop alias columns if desired.");
+        if(!$this->option('drop-columns')) $this->line("After checking that all data has been moved from them,\nrun again with --drop-columns to drop alias columns if desired.");
     }
 }

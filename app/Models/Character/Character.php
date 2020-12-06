@@ -193,6 +193,14 @@ class Character extends Model
     }
 
     /**
+     * Get the character's associated gallery submissions.
+     */
+    public function gallerySubmissions() 
+    {
+        return $this->hasMany('App\Models\Gallery\GalleryCharacter', 'character_id');
+    }
+    
+    /**     
      * Get the character's items.
      */
     public function items()

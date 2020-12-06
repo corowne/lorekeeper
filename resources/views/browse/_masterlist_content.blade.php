@@ -25,19 +25,20 @@
                         {!! Form::select('subtype_id', $subtypes, Request::get('subtype_id'), ['class' => 'form-control']) !!}
                     </div>
                 @endif
+                <hr/>
                 <div class="masterlist-search-field">
-                    {!! Form::label('username', 'Owner Username: ') !!}
-                    {!! Form::text('username', Request::get('username'), ['class' => 'form-control']) !!}
+                    {!! Form::label('owner', 'Owner Username: ') !!}
+                    {!! Form::select('owner', $userOptions, Request::get('owner'), ['class'=> 'form-control mr-2 userselectize', 'style' => 'width: 250px', 'placeholder' => 'Select a User']) !!}
                 </div>
                 <div class="masterlist-search-field">
-                    {!! Form::label('artist', 'Artist Username: ') !!}
-                    {!! Form::text('artist', Request::get('artist'), ['class' => 'form-control']) !!}
+                    {!! Form::label('artist', 'Artist: ') !!}
+                    {!! Form::select('artist', $userOptions, Request::get('artist'), ['class'=> 'form-control mr-2 userselectize', 'style' => 'width: 250px', 'placeholder' => 'Select a User']) !!}
                 </div>
                 <div class="masterlist-search-field">
-                    {!! Form::label('designer', 'Designer Username: ') !!}
-                    {!! Form::text('designer', Request::get('designer'), ['class' => 'form-control']) !!}
+                    {!! Form::label('designer', 'Designer: ') !!}
+                    {!! Form::select('designer', $userOptions, Request::get('designer'), ['class'=> 'form-control mr-2 userselectize', 'style' => 'width: 250px', 'placeholder' => 'Select a User']) !!}
                 </div>
-                <hr />
+                <hr/>
                 <div class="masterlist-search-field">
                     {!! Form::label('sale_value_min', 'Resale Minimum ($): ') !!}
                     {!! Form::text('sale_value_min', Request::get('sale_value_min'), ['class' => 'form-control']) !!}

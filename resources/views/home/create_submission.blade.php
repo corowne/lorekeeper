@@ -30,7 +30,7 @@
             </div>
         @endif
         <div class="form-group">
-            {!! Form::label('url', $isClaim ? 'URL' : 'Submission URL') !!}
+            {!! Form::label('url', $isClaim ? 'URL (Optional)' : 'Submission URL (Optional)') !!}
             @if($isClaim)
                 {!! add_help('Enter a URL relevant to your claim (for example, a comment proving you may make this claim).') !!}
             @else

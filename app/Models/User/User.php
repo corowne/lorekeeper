@@ -18,6 +18,9 @@ use App\Models\User\UserCharacterLog;
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
 use App\Models\Character\CharacterBookmark;
+use App\Models\Gallery\GallerySubmission;
+use App\Models\Gallery\GalleryCollaborator;
+use App\Models\Gallery\GalleryFavorite;
 use App\Traits\Commenter;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -151,6 +154,22 @@ class User extends Authenticatable implements MustVerifyEmail
     public function items()
     {
         return $this->belongsToMany('App\Models\Item\Item', 'user_items')->withPivot('count', 'data', 'updated_at', 'id')->whereNull('user_items.deleted_at');
+    }
+
+    /**
+     * Get all of the user's gallery submissions.
+     */
+    public function gallerySubmissions() 
+    {
+        return $this->hasMany('App\Models\Gallery\GallerySubmission')->where('user_id', $this->id)->orWhereIn('id', GalleryCollaborator::where('user_id', $this->id)->where('type', 'Collab')->pluck('gallery_submission_id')->toArray())->visible($this)->accepted()->orderBy('created_at', 'DESC');
+    }
+
+    /**
+     * Get all of the user's favorited gallery submissions.
+     */
+    public function galleryFavorites() 
+    {
+        return $this->hasMany('App\Models\Gallery\GalleryFavorite')->where('user_id', $this->id);
     }
 
     /**********************************************************************************************
@@ -374,7 +393,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $user = $this;
         $query = CurrencyLog::with('currency')->where(function($query) use ($user) {
-            $query->with('sender')->where('sender_type', 'User')->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Prompt Rewards', 'Claim Rewards']);
+            $query->with('sender')->where('sender_type', 'User')->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Prompt Rewards', 'Claim Rewards', 'Gallery Submission Reward']);
         })->orWhere(function($query) use ($user) {
             $query->with('recipient')->where('recipient_type', 'User')->where('recipient_id', $user->id)->where('log_type', '!=', 'Staff Removal');
         })->orderBy('id', 'DESC');

@@ -113,7 +113,7 @@ class Submission extends Model
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeViewable($query, $user)
+    public function scopeViewable($query, $user = null)
     {
         $forbiddenSubmissions = $this
         ->whereHas('prompt', function($q) {

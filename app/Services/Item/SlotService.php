@@ -97,7 +97,7 @@ class SlotService extends Service
             $tag->update(['data' => json_encode($characterData)]);
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -118,12 +118,12 @@ class SlotService extends Service
         try {
             foreach($stacks as $key=>$stack) {
                 // We don't want to let anyone who isn't the owner of the slot to use it,
-                // so do some validation... 
+                // so do some validation...
                 if($stack->user_id != $user->id) throw new \Exception("This item does not belong to you.");
 
                 // Next, try to delete the tag item. If successful, we can start distributing rewards.
                 if((new InventoryManager)->debitStack($stack->user, 'Slot Used', ['data' => ''], $stack, $data['quantities'][$key])) {
-                    
+
                     for($q=0; $q<$data['quantities'][$key]; $q++) {
                         //fill an array with the DB contents
                         $characterData = $stack->item->tag('slot')->data;
@@ -142,9 +142,9 @@ class SlotService extends Service
                         $characterData['y1'] = null;
                         $characterData['image'] = null;
                         $characterData['thumbnail'] = null;
-                        $characterData['artist_alias'][0] = null;
+                        $characterData['artist_id'][0] = null;
                         $characterData['artist_url'][0] = null;
-                        $characterData['designer_alias'][0] = null;
+                        $characterData['designer_id'][0] = null;
                         $characterData['designer_url'][0] = null;
                         $characterData['feature_id'][0] = null;
                         $characterData['feature_data'][0] = null;
@@ -167,7 +167,7 @@ class SlotService extends Service
                 }
             }
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
