@@ -193,20 +193,7 @@ function parseGalleryThumbs($text, &$submissions) {
             $submission = \App\Models\Gallery\GallerySubmission::where('id', $match)->first();
             if($submission) {
                 $submissions[] = $submission;
-                $text = preg_replace('/\[thumb='.$match.'\]/', '<a href="'.$submission->url.'" data-toggle="tooltip" title="'.$submission->displayTitle.' by '.nl2br(htmlentities($submission->creditsPlain)).(isset($submission->content_warning) ? '<br/><strong>Content Warning:</strong> '.nl2br(htmlentities($submission->content_warning)) : '').'">'.(isset($submission->content_warning) ? '<img class="img-thumbnail" src="'.asset('/images/content_warning.png').'"/>' :
-                (isset($submission->hash) ?
-                    '<img class="img-thumbnail" src="'.$submission->thumbnailUrl.'"/>' :
-                    '<div class="mx-auto img-thumbnail text-left" style="height:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.height')+8).'px; width:'.(Config::get('lorekeeper.settings.masterlist_thumbnails.width')+4).'px;">
-                        <span class="badge-primary px-2 py-1" style="border-radius:0 0 .5em 0; position:absolute; z-index:5;">Literature</span>
-                        <div class="container-'.$submission->id.' parsed-text pb-2 pr-2" style="height:'.Config::get('lorekeeper.settings.masterlist_thumbnails.height').'px; width:'.Config::get('lorekeeper.settings.masterlist_thumbnails.width').'px; overflow:hidden;">
-                            <div class="content-'.$submission->id.' text-body">'.substr($submission->parsed_text, 0, 500).(strlen($submission->parsed_text) > 500 ? '...' : '').'</div>
-                        </div>
-                    </div>
-                    <style>
-                        .content-'.$submission->id.' {transition-duration: '.(strlen(substr($submission->parsed_text, 0, 500))/1000).'s;}
-                        .content-'.$submission->id.':hover, .content-'.$submission->id.':focus-within {transform: translateY(calc('.Config::get('lorekeeper.settings.masterlist_thumbnails.height').'px - 100%)); transition-duration: '.(strlen(substr($submission->parsed_text, 0, 500))/100).'s;}
-                    </style>'))
-                .'</a>', $text);
+                $text = preg_replace('/\[thumb='.$match.'\]/', '<a href="'.$submission->url.'" data-toggle="tooltip" title="'.$submission->displayTitle.' by '.nl2br(htmlentities($submission->creditsPlain)).(isset($submission->content_warning) ? '<br/><strong>Content Warning:</strong> '.nl2br(htmlentities($submission->content_warning)) : '').'">'.view('widgets._gallery_thumb', ['submission' => $submission]).'</a>', $text);
             }
         }
     }
