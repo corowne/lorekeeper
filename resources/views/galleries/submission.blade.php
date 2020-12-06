@@ -209,9 +209,6 @@
     </div>
 @endif
 
-<?php $galleryPage = true;
-$sideGallery = $submission->gallery ?>
-
 @endsection
 
 @section('scripts')

@@ -67,6 +67,4 @@
     <p>No submissions found!</p>
 @endif
 
-<?php $galleryPage = true;
-$sideGallery = $gallery ?>
 @endsection

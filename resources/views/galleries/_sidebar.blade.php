@@ -21,9 +21,6 @@
 
     <li class="sidebar-section">
         <div class="sidebar-section-header">Galleries</div>
-        <?php
-            $galleries = app\Models\Gallery\Gallery::whereNull('parent_id')->active()->sort()->get();
-        ?>
         @foreach($galleries as $gallery)
             <div class="sidebar-item"><a href="{{ url('gallery/'.$gallery->id) }}" class="{{ set_active('gallery/.$gallery->id') }}">{{ $gallery->name }}</a></div>
         @endforeach

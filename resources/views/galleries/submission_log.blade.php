@@ -25,14 +25,14 @@
                                 <p>Enter in the amount of {{ $currency->name }} that {{ $submission->collaborators->count() ? 'each collaborator' : 'the submitting user'}}{{ $submission->participants->count() ? ' and any participants' : '' }} should receive. The suggested amount has been pre-filled for you based on the provided form responses, but this is only a guideline based on user input and should be verified and any adjustments made as necessary.</p>
                                 {!! Form::open(['url' => 'admin/gallery/edit/'.$submission->id.'/value']) !!}
                                     @if(!$submission->collaborators->count() || $submission->collaborators->where('user_id', $submission->user_id)->first() == null)
-                                        <div class="form-group">    
+                                        <div class="form-group">
                                             {!! Form::label($submission->user->name) !!}:
                                             {!! Form::number('value[submitted]['.$submission->user->id.']', isset($submission->data['total']) ? round(($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')) : 0, ['class' => 'form-control']) !!}
                                         </div>
                                     @endif
                                     @if($submission->collaborators->count())
                                         @foreach($submission->collaborators as $key=>$collaborator)
-                                            <div class="form-group">    
+                                            <div class="form-group">
                                                 {!! Form::label($collaborator->user->name.' ('.$collaborator->data.')') !!}:
                                                 {!! Form::number('value[collaborator]['.$collaborator->user->id.']', isset($submission->data['total']) ? round(($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')) : 0, ['class' => 'form-control']) !!}
                                             </div>
@@ -40,7 +40,7 @@
                                     @endif
                                     @if($submission->participants->count())
                                         @foreach($submission->participants as $key=>$participant)
-                                            <div class="form-group">    
+                                            <div class="form-group">
                                                 {!! Form::label($participant->user->name.' ('.$participant->displayType.')') !!}:
                                                 {!! Form::number('value[participant]['.$participant->user->id.']', isset($submission->data['total']) ? ($participant->type == 'Comm' ? round(($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')/2) : 0) : 0, ['class' => 'form-control']) !!}
                                             </div>
@@ -195,8 +195,5 @@
         </div>
     @endif
 </div>
-
-<?php $galleryPage = true; 
-$sideGallery = $submission->gallery ?>
 
 @endsection

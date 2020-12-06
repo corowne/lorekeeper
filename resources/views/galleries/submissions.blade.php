@@ -37,7 +37,4 @@
     <p>No gallery submissions found.</p>
 @endif
 
-<?php $galleryPage = false; 
-$sideGallery = null ?>
-
 @endsection

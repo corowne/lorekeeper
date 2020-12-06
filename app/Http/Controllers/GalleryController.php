@@ -3,6 +3,7 @@
 use Settings;
 use Config;
 use Auth;
+use View;
 use Illuminate\Http\Request;
 use App\Models\Gallery\Gallery;
 use App\Models\Gallery\GallerySubmission;
@@ -27,6 +28,17 @@ class GalleryController extends Controller
     */
 
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        View::share('galleries', Gallery::whereNull('parent_id')->active()->sort()->get());
+    }
+
+    /**
      * Shows the gallery index.
      *
      * @return \Illuminate\Contracts\Support\Renderable
@@ -35,6 +47,8 @@ class GalleryController extends Controller
     {
         return view('galleries.index', [
             'galleries' => Gallery::sort()->active()->whereNull('parent_id')->paginate(10),
+            'galleryPage' => false,
+            'sideGallery' => null
         ]);
     }
 
@@ -87,7 +101,9 @@ class GalleryController extends Controller
             'gallery' => $gallery,
             'submissions' => $query->paginate(20)->appends($request->query()),
             'prompts' => [0 => 'Any Prompt'] + Prompt::whereIn('id', GallerySubmission::where('gallery_id', $gallery->id)->visible(Auth::check() ? Auth::user() : null)->accepted()->whereNotNull('prompt_id')->pluck('prompt_id')->toArray())->orderBy('name')->pluck('name', 'id')->toArray(),
-            'childSubmissions' => GallerySubmission::whereIn('gallery_id', $gallery->children->pluck('id')->toArray())->where('is_visible', 1)->where('status', 'Accepted')
+            'childSubmissions' => GallerySubmission::whereIn('gallery_id', $gallery->children->pluck('id')->toArray())->where('is_visible', 1)->where('status', 'Accepted'),
+            'galleryPage' => true,
+            'sideGallery' => $gallery
         ]);
     }
 
@@ -113,7 +129,8 @@ class GalleryController extends Controller
         return view('galleries.submission', [
             'submission' => $submission,
             'commentCount' => Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->where('type', 'User-User')->count(),
-            'currency' => Currency::find(Settings::get('group_currency')),
+            'galleryPage' => true,
+            'sideGallery' => $submission->gallery
         ]);
     }
 
@@ -151,6 +168,8 @@ class GalleryController extends Controller
         return view('galleries.submission_log', [
             'submission' => $submission,
             'currency' => Currency::find(Settings::get('group_currency')),
+            'galleryPage' => true,
+            'sideGallery' => $submission->gallery
         ]);
     }
 
@@ -170,6 +189,8 @@ class GalleryController extends Controller
         return view('galleries.submissions', [
             'submissions' => $submissions->orderBy('id', 'DESC')->paginate(10),
             'galleries' => Gallery::sort()->whereNull('parent_id')->paginate(10),
+            'galleryPage' => false,
+            'sideGallery' => null
         ]);
     }
 
@@ -192,6 +213,8 @@ class GalleryController extends Controller
             'prompts' => Prompt::active()->sortAlphabetical()->pluck('name', 'id')->toArray(),
             'users' => User::visible()->orderBy('name')->pluck('name', 'id')->toArray(),
             'currency' => Currency::find(Settings::get('group_currency')),
+            'galleryPage' => true,
+            'sideGallery' => $gallery
         ]));
     }
 
@@ -216,11 +239,13 @@ class GalleryController extends Controller
         return view('galleries.create_edit_submission', [
             'closed' => false,
             'gallery' => $submission->gallery,
-            'galleries' => Gallery::orderBy('name')->pluck('name', 'id')->toArray(),
+            'galleryOptions' => Gallery::orderBy('name')->pluck('name', 'id')->toArray(),
             'prompts' => $prompts->sortAlphabetical()->pluck('name', 'id')->toArray(),
             'submission' => $submission,
             'users' => User::visible()->orderBy('name')->pluck('name', 'id')->toArray(),
             'currency' => Currency::find(Settings::get('group_currency')),
+            'galleryPage' => true,
+            'sideGallery' => $submission->gallery
         ]);
     }
 

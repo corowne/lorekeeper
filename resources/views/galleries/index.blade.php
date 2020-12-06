@@ -69,7 +69,4 @@
     <p>There aren't any galleries!</p>
 @endif
 
-<?php $galleryPage = false;
-$sideGallery = null ?>
-
 @endsection

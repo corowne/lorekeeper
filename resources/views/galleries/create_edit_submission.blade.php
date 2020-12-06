@@ -74,7 +74,7 @@
                 @if($submission->id && Auth::user()->hasPower('manage_submissions'))
                     <div class="form-group">
                         {!! Form::label('gallery_id', '[Admin] Gallery / Move Submission') !!} {!! add_help('Use in the event you need to move a submission between galleries. If left blank, leaves the submission in its current location. Note that if currency rewards from submissions are enabled, this won\'t retroactively fill out the form if moved from a gallery where they are disabled to one where they are enabled.') !!}
-                        {!! Form::select('gallery_id', $galleries, null, ['class' => 'form-control selectize gallery-select original', 'id' => 'gallery', 'placeholder' => '']) !!}
+                        {!! Form::select('gallery_id', $galleryOptions, null, ['class' => 'form-control selectize gallery-select original', 'id' => 'gallery', 'placeholder' => '']) !!}
                     </div>
                 @endif
 
@@ -257,8 +257,6 @@
     </div>
 @endif
 
-<?php $galleryPage = true;
-$sideGallery = $gallery ?>
 @endsection
 
 @section('scripts')
