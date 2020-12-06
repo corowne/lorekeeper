@@ -15,9 +15,19 @@
 
 <h3>Basic Information</h3>
 
-<div class="form-group">
-    {!! Form::label('Name') !!}
-    {!! Form::text('name', $prompt->name, ['class' => 'form-control']) !!}
+<div class="row">
+    <div class="col-md-8">
+        <div class="form-group">
+            {!! Form::label('Name') !!}
+            {!! Form::text('name', $prompt->name, ['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="col-md">
+        <div class="form-group">
+            {!! Form::label('Prefix (Optional)') !!} {!! add_help('This is used to label submissions associated with this prompt in the gallery.') !!}
+            {!! Form::text('prefix', $prompt->prefix, ['class' => 'form-control']) !!}
+        </div>
+    </div>
 </div>
 
 <div class="form-group">

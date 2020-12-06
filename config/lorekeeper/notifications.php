@@ -316,6 +316,7 @@ return [
         'message' => '<a href="{sender_url}">{sender}</a> has made a reply to your comment. <a href="comment/{comment_url}">See Reply.</a>',
         'url' => ''
     ],
+
     // CHARACTER_ITEM_GRANT
     501 => [
         'name' => 'Character Item Grant',
@@ -328,5 +329,82 @@ return [
         'name' => 'Character Item Removal',
         'message' => '{item_name} (×{item_quantity}) was removed from {character_name} by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Inventory</a>)',
         'url' => 'character/{character_slug}/inventory'
+    ],
+
+    // GALLERY_SUBMISSION_COLLABORATOR
+    505 => [
+        'name' => 'Gallery Submission Collaborator',
+        'message' => '<a href="{sender_url}">{sender}</a> has added you as a collaborator on a gallery submission, which needs your approval. (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/view/{submission_id}'
+    ],
+
+    // GALLERY_COLLABORATORS_APPROVED
+    506 => [
+        'name' => 'Gallery Submission Collaborators Approved',
+        'message' => 'All of the collaborators on your submission <strong>{submission_title}</strong> (#{submission_id}) have approved it, and it is now pending staff review. (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/view/{submission_id}'
+    ],
+
+    // GALLERY_SUBMISSION_ACCEPTED
+    507 => [
+        'name' => 'Gallery Submission Accepted',
+        'message' => 'Your submission <strong>{submission_title}</strong> (#{submission_id}) was accepted. (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/queue/{submission_id}'
+    ],
+
+    // GALLERY_SUBMISSION_REJECTED
+    508 => [
+        'name' => 'Gallery Submission Rejected',
+        'message' => 'Your submission <strong>{submission_title}</strong> (#{submission_id}) was rejected. (<a href="{url}">View Submission</a>)',
+        'url' => 'submissions/queue/{submission_id}'
+    ],
+
+    // GALLERY_SUBMISSION_VALUED
+    509 => [
+        'name' => 'Gallery Submission Valued',
+        'message' => 'You have been awarded {currency_quantity} {currency_name} for the gallery submission <strong>{submission_title}</strong> (#{submission_id}). (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/queue/{submission_id}'
+    ],
+
+    // GALLERY_SUBMISSION_MOVED
+    510 => [
+        'name' => 'Gallery Submission Moved',
+        'message' => 'Your gallery submission <strong>{submission_title}</strong> (#{submission_id}) has been moved by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/view/{submission_id}'
+    ],
+
+    // GALLERY_SUBMISSION_CHARACTER
+    511 => [
+        'name' => 'Gallery Submission Character',
+        'message' => '<a href="{sender_url}">{sender}</a> has added your character <a href="{character_url}">{character}</a> to a gallery submission. (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/view/{submission_id}'
+    ],
+
+    // GALLERY_SUBMISSION_FAVORITE
+    512 => [
+        'name' => 'Gallery Submission Favorite',
+        'message' => '<a href="{sender_url}">{sender}</a> has added your gallery submission <strong>{submission_title}</strong> (#{submission_id}) to their favorites. (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/view/{submission_id}'
+    ],
+
+    // GALLERY_SUBMISSION_STAFF_COMMENTS
+    513 => [
+        'name' => 'Gallery Submission Staff Comments',
+        'message' => '<a href="{sender_url}">{sender}</a> updated the staff comments on your gallery submission <strong>{submission_title}</strong> (#{submission_id}). (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/queue/{submission_id}'
+    ],
+
+    // GALLERY_SUBMISSION_EDITED
+    514 => [
+        'name' => 'Gallery Submission Edited',
+        'message' => 'Your gallery submission <strong>{submission_title}</strong> (#{submission_id}) has been edited by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/view/{submission_id}'
+    ],
+
+    // GALLERY_SUBMISSION_PARTICIPANT
+    515 => [
+        'name' => 'Gallery Submission Participant',
+        'message' => '<a href="{sender_url}">{sender}</a> has added you as a participant on a gallery submission. (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/view/{submission_id}'
     ],
 ];

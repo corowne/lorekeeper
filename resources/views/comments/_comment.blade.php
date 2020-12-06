@@ -9,9 +9,11 @@
   <div id="comment-{{ $comment->getKey() }}"  class="pt-4" style="flex-basis: 100%;">
 @endif
     <div class="media-body row mw-100 mx-0" style="flex:1;flex-wrap:wrap;">
+        @if(isset($compact) && !$compact)
         <div class="d-none d-md-block">
             <img class="mr-3 mt-2" src="/images/avatars/{{ $comment->commenter->avatar }}" style="width:70px; height:70px; border-radius:50%;" alt="{{ $comment->commenter->name }} Avatar">
         </div>
+        @endif
         <div class="d-block" style="flex:1">
             <div class="row mx-0 px-0 align-items-md-end">
                 <h5 class="mt-0 mb-1 col mx-0 px-0">
@@ -26,7 +28,9 @@
                     <span class="text-muted border-left mx-1 px-1">(Edited {!! ($comment->updated_at) !!})</span>
                 @endif
                 </small>
-                <a href="{{ url('comment/').'/'.$comment->id }}"><i class="fas fa-link ml-1" style="opacity: 50%;"></i></a>
+                @if($comment->type == "User-User")
+                    <a href="{{ url('comment/').'/'.$comment->id }}"><i class="fas fa-link ml-1" style="opacity: 50%;"></i></a>
+                @endif
                 <a href="{{ url('reports/new?url=') . $comment->url }}"><i class="fas fa-exclamation-triangle" data-toggle="tooltip" title="Click here to report this comment." style="opacity: 50%;"></i></a>
             </p>
         </div>
@@ -38,7 +42,7 @@
                 @can('edit-comment', $comment)
                     <button data-toggle="modal" data-target="#comment-modal-{{ $comment->getKey() }}" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1  btn-faded text-uppercase"><i class="fas fa-edit"></i><span class="ml-2 d-none d-sm-inline-block">Edit</span></button>
                 @endcan
-                @if((Auth::user()->id == $comment->commentable_id) || Auth::user()->isStaff)
+                @if(((Auth::user()->id == $comment->commentable_id) || Auth::user()->isStaff) && (isset($compact) && !$compact))
                     <button data-toggle="modal" data-target="#feature-modal-{{ $comment->getKey() }}" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1  btn-faded text-success text-uppercase"><i class="fas fa-star"></i><span class="ml-2 d-none d-sm-inline-block">{{$comment->is_featured ? 'Unf' : 'F' }}eature Comment</span></button>
                 @endif
                 @can('delete-comment', $comment)

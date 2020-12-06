@@ -1,6 +1,12 @@
 <ul>
     <li class="sidebar-header"><a href="{{ $user->url }}" class="card-link">{{ $user->name }}</a></li>
     <li class="sidebar-section">
+        <div class="sidebar-section-header">Gallery</div>
+        <div class="sidebar-item"><a href="{{ $user->url.'/gallery' }}" class="{{ set_active('user/'.$user->name.'/gallery*') }}">Gallery</a></div>
+        <div class="sidebar-item"><a href="{{ $user->url.'/favorites' }}" class="{{ set_active('user/'.$user->name.'/favorites*') }}">Favorites</a></div>
+        <div class="sidebar-item"><a href="{{ $user->url.'/favorites/own-characters' }}" class="{{ set_active('user/'.$user->name.'/favorites/own-characters*') }}">Own Character Favorites</a></div>
+    </li>
+    <li class="sidebar-section">
         <div class="sidebar-section-header">User</div>
         <div class="sidebar-item"><a href="{{ $user->url.'/characters' }}" class="{{ set_active('user/'.$user->name.'/characters*') }}">Characters</a></div>
         @if(isset($sublists) && $sublists->count() > 0)
