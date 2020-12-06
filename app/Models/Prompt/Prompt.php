@@ -17,7 +17,7 @@ class Prompt extends Model
      */
     protected $fillable = [
         'prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active',
-        'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image', 
+        'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image', 'prefix',
         'hide_submissions'
     ];
 
@@ -34,7 +34,7 @@ class Prompt extends Model
      * @var array
      */
     public $dates = ['start_at', 'end_at'];
-    
+
     /**
      * Validation rules for character creation.
      *
@@ -43,11 +43,12 @@ class Prompt extends Model
     public static $createRules = [
         'prompt_category_id' => 'nullable',
         'name' => 'required|unique:prompts|between:3,25',
+        'prefix' => 'nullable|unique:prompts|between:2,10',
         'summary' => 'nullable',
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
-    
+
     /**
      * Validation rules for character updating.
      *
@@ -56,35 +57,36 @@ class Prompt extends Model
     public static $updateRules = [
         'prompt_category_id' => 'nullable',
         'name' => 'required|between:3,25',
+        'prefix' => 'nullable|between:2,10',
         'summary' => 'nullable',
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the category the prompt belongs to.
      */
-    public function category() 
+    public function category()
     {
         return $this->belongsTo('App\Models\Prompt\PromptCategory', 'prompt_category_id');
     }
-    
+
     /**
      * Get the rewards attached to this prompt.
      */
-    public function rewards() 
+    public function rewards()
     {
         return $this->hasMany('App\Models\Prompt\PromptReward', 'prompt_id');
     }
 
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -107,7 +109,7 @@ class Prompt extends Model
                     $query->where('end_at', '<=', Carbon::now())->where('hide_after_end', 0);
                 });
         });
-        
+
     }
 
     /**
@@ -181,11 +183,11 @@ class Prompt extends Model
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
-    
+
     /**
      * Displays the model's name, linked to its encyclopedia page.
      *
@@ -225,7 +227,7 @@ class Prompt extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *

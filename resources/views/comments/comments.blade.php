@@ -1,8 +1,10 @@
 @php
     if (isset($approved) and $approved == true) {
-        $comments = $model->approvedComments;
+        if(isset($type) && $type != null) $comments = $model->approvedComments->where('type', $type);
+        else $comments = $model->approvedComments->where('type', "User-User");
     } else {
-        $comments = $model->commentz;
+        if(isset($type) && $type != null) $comments = $model->commentz->where('type', $type);
+        else $comments = $model->commentz->where('type', "User-User");
     }
 @endphp
 
@@ -10,7 +12,9 @@
     <div class="alert alert-warning">There are no comments yet.</div>
 @endif
 
+@if(!isset($type) || $type == "User-User")
 <h2>Comments</h2>
+@endif
 <div class="d-flex mw-100 row mx-0" style="overflow:hidden;">
     @php
         $comments = $comments->sortByDesc('created_at');
@@ -48,7 +52,8 @@
                 @include('comments::_comment', [
                     'comment' => $comment,
                     'grouped_comments' => $grouped_comments,
-                    'limit' => 0
+                    'limit' => 0,
+                    'compact' => ($comment->type == "Staff-Staff") ? true : false,
                 ])
             @endforeach
         @endif

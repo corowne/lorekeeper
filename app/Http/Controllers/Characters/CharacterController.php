@@ -17,6 +17,7 @@ use App\Models\Feature\Feature;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
 use App\Models\User\UserCurrency;
+use App\Models\Gallery\GallerySubmission;
 use App\Models\Character\CharacterCurrency;
 
 use App\Models\Item\Item;
@@ -131,6 +132,20 @@ class CharacterController extends Controller
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
         return redirect()->back();
+    }
+
+    /**
+     * Shows a character's gallery.
+     *
+     * @param  string  $slug
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterGallery($slug)
+    {
+        return view('character.gallery', [
+            'character' => $this->character,
+            'submissions' => GallerySubmission::whereIn('id', $this->character->gallerySubmissions->pluck('gallery_submission_id')->toArray())->visible()->accepted()->paginate(20),
+        ]);
     }
 
     /**
