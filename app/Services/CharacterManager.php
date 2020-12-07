@@ -1695,7 +1695,7 @@ class CharacterManager extends Service
             ]);
         }
 
-        if(Config::get('lorekeeper.settings.reset_character_profile_on_transfer')) {
+        if(Config::get('lorekeeper.settings.reset_character_profile_on_transfer') && !$character->is_myo_slot) {
             // Reset name and profile
             $character->update(['name' => null]);
 
