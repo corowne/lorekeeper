@@ -71,7 +71,19 @@
 </head>
 <body>
     <div id="app">
-        <div class="site-header-image" id="header" style="background-image: url('{{ asset('images/header.png') }}');"></div>
+        <?php
+        // rotating header image code
+        $month = date('n'); 
+        $day = date('j');
+        // We look for a configured header image...
+        $header =               Config::get('lorekeeper.rotating_site_header.'.$month.'.'.$day);
+        if (!$header) $header = Config::get('lorekeeper.rotating_site_header.'.$month.'.0');
+        if (!$header) $header = Config::get('lorekeeper.rotating_site_header.0.'.$day);
+        if (!$header) $header = Config::get('lorekeeper.rotating_site_header.0.0');
+        if (!$header) $header = 'images/header.png';
+        // make sure the site-header-image's background-image is set to {{ asset($header) }} or this won't work!
+        ?>
+        <div class="site-header-image" id="header" style="background-image: url('{{ asset($header) }}');"></div>
         @include('layouts._nav')
         @if ( View::hasSection('sidebar') )
 			<div class="site-mobile-header bg-secondary"><a href="#" class="btn btn-sm btn-outline-light" id="mobileMenuButton">Menu <i class="fas fa-caret-right ml-1"></i></a></div>
