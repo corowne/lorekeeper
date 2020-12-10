@@ -153,6 +153,16 @@ class CharacterDrop extends Model
         return $items;
     }
 
+    /**
+     * Get the display of the group a character belongs to, so long as the species has more than one.
+     *
+     */
+    public function getGroupAttribute()
+    {
+        if(count($this->dropData->parameters) > 1) return ' ('.$this->parameters.')';
+        else return null;
+    }
+
     /**********************************************************************************************
 
         OTHER FUNCTIONS
