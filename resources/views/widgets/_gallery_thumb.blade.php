@@ -1,7 +1,7 @@
 @if(isset($submission->content_warning))
-    <img class="img-thumbnail" src="{{ asset('/images/content_warning.png') }}"/>;
+    <img class="img-thumbnail" src="{{ asset('/images/content_warning.png') }}"/>
 @elseif(isset($submission->hash))
-    <img class="img-thumbnail" src="{{ $submission->thumbnailUrl }}"/>;
+    <img class="img-thumbnail" src="{{ $submission->thumbnailUrl }}"/>
 @else
     <div class="mx-auto img-thumbnail text-left" style="height:{{ (Config::get('lorekeeper.settings.masterlist_thumbnails.height')+8) }}px; width:{{ (Config::get('lorekeeper.settings.masterlist_thumbnails.width')+4) }}px;">
         <span class="badge-primary px-2 py-1" style="border-radius:0 0 .5em 0; position:absolute; z-index:5;">Literature</span>
