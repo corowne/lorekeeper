@@ -39,7 +39,7 @@ class SpeciesController extends Controller
             'specieses' => Species::orderBy('sort', 'DESC')->get()
         ]);
     }
-    
+
     /**
      * Shows the create species page.
      *
@@ -52,7 +52,7 @@ class SpeciesController extends Controller
             'sublists' => [0 => 'No Sublist'] + Sublist::orderBy('name', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
-    
+
     /**
      * Shows the edit species page.
      *
@@ -95,7 +95,7 @@ class SpeciesController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Gets the species deletion modal.
      *
@@ -158,7 +158,7 @@ class SpeciesController extends Controller
             'subtypes' => Subtype::orderBy('sort', 'DESC')->get()
         ]);
     }
-    
+
     /**
      * Shows the create subtype page.
      *
@@ -171,7 +171,7 @@ class SpeciesController extends Controller
             'specieses' => Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
-    
+
     /**
      * Shows the edit subtype page.
      *
@@ -214,7 +214,7 @@ class SpeciesController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Gets the subtype deletion modal.
      *
@@ -277,7 +277,7 @@ class SpeciesController extends Controller
             'drops' => CharacterDropData::orderBy('species_id', 'ASC')->paginate(20)
         ]);
     }
-    
+
     /**
      * Shows the create character drop data page.
      *
@@ -291,7 +291,7 @@ class SpeciesController extends Controller
             'subtypes' => Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
-    
+
     /**
      * Shows the edit character drop data page.
      *
@@ -322,7 +322,7 @@ class SpeciesController extends Controller
     {
         $id ? $request->validate(CharacterDropData::$updateRules) : $request->validate(CharacterDropData::$createRules);
         $data = $request->only([
-            'species_id', 'label', 'weight', 'drop_frequency', 'drop_interval', 'is_active', 'item_id', 'min_quantity', 'max_quantity'
+            'species_id', 'label', 'weight', 'drop_frequency', 'drop_interval', 'is_active', 'item_id', 'min_quantity', 'max_quantity', 'drop_name'
         ]);
         if($id && $service->updateCharacterDrop(CharacterDropData::find($id), $data, Auth::user())) {
             flash('Character drop updated successfully.')->success();
@@ -336,7 +336,7 @@ class SpeciesController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Gets the character drop data deletion modal.
      *

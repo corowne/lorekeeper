@@ -43,12 +43,13 @@ class CharacterDropService extends Service
 
             $data['data']['frequency'] = ['frequency' => $data['drop_frequency'], 'interval' => $data['drop_interval']];
             $data['data']['is_active'] = isset($data['is_active']) && $data['is_active'] ? $data['is_active'] : 0;
+            $data['data']['drop_name'] = isset($data['drop_name']) ? $data['drop_name'] : null;
             $data['data'] = json_encode($data['data']);
 
             $drop = CharacterDropData::create(array_only($data, ['species_id', 'parameters', 'data']));
 
             return $this->commitReturn($drop);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -58,7 +59,7 @@ class CharacterDropService extends Service
      * Updates character drop data.
      *
      * @param  \App\Models\Character\CharacterDropData  $drop
-     * @param  array                                    $data 
+     * @param  array                                    $data
      * @return bool|\App\Models\Character\CharacterDropData
      */
     public function updateCharacterDrop($drop, $data)
@@ -99,12 +100,13 @@ class CharacterDropService extends Service
 
             $data['data']['frequency'] = ['frequency' => $data['drop_frequency'], 'interval' => $data['drop_interval']];
             $data['data']['is_active'] = isset($data['is_active']) && $data['is_active'] ? $data['is_active'] : 0;
+            $data['data']['drop_name'] = isset($data['drop_name']) ? $data['drop_name'] : null;
             $data['data'] = json_encode($data['data']);
 
             $drop->update(array_only($data, ['species_id', 'parameters', 'data']));
 
             return $this->commitReturn($drop);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -125,12 +127,12 @@ class CharacterDropService extends Service
             // - Prompts
             // - Box rewards (unfortunately this can't be checked easily)
             if(CharacterDrop::where('drop_id', $drop->id)->exists()) throw new \Exception('A character has drops using this data. Consider disabling drops instead.');
-            
+
             $drop->characterDrops()->delete();
             $drop->delete();
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);

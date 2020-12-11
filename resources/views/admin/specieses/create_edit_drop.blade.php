@@ -41,7 +41,7 @@
             @foreach($drop->parameters as $label=>$weight)
                 <tr class="drop-row">
                     <td class="drop-row-select">{!! Form::text('label[]', $label, ['class' => 'form-control']) !!}</td>
-                    <td class="drop-row-weight">{!! Form::text('weight[]', $weight, ['class' => 'form-control drop-weight']) !!}</td>
+                    <td class="drop-row-weight">{!! Form::number('weight[]', $weight, ['class' => 'form-control drop-weight']) !!}</td>
                     <td class="drop-row-chance"></td>
                     <td class="text-right"><a href="#" class="btn btn-danger remove-drop-button">Remove</a></td>
                 </tr>
@@ -60,6 +60,11 @@ Select how often drops should occur.
 <div class="form-group">
     {!! Form::checkbox('is_active', 1, $drop->id ? $drop->data['is_active'] : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
     {!! Form::label('is_active', 'Is Active', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Whether or not drops for this species are active. Impacts subtypes as well.') !!}
+</div>
+
+<div class="form-group">
+    {!! Form::label('drop_name', 'Drop Name', ['class' => 'form-label']) !!} {!! add_help('What drops are referred to on character pages. Impacts subtypes as well. Should be singular.') !!}
+    {!! Form::text('drop_name', isset($drop->data['drop_name']) ? $drop->data['drop_name'] : null, ['class' => 'form-control']) !!}
 </div>
 
 @if($drop->id)

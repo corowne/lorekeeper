@@ -1,12 +1,12 @@
 @extends('character.layout', ['isMyo' => $character->is_myo_slot])
 
-@section('profile-title') {{ $character->fullName }}'s Character Drops @endsection
+@section('profile-title') {{ $character->fullName }} :: Collect {{ isset($character->drops->dropData->data['drop_name']) ? $character->drops->dropData->data['drop_name'].'s' : 'Drops' }} @endsection
 
 @section('profile-content')
 @if($character->is_myo_slot)
-{!! breadcrumbs(['MYO Slot Masterlist' => 'myos', $character->fullName => $character->url, "Character Drops" => $character->url.'/inventory']) !!}
+{!! breadcrumbs(['MYO Slot Masterlist' => 'myos', $character->fullName => $character->url, 'Collect '.(isset($character->drops->dropData->data['drop_name']) ? $character->drops->dropData->data['drop_name'].'s' : 'Drops') => $character->url.'/drops']) !!}
 @else
-{!! breadcrumbs([($character->category->masterlist_sub_id ? $character->category->sublist->name.' Masterlist' : 'Character masterlist') => ($character->category->masterlist_sub_id ? 'sublist/'.$character->category->sublist->key : 'masterlist' ), $character->fullName => $character->url, "Character Drops" => $character->url.'/inventory']) !!}
+{!! breadcrumbs([($character->category->masterlist_sub_id ? $character->category->sublist->name.' Masterlist' : 'Character masterlist') => ($character->category->masterlist_sub_id ? 'sublist/'.$character->category->sublist->key : 'masterlist' ), $character->fullName => $character->url, 'Collect '.(isset($character->drops->dropData->data['drop_name']) ? $character->drops->dropData->data['drop_name'].'s' : 'Drops') => $character->url.'/inventory']) !!}
 @endif
 
 @include('character._header', ['character' => $character])
@@ -24,7 +24,7 @@
     </div>
     <div class="col-md-6 text-center">
         <h2>
-            Character Drops
+            Collect {{ isset($character->drops->dropData->data['drop_name']) ? $character->drops->dropData->data['drop_name'].'s' : 'Drops' }}
             @if(Auth::check() && Auth::user()->hasPower('edit_inventories'))
                 <a href="#" class="float-right btn btn-outline-info btn-sm" id="paramsButton" data-toggle="modal" data-target="#paramsModal"><i class="fas fa-cog"></i> Admin</a>
             @endif
@@ -32,7 +32,7 @@
 
         <div class="card card-body mb-4">
             @if($drops->speciesItem || $drops->subtypeItem)
-                <p>This character produces these drops, based on their species and/or subtype:</p>
+                <p>This character produces these {{ isset($character->drops->dropData->data['drop_name']) ? strtolower($character->drops->dropData->data['drop_name']).'s' : 'drops' }}, based on their species and/or subtype:</p>
                 @if($drops->speciesItem)
                     <div class="row">
                     <div class="col-md align-self-center">
@@ -57,20 +57,20 @@
                     </div>
                 @endif
             @else
-                <p>This character isn't eligible for any drops.</p>
+                <p>This character {{ isset($character->drops->dropData->data['drop_name']) ? 'doesn\'t produce any '.strtolower($character->drops->dropData->data['drop_name']).'s' : 'isn\'t eligible for any drops' }}.</p>
             @endif
         </div>
 
         @if($drops->speciesItem || $drops->subtypeItem)
             <div class="text-center">
                 <p>
-                    This character has {{ $drops->drops_available }} drop{{ $drops->drops_available != 1 ? 's' : '' }} available.<br/>
-                    This character's next drop(s) will be available to collect {!! pretty_date($drops->next_day) !!}.
+                    This character has {{ $drops->drops_available }} batch of {{ isset($character->drops->dropData->data['drop_name']) ? strtolower($character->drops->dropData->data['drop_name']) : 'drop' }}s available.<br/>
+                    This character's next {{ isset($character->drops->dropData->data['drop_name']) ? strtolower($character->drops->dropData->data['drop_name']) : 'drop' }}(s) will be available to collect {!! pretty_date($drops->next_day) !!}.
                 </p>
             </div>
             @if(Auth::check() && Auth::user()->id == $character->user_id && $drops->drops_available > 0)
                 {!! Form::open(['url' => 'character/'.$character->slug.'/drops']) !!}
-                    {!! Form::submit('Collect Drop'.($drops->drops_available > 1 ? 's' : ''), ['class' => 'btn btn-primary']) !!}
+                    {!! Form::submit('Collect '.(isset($character->drops->dropData->data['drop_name']) ? $character->drops->dropData->data['drop_name'] : 'Drop').($drops->drops_available > 1 ? 's' : ''), ['class' => 'btn btn-primary']) !!}
                 {!! Form::close() !!}
             @endif
         @endif
