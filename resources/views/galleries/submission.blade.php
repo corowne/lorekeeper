@@ -173,7 +173,7 @@
                 </div>
                 <div class="card-body">
                     @foreach($submission->promptSubmissions as $promptSubmission)
-                        <strong><a href="{{ $promptSubmission->viewUrl }}">#{{ $promptSubmission->id }} for {!! $promptSubmission->prompt->name !!}</a></strong> by {!! $promptSubmission->user->displayName !!}
+                        <strong><a href="{{ $promptSubmission->viewUrl }}">#{{ $promptSubmission->id }} for {!! $promptSubmission->prompt->name !!}</a></strong> by {!! $promptSubmission->user->displayName !!}<br/>
                     @endforeach
                 </div>
             </div>

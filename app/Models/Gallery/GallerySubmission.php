@@ -362,7 +362,7 @@ class GallerySubmission extends Model
         $currencyName = Currency::find(Settings::get('group_currency'))->abbreviation ? Currency::find(Settings::get('group_currency'))->abbreviation : Currency::find(Settings::get('group_currency'))->name;
 
         $prefixList = [];
-        if($this->promptSubmissions->count()) foreach($this->prompts as $prompt) $prefixList[] = isset($prompt->prefix) ? $prompt->prefix : null;
+        if($this->promptSubmissions->count()) foreach($this->prompts as $prompt) isset($prompt->prefix) ? ($prefixList[] = $prompt->prefix) : null;
         foreach($this->participants as $participant) {
             switch($participant->type) {
                 case 'Collab':
