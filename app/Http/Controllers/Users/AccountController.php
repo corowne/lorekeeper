@@ -3,8 +3,13 @@
 namespace App\Http\Controllers\Users;
 
 use Auth;
+use File;
+use Image;
+
+use App\Models\User\User;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Notification;
 
 use App\Services\UserService;
@@ -58,6 +63,23 @@ class AccountController extends Controller
             'parsed_text' => parse($request->get('text'))
         ]);
         flash('Profile updated successfully.')->success();
+        return redirect()->back();
+    }
+
+    /**
+     * Edits the user's avatar.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postAvatar(Request $request, UserService $service)
+    {
+        if($service->updateAvatar($request->file('avatar'), Auth::user())) {
+            flash('Avatar updated successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
         return redirect()->back();
     }
     
@@ -138,9 +160,10 @@ class AccountController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postClearNotifications()
+    public function postClearNotifications($type = null)
     {
-        Auth::user()->notifications()->delete();
+        if(isset($type) && $type) Auth::user()->notifications()->where('notification_type_id', $type)->delete();
+        else Auth::user()->notifications()->delete();
         flash('Notifications cleared successfully.')->success();
         return redirect()->back();
     }

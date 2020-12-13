@@ -22,7 +22,7 @@ class PromptService extends Service
     */
 
     /**********************************************************************************************
-     
+
         PROMPT CATEGORIES
 
     **********************************************************************************************/
@@ -55,7 +55,7 @@ class PromptService extends Service
             if ($image) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
 
             return $this->commitReturn($category);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -79,7 +79,7 @@ class PromptService extends Service
 
             $data = $this->populateCategoryData($data, $category);
 
-            $image = null;            
+            $image = null;
             if(isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
                 $image = $data['image'];
@@ -91,7 +91,7 @@ class PromptService extends Service
             if ($category) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
 
             return $this->commitReturn($category);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -107,13 +107,14 @@ class PromptService extends Service
     private function populateCategoryData($data, $category = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
-        
+        elseif(!isset($data['description']) && !$data['description']) $data['parsed_description'] = null;
+
         if(isset($data['remove_image']))
         {
-            if($category && $category->has_image && $data['remove_image']) 
-            { 
-                $data['has_image'] = 0; 
-                $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
+            if($category && $category->has_image && $data['remove_image'])
+            {
+                $data['has_image'] = 0;
+                $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName);
             }
             unset($data['remove_image']);
         }
@@ -134,12 +135,12 @@ class PromptService extends Service
         try {
             // Check first if the category is currently in use
             if(Prompt::where('prompt_category_id', $category->id)->exists()) throw new \Exception("An prompt with this category exists. Please change its category first.");
-            
-            if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
+
+            if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName);
             $category->delete();
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -164,14 +165,14 @@ class PromptService extends Service
             }
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
 
     /**********************************************************************************************
-     
+
         PROMPTS
 
     **********************************************************************************************/
@@ -179,7 +180,7 @@ class PromptService extends Service
     /**
      * Creates a new prompt.
      *
-     * @param  array                  $data 
+     * @param  array                  $data
      * @param  \App\Models\User\User  $user
      * @return bool|\App\Models\Prompt\Prompt
      */
@@ -202,14 +203,16 @@ class PromptService extends Service
             }
             else $data['has_image'] = 0;
 
-            $prompt = Prompt::create(array_only($data, ['prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active', 'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image']));
+            if(!isset($data['hide_submissions']) && !$data['hide_submissions']) $data['hide_submissions'] = 0;
+
+            $prompt = Prompt::create(array_only($data, ['prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active', 'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image', 'prefix', 'hide_submissions']));
 
             if ($image) $this->handleImage($image, $prompt->imagePath, $prompt->imageFileName);
 
             $this->populateRewards(array_only($data, ['rewardable_type', 'rewardable_id', 'quantity']), $prompt);
 
             return $this->commitReturn($prompt);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -219,7 +222,7 @@ class PromptService extends Service
      * Updates a prompt.
      *
      * @param  \App\Models\Prompt\Prompt  $prompt
-     * @param  array                      $data 
+     * @param  array                      $data
      * @param  \App\Models\User\User      $user
      * @return bool|\App\Models\Prompt\Prompt
      */
@@ -233,24 +236,27 @@ class PromptService extends Service
             // More specific validation
             if(Prompt::where('name', $data['name'])->where('id', '!=', $prompt->id)->exists()) throw new \Exception("The name has already been taken.");
             if((isset($data['prompt_category_id']) && $data['prompt_category_id']) && !PromptCategory::where('id', $data['prompt_category_id'])->exists()) throw new \Exception("The selected prompt category is invalid.");
+            if(isset($data['prefix']) && Prompt::where('prefix', $data['prefix'])->where('id', '!=', $prompt->id)->exists()) throw new \Exception("That prefix has already been taken.");
 
             $data = $this->populateData($data, $prompt);
 
-            $image = null;            
+            $image = null;
             if(isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
                 $image = $data['image'];
                 unset($data['image']);
             }
 
-            $prompt->update(array_only($data, ['prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active', 'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image']));
+            if(!isset($data['hide_submissions']) && !$data['hide_submissions']) $data['hide_submissions'] = 0;
+
+            $prompt->update(array_only($data, ['prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active', 'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image', 'prefix', 'hide_submissions']));
 
             if ($prompt) $this->handleImage($image, $prompt->imagePath, $prompt->imageFileName);
 
             $this->populateRewards(array_only($data, ['rewardable_type', 'rewardable_id', 'quantity']), $prompt);
 
             return $this->commitReturn($prompt);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -259,24 +265,24 @@ class PromptService extends Service
     /**
      * Processes user input for creating/updating a prompt.
      *
-     * @param  array                      $data 
+     * @param  array                      $data
      * @param  \App\Models\Prompt\Prompt  $prompt
      * @return array
      */
     private function populateData($data, $prompt = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
-        
+
         if(!isset($data['hide_before_start'])) $data['hide_before_start'] = 0;
         if(!isset($data['hide_after_end'])) $data['hide_after_end'] = 0;
         if(!isset($data['is_active'])) $data['is_active'] = 0;
 
         if(isset($data['remove_image']))
         {
-            if($prompt && $prompt->has_image && $data['remove_image']) 
-            { 
-                $data['has_image'] = 0; 
-                $this->deleteImage($prompt->imagePath, $prompt->imageFileName); 
+            if($prompt && $prompt->has_image && $data['remove_image'])
+            {
+                $data['has_image'] = 0;
+                $this->deleteImage($prompt->imagePath, $prompt->imageFileName);
             }
             unset($data['remove_image']);
         }
@@ -287,7 +293,7 @@ class PromptService extends Service
     /**
      * Processes user input for creating/updating prompt rewards.
      *
-     * @param  array                      $data 
+     * @param  array                      $data
      * @param  \App\Models\Prompt\Prompt  $prompt
      */
     private function populateRewards($data, $prompt)
@@ -307,7 +313,7 @@ class PromptService extends Service
             }
         }
     }
-    
+
     /**
      * Deletes a prompt.
      *
@@ -323,11 +329,11 @@ class PromptService extends Service
             if(Submission::where('prompt_id', $prompt->id)->exists()) throw new \Exception("A submission under this prompt exists. Deleting the prompt will break the submission page - consider setting the prompt to be not active instead.");
 
             $prompt->rewards()->delete();
-            if($prompt->has_image) $this->deleteImage($prompt->imagePath, $prompt->imageFileName); 
+            if($prompt->has_image) $this->deleteImage($prompt->imagePath, $prompt->imageFileName);
             $prompt->delete();
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);

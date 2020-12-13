@@ -14,7 +14,7 @@ class Rank extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'parsed_description', 'sort', 'color'
+        'name', 'description', 'parsed_description', 'sort', 'color', 'icon'
     ];
 
     /**
@@ -32,7 +32,8 @@ class Rank extends Model
     public static $rules = [
         'name' => 'required|between:3,25',
         'description' => 'nullable',
-        'color' => 'nullable|regex:/^#?[0-9a-fA-F]{6}$/i'
+        'color' => 'nullable|regex:/^#?[0-9a-fA-F]{6}$/i',
+        'icon' => 'nullable'
     ];
 
     /**********************************************************************************************

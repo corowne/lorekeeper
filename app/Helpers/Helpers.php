@@ -70,8 +70,12 @@ function format_date($timestamp, $showTime = true) {
     return $timestamp->format('j F Y' . ($showTime ? ', H:i:s' : '')) . ($showTime ? ' <abbr data-toggle="tooltip" title="UTC'.$timestamp->timezone->toOffsetName().'">' . strtoupper($timestamp->timezone->getAbbreviatedName($timestamp->isDST())) . '</abbr>' : '');
 }
 
+function pretty_date($timestamp, $showTime = true) {
+   return '<abbr data-toggle="tooltip" title="' . $timestamp->format('F j Y' . ($showTime ? ', H:i:s' : '')) . ' ' . strtoupper($timestamp->timezone->getAbbreviatedName($timestamp->isDST())).'">' .$timestamp->diffForHumans() . '</abbr>';
+}
+
 /**
- * Formats a number to fit the number of digits given, 
+ * Formats a number to fit the number of digits given,
  * for generating masterlist numbers.
  *
  * @param  \Illuminate\Support\Carbon\Carbon  $timestamp
@@ -92,7 +96,7 @@ function parse($text, &$pings = null) {
     if(!$text) return null;
 
     require_once(base_path().'/vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php');
-    
+
     $config = HTMLPurifier_Config::createDefault();
     $config->set('Attr.EnableID', true);
     $config->set('HTML.DefinitionID', 'include');
@@ -104,15 +108,16 @@ function parse($text, &$pings = null) {
 		$def->addAttribute('a', 'aria-expanded', 'Enum#true,false');
 		$def->addAttribute('a', 'data-target', 'Text');
 		$def->addAttribute('div', 'data-parent', 'Text');
-		
+
     }
-    
+
     $purifier = new HTMLPurifier($config);
     $text = $purifier->purify($text);
 
     $users = $characters = null;
     $text = parseUsers($text, $users);
     $text = parseCharacters($text, $characters);
+    $text = parseGalleryThumbs($text, $submissions);
     if($pings) $pings = ['users' => $users, 'characters' => $characters];
 
     return $text;
@@ -171,6 +176,32 @@ function parseCharacters($text, &$characters) {
 }
 
 /**
+ * Parses a piece of user-entered text to match gallery submission thumb mentions
+ * and replace with a link.
+ *
+ * @param  string  $text
+ * @param  mixed   $submissions
+ * @return string
+ */
+function parseGalleryThumbs($text, &$submissions) {
+    $matches = null;
+    $submissions = [];
+    $count = preg_match_all('/\[thumb=([^\[\]&<>?"\']+)\]/', $text, $matches);
+    if($count) {
+        $matches = array_unique($matches[1]);
+        foreach($matches as $match) {
+            $submission = \App\Models\Gallery\GallerySubmission::where('id', $match)->first();
+            if($submission) {
+                $submissions[] = $submission;
+                $text = preg_replace('/\[thumb='.$match.'\]/', '<a href="'.$submission->url.'" data-toggle="tooltip" title="'.$submission->displayTitle.' by '.nl2br(htmlentities($submission->creditsPlain)).(isset($submission->content_warning) ? '<br/><strong>Content Warning:</strong> '.nl2br(htmlentities($submission->content_warning)) : '').'">'.view('widgets._gallery_thumb', ['submission' => $submission]).'</a>', $text);
+            }
+        }
+    }
+
+    return $text;
+}
+
+/**
  * Generates a string of random characters of the specified length.
  *
  * @param  int  $characters
@@ -182,6 +213,35 @@ function randomString($characters)
     $code = '';
     for ($i = 0; $i < $characters; $i++) $code .= $src[mt_rand(0, strlen($src) - 1)];
     return $code;
+}
+
+/**
+ * Check that a url is from a site used for authentication,
+ * and if it belongs to a user.
+ *
+ * @param  string                  $url
+ * @param  bool                    $failOnError
+ * @return \App\Models\User\User|string
+ */
+function checkAlias($url, $failOnError = true)
+{
+    $recipient = null;
+    $matches = [];
+    // Check to see if url is 1. from a site used for auth
+    foreach(Config::get('lorekeeper.sites') as $key=>$site) if(isset($site['auth']) && $site['auth']) {
+        preg_match_all($site['regex'], $url, $matches);
+        if($matches != []) {$urlSite = $key; break;}
+    }
+    if($matches[0] == [] && $failOnError) throw new \Exception('This URL is from an invalid site. Please provide a URL for a user profile from a site used for authentication.');
+
+    // and 2. if it contains an alias associated with a user on-site.
+    if($matches[1] != [] && isset($matches[1][0])) {
+        $alias = App\Models\User\UserAlias::where('site', $urlSite)->where('alias', $matches[1][0])->first();
+        if($alias) $recipient = $alias->user;
+        else $recipient = $url;
+    }
+
+    return $recipient;
 }
 
 /**
@@ -201,4 +261,23 @@ function prettyProfileLink($url)
     // Return formatted link if possible; failing that, an unformatted link
     if(isset($name) && isset($site) && isset($link)) return '<a href="https://'.$link.'">'.$name.'@'.$site.'</a>';
     else return '<a href="'.$url.'">'.$url.'</a>';
+}
+
+/**
+ * Prettifies user profile names for use in various functions.
+ *
+ * @param  string  $url
+ * @return string
+ */
+function prettyProfileName($url)
+{
+    $matches = [];
+    // Check different sites and return site if a match is made, plus username (retreived from the URL)
+    foreach(Config::get('lorekeeper.sites') as $siteName=>$siteInfo) {
+        if(preg_match_all($siteInfo['regex'], $url, $matches)) {$site = $siteName; $name = $matches[1][0]; break;}
+    }
+
+    // Return formatted name if possible; failing that, an unformatted url
+    if(isset($name) && isset($site)) return $name.'@'.$site;
+    else return $url;
 }

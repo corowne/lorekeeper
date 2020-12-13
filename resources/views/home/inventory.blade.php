@@ -18,13 +18,13 @@
         <div class="card-body inventory-body">
             @foreach($categoryItems->chunk(4) as $chunk)
                 <div class="row mb-3">
-                    @foreach($chunk as $item) 
-                        <div class="col-sm-3 col-6 text-center inventory-item" data-id="{{ $item->pivot->id }}" data-name="{{ $user->name }}'s {{ $item->name }}">
+                    @foreach($chunk as $itemId=>$stack)
+                        <div class="col-sm-3 col-6 text-center inventory-item" data-id="{{ $stack->first()->pivot->id }}" data-name="{{ $user->name }}'s {{ $stack->first()->name }}">
                             <div class="mb-1">
-                                <a href="#" class="inventory-stack"><img src="{{ $item->imageUrl }}" /></a>
+                                <a href="#" class="inventory-stack"><img src="{{ $stack->first()->imageUrl }}" /></a>
                             </div>
                             <div>
-                                <a href="#" class="inventory-stack inventory-stack-name">{{ $item->name }}</a>
+                                <a href="#" class="inventory-stack inventory-stack-name">{{ $stack->first()->name }} x{{ $stack->sum('pivot.count') }}</a>
                             </div>
                         </div>
                     @endforeach

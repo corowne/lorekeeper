@@ -57,7 +57,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   is_registration_open / Default: 1");
         }
         else $this->line("Skipped: is_registration_open");
-        
+
         if(!DB::table('site_settings')->where('key', 'transfer_cooldown')->exists()) {
             DB::table('site_settings')->insert([
                 [
@@ -70,7 +70,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   transfer_cooldown / Default: 0");
         }
         else $this->line("Skipped: transfer_cooldown");
-        
+
         if(!DB::table('site_settings')->where('key', 'open_transfers_queue')->exists()) {
             DB::table('site_settings')->insert([
                 [
@@ -83,7 +83,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   open_transfers_queue / Default: 0");
         }
         else $this->line("Skipped: open_transfers_queue");
-        
+
         if(!DB::table('site_settings')->where('key', 'is_prompts_open')->exists()) {
             DB::table('site_settings')->insert([
                 [
@@ -96,7 +96,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   is_prompts_open / Default: 1");
         }
         else $this->line("Skipped: is_prompts_open");
-        
+
         if(!DB::table('site_settings')->where('key', 'is_claims_open')->exists()) {
             DB::table('site_settings')->insert([
                 [
@@ -109,7 +109,20 @@ class AddSiteSettings extends Command
             $this->info("Added:   is_claims_open / Default: 1");
         }
         else $this->line("Skipped: is_claims_open");
-        
+
+        if(!DB::table('site_settings')->where('key', 'is_reports_open')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'is_reports_open',
+                    'value' => 1,
+                    'description' => '0: New reports cannot be made (mods can work on the queue still), 1: Reports are submittable.'
+                ]
+
+            ]);
+            $this->info("Added:   is_reports_open / Default: 1");
+        }
+        else $this->line("Skipped: is_reports_open");
+
         if(!DB::table('site_settings')->where('key', 'is_myos_open')->exists()) {
             DB::table('site_settings')->insert([
                 [
@@ -122,7 +135,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   is_myos_open / Default: 1");
         }
         else $this->line("Skipped: is_myos_open");
-        
+
         if(!DB::table('site_settings')->where('key', 'is_design_updates_open')->exists()) {
             DB::table('site_settings')->insert([
                 [
@@ -135,7 +148,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   is_design_updates_open / Default: 1");
         }
         else $this->line("Skipped: is_design_updates_open");
-        
+
         if(!DB::table('site_settings')->where('key', 'blacklist_privacy')->exists()) {
             DB::table('site_settings')->insert([
                 [
@@ -148,7 +161,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   blacklist_privacy / Default: 0");
         }
         else $this->line("Skipped: blacklist_privacy");
-        
+
         if(!DB::table('site_settings')->where('key', 'blacklist_link')->exists()) {
             DB::table('site_settings')->insert([
                 [
@@ -161,7 +174,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   blacklist_link / Default: 0");
         }
         else $this->line("Skipped: blacklist_link");
-        
+
         if(!DB::table('site_settings')->where('key', 'blacklist_key')->exists()) {
             DB::table('site_settings')->insert([
                 [
@@ -175,7 +188,85 @@ class AddSiteSettings extends Command
         }
         else $this->line("Skipped: blacklist_key");
 
+        if(!DB::table('site_settings')->where('key', 'design_votes_needed')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'design_votes_needed',
+                    'value' => 3,
+                    'description' => 'Number of approval votes needed for a design update or MYO submission to be considered as having approval.'
+                ]
+
+            ]);
+            $this->info("Added:   design_votes_needed / Default: 3");
+        }
+        else $this->line("Skipped: design_votes_needed");
+
+        if(!DB::table('site_settings')->where('key', 'admin_user')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'admin_user',
+                    'value' => 1,
+                    'description' => 'ID of the site\'s admin user.'
+                ]
+
+            ]);
+            $this->info("Added:   admin_user / Default: 1");
+        }
+        else $this->line("Skipped: admin_user");
+
+        if(!DB::table('site_settings')->where('key', 'gallery_submissions_open')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'gallery_submissions_open',
+                    'value' => 1,
+                    'description' => '0: Gallery submissions closed, 1: Gallery submissions open.'
+                ]
+
+            ]);
+            $this->info("Added:   gallery_submissions_open / Default: 1");
+        }
+        else $this->line("Skipped: gallery_submissions_open");
+
+        if(!DB::table('site_settings')->where('key', 'gallery_submissions_require_approval')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'gallery_submissions_require_approval',
+                    'value' => 1,
+                    'description' => '0: Gallery submissions do not require approval, 1: Gallery submissions require approval.'
+                ]
+
+            ]);
+            $this->info("Added:   gallery_submissions_require_approval / Default: 1");
+        }
+        else $this->line("Skipped: gallery_submissions_require_approval");
+
+        if(!DB::table('site_settings')->where('key', 'gallery_submissions_reward_currency')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'gallery_submissions_reward_currency',
+                    'value' => 0,
+                    'description' => '0: Gallery submissions do not reward currency, 1: Gallery submissions reward currency.'
+                ]
+
+            ]);
+            $this->info("Added:   gallery_submissions_reward_currency / Default: 0");
+        }
+        else $this->line("Skipped: gallery_submissions_reward_currency");
+
+        if(!DB::table('site_settings')->where('key', 'group_currency')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'group_currency',
+                    'value' => 1,
+                    'description' => 'ID of the group currency to award from gallery submissions (if enabled).'
+                ]
+
+            ]);
+            $this->info("Added:   group_currency / Default: 1");
+        }
+        else $this->line("Skipped: group_currency");
+
         $this->line("\nSite settings up to date!");
-        
+
     }
 }
