@@ -100,7 +100,8 @@ class CharacterDropData extends Model
      */
     public function getParametersAttribute()
     {
-        return json_decode($this->attributes['parameters'], true);
+        if(isset($this->attributes['parameters'])) return json_decode($this->attributes['parameters'], true);
+        else return null;
     }
 
     /**
@@ -121,7 +122,8 @@ class CharacterDropData extends Model
      */
     public function getDataAttribute()
     {
-        return json_decode($this->attributes['data'], true);
+        if(isset($this->attributes['data'])) return json_decode($this->attributes['data'], true);
+        else return null;
     }
 
     /**
