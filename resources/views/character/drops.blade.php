@@ -39,7 +39,7 @@
                             <h5>Species</h5>
                         </div>
                         <div class="col-md align-self-center">
-                            @if($drops->speciesItem->has_image) <a href="{{ $drops->subtypeItem->idUrl }}"><img src="{{ $drops->speciesItem->imageUrl }}"></a><br/> @endif
+                            @if($drops->speciesItem->has_image) <img src="{{ $drops->speciesItem->imageUrl }}"><br/> @endif
                             {!! $drops->speciesItem->displayName !!} ({{ $drops->speciesQuantity }}/{{ $drops->dropData->data['frequency']['interval']}})
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                             <h5>{{ $character->image->subtype->name }} (Subtype)</h5>
                         </div>
                         <div class="col-md align-self-center">
-                            @if($drops->subtypeItem->has_image) <a href="{{ $drops->subtypeItem->idUrl }}"><img src="{{ $drops->subtypeItem->imageUrl }}"></a><br/> @endif
+                            @if($drops->subtypeItem->has_image) <img src="{{ $drops->subtypeItem->imageUrl }}"><br/> @endif
                             {!! $drops->subtypeItem->displayName !!} ({{ $drops->subtypeQuantity }} every {{ $drops->dropData->data['frequency']['frequency'] > 1 ? $drops->dropData->data['frequency']['frequency'].' '.$drops->dropData->data['frequency']['interval'].'s' : $drops->dropData->data['frequency']['interval']}})
                         </div>
                     </div>
