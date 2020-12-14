@@ -95,6 +95,7 @@ class CharacterDrop extends Model
         $itemsData = $this->dropData->data['items'];
         $speciesItem = isset($itemsData['species']) && isset($itemsData['species'][$this->parameters]) ? Item::find($itemsData['species'][$this->parameters]['item_id']) : null;
         if($speciesItem) return $speciesItem;
+        else return null;
     }
 
     /**
@@ -122,6 +123,7 @@ class CharacterDrop extends Model
         $itemsData = $this->dropData->data['items'];
         $subtypeItem = isset($this->character->image->subtype_id) && isset($itemsData[$this->character->image->subtype_id][$this->parameters]) ? Item::find($itemsData[$this->character->image->subtype_id][$this->parameters]['item_id']) : null;
         if($subtypeItem) return $subtypeItem;
+        else return null;
     }
 
     /**
