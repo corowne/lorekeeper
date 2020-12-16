@@ -80,7 +80,7 @@
                                         <div class="col">
                                             <p><strong>Purchaseable At:</strong></p>
                                                 <div class="row">
-                                                    @foreach($item->shops as $shop) <span class="badge" style="font-size:95%; background-color: #fefcf6; margin:5px;"><a href="{{ $shop->url }}">{{ $shop->name }}</a></span>
+                                                    @foreach($shops as $shop) <span class="badge" style="font-size:95%; margin:5px;"><a href="{{ $shop->url }}">{{ $shop->name }}</a></span>
                                                     @endforeach
                                                 </div>
                                         </div>
