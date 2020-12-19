@@ -3,10 +3,10 @@
 @section('admin-title') Gallery Currency Queue @endsection
 
 @section('admin-content')
-{!! breadcrumbs(['Admin Panel' => 'admin', $currency->name.' Queue' => 'admin/gallery/currency/pending']) !!}
+{!! breadcrumbs(['Admin Panel' => 'admin', ($currency ? $currency->name : 'Gallery Currency').' Queue' => 'admin/gallery/currency/pending']) !!}
 
 <h1>
-    {!! $currency->name !!} Queue
+    {!! $currency ? $currency->name : 'Gallery Currency' !!} Queue
 </h1>
 
 <ul class="nav nav-tabs mb-3">

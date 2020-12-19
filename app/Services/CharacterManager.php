@@ -635,9 +635,14 @@ class CharacterManager extends Service
             $character->character_image_id = $image->id;
             $character->save();
 
-            // Add a log for the character
+            // Add a log for the character 
             // This logs all the updates made to the character
             $this->createLog($user->id, null, $character->user_id, ($character->user_id ? null : $character->owner_url), $character->id, 'Character Image Uploaded', '[#'.$image->id.']', 'character');
+            
+            // If the recipient has an account, send them a notification
+            if($character->user && $user->id != $character->user_id && $character->is_visible) {
+                Notifications::create('IMAGE_UPLOAD', $character->user, [
+                    'character_url' => $character->url,
                     'character_slug' => $character->slug,
                     'character_name' => $character->name,
                     'sender_url' => $user->url,
