@@ -38,9 +38,9 @@
                                     <p><strong>Rarity:</strong> {!! $item->rarity !!}</p>
                                 </div>
                             @endif
-                            @if(isset($item->artist) && $item->artist)
+                            @if(isset($item->itemArtist) && $item->itemArtist)
                                 <div class="col-md">
-                                    <p><strong>Artist:</strong> {!! $item->artist !!}</p>
+                                    <p><strong>Artist:</strong> {!! $item->itemArtist !!}</p>
                                 </div>
                             @endif
                         @endif
@@ -80,7 +80,7 @@
                                         <div class="col">
                                             <p><strong>Purchaseable At:</strong></p>
                                                 <div class="row">
-                                                    @foreach($item->shops as $shop) <span class="badge" style="font-size:95%; background-color: #fefcf6; margin:5px;"><a href="{{ $shop->url }}">{{ $shop->name }}</a></span>
+                                                    @foreach($shops as $shop) <span class="badge" style="font-size:95%; margin:5px;"><a href="{{ $shop->url }}">{{ $shop->name }}</a></span>
                                                     @endforeach
                                                 </div>
                                         </div>

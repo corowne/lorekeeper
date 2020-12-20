@@ -8,6 +8,7 @@ use Auth;
 use Config;
 use Notifications;
 
+use Illuminate\Support\Arr;
 use App\Models\User\User;
 use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
@@ -59,7 +60,7 @@ class InventoryManager extends Service
 
             foreach($users as $user) {
                 foreach($items as $item) {
-                    if($this->creditItem($staff, $user, 'Staff Grant', array_only($data, ['data', 'disallow_transfer', 'notes']), $item, $keyed_quantities[$item->id]))
+                    if($this->creditItem($staff, $user, 'Staff Grant', Arr::only($data, ['data', 'disallow_transfer', 'notes']), $item, $keyed_quantities[$item->id]))
                     {
                         Notifications::create('ITEM_GRANT', $user, [
                             'item_name' => $item->name,
@@ -115,7 +116,7 @@ class InventoryManager extends Service
             if(!count($items)) throw new \Exception("No valid items found.");
             
             foreach($items as $item) {
-                $this->creditItem($staff, $character, 'Staff Grant', array_only($data, ['data', 'disallow_transfer', 'notes']), $item, $keyed_quantities[$item->id]);
+                $this->creditItem($staff, $character, 'Staff Grant', Arr::only($data, ['data', 'disallow_transfer', 'notes']), $item, $keyed_quantities[$item->id]);
                 if($character->is_visible && $character->user_id) {
                     Notifications::create('CHARACTER_ITEM_GRANT', $character->user, [
                         'item_name' => $item->name,

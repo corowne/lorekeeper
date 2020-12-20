@@ -9,7 +9,7 @@ use App\Models\Currency\Currency;
 use App\Models\Feature\FeatureCategory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class CharacterDesignupdate extends Model
+class CharacterDesignUpdate extends Model
 {
     use SoftDeletes;
 

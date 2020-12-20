@@ -272,6 +272,7 @@ class UserController extends Controller
         return view('user.gallery', [
             'user' => $this->user,
             'submissions' => $this->user->gallerySubmissions()->paginate(20),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
 
@@ -287,6 +288,7 @@ class UserController extends Controller
             'user' => $this->user,
             'characters' => false,
             'favorites' => GallerySubmission::whereIn('id', $this->user->galleryFavorites()->pluck('gallery_submission_id')->toArray())->visible(Auth::check() ? Auth::user() : null)->accepted()->orderBy('created_at', 'DESC')->paginate(20),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
 
@@ -306,6 +308,7 @@ class UserController extends Controller
             'user' => $this->user,
             'characters' => true,
             'favorites' => $this->user->characters->count() ? GallerySubmission::whereIn('id', $userFavorites)->whereIn('id', GalleryCharacter::whereIn('character_id', $userCharacters)->pluck('gallery_submission_id')->toArray())->visible(Auth::check() ? Auth::user() : null)->accepted()->orderBy('created_at', 'DESC')->paginate(20) : null,
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
 }
