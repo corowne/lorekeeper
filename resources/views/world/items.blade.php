@@ -13,8 +13,13 @@
                 {!! Form::text('name', Request::get('name'), ['class' => 'form-control', 'placeholder' => 'Name']) !!}
             </div>
             <div class="form-group ml-3 mb-3">
-                {!! Form::select('item_category_id', $categories, Request::get('name'), ['class' => 'form-control']) !!}
+                {!! Form::select('item_category_id', $categories, Request::get('item_category_id'), ['class' => 'form-control']) !!}
             </div>
+            @if(Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields'))
+                <div class="form-group ml-3 mb-3">
+                    {!! Form::select('artist', $artists, Request::get('artist'), ['class' => 'form-control']) !!}
+                </div>
+            @endif
         </div>
         <div class="form-inline justify-content-end">
             <div class="form-group ml-3 mb-3">
@@ -23,7 +28,7 @@
                     'alpha-reverse'  => 'Sort Alphabetically (Z-A)',
                     'category'       => 'Sort by Category',
                     'newest'         => 'Newest First',
-                    'oldest'         => 'Oldest First'    
+                    'oldest'         => 'Oldest First'
                 ], Request::get('sort') ? : 'category', ['class' => 'form-control']) !!}
             </div>
             <div class="form-group ml-3 mb-3">

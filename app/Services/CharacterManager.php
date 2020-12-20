@@ -14,6 +14,7 @@ use File;
 use App\Services\CurrencyManager;
 use App\Services\InventoryManager;
 
+use Illuminate\Support\Arr;
 use App\Models\User\User;
 use App\Models\User\UserItem;
 use App\Models\Character\Character;
@@ -191,7 +192,7 @@ class CharacterManager extends Service
                 $data['rarity_id'] = isset($data['rarity_id']) && $data['rarity_id'] ? $data['rarity_id'] : null;
             }
 
-            $characterData = array_only($data, [
+            $characterData = Arr::only($data, [
                 'character_category_id', 'rarity_id', 'user_id',
                 'number', 'slug', 'description',
                 'sale_value', 'transferrable_at', 'is_visible'
@@ -250,7 +251,7 @@ class CharacterManager extends Service
                     unset($data['use_cropper']);
                 }
             }
-            $imageData = array_only($data, [
+            $imageData = Arr::only($data, [
                 'species_id', 'subtype_id', 'rarity_id', 'use_cropper',
                 'x0', 'x1', 'y0', 'y1',
             ]);
@@ -321,7 +322,7 @@ class CharacterManager extends Service
             $this->handleImage($data['image'], $image->imageDirectory, $image->imageFileName, null, isset($data['default_image']));
 
             // Save thumbnail first before processing full image
-            if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image, $isMyo);
+            if(isset($data['use_cropper'])) $this->cropThumbnail(Arr::only($data, ['x0','x1','y0','y1']), $image, $isMyo);
             else $this->handleImage($data['thumbnail'], $image->imageDirectory, $image->thumbnailFileName, null, isset($data['default_image']));
 
             // Process and save the image itself
@@ -905,7 +906,7 @@ class CharacterManager extends Service
 
             $isMyo = $image->character->is_myo_slot ? true : false;
             // Save thumbnail
-            if(isset($data['use_cropper'])) $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $image, $isMyo);
+            if(isset($data['use_cropper'])) $this->cropThumbnail(Arr::only($data, ['x0','x1','y0','y1']), $image, $isMyo);
             else $this->handleImage($data['thumbnail'], $image->thumbnailPath, $image->thumbnailFileName);
 
             // Process and save the image itself
@@ -1106,7 +1107,7 @@ class CharacterManager extends Service
         try {
             if(!$character->is_myo_slot && Character::where('slug', $data['slug'])->where('id', '!=', $character->id)->exists()) throw new \Exception("Character code must be unique.");
 
-            $characterData = array_only($data, [
+            $characterData = Arr::only($data, [
                 'character_category_id',
                 'number', 'slug',
             ]);
@@ -1707,7 +1708,7 @@ class CharacterManager extends Service
             ]);
         }
 
-        if(Config::get('lorekeeper.settings.reset_character_profile_on_transfer')) {
+        if(Config::get('lorekeeper.settings.reset_character_profile_on_transfer') && !$character->is_myo_slot) {
             // Reset name and profile
             $character->update(['name' => null]);
 
@@ -1835,7 +1836,7 @@ class CharacterManager extends Service
             if(!$isAdmin || ($isAdmin && isset($data['modify_thumbnail']))) {
                 $imageData = [];
                 if(isset($data['use_cropper'])) {
-                    $imageData = array_only($data, [
+                    $imageData = Arr::only($data, [
                         'use_cropper',
                         'x0', 'x1', 'y0', 'y1',
                     ]);
@@ -1893,7 +1894,7 @@ class CharacterManager extends Service
             // Save thumbnail
             if(!$isAdmin || ($isAdmin && isset($data['modify_thumbnail']))) {
                 if(isset($data['use_cropper']))
-                    $this->cropThumbnail(array_only($data, ['x0','x1','y0','y1']), $request);
+                    $this->cropThumbnail(Arr::only($data, ['x0','x1','y0','y1']), $request);
                 else if(isset($data['thumbnail']))
                     $this->handleImage($data['thumbnail'], $request->imageDirectory, $request->thumbnailFileName);
             }
@@ -1986,8 +1987,8 @@ class CharacterManager extends Service
 
             $request->has_addons = 1;
             $request->data = json_encode([
-                'user' => array_only(getDataReadyAssets($userAssets), ['user_items','currencies']),
-                'character' => array_only(getDataReadyAssets($characterAssets), ['currencies'])
+                'user' => Arr::only(getDataReadyAssets($userAssets), ['user_items','currencies']),
+                'character' => Arr::only(getDataReadyAssets($characterAssets), ['currencies'])
             ]);
             $request->save();
 

@@ -5,6 +5,7 @@ use App\Services\Service;
 use DB;
 use Config;
 
+use Illuminate\Support\Arr;
 use App\Models\Loot\LootTable;
 use App\Models\Loot\Loot;
 use App\Models\Prompt\PromptReward;
@@ -41,9 +42,9 @@ class LootService extends Service
                 if(!$data['weight'][$key] || $data['weight'][$key] < 1) throw new \Exception("Weight is required and must be an integer greater than 0.");
             }
 
-            $table = LootTable::create(array_only($data, ['name', 'display_name']));
+            $table = LootTable::create(Arr::only($data, ['name', 'display_name']));
 
-            $this->populateLootTable($table, array_only($data, ['rewardable_type', 'rewardable_id', 'quantity', 'weight']));
+            $this->populateLootTable($table, Arr::only($data, ['rewardable_type', 'rewardable_id', 'quantity', 'weight']));
 
             return $this->commitReturn($table);
         } catch(\Exception $e) { 
@@ -74,9 +75,9 @@ class LootService extends Service
                 if(!$data['weight'][$key] || $data['weight'][$key] < 1) throw new \Exception("Weight is required and must be an integer greater than 0.");
             }
 
-            $table->update(array_only($data, ['name', 'display_name']));
+            $table->update(Arr::only($data, ['name', 'display_name']));
 
-            $this->populateLootTable($table, array_only($data, ['rewardable_type', 'rewardable_id', 'quantity', 'weight']));
+            $this->populateLootTable($table, Arr::only($data, ['rewardable_type', 'rewardable_id', 'quantity', 'weight']));
 
             return $this->commitReturn($table);
         } catch(\Exception $e) { 

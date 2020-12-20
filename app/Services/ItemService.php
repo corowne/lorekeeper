@@ -285,6 +285,7 @@ class ItemService extends Service
     private function populateData($data, $item = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
+        else $data['parsed_description'] = null;
 
         if(!isset($data['allow_transfer'])) $data['allow_transfer'] = 0;
 
