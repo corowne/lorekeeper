@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Config;
 use App\Models\Model;
 use App\Traits\Commentable;
+use Illuminate\Support\Str;
 
 class Sales extends Model
 {
@@ -116,7 +117,7 @@ class Sales extends Model
      */
     public function getSlugAttribute()
     {
-        return $this->id . '.' . str_slug($this->title);
+        return $this->id . '.' . Str::slug($this->title);
     }
 
     /**

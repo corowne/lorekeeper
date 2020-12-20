@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Arr;
 
 use App\Models\Invitation;
 use App\Services\UserService;
@@ -91,7 +92,7 @@ class RegisterController extends Controller
     {
         DB::beginTransaction();
         $service = new UserService;
-        $user = $service->createUser(array_only($data, ['name', 'email', 'password']));
+        $user = $service->createUser(Arr::only($data, ['name', 'email', 'password']));
         if(!Settings::get('is_registration_open')) {
             (new InvitationService)->useInvitation(Invitation::where('code', $data['code'])->first(), $user);
         }
