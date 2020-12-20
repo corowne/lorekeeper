@@ -5,6 +5,7 @@ use App\Services\Service;
 use DB;
 use Config;
 
+use Illuminate\Support\Arr;
 use App\Models\Item\Item;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
@@ -46,7 +47,7 @@ class CharacterDropService extends Service
             $data['data']['drop_name'] = isset($data['drop_name']) ? $data['drop_name'] : null;
             $data['data'] = json_encode($data['data']);
 
-            $drop = CharacterDropData::create(array_only($data, ['species_id', 'parameters', 'data']));
+            $drop = CharacterDropData::create(Arr::only($data, ['species_id', 'parameters', 'data']));
 
             return $this->commitReturn($drop);
         } catch(\Exception $e) {
@@ -103,7 +104,7 @@ class CharacterDropService extends Service
             $data['data']['drop_name'] = isset($data['drop_name']) ? $data['drop_name'] : null;
             $data['data'] = json_encode($data['data']);
 
-            $drop->update(array_only($data, ['species_id', 'parameters', 'data']));
+            $drop->update(Arr::only($data, ['species_id', 'parameters', 'data']));
 
             return $this->commitReturn($drop);
         } catch(\Exception $e) {
