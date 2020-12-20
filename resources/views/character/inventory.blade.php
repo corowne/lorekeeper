@@ -3,7 +3,11 @@
 @section('profile-title') {{ $character->fullName }}'s Inventory @endsection
 
 @section('profile-content')
-{!! breadcrumbs([($character->is_myo_slot ? 'MYO Slot Masterlist' : 'Character Masterlist') => ($character->is_myo_slot ? 'myos' : 'masterlist'), $character->fullName => $character->url, "Inventory" => $character->url.'/inventory']) !!}
+@if($character->is_myo_slot)
+{!! breadcrumbs(['MYO Slot Masterlist' => 'myos', $character->fullName => $character->url, 'Inventory' => $character->url.'/inventory']) !!}
+@else
+{!! breadcrumbs([($character->category->masterlist_sub_id ? $character->category->sublist->name.' Masterlist' : 'Character masterlist') => ($character->category->masterlist_sub_id ? 'sublist/'.$character->category->sublist->key : 'masterlist' ), $character->fullName => $character->url, 'Inventory' => $character->url.'/inventory']) !!}
+@endif
 
 @include('character._header', ['character' => $character])
 
@@ -28,7 +32,7 @@
                             $stackName = $stack->first()->pivot->pluck('stack_name', 'id')->toArray()[$stack->first()->pivot->id];
                             $stackNameClean = htmlentities($stackName);
                         ?>
-                        <div class="col-sm-3 col-6 text-center inventory-item" data-id="{{ $stack->first()->pivot->id }}" data-name="{!! $canName && $stackName ? htmlentities($stackNameClean).' [' : null !!}{{ $character->name }}'s {{ $stack->first()->name }}{!! $canName && $stackName ? ']' : null !!}">
+                        <div class="col-sm-3 col-6 text-center inventory-item" data-id="{{ $stack->first()->pivot->id }}" data-name="{!! $canName && $stackName ? htmlentities($stackNameClean).' [' : null !!}{{ $character->name ? $character->name : $character->slug }}'s {{ $stack->first()->name }}{!! $canName && $stackName ? ']' : null !!}">
                             <div class="mb-1">
                                 <a href="#" class="inventory-stack"><img src="{{ $stack->first()->imageUrl }}" /></a>
                             </div>
@@ -123,7 +127,7 @@
 
 @endsection
 
-@section('scripts') 
+@section('scripts')
 
 @include('widgets._inventory_select_js', ['readOnly' => true])
 

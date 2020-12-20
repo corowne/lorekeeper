@@ -59,7 +59,7 @@
                         <div class="col">
                             <p><strong>Purchaseable At:</strong></p>
                                 <div class="row">
-                                    @foreach($item->shops as $shop) <div class="col"><a href="{{ $shop->url }}">{{ $shop->name }}</a></div> @endforeach
+                                    @foreach($shops as $shop) <div class="col"><a href="{{ $shop->url }}">{{ $shop->name }}</a></div> @endforeach
                                 </div>
                         </div>
                     @endif
