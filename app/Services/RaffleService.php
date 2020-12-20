@@ -3,6 +3,7 @@
 use DB;
 use App\Notify;
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 use App\Services\Service;
 use App\Models\Raffle\RaffleGroup;
 use App\Models\Raffle\Raffle;
@@ -28,7 +29,7 @@ class RaffleService  extends Service
     {
         DB::beginTransaction();
         if(!isset($data['is_active'])) $data['is_active'] = 0;
-        $raffle = Raffle::create(array_only($data, ['name', 'is_active', 'winner_count', 'group_id', 'order']));
+        $raffle = Raffle::create(Arr::only($data, ['name', 'is_active', 'winner_count', 'group_id', 'order']));
         DB::commit();
         return $raffle;
     }
@@ -44,7 +45,7 @@ class RaffleService  extends Service
     {
         DB::beginTransaction();
         if(!isset($data['is_active'])) $data['is_active'] = 0;
-        $raffle->update(array_only($data, ['name', 'is_active', 'winner_count', 'group_id', 'order']));
+        $raffle->update(Arr::only($data, ['name', 'is_active', 'winner_count', 'group_id', 'order']));
         DB::commit();
         return $raffle;
     }    
@@ -74,7 +75,7 @@ class RaffleService  extends Service
     {
         DB::beginTransaction();
         if(!isset($data['is_active'])) $data['is_active'] = 0;
-        $group = RaffleGroup::create(array_only($data, ['name', 'is_active']));
+        $group = RaffleGroup::create(Arr::only($data, ['name', 'is_active']));
         DB::commit();
         return $group;
     }
@@ -90,7 +91,7 @@ class RaffleService  extends Service
     {
         DB::beginTransaction();
         if(!isset($data['is_active'])) $data['is_active'] = 0;
-        $group->update(array_only($data, ['name', 'is_active']));
+        $group->update(Arr::only($data, ['name', 'is_active']));
         foreach($group->raffles as $raffle) $raffle->update(['is_active' => $data['is_active']]);
         DB::commit();
         return $group;
