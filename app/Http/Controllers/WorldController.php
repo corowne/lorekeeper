@@ -299,7 +299,7 @@ class WorldController extends Controller
             'name' => $item->displayName,
             'description' => $item->parsed_description,
             'categories' => $categories->keyBy('id'),
-            'shops' => Shop::orderBy('sort', 'DESC')->get()
+            'shops' => Shop::whereIn('id', ShopStock::where('item_id', $item->id)->pluck('shop_id')->unique()->toArray())->orderBy('sort', 'DESC')->get()
         ]);
     }
 
