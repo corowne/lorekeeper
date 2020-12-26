@@ -282,21 +282,15 @@ class BrowseController extends Controller
         // Searching on image properties
         if($request->get('species_id')) $imageQuery->where('species_id', $request->get('species_id'));
         if($request->get('artist')) {
-            $artistName = $request->get('artist');
-            // Usernames are prevented from containing spaces, but this is to deal with previously made accounts with spaces in names
-            $artistName = str_replace('%20', ' ', $artistName);
-            $artists = User::where('name', 'LIKE', '%' . $artistName . '%')->pluck('id')->toArray();
-            $imageQuery->whereHas('artists', function($query) use ($artists) {
-                $query->whereIn('user_id', $artists);
+            $artist = User::find($request->get('artist'));
+            $imageQuery->whereHas('artists', function($query) use ($artist) {
+                $query->where('user_id', $artist->id);
             });
         }
         if($request->get('designer')) {
-            $designerName = $request->get('designer');
-            // Usernames are prevented from containing spaces, but this is to deal with previously made accounts with spaces in names
-            $designerName = str_replace('%20', ' ', $designerName);
-            $designers = User::where('name', 'LIKE', '%' . $designerName . '%')->pluck('id')->toArray();
-            $imageQuery->whereHas('designers', function($query) use ($designers) {
-                $query->whereIn('user_id', $designers);
+            $designer = User::find($request->get('designer'));
+            $imageQuery->whereHas('designers', function($query) use ($designer) {
+                $query->where('user_id', $designer->id);
             });
         }
         if($request->get('feature_id')) {
@@ -417,21 +411,15 @@ class BrowseController extends Controller
             }
         }
         if($request->get('artist')) {
-            $artistName = $request->get('artist');
-            // Usernames are prevented from containing spaces, but this is to deal with previously made accounts with spaces in names
-            $artistName = str_replace('%20', ' ', $artistName);
-            $artists = User::where('name', 'LIKE', '%' . $artistName . '%')->pluck('id')->toArray();
-            $imageQuery->whereHas('artists', function($query) use ($artists) {
-                $query->whereIn('user_id', $artists);
+            $artist = User::find($request->get('artist'));
+            $imageQuery->whereHas('artists', function($query) use ($artist) {
+                $query->where('user_id', $artist->id);
             });
         }
         if($request->get('designer')) {
-            $designerName = $request->get('designer');
-            // Usernames are prevented from containing spaces, but this is to deal with previously made accounts with spaces in names
-            $designerName = str_replace('%20', ' ', $designerName);
-            $designers = User::where('name', 'LIKE', '%' . $designerName . '%')->pluck('id')->toArray();
-            $imageQuery->whereHas('designers', function($query) use ($designers) {
-                $query->whereIn('user_id', $designers);
+            $designer = User::find($request->get('designer'));
+            $imageQuery->whereHas('designers', function($query) use ($designer) {
+                $query->where('user_id', $designer->id);
             });
         }
 
