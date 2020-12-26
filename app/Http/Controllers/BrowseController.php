@@ -418,14 +418,20 @@ class BrowseController extends Controller
         }
         if($request->get('artist')) {
             $artistName = $request->get('artist');
-            $imageQuery->whereHas('artists', function($query) use ($artistName) {
-                $query->where('alias', 'LIKE', '%'.$artistName.'%');
+            // Usernames are prevented from containing spaces, but this is to deal with previously made accounts with spaces in names
+            $artistName = str_replace('%20', ' ', $artistName);
+            $artists = User::where('name', 'LIKE', '%' . $artistName . '%')->pluck('id')->toArray();
+            $imageQuery->whereHas('artists', function($query) use ($artists) {
+                $query->whereIn('user_id', $artists);
             });
         }
         if($request->get('designer')) {
             $designerName = $request->get('designer');
-            $imageQuery->whereHas('designers', function($query) use ($designerName) {
-                $query->where('alias', 'LIKE', '%'.$designerName.'%');
+            // Usernames are prevented from containing spaces, but this is to deal with previously made accounts with spaces in names
+            $designerName = str_replace('%20', ' ', $designerName);
+            $designers = User::where('name', 'LIKE', '%' . $designerName . '%')->pluck('id')->toArray();
+            $imageQuery->whereHas('designers', function($query) use ($designers) {
+                $query->whereIn('user_id', $designers);
             });
         }
 
