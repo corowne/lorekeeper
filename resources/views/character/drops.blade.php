@@ -64,7 +64,7 @@
         @if($drops->speciesItem || $drops->subtypeItem)
             <div class="text-center">
                 <p>
-                    This character has {{ $drops->drops_available }} batch{{ $drop->drops_available == 1 ? '' : 'es' }} of {{ isset($character->drops->dropData->data['drop_name']) ? strtolower($character->drops->dropData->data['drop_name']) : 'drop' }}s available.<br/>
+                    This character has {{ $drops->drops_available }} batch{{ $drops->drops_available == 1 ? '' : 'es' }} of {{ isset($character->drops->dropData->data['drop_name']) ? strtolower($character->drops->dropData->data['drop_name']) : 'drop' }}s available.<br/>
                     This character's next {{ isset($character->drops->dropData->data['drop_name']) ? strtolower($character->drops->dropData->data['drop_name']) : 'drop' }}(s) will be available to collect {!! pretty_date($drops->next_day) !!}.
                 </p>
             </div>
