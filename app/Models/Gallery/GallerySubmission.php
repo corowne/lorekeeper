@@ -473,4 +473,15 @@ class GallerySubmission extends Model
         return Prompt::whereIn('id', $this->promptSubmissions->pluck('prompt_id'))->get();
     }
 
+    /**
+     * Gets the excerpt of text for a literature submission.
+     *
+     * @return string
+     */
+    public function getExcerptAttribute()
+    {
+        if(!isset($this->parsed_text)) return null;
+        else return strip_tags(substr($this->parsed_text, 0, 500)).(strlen($this->parsed_text) > 500 ? '...' : '');
+    }
+
 }
