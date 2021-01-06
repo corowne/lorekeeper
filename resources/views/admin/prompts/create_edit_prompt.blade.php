@@ -15,9 +15,19 @@
 
 <h3>Basic Information</h3>
 
-<div class="form-group">
-    {!! Form::label('Name') !!}
-    {!! Form::text('name', $prompt->name, ['class' => 'form-control']) !!}
+<div class="row">
+    <div class="col-md-8">
+        <div class="form-group">
+            {!! Form::label('Name') !!}
+            {!! Form::text('name', $prompt->name, ['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="col-md">
+        <div class="form-group">
+            {!! Form::label('Prefix (Optional)') !!} {!! add_help('This is used to label submissions associated with this prompt in the gallery.') !!}
+            {!! Form::text('prefix', $prompt->prefix, ['class' => 'form-control']) !!}
+        </div>
+    </div>
 </div>
 
 <div class="form-group">
@@ -80,6 +90,11 @@
 <div class="form-group">
     {!! Form::checkbox('is_active', 1, $prompt->id ? $prompt->is_active : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
     {!! Form::label('is_active', 'Is Active', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Prompts that are not active will be hidden from the prompt list. The start/end time hide settings override this setting, i.e. if this is set to active, it will still be hidden outside of the start/end times.') !!}
+</div>
+
+<div class="form-group">
+    {!! Form::label('Hide Submissions (Optional)') !!} {!! add_help('Hide submissions to this prompt until the prompt ends, or forever. <strong>Hiding until the prompt ends requires a set end time.</strong>') !!}
+    {!! Form::select('hide_submissions', [0 => 'Submissions Visible After Approval', 1 => 'Hide Submissions Until Prompt Ends', 2 => 'Hide Submissions Always'], $prompt->hide_submissions, ['class' => 'form-control']) !!}
 </div>
 
 <h3>Rewards</h3>

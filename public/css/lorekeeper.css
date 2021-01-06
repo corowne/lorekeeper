@@ -625,6 +625,7 @@ tr.accountbound {
         padding-left: 3rem;
         border-left-width: 2px!important;
     }
+    
 @media only screen and (max-width: 600px) {
     .comment_replies { padding-left:1rem;}
 }

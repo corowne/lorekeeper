@@ -4,7 +4,7 @@
 
 @section('meta-img') {{ $imageUrl }} @endsection
 
-@section('meta-desc') 
+@section('meta-desc')
 @if(isset($item->category) && $item->category) <p><strong>Category:</strong> {{ $item->category->name }}</p> @endif
 @if(isset($item->rarity) && $item->rarity) :: <p><strong>Rarity:</strong> {{ $item->rarity }}: {{ $item->rarityName }}</p> @endif
  :: {!! substr(str_replace('"','&#39;',$item->description),0,69) !!}
@@ -38,9 +38,9 @@
                                     <p><strong>Rarity:</strong> {!! $item->rarity !!}</p>
                                 </div>
                             @endif
-                            @if(isset($item->artist) && $item->artist)
+                            @if(isset($item->itemArtist) && $item->itemArtist)
                                 <div class="col-md">
-                                    <p><strong>Artist:</strong> {!! $item->artist !!}</p>
+                                    <p><strong>Artist:</strong> {!! $item->itemArtist !!}</p>
                                 </div>
                             @endif
                         @endif
@@ -64,23 +64,23 @@
                         <div class="world-entry-text">
                             @if(isset($item->reference) && $item->reference && Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields'))  <p><strong>Reference Link:</strong> <a href="{{ $item->reference }}">{{ $item->reference }}</a></p> @endif
                             {!! $description !!}
-                            @if((isset($item->uses) && $item->uses || isset($item->source) && $item->source || isset($item->data['shops']) && $item->data['shops'] || isset($item->data['prompts']) && $item->data['prompts']) && Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields'))
-                            
+                            @if((isset($item->uses) && $item->uses || isset($item->source) && $item->source || $shops->count() || isset($item->data['prompts']) && $item->data['prompts']) && Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields'))
+
                                 @if(isset($item->uses) && $item->uses)  <p><strong>Uses:</strong> {!! $item->uses !!}</p> @endif
-                                @if(isset($item->source) && $item->source || isset($item->data['shops']) && $item->data['shops'] || isset($item->data['prompts']) && $item->data['prompts'])
+                                @if(isset($item->source) && $item->source || $shops->count() || isset($item->data['prompts']) && $item->data['prompts'])
                                 <h5>Availability</h5>
                                 <div class="row">
                                     @if(isset($item->data['release']) && $item->data['release'])
                                         <div class="col">
-                                            <p><strong>Source:</strong></p> 
+                                            <p><strong>Source:</strong></p>
                                             <p>{!! $item->data['release'] !!}</p>
                                         </div>
                                     @endif
-                                    @if(isset($item->data['shops']) && $item->data['shops'])
+                                    @if($shops->count())
                                         <div class="col">
                                             <p><strong>Purchaseable At:</strong></p>
                                                 <div class="row">
-                                                    @foreach($item->shops as $shop) <span class="badge" style="font-size:95%; background-color: #fefcf6; margin:5px;"><a href="{{ $shop->url }}">{{ $shop->name }}</a></span>
+                                                    @foreach($shops as $shop) <span class="badge" style="font-size:95%; margin:5px;"><a href="{{ $shop->url }}">{{ $shop->name }}</a></span>
                                                     @endforeach
                                                 </div>
                                         </div>

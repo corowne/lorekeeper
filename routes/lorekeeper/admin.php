@@ -19,7 +19,7 @@ Route::group(['prefix' => 'users', 'namespace' => 'Users'], function() {
 
         Route::get('{name}/edit', 'UserController@getUser');
         Route::post('{name}/basic', 'UserController@postUserBasicInfo');
-        Route::post('{name}/alias', 'UserController@postUserAlias');
+        Route::post('{name}/alias/{id}', 'UserController@postUserAlias');
         Route::post('{name}/account', 'UserController@postUserAccount');
         Route::get('{name}/updates', 'UserController@getUserUpdates');
         Route::get('{name}/ban', 'UserController@getBan');
@@ -75,6 +75,16 @@ Route::group(['prefix' => 'images', 'middleware' => 'power:edit_site_settings'],
 # DATA
 Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:edit_data'], function() {
 
+    # GALLERIES
+    Route::get('galleries', 'GalleryController@getIndex');
+    Route::get('galleries/create', 'GalleryController@getCreateGallery');
+    Route::get('galleries/edit/{id}', 'GalleryController@getEditGallery');
+    Route::get('galleries/delete/{id}', 'GalleryController@getDeleteGallery');
+    Route::post('galleries/create', 'GalleryController@postCreateEditGallery');
+    Route::post('galleries/edit/{id?}', 'GalleryController@postCreateEditGallery');
+    Route::post('galleries/delete/{id}', 'GalleryController@postDeleteGallery');
+    Route::post('galleries/sort', 'GalleryController@postSortGallery');
+    
     # CURRENCIES
     Route::get('currencies', 'CurrencyController@getIndex');
     Route::get('currencies/sort', 'CurrencyController@getSort');
@@ -196,7 +206,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('sublists/edit/{id?}', 'SublistController@postCreateEditSublist');
     Route::post('sublists/delete/{id}', 'SublistController@postDeleteSublist');
     Route::post('sublists/sort', 'SublistController@postSortSublist');
-    
+
     # LOOT TABLES
     Route::get('loot-tables', 'LootTableController@getIndex');
     Route::get('loot-tables/create', 'LootTableController@getCreateLootTable');
@@ -407,6 +417,15 @@ Route::group(['prefix' => 'claims', 'middleware' => 'power:manage_submissions'],
     Route::get('/{status}', 'SubmissionController@getClaimIndex')->where('status', 'pending|approved|rejected');
     Route::get('edit/{id}', 'SubmissionController@getClaim');
     Route::post('edit/{id}/{action}', 'SubmissionController@postSubmission')->where('action', 'approve|reject');
+});
+
+# SUBMISSIONS
+Route::group(['prefix' => 'gallery', 'middleware' => 'power:manage_submissions'], function() {
+    Route::get('/submissions', 'GalleryController@getSubmissionIndex');
+    Route::get('/submissions/{status}', 'GalleryController@getSubmissionIndex')->where('status', 'pending|accepted|rejected');
+    Route::get('/currency', 'GalleryController@getCurrencyIndex');
+    Route::get('/currency/{status}', 'GalleryController@getCurrencyIndex')->where('status', 'pending|valued');
+    Route::post('edit/{id}/{action}', 'GalleryController@postEditSubmission')->where('action', 'accept|reject|comment|move|value');
 });
 
 # REPORTS

@@ -108,12 +108,12 @@ class CharacterController extends Controller
     {
         $request->validate(Character::$createRules);
         $data = $request->only([
-            'user_id', 'owner_alias', 'character_category_id', 'number', 'slug',
+            'user_id', 'owner_url', 'character_category_id', 'number', 'slug',
             'description', 'is_visible', 'is_giftable', 'is_tradeable', 'is_sellable',
             'sale_value', 'transferrable_at', 'use_cropper',
             'x0', 'x1', 'y0', 'y1',
-            'designer_alias', 'designer_url',
-            'artist_alias', 'artist_url',
+            'designer_id', 'designer_url',
+            'artist_id', 'artist_url',
             'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data',
             'image', 'thumbnail', 'image_description'
         ]);
@@ -138,12 +138,12 @@ class CharacterController extends Controller
     {
         $request->validate(Character::$myoRules);
         $data = $request->only([
-            'user_id', 'owner_alias', 'name',
+            'user_id', 'owner_url', 'name',
             'description', 'is_visible', 'is_giftable', 'is_tradeable', 'is_sellable',
             'sale_value', 'transferrable_at', 'use_cropper',
             'x0', 'x1', 'y0', 'y1',
-            'designer_alias', 'designer_url',
-            'artist_alias', 'artist_url',
+            'designer_id', 'designer_url',
+            'artist_id', 'artist_url',
             'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data',
             'image', 'thumbnail'
         ]);
@@ -478,7 +478,7 @@ class CharacterController extends Controller
         $this->character = Character::where('slug', $slug)->first();
         if(!$this->character) abort(404);
 
-        if($service->adminTransfer($request->only(['recipient_id', 'recipient_alias', 'cooldown', 'reason']), $this->character, Auth::user())) {
+        if($service->adminTransfer($request->only(['recipient_id', 'recipient_url', 'cooldown', 'reason']), $this->character, Auth::user())) {
             flash('Character transferred successfully.')->success();
         }
         else {
@@ -500,7 +500,7 @@ class CharacterController extends Controller
         $this->character = Character::where('is_myo_slot', 1)->where('id', $id)->first();
         if(!$this->character) abort(404);
 
-        if($service->adminTransfer($request->only(['recipient_id', 'cooldown', 'reason']), $this->character, Auth::user())) {
+        if($service->adminTransfer($request->only(['recipient_id', 'recipient_url', 'cooldown', 'reason']), $this->character, Auth::user())) {
             flash('Character transferred successfully.')->success();
         }
         else {
@@ -614,7 +614,7 @@ class CharacterController extends Controller
                 }
             }
         }
-        
+
         return view('admin.masterlist.character_trades', [
             'trades' => $trades->orderBy('id', 'DESC')->paginate(20),
             'tradesQueue' => Settings::get('open_transfers_queue'),

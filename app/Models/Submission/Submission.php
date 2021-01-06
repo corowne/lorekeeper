@@ -33,65 +33,65 @@ class Submission extends Model
      * @var string
      */
     public $timestamps = true;
-    
+
     /**
      * Validation rules for submission creation.
      *
      * @var array
      */
     public static $createRules = [
-        'url' => 'required',
+        'url' => 'nullable|url',
     ];
-    
+
     /**
      * Validation rules for submission updating.
      *
      * @var array
      */
     public static $updateRules = [
-        'url' => 'required',
+        'url' => 'nullable|url',
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the prompt this submission is for.
      */
-    public function prompt() 
+    public function prompt()
     {
         return $this->belongsTo('App\Models\Prompt\Prompt', 'prompt_id');
     }
-    
+
     /**
      * Get the user who made the submission.
      */
-    public function user() 
+    public function user()
     {
         return $this->belongsTo('App\Models\User\User', 'user_id');
     }
-    
+
     /**
      * Get the staff who processed the submission.
      */
-    public function staff() 
+    public function staff()
     {
         return $this->belongsTo('App\Models\User\User', 'staff_id');
     }
-    
+
     /**
      * Get the characters attached to the submission.
      */
-    public function characters() 
+    public function characters()
     {
         return $this->hasMany('App\Models\Submission\SubmissionCharacter', 'submission_id');
     }
 
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -113,12 +113,21 @@ class Submission extends Model
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeViewable($query, $user)
+    public function scopeViewable($query, $user = null)
     {
+        $forbiddenSubmissions = $this
+        ->whereHas('prompt', function($q) {
+            $q->where('hide_submissions', 1)->whereNotNull('end_at')->where('end_at', '>', Carbon::now());
+        })
+        ->orWhereHas('prompt', function($q) {
+            $q->where('hide_submissions', 2);
+        })
+        ->orWhere('status', '!=', 'Approved')->pluck('id')->toArray();
+
         if($user && $user->hasPower('manage_submissions')) return $query;
-        return $query->where(function($query) use ($user) {
-            if($user) $query->where('user_id', $user->id)->orWhere('status', 'Approved');
-            else $query->where('status', 'Approved');
+        else return $query->where(function($query) use ($user, $forbiddenSubmissions) {
+            if($user) $query->whereNotIn('id', $forbiddenSubmissions)->orWhere('user_id', $user->id);
+            else $query->whereNotIn('id', $forbiddenSubmissions);
         });
     }
 
@@ -145,7 +154,7 @@ class Submission extends Model
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/

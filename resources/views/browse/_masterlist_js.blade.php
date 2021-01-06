@@ -1,5 +1,7 @@
 <script>
     $(document).ready(function() {
+        $('.userselectize').selectize();
+
         var $gridButton = $('.grid-view-button');
         var $gridView = $('#gridView');
         var $listButton = $('.list-view-button');
@@ -35,7 +37,7 @@
                 $listView.addClass('hide');
                 $listButton.removeClass('active');
                 window.localStorage.setItem('lorekeeper_masterlist_view', 'grid');
-            }   
+            }
             else if (view == 'list') {
                 $listView.removeClass('hide');
                 $listButton.addClass('active');
@@ -48,7 +50,7 @@
         var $featureBody = $('#featureBody');
         var $featureSelect = $('#featureContent .feature-block');
         var $addFeatureButton = $('.add-feature-button');
-        
+
         // handle the ones that were already there
         var $existingFeatures = $('#featureBody .feature-block');
         $existingFeatures.find('.selectize').selectize();

@@ -179,6 +179,7 @@ class CurrencyService extends Service
             if(DB::table('loots')->where('rewardable_type', 'Currency')->where('rewardable_id', $currency->id)->exists()) throw new \Exception("A loot table currently distributes this currency as a potential reward. Please remove the currency before deleting it.");
             if(DB::table('prompt_rewards')->where('rewardable_type', 'Currency')->where('rewardable_id', $currency->id)->exists()) throw new \Exception("A prompt currently distributes this currency as a reward. Please remove the currency before deleting it.");
             if(DB::table('shop_stock')->where('currency_id', $currency->id)->exists()) throw new \Exception("A shop currently requires this currency to purchase an item. Please change the currency before deleting it.");
+            if(DB::table('items')->where('data->resell', $currency->id)->exists()) throw new \Exception("An item currently uses this currency for its resale value. Please change the resale information before deleting this currency.");
 
             // This will delete the currency in users' possession as well.
             // The reason this is allowed is that in instances where event currencies
