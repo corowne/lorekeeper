@@ -12,12 +12,22 @@
     <p>No species found.</p>
 @else 
     <table class="table table-sm species-table">
+    <thead>
+            <tr>
+                <th>Species</th>
+                <th>Sub Masterlist</th>
+                <th></th>
+            </tr>
+        </thead>
         <tbody id="sortable" class="sortable">
             @foreach($specieses as $species)
                 <tr class="sort-item" data-id="{{ $species->id }}">
                     <td>
                         <a class="fas fa-arrows-alt-v handle mr-3" href="#"></a>
                         {!! $species->displayName !!}
+                    </td>
+                    <td>
+                    @if(isset($species->sublist->name)) {{ $species->sublist->name  }} @else -- @endif
                     </td>
                     <td class="text-right">
                         <a href="{{ url('admin/data/species/edit/'.$species->id) }}" class="btn btn-primary">Edit</a>

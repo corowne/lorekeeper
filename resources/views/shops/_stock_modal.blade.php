@@ -2,8 +2,8 @@
     <div class="text-center">Invalid item selected.</div>
 @else
     <div class="text-center mb-3">
-        <div class="mb-1"><a href="{{ $stock->item->url }}"><img src="{{ $stock->item->imageUrl }}" /></a></div>
-        <div><a href="{{ $stock->item->url }}"><strong>{{ $stock->item->name }}</strong></a></div>
+        <div class="mb-1"><a href="{{ $stock->item->idUrl }}"><img src="{{ $stock->item->imageUrl }}" /></a></div>
+        <div><a href="{{ $stock->item->idUrl }}"><strong>{{ $stock->item->name }}</strong></a></div>
         <div><strong>Cost: </strong> {!! $stock->currency->display($stock->cost) !!}</div>
         @if($stock->is_limited_stock) <div>Stock: {{ $stock->quantity }}</div> @endif
         @if($stock->purchase_limit) <div class="text-danger">Max {{ $stock->purchase_limit }} per user</div> @endif

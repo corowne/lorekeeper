@@ -133,6 +133,17 @@ class Submission extends Model
         return $query->orderBy('id');
     }
 
+    /**
+     * Scope a query to sort submissions by newest first.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSortNewest($query)
+    {
+        return $query->orderBy('id', 'DESC');
+    }
+
     /**********************************************************************************************
     
         ACCESSORS
@@ -147,6 +158,28 @@ class Submission extends Model
     public function getDataAttribute()
     {
         return json_decode($this->attributes['data'], true);
+    }
+
+    /**
+     * Gets the inventory of the user for selection.
+     *
+     * @return array
+     */
+    public function getInventory($user)
+    {
+        return $this->data && isset($this->data['user']['user_items']) ? $this->data['user']['user_items'] : [];
+        return $inventory;
+    }
+
+    /**
+     * Gets the currencies of the given user for selection.
+     *
+     * @param  \App\Models\User\User $user
+     * @return array
+     */
+    public function getCurrencies($user)
+    {
+        return $this->data && isset($this->data['user']) && isset($this->data['user']['currencies']) ? $this->data['user']['currencies'] : [];
     }
 
     /**
@@ -176,6 +209,9 @@ class Submission extends Model
      */
     public function getRewardsAttribute()
     {
+        if(isset($this->data['rewards']))
+        $assets = parseAssetData($this->data['rewards']);
+        else
         $assets = parseAssetData($this->data);
         $rewards = [];
         foreach($assets as $type => $a)

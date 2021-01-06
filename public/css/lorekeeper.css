@@ -61,6 +61,11 @@ body {
     display: none !important;
 }
 
+.parsed-text img {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
 /**************************************************************************************************
     
     Layout
@@ -180,6 +185,11 @@ main > .row {
 @media (max-width: 767px) {
 	.site-mobile-header {
 		top: 54px !important;
+    }
+    
+    .timestamp {
+		margin-left: 1rem!important;
+		margin-right: 1rem!important;
 	}
 }
 
@@ -257,11 +267,6 @@ main > .row {
     
 	.site-footer .navbar .navbar-nav {
 		flex-wrap: wrap; justify-content: center;
-	}
-	
-	.timestamp {
-		margin-left: 1rem!important;
-		margin-right: 1rem!important;
 	}
 }
 
@@ -594,6 +599,34 @@ tr.accountbound {
 
 .bookmark-table .img-thumbnail {
     width: 100px;
+}
+
+/* BOOTSTRAP TABLES *************************************************************************************/
+.ubt-bottom {
+  border-bottom:1px solid #dee2e6;
+}
+
+.ubt-top {
+  border-top:1px solid #dee2e6;
+}
+
+.ubt-texthide {
+  width:100%;
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* COMMENTS *************************************************************************************/
+.comment_replies {
+        padding-left: 3rem;
+        border-left-width: 2px!important;
+    }
+@media only screen and (max-width: 600px) {
+    .comment_replies { padding-left:1rem;}
 }
 
 /* RECIPES ***************************************************************************************/

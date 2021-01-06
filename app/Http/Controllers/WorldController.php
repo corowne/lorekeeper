@@ -15,6 +15,7 @@ use App\Models\Feature\Feature;
 use App\Models\Character\CharacterCategory;
 use App\Models\Prompt\PromptCategory;
 use App\Models\Prompt\Prompt;
+use App\Models\Shop\Shop;
 
 class WorldController extends Controller
 {
@@ -195,6 +196,43 @@ class WorldController extends Controller
     }
 
     /**
+     * Shows a species' visual trait list.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getSpeciesFeatures($id)
+    {
+        $categories = FeatureCategory::orderBy('sort', 'DESC')->get();
+        $rarities = Rarity::orderBy('sort', 'ASC')->get();
+        $species = Species::where('id', $id)->first();
+        if(!$species) abort(404);
+        if(!Config::get('lorekeeper.extensions.species_trait_index')) abort(404);
+
+        $features = count($categories) ? 
+            $species->features()
+                ->orderByRaw('FIELD(feature_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
+                ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
+                ->orderBy('has_image', 'DESC')
+                ->orderBy('name')
+                ->get()
+                ->groupBy(['feature_category_id', 'id']) :
+            $species->features()
+                ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
+                ->orderBy('has_image', 'DESC')
+                ->orderBy('name')
+                ->get()
+                ->groupBy(['feature_category_id', 'id']);
+
+        return view('world.species_features', [  
+            'species' => $species,
+            'categories' => $categories->keyBy('id'),
+            'rarities' => $rarities->keyBy('id'),
+            'features' => $features,
+        ]);
+    }
+
+    /**
      * Shows the items page.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -233,7 +271,30 @@ class WorldController extends Controller
 
         return view('world.items', [
             'items' => $query->paginate(20)->appends($request->query()),
-            'categories' => ['none' => 'Any Category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
+            'categories' => ['none' => 'Any Category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'shops' => Shop::orderBy('sort', 'DESC')->get()
+        ]);
+    }
+
+    /**
+     * Shows an individual item's page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getItem($id)
+    {
+        $categories = ItemCategory::orderBy('sort', 'DESC')->get();
+        $item = Item::where('id', $id)->first();
+        if(!$item) abort(404);
+
+        return view('world.item_page', [
+            'item' => $item,
+            'imageUrl' => $item->imageUrl, 
+            'name' => $item->displayName, 
+            'description' => $item->parsed_description,
+            'categories' => $categories->keyBy('id'),
+            'shops' => Shop::orderBy('sort', 'DESC')->get()
         ]);
     }
 

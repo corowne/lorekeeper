@@ -70,8 +70,12 @@ function format_date($timestamp, $showTime = true) {
     return $timestamp->format('j F Y' . ($showTime ? ', H:i:s' : '')) . ($showTime ? ' <abbr data-toggle="tooltip" title="UTC'.$timestamp->timezone->toOffsetName().'">' . strtoupper($timestamp->timezone->getAbbreviatedName($timestamp->isDST())) . '</abbr>' : '');
 }
 
+function pretty_date($timestamp, $showTime = true) {
+   return '<abbr data-toggle="tooltip" title="' . $timestamp->format('F j Y' . ($showTime ? ', H:i:s' : '')) . ' ' . strtoupper($timestamp->timezone->getAbbreviatedName($timestamp->isDST())).'">' .$timestamp->diffForHumans() . '</abbr>';
+}
+
 /**
- * Formats a number to fit the number of digits given, 
+ * Formats a number to fit the number of digits given,
  * for generating masterlist numbers.
  *
  * @param  \Illuminate\Support\Carbon\Carbon  $timestamp
@@ -92,20 +96,21 @@ function parse($text, &$pings = null) {
     if(!$text) return null;
 
     require_once(base_path().'/vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php');
-    
+
     $config = HTMLPurifier_Config::createDefault();
     $config->set('Attr.EnableID', true);
     $config->set('HTML.DefinitionID', 'include');
     $config->set('HTML.DefinitionRev', 2);
+	$config->set('Cache.DefinitionImpl', null); // TODO: remove this later!
     if ($def = $config->maybeGetRawHTMLDefinition()) {
         $def->addElement('include', 'Block', 'Empty', 'Common', array('file*' => 'URI', 'height' => 'Text', 'width' => 'Text'));
 		$def->addAttribute('a', 'data-toggle', 'Enum#collapse,tab');
 		$def->addAttribute('a', 'aria-expanded', 'Enum#true,false');
 		$def->addAttribute('a', 'data-target', 'Text');
 		$def->addAttribute('div', 'data-parent', 'Text');
-		
+
     }
-    
+
     $purifier = new HTMLPurifier($config);
     $text = $purifier->purify($text);
 
@@ -181,4 +186,23 @@ function randomString($characters)
     $code = '';
     for ($i = 0; $i < $characters; $i++) $code .= $src[mt_rand(0, strlen($src) - 1)];
     return $code;
+}
+
+/**
+ * Prettifies links to user profiles on various sites in a "user@site" format.
+ *
+ * @param  string  $url
+ * @return string
+ */
+function prettyProfileLink($url)
+{
+    $matches = [];
+    // Check different sites and return site if a match is made, plus username (retreived from the URL)
+    foreach(Config::get('lorekeeper.sites') as $siteName=>$siteInfo) {
+        if(preg_match_all($siteInfo['regex'], $url, $matches)) {$site = $siteName; $name = $matches[1][0]; $link = $matches[0][0]; break;}
+    }
+
+    // Return formatted link if possible; failing that, an unformatted link
+    if(isset($name) && isset($site) && isset($link)) return '<a href="https://'.$link.'">'.$name.'@'.$site.'</a>';
+    else return '<a href="'.$url.'">'.$url.'</a>';
 }

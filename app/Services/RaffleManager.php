@@ -57,6 +57,7 @@ class RaffleManager extends Service
         if (!$user) return 0;
         else if (!$raffle) return 0;
         else if ($count == 0) return 0;
+        else if ($raffle->rolled_at != null) return 0;
         else {
             DB::beginTransaction();
             $data = ["raffle_id" => $raffle->id, 'created_at' => Carbon::now()] + (is_string($user) ? ['alias' => $user] : ['user_id' => $user->id]);
@@ -166,7 +167,7 @@ class RaffleManager extends Service
             $winner->update(['position' => $i + 1]);
 
             // save the winning ticket's user id
-            if($winner->user_id) $winners['ids'][] = $winner->user_id;
+            if(isset($winner->user_id)) $winners['ids'][] = $winner->user_id;
             else $winners['aliases'][] = $winner->alias;
 
             // remove ticket from the ticket pool after pulled
@@ -178,13 +179,14 @@ class RaffleManager extends Service
             // remove tickets for the same user...I'm unsure how this is going to hold up with 3000 tickets,
             foreach($ticketPool as $key=>$ticket)
             {
-                if($ticket->user_id == $winner->user_id) 
+                if(($ticket->user_id != null && $ticket->user_id == $winner->user_id) || ($ticket->user_id == null && $ticket->alias == $winner->alias)) 
                 {
                     $ticketPool->forget($key);
-                    $ticketPool = $ticketPool->values();
-                    $ticketCount--;
                 }
+
             }
+            $ticketPool = $ticketPool->values();
+            $ticketCount = $ticketPool->count();
         }
         return $winners;
     }

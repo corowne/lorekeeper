@@ -9,6 +9,7 @@ use App\Services\InventoryManager;
 use App\Models\Item\Item;
 use App\Models\Currency\Currency;
 use App\Models\Loot\LootTable;
+use App\Models\Raffle\Raffle;
 
 class BoxService extends Service
 {
@@ -33,6 +34,7 @@ class BoxService extends Service
             'items' => Item::orderBy('name')->pluck('name', 'id'),
             'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
             'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
+            'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
         ];
     }
 
@@ -92,6 +94,9 @@ class BoxService extends Service
                         break;
                     case 'LootTable':
                         $type = 'App\Models\Loot\LootTable';
+                        break;
+                    case 'Raffle':
+                        $type = 'App\Models\Raffle\Raffle';
                         break;
                 }
                 $asset = $type::find($data['rewardable_id'][$key]);
@@ -162,7 +167,7 @@ class BoxService extends Service
             {
                 foreach($assetType as $asset)
                 {
-                    array_push($result_elements, $asset['asset']->name." x".$asset['quantity']);
+                    array_push($result_elements, $asset['asset']->name.(class_basename($asset['asset']) == 'Raffle' ? ' (Raffle Ticket)' : '')." x".$asset['quantity']);
                 }
             }
         }

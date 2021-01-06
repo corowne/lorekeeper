@@ -46,5 +46,15 @@ return [
         'name' => 'MYO Default Image (Thumbnail)',
         'description' => 'The default masterlist thumbnail used for MYO slots when no image is uploaded. PNG format, size of masterlist thumbnails.',
         'filename' => 'myo-th.png'
-    ]
+    ],
+    'meta-image' => [
+        'name' => 'Meta Tag Image',
+        'description' => 'The image displayed in meta tag previews on social media, discord, and the like. PNG format, no size restriction.',
+        'filename' => 'meta-image.png'
+    ],
+    'watermark' => [
+        'name' => 'Watermark Image',
+        'description' => 'Watermark for applying to masterlist images.',
+        'filename' => 'watermark.png'
+    ],
 ];

@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 use App\Models\Character\Character;
+use App\Models\Character\CharacterImageCreator;
 use App\Models\Rank\RankPower;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
@@ -16,10 +17,11 @@ use App\Models\User\UserCharacterLog;
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
 use App\Models\Character\CharacterBookmark;
+use App\Traits\Commenter;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable;
+    use Notifiable, Commenter;
 
     /**
      * The attributes that are mass assignable.
@@ -27,7 +29,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned'
+        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned', 'avatar', 'is_sales_unread'
     ];
 
     /**
@@ -266,6 +268,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return ($this->is_banned ? '<strike>' : '') . '<a href="'.$this->url.'" class="display-user" '.($this->rank->color ? 'style="color: #'.$this->rank->color.';"' : '').'>'.$this->name.'</a>' . ($this->is_banned ? '</strike>' : '');
     }
 
+        /**
+     * Displays the user's name, linked to their profile page.
+     *
+     * @return string
+     */
+    public function getCommentDisplayNameAttribute()
+    {
+        return '<small><a href="'. $this->url .'" class="btn btn-primary btn-sm"'.($this->rank->color ? 'style="background-color: #'.$this->rank->color.'!important;color:#000!important;"' : '').'><i class="'.($this->rank->icon ? $this->rank->icon : 'fas fa-user').' mr-1" style="opacity: 50%;"></i>'. $this->name .'</a></small>';
+    }
+
     /**
      * Displays the user's alias, linked to their deviantART page.
      *
@@ -275,6 +287,16 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if (!$this->alias) return '(Unverified)';
         return '<a href="'.$this->aliasUrl.'">'.$this->alias.'@dA</a>';
+    }
+
+    /**
+     * Displays the user's avatar
+     *
+     * @return string
+     */
+    public function getAvatar()
+    {
+        return ($this->avatar);
     }
 
     /**
@@ -371,10 +393,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getItemLogs($limit = 10)
     {
         $user = $this;
-        $query = ItemLog::with('sender')->with('recipient')->with('item')->where(function($query) use ($user) {
-            $query->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Staff Removal']);
+        $query = ItemLog::with('item')->where(function($query) use ($user) {
+            $query->with('sender')->where('sender_type', 'User')->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Prompt Rewards', 'Claim Rewards']);
         })->orWhere(function($query) use ($user) {
-            $query->where('recipient_id', $user->id);
+            $query->with('recipient')->where('recipient_type', 'User')->where('recipient_id', $user->id)->where('log_type', '!=', 'Staff Removal');
         })->orderBy('id', 'DESC');
         if($limit) return $query->take($limit)->get();
         else return $query->paginate(30);
@@ -403,7 +425,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $user = $this;
         $query = UserCharacterLog::with('sender.rank')->with('recipient.rank')->with('character')->where(function($query) use ($user) {
-            $query->where('sender_id', $user->id)->where('log_type', '!=', 'Character Created');
+            $query->where('sender_id', $user->id)->whereNotIn('log_type', ['Character Created', 'MYO Slot Created', 'Character Design Updated', 'MYO Design Approved']);
         })->orWhere(function($query) use ($user) {
             $query->where('recipient_id', $user->id);
         })->orderBy('id', 'DESC');
@@ -429,6 +451,27 @@ class User extends Authenticatable implements MustVerifyEmail
                 }
                 $this->settings->save();
             }
+        }
+    }
+
+    /**     
+     * Checks if there are art or design credits credited to the user's alias and credits them to their account accordingly.
+     */    
+    public function updateArtDesignCredits()    
+    {
+        if(!$this->alias) return;
+        
+        // Find any art credited to this alias and update credit to this account.
+        if(CharacterImageCreator::where('alias', $this->alias)->update(['alias' => null, 'user_id' => $this->id]));
+
+        // Perform the same operation, plucking alias from url
+        $urlCreators = CharacterImageCreator::whereNotNull('url')->pluck('url','id');
+        if(count($urlCreators)) {
+            $matches = null;
+            // Find all deviantArt urls
+            foreach($urlCreators as $key=>$creator) preg_match_all('/deviantart\.com\/([A-Za-z0-9_-]+)/', $creator, $matches[$key]);
+            // Find all alias matches within those, and update the relevant CharacterImageCreator
+            foreach($matches as $key=>$match) if($match[1][0] == $this->alias) CharacterImageCreator::find($key)->update(['url' => null, 'user_id' => $this->id]);
         }
     }
 

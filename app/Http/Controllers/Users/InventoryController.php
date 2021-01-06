@@ -11,6 +11,8 @@ use App\Models\User\UserItem;
 use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
 use App\Models\Item\UserItemLog;
+use App\Models\Character\Character;
+use App\Models\Character\CharacterItem;
 use App\Services\InventoryManager;
 
 use App\Http\Controllers\Controller;
@@ -75,7 +77,39 @@ class InventoryController extends Controller
             'item' => $item,
             'user' => Auth::user(),
             'userOptions' => ['' => 'Select User'] + User::visible()->where('id', '!=', $first_instance ? $first_instance->user_id : 0)->orderBy('name')->get()->pluck('verified_name', 'id')->toArray(),
-            'readOnly' => $readOnly
+            'readOnly' => $readOnly,
+            'characterOptions' => Character::visible()->myo(0)->where('user_id', optional(Auth::user())->id)->orderBy('sort','DESC')->get()->pluck('fullName','id')->toArray(),
+        ]);
+    }
+
+    /**
+     * Shows the inventory stack modal, for characters.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterStack(Request $request, $id)
+    {
+        $first_instance = CharacterItem::withTrashed()->where('id', $id)->first();
+        $stack = CharacterItem::where([['character_id', $first_instance->character_id], ['item_id', $first_instance->item_id], ['count', '>', 0]])->get();
+        $item = Item::where('id', $first_instance->item_id)->first();
+
+        $character = $first_instance->character;
+        isset($stack->first()->character->user_id) ?
+        $ownerId = $stack->first()->character->user_id : null;
+
+        $hasPower = Auth::check() ? Auth::user()->hasPower('edit_inventories') : false;
+        $readOnly = $request->get('read_only') ? : ((Auth::check() && $first_instance && (isset($ownerId) == TRUE || $hasPower == TRUE)) ? 0 : 1);
+
+        return view('character._inventory_stack', [
+            'stack' => $stack,
+            'item' => $item,
+            'user' => Auth::user(),
+            'has_power' => $hasPower,
+            'readOnly' => $readOnly,
+            'character' => $character,
+            'owner_id' => isset($ownerId) ? $ownerId : null,
         ]);
     }
 
@@ -102,6 +136,11 @@ class InventoryController extends Controller
                 case 'delete':
                     return $this->postDelete($request, $service);
                     break;
+                case 'characterTransfer':
+                    return $this->postTransferToCharacter($request, $service);
+                case 'resell':
+                    return $this->postResell($request, $service);
+                    break;
                 case 'act':
                     return $this->postAct($request);
                     break;
@@ -127,6 +166,24 @@ class InventoryController extends Controller
         }
         return redirect()->back();
     }
+
+    /**
+     * Transfers inventory items to another user.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\InventoryManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function postTransferToCharacter(Request $request, InventoryManager $service)
+    {
+        if($service->transferCharacterStack(Auth::user(), Character::visible()->where('id', $request->get('character_id'))->first(), UserItem::find($request->get('ids')), $request->get('quantities'))) {
+            flash('Item transferred successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
     
     /**
      * Deletes an inventory stack.
@@ -139,6 +196,24 @@ class InventoryController extends Controller
     {
         if($service->deleteStack(Auth::user(), UserItem::find($request->get('ids')), $request->get('quantities'))) {
             flash('Item deleted successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Sells an inventory stack.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\InventoryManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function postResell(Request $request, InventoryManager $service)
+    {
+        if($service->resellStack(Auth::user(), UserItem::find($request->get('ids')), $request->get('quantities'))) {
+            flash('Item sold successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

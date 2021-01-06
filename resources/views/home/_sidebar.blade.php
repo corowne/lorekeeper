@@ -19,4 +19,8 @@
         <div class="sidebar-item"><a href="{{ url('crafting') }}" class="{{ set_active('crafting') }}">Recipes</a></div>
         <div class="sidebar-item"><a href="{{ url('crafting/recipebook') }}" class="{{ set_active('crafting/recipebook') }}">Recipebook</a></div>
     </li>
+    <li class="sidebar-section">
+        <div class="sidebar-section-header">Reports</div>
+        <div class="sidebar-item"><a href="{{ url('reports') }}" class="{{ set_active('reports*') }}">Reports</a></div>
+    </li>
 </ul>

@@ -7,7 +7,7 @@
 
 @include('character._header', ['character' => $character])
 
-<p>This will add a new image to the character's gallery. The character's active image will be changed to the new one automatically. If the character is marked as visible, the owner of the character will be notified of the upload.</p> 
+<p>This will add a new image to the character's gallery. The character's active image will be changed to the new one automatically. If the character is marked as visible, the owner of the character will be notified of the upload.</p>
 
 {!! Form::open(['url' => 'admin/character/'.$character->slug.'/image', 'files' => true]) !!}
 
@@ -46,19 +46,19 @@
     </div>
 </div>
 <p class="alert alert-info">
-    This section is for crediting the image creators. The first box is for the designer's deviantART name (if any). If the designer has an account on the site, it will link to their site profile; if not, it will link to their dA page. The second is for a custom URL if they don't use dA. Both are optional - you can fill in the alias and ignore the URL, or vice versa. If you fill in both, it will link to the given URL, but use the alias field as the link name.
+    This section is for crediting the image creators. The first box is for the designer or artist's on-site username (if any). The second is for a link to the designer or artist if they don't have an account on the site.
 </p>
 <div class="form-group">
     {!! Form::label('Designer(s)') !!}
     <div id="designerList">
         <div class="mb-2 d-flex">
-            {!! Form::text('designer_alias[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Designer Alias']) !!}
+            {!! Form::select('designer_alias[]', $users, null, ['class'=> 'form-control mr-2 selectize', 'placeholder' => 'Select a Designer']) !!}
             {!! Form::text('designer_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Designer URL']) !!}
             <a href="#" class="add-designer btn btn-link" data-toggle="tooltip" title="Add another designer">+</a>
         </div>
     </div>
     <div class="designer-row hide mb-2">
-        {!! Form::text('designer_alias[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Designer Alias']) !!}
+        {!! Form::select('designer_alias[]', $users, null, ['class'=> 'form-control mr-2 designer-select', 'placeholder' => 'Select a Designer']) !!}
         {!! Form::text('designer_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Designer URL']) !!}
         <a href="#" class="add-designer btn btn-link" data-toggle="tooltip" title="Add another designer">+</a>
     </div>
@@ -67,13 +67,13 @@
     {!! Form::label('Artist(s)') !!}
     <div id="artistList">
         <div class="mb-2 d-flex">
-            {!! Form::text('artist_alias[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Artist Alias']) !!}
+            {!! Form::select('artist_alias[]', $users, null, ['class'=> 'form-control mr-2 selectize', 'placeholder' => 'Select an Artist']) !!}
             {!! Form::text('artist_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Artist URL']) !!}
             <a href="#" class="add-artist btn btn-link" data-toggle="tooltip" title="Add another artist">+</a>
         </div>
     </div>
     <div class="artist-row hide mb-2">
-        {!! Form::text('artist_alias[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Artist Alias']) !!}
+        {!! Form::select('artist_alias[]', $users, null, ['class'=> 'form-control mr-2 artist-select', 'placeholder' => 'Select an Artist']) !!}
         {!! Form::text('artist_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Artist URL']) !!}
         <a href="#" class="add-artist btn btn-link mb-2" data-toggle="tooltip" title="Add another artist">+</a>
     </div>
@@ -94,8 +94,8 @@ Traits
     {!! Form::select('species_id', $specieses, old('species_id') ? : $character->image->species_id, ['class' => 'form-control', 'id' => 'species']) !!}
 </div>
 
-<div class="form-group">
-    {!! Form::label('Subtype (Optional)') !!} 
+<div class="form-group" id="subtypes">
+    {!! Form::label('Subtype (Optional)') !!}
     {!! Form::select('subtype_id', $subtypes, old('subtype_id') ? : $character->image->subtype_id, ['class' => 'form-control', 'id' => 'subtype']) !!}
 </div>
 
@@ -157,6 +157,7 @@ $( document ).ready(function() {
 
     // Designers and artists //////////////////////////////////////////////////////////////////////
 
+    $('.selectize').selectize();
     $('.add-designer').on('click', function(e) {
         e.preventDefault();
         addDesignerRow($(this));
@@ -170,9 +171,10 @@ $( document ).ready(function() {
             e.preventDefault();
             addDesignerRow($(this));
         })
+        $clone.find('.designer-select').selectize();
         $trigger.css({ visibility: 'hidden' });
     }
-    
+
     $('.add-artist').on('click', function(e) {
         e.preventDefault();
         addArtistRow($(this));
@@ -186,11 +188,12 @@ $( document ).ready(function() {
             e.preventDefault();
             addArtistRow($(this));
         })
+        $clone.find('.artist-select').selectize();
         $trigger.css({ visibility: 'hidden' });
     }
 
     // Traits /////////////////////////////////////////////////////////////////////////////////////
-    
+
     $('#add-feature').on('click', function(e) {
         e.preventDefault();
         addFeatureRow();
@@ -261,8 +264,19 @@ $( document ).ready(function() {
         $y1.val(values.points[3]);
     }
 
-    
+
 });
-    
+
+
+
+$( "#species" ).change(function() {
+  var species = $('#species').val();
+  var id = '<?php echo($character->image->id); ?>';
+  $.ajax({
+    type: "GET", url: "{{ url('admin/character/image/subtype') }}?species="+species+"&id="+id, dataType: "text"
+  }).done(function (res) { $("#subtypes").html(res); }).fail(function (jqXHR, textStatus, errorThrown) { alert("AJAX call failed: " + textStatus + ", " + errorThrown); });
+
+});
+
 </script>
 @endsection
