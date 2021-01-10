@@ -31,6 +31,8 @@ use App\Models\Rarity;
 use App\Models\Currency\Currency;
 use App\Models\Feature\Feature;
 
+use App\Models\Stats\Character\CharacterStat;
+
 class CharacterManager extends Service
 {
     /*
@@ -131,6 +133,20 @@ class CharacterManager extends Service
             // Update the character's image ID
             $character->character_image_id = $image->id;
             $character->save();
+
+            // Create character stats
+            $character->level()->create([
+                'character_id' => $character->id
+            ]);
+            
+            foreach($data['stats'] as $key=>$stat)
+            {
+                CharacterStat::create([
+                    'character_id' => $character->id,
+                    'stat_id' => $id,
+                    'count' => $stat,
+                ]);
+            }
             
             // Add a log for the character
             // This logs all the updates made to the character
@@ -147,7 +163,6 @@ class CharacterManager extends Service
                 }
                 $recipient->settings->save();
             }
-
 
             // If the recipient has an account, send them a notification
             if($recipient && $user->id != $recipient->id) {

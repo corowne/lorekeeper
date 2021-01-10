@@ -58,6 +58,11 @@ Route::group(['prefix' => 'bank', 'namespace' => 'Users'], function() {
     Route::post('transfer', 'BankController@postTransfer');
 });
 
+Route::group(['prefix' => 'level', 'namespace' => 'Users'], function() {
+    Route::get('/', 'LevelController@getIndex');
+    Route::post('up', 'LevelController@postLevel');
+});
+
 Route::group(['prefix' => 'trades', 'namespace' => 'Users'], function() {
     Route::get('{status}', 'TradeController@getIndex')->where('status', 'open|pending|completed|rejected|canceled');
     Route::get('create', 'TradeController@getCreateTrade');

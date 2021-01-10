@@ -142,6 +142,7 @@ class Notification extends Model
     const BOOKMARK_IMAGE                  = 37;
     const CHARACTER_TRANSFER_ACCEPTABLE   = 38;
     const BOOKMARK_GIFT_WRITING           = 39;
+    const EXP_GRANT                       = 45;
     const REPORT_ASSIGNED                 = 220;
     const REPORT_CLOSED                   = 221;
     const COMMENT_MADE                    = 239;

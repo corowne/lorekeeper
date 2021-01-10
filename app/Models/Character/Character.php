@@ -168,6 +168,14 @@ class Character extends Model
     }
 
     /**
+     * Get character level.
+     */
+    public function level() 
+    {
+        return $this->hasOne('App\Models\Stats\Character\CharaLevels');
+    }
+
+    /**
      * Get the character's active design update.
      */
     public function designUpdate() 

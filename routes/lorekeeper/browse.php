@@ -51,11 +51,15 @@ Route::group(['prefix' => 'user', 'namespace' => 'Users'], function() {
     Route::get('{name}/myos', 'UserController@getUserMyoSlots');
     Route::get('{name}/inventory', 'UserController@getUserInventory');
     Route::get('{name}/bank', 'UserController@getUserBank');
+    Route::get('{name}/level', 'UserController@getUserLevel');
     
     Route::get('{name}/currency-logs', 'UserController@getUserCurrencyLogs');
     Route::get('{name}/item-logs', 'UserController@getUserItemLogs');
     Route::get('{name}/ownership', 'UserController@getUserOwnershipLogs');
     Route::get('{name}/submissions', 'UserController@getUserSubmissions');
+    Route::get('{name}/exp-logs', 'UserController@getUserExpLogs');
+    Route::get('{name}/level-logs', 'UserController@getUserLevelLogs');
+    Route::get('{name}/stat-logs', 'UserController@getUserStatLogs');
 });
 
 /**************************************************************************************************

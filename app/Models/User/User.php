@@ -12,6 +12,9 @@ use App\Models\Rank\RankPower;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
 use App\Models\Item\ItemLog;
+use App\Models\Stats\ExpLog;
+use App\Models\Stats\StatTransferLog;
+use App\Models\Stats\LevelLog;
 use App\Models\Shop\ShopLog;
 use App\Models\User\UserCharacterLog;
 use App\Models\Submission\Submission;
@@ -86,6 +89,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public function profile() 
     {
         return $this->hasOne('App\Models\User\UserProfile');
+    }
+
+    /**
+     * Get user settings.
+     */
+    public function level() 
+    {
+        return $this->hasOne('App\Models\Stats\User\UserLevel');
     }
 
     /**
@@ -371,6 +382,58 @@ class User extends Authenticatable implements MustVerifyEmail
             $query->with('sender')->where('sender_type', 'User')->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Prompt Rewards', 'Claim Rewards']);
         })->orWhere(function($query) use ($user) {
             $query->with('recipient')->where('recipient_type', 'User')->where('recipient_id', $user->id)->where('log_type', '!=', 'Staff Removal');
+        })->orderBy('id', 'DESC');
+        if($limit) return $query->take($limit)->get();
+        else return $query->paginate(30);
+    }
+
+    /**
+     * Get the user's exp logs.
+     *
+     * @param  int  $limit
+     * @return \Illuminate\Support\Collection|\Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getExpLogs($limit = 10)
+    {
+        $user = $this;
+        $query = ExpLog::where(function($query) use ($user) {
+            $query->with('sender')->where('sender_type', 'User')->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Prompt Rewards', 'Claim Rewards']);
+        })->orWhere(function($query) use ($user) {
+            $query->with('recipient')->where('recipient_type', 'User')->where('recipient_id', $user->id)->where('log_type', '!=', 'Staff Removal');
+        })->orderBy('id', 'DESC');
+        if($limit) return $query->take($limit)->get();
+        else return $query->paginate(30);
+    }
+
+    /**
+     * Get the user's stat logs.
+     *
+     * @param  int  $limit
+     * @return \Illuminate\Support\Collection|\Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getStatLogs($limit = 10)
+    {
+        $user = $this;
+        $query = StatTransferLog::where(function($query) use ($user) {
+            $query->with('sender')->where('sender_type', 'User')->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Prompt Rewards', 'Claim Rewards']);
+        })->orWhere(function($query) use ($user) {
+            $query->with('recipient')->where('recipient_type', 'User')->where('recipient_id', $user->id)->where('log_type', '!=', 'Staff Removal');
+        })->orderBy('id', 'DESC');
+        if($limit) return $query->take($limit)->get();
+        else return $query->paginate(30);
+    }
+
+    /**
+     * Get the user's level logs.
+     *
+     * @param  int  $limit
+     * @return \Illuminate\Support\Collection|\Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getLevelLogs($limit = 10)
+    {
+        $user = $this;
+        $query = LevelLog::where(function($query) use ($user) {
+            $query->with('recipient')->where('leveller_type', 'User')->where('recipient_id', $user->id);
         })->orderBy('id', 'DESC');
         if($limit) return $query->take($limit)->get();
         else return $query->paginate(30);

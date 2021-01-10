@@ -221,6 +221,17 @@
         </div>
     </div>
 
+    @if($stats)
+    <h3>Stats</h3>
+    <p class="alert alert-info">If you want a character to have different stats from the default, set them here. Else, leave it as default</p>
+    <div class="form-group">
+        @foreach($stats as $stat)
+            {!! Form::label($stat->name) !!}
+            {!! Form::number('stats['.$stat->id.']', $stat->default, ['class' => 'form-control m-1',]) !!}
+        @endforeach
+    </div>
+    @endif
+
     <div class="text-right">
         {!! Form::submit('Create Character', ['class' => 'btn btn-primary']) !!}
     </div>

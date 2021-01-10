@@ -268,6 +268,9 @@ Route::group(['prefix' => 'grants', 'namespace' => 'Users', 'middleware' => 'pow
 
     Route::get('items', 'GrantController@getItems');
     Route::post('items', 'GrantController@postItems');
+
+    Route::get('exp', 'GrantController@getExp');
+    Route::post('exp', 'GrantController@postExp');
 });
 
 # MASTERLIST
@@ -412,3 +415,42 @@ Route::group(['prefix' => 'designs', 'middleware' => 'power:manage_characters'],
     Route::post('vote/{id}/{action}', 'DesignController@postVote')->where('action', 'approve|reject');
 });
 Route::get('{type}/{status}', 'DesignController@getDesignIndex')->where('type', 'myo-approvals|design-approvals')->where('status', 'pending|approved|rejected');
+
+# STATS - STATS
+Route::group(['prefix' => 'stats', 'namespace' => 'Stats', 'middleware' => 'power:edit_stats'], function() {
+    // GET
+    Route::get('/', 'StatController@getIndex');
+    Route::get('/create', 'StatController@getCreateStat');
+    Route::get('/edit/{id}', 'StatController@getEditStat');
+    Route::get('/delete/{id}', 'StatController@getDeleteStat');
+    // POST
+    Route::post('/create', 'StatController@postCreateEditStat');
+    Route::post('/edit/{id}', 'StatController@postCreateEditStat');
+    Route::post('/delete/{id}', 'StatController@postDeleteStat');
+
+
+});
+# STATS - LEVELS
+Route::group(['prefix' => 'levels', 'namespace' => 'Stats', 'middleware' => 'power:edit_levels'], function() {
+    # USER 
+    // GET
+    Route::get('/', 'LevelController@getIndex');
+    Route::get('/create', 'LevelController@getCreateLevel');
+    Route::get('/edit/{id}', 'LevelController@getEditLevel');
+    Route::get('/delete/{id}', 'LevelController@getDeleteLevel');
+    // POST
+    Route::post('/create', 'LevelController@postCreateEditLevel');
+    Route::post('/edit/{id}', 'LevelController@postCreateEditLevel');
+    Route::post('/delete/{id}', 'LevelController@postDeleteLevel');    
+    # ---------------------------------------------
+    # CHARACTER
+    // GET
+    Route::get('/character', 'LevelController@getCharaIndex');
+    Route::get('character/create', 'LevelController@getCharaCreateLevel');
+    Route::get('character/edit/{id}', 'LevelController@getCharaEditLevel');
+    Route::get('character/delete/{id}', 'LevelController@getCharaDeleteLevel');
+        // POST
+    Route::post('character/create', 'LevelController@postCharaCreateEditLevel');
+    Route::post('character/edit/{id}', 'LevelController@postCharaCreateEditLevel');
+    Route::post('character/delete/{id}', 'LevelController@postCharaDeleteLevel');    
+});

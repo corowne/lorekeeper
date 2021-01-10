@@ -286,8 +286,14 @@ return [
     ],
     // BOOKMARK_GIFT_WRITING
     39 => [
+        'name' => 'Bookmark Gift Writing',
         'message' => 'A character you have bookmarked (<a href="{character_url}">{character_name}</a>) has had its Gift Writing Allowed status changed. (<a href="{url}">View Bookmarks</a>)',
         'url' => 'account/bookmarks'
+    ],
+    45 => [
+        'name' => 'EXP Grant',
+        'message' => 'You have received a staff grant of {quantity} EXP from <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Level Area</a>)',
+        'url' => 'level'
     ],
     // REPORT_ASSIGNED
     220 => [

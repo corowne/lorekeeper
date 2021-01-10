@@ -86,6 +86,10 @@ return [
                 'name' => 'Item Grants',
                 'url' => 'admin/grants/items'
             ],
+            [
+                'name' => 'EXP Grants',
+                'url' => 'admin/grants/exp'
+            ],
         ]
     ],
     'Masterlist' => [
@@ -117,6 +121,29 @@ return [
             ],
         ]
     ],
+    'Stats' => [
+        'power' => 'edit_stats',
+        'links' => [
+            [
+                'name' => 'Stats',
+                'url' => 'admin/stats'
+            ],
+        ]
+    ],
+    'Levels' => [
+        'power' => 'edit_levels',
+        'links' => [
+            [
+                'name' => 'User Levels',
+                'url' => 'admin/levels'
+            ],
+            [
+                'name' => 'Character Levels',
+                'url' => 'admin/levels/character'
+            ],
+        ]
+    ],
+    
     'Data' => [
         'power' => 'edit_data',
         'links' => [
