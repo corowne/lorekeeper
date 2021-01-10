@@ -29,9 +29,6 @@ class CharacterStat extends Model
 
     **********************************************************************************************/
 
-    /**
-     * Get the shop stock.
-     */
     public function character() 
     {
         return $this->belongsTo('App\Models\Character\Character');

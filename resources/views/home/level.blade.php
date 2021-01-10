@@ -1,9 +1,9 @@
 @extends('home.layout')
 
-@section('home-title') Bank @endsection
+@section('home-title') Level Area @endsection
 
 @section('home-content')
-{!! breadcrumbs(['Bank' => 'bank']) !!}
+{!! breadcrumbs(['Level Area' => 'level-area']) !!}
 
 <h1>
     Level Area
@@ -13,6 +13,8 @@
     <h1><span class="badge badge-dark float-center text-white mx-1" data-toggle="tooltip" title="Current user level.">Current Lvl: {{ $user->level->current_level }}</span></h1>
     
     @if($next)
+    <p>Next Level: {{ $next->level}}</p>
+    {{ $user->level->current_exp}}/{{ $next->exp_required }}
     <div class="progress">
         <div class="progress-bar progress-bar-striped active" role="progressbar"
         aria-valuenow="{{ $user->level->current_exp}}" aria-valuemin="0" aria-valuemax="{{ $next->exp_required }}" style="width:{{$width}}%">
@@ -33,7 +35,7 @@
         <p>You are at the max level!</p>
     @endif
 
-    <div class="mb-4 text-center">
+    <div class="mb-4 mt-2 text-center">
         <div class="card text-center">
             <div class="m-4"><strong>Current EXP:</strong> <br>{{ $user->level->current_exp }} </div>
             <div class="m-4"><strong>Current Available Stat Points:</strong> <br>{{ $user->level->current_points }}</div>
@@ -42,6 +44,6 @@
 </div>
 
 <div class="text-right mb-4">
-    <a href="{{ url(Auth::user()->url.'/level') }}">View logs...</a>
+    <a href="{{ url(Auth::user()->url.'/level-logs') }}">View logs...</a>
 </div>
 @endsection

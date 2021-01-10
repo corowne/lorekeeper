@@ -58,7 +58,7 @@ class StatController extends Controller
     {
         $id ? $request->validate(Stat::$updateRules) : $request->validate(Stat::$createRules);
         $data = $request->only([
-            'name', 'abbreviation', 'default', 'step', 'multiplier'
+            'name', 'abbreviation', 'default', 'step', 'multiplier', 'max_level'
         ]);
         if($id && $service->updateStat(Stat::find($id), $data)) {
             flash('Stat updated successfully.')->success();

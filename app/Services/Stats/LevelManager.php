@@ -42,10 +42,12 @@ class LevelManager extends Service
 
             // give stat points
             $service = new StatManager;
-
-            if(!$service->creditUserStat($user, 'Level Up Reward', 'Rewards for levelling up.', $next))
+            if($next->stat_points != 0)
             {
-                throw new \Exception('Error granting stat points.');
+                if(!$service->creditUserStat($user, 'Level Up Reward', 'Rewards for levelling up.', $next))
+                {
+                    throw new \Exception('Error granting stat points.');
+                }
             }
 
             // create log

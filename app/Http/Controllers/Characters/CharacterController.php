@@ -205,6 +205,22 @@ class CharacterController extends Controller
             'currencyOptions' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id')->toArray(),
         ] : []));
     }
+
+    /**
+     * Shows a character's levels
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterLevel($name)
+    {
+        return view('character.stats.level', [
+            'character' => $this->character,
+            'exps' => $this->character->getExpLogs(),
+            'levels' => $this->character->getLevelLogs(),
+            'stats' => $this->character->getStatLogs(),
+        ]);
+    }
     
     /**
      * Transfers currency between the user and character.

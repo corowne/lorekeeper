@@ -13,7 +13,7 @@ class Stat extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'abbreviation','default','step','multiplier'
+        'name', 'abbreviation','default','step','multiplier', 'max_level'
     ];
 
     /**

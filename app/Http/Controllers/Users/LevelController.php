@@ -21,6 +21,11 @@ use App\Http\Controllers\Controller;
 
 class LevelController extends Controller
 {
+    /* ----------------------------------------
+    |
+    |   USER
+    |
+    |------------------------------------------*/
 
     /**
      * Shows the user's level page.
@@ -45,9 +50,9 @@ class LevelController extends Controller
             $width = 100;
         }
         else {
-            if($user->level->current_exp < $next->required_exp)
+            if($user->level->current_exp < $next->exp_required)
             {
-                $width = ($user->level->current_exp / $next->required_exp) * 100;
+                $width = ($user->level->current_exp / $next->exp_required) * 100;
             }
             else {
                 $width = 100;

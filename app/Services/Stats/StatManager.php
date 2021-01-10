@@ -34,6 +34,55 @@ class StatManager extends Service
         return $this->rollbackReturn(false);
     }
 
+    /* --------------------------------
+    |
+    |   CHARACTER
+    |
+    |  -----------------------------------
+    */
+
+    public function levelCharaStat($stat, $character)
+    {
+        DB::beginTransaction();
+
+        try {
+            
+            $stat->stat_level += 1;
+            $stat->save();
+
+            $headerStat = $stat->stat;
+            if($headerStat->multiplier || $headerStat->step)
+            {
+                // First if there's a step, add that
+                // This is so that the multiplier affects the new step total
+                // E.G if the current is 10 and step is 5, we do 15 * multiplier
+                // This can be changed if desired but generally I think this is fine
+                if($headerStat->step)
+                {
+                    $stat->count += $headerStat->step;
+                    $stat->save();
+                }
+                if($headerStat->multiplier)
+                {
+                    // This can be a decimal but if you want it to be whole you can use the round() function
+                    $total = $stat->count * $headerStat->multiplier;
+                    $stat->count = $total;
+                    $stat->save();
+                }
+            }
+
+            $character->level->current_points -= 1;
+            $character->level->save();
+
+            if(!$this->createLog($character->id, 'Character', $character->id, 'Character', $type, $data, 1)) throw new \Exception('Error creating log.');
+    
+            
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
     /**
      * Creates a log.
      */

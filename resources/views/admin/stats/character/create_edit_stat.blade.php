@@ -51,6 +51,12 @@
     </div>
 </div>
 
+<p>A max level can be applied if you want to cap the levels a character can gain</p>
+<div class="form-group">
+    {!! Form::label('Max level (optional)') !!} 
+    {!! Form::text('max_level', $stat->max_level, ['class' => 'form-control']) !!}
+</div>
+
 <div class="text-right">
     {!! Form::submit($stat->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
 </div>

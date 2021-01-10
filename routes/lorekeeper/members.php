@@ -93,6 +93,10 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() 
 
     Route::post('{slug}/approval', 'CharacterController@postCharacterApproval');
     Route::get('{slug}/approval', 'CharacterController@getCharacterApproval');
+    Route::get('{slug}/level-area', 'LevelController@getIndex');
+    Route::get('{slug}/stats-area', 'LevelController@getStatsIndex');
+    Route::post('{slug}/level-area/up', 'LevelController@postLevel');
+    Route::post('{slug}/stats-area/{id}', 'LevelController@postStat');
 });
 Route::group(['prefix' => 'myo', 'namespace' => 'Characters'], function() {
     Route::get('{id}/profile/edit', 'MyoController@getEditCharacterProfile');
@@ -105,6 +109,13 @@ Route::group(['prefix' => 'myo', 'namespace' => 'Characters'], function() {
     Route::post('{id}/approval', 'MyoController@postCharacterApproval');
     Route::get('{id}/approval', 'MyoController@getCharacterApproval');
 });
+
+Route::group(['prefix' => 'level', 'namespace' => 'Users'], function() {
+    Route::get('/', 'LevelController@getIndex');
+
+});
+
+
 
 /**************************************************************************************************
     Submissions
