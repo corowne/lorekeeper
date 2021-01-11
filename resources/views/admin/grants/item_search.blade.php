@@ -60,9 +60,9 @@
                                     if(isset($holdLocations['trade']))
                                         foreach($holdLocations['trade'] as $trade=>$quantity) array_push($held, '<a href="'.App\Models\Trade::find($trade)->url.'">Trade #'.App\Models\Trade::find($trade)->id.'</a>'.' ('.$quantity.')');
                                     if(isset($holdLocations['update']))
-                                        foreach($holdLocations['update'] as $update=>$quantity) array_push($held, '<a href="'.App\Models\Character\CharacterDesignUpdate::find($update)->url.'">Design Update #'.App\Models\Character\CharacterDesignUpdate::find($update)->id.'</a>'.' ('.$quantity.')');
+                                        foreach($holdLocations['update'] as $update=>$quantity) array_push($held, (Auth::user()->hasPower('manage_characters') ? '<a href="'.App\Models\Character\CharacterDesignUpdate::find($update)->url.'">Design Update #'.App\Models\Character\CharacterDesignUpdate::find($update)->id.'</a>' : 'Design Update #'.App\Models\Character\CharacterDesignUpdate::find($update)->id).' ('.$quantity.')');
                                     if(isset($holdLocations['submission']))
-                                        foreach($holdLocations['submission'] as $submission=>$quantity) array_push($held, '<a href="'.App\Models\Submission\Submission::find($submission)->viewUrl.'">Submission #'.App\Models\Submission\Submission::find($submission)->id.'</a>'.' ('.$quantity.')');
+                                        foreach($holdLocations['submission'] as $submission=>$quantity) array_push($held, (Auth::user()->hasPower('manage_submissions') ? '<a href="'.App\Models\Submission\Submission::find($submission)->viewUrl.'">Submission #'.App\Models\Submission\Submission::find($submission)->id.'</a>' : 'Submission #'.App\Models\Submission\Submission::find($submission)->id).' ('.$quantity.')');
                                     $heldString = implode(', ',$held);
                                 ?>
                                 <li>
