@@ -27,7 +27,7 @@
     <p>You currently have {{ $userItems->pluck('count')->sum()+$characterItems->pluck('count')->sum() }} of this item between your and your characters' inventories.</p>
 
     @if($userItems->count())
-        <h5>Your Inventory:</h5>
+        <h5>In Your Inventory:</h5>
         <ul>
             @foreach($userItems as $item)
                 <li>
@@ -75,7 +75,7 @@
         </ul>
     @endif
     @if($characterItems->count())
-        <h5>Character Inventories:</h5>
+        <h5>In Character Inventories:</h5>
         <ul>
             @foreach($characterItems as $item)
                 <li>
