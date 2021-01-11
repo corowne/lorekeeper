@@ -19,7 +19,6 @@
     </div>
 </div>
 {!! Form::close() !!}
-</div>
 
 @if($item)
     <h3>{{ $item->name }}</h3>
