@@ -288,6 +288,8 @@ class ItemService extends Service
         else $data['parsed_description'] = null;
 
         if(!isset($data['allow_transfer'])) $data['allow_transfer'] = 0;
+        if(!isset($data['is_released']) && Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields')) $data['is_released'] = 0;
+        else $data['is_released'] = 1;
 
         if(isset($data['remove_image']))
         {
