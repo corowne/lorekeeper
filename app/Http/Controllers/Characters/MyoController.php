@@ -205,7 +205,7 @@ class MyoController extends Controller
     {
         if(!Auth::check()) abort(404);
 
-        if($service->createTransfer($request->only(['recipient_id']), $this->character, Auth::user())) {
+        if($service->createTransfer($request->only(['recipient_id', 'user_reason']), $this->character, Auth::user())) {
             flash('Transfer created successfully.')->success();
         }
         else {
