@@ -266,7 +266,7 @@ class InventoryController extends Controller
      */
     public function getAccountSearch(Request $request)
     {
-        $item = Item::find($request->only(['item_id']))->first();
+        $item = Item::released()->find($request->only(['item_id']))->first();
         $user = Auth::user();
 
         if($item) {
@@ -285,7 +285,7 @@ class InventoryController extends Controller
 
         return view('home.account_search', [
             'item' => $item ? $item : null,
-            'items' => Item::orderBy('name')->pluck('name', 'id'),
+            'items' => Item::orderBy('name')->released()->pluck('name', 'id'),
             'userItems' => $item ? $userItems : null,
             'characterItems' => $item ? $characterItems : null,
             'characters' => $item ? $characters : null,
