@@ -30,7 +30,6 @@
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Category</th>
                 <th></th>
             </tr>
         </thead>
