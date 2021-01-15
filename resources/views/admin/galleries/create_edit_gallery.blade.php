@@ -43,27 +43,31 @@
 <div class="row">
     <div class="col-md">
         <div class="form-group">
-            {!! Form::label('submissions_open', 'Submissions Open', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Whether or not users can submit to this gallery. Admins can submit regardless of this setting. Does not override global setting. Leave this on for time-limited galleries; users wll not be able to submit outside of the start and end times regardless of this setting, but will not be able to submit at all if this is off.') !!}<br/>
             {!! Form::checkbox('submissions_open', 1, $gallery->submissions_open, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+            {!! Form::label('submissions_open', 'Submissions Open', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Whether or not users can submit to this gallery. Admins can submit regardless of this setting. Does not override global setting. Leave this on for time-limited galleries; users wll not be able to submit outside of the start and end times regardless of this setting, but will not be able to submit at all if this is off.') !!}
         </div>
     </div>
     @if(Settings::get('gallery_submissions_reward_currency'))
     <div class="col-md">
         <div class="form-group">
-            {!! Form::label('currency_enabled', 'Enable Currency Rewards', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Whether or not submissions to this gallery are eligible for rewards of group currency.') !!}<br/>
             {!! Form::checkbox('currency_enabled', 1, $gallery->currency_enabled, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+            {!! Form::label('currency_enabled', 'Enable Currency Rewards', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Whether or not submissions to this gallery are eligible for rewards of group currency.') !!}
         </div>
     </div>
     @endif
-    @if(Settings::get('gallery_submissions_require_approval'))
-        <div class="col-md">
-            <div class="form-group">
-                {!! Form::label('Votes Required') !!} {!! add_help('How many votes are required for submissions to this gallery to be accepted. Set to 0 to automatically accept submissions.') !!}
-                {!! Form::number('votes_required', $gallery->votes_required, ['class' => 'form-control']) !!}
-            </div>
+    <div class="col-md">
+        <div class="form-group">
+            {!! Form::checkbox('prompt_selection', 1, $gallery->prompt_selection, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+            {!! Form::label('prompt_selection', 'Prompt Selection', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Whether or not users can select a prompt to associate a gallery submission with when creating it. Gallery submissions will still auto-associate, prefix, etc. themselves with prompts if approved prompt submissions using the gallery submission exist.') !!}
         </div>
-    @endif
+    </div>
 </div>
+@if(Settings::get('gallery_submissions_require_approval'))
+    <div class="form-group">
+        {!! Form::label('Votes Required') !!} {!! add_help('How many votes are required for submissions to this gallery to be accepted. Set to 0 to automatically accept submissions.') !!}
+        {!! Form::number('votes_required', $gallery->votes_required, ['class' => 'form-control']) !!}
+    </div>
+@endif
 
 <div class="row">
     <div class="col-md">
