@@ -1,10 +1,11 @@
 <?php namespace App\Services\Stats;
 
+use Carbon\Carbon;
 use App\Services\Service;
 
 use DB;
 use Config;
-use Carbon\Carbon;
+use Notifications;
 
 use App\Models\Stats\Character\Stat;
 use App\Models\Item\Item;
@@ -18,7 +19,7 @@ class StatManager extends Service
         try {
             $points  = $next->stat_points;
 
-            if($this->createLog($user->id, 'User', $user->id, 'User', $type, $data, $points))
+            if($this->createTransferLog($user->id, 'User', $user->id, 'User', $type, $data, $points))
             {
                 $user->level->current_points += $points;
                 $user->level->save();
@@ -46,7 +47,8 @@ class StatManager extends Service
         DB::beginTransaction();
 
         try {
-            
+            // registering previous
+            $previous = $stat->stat_level;
             $stat->stat_level += 1;
             $stat->save();
 
@@ -64,7 +66,6 @@ class StatManager extends Service
                 }
                 if($headerStat->multiplier)
                 {
-                    // This can be a decimal but if you want it to be whole you can use the round() function
                     $total = $stat->count * $headerStat->multiplier;
                     $stat->count = $total;
                     $stat->save();
@@ -74,9 +75,12 @@ class StatManager extends Service
             $character->level->current_points -= 1;
             $character->level->save();
 
-            if(!$this->createLog($character->id, 'Character', $character->id, 'Character', $type, $data, 1)) throw new \Exception('Error creating log.');
-    
+            $type =  'Stat Level Up';
+            $data = 'Point used in stat level up.';
+            if(!$this->createTransferLog($character->id, 'Character', $character->id, 'Character', $type, $data, -1)) throw new \Exception('Error creating log.');
+            if(!$this->createLevelLog($character->id, $headerStat->id, 'Character', $previous, $stat->stat_level)) throw new \Exception('Error creating log.');
             
+            return $this->commitReturn(true);
         } catch(\Exception $e) { 
             $this->setError('error', $e->getMessage());
         }
@@ -86,7 +90,7 @@ class StatManager extends Service
     /**
      * Creates a log.
      */
-    public function createLog($senderId, $senderType, $recipientId, $recipientType, $type, $data, $quantity)
+    public function createTransferLog($senderId, $senderType, $recipientId, $recipientType, $type, $data, $quantity)
     {
         
         return DB::table('stat_transfer_log')->insert(
@@ -99,6 +103,25 @@ class StatManager extends Service
                 'log_type' => $type,
                 'data' => $data,
                 'quantity' => $quantity,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ]
+        );
+    }
+
+    /**
+     * Creates a log.
+     */
+    public function createLevelLog($recipientId, $stat, $recipientType, $previous, $new)
+    {
+        
+        return DB::table('stat_log')->insert(
+            [
+                'recipient_id' => $recipientId,
+                'stat_id' => $stat,
+                'leveller_type' => $recipientType,
+                'previous_level' => $previous,
+                'new_level' => $new,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ]

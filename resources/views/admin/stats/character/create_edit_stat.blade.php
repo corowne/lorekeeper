@@ -36,6 +36,7 @@
 </div>
 
 <p>Multiplier can apply to step (e.g (current + step) X Multiplier) or just to current. Leave step blank if you want it to apply just to current</p>
+<p>If a stat calculation is a decimal it will round to the nearest whole number.</p>
 <div class="row">
     <div class="col-md">
         <div class="form-group">

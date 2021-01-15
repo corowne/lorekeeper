@@ -115,14 +115,13 @@ class LevelController extends Controller
         ]);
     }
 
-    public function postStat($slug, $id)
+    public function postStat($slug, $id, StatManager $service)
     {
-        $service = new StatManager;
         $character = $this->character;
         $stat = CharacterStat::find($id);
-        if ($service->levelCharaStat($stat, $character)) {
+        if($service->levelCharaStat($stat, $character)) 
+        {
             flash('Characters stat levelled successfully!')->success();
-            return redirect()->back();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
