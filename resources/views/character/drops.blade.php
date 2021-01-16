@@ -65,7 +65,16 @@
             <div class="text-center">
                 <p>
                     This character has {{ $drops->drops_available }} batch{{ $drops->drops_available == 1 ? '' : 'es' }} of {{ isset($character->drops->dropData->data['drop_name']) ? strtolower($character->drops->dropData->data['drop_name']) : 'drop' }}s available.<br/>
-                    This character's next {{ isset($character->drops->dropData->data['drop_name']) ? strtolower($character->drops->dropData->data['drop_name']) : 'drop' }}(s) will be available to collect {!! pretty_date($drops->next_day) !!}.
+                    @if(isset($drops->dropData->cap))
+                        This character can manage a maximum of {{ $drops->dropData->cap }} batch{{ $drops->dropData->cap == 1 ? '' : 'es' }} of {{ isset($character->drops->dropData->data['drop_name']) ? strtolower($character->drops->dropData->data['drop_name']) : 'drop' }}s at once!
+                        @if($drops->drops_available >= $drops->dropData->cap)
+                             Until these {{ isset($character->drops->dropData->data['drop_name']) ? strtolower($character->drops->dropData->data['drop_name']) : 'drop' }}s are collected, this character won't produce any more.
+                        @else
+                             This character's next {{ isset($character->drops->dropData->data['drop_name']) ? strtolower($character->drops->dropData->data['drop_name']) : 'drop' }}(s) will be available to collect {!! pretty_date($drops->next_day) !!}.
+                        @endif
+                    @else
+                        This character's next {{ isset($character->drops->dropData->data['drop_name']) ? strtolower($character->drops->dropData->data['drop_name']) : 'drop' }}(s) will be available to collect {!! pretty_date($drops->next_day) !!}.
+                    @endif
                 </p>
             </div>
             @if(Auth::check() && Auth::user()->id == $character->user_id && $drops->drops_available > 0)

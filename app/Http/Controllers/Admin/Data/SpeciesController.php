@@ -322,7 +322,7 @@ class SpeciesController extends Controller
     {
         $id ? $request->validate(CharacterDropData::$updateRules) : $request->validate(CharacterDropData::$createRules);
         $data = $request->only([
-            'species_id', 'label', 'weight', 'drop_frequency', 'drop_interval', 'is_active', 'item_id', 'min_quantity', 'max_quantity', 'drop_name'
+            'species_id', 'label', 'weight', 'drop_frequency', 'drop_interval', 'is_active', 'item_id', 'min_quantity', 'max_quantity', 'drop_name', 'is_active', 'cap'
         ]);
         if($id && $service->updateCharacterDrop(CharacterDropData::find($id), $data, Auth::user())) {
             flash('Character drop updated successfully.')->success();

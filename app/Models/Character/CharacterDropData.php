@@ -23,7 +23,7 @@ class CharacterDropData extends Model
      * @var array
      */
     protected $fillable = [
-        'species_id', 'subtype_id', 'parameters', 'data'
+        'species_id', 'subtype_id', 'parameters', 'data', 'is_active'
     ];
 
     /**
@@ -127,13 +127,23 @@ class CharacterDropData extends Model
     }
 
     /**
-     * Get the parameter attribute as an associative array.
+     * Check if the drop data is active or not.
      *
      * @return array
      */
     public function getIsActiveAttribute()
     {
-        return $this->data['is_active'];
+        return $this->attributes['is_active'];
+    }
+
+    /**
+     * Retrieve the drop data's cap.
+     *
+     * @return array
+     */
+    public function getCapAttribute()
+    {
+        return isset($this->data['cap']) ? $this->data['cap'] : null;
     }
 
     /**********************************************************************************************

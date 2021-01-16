@@ -56,9 +56,13 @@ Select how often drops should occur.
     {!! Form::number('drop_frequency', $drop->id ? $drop->data['frequency']['frequency'] : null, ['class' => 'form-control mr-2', 'placeholder' => 'Drop Frequency']) !!}
     {!! Form::select('drop_interval', ['hour' => 'Hour', 'day' => 'Day', 'month' => 'Month', 'year' => 'Year'], $drop->id ? $drop->data['frequency']['interval'] : null, ['class' => 'form-control mr-2 default item-select', 'placeholder' => 'Drop Interval']) !!}
 </div>
+<div class="form-group">
+    {!! Form::label('cap', 'Drop Cap (Optional)', ['class' => 'form-label ml-3']) !!} {!! add_help('How many batches of drops are allowed to accumulate. Either set to 0 or unset to allow unlimited accumulation.') !!}
+    {!! Form::number('cap', $drop->id ? $drop->cap : null, ['class' => 'form-control mr-2', 'placeholder' => 'Drop Cap']) !!}
+</div>
 
 <div class="form-group">
-    {!! Form::checkbox('is_active', 1, $drop->id ? $drop->data['is_active'] : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+    {!! Form::checkbox('is_active', 1, $drop->id ? $drop->isActive : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
     {!! Form::label('is_active', 'Is Active', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Whether or not drops for this species are active. Impacts subtypes as well.') !!}
 </div>
 
