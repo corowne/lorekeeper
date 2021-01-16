@@ -19,11 +19,11 @@ class SpeciesService extends Service
     | Handles the creation and editing of character species.
     |
     */
-    
+
     /**
      * Creates a new species.
      *
-     * @param  array                  $data 
+     * @param  array                  $data
      * @param  \App\Models\User\User  $user
      * @return bool|\App\Models\Species\Species
      */
@@ -47,17 +47,17 @@ class SpeciesService extends Service
             if ($image) $this->handleImage($image, $species->speciesImagePath, $species->speciesImageFileName);
 
             return $this->commitReturn($species);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
-    
+
     /**
      * Updates a species.
      *
      * @param  \App\Models\Species\Species  $species
-     * @param  array                        $data 
+     * @param  array                        $data
      * @param  \App\Models\User\User        $user
      * @return bool|\App\Models\Species\Species
      */
@@ -71,7 +71,7 @@ class SpeciesService extends Service
 
             $data = $this->populateData($data, $species);
 
-            $image = null;            
+            $image = null;
             if(isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
                 $image = $data['image'];
@@ -83,7 +83,7 @@ class SpeciesService extends Service
             if ($species) $this->handleImage($image, $species->speciesImagePath, $species->speciesImageFileName);
 
             return $this->commitReturn($species);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -92,27 +92,27 @@ class SpeciesService extends Service
     /**
      * Processes user input for creating/updating a species.
      *
-     * @param  array                        $data 
+     * @param  array                        $data
      * @param  \App\Models\Species\Species  $species
      * @return array
      */
     private function populateData($data, $species = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
-        
+
         if(isset($data['remove_image']))
         {
-            if($species && $species->has_image && $data['remove_image']) 
-            { 
-                $data['has_image'] = 0; 
-                $this->deleteImage($species->speciesImagePath, $species->speciesImageFileName); 
+            if($species && $species->has_image && $data['remove_image'])
+            {
+                $data['has_image'] = 0;
+                $this->deleteImage($species->speciesImagePath, $species->speciesImageFileName);
             }
             unset($data['remove_image']);
         }
 
         return $data;
     }
-    
+
     /**
      * Deletes a species.
      *
@@ -126,12 +126,17 @@ class SpeciesService extends Service
         try {
             // Check first if characters with this species exists
             if(CharacterImage::where('species_id', $species->id)->exists()) throw new \Exception("A character image with this species exists. Please change its species first.");
-            
-            if($species->has_image) $this->deleteImage($species->speciesImagePath, $species->speciesImageFileName); 
+
+            if($species->has_image) $this->deleteImage($species->speciesImagePath, $species->speciesImageFileName);
+            // Delete character drops and drop data if they exist
+            if($species->dropData->exists()) {
+                $species->dropData->characterDrops()->delete();
+                $species->dropData->delete();
+            }
             $species->delete();
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -156,16 +161,16 @@ class SpeciesService extends Service
             }
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
-    
+
     /**
      * Creates a new subtype.
      *
-     * @param  array                  $data 
+     * @param  array                  $data
      * @param  \App\Models\User\User  $user
      * @return bool|\App\Models\Species\Subtype
      */
@@ -189,17 +194,17 @@ class SpeciesService extends Service
             if ($image) $this->handleImage($image, $subtype->subtypeImagePath, $subtype->subtypeImageFileName);
 
             return $this->commitReturn($subtype);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
-    
+
     /**
      * Updates a subtype.
      *
      * @param  \App\Models\Species\Subtype  $subtype
-     * @param  array                        $data 
+     * @param  array                        $data
      * @param  \App\Models\User\User        $user
      * @return bool|\App\Models\Species\Subtype
      */
@@ -210,7 +215,7 @@ class SpeciesService extends Service
         try {
             $data = $this->populateSubtypeData($data, $subtype);
 
-            $image = null;            
+            $image = null;
             if(isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
                 $image = $data['image'];
@@ -222,7 +227,7 @@ class SpeciesService extends Service
             if ($subtype) $this->handleImage($image, $subtype->subtypeImagePath, $subtype->subtypeImageFileName);
 
             return $this->commitReturn($subtype);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -231,27 +236,27 @@ class SpeciesService extends Service
     /**
      * Processes user input for creating/updating a subtype.
      *
-     * @param  array                        $data 
+     * @param  array                        $data
      * @param  \App\Models\Species\Subtype  $subtype
      * @return array
      */
     private function populateSubtypeData($data, $subtype = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
-        
+
         if(isset($data['remove_image']))
         {
-            if($subtype && $subtype->has_image && $data['remove_image']) 
-            { 
-                $data['has_image'] = 0; 
-                $this->deleteImage($subtype->subtypeImagePath, $subtype->subtypeImageFileName); 
+            if($subtype && $subtype->has_image && $data['remove_image'])
+            {
+                $data['has_image'] = 0;
+                $this->deleteImage($subtype->subtypeImagePath, $subtype->subtypeImageFileName);
             }
             unset($data['remove_image']);
         }
 
         return $data;
     }
-    
+
     /**
      * Deletes a subtype.
      *
@@ -265,12 +270,12 @@ class SpeciesService extends Service
         try {
             // Check first if characters with this subtype exists
             if(CharacterImage::where('subtype_id', $subtype->id)->exists()) throw new \Exception("A character image with this subtype exists. Please change or remove its subtype first.");
-            
-            if($subtype->has_image) $this->deleteImage($subtype->subtypeImagePath, $subtype->subtypeImageFileName); 
+
+            if($subtype->has_image) $this->deleteImage($subtype->subtypeImagePath, $subtype->subtypeImageFileName);
             $subtype->delete();
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -295,7 +300,7 @@ class SpeciesService extends Service
             }
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);

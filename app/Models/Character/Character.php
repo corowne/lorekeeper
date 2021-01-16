@@ -196,12 +196,12 @@ class Character extends Model
     /**
      * Get the character's associated gallery submissions.
      */
-    public function gallerySubmissions() 
+    public function gallerySubmissions()
     {
         return $this->hasMany('App\Models\Gallery\GalleryCharacter', 'character_id');
     }
-    
-    /**     
+
+    /**
      * Get the character's items.
      */
     public function items()
@@ -212,9 +212,14 @@ class Character extends Model
     /**
      * Get the character's character drop data.
      */
-    public function drops() 
+    public function drops()
     {
         if(!CharacterDrop::where('character_id', $this->id)->first()) {
+            $drop = new CharacterDrop;
+            $drop->createDrop($this->id);
+        }
+        elseif(!CharacterDrop::where('character_id', $this->id)->where('drop_id', $this->image->species->dropData->id)->first()) {
+            CharacterDrop::where('character_id', $this->id)->delete;
             $drop = new CharacterDrop;
             $drop->createDrop($this->id);
         }
