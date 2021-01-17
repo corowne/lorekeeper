@@ -427,7 +427,7 @@ class SubmissionManager extends Service
                         $quantity = $submission->prompt->user_exp;
                             if($data['bonus_exp'])
                             {
-                                $quantity += $data['bonus_exp'];
+                                $quantity += $data['bonus_user_exp'];
                             }
                         if(!$levelLog->creditExp(null, $levelUser, $promptLogType, $levelData, $quantity)) throw new \Exception('Could not grant user exp');
                     }
@@ -436,9 +436,9 @@ class SubmissionManager extends Service
                         $quantity = $submission->prompt->user_points;
                             if($data['bonus_points'])
                             {
-                                $quantity += $data['bonus_points'];
+                                $quantity += $data['bonus_user_points'];
                             }
-                        if(!$statLog->creditStat(null, $levelUser, $promptLogType, $levelData, $submission->prompt->user_points)) throw new \Exception('Could not grant user exp');
+                        if(!$statLog->creditStat(null, $levelUser, $promptLogType, $levelData, $submission->prompt->user_points)) throw new \Exception('Could not grant user points');
                     }
                 }
                 // character
@@ -467,7 +467,7 @@ class SubmissionManager extends Service
                             {
                                 $quantity += $data['bonus_points'];
                             }
-                            if(!$statLog->creditStat(null, $levelUser, $promptLogType, $levelData, $quantity)) throw new \Exception('Could not grant character stat');
+                            if(!$statLog->creditStat(null, $levelUser, $promptLogType, $levelData, $quantity)) throw new \Exception('Could not grant character points');
                         }
                     }
                 }

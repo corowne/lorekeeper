@@ -86,6 +86,21 @@
                         @endif
                     </div>
                 </div>
+                <div class="alert alert-warning">Only input values here if the user is supposed to get more than the amount listed above.</div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                {!! Form::label('bonus_user_exp', 'Bonus User Exp Reward', ['class' => 'form-control-label ml-3']) !!}
+                                {!! Form::number('bonus_user_exp', null, ['class' => 'form-control ml-1',]) !!}
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                {!! Form::label('bonus_user_points', 'Bonus User Stat Point Reward', ['class' => 'form-control-label ml-3']) !!}
+                                {!! Form::number('bonus_user_points', null, ['class' => 'form-control mr-1',]) !!}
+                            </div>
+                        </div>
+                    </div>
             </div>
         </div>
     </div>
@@ -141,13 +156,13 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    {!! Form::label('bonus_exp', 'Bonus Exp Reward', ['class' => 'form-control-label ml-3']) !!}
+                    {!! Form::label('bonus_exp', 'Bonus Character Exp Reward', ['class' => 'form-control-label ml-3']) !!}
                     {!! Form::number('bonus_exp', null, ['class' => 'form-control',]) !!}
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    {!! Form::label('bonus_points', 'Bonus Stat Point Reward', ['class' => 'form-control-label ml-3']) !!}
+                    {!! Form::label('bonus_points', 'Bonus Character Stat Point Reward', ['class' => 'form-control-label ml-3']) !!}
                     {!! Form::number('bonus_points', null, ['class' => 'form-control',]) !!}
                 </div>
             </div>

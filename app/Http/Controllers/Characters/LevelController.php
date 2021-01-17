@@ -124,7 +124,24 @@ class LevelController extends Controller
     {
         $character = $this->character;
         $stat = CharacterStat::find($id);
-        if($service->levelCharaStat($stat, $character)) 
+        if($service->levelCharaStat($stat, $character, false)) 
+        {
+            flash('Characters stat levelled successfully!')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+    
+    /*
+    *  Admin Character stat level up
+    */
+    public function postAdminStat($slug, $id, StatManager $service)
+    {
+        $character = $this->character;
+        $stat = CharacterStat::find($id);
+        if($service->levelCharaStat($stat, $character, true)) 
         {
             flash('Characters stat levelled successfully!')->success();
         }
@@ -139,7 +156,7 @@ class LevelController extends Controller
     */
     public function postEditStat($slug, $id, StatManager $service, Request $request)
     {
-        $quantity = $request->get('quantity');
+        $quantity = $request->get('count');
         $character = $this->character;
         $stat = CharacterStat::find($id);
         if($service->editCharaStat($stat, $character, $quantity)) 

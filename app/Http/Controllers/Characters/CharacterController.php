@@ -234,6 +234,7 @@ class CharacterController extends Controller
             'exps' => $this->character->getExpLogs(),
             'levels' => $this->character->getLevelLogs(),
             'stats' => $this->character->getStatLogs(),
+            'counts' => $this->character->getCountLogs(),
         ]);
     }
     

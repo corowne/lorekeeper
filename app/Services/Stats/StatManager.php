@@ -3,6 +3,7 @@
 use Carbon\Carbon;
 use App\Services\Service;
 
+use Auth;
 use DB;
 use Config;
 use Notifications;
@@ -12,6 +13,7 @@ use App\Models\Item\Item;
 
 use App\Models\User\User;
 use App\Models\Character\Character;
+use App\Models\Stats\Character\CharacterStat;
 use App\Models\Stats\Character\CharaLevels;
 use App\Models\Stats\User\UserLevel;
 
@@ -51,7 +53,7 @@ class StatManager extends Service
     *
     *   Level the stat
     */
-    public function levelCharaStat($stat, $character)
+    public function levelCharaStat($stat, $character, $isStaff = false)
     {
         DB::beginTransaction();
 
@@ -80,9 +82,12 @@ class StatManager extends Service
                     $stat->save();
                 }
             }
-
-            $character->level->current_points -= 1;
-            $character->level->save();
+            if(!$isStaff)
+            {
+                if($character->level->current_points < 1) throw new \Exception('You do not have enough stat points to level');
+                $character->level->current_points -= 1;
+                $character->level->save();
+            }
 
             $type =  'Stat Level Up';
             $data = 'Point used in stat level up.';
@@ -125,42 +130,19 @@ class StatManager extends Service
     */
     public function editCharaStat($stat, $character, $quantity)
     {
-        //// FINISH
         DB::beginTransaction();
 
         try {
-            // registering previous
-            $previous = $stat->stat_level;
-            $stat->stat_level += 1;
+            $sender = Auth::user();
+            if(!$sender->isStaff) throw new \Exception('You are not staff.');
+
+            $stat->current_count += $quantity;
             $stat->save();
 
-            $headerStat = $stat->stat;
-            if($headerStat->multiplier || $headerStat->step)
-            {
-                // First if there's a step, add that
-                // This is so that the multiplier affects the new step total
-                // E.G if the current is 10 and step is 5, we do 15 * multiplier
-                // This can be changed if desired but generally I think this is fine
-                if($headerStat->step)
-                {
-                    $stat->count += $headerStat->step;
-                    $stat->save();
-                }
-                if($headerStat->multiplier)
-                {
-                    $total = $stat->count * $headerStat->multiplier;
-                    $stat->count = $total;
-                    $stat->save();
-                }
-            }
-
-            $character->level->current_points -= 1;
-            $character->level->save();
-
-            $type =  'Staff Grant';
-            $data = 'Editted in Staff ';
-            if(!$this->createTransferLog($character->id, 'Character', $character->id, 'Character', $type, $data, -1)) throw new \Exception('Error creating log.');
-            if(!$this->createLevelLog($character->id, $headerStat->id, 'Character', $previous, $stat->stat_level)) throw new \Exception('Error creating log.');
+            $type =  'Staff Edit';
+            $data = 'Editted by staff';
+            
+            if(!$this->createCountLog($sender->id, $sender->logtype, $character, $type, $data, $quantity)) throw new \Exception('Error creating log.');
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
@@ -247,6 +229,27 @@ class StatManager extends Service
                 'leveller_type' => $recipientType,
                 'previous_level' => $previous,
                 'new_level' => $new,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ]
+        );
+    }
+
+    /**
+     * Creates a log.
+     */
+    public function createCountLog($senderId, $senderType, $character, $type, $data, $quantity)
+    {
+        
+        return DB::table('count_log')->insert(
+            [
+                'sender_id' => $senderId,
+                'sender_type' => $senderType,
+                'character_id' => $character->id,
+                'log' => $type . ($data ? ' (' . $data . ')' : ''),
+                'log_type' => $type,
+                'data' => $data,
+                'quantity' => $quantity,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ]

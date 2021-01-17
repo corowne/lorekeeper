@@ -27,6 +27,7 @@ use App\Models\Item\ItemLog;
 use App\Models\Stats\ExpLog;
 use App\Models\Stats\StatTransferLog;
 use App\Models\Stats\LevelLog;
+use App\Models\Stats\CountLog;
 
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
@@ -481,6 +482,24 @@ class Character extends Model
         $character = $this;
         $query = LevelLog::where(function($query) use ($character) {
             $query->with('recipient')->where('leveller_type', 'Character')->where('recipient_id', $character->id);
+        })->orderBy('id', 'DESC');
+        if($limit) return $query->take($limit)->get();
+        else return $query->paginate(30);
+    }
+
+    /**
+     * Get the character's stat count logs
+     *
+     * @param  int  $limit
+     * @return \Illuminate\Support\Collection|\Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getCountLogs($limit = 10)
+    {
+        $character = $this;
+        $query = CountLog::where(function($query) use ($character) {
+            $query->with('sender')->where('sender_type', 'Character')->where('sender_id', $character->id)->whereNotIn('log_type', ['Staff Grant', 'Prompt Rewards', 'Claim Rewards']);
+        })->orWhere(function($query) use ($character) {
+            $query->where('character_id', $character->id)->where('log_type', '!=', 'Staff Removal');
         })->orderBy('id', 'DESC');
         if($limit) return $query->take($limit)->get();
         else return $query->paginate(30);

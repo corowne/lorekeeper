@@ -73,4 +73,23 @@
     <a href="{{ url($character->url.'/level-logs') }}">View all...</a>
 </div>
 
+<h3>Latest Current Count Activity</h3>
+<table class="table table-sm">
+    <thead>
+        <th>Sender</th>
+        <th>Recipient</th>
+        <th>Quantity</th>
+        <th>Log</th>
+        <th>Date</th>
+   </thead>
+    <tbody>
+        @foreach($counts as $count)
+            @include('character.stats._count_log_row', ['exp' => $count, 'owner' => $character])
+        @endforeach
+    </tbody>
+</table>
+<div class="text-right">
+    <a href="{{ url($character->url.'/count-logs') }}">View all...</a>
+</div>
+
 @endsection
