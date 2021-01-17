@@ -74,7 +74,7 @@ class RecipeManager extends Service
             // Credit rewards
             $logType = 'Crafting Reward';
             $craftingData = [
-                'data' => 'Received rewards from '. $recipe->displayName .' recipe. (<a href="'. $recipe->url .'">View Recipe</a>)'
+                'data' => 'Received rewards from '. $recipe->displayName .' recipe'
             ];
             
             if(!fillUserAssets($recipe->rewardItems, null, $user, $logType, $craftingData)) throw new \Exception("Failed to distribute rewards to user.");
@@ -135,33 +135,5 @@ class RecipeManager extends Service
             if($quantity_left > 0) return null;
         }
         return $plucked;
-    }
-
-    /**
-     * Creates an recipe log.
-     *
-     * @param  int     $senderId
-     * @param  string  $senderType
-     * @param  int     $recipientId
-     * @param  string  $recipientType
-     * @param  int     $userRecipeId
-     * @param  string  $type 
-     * @param  string  $data
-     * @param  int     $recipeId
-     * @param  int     $quantity
-     * @return  int
-     */
-    public function createLog($senderId, $recipientId, $characterId, $recipeId)
-    {
-        return DB::table('user_recipes_log')->insert(
-            [
-                'sender_id' => $senderId,
-                'recipient_id' => $recipientId,
-                'character_id' => $characterId,
-                'recipe_id' => $recipeId,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ]
-        );
     }
 }

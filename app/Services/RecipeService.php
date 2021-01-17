@@ -1,5 +1,6 @@
 <?php namespace App\Services;
 
+use Carbon\Carbon;
 use App\Services\Service;
 
 use DB;
@@ -275,7 +276,7 @@ class RecipeService extends Service
 
             foreach($users as $user) {
                 foreach($recipes as $recipe) {   
-                    if($this->creditRecipe($staff, $user, 'Staff Grant', array_only($data, ['data']), $recipe))
+                    if($this->creditRecipe($staff, $user, null, 'Staff Grant', array_only($data, ['data']), $recipe))
                     {
                         Notifications::create('RECIPE_GRANT', $user, [
                             'recipe_name' => $recipe->name,
@@ -295,28 +296,31 @@ class RecipeService extends Service
         }
         return $this->rollbackReturn(false);
     }
-
-
     
     /**
      * Credits recipe to a user or character.
      *
-     * @param  \App\Models\User\User|\App\Models\Character\Character  $sender
-     * @param  \App\Models\User\User|\App\Models\Character\Character  $recipient
-     * @param  string                                                 $type 
-     * @param  string                                                 $data
-     * @param  \App\Models\Recipe\Recipe                              $recipe
-     * @param  int                                                    $quantity
+     * @param  \App\Models\User\User                        $sender
+     * @param  \App\Models\User\User                        $recipient
+     * @param  \App\Models\Character\Character              $character
+     * @param  string                                       $type 
+     * @param  string                                       $data
+     * @param  \App\Models\Recipe\Recipe                    $recipe
+     * @param  int                                          $quantity
      * @return  bool
      */
-    public function creditRecipe($sender, $recipient, $type, $data, $recipe)
+    public function creditRecipe($sender, $recipient, $character, $type, $data, $recipe)
     {
         DB::beginTransaction();
 
         try {
             if(is_numeric($recipe)) $recipe = Recipe::find($recipe);
             
-            if($user->recipes->contains($recipe)) throw new \Exception($user->name." already has the recipe ".$recipe->displayName);
+            // if($recipient->recipes->contains($recipe)) throw new \Exception($recipient->name." already has the recipe ".$recipe->displayName);
+            if($recipient->recipes->contains($recipe)) {
+                flash($recipient->name." already has the recipe ".$recipe->displayName, 'warning');
+                return $this->commitReturn(true);
+            }
             
             $record = UserRecipe::where('user_id', $recipient->id)->where('recipe_id', $recipe->id)->first();
             if($record) {
@@ -327,9 +331,8 @@ class RecipeService extends Service
                 $record = UserRecipe::create(['user_id' => $recipient->id, 'recipe_id' => $recipe->id]);
             }
             
-            // if($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, 
-            // $recipient ? $recipient->id : null, $recipient ? $recipient->logType : null, 
-            // $type, $data, $recipe->id, $quantity)) throw new \Exception("Failed to create log.");
+            if($type && !$this->createLog($sender ? $sender->id : null, $recipient ? $recipient->id : null,
+            $character ? $character->id : null, $type, $data['data'], $recipe->id)) throw new \Exception("Failed to create log.");
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
@@ -337,154 +340,34 @@ class RecipeService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
-    /**********************************************************************************************
-     
-        RECIPE CATEGORIES
 
-    **********************************************************************************************/
-
-    // /**
-    //  * Create a category.
-    //  *
-    //  * @param  array                 $data
-    //  * @param  \App\Models\User\User $user
-    //  * @return \App\Models\Recipe\RecipeCategory|bool
-    //  */
-    // public function createRecipeCategory($data, $user)
-    // {
-    //     DB::beginTransaction();
-
-    //     try {
-
-    //         $data = $this->populateCategoryData($data);
-
-    //         $image = null;
-    //         if(isset($data['image']) && $data['image']) {
-    //             $data['has_image'] = 1;
-    //             $image = $data['image'];
-    //             unset($data['image']);
-    //         }
-    //         else $data['has_image'] = 0;
-
-    //         $category = RecipeCategory::create($data);
-
-    //         if ($image) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
-
-    //         return $this->commitReturn($category);
-    //     } catch(\Exception $e) { 
-    //         $this->setError('error', $e->getMessage());
-    //     }
-    //     return $this->rollbackReturn(false);
-    // }
-
-    // /**
-    //  * Update a category.
-    //  *
-    //  * @param  \App\Models\Recipe\RecipeCategory  $category
-    //  * @param  array                          $data
-    //  * @param  \App\Models\User\User          $user
-    //  * @return \App\Models\Recipe\RecipeCategory|bool
-    //  */
-    // public function updateRecipeCategory($category, $data, $user)
-    // {
-    //     DB::beginTransaction();
-
-    //     try {
-    //         // More specific validation
-    //         if(RecipeCategory::where('name', $data['name'])->where('id', '!=', $category->id)->exists()) throw new \Exception("The name has already been taken.");
-
-    //         $data = $this->populateCategoryData($data, $category);
-
-    //         $image = null;            
-    //         if(isset($data['image']) && $data['image']) {
-    //             $data['has_image'] = 1;
-    //             $image = $data['image'];
-    //             unset($data['image']);
-    //         }
-
-    //         $category->update($data);
-
-    //         if ($category) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
-
-    //         return $this->commitReturn($category);
-    //     } catch(\Exception $e) { 
-    //         $this->setError('error', $e->getMessage());
-    //     }
-    //     return $this->rollbackReturn(false);
-    // }
-
-    // /**
-    //  * Handle category data.
-    //  *
-    //  * @param  array                               $data
-    //  * @param  \App\Models\Recipe\RecipeCategory|null  $category
-    //  * @return array
-    //  */
-    // private function populateCategoryData($data, $category = null)
-    // {
-    //     if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
-        
-    //     if(isset($data['remove_image']))
-    //     {
-    //         if($category && $category->has_image && $data['remove_image']) 
-    //         { 
-    //             $data['has_image'] = 0; 
-    //             $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
-    //         }
-    //         unset($data['remove_image']);
-    //     }
-
-    //     return $data;
-    // }
-
-    // /**
-    //  * Delete a category.
-    //  *
-    //  * @param  \App\Models\Recipe\RecipeCategory  $category
-    //  * @return bool
-    //  */
-    // public function deleteRecipeCategory($category)
-    // {
-    //     DB::beginTransaction();
-
-    //     try {
-    //         // Check first if the category is currently in use
-    //         if(Recipe::where('recipe_category_id', $category->id)->exists()) throw new \Exception("An recipe with this category exists. Please change its category first.");
-            
-    //         if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
-    //         $category->delete();
-
-    //         return $this->commitReturn(true);
-    //     } catch(\Exception $e) { 
-    //         $this->setError('error', $e->getMessage());
-    //     }
-    //     return $this->rollbackReturn(false);
-    // }
-
-    // /**
-    //  * Sorts category order.
-    //  *
-    //  * @param  array  $data
-    //  * @return bool
-    //  */
-    // public function sortRecipeCategory($data)
-    // {
-    //     DB::beginTransaction();
-
-    //     try {
-    //         // explode the sort array and reverse it since the order is inverted
-    //         $sort = array_reverse(explode(',', $data));
-
-    //         foreach($sort as $key => $s) {
-    //             RecipeCategory::where('id', $s)->update(['sort' => $key]);
-    //         }
-
-    //         return $this->commitReturn(true);
-    //     } catch(\Exception $e) { 
-    //         $this->setError('error', $e->getMessage());
-    //     }
-    //     return $this->rollbackReturn(false);
-    // }
-    
+    /**
+     * Creates an recipe log.
+     *
+     * @param  int     $senderId
+     * @param  string  $senderType
+     * @param  int     $recipientId
+     * @param  string  $recipientType
+     * @param  int     $userRecipeId
+     * @param  string  $type 
+     * @param  string  $data
+     * @param  int     $recipeId
+     * @return  int
+     */
+    public function createLog($senderId, $recipientId, $characterId, $type, $data, $recipeId)
+    {
+        return DB::table('user_recipes_log')->insert(
+            [
+                'sender_id' => $senderId,
+                'recipient_id' => $recipientId,
+                'character_id' => $characterId,
+                'recipe_id' => $recipeId,
+                'log' => $type . ($data ? ' (' . $data . ')' : ''),
+                'log_type' => $type,
+                'data' => $data, // this should be just a string
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ]
+        );
+    }
 }

@@ -59,7 +59,7 @@
 
                     @if(!$recipe->needs_unlocking || (Auth::check() && Auth::user()->hasRecipe($recipe->id)))
                         <div class="text-center">
-                            <h5><a href="{{ url('crafting/recipebook') }}" class="btn btn-primary">
+                            <h5><a href="{{ url('crafting') }}" class="btn btn-primary">
                                 Craft this from your Recipe Book!
                             </a></h5>
                         </div>

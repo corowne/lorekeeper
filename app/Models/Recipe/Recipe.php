@@ -110,6 +110,18 @@ class Recipe extends Model
         return $query->orderBy('id');
     }
 
+
+    /**
+     * Scope a query to only show recipes that need to be unlocked.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeNeedsUnlocking($query)
+    {
+        return $query->where('needs_unlocking',true);
+    }
+
     /**********************************************************************************************
     
         ACCESSORS

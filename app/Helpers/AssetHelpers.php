@@ -275,9 +275,9 @@ function fillUserAssets($assets, $sender, $recipient, $logType, $data)
         }
         if($key == 'recipes' && count($contents))
         {
-            $service = new \App\Services\RecipeManager;
+            $service = new \App\Services\RecipeService;
             foreach($contents as $asset)
-                if(!$service->creditRecipe($sender, $recipient, $logType, $data, $asset['asset'])) return false;
+                if(!$service->creditRecipe($sender, $recipient, null, $logType, $data, $asset['asset'])) return false;
         }
     }
     return $assets;
