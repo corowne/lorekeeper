@@ -414,6 +414,12 @@ class SubmissionManager extends Service
                 $levelLog = new ExperienceManager;
                 $statLog = new StatManager;
                 $levelData = 'Received rewards for '.($submission->prompt_id ? 'submission' : 'claim').' (<a href="'.$submission->viewUrl.'">#'.$submission->id.'</a>)';
+                
+                // to be encoded
+                $user_exp = null;
+                $user_points = null;
+                $character_exp = null;
+                $character_points = null;
                 // user
                 if($submission->prompt->user_exp || $submission->prompt->user_points)
                 {
@@ -421,23 +427,27 @@ class SubmissionManager extends Service
                     $levelUser = $submission->user;
                     if(!$level) throw new \Exception('This user does not have a level log.');
 
-
+                    // exp
                     if($submission->prompt->user_exp)
                     {
                         $quantity = $submission->prompt->user_exp;
-                            if($data['bonus_exp'])
+                            if($data['bonus_user_exp'])
                             {
                                 $quantity += $data['bonus_user_exp'];
                             }
+                        
+                        $user_exp += $quantity;
                         if(!$levelLog->creditExp(null, $levelUser, $promptLogType, $levelData, $quantity)) throw new \Exception('Could not grant user exp');
                     }
+                    //points
                     if($submission->prompt->user_points)
                     {
                         $quantity = $submission->prompt->user_points;
-                            if($data['bonus_points'])
+                            if($data['bonus_user_points'])
                             {
                                 $quantity += $data['bonus_user_points'];
                             }
+                            $user_points += $quantity;
                         if(!$statLog->creditStat(null, $levelUser, $promptLogType, $levelData, $submission->prompt->user_points)) throw new \Exception('Could not grant user points');
                     }
                 }
@@ -448,7 +458,6 @@ class SubmissionManager extends Service
                     {
                         $level = $submission->focus->level;
                         $levelCharacter = $submission->focus;
-                        
                         if(!$level) throw new \Exception('This character does not have a level log.');
 
                         if($submission->prompt->chara_exp)
@@ -458,7 +467,8 @@ class SubmissionManager extends Service
                             {
                                 $quantity += $data['bonus_exp'];
                             }
-                            if(!$levelLog->creditExp(null, $levelUser, $promptLogType, $levelData, $quantity)) throw new \Exception('Could not grant character exp');
+                            $character_exp += $quantity;
+                            if(!$levelLog->creditExp(null, $levelCharacter, $promptLogType, $levelData, $quantity)) throw new \Exception('Could not grant character exp');
                         }
                         if($submission->prompt->chara_points)
                         {
@@ -467,10 +477,24 @@ class SubmissionManager extends Service
                             {
                                 $quantity += $data['bonus_points'];
                             }
-                            if(!$statLog->creditStat(null, $levelUser, $promptLogType, $levelData, $quantity)) throw new \Exception('Could not grant character points');
+                            $character_points += $quantity;
+                            if(!$statLog->creditStat(null, $levelCharacter, $promptLogType, $levelData, $quantity)) throw new \Exception('Could not grant character points');
                         }
                     }
                 }
+
+                $json[] = [
+                    'User_Bonus' => [
+                        'exp' => $user_exp,
+                        'points' => $user_points
+                    ],
+                    'Character_Bonus' => [
+                        'exp' => $character_exp,
+                        'points' => $character_points
+                    ],
+                ];
+
+                $bonus = json_encode($json);
             }
 
 
@@ -496,7 +520,8 @@ class SubmissionManager extends Service
                 'data' => json_encode([
                     'user' => $addonData,
                     'rewards' => getDataReadyAssets($rewards)
-                    ]) // list of rewards
+                    ]), // list of rewards
+                'bonus' => $bonus,
             ]);
 
             Notifications::create($submission->prompt_id ? 'SUBMISSION_APPROVED' : 'CLAIM_APPROVED', $submission->user, [

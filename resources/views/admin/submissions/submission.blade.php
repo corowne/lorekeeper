@@ -120,6 +120,9 @@
     @endif
 
         <h2>Characters</h2>
+        @if($submission->focus_chara_id && $submission->prompt->chara_exp || $submission->prompt->chara_points)
+            <div class="alert alert-warning">This prompt has character rewards but the user has not added a focus character. If this is a mistake, please decline.</div>
+        @endif
         @if($submission->focus_chara_id)
         <h5>Focus Character</h5>
         <div class="submission-character-row mb-2">

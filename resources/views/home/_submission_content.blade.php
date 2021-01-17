@@ -87,6 +87,30 @@
                 @endif
             </div>
         </div>
+        @if($submission->bonus)
+        <hr>
+        @php
+            $bonus = json_decode($submission->bonus, true);
+        @endphp
+        <div class="m-2">
+            <h4 class="m-2">Bonus Rewards</h4>
+            <hr>
+            <div class="row m-2">
+                <div class="col">
+                    <h5>User Rewards</h5>
+                    {{ $bonus[0]['User_Bonus']['exp'] ? $bonus[0]['User_Bonus']['exp'] : 'No bonus'}} user EXP
+                        <br>
+                    {{ $bonus[0]['User_Bonus']['points'] ? $bonus[0]['User_Bonus']['points'] : 'No bonus'}} user points
+                </div>
+                <div class="col">
+                    <h5>Character Rewards</h5>
+                    {{ $bonus[0]['Character_Bonus']['exp'] ? $bonus[0]['Character_Bonus']['exp'] : 'No bonus'}} character EXP
+                        <br>
+                    {{ $bonus[0]['Character_Bonus']['points'] ? $bonus[0]['Character_Bonus']['points'] : 'No bonus'}} character points
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
 @endif
 

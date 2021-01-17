@@ -24,6 +24,7 @@ class AddRewardStatPrompt extends Migration
 
         Schema::table('submissions', function (Blueprint $table) {
             $table->integer('focus_chara_id')->nullable()->default(null);
+            $table->string('bonus')->nullable()->default(null);
         });
 
         Schema::create('count_log', function (Blueprint $table) {
@@ -63,6 +64,7 @@ class AddRewardStatPrompt extends Migration
 
         Schema::table('submissions', function (Blueprint $table) {
             $table->dropColumn('focus_chara_id');
+            $table->dropColumn('bonus');
         });
 
         Schema::dropIfExists('count_log');
