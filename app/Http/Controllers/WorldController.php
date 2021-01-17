@@ -17,6 +17,7 @@ use App\Models\Character\CharacterCategory;
 use App\Models\Prompt\PromptCategory;
 use App\Models\Prompt\Prompt;
 use App\Models\Shop\Shop;
+use App\Models\Shop\ShopStock;
 use App\Models\User\User;
 
 class WorldController extends Controller
@@ -242,7 +243,7 @@ class WorldController extends Controller
      */
     public function getItems(Request $request)
     {
-        $query = Item::with('category');
+        $query = Item::with('category')->released();
         $data = $request->only(['item_category_id', 'name', 'sort']);
         if(isset($data['item_category_id']) && $data['item_category_id'] != 'none')
             $query->where('item_category_id', $data['item_category_id']);
@@ -290,7 +291,7 @@ class WorldController extends Controller
     public function getItem($id)
     {
         $categories = ItemCategory::orderBy('sort', 'DESC')->get();
-        $item = Item::where('id', $id)->first();
+        $item = Item::where('id', $id)->released()->first();
         if(!$item) abort(404);
 
         return view('world.item_page', [
