@@ -1,1 +1,1 @@
-{{ $reward->quantity }} @if(isset($reward->reward->image_url))<img class="small-icon" src="{{ $reward->reward->image_url }}">@endif<span>{!! $reward->reward->displayName !!}</span>
+{{ $reward['quantity'] }} @if(isset($reward['asset']->image_url))<img class="small-icon" src="{{ $reward['asset']->image_url }}">@endif<span>{!! $reward['asset']->displayName !!}</span>

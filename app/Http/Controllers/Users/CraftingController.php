@@ -17,7 +17,7 @@ use App\Models\User\UserItem;
 use App\Models\Currency\Currency;
 
 use App\Services\RecipeService;
-
+use App\Services\RecipeManager;
 class CraftingController extends Controller
 {
     /*
@@ -76,7 +76,7 @@ class CraftingController extends Controller
      * @param  integer  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCraftRecipe(RecipeService $service, $id)
+    public function getCraftRecipe(RecipeManager $service, $id)
     {
         $recipe = Recipe::find($id);
         
@@ -104,10 +104,11 @@ class CraftingController extends Controller
      * @param  integer  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function postCraftRecipe(Request $request, RecipeService $service, $id)
+    public function postCraftRecipe(Request $request, RecipeManager $service, $id)
     {
         $recipe = Recipe::find($id);
-
+        if(!$recipe) abort(404);
+        
         if($service->craftRecipe($request->only(['stack_id', 'stack_quantity']), $recipe, Auth::user())) {
             flash('Recipe crafted successfully.')->success();
         }

@@ -20,10 +20,12 @@
             </div>
             <div class="col-md-6">
                 <h5>Rewards</h5>
-                @foreach($recipe->rewards as $reward)
-                    <div class="alert alert-secondary">
-                        @include('home.crafting._recipe_reward_entry', ['reward' => $reward])
-                    </div>
+                @foreach($recipe->reward_items as $type)
+                    @foreach($type as $item)
+                        <div class="alert alert-secondary">
+                            @include('home.crafting._recipe_reward_entry', ['reward' => $item])
+                        </div>
+                    @endforeach
                 @endforeach
             </div>
         </div>

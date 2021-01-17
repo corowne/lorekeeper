@@ -268,6 +268,12 @@ function fillUserAssets($assets, $sender, $recipient, $logType, $data)
             foreach($contents as $asset)
                 if(!$service->moveCharacter($asset['asset'], $recipient, $data, $asset['quantity'], $logType)) return false;
         }
+        if($key == 'recipes' && count($contents))
+        {
+            $service = new \App\Services\RecipeManager;
+            foreach($contents as $asset)
+                if(!$service->creditRecipe($sender, $recipient, $logType, $data, $asset['asset'])) return false;
+        }
     }
     return $assets;
 }

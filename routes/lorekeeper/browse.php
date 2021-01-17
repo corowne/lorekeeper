@@ -109,6 +109,8 @@ Route::group(['prefix' => 'world'], function() {
     Route::get('trait-categories', 'WorldController@getFeatureCategories');
     Route::get('traits', 'WorldController@getFeatures');
     Route::get('character-categories', 'WorldController@getCharacterCategories');
+    Route::get('recipes', 'WorldController@getRecipes');
+    Route::get('recipes/{id}', 'WorldController@getRecipe');
 });
 
 Route::group(['prefix' => 'prompts'], function() {
@@ -170,3 +172,10 @@ Route::group(['prefix' => 'reports', 'namespace' => 'Users'], function() {
 });
 
 
+/**************************************************************************************************
+    Crafting
+**************************************************************************************************/
+Route::group(['prefix' => 'recipes', 'namespace' => 'Users'], function () {
+    Route::get('/', 'CraftingController@getRecipeIndex');
+    Route::get('view/{id}', 'CraftingController@getRecipe');
+});

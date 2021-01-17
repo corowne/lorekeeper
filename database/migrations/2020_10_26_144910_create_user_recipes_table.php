@@ -27,31 +27,19 @@ class CreateUserRecipesTable extends Migration
 
             $table->unsignedInteger('recipe_id'); // The ID of the recipe from the recipes table
 
+            $table->string('log', 500); // Actual log text
+            $table->string('log_type'); // Indicates how the recipe was received.
+            $table->string('data', 1024)->nullable(); // Includes information like staff notes, etc.
+
             // The sender_id, if granted by an admin, is the admin user's id.
             // Recipes shouldn't be user-user transferrable, so if it's null then it's implied that it's purchased.
-            // Recipes should always belong to a user, but they can be purchased using character currency, ergo character_id.
+            // Recipes should always belong to a user, but they can be purchased using character currency, ergo character_id
             $table->unsignedInteger('sender_id')->nullable(); 
-            $table->unsignedInteger('recipient_id'); 
+            $table->unsignedInteger('recipient_id')->nullable(); // Nullable in the case that a recipe has to be rescinded for whatever reason
             $table->unsignedInteger('character_id')->nullable(); 
             
             $table->timestamps();
         });
-
-        // Schema::create('user_crafting_log', function (Blueprint $table) {
-        //     $table->engine = 'InnoDB';
-        //     $table->increments('id');
-
-        //     $table->unsignedInteger('recipe_id'); // The ID of the recipe from the recipes table
-
-        //     // The sender_id, if granted by an admin, is the admin user's id.
-        //     // Recipes shouldn't be user-user transferrable, so if it's null then it's implied that it's purchased.
-        //     // Recipes should always belong to a user, but they can be purchased using character currency, ergo character_id.
-        //     $table->unsignedInteger('sender_id')->nullable(); 
-        //     $table->unsignedInteger('recipient_id'); 
-        //     $table->unsignedInteger('character_id')->nullable(); 
-            
-        //     $table->timestamps();
-        // });
     }
 
     /**
@@ -61,6 +49,7 @@ class CreateUserRecipesTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('user_crafting_log');
         Schema::dropIfExists('user_recipes_log');
         Schema::dropIfExists('user_recipes');
     }

@@ -61,6 +61,14 @@ class Recipe extends Model
     {
         return $this->hasMany('App\Models\Recipe\RecipeIngredient');
     }
+    
+    /**
+     * Get the users who have this recipe.
+     */
+    public function users()
+    {
+        return $this->belongsToMany('App\Models\User\User', 'user_recipes')->withPivot('id');
+    }
 
     /**********************************************************************************************
     
@@ -111,13 +119,13 @@ class Recipe extends Model
     /**
      * Gets the decoded output json
      *
-     * @return string
+     * @return array
      */
     public function getRewardsAttribute()
     {
         $rewards = [];
         if($this->output) {
-            $assets = parseAssetData(json_decode($this->output, true));
+            $assets = $this->getRewardItemsAttribute();
 
             foreach($assets as $type => $a)
             {
@@ -133,6 +141,26 @@ class Recipe extends Model
             }
         }
         return $rewards;
+    }
+
+    /**
+     * Interprets the json output and retrieves the corresponding items
+     *
+     * @return array
+     */
+    public function getRewardItemsAttribute()
+    {
+        return parseAssetData(json_decode($this->output, true));
+    }
+
+    /**
+     * Gets the URL of the individual recipe's page, by ID.
+     *
+     * @return string
+     */
+    public function getIdUrlAttribute()
+    {
+        return url('world/recipes/'.$this->id);
     }
 
     /**

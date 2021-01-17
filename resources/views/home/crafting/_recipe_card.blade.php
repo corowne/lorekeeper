@@ -23,13 +23,17 @@
             </div>
             <div class="col-md-6">
                 <h5>Rewards</h5>
-                @for($i = 0; $i < count($recipe->rewards) && $i < 3; ++$i)
-                    <?php $reward = $recipe->rewards[$i]?>
-                    <div class="alert alert-secondary">
-                        @include('home.crafting._recipe_reward_entry', ['reward' => $reward])
-                    </div>
-                @endfor
-                @if(count($recipe->rewards) > 3)
+                <?php $counter = 0; ?>
+                @foreach($recipe->reward_items as $type)
+                    @foreach($type as $item)
+                        @if($counter > 3) @break @endif
+                        <?php ++$counter; ?>
+                        <div class="alert alert-secondary">
+                            @include('home.crafting._recipe_reward_entry', ['reward' => $item])
+                        </div>
+                    @endforeach
+                @endforeach
+                @if($counter > 3)
                     <i class="fas fa-ellipsis-h mb-3"></i>
                 @endif
             </div>

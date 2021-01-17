@@ -22,6 +22,7 @@ use App\Models\Gallery\GallerySubmission;
 use App\Models\Gallery\GalleryCollaborator;
 use App\Models\Gallery\GalleryFavorite;
 use App\Traits\Commenter;
+use App\Models\Recipe\Recipe;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -518,5 +519,29 @@ class User extends Authenticatable implements MustVerifyEmail
     public function hasBookmarked($character)
     {
         return CharacterBookmark::where('user_id', $this->id)->where('character_id', $character->id)->first();
+    }
+
+    /** 
+     * Checks if the user has the named recipe
+     * 
+     * @return bool
+     */
+    public function hasRecipe($recipe_id)
+    {
+        return $this->recipes->contains(Recipe::find($recipe_id));
+    }
+
+    /** 
+     * Checks if the user has the named recipe's ingredients
+     * 
+     * @return bool
+     */
+    public function hasRecipeIngredients($recipe_id)
+    {
+        $this->recipes->contains(Recipe::find($recipe_id));
+
+
+
+        return true;
     }
 }
