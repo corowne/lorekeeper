@@ -57,14 +57,9 @@ class StatService extends Service
         DB::beginTransaction();
 
         try {
-            // NEED TO FINISH
             // Check first if the stat is currently owned or if some other site feature uses it
-            if(DB::table('user_items')->where([['item_id', '=', $item->id], ['count', '>', 0]])->exists()) throw new \Exception("At least one user currently owns this item. Please remove the item(s) before deleting it.");
-            if(DB::table('character_items')->where([['item_id', '=', $item->id], ['count', '>', 0]])->exists()) throw new \Exception("At least one character currently owns this item. Please remove the item(s) before deleting it.");
-            if(DB::table('loots')->where('rewardable_type', 'Item')->where('rewardable_id', $item->id)->exists()) throw new \Exception("A loot table currently distributes this item as a potential reward. Please remove the item before deleting it.");
-            if(DB::table('prompt_rewards')->where('rewardable_type', 'Item')->where('rewardable_id', $item->id)->exists()) throw new \Exception("A prompt currently distributes this item as a reward. Please remove the item before deleting it.");
-            if(DB::table('shop_stock')->where('item_id', $item->id)->exists()) throw new \Exception("A shop currently stocks this item. Please remove the item before deleting it.");
-            
+            if(DB::table('character_stats')->where('stat_id', $stat->id)->exists()) throw new \Exception("A character currently has this stat.");
+           
             $stat->delete();
 
             return $this->commitReturn(true);

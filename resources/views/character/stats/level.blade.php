@@ -28,7 +28,7 @@
    </thead>
     <tbody>
         @foreach($exps as $exp)
-            @include('character._exp_log_row', ['exp' => $exp, 'owner' => $character])
+            @include('character.stats._exp_log_row', ['exp' => $exp, 'owner' => $character])
         @endforeach
     </tbody>
 </table>
@@ -47,7 +47,7 @@
    </thead>
     <tbody>
         @foreach($stats as $stat)
-            @include('character._stat_log_row', ['exp' => $stat, 'owner' => $character])
+            @include('character.stats._stat_log_row', ['exp' => $stat, 'owner' => $character])
         @endforeach
     </tbody>
 </table>
@@ -65,7 +65,7 @@
    </thead>
     <tbody>
         @foreach($levels as $level)
-            @include('character._level_log_row', ['exp' => $level, 'owner' => $character])
+            @include('character.stats._level_log_row', ['exp' => $level, 'owner' => $character])
         @endforeach
     </tbody>
 </table>

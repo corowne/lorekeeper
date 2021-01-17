@@ -26,29 +26,59 @@
                     <p>No further details.</p>
                 @endif
             </div>
-            <h4>Rewards</h4>
-            @if(!count($prompt->rewards))
-                No rewards.
-            @else 
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th width="70%">Reward</th>
-                            <th width="30%">Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($prompt->rewards as $reward)
-                            <tr>
-                                <td>{!! $reward->reward->displayName !!}</td>
-                                <td>{{ $reward->quantity }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @endif
+            <div class="row">
+                <div class="col">
+                    <h4>Rewards</h4>
+                    @if(!count($prompt->rewards))
+                        No rewards.
+                    @else 
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th width="70%">Reward</th>
+                                    <th width="30%">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($prompt->rewards as $reward)
+                                    <tr>
+                                        <td>{!! $reward->reward->displayName !!}</td>
+                                        <td>{{ $reward->quantity }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
+                </div>
+                <div class="col">
+                    <h4>Stat & Level Rewards</h4>
+                    <div class="row">
+                        <div class="col">
+                            @if(!$prompt->user_exp && !$prompt->user_points)
+                            No user rewards.
+                            @else
+                            {{ $prompt->user_exp ? $prompt->user_exp : 0  }} user EXP
+                                <br>
+                            {{ $prompt->user_points ? $prompt->user_points : 0  }} user points
+                            @endif
+                        </div>
+                        <div class="col">
+                            @if(!$prompt->chara_exp && !$prompt->chara_points)
+                            No character rewards.
+                            @else
+                            {{ $prompt->chara_exp ? $prompt->chara_exp : 0  }} character EXP
+                                <br>
+                            {{ $prompt->chara_points ? $prompt->chara_points : 0  }} character points
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="text-right">
+        <div class="text-right mt-1">
+            @if($prompt->level_req)
+            <p class="text-danger">This prompt requires you to be at least level {{ $prompt->level_req }}</p>
+            @endif
             @if($prompt->end_at && $prompt->end_at->isPast())
                 <span class="text-secondary">This prompt has ended.</span>
             @elseif($prompt->start_at && $prompt->start_at->isFuture())

@@ -18,6 +18,8 @@ use App\Models\Stats\Character\Stat;
 use App\Services\Stats\StatManager;
 
 use App\Http\Controllers\Controller;
+use App\Services\Stats\ExperienceManager;
+use App\Services\Stats\LevelManager;
 
 class LevelController extends Controller
 {
@@ -115,6 +117,9 @@ class LevelController extends Controller
         ]);
     }
 
+    /*
+    *   Character stat level up
+    */
     public function postStat($slug, $id, StatManager $service)
     {
         $character = $this->character;
@@ -122,6 +127,83 @@ class LevelController extends Controller
         if($service->levelCharaStat($stat, $character)) 
         {
             flash('Characters stat levelled successfully!')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /*
+    *   Character stat current count edit
+    */
+    public function postEditStat($slug, $id, StatManager $service, Request $request)
+    {
+        $quantity = $request->get('quantity');
+        $character = $this->character;
+        $stat = CharacterStat::find($id);
+        if($service->editCharaStat($stat, $character, $quantity)) 
+        {
+            flash('Characters stat editted successfully!')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Grants exp to characters
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function postExpGrant(Request $request, ExperienceManager $service)
+    {
+        $character = $this->character;
+        if(!$character) abort(404);
+        $logType = 'Admin Grant';
+        $data = 'Admin Grant of '.$request->get('quantity').' exp';
+
+        if($service->creditExp(null, $character, $logType, $data, $request->get('quantity')))
+        {
+            flash('Character exp granted successfully!')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Grants stat points to characters
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function postStatGrant(Request $request, StatManager $service)
+    {
+        $character = $this->character;
+        if(!$character) abort(404);
+        $logType = 'Admin Grant';
+        $data = 'Admin Grant of '.$request->get('quantity').' stat points';
+
+        if($service->creditStat(null, $character, $logType, $data, $request->get('quantity')))
+        {
+            flash('Character stat point(s) granted successfully!')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    public function postLevel(LevelManager $service)
+    {
+        $character = $this->character;
+        if(!$character) abort(404);
+
+        if($service->characterLevel($character)) 
+        {
+            flash('Successfully levelled up!')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

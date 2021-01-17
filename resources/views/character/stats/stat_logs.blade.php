@@ -20,7 +20,7 @@
     </thead>
     <tbody>
         @foreach($logs as $log)
-            @include('character._stat_log_row', ['stat' => $log, 'owner' => $character])
+            @include('character.stats._stat_log_row', ['stat' => $log, 'owner' => $character])
         @endforeach
     </tbody>
 </table>

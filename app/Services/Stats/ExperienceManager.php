@@ -117,7 +117,6 @@ class ExperienceManager extends Service
      */
     public function createLog($senderId, $senderType, $recipientId, $recipientType, $type, $data, $quantity)
     {
-        
         return DB::table('exp_log')->insert(
             [
                 'sender_id' => $senderId,

@@ -21,6 +21,9 @@ use App\Models\Loot\LootTable;
 use App\Models\Raffle\Raffle;
 use App\Models\Prompt\Prompt;
 
+use App\Services\Stats\ExperienceManager;
+use App\Services\Stats\StatManager;
+
 class SubmissionManager extends Service
 {
     /*
@@ -102,7 +105,22 @@ class SubmissionManager extends Service
                     }
                 }
             }
+            if(!$isClaim) 
+            {
+                //level req
+                if($prompt->level_req)
+                {
+                    if($user->level->current_level < $prompt->level_req) throw new \Exception('You are not high enough level to enter this prompt');
+                }
+                // focus character
+                if(isset($data['focus_chara']))
+                {
+                    $focusCharacter = Character::where('slug', $data['focus_chara'])->first();
+                    if(!$focusCharacter) throw new \Exception('Invalid character code entered for focus character');
 
+                    $focusId = $focusCharacter->id;
+                }
+            }
             // Get a list of rewards, then create the submission itself
             $promptRewards = createAssetsArray();
             if(!$isClaim) 
@@ -115,6 +133,7 @@ class SubmissionManager extends Service
             $promptRewards = mergeAssetsArrays($promptRewards, $this->processRewards($data, false));
             $submission = Submission::create([
                 'user_id' => $user->id,
+                'focus_chara_id' => $focusId,
                 'url' => $data['url'],
                 'status' => 'Pending',
                 'comments' => $data['comments'],
@@ -386,6 +405,72 @@ class SubmissionManager extends Service
                     'data' => json_encode(getDataReadyAssets($assets))
                 ]);
             }
+
+            // stats & exp ---- currently prompt only
+            if($submission->prompt)
+            {
+                $levelLog = new ExperienceManager;
+                $statLog = new StatManager;
+                $levelData = 'Received rewards for '.($submission->prompt_id ? 'submission' : 'claim').' (<a href="'.$submission->viewUrl.'">#'.$submission->id.'</a>)';
+                // user
+                if($submission->prompt->user_exp || $submission->prompt->user_points)
+                {
+                    $level = $submission->user->level;
+                    $levelUser = $submission->user;
+                    if(!$level) throw new \Exception('This user does not have a level log.');
+
+
+                    if($submission->prompt->user_exp)
+                    {
+                        $quantity = $submission->prompt->user_exp;
+                            if($data['bonus_exp'])
+                            {
+                                $quantity += $data['bonus_exp'];
+                            }
+                        if(!$levelLog->creditExp(null, $levelUser, $promptLogType, $levelData, $quantity)) throw new \Exception('Could not grant user exp');
+                    }
+                    if($submission->prompt->user_points)
+                    {
+                        $quantity = $submission->prompt->user_points;
+                            if($data['bonus_points'])
+                            {
+                                $quantity += $data['bonus_points'];
+                            }
+                        if(!$statLog->creditStat(null, $levelUser, $promptLogType, $levelData, $submission->prompt->user_points)) throw new \Exception('Could not grant user exp');
+                    }
+                }
+                // character
+                if($submission->prompt->chara_exp || $submission->prompt->chara_points)
+                {
+                    if($submission->focus_chara_id)
+                    {
+                        $level = $submission->focus->level;
+                        $levelCharacter = $submission->focus;
+                        
+                        if(!$level) throw new \Exception('This character does not have a level log.');
+
+                        if($submission->prompt->chara_exp)
+                        {
+                            $quantity = $submission->prompt->chara_exp;
+                            if($data['bonus_exp'])
+                            {
+                                $quantity += $data['bonus_exp'];
+                            }
+                            if(!$levelLog->creditExp(null, $levelUser, $promptLogType, $levelData, $quantity)) throw new \Exception('Could not grant character exp');
+                        }
+                        if($submission->prompt->chara_points)
+                        {
+                            $quantity = $submission->prompt->chara_points;
+                            if($data['bonus_points'])
+                            {
+                                $quantity += $data['bonus_points'];
+                            }
+                            if(!$statLog->creditStat(null, $levelUser, $promptLogType, $levelData, $quantity)) throw new \Exception('Could not grant character stat');
+                        }
+                    }
+                }
+            }
+
 
             // Increment user submission count if it's a prompt
             if($submission->prompt_id) {

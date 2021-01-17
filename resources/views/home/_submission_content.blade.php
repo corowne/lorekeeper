@@ -62,7 +62,68 @@
     </tbody>
 </table>
 
+@if($submission->prompt_id)
+<h3>Stat & Level Rewards</h3>
+    <div class="card m-1">
+        <div class="row m-2">
+            <div class="col">
+                <h5>User Rewards</h5>
+                @if(!$submission->prompt->user_exp && !$submission->prompt->user_points)
+                No user rewards.
+                @else
+                {{ $submission->prompt->user_exp ? $submission->prompt->user_exp : 0  }} user EXP
+                    <br>
+                {{ $submission->prompt->user_points ? $submission->prompt->user_points : 0  }} user points
+                @endif
+            </div>
+            <div class="col">
+                <h5>Character Rewards</h5>
+                @if(!$submission->prompt->chara_exp && !$submission->prompt->chara_points)
+                No character rewards.
+                @else
+                {{ $submission->prompt->chara_exp ? $submission->prompt->chara_exp : 0  }} character EXP
+                    <br>
+                {{ $submission->prompt->chara_points ? $submission->prompt->chara_points : 0  }} character points
+                @endif
+            </div>
+        </div>
+    </div>
+@endif
+
 <h2>Characters</h2>
+@if($submission->focus_chara_id)
+    <h5>Focus Character</h5>
+    <div class="submission-character-row mb-2">
+        <div class="submission-character-thumbnail"><a href="{{ $submission->focus->url }}"><img src="{{ $submission->focus->image->thumbnailUrl }}" class="img-thumbnail" /></a></div>
+        @if($submission->prompt_id)
+        <div class="submission-character-info card ml-2">
+            <div class="card-body">
+                <div class="submission-character-info-content">
+                    <h3 class="mb-2 submission-character-info-header"><a href="{{ $submission->focus->url }}">{{ $submission->focus->fullName }}</a></h3>
+                    <div class="submission-character-info-body">
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr>
+                                <th>Reward</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ $submission->prompt->chara_exp ? $submission->prompt->chara_exp : 0 }} EXP
+                                <br>
+                                {{ $submission->prompt->chara_points ? $submission->prompt->chara_points : 0  }} Stat Point
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
+            @endif
+        </div>
+    </div>
+<hr>
+ @endif
 @foreach($submission->characters as $character)
     <div class="submission-character-row mb-2">
         <div class="submission-character-thumbnail"><a href="{{ $character->character->url }}"><img src="{{ $character->character->image->thumbnailUrl }}" class="img-thumbnail" /></a></div>

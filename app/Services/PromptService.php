@@ -202,7 +202,8 @@ class PromptService extends Service
             }
             else $data['has_image'] = 0;
 
-            $prompt = Prompt::create(array_only($data, ['prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active', 'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image']));
+            $prompt = Prompt::create(array_only($data, ['prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active', 'start_at', 'end_at',
+             'hide_before_start', 'hide_after_end', 'has_image', 'user_exp', 'user_points', 'chara_exp', 'chara_points', 'level_req']));
 
             if ($image) $this->handleImage($image, $prompt->imagePath, $prompt->imageFileName);
 
@@ -243,7 +244,8 @@ class PromptService extends Service
                 unset($data['image']);
             }
 
-            $prompt->update(array_only($data, ['prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active', 'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image']));
+            $prompt->update(array_only($data, ['prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active', 'start_at', 'end_at', 
+            'hide_before_start', 'hide_after_end', 'has_image', 'user_exp', 'user_points', 'chara_exp', 'chara_points', 'level_req']));
 
             if ($prompt) $this->handleImage($image, $prompt->imagePath, $prompt->imageFileName);
 
@@ -270,6 +272,7 @@ class PromptService extends Service
         if(!isset($data['hide_before_start'])) $data['hide_before_start'] = 0;
         if(!isset($data['hide_after_end'])) $data['hide_after_end'] = 0;
         if(!isset($data['is_active'])) $data['is_active'] = 0;
+        if(!isset($data['level_check'])) $data['level_req'] = null;
 
         if(isset($data['remove_image']))
         {

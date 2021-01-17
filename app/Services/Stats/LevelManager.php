@@ -66,6 +66,55 @@ class LevelManager extends Service
         return $this->rollbackReturn(false);
     }
 
+    public function characterLevel($character)
+    {        
+        DB::beginTransaction();
+
+        try {
+
+            $service = new ExperienceManager;
+
+            $level = $character->level;
+
+            // getting the next level
+            $check = $character->level->current_level + 1;
+            $next = Level::where('level', $check)->first();
+
+            // validation
+            if(!$next) throw new \Exception('You are at the max level!');
+            if($character->level->current_exp < $next->required_exp) throw new \Exception('You do not have enough exp to level up!');
+
+            if(!$service->debitExp($character, 'Level Up', 'Used EXP in level up.', $level, $next->exp_required))
+            {
+                throw new \Exception('Error debitting exp.');
+            }
+
+            // give stat points
+            $service = new StatManager;
+            if($next->stat_points != 0)
+            {
+                if(!$service->creditCharaStat($character, 'Level Up Reward', 'Rewards for levelling up.', $next))
+                {
+                    throw new \Exception('Error granting stat points.');
+                }
+            }
+
+            // create log
+            if($this->createlog($character, 'Character', $character->level->current_level, $next->level)) {
+                $level->current_level += 1;
+                $level->save();
+            }
+            else {
+                throw new \Exception('Could not create log :(');
+            }
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
     /**
      * Creates a log.
      */
