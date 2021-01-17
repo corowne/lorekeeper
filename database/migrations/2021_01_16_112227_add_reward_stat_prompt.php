@@ -21,6 +21,28 @@ class AddRewardStatPrompt extends Migration
             $table->string('chara_points')->nullable()->default(null);
             $table->integer('level_req')->unsigned()->nullable()->default(null);
         });
+
+        Schema::table('submissions', function (Blueprint $table) {
+            $table->integer('focus_chara_id')->nullable()->default(null);
+        });
+
+        Schema::create('count_log', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->increments('id');
+            $table->integer('quantity')->default(1);
+
+            $table->integer('sender_id')->unsigned()->nullable();
+            $table->integer('character_id')->unsigned()->nullable();
+            
+            $table->string('log'); // Actual log text
+            $table->string('log_type'); // Indicates what type of transaction the item was used in
+            $table->string('data', 1024)->nullable(); // Includes information like staff notes, etc.
+
+            $table->timestamps();
+
+            //Add sender and recipient type. Set default user to account for preexisting rows
+            $table->enum('sender_type', ['User', 'Character'])->nullable()->default('User');
+        });
     }
 
     /**
@@ -38,5 +60,11 @@ class AddRewardStatPrompt extends Migration
             $table->dropColumn('chara_points');
             $table->dropColumn('level_req');
         });
+
+        Schema::table('submissions', function (Blueprint $table) {
+            $table->dropColumn('focus_chara_id');
+        });
+
+        Schema::dropIfExists('count_log');
     }
 }
