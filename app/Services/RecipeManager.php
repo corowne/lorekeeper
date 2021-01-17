@@ -14,7 +14,10 @@ use App\Models\Recipe\Recipe;
 use App\Models\Recipe\RecipeIngredient;
 use App\Models\Recipe\RecipeReward;
 
+use App\Models\Currency\Currency;
+
 use App\Services\InventoryManager;
+use App\Services\CurrencyManager;
 
 class RecipeManager extends Service
 {
@@ -38,6 +41,14 @@ class RecipeManager extends Service
         DB::beginTransaction();
 
         try {
+            // Check for sufficient currencies
+            $user_currencies = $user->getCurrencies(true);
+            $currency_ingredients = $recipe->ingredients->where('ingredient_type', 'Currency');
+            foreach($currency_ingredients as $ingredient) {
+                $currency = $user_currencies->where('id', $ingredient->data[0])->first();
+                if($currency->quantity < $ingredient->quantity) throw new \Exception('Insufficient currency.');
+            }
+
             // Fetch the stacks from DB
             $stacks = UserItem::whereIn('id', $data['stack_id'])->get()->map(function($stack) use ($data) {
                 $stack->count = (int)$data['stack_quantity'][array_search($stack->id, $data['stack_id'])];
@@ -48,11 +59,16 @@ class RecipeManager extends Service
             $plucked = $this->pluckIngredients($stacks, $recipe);
             if(!$plucked) throw new \Exception('Insufficient ingredients selected.');
             
-            $service = new InventoryManager();
             // Debit the ingredients
+            $service = new InventoryManager();
             foreach($plucked as $id => $quantity) {
                 $stack = UserItem::find($id);
-                if(!$service->debitStack($user, 'Crafting', ['data' => 'Used in '.$recipe->name.' Recipe'], $stack, $quantity)) throw new Exception('Items could not be removed.');
+                if(!$service->debitStack($user, 'Crafting', ['data' => 'Used in '.$recipe->name.' Recipe'], $stack, $quantity)) throw new \Exception('Items could not be removed.');
+            }
+            // Debit the currency
+            $service = new CurrencyManager();
+            foreach($currency_ingredients as $ingredient) {
+                if(!$service->debitCurrency($user, null, 'Crafting', 'Used in '.$recipe->name.' Recipe', Currency::find($ingredient->data[0]), $ingredient->quantity)) throw new \Exception('Currency could not be debited.');
             }
 
             // Credit rewards
@@ -98,24 +114,26 @@ class RecipeManager extends Service
                 case 'MultiCategory':
                     $stacks = $user_items->whereIn('item.item_category_id', $ingredient->data);
                     break;
+                case 'Currency':
+                    continue 2;
             }
 
-                $quantity_left = $ingredient->quantity;
-                while($quantity_left > 0 && count($stacks) > 0)
-                {
-                    $stack = $stacks->pop();
-                    $plucked[$stack->id] = $stack->count >= $quantity_left ? $quantity_left : $stack->count;
-                    // Update the larger collection
-                    $user_items = $user_items->map(function($s) use($stack, $plucked) {
-                        if($s->id == $stack->id) $s->count -= $plucked[$stack->id];
-                        if($s->count) return $s;
-                        else return null;
-                    })->filter();
-                    $quantity_left -= $plucked[$stack->id];
-                }
-                // If there are no more eligible ingredients but the requirement is not fulfilled, the pluck fails
-                if($quantity_left > 0) return null;
+            $quantity_left = $ingredient->quantity;
+            while($quantity_left > 0 && count($stacks) > 0)
+            {
+                $stack = $stacks->pop();
+                $plucked[$stack->id] = $stack->count >= $quantity_left ? $quantity_left : $stack->count;
+                // Update the larger collection
+                $user_items = $user_items->map(function($s) use($stack, $plucked) {
+                    if($s->id == $stack->id) $s->count -= $plucked[$stack->id];
+                    if($s->count) return $s;
+                    else return null;
+                })->filter();
+                $quantity_left -= $plucked[$stack->id];
             }
+            // If there are no more eligible ingredients but the requirement is not fulfilled, the pluck fails
+            if($quantity_left > 0) return null;
+        }
         return $plucked;
     }
 

@@ -117,4 +117,5 @@ class CraftingController extends Controller
         }
         return redirect()->back();
     }
+
 }

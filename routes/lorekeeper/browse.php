@@ -170,12 +170,3 @@ Route::group(['prefix' => 'gallery'], function() {
 Route::group(['prefix' => 'reports', 'namespace' => 'Users'], function() {
     Route::get('/bug-reports', 'ReportController@getBugIndex');
 });
-
-
-/**************************************************************************************************
-    Crafting
-**************************************************************************************************/
-Route::group(['prefix' => 'recipes', 'namespace' => 'Users'], function () {
-    Route::get('/', 'CraftingController@getRecipeIndex');
-    Route::get('view/{id}', 'CraftingController@getRecipe');
-});

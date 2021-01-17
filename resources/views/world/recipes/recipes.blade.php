@@ -35,7 +35,7 @@
     <div class="card mb-3">
         <div class="card-body">
        
-        @include('world.recipes._recipe_entry', ['imageUrl' => $recipe->imageUrl, 'name' => $recipe->displayName, 'description' => $recipe->parsed_description])
+        @include('world.recipes._recipe_entry', ['recipe' => $recipe, 'imageUrl' => $recipe->imageUrl, 'name' => $recipe->displayName, 'description' => $recipe->parsed_description])
         </div>
     </div>
 @endforeach

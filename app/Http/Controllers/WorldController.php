@@ -439,7 +439,7 @@ class WorldController extends Controller
         $recipe = Recipe::where('id', $id)->first();
         if(!$recipe) abort(404);
 
-        return view('world.recipes._recipe_entry', [
+        return view('world.recipes._recipe_page', [
             'recipe' => $recipe,
             'imageUrl' => $recipe->imageUrl,
             'name' => $recipe->displayName,

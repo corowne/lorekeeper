@@ -528,20 +528,9 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function hasRecipe($recipe_id)
     {
-        return $this->recipes->contains(Recipe::find($recipe_id));
-    }
-
-    /** 
-     * Checks if the user has the named recipe's ingredients
-     * 
-     * @return bool
-     */
-    public function hasRecipeIngredients($recipe_id)
-    {
-        $this->recipes->contains(Recipe::find($recipe_id));
-
-
-
-        return true;
+        $recipe = Recipe::find($recipe_id);
+        $user_has = $this->recipes->contains($recipe);
+        $default = !$recipe->needs_unlocking;
+        return $default ? true : $user_has;
     }
 }

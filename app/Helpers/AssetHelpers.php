@@ -67,7 +67,7 @@ function calculateGroupCurrency($data)
  */
 function getAssetKeys($isCharacter = false)
 {
-    if(!$isCharacter) return ['items', 'currencies', 'raffle_tickets', 'loot_tables', 'user_items', 'characters'];
+    if(!$isCharacter) return ['items', 'currencies', 'raffle_tickets', 'loot_tables', 'user_items', 'characters', 'recipes'];
     else return ['currencies'];
 }
 
@@ -111,6 +111,11 @@ function getAssetModelString($type, $namespaced = true)
         case 'characters':
             if($namespaced) return '\App\Models\Character\Character';
             else return 'Character';
+            break;
+
+        case 'recipes':
+            if($namespaced) return '\App\Models\Recipe\Recipe';
+            else return 'Recipe';
             break;
     }
     return null;
