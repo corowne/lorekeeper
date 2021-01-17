@@ -62,15 +62,6 @@ class Recipe extends Model
         return $this->hasMany('App\Models\Recipe\RecipeIngredient');
     }
 
-    /**
-     * Get the recipe's rewards.
-     */
-    public function rewards() 
-    {
-        return $this->hasMany('App\Models\Recipe\RecipeReward');
-    }
-
-
     /**********************************************************************************************
     
         SCOPES
@@ -117,6 +108,33 @@ class Recipe extends Model
 
     **********************************************************************************************/
     
+    /**
+     * Gets the decoded output json
+     *
+     * @return string
+     */
+    public function getRewardsAttribute()
+    {
+        $rewards = [];
+        if($this->output) {
+            $assets = parseAssetData(json_decode($this->output, true));
+
+            foreach($assets as $type => $a)
+            {
+                $class = getAssetModelString($type, false);
+                foreach($a as $id => $asset)
+                {
+                    $rewards[] = (object)[
+                        'rewardable_type' => $class,
+                        'rewardable_id' => $id,
+                        'quantity' => $asset['quantity']
+                    ];
+                }
+            }
+        }
+        return $rewards;
+    }
+
     /**
      * Displays the model's name, linked to its encyclopedia page.
      *

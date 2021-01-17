@@ -76,47 +76,17 @@ class CraftingController extends Controller
      * @param  integer  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCraftRecipe($id)
+    public function getCraftRecipe(RecipeService $service, $id)
     {
         $recipe = Recipe::find($id);
         
         if(!$recipe || !Auth::user()) abort(404);
 
-        $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)
-        ->get()
-        ->filter(function($userItem){
-            return $userItem->isTransferrable == true;
-        })
-        ->sortBy('item.name');
+        $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get();
 
         // foreach ingredient, search for a qualifying item in the users inv, and select items up to the quantity, if insufficient continue onto the next entry
         // until there are no more eligible items, then proceed to the next item
-        $selected = [];
-        foreach($recipe->ingredients as $ingredient)
-        {
-            switch($ingredient->ingredient_type)
-            {
-                case 'Item':
-                    $user_items = $inventory->where('item.id', $ingredient->data[0]);
-                    break;
-                case 'MultiItem':
-                    $user_items = $inventory->whereIn('item.id', $ingredient->data);
-                    break;
-                case 'Category':
-                    $user_items = $inventory->where('item.item_category_id', $ingredient->data[0]);
-                    break;
-                case 'MultiCategory':
-                    $user_items = $inventory->whereIn('item.item_category_id', $ingredient->data);
-                    break;
-            }
-            $quantity_left = $ingredient->quantity;
-            while($quantity_left > 0 && count($user_items) > 0)
-            {
-                $item = $user_items->pop();
-                $selected[$item->id] = $item->count >= $quantity_left ? $quantity_left : $item->count;
-                $quantity_left -= $selected[$item->id];
-            }
-        }
+        $selected = $service->pluckIngredients($inventory, $recipe);
 
         return view('home.crafting._modal_craft', [
             'recipe' => $recipe,
@@ -136,6 +106,14 @@ class CraftingController extends Controller
      */
     public function postCraftRecipe(Request $request, RecipeService $service, $id)
     {
-        // TODO: process request
+        $recipe = Recipe::find($id);
+
+        if($service->craftRecipe($request->only(['stack_id', 'stack_quantity']), $recipe, Auth::user())) {
+            flash('Recipe crafted successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
     }
 }
