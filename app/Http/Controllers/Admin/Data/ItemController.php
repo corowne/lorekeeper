@@ -13,6 +13,7 @@ use App\Models\Shop\Shop;
 use App\Models\Shop\ShopStock;
 use App\Models\Prompt\Prompt;
 use App\Models\Currency\Currency;
+use App\Models\User\User;
 
 use App\Services\ItemService;
 
@@ -30,7 +31,7 @@ class ItemController extends Controller
     */
 
     /**********************************************************************************************
-    
+
         ITEM CATEGORIES
 
     **********************************************************************************************/
@@ -46,7 +47,7 @@ class ItemController extends Controller
             'categories' => ItemCategory::orderBy('sort', 'DESC')->get()
         ]);
     }
-    
+
     /**
      * Shows the create item category page.
      *
@@ -58,7 +59,7 @@ class ItemController extends Controller
             'category' => new ItemCategory
         ]);
     }
-    
+
     /**
      * Shows the edit item category page.
      *
@@ -100,7 +101,7 @@ class ItemController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Gets the item category deletion modal.
      *
@@ -153,7 +154,7 @@ class ItemController extends Controller
     }
 
     /**********************************************************************************************
-    
+
         ITEMS
 
     **********************************************************************************************/
@@ -168,16 +169,16 @@ class ItemController extends Controller
     {
         $query = Item::query();
         $data = $request->only(['item_category_id', 'name']);
-        if(isset($data['item_category_id']) && $data['item_category_id'] != 'none') 
+        if(isset($data['item_category_id']) && $data['item_category_id'] != 'none')
             $query->where('item_category_id', $data['item_category_id']);
-        if(isset($data['name'])) 
+        if(isset($data['name']))
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
         return view('admin.items.items', [
             'items' => $query->paginate(20)->appends($request->query()),
             'categories' => ['none' => 'Any Category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
-    
+
     /**
      * Shows the create item page.
      *
@@ -189,10 +190,11 @@ class ItemController extends Controller
             'item' => new Item,
             'categories' => ['none' => 'No category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'prompts' => Prompt::where('is_active', 1)->orderBy('id')->pluck('name', 'id'),
-            'userCurrencies' => Currency::where('is_user_owned', 1)->orderBy('sort_user', 'DESC')->pluck('name', 'id')
+            'userCurrencies' => Currency::where('is_user_owned', 1)->orderBy('sort_user', 'DESC')->pluck('name', 'id'),
+            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray()
         ]);
     }
-    
+
     /**
      * Shows the edit item page.
      *
@@ -208,7 +210,8 @@ class ItemController extends Controller
             'categories' => ['none' => 'No category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'shops' => Shop::whereIn('id', ShopStock::where('item_id', $item->id)->pluck('shop_id')->unique()->toArray())->orderBy('sort', 'DESC')->get(),
             'prompts' => Prompt::where('is_active', 1)->orderBy('id')->pluck('name', 'id'),
-            'userCurrencies' => Currency::where('is_user_owned', 1)->orderBy('sort_user', 'DESC')->pluck('name', 'id')
+            'userCurrencies' => Currency::where('is_user_owned', 1)->orderBy('sort_user', 'DESC')->pluck('name', 'id'),
+            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray()
         ]);
     }
 
@@ -225,7 +228,8 @@ class ItemController extends Controller
         $id ? $request->validate(Item::$updateRules) : $request->validate(Item::$createRules);
         $data = $request->only([
             'name', 'allow_transfer', 'item_category_id', 'description', 'image', 'remove_image', 'rarity',
-            'reference_url', 'artist_alias', 'artist_url', 'uses', 'shops', 'prompts', 'release', 'currency_id', 'currency_quantity'
+            'reference_url', 'artist_id', 'artist_url', 'uses', 'shops', 'prompts', 'release', 'currency_id', 'currency_quantity',
+            'is_released'
         ]);
         if($id && $service->updateItem(Item::find($id), $data, Auth::user())) {
             flash('Item updated successfully.')->success();
@@ -239,7 +243,7 @@ class ItemController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Gets the item deletion modal.
      *
@@ -274,7 +278,7 @@ class ItemController extends Controller
     }
 
     /**********************************************************************************************
-    
+
         ITEM TAGS
 
     **********************************************************************************************/
@@ -354,7 +358,7 @@ class ItemController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Gets the item tag deletion modal.
      *

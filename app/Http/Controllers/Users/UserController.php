@@ -12,10 +12,14 @@ use App\Models\User\User;
 use App\Models\User\UserCurrency;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
+use App\Models\Gallery\Gallery;
+use App\Models\Gallery\GallerySubmission;
 
 use App\Models\User\UserItem;
 use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
+use App\Models\Gallery\GalleryFavorite;
+use App\Models\Gallery\GalleryCharacter;
 use App\Models\Item\ItemLog;
 
 use App\Models\Character\CharacterCategory;
@@ -61,11 +65,11 @@ class UserController extends Controller
     {
         return view('user.profile', [
             'user' => $this->user,
-            'items' => $this->user->items()->orderBy('user_items.updated_at', 'DESC')->take(4)->get(),
+            'items' => $this->user->items()->where('count', '>', 0)->orderBy('user_items.updated_at', 'DESC')->take(4)->get(),
             'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
-    
+
     /**
      * Shows a user's characters.
      *
@@ -76,7 +80,7 @@ class UserController extends Controller
     {
         $query = Character::myo(0)->visible()->where('user_id', $this->user->id);
         $imageQuery = CharacterImage::images(Auth::check() ? Auth::user() : null)->with('features')->with('rarity')->with('species')->with('features');
-        
+
         if($sublists = Sublist::where('show_main', 0)->get())
         $subCategories = []; $subSpecies = [];
         {   foreach($sublists as $sublist)
@@ -97,7 +101,7 @@ class UserController extends Controller
             'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
-    
+
     /**
      * Shows a user's sublist characters.
      *
@@ -108,7 +112,7 @@ class UserController extends Controller
     {
         $query = Character::myo(0)->visible()->where('user_id', $this->user->id);
         $imageQuery = CharacterImage::images(Auth::check() ? Auth::user() : null)->with('features')->with('rarity')->with('species')->with('features');
-        
+
         $sublist = Sublist::where('key', $key)->first();
         if(!$sublist) abort(404);
         $subCategories = $sublist->categories->pluck('id')->toArray();
@@ -126,7 +130,7 @@ class UserController extends Controller
             'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
-    
+
     /**
      * Shows a user's MYO slots.
      *
@@ -141,7 +145,7 @@ class UserController extends Controller
             'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
-    
+
     /**
      * Shows a user's inventory.
      *
@@ -151,7 +155,7 @@ class UserController extends Controller
     public function getUserInventory($name)
     {
         $categories = ItemCategory::orderBy('sort', 'DESC')->get();
-        $items = count($categories) ? 
+        $items = count($categories) ?
             $this->user->items()
                 ->where('count', '>', 0)
                 ->orderByRaw('FIELD(item_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
@@ -317,7 +321,58 @@ class UserController extends Controller
     {
         return view('user.submission_logs', [
             'user' => $this->user,
-            'logs' => $this->user->getSubmissions(),
+            'logs' => $this->user->getSubmissions(Auth::check() ? Auth::user() : null),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
+        ]);
+    }
+
+    /**
+     * Shows a user's gallery submissions.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserGallery($name)
+    {
+        return view('user.gallery', [
+            'user' => $this->user,
+            'submissions' => $this->user->gallerySubmissions()->paginate(20),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
+        ]);
+    }
+
+    /**
+     * Shows a user's gallery submission favorites.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserFavorites($name)
+    {
+        return view('user.favorites', [
+            'user' => $this->user,
+            'characters' => false,
+            'favorites' => GallerySubmission::whereIn('id', $this->user->galleryFavorites()->pluck('gallery_submission_id')->toArray())->visible(Auth::check() ? Auth::user() : null)->accepted()->orderBy('created_at', 'DESC')->paginate(20),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
+        ]);
+    }
+
+    /**
+     * Shows a user's gallery submission favorites that contain characters they own.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserOwnCharacterFavorites($name)
+    {
+        $user = $this->user;
+        $userCharacters = $user->characters()->pluck('id')->toArray();
+        $userFavorites = $user->galleryFavorites()->pluck('gallery_submission_id')->toArray();
+
+        return view('user.favorites', [
+            'user' => $this->user,
+            'characters' => true,
+            'favorites' => $this->user->characters->count() ? GallerySubmission::whereIn('id', $userFavorites)->whereIn('id', GalleryCharacter::whereIn('character_id', $userCharacters)->pluck('gallery_submission_id')->toArray())->visible(Auth::check() ? Auth::user() : null)->accepted()->orderBy('created_at', 'DESC')->paginate(20) : null,
             'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }

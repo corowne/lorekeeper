@@ -24,7 +24,7 @@ class CurrencyService extends Service
     /**
      * Creates a new currency.
      *
-     * @param  array                  $data 
+     * @param  array                  $data
      * @param  \App\Models\User\User  $user
      * @return bool|\App\Models\Currency\Currency
      */
@@ -45,7 +45,7 @@ class CurrencyService extends Service
                 unset($data['icon']);
             }
             else $data['has_icon'] = 0;
-            
+
             if(isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
                 $image = $data['image'];
@@ -59,7 +59,7 @@ class CurrencyService extends Service
             if ($image) $this->handleImage($image, $currency->currencyImagePath, $currency->currencyImageFileName);
 
             return $this->commitReturn($currency);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -69,7 +69,7 @@ class CurrencyService extends Service
      * Updates a currency.
      *
      * @param  \App\Models\Currency\Currency  $currency
-     * @param  array                          $data 
+     * @param  array                          $data
      * @param  \App\Models\User\User          $user
      * @return bool|\App\Models\Currency\Currency
      */
@@ -91,7 +91,7 @@ class CurrencyService extends Service
                 $icon = $data['icon'];
                 unset($data['icon']);
             }
-            
+
             if(isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
                 $image = $data['image'];
@@ -104,7 +104,7 @@ class CurrencyService extends Service
             if ($image) $this->handleImage($image, $currency->currencyImagePath, $currency->currencyImageFileName);
 
             return $this->commitReturn($currency);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -113,7 +113,7 @@ class CurrencyService extends Service
     /**
      * Processes user input for creating/updating a currency.
      *
-     * @param  array                          $data 
+     * @param  array                          $data
      * @param  \App\Models\Currency\Currency  $currency
      * @return array
      */
@@ -123,13 +123,13 @@ class CurrencyService extends Service
 
         if(!isset($data['is_user_owned'])) $data['is_user_owned'] = 0;
         if(!isset($data['is_character_owned'])) $data['is_character_owned'] = 0;
-        
+
         if(!isset($data['is_displayed'])) $data['is_displayed'] = 0;
 
         if(!isset($data['allow_user_to_user'])) $data['allow_user_to_user'] = 0;
         if(!isset($data['allow_user_to_character'])) $data['allow_user_to_character'] = 0;
         if(!isset($data['allow_character_to_user'])) $data['allow_character_to_user'] = 0;
-        
+
         $data['sort_user'] = $data['sort_character'] = 0;
 
         // Process the checkbox fields
@@ -137,24 +137,24 @@ class CurrencyService extends Service
         {
             $data['allow_user_to_character'] = $data['allow_character_to_user'] = 0;
         }
-        if(!$data['is_user_owned']) 
+        if(!$data['is_user_owned'])
         {
             $data['allow_user_to_user'] = $data['is_displayed'] = 0;
         }
-        
+
         if(isset($data['remove_icon']) || isset($data['remove_image']))
         {
-            if($currency) 
+            if($currency)
             {
-                if($currency->has_icon && $data['remove_icon']) 
-                { 
-                    $data['has_icon'] = 0; 
-                    $this->deleteImage($currency->currencyIconPath, $currency->currencyIconFileName); 
+                if($currency->has_icon && $data['remove_icon'])
+                {
+                    $data['has_icon'] = 0;
+                    $this->deleteImage($currency->currencyIconPath, $currency->currencyIconFileName);
                 }
-                if($currency->has_image && $data['remove_image']) 
-                { 
-                    $data['has_image'] = 0; 
-                    $this->deleteImage($currency->currencyImagePath, $currency->currencyImageFileName); 
+                if($currency->has_image && $data['remove_image'])
+                {
+                    $data['has_image'] = 0;
+                    $this->deleteImage($currency->currencyImagePath, $currency->currencyImageFileName);
                 }
             }
             unset($data['remove_icon']);
@@ -163,7 +163,7 @@ class CurrencyService extends Service
 
         return $data;
     }
-    
+
     /**
      * Deletes a currency.
      *
@@ -175,29 +175,31 @@ class CurrencyService extends Service
         DB::beginTransaction();
 
         try {
-            
+
             if(DB::table('loots')->where('rewardable_type', 'Currency')->where('rewardable_id', $currency->id)->exists()) throw new \Exception("A loot table currently distributes this currency as a potential reward. Please remove the currency before deleting it.");
             if(DB::table('prompt_rewards')->where('rewardable_type', 'Currency')->where('rewardable_id', $currency->id)->exists()) throw new \Exception("A prompt currently distributes this currency as a reward. Please remove the currency before deleting it.");
             if(DB::table('shop_stock')->where('currency_id', $currency->id)->exists()) throw new \Exception("A shop currently requires this currency to purchase an item. Please change the currency before deleting it.");
+            // Disabled for now due to issues with JSON lookup with older mysql versions/mariaDB
+            // if(DB::table('items')->where('data->resell', $currency->id)->exists()) throw new \Exception("An item currently uses this currency for its resale value. Please change the resale information before deleting this currency.");
 
             // This will delete the currency in users' possession as well.
             // The reason this is allowed is that in instances where event currencies
             // are created for temporary use, it would be inconvenient to have to manually
             // remove them from user accounts before deleting the base currency.
-            
+
             UserCurrency::where('currency_id', $currency->id)->delete();
             CharacterCurrency::where('currency_id', $currency->id)->delete();
-            if($currency->has_image) $this->deleteImage($currency->currencyImagePath, $currency->currencyImageFileName); 
-            if($currency->has_icon) $this->deleteImage($currency->currencyIconPath, $currency->currencyIconFileName); 
+            if($currency->has_image) $this->deleteImage($currency->currencyImagePath, $currency->currencyImageFileName);
+            if($currency->has_icon) $this->deleteImage($currency->currencyIconPath, $currency->currencyIconFileName);
             $currency->delete();
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
-    
+
     /**
      * Sorts currency order.
      *
@@ -218,7 +220,7 @@ class CurrencyService extends Service
             }
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);

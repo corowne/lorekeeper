@@ -10,6 +10,7 @@ use Image;
 use Notifications;
 use Settings;
 
+use Illuminate\Support\Arr;
 use App\Models\User\User;
 use App\Models\User\UserItem;
 use App\Models\Character\Character;
@@ -61,7 +62,7 @@ class SubmissionManager extends Service
             else $prompt = null;
 
             // The character identification comes in both the slug field and as character IDs
-            // that key the reward ID/quantity arrays. 
+            // that key the reward ID/quantity arrays.
             // We'll need to match characters to the rewards for them.
             // First, check if the characters are accessible to begin with.
             if(isset($data['slug'])) {
@@ -78,6 +79,7 @@ class SubmissionManager extends Service
                 foreach($data['stack_id'] as $key=>$stackId) {
                     $stack = UserItem::with('item')->find($stackId);
                     if(!$stack || $stack->user_id != $user->id) throw new \Exception("Invalid item selected.");
+                    if(!isset($data['stack_quantity'][$key])) $data['stack_quantity'][$key] = $stack->count;
                     $stack->submission_count += $data['stack_quantity'][$key];
                     $stack->save();
 
@@ -101,7 +103,7 @@ class SubmissionManager extends Service
                         if(!$currencyManager->debitCurrency($holder, null, null, null, $currency, $data['currency_quantity'][$holderKey][$key])) throw new \Exception("Invalid currency/quantity selected.");
 
                         addAsset($userAssets, $currency, $data['currency_quantity'][$holderKey][$key]);
-                        
+
                     }
                 }
             }
@@ -123,9 +125,9 @@ class SubmissionManager extends Service
             }
             // Get a list of rewards, then create the submission itself
             $promptRewards = createAssetsArray();
-            if(!$isClaim) 
+            if(!$isClaim)
             {
-                foreach($prompt->rewards as $reward) 
+                foreach($prompt->rewards as $reward)
                 {
                     addAsset($promptRewards, $reward->reward, $reward->quantity);
                 }
@@ -134,11 +136,11 @@ class SubmissionManager extends Service
             $submission = Submission::create([
                 'user_id' => $user->id,
                 'focus_chara_id' => $focusId,
-                'url' => $data['url'],
+                'url' => isset($data['url']) ? $data['url'] : null,
                 'status' => 'Pending',
                 'comments' => $data['comments'],
                 'data' => json_encode([
-                    'user' => array_only(getDataReadyAssets($userAssets), ['user_items','currencies']),
+                    'user' => Arr::only(getDataReadyAssets($userAssets), ['user_items','currencies']),
                     'rewards' => getDataReadyAssets($promptRewards)
                     ]) // list of rewards and addons
             ] + ($isClaim ? [] : ['prompt_id' => $prompt->id,]));
@@ -155,7 +157,7 @@ class SubmissionManager extends Service
             $currencies = Currency::whereIn('id', $currencyIds)->where('is_character_owned', 1)->get()->keyBy('id');
 
             // Attach characters
-            foreach($characters as $c) 
+            foreach($characters as $c)
             {
                 // Users might not pass in clean arrays (may contain redundant data) so we need to clean that up
                 $assets = $this->processRewards($data + ['character_id' => $c->id, 'currencies' => $currencies], true);
@@ -170,7 +172,7 @@ class SubmissionManager extends Service
             }
 
             return $this->commitReturn($submission);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -271,14 +273,14 @@ class SubmissionManager extends Service
                 foreach($addonData['currencies'] as $currencyId=>$quantity) {
                     $currency = Currency::find($currencyId);
                     if(!$currency) throw new \Exception("Cannot return an invalid currency. (".$currencyId.")");
-                    if(!$currencyManager->creditCurrency(null, $submission->user, null, null, $currency, $quantity)) throw new \Exception("Could not return currency to user. (".$currencyId.")");                    
+                    if(!$currencyManager->creditCurrency(null, $submission->user, null, null, $currency, $quantity)) throw new \Exception("Could not return currency to user. (".$currencyId.")");
                 }
             }
-			
+
 			if(isset($data['staff_comments']) && $data['staff_comments']) $data['parsed_staff_comments'] = parse($data['staff_comments']);
 			else $data['parsed_staff_comments'] = null;
 
-            // The only things we need to set are: 
+            // The only things we need to set are:
             // 1. staff comment
             // 2. staff ID
             // 3. status
@@ -296,7 +298,7 @@ class SubmissionManager extends Service
             ]);
 
             return $this->commitReturn($submission);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -334,7 +336,7 @@ class SubmissionManager extends Service
 
                 // Workaround for user not being unset after inventory shuffling, preventing proper staff ID assignment
                 $staff = $user;
-                
+
                 foreach($stacks as $stackId=>$quantity) {
                     $stack = UserItem::find($stackId);
                     $user = User::find($submission->user_id);
@@ -351,14 +353,14 @@ class SubmissionManager extends Service
             {
                 foreach($addonData['currencies'] as $currencyId=>$quantity) {
                     $currency = Currency::find($currencyId);
-                    if(!$currencyManager->createLog($user->id, 'User', null, null, 
-                    $submission->prompt_id ? 'Prompt Approved' : 'Claim Approved', 'Used in ' . ($submission->prompt_id ? 'prompt' : 'claim') . ' (<a href="'.$submission->viewUrl.'">#'.$submission->id.'</a>)', $currencyId, $quantity)) 
+                    if(!$currencyManager->createLog($user->id, 'User', null, null,
+                    $submission->prompt_id ? 'Prompt Approved' : 'Claim Approved', 'Used in ' . ($submission->prompt_id ? 'prompt' : 'claim') . ' (<a href="'.$submission->viewUrl.'">#'.$submission->id.'</a>)', $currencyId, $quantity))
                         throw new \Exception("Failed to create currency log.");
                 }
             }
 
             // The character identification comes in both the slug field and as character IDs
-            // that key the reward ID/quantity arrays. 
+            // that key the reward ID/quantity arrays.
             // We'll need to match characters to the rewards for them.
             // First, check if the characters are accessible to begin with.
             if(isset($data['slug'])) {
@@ -378,7 +380,7 @@ class SubmissionManager extends Service
 
             // Distribute user rewards
             if(!$rewards = fillUserAssets($rewards, $user, $submission->user, $promptLogType, $promptData)) throw new \Exception("Failed to distribute rewards to user.");
-            
+
             // Retrieve all currency IDs for characters
             $currencyIds = [];
             if(isset($data['character_currency_id'])) {
@@ -390,15 +392,15 @@ class SubmissionManager extends Service
 
             // We're going to remove all characters from the submission and reattach them with the updated data
             $submission->characters()->delete();
-            
+
             // Distribute character rewards
-            foreach($characters as $c) 
+            foreach($characters as $c)
             {
                 // Users might not pass in clean arrays (may contain redundant data) so we need to clean that up
                 $assets = $this->processRewards($data + ['character_id' => $c->id, 'currencies' => $currencies], true);
 
                 if(!fillCharacterAssets($assets, $user, $c, $promptLogType, $promptData)) throw new \Exception("Failed to distribute rewards to character.");
-                
+
                 SubmissionCharacter::create([
                     'character_id' => $c->id,
                     'submission_id' => $submission->id,
@@ -477,11 +479,11 @@ class SubmissionManager extends Service
                 $user->settings->submission_count++;
                 $user->settings->save();
             }
-			
+
 			if(isset($data['staff_comments']) && $data['staff_comments']) $data['parsed_staff_comments'] = parse($data['staff_comments']);
 			else $data['parsed_staff_comments'] = null;
 
-            // Finally, set: 
+            // Finally, set:
 			// 1. staff comments
             // 2. staff ID
             // 3. status
@@ -504,10 +506,10 @@ class SubmissionManager extends Service
             ]);
 
             return $this->commitReturn($submission);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
-    
+
 }

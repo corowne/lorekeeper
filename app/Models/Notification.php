@@ -149,4 +149,15 @@ class Notification extends Model
     const COMMENT_REPLY                   = 240;
     const CHARACTER_ITEM_GRANT            = 501;
     const CHARACTER_ITEM_REMOVAL          = 502;
+    const GALLERY_SUBMISSION_COLLABORATOR   = 505;
+    const GALLERY_COLLABORATORS_APPROVED    = 506;
+    const GALLERY_SUBMISSION_ACCEPTED       = 507;
+    const GALLERY_SUBMISSION_REJECTED       = 508;
+    const GALLERY_SUBMISSION_VALUED         = 509;
+    const GALLERY_SUBMISSION_MOVED          = 510;
+    const GALLERY_SUBMISSION_CHARACTER      = 511;
+    const GALLERY_SUBMISSION_FAVORITE       = 512;
+    const GALLERY_SUBMISSION_STAFF_COMMENTS = 513;
+    const GALLERY_SUBMISSION_EDITED         = 514;
+    const GALLERY_SUBMISSION_PARTICIPANT    = 515;
 }

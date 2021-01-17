@@ -2,6 +2,7 @@
 
 use DB;
 use App\Services\Service;
+use App\Models\User\UserAlias;
 use App\Models\User\UserUpdateLog;
 use DeviantPHP\DeviantPHP;
 
@@ -75,12 +76,19 @@ class DeviantArtService extends Service
             $this->deviantart->setToken($accessToken, $refreshToken);
             $data = $this->deviantart->getUser();
 
-            if(DB::table('users')->where('alias', $data['username'])->exists()) throw new \Exception("Cannot link the same deviantART account to multiple site accounts. Please ask a staff member to unlink your old account first.");
+            if(DB::table('user_aliases')->where('site', 'dA')->where('alias', $data['username'])->exists()) throw new \Exception("Cannot link the same deviantART account multiple times. Please ask a staff member to unlink your old account first.");
 
-            // Save the user's username
-            // Also consider: save the user's dA join date
-            $user->alias = $data['username'];
+            // Save that the user has an alias
+            $user->has_alias = 1;
             $user->save();
+            // Save the user's alias and set it as the primary alias
+            UserAlias::create([
+                'user_id' => $user->id,
+                'site' => 'dA',
+                'alias' => $data['username'],
+                'is_visible' => 1,
+                'is_primary_alias' => 1,
+            ]);
             
             UserUpdateLog::create(['user_id' => $user->id, 'data' => json_encode(['alias' => $data['username']]), 'type' => 'Alias Added']);
 
