@@ -61,6 +61,7 @@ Route::group(['prefix' => 'bank', 'namespace' => 'Users'], function() {
 Route::group(['prefix' => 'level', 'namespace' => 'Users'], function() {
     Route::get('/', 'LevelController@getIndex');
     Route::post('up', 'LevelController@postLevel');
+    Route::post('transfer', 'LevelController@postTransfer');
 });
 
 Route::group(['prefix' => 'trades', 'namespace' => 'Users'], function() {

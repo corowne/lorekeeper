@@ -13,6 +13,7 @@ use App\Models\Item\Item;
 
 use App\Models\User\User;
 use App\Models\Character\Character;
+use App\Models\Stats\Character\CharacterLevel;
 use App\Models\Stats\Character\CharacterStat;
 use App\Models\Stats\Character\CharaLevels;
 use App\Models\Stats\User\UserLevel;
@@ -34,6 +35,34 @@ class StatManager extends Service
             else {
                 throw new \Exception('Error creating log.');
             }
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    public function userToCharacter($user, $character, $quantity)
+    {
+        DB::beginTransaction();
+
+        try {
+            if($user->level->current_points < $quantity) throw new \Exception('Not enough points to transfer this amount');
+
+            $recipient_stack = $character->level;
+            $stack = $user->level;
+            if(!$recipient_stack) throw new \Exception('This character has no level log.');
+                
+            $stack->current_points -= $quantity;
+            $recipient_stack->current_points += $quantity;
+            $stack->save();
+            $recipient_stack->save();
+
+            $type = 'User Transfer';
+            $data = 'User initiated transfer: ' . $user->displayName . ' transferred ' . $quantity . ' to ' . $character->displayName;
+
+            if($type && !$this->createTransferLog($user->id, $user->logType, $character->id, $character->logType, $type, $data, $quantity)) throw new \Exception("Failed to create log.");
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 

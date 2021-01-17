@@ -13,8 +13,10 @@ use App\Models\Currency\CurrencyLog;
 use App\Services\CurrencyManager;
 
 use App\Models\Stats\User\Level;
+use App\Models\Character\Character;
 
 use App\Services\Stats\ExperienceManager;
+use App\Services\Stats\StatManager;
 use App\Services\Stats\LevelManager;
 
 use App\Http\Controllers\Controller;
@@ -62,6 +64,7 @@ class LevelController extends Controller
             'user' => $user,
             'next' => $next,
             'width' => $width,
+            'characters' => $user->characters()->pluck('slug', 'id'),
         ]);
     }
 
@@ -71,6 +74,21 @@ class LevelController extends Controller
         if($service->userLevel($user)) 
         {
             flash('Successfully levelled up!')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    public function postTransfer(Request $request, StatManager $service)
+    {
+        $user = Auth::user();
+        $character = Character::find($request->get('id'));
+
+        if($service->userToCharacter($user, $character, $request->get('quantity'))) 
+        {
+            flash('Successfully transferred stat points!')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

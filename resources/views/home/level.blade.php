@@ -44,6 +44,33 @@
 </div>
 
 <div class="text-right mb-4">
-    <a href="{{ url(Auth::user()->url.'/level-logs') }}">View logs...</a>
+    <a href="{{ url($user->url.'/level-logs') }}">View logs...</a>
 </div>
+<hr>
+<div class="container">
+    <div class="card p-2">
+        <h5>Transfer stat points to character</h5>
+        <p>Note that once stat points are transferred they cannot be transferred back</p>
+        {!! Form::open(['url' => 'level/transfer']) !!}
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    {!! Form::label('id', 'Choose Character') !!}
+                    {!! Form::select('id', $characters, null, ['class'=>'form-control']) !!}
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    {!! Form::label('quantity', 'Quantity') !!}
+                    {!! Form::number('quantity', null, ['class'=>'form-control']) !!}
+                </div>
+            </div>
+        </div>
+        <div class="text-right">
+            {!! Form::submit('Transfer Stat Points', ['class' => 'btn btn-primary']) !!}
+        </div>
+        {!! Form::close() !!}
+    </div>
+</div>
+
 @endsection
