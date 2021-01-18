@@ -11,7 +11,7 @@ use Illuminate\Database\Schema\Blueprint;
 use App\Models\User\User;
 use App\Models\Character\Character;
 
-class MigrateAliases extends Command
+class Addlevels extends Command
 {
     /**
      * The name and signature of the console command.
