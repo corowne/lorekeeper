@@ -54,21 +54,21 @@
                     <h4>Stat & Level Rewards</h4>
                     <div class="row">
                         <div class="col">
-                            @if(!$prompt->user_exp && !$prompt->user_points)
+                            @if(!$prompt->expreward->user_exp && !$prompt->expreward->user_points)
                             No user rewards.
                             @else
-                            {{ $prompt->user_exp ? $prompt->user_exp : 0  }} user EXP
+                            {{ $prompt->expreward->user_exp ? $prompt->expreward->user_exp : 0  }} user EXP
                                 <br>
-                            {{ $prompt->user_points ? $prompt->user_points : 0  }} user points
+                            {{ $prompt->expreward->user_points ? $prompt->expreward->user_points : 0  }} user points
                             @endif
                         </div>
                         <div class="col">
-                            @if(!$prompt->chara_exp && !$prompt->chara_points)
+                            @if(!$prompt->expreward->chara_exp && !$prompt->expreward->chara_points)
                             No character rewards.
                             @else
-                            {{ $prompt->chara_exp ? $prompt->chara_exp : 0  }} character EXP
+                            {{ $prompt->expreward->chara_exp ? $prompt->expreward->chara_exp : 0  }} character EXP
                                 <br>
-                            {{ $prompt->chara_points ? $prompt->chara_points : 0  }} character points
+                            {{ $prompt->expreward->chara_points ? $prompt->expreward->chara_points : 0  }} character points
                             @endif
                         </div>
                     </div>

@@ -67,22 +67,22 @@
                 <div class="row m-2">
                     <div class="col">
                         <h5>User Rewards</h5>
-                        @if(!$submission->prompt->user_exp && !$submission->prompt->user_points)
+                        @if(!$submission->prompt->expreward->user_exp && !$submission->prompt->expreward->user_points)
                         No user rewards.
                         @else
-                        {{ $submission->prompt->user_exp ? $submission->prompt->user_exp : 0  }} user EXP
+                        {{ $submission->prompt->expreward->user_exp ? $submission->prompt->expreward->user_exp : 0  }} user EXP
                             <br>
-                        {{ $submission->prompt->user_points ? $submission->prompt->user_points : 0  }} user points
+                        {{ $submission->prompt->expreward->user_points ? $submission->prompt->expreward->user_points : 0  }} user points
                         @endif
                     </div>
                     <div class="col">
                         <h5>Character Rewards</h5>
-                        @if(!$submission->prompt->chara_exp && !$submission->prompt->chara_points)
+                        @if(!$submission->prompt->expreward->chara_exp && !$submission->prompt->expreward->chara_points)
                         No character rewards.
                         @else
-                        {{ $submission->prompt->chara_exp ? $submission->prompt->chara_exp : 0  }} character EXP
+                        {{ $submission->prompt->expreward->chara_exp ? $submission->prompt->expreward->chara_exp : 0  }} character EXP
                             <br>
-                        {{ $submission->prompt->chara_points ? $submission->prompt->chara_points : 0  }} character points
+                        {{ $submission->prompt->expreward->chara_points ? $submission->prompt->expreward->chara_points : 0  }} character points
                         @endif
                     </div>
                 </div>

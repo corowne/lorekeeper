@@ -100,13 +100,13 @@
         <div class="col-md-6">
             <div class="form-group">
                 {!! Form::label('user_exp', 'User Exp Reward', ['class' => 'form-control-label ml-3']) !!}
-                {!! Form::number('user_exp', $prompt->user_exp ? $prompt->user_exp : null, ['class' => 'form-control',]) !!}
+                {!! Form::number('user_exp', $prompt->expreward ? $prompt->expreward->user_exp : null, ['class' => 'form-control',]) !!}
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 {!! Form::label('user_points', 'User Stat Point Reward', ['class' => 'form-control-label ml-3']) !!}
-                {!! Form::number('user_points', $prompt->user_points ? $prompt->user_points : null, ['class' => 'form-control',]) !!}
+                {!! Form::number('user_points', $prompt->expreward ? $prompt->expreward->user_points : null, ['class' => 'form-control',]) !!}
             </div>
         </div>
     </div>
@@ -115,13 +115,13 @@
         <div class="col-md-6">
             <div class="form-group">
                 {!! Form::label('chara_exp', 'Character Exp Reward', ['class' => 'form-control-label ml-3']) !!}
-                {!! Form::number('chara_exp', $prompt->chara_points ? $prompt->chara_points : null, ['class' => 'form-control',]) !!}
+                {!! Form::number('chara_exp', $prompt->expreward ? $prompt->expreward->chara_points : null, ['class' => 'form-control',]) !!}
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 {!! Form::label('chara_points', 'Character Stat Point Reward', ['class' => 'form-control-label ml-3']) !!}
-                {!! Form::number('chara_points', $prompt->chara_points ? $prompt->chara_points : null, ['class' => 'form-control',]) !!}
+                {!! Form::number('chara_points', $prompt->expreward ? $prompt->expreward->chara_points : null, ['class' => 'form-control',]) !!}
             </div>
         </div>
     </div>

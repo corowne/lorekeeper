@@ -421,48 +421,47 @@ class SubmissionManager extends Service
                 $character_exp = null;
                 $character_points = null;
                 // user
-                if($submission->prompt->user_exp || $submission->prompt->user_points)
+                if($submission->prompt->expreward->user_exp || $submission->prompt->expreward->user_points)
                 {
                     $level = $submission->user->level;
                     $levelUser = $submission->user;
                     if(!$level) throw new \Exception('This user does not have a level log.');
 
                     // exp
-                    if($submission->prompt->user_exp)
+                    if($submission->prompt->expreward->user_exp)
                     {
-                        $quantity = $submission->prompt->user_exp;
+                        $quantity = $submission->prompt->expreward->user_exp;
                             if($data['bonus_user_exp'])
                             {
                                 $quantity += $data['bonus_user_exp'];
                             }
-                        
-                        $user_exp += $quantity;
+                            $user_exp += $quantity;
                         if(!$levelLog->creditExp(null, $levelUser, $promptLogType, $levelData, $quantity)) throw new \Exception('Could not grant user exp');
                     }
                     //points
-                    if($submission->prompt->user_points)
+                    if($submission->prompt->expreward->user_points)
                     {
-                        $quantity = $submission->prompt->user_points;
+                        $quantity = $submission->prompt->expreward->user_points;
                             if($data['bonus_user_points'])
                             {
                                 $quantity += $data['bonus_user_points'];
                             }
                             $user_points += $quantity;
-                        if(!$statLog->creditStat(null, $levelUser, $promptLogType, $levelData, $submission->prompt->user_points)) throw new \Exception('Could not grant user points');
+                        if(!$statLog->creditStat(null, $levelUser, $promptLogType, $levelData, $quantity)) throw new \Exception('Could not grant user points');
                     }
                 }
                 // character
-                if($submission->prompt->chara_exp || $submission->prompt->chara_points)
+                if($submission->prompt->expreward->chara_exp || $submission->prompt->expreward->chara_points)
                 {
                     if($submission->focus_chara_id)
                     {
                         $level = $submission->focus->level;
                         $levelCharacter = $submission->focus;
                         if(!$level) throw new \Exception('This character does not have a level log.');
-
-                        if($submission->prompt->chara_exp)
+                        // exp
+                        if($submission->prompt->expreward->chara_exp)
                         {
-                            $quantity = $submission->prompt->chara_exp;
+                            $quantity = $submission->prompt->expreward->chara_exp;
                             if($data['bonus_exp'])
                             {
                                 $quantity += $data['bonus_exp'];
@@ -470,9 +469,10 @@ class SubmissionManager extends Service
                             $character_exp += $quantity;
                             if(!$levelLog->creditExp(null, $levelCharacter, $promptLogType, $levelData, $quantity)) throw new \Exception('Could not grant character exp');
                         }
-                        if($submission->prompt->chara_points)
+                        // points
+                        if($submission->prompt->expreward->chara_points)
                         {
-                            $quantity = $submission->prompt->chara_points;
+                            $quantity = $submission->prompt->expreward->chara_points;
                             if($data['bonus_points'])
                             {
                                 $quantity += $data['bonus_points'];
