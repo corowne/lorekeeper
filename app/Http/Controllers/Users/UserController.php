@@ -78,7 +78,7 @@ class UserController extends Controller
      */
     public function getUserCharacters($name)
     {
-        $query = Character::myo(0)->visible()->where('user_id', $this->user->id);
+        $query = Character::myo(0)->where('user_id', $this->user->id);
         $imageQuery = CharacterImage::images(Auth::check() ? Auth::user() : null)->with('features')->with('rarity')->with('species')->with('features');
 
         if($sublists = Sublist::where('show_main', 0)->get())
@@ -94,10 +94,12 @@ class UserController extends Controller
         $imageQuery->whereNotIn('species_id', $subSpecies);
 
         $query->whereIn('id', $imageQuery->pluck('character_id'));
+        $admin_characters = $query->orderBy('sort', 'DESC')->get();
 
         return view('user.characters', [
             'user' => $this->user,
-            'characters' => $query->orderBy('sort', 'DESC')->get(),
+            'characters' => $query->visible()->orderBy('sort', 'DESC')->get(),
+            'admin_characters' => $admin_characters,
             'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
