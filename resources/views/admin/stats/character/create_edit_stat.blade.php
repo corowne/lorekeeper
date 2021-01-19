@@ -73,7 +73,7 @@ $( document ).ready(function() {
     
     $('.delete-stat-button').on('click', function(e) {
         e.preventDefault();
-        loadModal("{{ url('admin/data/stats/delete') }}/{{ $stat->id }}", 'Delete Stat');
+        loadModal("{{ url('admin/stats/delete') }}/{{ $stat->id }}", 'Delete Stat');
     });
 });
     

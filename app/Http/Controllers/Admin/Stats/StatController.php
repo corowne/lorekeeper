@@ -80,7 +80,7 @@ class StatController extends Controller
     public function getDeleteStat($id)
     {
         $stat = Stat::find($id);
-        return view('admin.stats._delete_stat', [
+        return view('admin.stats.character._delete_stat', [
             'stat' => $stat,
         ]);
     }
