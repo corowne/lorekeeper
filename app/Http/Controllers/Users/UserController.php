@@ -63,10 +63,14 @@ class UserController extends Controller
      */
     public function getUser($name)
     {
+        $characters = $this->user->characters();
+        if(!Auth::check() || !(Auth::check() && Auth::user()->hasPower('manage_characters'))) $characters->visible();
+        
         return view('user.profile', [
             'user' => $this->user,
             'items' => $this->user->items()->where('count', '>', 0)->orderBy('user_items.updated_at', 'DESC')->take(4)->get(),
-            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get(),
+            'characters' => $characters,
         ]);
     }
 
@@ -94,12 +98,12 @@ class UserController extends Controller
         $imageQuery->whereNotIn('species_id', $subSpecies);
 
         $query->whereIn('id', $imageQuery->pluck('character_id'));
-        $admin_characters = $query->orderBy('sort', 'DESC')->get();
+
+        if(!Auth::check() || !(Auth::check() && Auth::user()->hasPower('manage_characters'))) $query->visible();
 
         return view('user.characters', [
             'user' => $this->user,
-            'characters' => $query->visible()->orderBy('sort', 'DESC')->get(),
-            'admin_characters' => $admin_characters,
+            'characters' => $query->orderBy('sort', 'DESC')->get(),
             'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
