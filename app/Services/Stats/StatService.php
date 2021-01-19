@@ -19,7 +19,10 @@ class StatService extends Service
         DB::beginTransaction();
 
         try {
-
+            if(!isset($data['name'])) throw new \Exception('Please name the stat');
+            if(!isset($data['default'])) throw new \Exception('Please set a default.');
+            if(!isset($data['abbreviation'])) throw new \Exception('Please add an abbreviation.');
+            
             $stat = Stat::create($data);
 
             return $this->commitReturn($stat);
