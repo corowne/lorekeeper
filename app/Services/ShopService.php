@@ -111,7 +111,7 @@ class ShopService extends Service
             if(isset($data['item_id'])) {
                 foreach($data['item_id'] as $key => $itemId)
                 {
-                    if(!$data['cost'][$key]) throw new \Exception("One or more of the items is missing a cost.");
+                    if($data['cost'][$key] < 0) throw new \Exception("One or more of the items is missing a cost.");
                 }
 
                 // Clear the existing shop stock
