@@ -81,7 +81,8 @@ class CharacterController extends Controller
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'subtypes' => ['0' => 'Pick a Species First'],
             'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
-            'isMyo' => true
+            'isMyo' => true,
+            'stats' => Stat::orderBy('name')->get(),
         ]);
     }
 
