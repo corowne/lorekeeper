@@ -139,13 +139,16 @@ class CharacterManager extends Service
                 'character_id' => $character->id
             ]);
             
-            foreach($data['stats'] as $key=>$stat)
+            if(isset($data['stats']))
             {
-                CharacterStat::create([
-                    'character_id' => $character->id,
-                    'stat_id' => $key,
-                    'count' => $stat,
-                ]);
+                foreach($data['stats'] as $key=>$stat)
+                {
+                    CharacterStat::create([
+                        'character_id' => $character->id,
+                        'stat_id' => $key,
+                        'count' => $stat,
+                    ]);
+                }
             }
             
             // Add a log for the character
