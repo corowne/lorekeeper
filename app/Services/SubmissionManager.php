@@ -122,6 +122,7 @@ class SubmissionManager extends Service
 
                     $focusId = $focusCharacter->id;
                 }
+                else $focusId = NULL;
             }
             // Get a list of rewards, then create the submission itself
             $promptRewards = createAssetsArray();
