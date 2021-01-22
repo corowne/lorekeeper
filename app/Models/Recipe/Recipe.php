@@ -14,7 +14,7 @@ class Recipe extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'has_image', 'needs_unlocking', 'description', 'parsed_description', 'reference_url', 'artist_alias' ,'artist_url'
+        'name', 'has_image', 'needs_unlocking', 'description', 'parsed_description', 'reference_url', 'artist_alias' ,'artist_url', 'is_limited'
     ];
 
     protected $appends = ['image_url'];
@@ -68,6 +68,11 @@ class Recipe extends Model
     public function users()
     {
         return $this->belongsToMany('App\Models\User\User', 'user_recipes')->withPivot('id');
+    }
+
+    public function limits()
+    {
+        return $this->hasMany('App\Models\Recipe\RecipeLimit');
     }
 
     /**********************************************************************************************

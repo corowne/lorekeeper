@@ -8,6 +8,7 @@ use Config;
 
 use App\Models\User\User;
 use App\Models\User\UserItem;
+use App\Models\User\UserCurrency;
 use App\Models\User\UserRecipe;
 
 use App\Models\Recipe\Recipe;
@@ -41,6 +42,29 @@ class RecipeManager extends Service
         DB::beginTransaction();
 
         try {
+            // Check user has all limits
+            if($recipe->is_limited)
+            {
+                foreach($recipe->limits as $limit)
+                {
+                    $rewardType = $limit->rewardable_type;
+                    $check = NULL;
+                    switch($rewardType)
+                    {
+                        case 'Item':
+                            $check = UserItem::where('item_id', $limit->reward->id)->where('user_id', auth::user()->id)->where('count', '>', 0)->first();
+                            break;
+                        case 'Currency':
+                            $check = UserCurrency::where('currency_id', $limit->reward->id)->where('user_id', auth::user()->id)->where('count', '>', 0)->first();
+                            break;
+                        case 'Recipe':
+                            $check = UserRecipe::where('recipe_id', $limit->reward->id)->where('user_id', auth::user()->id)->first();
+                            break;
+                    }
+                    
+                    if(!$check) throw new \Exception('You require ' . $limit->reward->name . ' to craft this');
+                }
+            }
             // Check for sufficient currencies
             $user_currencies = $user->getCurrencies(true);
             $currency_ingredients = $recipe->ingredients->where('ingredient_type', 'Currency');

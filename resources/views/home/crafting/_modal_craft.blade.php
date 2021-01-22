@@ -29,6 +29,17 @@
                 @endforeach
             </div>
         </div>
+        @if($recipe->is_limited)
+        <div class="text-danger">(Requires <?php 
+            $limits = []; 
+            foreach($recipe->limits as $limit)
+            {
+            $name = $limit->reward->name;
+            $limits[] = $name;
+            }
+            echo implode(", ", $limits);
+        ?>)</div>
+        @endif
     </div>
     {{-- Check if sufficient ingredients have been selected? --}}
     {!! Form::open(['url' => 'crafting/craft/'.$recipe->id]) !!}

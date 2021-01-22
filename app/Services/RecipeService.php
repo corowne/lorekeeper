@@ -14,6 +14,7 @@ use App\Models\User\UserRecipe;
 use App\Models\Recipe\Recipe;
 use App\Models\Recipe\RecipeIngredient;
 use App\Models\Recipe\RecipeReward;
+use App\Models\Recipe\RecipeLimit;
 
 use App\Services\InventoryManager;
 
@@ -79,6 +80,8 @@ class RecipeService extends Service
 
             $recipe = Recipe::create($data);
             $this->populateIngredients($recipe, $data);
+            //limits
+            $this->populateLimits($recipe, $data);
 
             $recipe->output = $this->populateRewards($data);
             $recipe->save();
@@ -115,8 +118,9 @@ class RecipeService extends Service
             if(!isset($data['rewardable_type'])) throw new \Exception('Please add at least one reward to the recipe.');
 
             $data = $this->populateData($data);
-
             $this->populateIngredients($recipe, $data);
+            // do limits
+            $this->populateLimits($recipe, $data);
 
             $image = null;            
             if(isset($data['image']) && $data['image']) {
@@ -221,6 +225,34 @@ class RecipeService extends Service
             return getDataReadyAssets($assets);
         }
         return null;
+    }
+
+    /**
+     * Adds limits to the recipe
+     *
+     * @param  \App\Models\Recipe\Recipe   $recipe
+     * @param  array                       $data 
+     */
+    private function populateLimits($recipe, $data)
+    {
+        if(!isset($data['is_limited'])) $data['is_limited'] = 0;
+
+        $recipe->is_limited = $data['is_limited'];
+        $recipe->save();
+
+        $recipe->limits()->delete();
+
+        if(isset($data['limit_type'])) {
+            foreach($data['limit_type'] as $key => $type)
+            {
+                RecipeLimit::create([
+                    'recipe_id'       => $recipe->id,
+                    'limit_type' => $type,
+                    'limit_id'   => $data['limit_id'][$key],
+                    'quantity'        => $data['limit_quantity'][$key],
+                ]);
+            }
+        }
     }
 
     /**
