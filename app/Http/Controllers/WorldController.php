@@ -420,8 +420,12 @@ class WorldController extends Controller
                 case 'oldest':
                     $query->sortOldest();
                     break;
+                case 'locked':
+                    $query->sortNeedsUnlocking();
+                    break;
             }
         }
+        else $query->sortNewest();
 
         return view('world.recipes.recipes', [
             'recipes' => $query->paginate(20)->appends($request->query()),

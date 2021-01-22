@@ -262,6 +262,22 @@ class UserController extends Controller
     }
 
     /**
+     * Shows a user's recipe logs.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserRecipeLogs($name)
+    {
+        $user = $this->user;
+        return view('user.recipe_logs', [
+            'user' => $this->user,
+            'logs' => $this->user->getRecipeLogs(0),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
+        ]);
+    }
+
+    /**
      * Shows a user's gallery submissions.
      *
      * @param  string  $name
@@ -299,26 +315,6 @@ class UserController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getUserOwnCharacterFavorites($name)
-    {
-        $user = $this->user;
-        $userCharacters = $user->characters()->pluck('id')->toArray();
-        $userFavorites = $user->galleryFavorites()->pluck('gallery_submission_id')->toArray();
-
-        return view('user.favorites', [
-            'user' => $this->user,
-            'characters' => true,
-            'favorites' => $this->user->characters->count() ? GallerySubmission::whereIn('id', $userFavorites)->whereIn('id', GalleryCharacter::whereIn('character_id', $userCharacters)->pluck('gallery_submission_id')->toArray())->visible(Auth::check() ? Auth::user() : null)->accepted()->orderBy('created_at', 'DESC')->paginate(20) : null,
-            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
-        ]);
-    }
-
-    /**
-     * Shows a user's recipe acquisition history.
-     *
-     * @param  string  $name
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function getRecipeLogs($name)
     {
         $user = $this->user;
         $userCharacters = $user->characters()->pluck('id')->toArray();

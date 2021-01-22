@@ -18,9 +18,9 @@
                 {!! Form::select('sort', [
                     'alpha'          => 'Sort Alphabetically (A-Z)',
                     'alpha-reverse'  => 'Sort Alphabetically (Z-A)',
-                    'category'       => 'Sort by Category',
                     'newest'         => 'Newest First',
-                    'oldest'         => 'Oldest First'
+                    'oldest'         => 'Oldest First',
+                    'locked'         => 'Needs to be Unlocked'
                 ], Request::get('sort') ? : 'category', ['class' => 'form-control']) !!}
             </div>
             <div class="form-group ml-3 mb-3">

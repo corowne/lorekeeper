@@ -117,9 +117,9 @@ class Recipe extends Model
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeNeedsUnlocking($query)
+    public function scopeSortNeedsUnlocking($query)
     {
-        return $query->where('needs_unlocking',true);
+        return $query->where('needs_unlocking', 1);
     }
 
     /**********************************************************************************************

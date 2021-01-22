@@ -17,7 +17,7 @@
     <li class="sidebar-section">
         <div class="sidebar-section-header">Crafting</div>
         <div class="sidebar-item"><a href="{{ url('world/recipes') }}" class="{{ set_active('crafting') }}">Recipes</a></div>
-        <div class="sidebar-item"><a href="{{ url('crafting/recipebook') }}" class="{{ set_active('crafting/recipebook') }}">Recipebook</a></div>
+        <div class="sidebar-item"><a href="{{ url('world/recipebook') }}" class="{{ set_active('world/recipebook') }}">Recipebook</a></div>
     </li>
     <li class="sidebar-section">
         <div class="sidebar-section-header">Reports</div>

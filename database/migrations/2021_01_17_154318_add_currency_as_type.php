@@ -22,13 +22,6 @@ class AddCurrencyAsType extends Migration
             $table->enum('ingredient_type', ['Item', 'MultiItem', 'Category', 'MultiCategory', 'Currency'])->nullable(false);
         });
 
-        Schema::table('user_recipes_log', function (Blueprint $table) {
-
-            $table->string('log', 500); // Actual log text
-            $table->string('log_type'); // Indicates how the recipe was received.
-            $table->string('data', 1024)->nullable(); // Includes information like staff notes, etc.
-        });
-
         Schema::create('user_crafting_log', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
@@ -53,11 +46,6 @@ class AddCurrencyAsType extends Migration
     {
         Schema::dropIfExists('user_crafting_log');
 
-        Schema::table('user_recipes_log', function (Blueprint $table) {
-            $table->dropColumn('log');
-            $table->dropColumn('log_type');
-            $table->dropColumn('data');
-        });
 
         Schema::table('recipe_ingredients', function (Blueprint $table) {
             $table->dropColumn('ingredient_type');

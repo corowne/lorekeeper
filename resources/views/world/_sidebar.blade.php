@@ -15,4 +15,8 @@
         <div class="sidebar-item"><a href="{{ url('world/items') }}" class="{{ set_active('world/items*') }}">All Items</a></div>
         <div class="sidebar-item"><a href="{{ url('world/currencies') }}" class="{{ set_active('world/currencies*') }}">Currencies</a></div>
     </li>
+    <li class="sidebar-section">
+        <div class="sidebar-section-header">Crafting</div>
+        <div class="sidebar-item"><a href="{{ url('world/recipebook') }}" class="{{ set_active('world/recipebook*') }}">Recipebook</a></div>
+    </li>
 </ul>

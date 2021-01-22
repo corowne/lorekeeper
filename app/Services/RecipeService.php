@@ -50,6 +50,9 @@ class RecipeService extends Service
 
             // if((isset($data['recipe_category_id']) && $data['recipe_category_id']) && !RecipeCategory::where('id', $data['recipe_category_id'])->exists()) throw new \Exception("The selected recipe category is invalid.");
 
+            if(!isset($data['ingredient_type'])) throw new \Exception('Please add at least one ingredient.');
+            if(!isset($data['rewardable_type'])) throw new \Exception('Please add at least one reward to the recipe.');
+
             $data = $this->populateData($data);
 
             foreach($data['ingredient_type'] as $key => $type)
@@ -107,6 +110,9 @@ class RecipeService extends Service
             // More specific validation
             if(Recipe::where('name', $data['name'])->where('id', '!=', $recipe->id)->exists()) throw new \Exception("The name has already been taken.");
             if((isset($data['recipe_category_id']) && $data['recipe_category_id']) && !RecipeCategory::where('id', $data['recipe_category_id'])->exists()) throw new \Exception("The selected recipe category is invalid.");
+
+            if(!isset($data['ingredient_type'])) throw new \Exception('Please add at least one ingredient.');
+            if(!isset($data['rewardable_type'])) throw new \Exception('Please add at least one reward to the recipe.');
 
             $data = $this->populateData($data);
 

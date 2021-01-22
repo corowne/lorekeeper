@@ -61,7 +61,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'Users'], function() {
     Route::get('{name}/ownership', 'UserController@getUserOwnershipLogs');
     Route::get('{name}/submissions', 'UserController@getUserSubmissions');
 
-    Route::get('{name}/recipe-logs', 'UserController@getRecipeLogs');
+    Route::get('{name}/recipe-logs', 'UserController@getUserRecipeLogs');
 });
 
 /**************************************************************************************************
@@ -111,7 +111,7 @@ Route::group(['prefix' => 'world'], function() {
     Route::get('trait-categories', 'WorldController@getFeatureCategories');
     Route::get('traits', 'WorldController@getFeatures');
     Route::get('character-categories', 'WorldController@getCharacterCategories');
-    Route::get('recipes', 'WorldController@getRecipes');
+    Route::get('recipebook', 'WorldController@getRecipes');
     Route::get('recipes/{id}', 'WorldController@getRecipe');
 });
 
