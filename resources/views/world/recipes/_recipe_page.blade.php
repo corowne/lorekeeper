@@ -37,6 +37,26 @@
                     </div>
 
                     <div class="row">
+
+                        @if($recipe->is_limited)
+                            <div class="col-md-12">
+                                <h5>Requirements</h5>
+
+                                <div class="alert alert-secondary">
+                                    <?php
+                                    $limits = [];
+                                    foreach($recipe->limits as $limit)
+                                    {
+                                    $name = $limit->reward->name;
+                                    $quantity = $limit->quantity > 1 ? $limit->quantity . ' ' : '';
+                                    $limits[] = $quantity . $name;
+                                    }
+                                    echo implode(", ", $limits);
+                                    ?>
+                                </div>
+                            </div>
+                        @endif
+
                         <div class="col-md-6">
                             <h5>Ingredients</h5>
                             @foreach($recipe->ingredients as $ingredient)
