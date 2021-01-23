@@ -47,7 +47,7 @@ class RecipeManager extends Service
             {
                 foreach($recipe->limits as $limit)
                 {
-                    $rewardType = $limit->rewardable_type;
+                    $rewardType = $limit->limit_type;
                     $check = NULL;
                     switch($rewardType)
                     {
