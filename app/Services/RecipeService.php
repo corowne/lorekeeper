@@ -181,6 +181,7 @@ class RecipeService extends Service
 
         foreach($data['ingredient_type'] as $key => $type)
         {
+            if(!count(array_filter($data['ingredient_data'][$key]))) throw new \Exception('One of the ingredients was not specified.');
             RecipeIngredient::create([
                 'recipe_id' => $recipe->id,
                 'ingredient_type' => $type,
@@ -245,11 +246,12 @@ class RecipeService extends Service
         if(isset($data['limit_type'])) {
             foreach($data['limit_type'] as $key => $type)
             {
+                if(!count(array_filter($data['limit_id'][$key]))) throw new \Exception('One of the limits was not specified.');
                 RecipeLimit::create([
-                    'recipe_id'       => $recipe->id,
+                    'recipe_id'  => $recipe->id,
                     'limit_type' => $type,
                     'limit_id'   => $data['limit_id'][$key],
-                    'quantity'        => $data['limit_quantity'][$key],
+                    'quantity'   => $data['limit_quantity'][$key],
                 ]);
             }
         }
