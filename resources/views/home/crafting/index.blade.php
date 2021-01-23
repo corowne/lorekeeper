@@ -6,56 +6,48 @@
 {!! breadcrumbs(['Crafting' => 'crafting']) !!}
 
 <h1>
-    Crafting
+    My Recipe Book
 </h1>
+<p> This is a list of recipes that you have unlocked, as well as automatically unlocked recipes. </p>
 
-<div>
-    {!! Form::open(['method' => 'GET', 'class' => '']) !!}
-        <div class="form-inline justify-content-end">
-            <div class="form-group ml-3 mb-3">
-                {!! Form::text('name', Request::get('name'), ['class' => 'form-control', 'placeholder' => 'Name']) !!}
-            </div>
-            {{--
-            <div class="form-group ml-3 mb-3">
-                {!! Form::select('prompt_category_id', $categories, Request::get('name'), ['class' => 'form-control']) !!}
-            </div>
-            --}}
-        </div>
-        <div class="form-inline justify-content-end">
-            <div class="form-group ml-3 mb-3">
-                {!! Form::select('sort', [
-                    'alpha'          => 'Sort Alphabetically (A-Z)',
-                    'alpha-reverse'  => 'Sort Alphabetically (Z-A)',
-                    {{--
-                    'category'       => 'Sort by Category',
-                    'newest'         => 'Newest First',
-                    'oldest'         => 'Oldest First',--}}
-                ], Request::get('sort') ? : 'category', ['class' => 'form-control']) !!}
-            </div>
-            <div class="form-group ml-3 mb-3">
-                {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
-            </div>
-        </div>
-    {!! Form::close() !!}
-</div>
+<hr>
 
-{!! $recipes->render() !!}
-@foreach($recipes as $recipe)
-    @include('home.crafting._recipe_card', ['recipe' => $recipe])
-@endforeach
-{!! $recipes->render() !!}
+<h3>Free Recipes</h3>
+@if($default->count())
+    <div class="row mx-0">
+        @foreach($default as $recipe)
+            @include('home.crafting._smaller_recipe_card', ['recipe' => $recipe])
+        @endforeach
+    </div>
+@else
+    There are no free recipes.
+@endif
+
+<hr>
+
+<h3>Your Unlocked Recipes</h3>
+@if(Auth::user()->recipes->count())
+    <div class="row mx-0">
+        @foreach(Auth::user()->recipes as $recipe)
+            @include('home.crafting._smaller_recipe_card', ['recipe' => $recipe])
+        @endforeach
+    </div>
+@else
+    You haven't unlocked any recipes!
+@endif
 
 
 @endsection
+
 
 @section('scripts')
 <script>
 $( document ).ready(function() {
     $('.btn-craft').on('click', function(e) {
         e.preventDefault();
-        var $parent = $(this).parent().parent();
+        var $parent = $(this).parent().parent().parent();
         loadModal("{{ url('crafting/craft') }}/" + $parent.data('id'), $parent.data('name'));
     });
 });
 </script>
-@endsection
+@endsection 

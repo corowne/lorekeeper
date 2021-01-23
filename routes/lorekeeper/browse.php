@@ -111,7 +111,7 @@ Route::group(['prefix' => 'world'], function() {
     Route::get('trait-categories', 'WorldController@getFeatureCategories');
     Route::get('traits', 'WorldController@getFeatures');
     Route::get('character-categories', 'WorldController@getCharacterCategories');
-    Route::get('recipebook', 'WorldController@getRecipes');
+    Route::get('recipes', 'WorldController@getRecipes');
     Route::get('recipes/{id}', 'WorldController@getRecipe');
 });
 

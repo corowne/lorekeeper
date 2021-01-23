@@ -37,35 +37,7 @@ class CraftingController extends Controller
      */
     public function getIndex(Request $request)
     {
-        $query = Recipe::query();
-        $data = $request->only(['name', 'sort']);
-        if(isset($data['name'])) $query->where('name', 'LIKE', '%'.$data['name'].'%');
-        if(isset($data['sort'])) 
-        {
-            switch($data['sort']) {
-                case 'alpha':
-                    $query->sortAlphabetical();
-                    break;
-                case 'alpha-reverse':
-                    $query->sortAlphabetical(true);
-                    break;
-            }
-        }
-        else $query->sortAlphabetical();
         return view('home.crafting.index', [
-            'recipes' => $query->paginate(20)
-        ]);
-    }
-
-    /**
-     * Shows the user's recipes.
-     *
-     * @param  string  $type
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function getRecipeBook(Request $request)
-    {
-        return view('home.crafting.recipebook', [
             'default' => Recipe::where('needs_unlocking','0')->get(),
         ]);
     }
