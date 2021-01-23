@@ -1,27 +1,28 @@
 
 <script>
 $( document ).ready(function() {    
-    var $lootTable  = $('#lootTableBody');
-    var $lootRow = $('#lootRow').find('.loot-row');
-    var $itemSelect = $('#lootRowData').find('.item-select');
-    var $currencySelect = $('#lootRowData').find('.currency-select');
-    var $recipeSelect = $('#lootRowData').find('.recipe-select');
+    var $limitTable  = $('#limitTableBody');
+    var $limitRow = $('#limitRow').find('.limit-row');
+    var $itemSelect = $('#limitRowData').find('.item-select');
+    var $currencySelect = $('#limitRowData').find('.currency-select');
+    var $recipeSelect = $('#limitRowData').find('.recipe-select');
 
 
-    $('#lootTableBody .selectize').selectize();
-    attachRemoveListener($('#lootTableBody .remove-loot-button'));
+    $('#limitTableBody .selectize').selectize();
+    attachRewardTypeListener($('#limitTableBody .reward-type'));
+    attachRemoveListener($('#limitTableBody .remove-limit-button'));
 
-    $('#addLoot').on('click', function(e) {
+    $('#addLimit').on('click', function(e) {
         e.preventDefault();
-        var $clone = $lootRow.clone();
-        $lootTable.append($clone);
+        var $clone = $limitRow.clone();
+        $limitTable.append($clone);
         attachRewardTypeListener($clone.find('.reward-type'));
-        attachRemoveListener($clone.find('.remove-loot-button'));
+        attachRemoveListener($clone.find('.remove-limit-button'));
     });
 
     $('.reward-type').on('change', function(e) {
         var val = $(this).val();
-        var $cell = $(this).parent().find('.loot-row-select');
+        var $cell = $(this).parent().find('.limit-row-select');
 
         var $clone = null;
         if(val == 'Item') $clone = $itemSelect.clone();
@@ -35,7 +36,7 @@ $( document ).ready(function() {
     function attachRewardTypeListener(node) {
         node.on('change', function(e) {
             var val = $(this).val();
-            var $cell = $(this).parent().parent().find('.loot-row-select');
+            var $cell = $(this).parent().parent().find('.limit-row-select');
 
             var $clone = null;
             if(val == 'Item') $clone = $itemSelect.clone();

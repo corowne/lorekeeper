@@ -12,6 +12,7 @@ $( document ).ready(function() {
     var currentRowID = $ingredientTable.find('.ingredient-row').length;
 
     $('#ingredientTableBody .selectize').selectize();
+    attachIngredientTypeListener($('#ingredientTableBody .ingredient-type'));
     attachRemoveListener($('#ingredientTableBody .remove-ingredient-button'));
 
     $('#addIngredient').on('click', function(e) {

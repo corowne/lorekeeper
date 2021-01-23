@@ -1,4 +1,4 @@
-<div class="text-right mb-3">
+    <div class="text-right mb-3">
     <a href="#" class="btn btn-outline-info" id="addIngredient">Add Ingredient</a>
 </div>
 <table class="table table-sm" id="ingredientTable">
