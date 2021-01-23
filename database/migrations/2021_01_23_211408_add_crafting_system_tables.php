@@ -39,7 +39,7 @@ class AddCraftingSystemTables extends Migration
         Schema::create('recipe_ingredients', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->unsignedInteger('recipe_id')->nullable(false);
-            $table->enum('ingredient_type', ['Item', 'MultiItem', 'Category', 'MultiCategory'])->nullable(false);
+            $table->enum('ingredient_type', ['Item', 'MultiItem', 'Category', 'MultiCategory', 'Currency'])->nullable(false);
             $table->string('ingredient_data', 1024)->nullable(false);
             $table->unsignedInteger('quantity')->nullable(false);
         });
