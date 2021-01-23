@@ -102,7 +102,6 @@ class RecipeManager extends Service
             ];
             
             if(!fillUserAssets($recipe->rewardItems, null, $user, $logType, $craftingData)) throw new \Exception("Failed to distribute rewards to user.");
-            //if(!$this->creatLog())
             
             return $this->commitReturn(true);
         } catch(\Exception $e) {
