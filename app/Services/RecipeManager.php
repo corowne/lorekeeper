@@ -47,18 +47,18 @@ class RecipeManager extends Service
             {
                 foreach($recipe->limits as $limit)
                 {
-                    $rewardType = $limit->rewardable_type;
+                    $limitType = $limit->limit_type;
                     $check = NULL;
-                    switch($rewardType)
+                    switch($limitType)
                     {
                         case 'Item':
-                            $check = UserItem::where('item_id', $limit->reward->id)->where('user_id', auth::user()->id)->where('count', '>', 0)->first();
+                            $check = UserItem::where('item_id', $limit->reward->id)->where('user_id', $user->id)->where('count', '>', 0)->first();
                             break;
                         case 'Currency':
-                            $check = UserCurrency::where('currency_id', $limit->reward->id)->where('user_id', auth::user()->id)->where('count', '>', 0)->first();
+                            $check = UserCurrency::where('currency_id', $limit->reward->id)->where('user_id', $user->id)->where('count', '>', 0)->first();
                             break;
                         case 'Recipe':
-                            $check = UserRecipe::where('recipe_id', $limit->reward->id)->where('user_id', auth::user()->id)->first();
+                            $check = UserRecipe::where('recipe_id', $limit->reward->id)->where('user_id', $user->id)->first();
                             break;
                     }
                     
