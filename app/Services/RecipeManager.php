@@ -55,7 +55,7 @@ class RecipeManager extends Service
                             $check = UserItem::where('item_id', $limit->reward->id)->where('user_id', $user->id)->where('count', '>', 0)->first();
                             break;
                         case 'Currency':
-                            $check = UserCurrency::where('currency_id', $limit->reward->id)->where('user_id', $user->id)->where('count', '>', 0)->first();
+                            $check = UserCurrency::where('currency_id', $limit->reward->id)->where('user_id', $user->id)->where('quantity', '>', 0)->first();
                             break;
                         case 'Recipe':
                             $check = UserRecipe::where('recipe_id', $limit->reward->id)->where('user_id', $user->id)->first();
