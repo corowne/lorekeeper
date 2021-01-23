@@ -10,6 +10,7 @@ use App\Models\Item\ItemCategory;
 use App\Models\User\User;
 use App\Models\Shop\Shop;
 use App\Models\Prompt\Prompt;
+use App\Models\User\UserItem;
 
 class Item extends Model
 {
@@ -20,7 +21,7 @@ class Item extends Model
      */
     protected $fillable = [
         'item_category_id', 'name', 'has_image', 'description', 'parsed_description', 'allow_transfer',
-        'data', 'reference_url', 'artist_alias', 'artist_url', 'artist_id'
+        'data', 'reference_url', 'artist_alias', 'artist_url', 'artist_id', 'is_released'
     ];
 
     protected $appends = ['image_url'];
@@ -145,6 +146,17 @@ class Item extends Model
     public function scopeSortOldest($query)
     {
         return $query->orderBy('id');
+    }
+
+    /**
+     * Scope a query to show only released or "released" (at least one user-owned stack has ever existed) items.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeReleased($query)
+    {
+        return $query->whereIn('id', UserItem::pluck('item_id')->toArray())->orWhere('is_released', 1);
     }
 
     /**********************************************************************************************

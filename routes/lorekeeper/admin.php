@@ -84,7 +84,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('galleries/edit/{id?}', 'GalleryController@postCreateEditGallery');
     Route::post('galleries/delete/{id}', 'GalleryController@postDeleteGallery');
     Route::post('galleries/sort', 'GalleryController@postSortGallery');
-    
+
     # CURRENCIES
     Route::get('currencies', 'CurrencyController@getIndex');
     Route::get('currencies/sort', 'CurrencyController@getSort');
@@ -287,10 +287,13 @@ Route::group(['prefix' => 'grants', 'namespace' => 'Users', 'middleware' => 'pow
 
     Route::get('items', 'GrantController@getItems');
     Route::post('items', 'GrantController@postItems');
+    
+    Route::get('item-search', 'GrantController@getItemSearch');
 
     Route::get('recipes', 'GrantController@getRecipes');
     Route::post('recipes', 'GrantController@postRecipes');
 });
+
 
 # MASTERLIST
 Route::group(['prefix' => 'masterlist', 'namespace' => 'Characters', 'middleware' => 'power:manage_characters'], function() {

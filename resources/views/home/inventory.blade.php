@@ -7,9 +7,13 @@
 
 <h1>
     Inventory
+    <div class="float-right mb-3">
+        <a class="btn btn-primary" href="{{ url('inventory/account-search') }}"><i class="fas fa-search"></i> Account Search</a>
+    </div>
 </h1>
 
 <p>This is your inventory. Click on an item to view more details and actions you can perform on it.</p>
+
 @foreach($items as $categoryId=>$categoryItems)
     <div class="card mb-3 inventory-category">
         <h5 class="card-header inventory-header">

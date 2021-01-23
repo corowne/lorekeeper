@@ -77,7 +77,7 @@ class SubmissionManager extends Service
                 foreach($data['stack_id'] as $key=>$stackId) {
                     $stack = UserItem::with('item')->find($stackId);
                     if(!$stack || $stack->user_id != $user->id) throw new \Exception("Invalid item selected.");
-                    if(!isset($data['stack_quantity'][$key])) $data['stack_quantity'][$key] = $stack->count();
+                    if(!isset($data['stack_quantity'][$key])) $data['stack_quantity'][$key] = $stack->count;
                     $stack->submission_count += $data['stack_quantity'][$key];
                     $stack->save();
 

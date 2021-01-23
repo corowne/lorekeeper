@@ -87,9 +87,17 @@
     </div>
 @endif
 
-<div class="form-group">
-    {!! Form::checkbox('allow_transfer', 1, $item->id ? $item->allow_transfer : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-    {!! Form::label('allow_transfer', 'Allow User → User Transfer', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is off, users will not be able to transfer this item to other users. Non-account-bound items can be account-bound when granted to users directly.') !!}
+<div class="row">
+    <div class="col-md form-group">
+        {!! Form::checkbox('allow_transfer', 1, $item->id ? $item->allow_transfer : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+        {!! Form::label('allow_transfer', 'Allow User → User Transfer', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is off, users will not be able to transfer this item to other users. Non-account-bound items can be account-bound when granted to users directly.') !!}
+    </div>
+    @if(Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields'))
+        <div class="col-md form-group">
+            {!! Form::checkbox('is_released', 1, $item->id ? $item->is_released : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+            {!! Form::label('is_released', 'Is Released', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is off, users will not be able to view information for the item/it will be hidden from view. This is overridden by the item being owned at any point by anyone on the site.') !!}
+        </div>
+    @endif
 </div>
 
 @if(Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields'))
