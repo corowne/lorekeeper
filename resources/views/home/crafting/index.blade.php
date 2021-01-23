@@ -35,6 +35,9 @@
 @else
     You haven't unlocked any recipes!
 @endif
+<div class="text-right mb-4">
+    <a href="{{ url(Auth::user()->url.'/recipe-logs') }}">View logs...</a>
+</div>
 
 
 @endsection
