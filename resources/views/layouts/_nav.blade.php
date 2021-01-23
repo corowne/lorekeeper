@@ -62,6 +62,9 @@
                             <a class="dropdown-item" href="{{ url('designs') }}">
                                 Design Approvals
                             </a>
+                            <a class="dropdown-item" href="{{ url('crafting') }}">
+                                Crafting
+                            </a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{{ url('characters/transfers/incoming') }}">
                                 Character Transfers
@@ -111,9 +114,6 @@
                         </a>
                         <a class="dropdown-item" href="{{ url('shops') }}">
                             Shops
-                        </a>
-                        <a class="dropdown-item" href="{{ url('crafting') }}">
-                            Crafting
                         </a>
                     </div>
                 </li>
