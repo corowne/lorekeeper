@@ -50,4 +50,4 @@ $( document ).ready(function() {
     });
 });
 </script>
-@endsection 
+@endsection

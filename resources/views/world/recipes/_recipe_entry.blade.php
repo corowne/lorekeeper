@@ -17,9 +17,28 @@
             {!! $name !!} @if(isset($idUrl) && $idUrl) <a href="{{ $idUrl }}" class="world-entry-search text-muted"><i class="fas fa-search"></i></a>  @endif
         </h3>
 
-                    
+
         <div class="row">
-            <div class="col-md-6">
+
+            @if($recipe->is_limited)
+                <div class="col-md-4">
+                    <h5>Requirements</h5>
+
+                    <div class="alert alert-secondary">
+                        <?php
+                        $limits = [];
+                        foreach($recipe->limits as $limit)
+                        {
+                        $name = $limit->reward->name;
+                        $quantity = $limit->quantity > 1 ? $limit->quantity . ' ' : '';
+                        $limits[] = $quantity . $name;
+                        }
+                        echo implode(", ", $limits);
+                        ?>
+                    </div>
+                </div>
+            @endif
+            <div class="col-md">
                 <h5>Ingredients</h5>
                 @for($i = 0; $i < count($recipe->ingredients) && $i < 3; ++$i)
                     <?php $ingredient = $recipe->ingredients[$i]?>
@@ -31,7 +50,7 @@
                     <i class="fas fa-ellipsis-h mb-3"></i>
                 @endif
             </div>
-            <div class="col-md-6">
+            <div class="col-md">
                 <h5>Rewards</h5>
                 <?php $counter = 0; ?>
                 @foreach($recipe->reward_items as $type)
