@@ -25,7 +25,7 @@ class Recipe extends Model
      * @var string
      */
     protected $table = 'recipes';
-    
+
     /**
      * Validation rules for creation.
      *
@@ -36,7 +36,7 @@ class Recipe extends Model
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -49,7 +49,7 @@ class Recipe extends Model
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -57,11 +57,11 @@ class Recipe extends Model
     /**
      * Get the recipe's ingredients.
      */
-    public function ingredients() 
+    public function ingredients()
     {
         return $this->hasMany('App\Models\Recipe\RecipeIngredient');
     }
-    
+
     /**
      * Get the users who have this recipe.
      */
@@ -76,7 +76,7 @@ class Recipe extends Model
     }
 
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -128,11 +128,11 @@ class Recipe extends Model
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
-    
+
     /**
      * Gets the decoded output json
      *
@@ -219,7 +219,7 @@ class Recipe extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
@@ -259,5 +259,26 @@ class Recipe extends Model
    public function getLockedAttribute()
    {
        return $this->needs_unlocking && !User;
+   }
+
+   /**
+    * Returns whether or not a recipe's ingredients are all currency
+    *
+    * @return bool
+    */
+   public function getOnlyCurrencyAttribute()
+   {
+        if(count($this->ingredients))
+        {
+            $type = [];
+            foreach($this->ingredients as $ingredient)
+            {
+                $type[] = $ingredient->ingredient_type;
+            }
+            $types = array_flip($type);
+            if(count($types) == 1 && key($types) == 'Currency') return true;
+            else return false;
+        }
+        else return false;
    }
 }

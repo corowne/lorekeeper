@@ -48,7 +48,7 @@
             </div>
         </div>
     </div>
-    @if($selected)
+    @if($selected || $recipe->onlyCurrency)
         {{-- Check if sufficient ingredients have been selected? --}}
         {!! Form::open(['url' => 'crafting/craft/'.$recipe->id]) !!}
             @include('widgets._inventory_select', ['user' => Auth::user(), 'inventory' => $inventory, 'categories' => $categories, 'selected' => $selected, 'page' => $page])

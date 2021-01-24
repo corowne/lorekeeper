@@ -51,7 +51,7 @@ class CraftingController extends Controller
     public function getCraftRecipe(RecipeManager $service, $id)
     {
         $recipe = Recipe::find($id);
-        
+
         if(!$recipe || !Auth::user()) abort(404);
 
         $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get();
@@ -66,7 +66,7 @@ class CraftingController extends Controller
             'item_filter' => Item::orderBy('name')->get()->keyBy('id'),
             'inventory' => $inventory,
             'page' => 'craft',
-            'selected' => $selected
+            'selected' => count($selected) ? $selected : []
         ]);
     }
 
@@ -80,7 +80,7 @@ class CraftingController extends Controller
     {
         $recipe = Recipe::find($id);
         if(!$recipe) abort(404);
-        
+
         if($service->craftRecipe($request->only(['stack_id', 'stack_quantity']), $recipe, Auth::user())) {
             flash('Recipe crafted successfully.')->success();
         }

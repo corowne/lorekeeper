@@ -24,14 +24,14 @@ class RecipeManager extends Service
 {
 
 /**********************************************************************************************
-     
+
      RECIPE CRAFTING
 
  **********************************************************************************************/
 
     /**
      * Attempts to craft the specified recipe.
-    * 
+    *
     * @param  array                        $data
     * @param  \App\Models\Recipe\Recipe    $recipe
     * @param  \App\Models\User\User        $user
@@ -61,7 +61,7 @@ class RecipeManager extends Service
                             $check = UserRecipe::where('recipe_id', $limit->reward->id)->where('user_id', $user->id)->first();
                             break;
                     }
-                    
+
                     if(!$check) throw new \Exception('You require ' . $limit->reward->name . ' to craft this');
                 }
             }
@@ -73,22 +73,27 @@ class RecipeManager extends Service
                 if($currency->quantity < $ingredient->quantity) throw new \Exception('Insufficient currency.');
             }
 
-            // Fetch the stacks from DB
-            $stacks = UserItem::whereIn('id', $data['stack_id'])->get()->map(function($stack) use ($data) {
-                $stack->count = (int)$data['stack_quantity'][array_search($stack->id, $data['stack_id'])];
-                return $stack;
-            });
+            // If there are non-Currency ingredients.
+            if(isset($data['stack_id']))
+            {
+                // Fetch the stacks from DB
+                $stacks = UserItem::whereIn('id', $data['stack_id'])->get()->map(function($stack) use ($data) {
+                    $stack->count = (int)$data['stack_quantity'][array_search($stack->id, $data['stack_id'])];
+                    return $stack;
+                });
 
-            // Check for sufficient ingredients
-            $plucked = $this->pluckIngredients($stacks, $recipe);
-            if(!$plucked) throw new \Exception('Insufficient ingredients selected.');
-            
-            // Debit the ingredients
-            $service = new InventoryManager();
-            foreach($plucked as $id => $quantity) {
-                $stack = UserItem::find($id);
-                if(!$service->debitStack($user, 'Crafting', ['data' => 'Used in '.$recipe->name.' Recipe'], $stack, $quantity)) throw new \Exception('Items could not be removed.');
+                // Check for sufficient ingredients
+                $plucked = $this->pluckIngredients($stacks, $recipe);
+                if(!$plucked) throw new \Exception('Insufficient ingredients selected.');
+
+                // Debit the ingredients
+                $service = new InventoryManager();
+                foreach($plucked as $id => $quantity) {
+                    $stack = UserItem::find($id);
+                    if(!$service->debitStack($user, 'Crafting', ['data' => 'Used in '.$recipe->name.' Recipe'], $stack, $quantity)) throw new \Exception('Items could not be removed.');
+                }
             }
+
             // Debit the currency
             $service = new CurrencyManager();
             foreach($currency_ingredients as $ingredient) {
@@ -100,9 +105,9 @@ class RecipeManager extends Service
             $craftingData = [
                 'data' => 'Received rewards from '. $recipe->displayName .' recipe'
             ];
-            
+
             if(!fillUserAssets($recipe->rewardItems, null, $user, $logType, $craftingData)) throw new \Exception("Failed to distribute rewards to user.");
-            
+
             return $this->commitReturn(true);
         } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
@@ -113,7 +118,7 @@ class RecipeManager extends Service
     /**
      * Plucks stacks from a given Collection of user items that meet the crafting requirements of a recipe
     * If there are insufficient ingredients, null is returned
-    * 
+    *
     * @param  \Illuminate\Database\Eloquent\Collection     $user_items
     * @param  \App\Models\Recipe\Recipe                    $recipe
     * @return array|null
