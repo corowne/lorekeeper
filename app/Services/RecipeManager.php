@@ -123,8 +123,9 @@ class RecipeManager extends Service
     * @param  \App\Models\Recipe\Recipe                    $recipe
     * @return array|null
     */
-    public function pluckIngredients($user_items, $recipe)
+    public function pluckIngredients($user, $recipe)
     {
+        $user_items = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', $user->id)->get();
         $plucked = [];
         // foreach ingredient, search for a qualifying item, and select items up to the quantity, if insufficient continue onto the next entry
         foreach($recipe->ingredients->sortBy('ingredient_type') as $ingredient)

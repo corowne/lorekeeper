@@ -54,11 +54,11 @@ class CraftingController extends Controller
 
         if(!$recipe || !Auth::user()) abort(404);
 
-        $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get();
-
         // foreach ingredient, search for a qualifying item in the users inv, and select items up to the quantity, if insufficient continue onto the next entry
         // until there are no more eligible items, then proceed to the next item
-        $selected = $service->pluckIngredients($inventory, $recipe);
+        $selected = $service->pluckIngredients(Auth::user(), $recipe);
+
+        $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get();
 
         return view('home.crafting._modal_craft', [
             'recipe' => $recipe,
