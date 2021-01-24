@@ -51,6 +51,7 @@ class CraftingController extends Controller
     public function getCraftRecipe(RecipeManager $service, $id)
     {
         $recipe = Recipe::find($id);
+        $selected = [];
 
         if(!$recipe || !Auth::user()) abort(404);
 
@@ -66,7 +67,7 @@ class CraftingController extends Controller
             'item_filter' => Item::orderBy('name')->get()->keyBy('id'),
             'inventory' => $inventory,
             'page' => 'craft',
-            'selected' => count($selected) ? $selected : []
+            'selected' => $selected
         ]);
     }
 
