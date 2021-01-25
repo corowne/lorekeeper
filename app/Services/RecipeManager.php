@@ -83,7 +83,7 @@ class RecipeManager extends Service
                 });
 
                 // Check for sufficient ingredients
-                $plucked = $this->pluckIngredients($stacks, $recipe);
+                $plucked = $this->pluckIngredients($user, $recipe);
                 if(!$plucked) throw new \Exception('Insufficient ingredients selected.');
 
                 // Debit the ingredients
