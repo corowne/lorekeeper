@@ -16,6 +16,7 @@ use App\Models\Item\ItemCategory;
 use App\Models\Currency\Currency;
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
+use App\Models\Recipe\Recipe;
 use App\Models\Prompt\Prompt;
 
 use App\Services\SubmissionManager;
