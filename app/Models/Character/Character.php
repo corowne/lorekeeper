@@ -86,7 +86,7 @@ class Character extends Model
         'number' => 'required',
         'slug' => 'required|alpha_dash',
         'description' => 'nullable',
-        'sale_value' => 'nullable',
+        'sale_value' => 'nullable|integer',
         'image' => 'required|mimes:jpeg,gif,png|max:20000',
         'thumbnail' => 'nullable|mimes:jpeg,gif,png|max:20000',
         'owner_url' => 'url|nullable',
@@ -195,12 +195,12 @@ class Character extends Model
     /**
      * Get the character's associated gallery submissions.
      */
-    public function gallerySubmissions() 
+    public function gallerySubmissions()
     {
         return $this->hasMany('App\Models\Gallery\GalleryCharacter', 'character_id');
     }
-    
-    /**     
+
+    /**
      * Get the character's items.
      */
     public function items()
