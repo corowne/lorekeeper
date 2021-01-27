@@ -102,7 +102,7 @@ class Character extends Model
         'number' => 'required',
         'slug' => 'required',
         'description' => 'nullable',
-        'sale_value' => 'nullable',
+        'sale_value' => 'nullable|integer',
     ];
 
     /**
