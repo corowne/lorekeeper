@@ -65,7 +65,7 @@
             <div class="text-center">
                 <p>
                     This character has {{ $drops->drops_available }} batch{{ $drops->drops_available == 1 ? '' : 'es' }} of {{ isset($character->drops->dropData->data['drop_name']) ? strtolower($character->drops->dropData->data['drop_name']) : 'drop' }}s available.<br/>
-                    @if(isset($drops->dropData->cap))
+                    @if(isset($drops->dropData->cap) && $drops->dropData->cap > 0)
                         This character can manage a maximum of {{ $drops->dropData->cap }} batch{{ $drops->dropData->cap == 1 ? '' : 'es' }} of {{ isset($character->drops->dropData->data['drop_name']) ? strtolower($character->drops->dropData->data['drop_name']) : 'drop' }}s at once!
                         @if($drops->drops_available >= $drops->dropData->cap)
                              Until these {{ isset($character->drops->dropData->data['drop_name']) ? strtolower($character->drops->dropData->data['drop_name']) : 'drop' }}s are collected, this character won't produce any more.
