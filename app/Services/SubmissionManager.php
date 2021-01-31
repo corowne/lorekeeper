@@ -160,6 +160,7 @@ class SubmissionManager extends Service
             // Attach characters
             foreach($characters as $c)
             {
+                if($c->id == $focusId) throw new \Exception('Please only include the focus character in the focus character area.');
                 // Users might not pass in clean arrays (may contain redundant data) so we need to clean that up
                 $assets = $this->processRewards($data + ['character_id' => $c->id, 'currencies' => $currencies], true);
 
