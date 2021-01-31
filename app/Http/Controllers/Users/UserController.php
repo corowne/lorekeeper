@@ -147,12 +147,12 @@ class UserController extends Controller
      */
     public function getUserMyoSlots($name)
     {
-        $myo = $this->user->myoSlots()->get();
+        $myo = $this->user->myoSlots();
         if(!Auth::check() || !(Auth::check() && Auth::user()->hasPower('manage_characters'))) $myo->visible();
 
         return view('user.myo_slots', [
             'user' => $this->user,
-            'myos' => $myo,
+            'myos' => $myo->get(),
             'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
