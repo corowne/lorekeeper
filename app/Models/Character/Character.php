@@ -582,7 +582,8 @@ class Character extends Model
      */
     public function getSubmissions()
     {
-        return Submission::with('user.rank')->with('prompt')->where('status', 'Approved')->whereIn('id', SubmissionCharacter::where('character_id', $this->id)->pluck('submission_id')->toArray())->paginate(30);
+        $first = Submission::with('user.rank')->with('prompt')->where('status', 'Approved')->where('focus_chara_id', $this->id)->pluck('id');
+        return Submission::with('user.rank')->with('prompt')->where('status', 'Approved')->whereIn('id', SubmissionCharacter::where('character_id', $this->id)->pluck('submission_id')->union($first)->toArray())->paginate(30);
 
         // Untested
         //$character = $this;
