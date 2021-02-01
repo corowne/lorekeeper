@@ -40,10 +40,15 @@ class FixChildCommentTypes extends Command
     {
         //
         $childComments = Comment::whereNotNull('child_id')->get();
-        foreach($childComments as $comment) {
-            $parent = Comment::find($comment->child_id);
-            if(isset($parent->type) && $comment->type != $parent->type)
-                $comment->update(['type' => $parent->type]);
+        if($childComments->count()) {
+            $this->line('Updating '.$childComments->count().' comments...');
+            foreach($childComments as $comment) {
+                $parent = Comment::find($comment->child_id);
+                if(isset($parent->type) && $comment->type != $parent->type)
+                    $comment->update(['type' => $parent->type]);
+            }
+            $this->line('Complete!');
         }
+        else $this->line('No comments to update!');
     }
 }
