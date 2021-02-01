@@ -1377,11 +1377,10 @@ class CharacterManager extends Service
             // deletes any pending design drafts
             foreach($character->designUpdate as $update)
             {
-               if($update->status == 'Draft')
-               {
-                   $update->deleted_at = carbon::now();
-                   $update->save();
-               }
+                if($update->status == 'Draft')
+                {
+                   if(!$this->rejectRequest('Cancelled by '.$user->displayName.' in order to transfer character to another user', $update, $user, true)) throw new \Exception('Could not cancel pending request.');
+                }
             }
 
             $queueOpen = Settings::get('open_transfers_queue');
@@ -1448,8 +1447,7 @@ class CharacterManager extends Service
             {
                 if($update->status == 'Draft')
                 {
-                    $update->deleted_at = carbon::now();
-                    $update->save();
+                   if(!$this->rejectRequest('Cancelled by '.$user->displayName.' in order to transfer character to another user', $update, $user, true)) throw new \Exception('Could not cancel pending request.');
                 }
             }
 
