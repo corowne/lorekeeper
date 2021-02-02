@@ -1377,11 +1377,10 @@ class CharacterManager extends Service
             // deletes any pending design drafts
             foreach($character->designUpdate as $update)
             {
-               if($update->status == 'Draft')
-               {
-                   $update->deleted_at = carbon::now();
-                   $update->save();
-               }
+                if($update->status == 'Draft')
+                {
+                   if(!$this->rejectRequest('Cancelled by '.$user->displayName.' in order to transfer character to another user', $update, $user, true, false)) throw new \Exception('Could not cancel pending request.');
+                }
             }
 
             $queueOpen = Settings::get('open_transfers_queue');
@@ -1448,8 +1447,7 @@ class CharacterManager extends Service
             {
                 if($update->status == 'Draft')
                 {
-                    $update->deleted_at = carbon::now();
-                    $update->save();
+                   if(!$this->rejectRequest('Cancelled by '.$user->displayName.' in order to transfer character to another user', $update, $user, true, false)) throw new \Exception('Could not cancel pending request.');
                 }
             }
 
@@ -2302,7 +2300,7 @@ is_object($sender) ? $sender->id : null,
      * @param  bool                                         $forceReject
      * @return  bool
      */
-    public function rejectRequest($data, $request, $user, $forceReject = false)
+    public function rejectRequest($data, $request, $user, $forceReject = false, $notification = true)
     {
         DB::beginTransaction();
 
@@ -2349,12 +2347,15 @@ is_object($sender) ? $sender->id : null,
             $request->status = 'Rejected';
             $request->save();
 
-            // Notify the user
-            Notifications::create('DESIGN_REJECTED', $request->user, [
-                'design_url' => $request->url,
-                'character_url' => $request->character->url,
-                'name' => $request->character->fullName
-            ]);
+            if($notification)
+            {
+                // Notify the user
+                Notifications::create('DESIGN_REJECTED', $request->user, [
+                    'design_url' => $request->url,
+                    'character_url' => $request->character->url,
+                    'name' => $request->character->fullName
+                ]);
+            }
 
             return $this->commitReturn(true);
         } catch(\Exception $e) {
