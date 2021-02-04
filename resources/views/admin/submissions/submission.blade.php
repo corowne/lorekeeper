@@ -63,6 +63,9 @@
         </div>
         <div class="col-6">
             <h3>Stat & Level Rewards</h3>
+            @if(!$submission->focus_chara_id && $submission->prompt->expreward->chara_exp || !$submission->focus_chara_id && $submission->prompt->expreward->chara_points)
+            <div class="alert alert-danger">This prompt has character rewards but the user has not added a focus character. If this is a mistake, please decline.</div>
+            @endif
             <div class="card m-1">
                 <div class="row m-2">
                     <div class="col">
@@ -118,11 +121,8 @@
             </div>
         @endif
     @endif
-
         <h2>Characters</h2>
-        @if($submission->focus_chara_id && $submission->prompt->chara_exp || $submission->prompt->chara_points)
-            <div class="alert alert-warning">This prompt has character rewards but the user has not added a focus character. If this is a mistake, please decline.</div>
-        @endif
+    @if($submission->prompt_id)
         @if($submission->focus_chara_id)
         <h5>Focus Character</h5>
         <div class="submission-character-row mb-2">
@@ -172,6 +172,7 @@
         </div>
         <hr>
         @endif
+    @endif
         <div id="characters" class="mb-3">
             @foreach($submission->characters as $character)
                 @include('widgets._character_select_entry', ['characterCurrencies' => $characterCurrencies, 'character' => $character])

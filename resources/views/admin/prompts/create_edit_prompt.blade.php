@@ -115,7 +115,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 {!! Form::label('chara_exp', 'Character Exp Reward', ['class' => 'form-control-label ml-3']) !!}
-                {!! Form::number('chara_exp', $prompt->expreward ? $prompt->expreward->chara_points : null, ['class' => 'form-control',]) !!}
+                {!! Form::number('chara_exp', $prompt->expreward ? $prompt->expreward->chara_exp : null, ['class' => 'form-control',]) !!}
             </div>
         </div>
         <div class="col-md-6">

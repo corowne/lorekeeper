@@ -47,5 +47,12 @@ class Level extends Model
 
     **********************************************************************************************/
 
+    /**
+     * Get the rewards attached to this level.
+     */
+    public function rewards()
+    {
+        return $this->hasMany('App\Models\Stats\User\UserLevelReward', 'level_id');
+    }
     
 }

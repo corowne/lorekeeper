@@ -47,12 +47,12 @@ class CharacterLevel extends Model
 
     **********************************************************************************************/
 
-    /**
-     * Get the shop stock.
-     */
-    public function stock() 
-    {
-        return $this->hasMany('App\Models\Shop\ShopStock');
-    }
     
+    /**
+     * Get the rewards attached to this prompt.
+     */
+    public function rewards()
+    {
+        return $this->hasMany('App\Models\Stat\Character\CharacterLevelReward', 'level_id');
+    }
 }

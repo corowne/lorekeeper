@@ -15,6 +15,12 @@ use App\Models\Character\Character;
 use App\Models\Stats\Character\CharaLevels;
 use App\Models\Stats\User\UserLevel;
 
+use App\Models\Currency\Currency;
+use App\Models\Item\Item;
+use App\Models\Loot\LootTable;
+use App\Models\Raffle\Raffle;
+use App\Models\Prompt\Prompt;
+
 class LevelManager extends Service
 {
     public function userLevel($user)
@@ -44,11 +50,28 @@ class LevelManager extends Service
             $service = new StatManager;
             if($next->stat_points != 0)
             {
-                if(!$service->creditUserStat($user, 'Level Up Reward', 'Rewards for levelling up.', $next))
+                if(!$service->creditUserStat($user, 'Level Up Reward', 'Rewards for levelling up to .'.$next->level.'.', $next))
                 {
                     throw new \Exception('Error granting stat points.');
                 }
             }
+            ////////////////////////////////////////////////////// LEVEL REWARDS
+            $levelRewards = createAssetsArray();
+
+                foreach($next->rewards as $reward)
+                {
+                    addAsset($levelRewards, $reward->reward, $reward->quantity);
+                }
+
+            // Logging data
+            $levelLogType = 'Level Rewards';
+            $levelData = [
+                'data' => 'Received rewards for level up to level '.$next->level.'.'
+            ];
+
+            // Distribute user rewards
+            if(!$levelRewards = fillUserAssets($levelRewards, null, $user, $levelLogType, $levelData)) throw new \Exception("Failed to distribute rewards to user.");
+            /////////////////////////////////////////////////
 
             // create log
             if($this->createlog($user, 'User', $user->level->current_level, $next->level)) {
@@ -131,5 +154,78 @@ class LevelManager extends Service
                 'updated_at' => Carbon::now()
             ]
         );
+    }
+
+     /**
+     * Processes reward data into a format that can be used for distribution.
+     *
+     * @param  array $data
+     * @param  bool  $isCharacter
+     * @param  bool  $isStaff
+     * @return array
+     */
+    private function processRewards($data, $isCharacter, $isStaff = false)
+    {
+        if($isCharacter)
+        {
+            $assets = createAssetsArray(true);
+            if(isset($data['character_currency_id'][$data['character_id']]) && isset($data['character_quantity'][$data['character_id']]))
+            {
+                foreach($data['character_currency_id'][$data['character_id']] as $key => $currency)
+                {
+                    if($data['character_quantity'][$data['character_id']][$key]) addAsset($assets, $data['currencies'][$currency], $data['character_quantity'][$data['character_id']][$key]);
+                }
+            }
+            return $assets;
+        }
+
+        $assets = createAssetsArray(false);
+        // Process the additional rewards
+        if(isset($data['rewardable_type']) && $data['rewardable_type'])
+        {
+            foreach($data['rewardable_type'] as $key => $type)
+            {
+                $reward = null;
+                switch($type)
+                {
+                    case 'Item':
+                        $reward = Item::find($data['rewardable_id'][$key]);
+                        break;
+                    case 'Currency':
+                        $reward = Currency::find($data['rewardable_id'][$key]);
+                        if(!$reward->is_user_owned) throw new \Exception("Invalid currency selected.");
+                        break;
+                    case 'LootTable':
+                        if (!$isStaff) break;
+                        $reward = LootTable::find($data['rewardable_id'][$key]);
+                        break;
+                    case 'Raffle':
+                        if (!$isStaff) break;
+                        $reward = Raffle::find($data['rewardable_id'][$key]);
+                        break;
+                }
+                if(!$reward) continue;
+                addAsset($assets, $reward, $data['quantity'][$key]);
+            }
+        }
+        return $assets;
+    }
+
+    private function processData($levelRewards)
+    {
+        $rewards = [];
+        foreach($levelRewards as $type => $a)
+        {
+            $class = getAssetModelString($type, false);
+            foreach($a as $id => $asset)
+            {
+                $rewards[] = (object)[
+                    'rewardable_type' => $class,
+                    'rewardable_id' => $id,
+                    'quantity' => $asset['quantity']
+                ];
+            }
+        }
+        return $rewards;
     }
 }
