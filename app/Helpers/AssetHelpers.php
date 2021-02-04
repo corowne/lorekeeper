@@ -293,6 +293,12 @@ function fillCharacterAssets($assets, $sender, $recipient, $logType, $data)
             foreach($contents as $asset)
                 if(!$service->creditCurrency($sender, $recipient, $logType, $data['data'], $asset['asset'], $asset['quantity'])) return false;
         }
+        if($key == 'items' && count($contents))
+        {
+            $service = new \App\Services\InventoryManager;
+            foreach($contents as $asset)
+                if(!$service->creditItem($sender, $recipient, $logType, $data, $asset['asset'], $asset['quantity'])) return false;
+        }
     }
     return true;
 }

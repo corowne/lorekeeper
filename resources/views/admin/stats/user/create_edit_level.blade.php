@@ -40,7 +40,7 @@
 @include('widgets._loot_select', ['loots' => $level->rewards, 'showLootTables' => true, 'showRaffles' => true])
 
 <div class="text-right">
-    {!! Form::submit($level->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary', 'min' => 0]) !!}
+    {!! Form::submit($level->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
 </div>
 
 {!! Form::close() !!}

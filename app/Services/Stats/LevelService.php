@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 use App\Models\Stats\User\Level;
 use App\Models\Stats\User\UserLevelReward;
 use App\Models\Stats\Character\CharacterLevel;
-use App\Models\Stats\User\CharacterLevelReward;
+use App\Models\Stats\Character\CharacterLevelReward;
 use App\Models\Item\Item;
 
 class LevelService extends Service

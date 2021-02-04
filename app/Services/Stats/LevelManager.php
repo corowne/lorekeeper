@@ -13,6 +13,7 @@ use App\Models\Stats\User\Level;
 use App\Models\User\User;
 use App\Models\Character\Character;
 use App\Models\Stats\Character\CharaLevels;
+use App\Models\Stats\Character\CharacterLevel;
 use App\Models\Stats\User\UserLevel;
 
 use App\Models\Currency\Currency;
@@ -101,7 +102,7 @@ class LevelManager extends Service
 
             // getting the next level
             $check = $character->level->current_level + 1;
-            $next = Level::where('level', $check)->first();
+            $next = CharacterLevel::where('level', $check)->first();
 
             // validation
             if(!$next) throw new \Exception('You are at the max level!');
@@ -121,6 +122,24 @@ class LevelManager extends Service
                     throw new \Exception('Error granting stat points.');
                 }
             }
+
+            ////////////////////////////////////////////////////// LEVEL REWARDS
+            $levelRewards = createAssetsArray();
+
+                foreach($next->rewards as $reward)
+                {
+                    addAsset($levelRewards, $reward->reward, $reward->quantity);
+                }
+
+            // Logging data
+            $levelLogType = 'Level Rewards';
+            $levelData = [
+                'data' => 'Received rewards for level up to level '.$next->level.'.'
+            ];
+
+            // Distribute user rewards
+            if(!$levelRewards = fillCharacterAssets($levelRewards, null, $character, $levelLogType, $levelData)) throw new \Exception("Failed to distribute rewards to user.");
+            /////////////////////////////////////////////////
 
             // create log
             if($this->createlog($character, 'Character', $character->level->current_level, $next->level)) {

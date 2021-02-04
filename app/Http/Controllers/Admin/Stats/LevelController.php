@@ -17,6 +17,7 @@ use App\Services\CharacterManager;
 use App\Http\Controllers\Controller;
 
 use App\Models\Item\Item;
+use App\Models\Item\ItemCategory;
 use App\Models\Currency\Currency;
 use App\Models\Loot\LootTable;
 use App\Models\Raffle\Raffle;
@@ -137,9 +138,12 @@ class LevelController extends Controller
      */
     public function getCharaCreateLevel()
     {
+        $categories = ItemCategory::where('is_character_owned', '1')->orderBy('sort', 'DESC')->get();
+        $itemOptions = Item::whereIn('item_category_id', $categories->pluck('id'));
+        $item = Item::whereIn('id', $itemOptions->pluck('id'))->pluck('name', 'id');
         return view('admin.stats.character.create_edit_character_level', [
             'level' => new CharacterLevel,
-            'items' => Item::orderBy('name')->pluck('name', 'id'),
+            'items' => $item,
             'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
             'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
             'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
@@ -153,9 +157,13 @@ class LevelController extends Controller
     {
         $level = CharacterLevel::find($id);
         if(!$level) abort(404);
+
+        $categories = ItemCategory::where('is_character_owned', '1')->orderBy('sort', 'DESC')->get();
+        $itemOptions = Item::whereIn('item_category_id', $categories->pluck('id'));
+        $item = Item::whereIn('id', $itemOptions->pluck('id'))->pluck('name', 'id');
         return view('admin.stats.character.create_edit_character_level', [
             'level' => $level,
-            'items' => Item::orderBy('name')->pluck('name', 'id'),
+            'items' => $item,
             'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
             'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
             'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),

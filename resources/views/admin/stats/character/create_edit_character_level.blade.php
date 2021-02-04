@@ -35,11 +35,23 @@
     {!! Form::number('stat_points', $level->stat_points, ['class' => 'form-control', 'min' => 0]) !!}
 </div>
 
+<h3>Rewards</h3>
+<p>Rewards are awarded when the user levels up</p>
+@include('widgets._loot_select', ['loots' => $level->rewards, 'showLootTables' => false, 'showRaffles' => false])
+
 <div class="text-right">
-    {!! Form::submit($level->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary', 'min' => 0]) !!}
+    {!! Form::submit($level->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
 </div>
 
 {!! Form::close() !!}
+
+@include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables, 'raffles' => $raffles, 'showLootTables' => false, 'showRaffles' => false])
+
+@endsection
+
+@section('scripts')
+@parent
+@include('js._loot_js', ['showLootTables' => false, 'showRaffles' => false])
 
 @endsection
 

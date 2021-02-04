@@ -53,6 +53,6 @@ class CharacterLevel extends Model
      */
     public function rewards()
     {
-        return $this->hasMany('App\Models\Stat\Character\CharacterLevelReward', 'level_id');
+        return $this->hasMany('App\Models\Stats\Character\CharacterLevelReward', 'level_id');
     }
 }
