@@ -495,7 +495,7 @@ class SubmissionManager extends Service
 
                 $bonus = json_encode($json);
             }
-
+            else $bonus = NULL;
 
             // Increment user submission count if it's a prompt
             if($submission->prompt_id) {

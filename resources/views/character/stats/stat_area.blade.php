@@ -19,10 +19,7 @@
                 <p>{{$stat->stat_level}}</p>
                 <p><strong>Total {{$stat->stat->name}} Count:</strong></p>
                 <p>{{$stat->count}}</p>
-                @if($stat->current_count)
-                <p><strong>Current {{$stat->stat->name}} Count:</strong></p>
-                <p>{{$stat->current_count}}/{{$stat->count}}</p>
-                @elseif($stat->current_count == 0)
+                @if($stat->current_count != $stat->count && $stat->current_count != NULL)
                 <p><strong>Current {{$stat->stat->name}} Count:</strong></p>
                 <p>{{$stat->current_count}}/{{$stat->count}}</p>
                 @endif

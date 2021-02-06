@@ -13,7 +13,7 @@ class LevelLog extends Model
      * @var array
      */
     protected $fillable = [
-        'leveller_type', 'previous_level', 'new_level', 'created_at', 'updated_at'
+        'leveller_type', 'recipient_id', 'previous_level', 'new_level', 'created_at', 'updated_at'
     ];
 
     /**
