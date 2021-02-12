@@ -35,6 +35,14 @@
     {!! Form::number('stat_points', $level->stat_points, ['class' => 'form-control', 'min' => 0]) !!}
 </div>
 
+<div class="form-group">
+    {!! Form::label('Description') !!}
+    {!! Form::text('description', $level->description, ['class' => 'form-control wysiwyg']) !!}
+</div>
+
+<h3>Requirements</h3>
+@include('widgets._level_limit_select', ['loots' => $level->limits])
+<br>
 <h3>Rewards</h3>
 <p>Rewards are awarded when the user levels up</p>
 @include('widgets._loot_select', ['loots' => $level->rewards, 'showLootTables' => false, 'showRaffles' => false])
@@ -46,13 +54,13 @@
 {!! Form::close() !!}
 
 @include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables, 'raffles' => $raffles, 'showLootTables' => false, 'showRaffles' => false])
-
+@include('widgets._level_limit_row', ['items' => $items, 'currencies' => $currencies])
 @endsection
 
 @section('scripts')
 @parent
 @include('js._loot_js', ['showLootTables' => false, 'showRaffles' => false])
-
+@include('js._level_limit_js')
 @endsection
 
 @section('scripts')

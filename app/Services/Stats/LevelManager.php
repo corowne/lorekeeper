@@ -22,6 +22,12 @@ use App\Models\Loot\LootTable;
 use App\Models\Raffle\Raffle;
 use App\Models\Prompt\Prompt;
 
+use App\Models\User\UserItem;
+use App\Models\User\UserCurrency;
+
+use App\Models\Character\CharacterItem;
+use App\Models\Character\CharacterCurrency;
+
 class LevelManager extends Service
 {
     public function userLevel($user)
@@ -73,6 +79,26 @@ class LevelManager extends Service
             // Distribute user rewards
             if(!$levelRewards = fillUserAssets($levelRewards, null, $user, $levelLogType, $levelData)) throw new \Exception("Failed to distribute rewards to user.");
             /////////////////////////////////////////////////
+
+            foreach($next->limits as $limit)
+            {
+                $rewardType = $limit->rewardable_type;
+                $check = NULL;
+                switch($rewardType)
+                {
+                    case 'Item':
+                        $check = UserItem::where('item_id', $limit->reward->id)->where('user_id', auth::user()->id)->where('count', '>=', $limit->quantity)->first();
+                        break;
+                    case 'Currency':
+                        $check = UserCurrency::where('currency_id', $limit->reward->id)->where('user_id', auth::user()->id)->where('count', '>=', $limit->quantity)->first();
+                        break;
+                    //case 'Recipe':
+                    //    $check = UserRecipe::where('recipe_id', $limit->reward->id)->where('user_id', auth::user()->id)->first();
+                    //    break;
+                }
+
+                if(!$check) throw new \Exception('You require ' . $limit->reward->name . ' x ' . $limit->quantity . ' to level up.');
+            }
 
             // create log
             if($this->createlog($user, 'User', $user->level->current_level, $next->level)) {
@@ -140,6 +166,26 @@ class LevelManager extends Service
             // Distribute user rewards
             if(!$levelRewards = fillCharacterAssets($levelRewards, null, $character, $levelLogType, $levelData)) throw new \Exception("Failed to distribute rewards to user.");
             /////////////////////////////////////////////////
+
+            foreach($next->limits as $limit)
+            {
+                $rewardType = $limit->rewardable_type;
+                $check = NULL;
+                switch($rewardType)
+                {
+                    case 'Item':
+                        $check = CharacterItem::where('item_id', $limit->reward->id)->where('character_id', $character->id)->where('count', '>', 0)->first();
+                        break;
+                    case 'Currency':
+                        $check = CharacterCurrency::where('currency_id', $limit->reward->id)->where('character_id', $character->id)->where('count', '>', 0)->first();
+                        break;
+                    //case 'Recipe':
+                    //    $check = UserRecipe::where('recipe_id', $limit->reward->id)->where('user_id', auth::user()->id)->first();
+                    //    break;
+                }
+
+                if(!$check) throw new \Exception('You require ' . $limit->reward->name . ' to level up.');
+            }
 
             // create log
             if($this->createlog($character, 'Character', $character->level->current_level, $next->level)) {

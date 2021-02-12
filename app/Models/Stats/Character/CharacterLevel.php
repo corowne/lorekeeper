@@ -13,7 +13,7 @@ class CharacterLevel extends Model
      * @var array
      */
     protected $fillable = [
-        'level', 'exp_required','stat_points'
+        'level', 'exp_required','stat_points', 'description'
     ];
 
     /**
@@ -46,7 +46,6 @@ class CharacterLevel extends Model
         RELATIONS
 
     **********************************************************************************************/
-
     
     /**
      * Get the rewards attached to this prompt.
@@ -54,5 +53,10 @@ class CharacterLevel extends Model
     public function rewards()
     {
         return $this->hasMany('App\Models\Stats\Character\CharacterLevelReward', 'level_id');
+    }
+
+    public function limits()
+    {
+        return $this->hasMany('App\Models\Stats\Character\CharacterLevelRequirement', 'level_id');
     }
 }

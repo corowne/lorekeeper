@@ -73,7 +73,7 @@ class LevelController extends Controller
     {
         $id ? $request->validate(Level::$updateRules) : $request->validate(Level::$createRules);
         $data = $request->only([
-            'level', 'exp_required', 'stat_points', 'rewardable_type', 'rewardable_id', 'quantity'
+            'level', 'exp_required', 'stat_points', 'rewardable_type', 'rewardable_id', 'quantity', 'description', 'limit_type', 'limit_id', 'limit_quantity'
         ]);
         if($id && $service->updateLevel(Level::find($id), $data)) {
             flash('Level updated successfully.')->success();
@@ -177,7 +177,7 @@ class LevelController extends Controller
     {
         $id ? $request->validate(CharacterLevel::$updateRules) : $request->validate(CharacterLevel::$createRules);
         $data = $request->only([
-            'level', 'exp_required', 'stat_points', 'rewardable_type', 'rewardable_id', 'quantity'
+            'level', 'exp_required', 'stat_points', 'rewardable_type', 'rewardable_id', 'quantity', 'description', 'limit_type', 'limit_id', 'limit_quantity'
         ]);
         if($id && $service->updateCharaLevel(CharacterLevel::find($id), $data)) {
             flash('Level updated successfully.')->success();

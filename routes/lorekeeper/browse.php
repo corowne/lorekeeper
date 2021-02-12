@@ -114,6 +114,10 @@ Route::group(['prefix' => 'world'], function() {
     Route::get('trait-categories', 'WorldController@getFeatureCategories');
     Route::get('traits', 'WorldController@getFeatures');
     Route::get('character-categories', 'WorldController@getCharacterCategories');
+    Route::get('levels', 'WorldController@getLevels');
+    Route::get('levels/{type}', 'WorldController@getLevelTypes');
+    Route::get('levels/{type}/{level}', 'WorldController@getSingleLevel');
+    Route::get('stats', 'WorldController@getStats');
 });
 
 Route::group(['prefix' => 'prompts'], function() {

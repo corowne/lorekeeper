@@ -13,7 +13,7 @@ class Level extends Model
      * @var array
      */
     protected $fillable = [
-        'level', 'exp_required','stat_points'
+        'level', 'exp_required','stat_points', 'description'
     ];
 
     /**
@@ -55,4 +55,8 @@ class Level extends Model
         return $this->hasMany('App\Models\Stats\User\UserLevelReward', 'level_id');
     }
     
+    public function limits()
+    {
+        return $this->hasMany('App\Models\Stats\User\UserLevelRequirement');
+    }
 }

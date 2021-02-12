@@ -19,6 +19,11 @@ use App\Models\Prompt\Prompt;
 use App\Models\Shop\Shop;
 use App\Models\Shop\ShopStock;
 use App\Models\User\User;
+use App\Models\Stats\Character\CharacterLevel;
+use App\Models\Stats\User\Level;
+use App\Models\Stats\Character\CharaLevels;
+use App\Models\Stats\User\UserLevel;
+use App\Models\Stats\Character\Stat;
 
 class WorldController extends Controller
 {
@@ -388,6 +393,63 @@ class WorldController extends Controller
         return view('world.prompts', [
             'prompts' => $query->paginate(20)->appends($request->query()),
             'categories' => ['none' => 'Any Category'] + PromptCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
+        ]);
+    }
+    /**
+     * 
+     *  LEVELS
+     * 
+     */
+    public function getLevels()
+    {
+        return view('world.level_index');
+    }
+
+    public function getLevelTypes($type)
+    {
+        if($type == 'user')
+        {
+            $levels = Level::all();
+        }
+        elseif($type == 'character')
+        {
+            $levels = CharacterLevel::all();
+        }
+        else abort(404);
+
+        return view('world.level_type_index', [
+            'levels' => $levels->paginate(20),
+            'type' => $type
+        ]);
+    }
+
+    public function getSingleLevel($type, $level)
+    {
+        if($type == 'user')
+        {
+            $levels = Level::where('level', $level)->first();
+        }
+        elseif($type == 'character')
+        {
+            $levels = CharacterLevel::where('level', $level)->first();
+        }
+        else abort(404);
+
+        return view('world.level_single', [
+            'level' => $levels,
+            'type' => $type
+        ]);
+    }
+
+    /**
+     * STATS
+     */
+    public function getStats()
+    {
+        $stats = Stat::all();
+
+        return view('world.stats', [
+            'stats' => $stats,
         ]);
     }
 }

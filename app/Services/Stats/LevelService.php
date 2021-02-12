@@ -11,6 +11,8 @@ use App\Models\Stats\User\UserLevelReward;
 use App\Models\Stats\Character\CharacterLevel;
 use App\Models\Stats\Character\CharacterLevelReward;
 use App\Models\Item\Item;
+use App\Models\Stats\User\UserLevelRequirement;
+use App\Models\Stats\Character\CharacterLevelRequirement;
 
 class LevelService extends Service
 {
@@ -27,6 +29,7 @@ class LevelService extends Service
             $level = Level::create($data);
 
             $this->populateRewards(Arr::only($data, ['rewardable_type', 'rewardable_id', 'quantity']), $level);
+            $this->populateLimits($level, Arr::only($data, ['limit_type', 'limit_id', 'limit_quantity']));
 
             return $this->commitReturn($level);
         } catch(\Exception $e) { 
@@ -48,6 +51,7 @@ class LevelService extends Service
             $level->update($data);
 
             $this->populateRewards(Arr::only($data, ['rewardable_type', 'rewardable_id', 'quantity']), $level);
+            $this->populateLimits($level, Arr::only($data, ['limit_type', 'limit_id', 'limit_quantity']));
 
             return $this->commitReturn($level);
         } catch(\Exception $e) { 
@@ -97,6 +101,7 @@ class LevelService extends Service
             $level = CharacterLevel::create($data);
 
             $this->populateRewards(Arr::only($data, ['rewardable_type', 'rewardable_id', 'quantity']), $level, true);
+            $this->populateLimits($level, Arr::only($data, ['limit_type', 'limit_id', 'limit_quantity']), true);
 
             return $this->commitReturn($level);
         } catch(\Exception $e) { 
@@ -118,6 +123,7 @@ class LevelService extends Service
             $level->update($data);
 
             $this->populateRewards(Arr::only($data, ['rewardable_type', 'rewardable_id', 'quantity']), $level, true);
+            $this->populateLimits($level, Arr::only($data, ['limit_type', 'limit_id', 'limit_quantity']), true);
 
             return $this->commitReturn($level);
         } catch(\Exception $e) { 
@@ -186,6 +192,38 @@ class LevelService extends Service
                         'rewardable_type' => $type,
                         'rewardable_id'   => $data['rewardable_id'][$key],
                         'quantity'        => $data['quantity'][$key],
+                    ]);
+                }
+            }
+        }
+    }
+
+    private function populateLimits($level, $data, $isChara = false)
+    {
+        $level->limits()->delete();
+
+        if($isChara){
+            if(isset($data['limit_type'])) {
+                foreach($data['limit_type'] as $key => $type)
+                {
+                    CharacterLevelRequirement::create([
+                        'level_id'       => $level->id,
+                        'limit_type' => $type,
+                        'limit_id'   => $data['limit_id'][$key],
+                        'quantity'        => $data['limit_quantity'][$key],
+                    ]);
+                }
+            }
+        }
+        else {
+            if(isset($data['limit_type'])) {
+                foreach($data['limit_type'] as $key => $type)
+                {
+                    UserLevelRequirement::create([
+                        'level_id'       => $level->id,
+                        'limit_type' => $type,
+                        'limit_id'   => $data['limit_id'][$key],
+                        'quantity'        => $data['limit_quantity'][$key],
                     ]);
                 }
             }
