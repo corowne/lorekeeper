@@ -11,7 +11,7 @@
 <div class="card mb-3">
     <div class="card-body">
         <div class="row world-entry">
-            <h1>Level 1<h2>
+            <h1 class="ml-3">Level 1<h2>
         </div>
         <p>The beginner level!</p>
     </div>
@@ -20,9 +20,9 @@
 <div class="card mb-3">
     <div class="card-body">
         <div class="row world-entry">
-             <a href="{{ $type }}/{{ $level->level }}"><h1>Level {{ $level->level }}</h1></a>
+             <a href="{{ $type }}/{{ $level->level }}"><h1 class="ml-3">Level {{ $level->level }}</h1></a>
         </div>
-        <p>{{ $level->description }}</p>
+        {!! $level->description !!}
         @if($level->limits->count())
         <div class="text-danger">Requires:
             <?php 

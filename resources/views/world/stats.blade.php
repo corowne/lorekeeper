@@ -12,7 +12,7 @@
 <div class="card mb-3">
     <div class="card-body">
         <div class="row world-entry">
-             <h1 class="ml-2">{{ $stat->abbreviation }}</h1>
+             <h1 class="ml-3">{{ $stat->abbreviation }}</h1>
         </div>
         <div class="row">
             <div class="col-4 ml-3">

@@ -8,9 +8,9 @@
 <div class="card mb-3">
     <div class="card-body">
         <div class="row world-entry">
-            <h1>Level {{ $level->level }}</h1>
+            <h1 class="ml-3">Level {{ $level->level }}</h1>
         </div>
-        <p>{{ $level->description }}</p>
+        {!! $level->description !!}
         <div class="world-entry-text">
             <div class="row">
                 <div class="col-6">
