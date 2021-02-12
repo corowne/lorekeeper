@@ -32,6 +32,7 @@
                 </div>
                 <div class="col-6">
                 <h4>Rewards</h4>
+                <p>{{ $level->stat_points ? $level->stat_point : '0'}} Stat points reward </p>
                 @if(!count($level->rewards))
                     No rewards.
                 @else 
