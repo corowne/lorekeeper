@@ -90,7 +90,7 @@ class LevelManager extends Service
                         $check = UserItem::where('item_id', $limit->reward->id)->where('user_id', auth::user()->id)->where('count', '>=', $limit->quantity)->first();
                         break;
                     case 'Currency':
-                        $check = UserCurrency::where('currency_id', $limit->reward->id)->where('user_id', auth::user()->id)->where('count', '>=', $limit->quantity)->first();
+                        $check = UserCurrency::where('currency_id', $limit->reward->id)->where('user_id', auth::user()->id)->where('quantity', '>=', $limit->quantity)->first();
                         break;
                     //case 'Recipe':
                     //    $check = UserRecipe::where('recipe_id', $limit->reward->id)->where('user_id', auth::user()->id)->first();
