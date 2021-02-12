@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 use App\Models\User\User;
 use App\Models\Item\Item;
+use App\Models\Recipe\Recipe;
 use App\Models\Currency\Currency;
 
 use App\Models\User\UserItem;
@@ -19,6 +20,7 @@ use App\Models\Submission\Submission;
 use App\Models\Character\Character;
 use App\Services\CurrencyManager;
 use App\Services\InventoryManager;
+use App\Services\RecipeService;
 
 use App\Http\Controllers\Controller;
 
@@ -81,6 +83,38 @@ class GrantController extends Controller
         $data = $request->only(['names', 'item_ids', 'quantities', 'data', 'disallow_transfer', 'notes']);
         if($service->grantItems($data, Auth::user())) {
             flash('Items granted successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+    
+    /**
+     * Show the recipe grant page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getRecipes()
+    {
+        return view('admin.grants.recipes', [
+            'users' => User::orderBy('id')->pluck('name', 'id'),
+            'recipes' => Recipe::orderBy('name')->pluck('name', 'id')
+        ]);
+    }
+
+    /**
+     * Grants or removes items from multiple users.
+     *
+     * @param  \Illuminate\Http\Request        $request
+     * @param  App\Services\InventoryManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postRecipes(Request $request, RecipeService $service)
+    {
+        $data = $request->only(['names', 'recipe_ids', 'data']);
+        if($service->grantRecipes($data, Auth::user())) {
+            flash('Recipes granted successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

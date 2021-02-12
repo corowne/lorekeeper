@@ -629,3 +629,8 @@ tr.accountbound {
 @media only screen and (max-width: 600px) {
     .comment_replies { padding-left:1rem;}
 }
+
+/* RECIPES ***************************************************************************************/
+.recipe-image {
+    width: 150px;
+}

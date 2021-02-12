@@ -159,4 +159,5 @@ class Notification extends Model
     const GALLERY_SUBMISSION_STAFF_COMMENTS = 513;
     const GALLERY_SUBMISSION_EDITED         = 514;
     const GALLERY_SUBMISSION_PARTICIPANT    = 515;
+    const RECIPE_GRANT                      = 600; // Draginraptor - Crafting
 }
