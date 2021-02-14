@@ -413,7 +413,7 @@ class SubmissionManager extends Service
             }
 
             // stats & exp ---- currently prompt only
-            if($submission->prompt_id)
+            if($submission->prompt_id && $submission->prompt->expreward)
             {
                 $levelLog = new ExperienceManager;
                 $statLog = new StatManager;
