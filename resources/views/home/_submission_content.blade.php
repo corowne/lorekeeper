@@ -62,7 +62,7 @@
     </tbody>
 </table>
 
-@if($submission->prompt_id)
+@if($submission->prompt_id && $submission->prompt->expreward)
 <h3>Stat & Level Rewards</h3>
     <div class="card m-1">
         <div class="row m-2">
