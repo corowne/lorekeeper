@@ -60,7 +60,7 @@ class StatManager extends Service
             $recipient_stack->save();
 
             $type = 'User Transfer';
-            $data = 'User initiated transfer: ' . $user->displayName . ' transferred ' . $quantity . ' to ' . $character->displayName;
+            $data = $user->displayName . ' transferred ' . $quantity . ' exp to ' . $character->displayName;
 
             if($type && !$this->createTransferLog($user->id, $user->logType, $character->id, $character->logType, $type, $data, $quantity)) throw new \Exception("Failed to create log.");
 
