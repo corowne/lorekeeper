@@ -41,8 +41,6 @@ class ItemService extends Service
 
             $data = $this->populateCategoryData($data);
 
-            isset($data['character_limit']) && $data['character_limit'] ? $data['character_limit'] : $data['character_limit'] = 0;
-
             $image = null;
             if(isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
@@ -80,8 +78,6 @@ class ItemService extends Service
 
             $data = $this->populateCategoryData($data, $category);
 
-            isset($data['character_limit']) && $data['character_limit'] ? $data['character_limit'] : $data['character_limit'] = 0;
-
             $image = null;
             if(isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
@@ -110,6 +106,9 @@ class ItemService extends Service
     private function populateCategoryData($data, $category = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
+
+        isset($data['is_character_owned']) && $data['is_character_owned'] ? $data['is_character_owned'] : $data['is_character_owned'] = 0;
+        isset($data['character_limit']) && $data['character_limit'] ? $data['character_limit'] : $data['character_limit'] = 0;
 
         if(isset($data['remove_image']))
         {
