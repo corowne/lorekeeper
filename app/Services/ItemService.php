@@ -41,6 +41,8 @@ class ItemService extends Service
 
             $data = $this->populateCategoryData($data);
 
+            isset($data['character_limit']) && $data['character_limit'] ? $data['character_limit'] : $data['character_limit'] = 0;
+
             $image = null;
             if(isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
@@ -77,6 +79,8 @@ class ItemService extends Service
             if(ItemCategory::where('name', $data['name'])->where('id', '!=', $category->id)->exists()) throw new \Exception("The name has already been taken.");
 
             $data = $this->populateCategoryData($data, $category);
+
+            isset($data['character_limit']) && $data['character_limit'] ? $data['character_limit'] : $data['character_limit'] = 0;
 
             $image = null;            
             if(isset($data['image']) && $data['image']) {
@@ -203,6 +207,17 @@ class ItemService extends Service
 
             $item = Item::create($data);
 
+            $item->update([
+                'data' => json_encode([
+                    'rarity' => isset($data['rarity']) && $data['rarity'] ? $data['rarity'] : null,
+                    'uses' => isset($data['uses']) && $data['uses'] ? $data['uses'] : null,
+                    'release' => isset($data['release']) && $data['release'] ? $data['release'] : null,
+                    'shops' => isset($data['shops']) && $data['shops'] ? $data['shops'] : null,
+                    'prompts' => isset($data['prompts']) && $data['prompts'] ? $data['prompts'] : null,
+                    'resell' => isset($data['currency_quantity']) ? [$data['currency_id'] => $data['currency_quantity']] : null,
+                    ]) // rarity, availability info (original source, purchase locations, drop locations)
+            ]);
+
             if ($image) $this->handleImage($image, $item->imagePath, $item->imageFileName);
 
             return $this->commitReturn($item);
@@ -241,6 +256,17 @@ class ItemService extends Service
             }
 
             $item->update($data);
+
+            $item->update([
+                'data' => json_encode([
+                    'rarity' => isset($data['rarity']) && $data['rarity'] ? $data['rarity'] : null,
+                    'uses' => isset($data['uses']) && $data['uses'] ? $data['uses'] : null,
+                    'release' => isset($data['release']) && $data['release'] ? $data['release'] : null,
+                    'shops' => isset($data['shops']) && $data['shops'] ? $data['shops'] : null,
+                    'prompts' => isset($data['prompts']) && $data['prompts'] ? $data['prompts'] : null,
+                    'resell' => isset($data['currency_quantity']) ? [$data['currency_id'] => $data['currency_quantity']] : null,
+                    ]) // rarity, availability info (original source, purchase locations, drop locations)
+            ]);
 
             if ($item) $this->handleImage($image, $item->imagePath, $item->imageFileName);
 
@@ -289,11 +315,15 @@ class ItemService extends Service
 
         try {
             // Check first if the item is currently owned or if some other site feature uses it
-            if(DB::table('user_items')->where('item_id', $item->id)->exists()) throw new \Exception("At least one user currently owns this item. Please remove the item(s) before deleting it.");
+            if(DB::table('user_items')->where([['item_id', '=', $item->id], ['count', '>', 0]])->exists()) throw new \Exception("At least one user currently owns this item. Please remove the item(s) before deleting it.");
+            if(DB::table('character_items')->where([['item_id', '=', $item->id], ['count', '>', 0]])->exists()) throw new \Exception("At least one character currently owns this item. Please remove the item(s) before deleting it.");
             if(DB::table('loots')->where('rewardable_type', 'Item')->where('rewardable_id', $item->id)->exists()) throw new \Exception("A loot table currently distributes this item as a potential reward. Please remove the item before deleting it.");
             if(DB::table('prompt_rewards')->where('rewardable_type', 'Item')->where('rewardable_id', $item->id)->exists()) throw new \Exception("A prompt currently distributes this item as a reward. Please remove the item before deleting it.");
             if(DB::table('shop_stock')->where('item_id', $item->id)->exists()) throw new \Exception("A shop currently stocks this item. Please remove the item before deleting it.");
             
+            DB::table('items_log')->where('item_id', $item->id)->delete();
+            DB::table('user_items')->where('item_id', $item->id)->delete();
+            DB::table('character_items')->where('item_id', $item->id)->delete();
             $item->tags()->delete();
             if($item->has_image) $this->deleteImage($item->imagePath, $item->imageFileName); 
             $item->delete();
