@@ -125,7 +125,7 @@
         <div class="col-md">
             <div class="form-group">
                 {!! Form::label('currency_id', 'Currency') !!}
-                {!! Form::select('currency_id', $userCurrencies, isset($item->data['resell']) ? $item->resell->flip()->pop() : null, ['class' => 'form-control']) !!}
+                {!! Form::select('currency_id', $userCurrencies, isset($item->data['resell']) && App\Models\Currency\Currency::where('id', $item->resell->flip()->pop())->first() ? $item->resell->flip()->pop() : null, ['class' => 'form-control']) !!}
             </div>
         </div>
         <div class="col-md">
