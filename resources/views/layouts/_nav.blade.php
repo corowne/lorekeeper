@@ -43,6 +43,9 @@
                             <a class="dropdown-item" href="{{ url('bank') }}">
                                 Bank
                             </a>
+                            <a class="dropdown-item" href="{{ url('level') }}">
+                                Level Area
+                            </a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
@@ -113,6 +116,9 @@
                             Shops
                         </a>
                     </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('gallery') }}">Gallery</a>
                 </li>
             </ul>
 

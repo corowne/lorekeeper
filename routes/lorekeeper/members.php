@@ -58,6 +58,12 @@ Route::group(['prefix' => 'bank', 'namespace' => 'Users'], function() {
     Route::post('transfer', 'BankController@postTransfer');
 });
 
+Route::group(['prefix' => 'level', 'namespace' => 'Users'], function() {
+    Route::get('/', 'LevelController@getIndex');
+    Route::post('up', 'LevelController@postLevel');
+    Route::post('transfer', 'LevelController@postTransfer');
+});
+
 Route::group(['prefix' => 'trades', 'namespace' => 'Users'], function() {
     Route::get('{status}', 'TradeController@getIndex')->where('status', 'open|pending|completed|rejected|canceled');
     Route::get('create', 'TradeController@getCreateTrade');
@@ -81,6 +87,8 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() 
     Route::get('{slug}/profile/edit', 'CharacterController@getEditCharacterProfile');
     Route::post('{slug}/profile/edit', 'CharacterController@postEditCharacterProfile');
 
+    Route::post('{slug}/inventory/edit', 'CharacterController@postInventoryEdit');
+
     Route::post('{slug}/bank/transfer', 'CharacterController@postCurrencyTransfer');
     Route::get('{slug}/transfer', 'CharacterController@getTransfer');
     Route::post('{slug}/transfer', 'CharacterController@postTransfer');
@@ -88,6 +96,15 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() 
 
     Route::post('{slug}/approval', 'CharacterController@postCharacterApproval');
     Route::get('{slug}/approval', 'CharacterController@getCharacterApproval');
+    Route::get('{slug}/level-area', 'LevelController@getIndex');
+    Route::get('{slug}/stats-area', 'LevelController@getStatsIndex');
+    Route::post('{slug}/level-area/up', 'LevelController@postLevel');
+    Route::post('{slug}/stats-area/{id}', 'LevelController@postStat');
+    Route::post('{slug}/stats-area/admin/{id}', 'LevelController@postAdminStat');
+    Route::post('{slug}/stats-area/edit/{id}', 'LevelController@postEditStat');
+    # EXP
+    Route::post('{slug}/level-area/exp-grant', 'LevelController@postExpGrant');
+    Route::post('{slug}/level-area/stat-grant', 'LevelController@postStatGrant');
 });
 Route::group(['prefix' => 'myo', 'namespace' => 'Characters'], function() {
     Route::get('{id}/profile/edit', 'MyoController@getEditCharacterProfile');
@@ -101,9 +118,34 @@ Route::group(['prefix' => 'myo', 'namespace' => 'Characters'], function() {
     Route::get('{id}/approval', 'MyoController@getCharacterApproval');
 });
 
+Route::group(['prefix' => 'level', 'namespace' => 'Users'], function() {
+    Route::get('/', 'LevelController@getIndex');
+
+});
+
+
+
 /**************************************************************************************************
     Submissions
 **************************************************************************************************/
+
+Route::group(['prefix' => 'gallery'], function() {
+    Route::get('submissions/{type}', 'GalleryController@getUserSubmissions')->where('type', 'pending|accepted|rejected');
+
+    Route::post('favorite/{id}', 'GalleryController@postFavoriteSubmission');
+
+    Route::get('submit/{id}', 'GalleryController@getNewGallerySubmission');
+    Route::get('submit/character/{slug}', 'GalleryController@getCharacterInfo');
+    Route::get('edit/{id}', 'GalleryController@getEditGallerySubmission');
+    Route::get('queue/{id}', 'GalleryController@getSubmissionLog');
+    Route::post('submit', 'GalleryController@postCreateEditGallerySubmission');
+    Route::post('edit/{id}', 'GalleryController@postCreateEditGallerySubmission');
+
+    Route::post('collaborator/{id}', 'GalleryController@postEditCollaborator');
+    
+    Route::get('archive/{id}', 'GalleryController@getArchiveSubmission');
+    Route::post('archive/{id}', 'GalleryController@postArchiveSubmission');
+});
 
 Route::group(['prefix' => 'submissions', 'namespace' => 'Users'], function() {
     Route::get('/', 'SubmissionController@getIndex');

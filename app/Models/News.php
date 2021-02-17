@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Config;
 use App\Models\Model;
+use Illuminate\Support\Str;
 
 use App\Traits\Commentable;
 
@@ -116,7 +117,7 @@ class News extends Model
      */
     public function getSlugAttribute()
     {
-        return $this->id . '.' . str_slug($this->title);
+        return $this->id . '.' . Str::slug($this->title);
     }
 
     /**

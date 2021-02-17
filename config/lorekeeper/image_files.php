@@ -57,4 +57,9 @@ return [
         'description' => 'Watermark for applying to masterlist images.',
         'filename' => 'watermark.png'
     ],
+    'content_warning' => [
+        'name' => 'Content Warning Thumbnail',
+        'description' => 'Thumbnail used for gallery submissions with a set content warning. PNG format, size of masterlist thumbnails.',
+        'filename' => 'content_warning.png'
+    ],
 ];

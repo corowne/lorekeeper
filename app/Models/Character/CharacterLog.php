@@ -14,7 +14,7 @@ class CharacterLog extends Model
      */
     protected $fillable = [
         'character_id', 'sender_id', 'sender_alias', 'recipient_id', 'recipient_alias',
-        'log', 'log_type', 'data', 'change_log'
+        'log', 'log_type', 'data', 'change_log', 'sender_url', 'recipient_url'
     ];
 
     /**
@@ -74,8 +74,8 @@ class CharacterLog extends Model
      */
     public function getDisplayRecipientAliasAttribute()
     {
-        if($this->recipient_alias)
-            return '<a href="http://www.deviantart.com/'.$this->recipient_alias.'">'.$this->recipient_alias.'@dA</a>';
+        if($this->recipient_url)
+            return prettyProfileLink($this->recipient_url);
         else return '---';
     }
 

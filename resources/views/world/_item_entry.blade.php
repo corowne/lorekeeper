@@ -16,9 +16,9 @@
                         <p><strong>Rarity:</strong> {!! $item->rarity !!}</p>
                     </div>
                 @endif
-                @if(isset($item->artist) && $item->artist)
+                @if(isset($item->itemArtist) && $item->itemArtist)
                     <div class="col-md">
-                        <p><strong>Artist:</strong> {!! $item->artist !!}</p>
+                        <p><strong>Artist:</strong> {!! $item->itemArtist !!}</p>
                     </div>
                 @endif
             @endif
@@ -42,24 +42,24 @@
         <div class="world-entry-text">
             @if(isset($item->reference) && $item->reference && Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields'))  <p><strong>Reference Link:</strong> <a href="{{ $item->reference }}">{{ $item->reference }}</a></p> @endif
             {!! $description !!}
-            @if((isset($item->uses) && $item->uses || isset($item->source) && $item->source || isset($item->data['shops']) && $item->data['shops'] || isset($item->data['prompts']) && $item->data['prompts']) && Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields'))
+            @if((isset($item->uses) && $item->uses || isset($item->source) && $item->source || $shops->count() || isset($item->data['prompts']) && $item->data['prompts']) && Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields'))
             <div class="text-right"><a data-toggle="collapse" href="#item-{{ $item->id }}" class="text-primary"><strong>Show details...</strong></a></div>
             <div class="collapse" id="item-{{ $item->id }}">
                 @if(isset($item->uses) && $item->uses)  <p><strong>Uses:</strong> {{ $item->uses }}</p> @endif
-                @if(isset($item->source) && $item->source || isset($item->data['shops']) && $item->data['shops'] || isset($item->data['prompts']) && $item->data['prompts'])
+                @if(isset($item->source) && $item->source || $shops->count() || isset($item->data['prompts']) && $item->data['prompts'])
                 <h5>Availability</h5>
                 <div class="row">
                     @if(isset($item->source) && $item->source)
                         <div class="col">
-                            <p><strong>Source:</strong></p> 
+                            <p><strong>Source:</strong></p>
                             <p>{!! $item->source !!}</p>
                         </div>
                     @endif
-                    @if(isset($item->data['shops']) && $item->data['shops'])
+                    @if($shops->count())
                         <div class="col">
                             <p><strong>Purchaseable At:</strong></p>
                                 <div class="row">
-                                    @foreach($item->shops as $shop) <div class="col"><a href="{{ $shop->url }}">{{ $shop->name }}</a></div> @endforeach
+                                    @foreach($shops as $shop) <div class="col"><a href="{{ $shop->url }}">{{ $shop->name }}</a></div> @endforeach
                                 </div>
                         </div>
                     @endif

@@ -4,6 +4,7 @@ namespace App\Models\Rank;
 
 use Config;
 use App\Models\Model;
+use Illuminate\Support\Arr;
 
 class Rank extends Model
 {
@@ -124,6 +125,6 @@ class Rank extends Model
     {
         if($this->isAdmin) return Config::get('lorekeeper.powers');
         $powers = $this->powers->pluck('power')->toArray();
-        return array_only(Config::get('lorekeeper.powers'), $powers);
+        return Arr::only(Config::get('lorekeeper.powers'), $powers);
     }
 }

@@ -15,6 +15,7 @@
             @honeypot
             <input type="hidden" name="commentable_type" value="\{{ get_class($model) }}" />
             <input type="hidden" name="commentable_id" value="{{ $model->getKey() }}" />
+            <input type="hidden" name="type" value="{{ isset($type) ? $type : null }}" />
 
             <div class="form-group">
                 <label for="message">Enter your message here:</label>
