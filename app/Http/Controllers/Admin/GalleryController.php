@@ -26,7 +26,7 @@ class GalleryController extends Controller
     public function getSubmissionIndex(Request $request, $status = null)
     {
         $submissions = GallerySubmission::collaboratorApproved()->where('status', $status ? ucfirst($status) : 'Pending');
-        if($request->get('gallery_id')) 
+        if($request->get('gallery_id'))
             $submissions->where(function($query) use ($request) {
                 $query->where('gallery_id', $request->get('gallery_id'));
             });
@@ -47,7 +47,7 @@ class GalleryController extends Controller
     public function getCurrencyIndex(Request $request, $status = null)
     {
         $submissions = GallerySubmission::requiresAward()->where('is_valued', !$status || $status == 'pending' ? 0 : 1);
-        if($request->get('gallery_id')) 
+        if($request->get('gallery_id'))
             $submissions->where(function($query) use ($request) {
                 $query->where('gallery_id', $request->get('gallery_id'));
             });
@@ -55,8 +55,7 @@ class GalleryController extends Controller
         else $submissions = $submissions->orderBy('created_at', 'DESC');
         return view('admin.galleries.submissions_currency_index', [
             'submissions' => $submissions->paginate(10)->appends($request->query()),
-            'galleries' => ['' => 'Any Gallery'] + Gallery::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'currency' => Currency::find(Settings::get('group_currency'))
+            'galleries' => ['' => 'Any Gallery'] + Gallery::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
 
@@ -72,7 +71,7 @@ class GalleryController extends Controller
     public function postEditSubmission(Request $request, GalleryManager $service, $id, $action)
     {
         if(!$id) { flash('Invalid submission selected.')->error(); }
-        
+
         if($id && $action) {
             switch($action) {
                 default:

@@ -36,6 +36,7 @@ class GalleryService extends Service
             if(!isset($data['votes_required'])) $data['votes_required'] = 0;
             if(!isset($data['hide_before_start'])) $data['hide_before_start'] = 0;
             if(!isset($data['prompt_selection'])) $data['prompt_selection'] = 0;
+            if(!isset($data['use_alternate_currency'])) $data['use_alternate_currency'] = 0;
 
             $gallery = Gallery::create($data);
 
@@ -67,6 +68,7 @@ class GalleryService extends Service
             if(!isset($data['votes_required'])) $data['votes_required'] = 0;
             if(!isset($data['hide_before_start'])) $data['hide_before_start'] = 0;
             if(!isset($data['prompt_selection'])) $data['prompt_selection'] = 0;
+            if(!isset($data['use_alternate_currency'])) $data['use_alternate_currency'] = 0;
 
             $gallery->update($data);
 

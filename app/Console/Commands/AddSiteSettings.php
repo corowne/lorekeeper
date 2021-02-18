@@ -266,6 +266,19 @@ class AddSiteSettings extends Command
         }
         else $this->line("Skipped: group_currency");
 
+        if(!DB::table('site_settings')->where('key', 'group_currency_alt')->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key' => 'group_currency_alt',
+                    'value' => 1,
+                    'description' => 'ID of the alternate group currency to award from gallery submissions (if enabled).'
+                ]
+
+            ]);
+            $this->info("Added:   group_currency_alt / Default: 1");
+        }
+        else $this->line("Skipped: group_currency_alt");
+
         $this->line("\nSite settings up to date!");
 
     }
