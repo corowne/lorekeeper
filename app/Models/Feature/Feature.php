@@ -26,7 +26,7 @@ class Feature extends Model
      * @var string
      */
     protected $table = 'features';
-    
+
     /**
      * Validation rules for creation.
      *
@@ -41,7 +41,7 @@ class Feature extends Model
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -58,7 +58,7 @@ class Feature extends Model
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -66,37 +66,37 @@ class Feature extends Model
     /**
      * Get the rarity of this feature.
      */
-    public function rarity() 
+    public function rarity()
     {
         return $this->belongsTo('App\Models\Rarity');
     }
-    
+
     /**
      * Get the species the feature belongs to.
      */
-    public function species() 
+    public function species()
     {
         return $this->belongsTo('App\Models\Species\Species');
     }
-    
+
     /**
      * Get the subtype the feature belongs to.
      */
-    public function subtype() 
+    public function subtype()
     {
         return $this->belongsTo('App\Models\Species\Subtype');
     }
-    
+
     /**
      * Get the category the feature belongs to.
      */
-    public function category() 
+    public function category()
     {
         return $this->belongsTo('App\Models\Feature\FeatureCategory', 'feature_category_id');
     }
 
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -175,11 +175,11 @@ class Feature extends Model
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
-    
+
     /**
      * Displays the model's name, linked to its encyclopedia page.
      *
@@ -187,7 +187,7 @@ class Feature extends Model
      */
     public function getDisplayNameAttribute()
     {
-        return '<a href="'.$this->url.'" class="display-trait">'.$this->name.'</a> (' . $this->rarity->displayName . ')';
+        return '<a href="'.$this->url.'" class="display-trait">'.$this->name.'</a>'.($this->rarity? ' (' . $this->rarity->displayName . ')' : '');
     }
 
     /**
@@ -219,7 +219,7 @@ class Feature extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
