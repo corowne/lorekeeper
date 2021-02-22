@@ -39,6 +39,7 @@ Route::group(['prefix' => 'account', 'namespace' => 'Users'], function() {
 Route::group(['prefix' => 'inventory', 'namespace' => 'Users'], function() {
     Route::get('/', 'InventoryController@getIndex');
     Route::post('edit', 'InventoryController@postEdit');
+    Route::get('account-search', 'InventoryController@getAccountSearch');
 
     Route::get('selector', 'InventoryController@getSelector');
 });
@@ -78,6 +79,12 @@ Route::group(['prefix' => 'trades', 'namespace' => 'Users'], function() {
     Route::post('{id}/confirm-trade', 'TradeController@postConfirmTrade');
     Route::get('{id}/cancel-trade', 'TradeController@getCancelTrade');
     Route::post('{id}/cancel-trade', 'TradeController@postCancelTrade');
+});
+
+Route::group(['prefix' => 'crafting', 'namespace' => 'Users'], function() {
+    Route::get('/', 'CraftingController@getIndex');
+    Route::get('craft/{id}', 'CraftingController@getCraftRecipe');
+    Route::post('craft/{id}', 'CraftingController@postCraftRecipe');
 });
 
 /**************************************************************************************************
@@ -142,7 +149,7 @@ Route::group(['prefix' => 'gallery'], function() {
     Route::post('edit/{id}', 'GalleryController@postCreateEditGallerySubmission');
 
     Route::post('collaborator/{id}', 'GalleryController@postEditCollaborator');
-    
+
     Route::get('archive/{id}', 'GalleryController@getArchiveSubmission');
     Route::post('archive/{id}', 'GalleryController@postArchiveSubmission');
 });
@@ -201,9 +208,9 @@ Route::group(['prefix' => 'shops'], function() {
     Route::get('history', 'ShopController@getPurchaseHistory');
 });
 
-/**************************************************************************************************	
+/**************************************************************************************************
     Comments
-**************************************************************************************************/	
+**************************************************************************************************/
 Route::group(['prefix' => 'comments', 'namespace' => 'Comments'], function() {
     Route::post('/', 'CommentController@store')->name('comments.store');
     Route::delete('/{comment}', 'CommentController@destroy')->name('comments.destroy');

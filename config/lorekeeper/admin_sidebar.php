@@ -95,8 +95,13 @@ return [
                 'url' => 'admin/grants/items'
             ],
             [
+<<<<<<< HEAD
                 'name' => 'EXP Grants',
                 'url' => 'admin/grants/exp'
+=======
+                'name' => 'Recipe Grants',
+                'url' => 'admin/grants/recipes'
+>>>>>>> d6c2d037946decba62b3720114d4ce721774e437
             ],
         ]
     ],
@@ -202,6 +207,10 @@ return [
             [
                 'name' => 'Items',
                 'url' => 'admin/data/items'
+            ],
+            [
+                'name' => 'Recipes',
+                'url' => 'admin/data/recipes'
             ],
         ]
     ],

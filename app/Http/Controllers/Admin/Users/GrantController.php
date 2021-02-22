@@ -8,11 +8,23 @@ use Illuminate\Http\Request;
 
 use App\Models\User\User;
 use App\Models\Item\Item;
+use App\Models\Recipe\Recipe;
 use App\Models\Currency\Currency;
 
+use App\Models\User\UserItem;
+use App\Models\Character\CharacterItem;
+use App\Models\Trade;
+use App\Models\Character\CharacterDesignUpdate;
+use App\Models\Submission\Submission;
+
+use App\Models\Character\Character;
 use App\Services\CurrencyManager;
 use App\Services\InventoryManager;
+<<<<<<< HEAD
 use App\Services\Stats\ExperienceManager;
+=======
+use App\Services\RecipeService;
+>>>>>>> d6c2d037946decba62b3720114d4ce721774e437
 
 use App\Http\Controllers\Controller;
 
@@ -49,7 +61,7 @@ class GrantController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Show the item grant page.
      *
@@ -80,6 +92,75 @@ class GrantController extends Controller
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
         return redirect()->back();
+    }
+    
+    /**
+     * Show the recipe grant page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getRecipes()
+    {
+        return view('admin.grants.recipes', [
+            'users' => User::orderBy('id')->pluck('name', 'id'),
+            'recipes' => Recipe::orderBy('name')->pluck('name', 'id')
+        ]);
+    }
+
+    /**
+     * Grants or removes items from multiple users.
+     *
+     * @param  \Illuminate\Http\Request        $request
+     * @param  App\Services\InventoryManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postRecipes(Request $request, RecipeService $service)
+    {
+        $data = $request->only(['names', 'recipe_ids', 'data']);
+        if($service->grantRecipes($data, Auth::user())) {
+            flash('Recipes granted successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Show the item search page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getItemSearch(Request $request)
+    {
+        $item = Item::find($request->only(['item_id']))->first();
+
+        if($item) {
+            // Gather all instances of this item
+            $userItems = UserItem::where('item_id', $item->id)->where('count', '>', 0)->get();
+            $characterItems = CharacterItem::where('item_id', $item->id)->where('count', '>', 0)->get();
+
+            // Gather the users and characters that own them
+            $users = User::whereIn('id', $userItems->pluck('user_id')->toArray())->orderBy('name', 'ASC')->get();
+            $characters = Character::whereIn('id', $characterItems->pluck('character_id')->toArray())->orderBy('slug', 'ASC')->get();
+
+            // Gather hold locations
+            $designUpdates = CharacterDesignUpdate::whereIn('user_id', $userItems->pluck('user_id')->toArray())->whereNotNull('data')->get();
+            $trades = Trade::whereIn('sender_id', $userItems->pluck('user_id')->toArray())->orWhereIn('recipient_id', $userItems->pluck('user_id')->toArray())->get();
+            $submissions = Submission::whereIn('user_id', $userItems->pluck('user_id')->toArray())->whereNotNull('data')->get();
+        }
+
+        return view('admin.grants.item_search', [
+            'item' => $item ? $item : null,
+            'items' => Item::orderBy('name')->pluck('name', 'id'),
+            'userItems' => $item ? $userItems : null,
+            'characterItems' => $item ? $characterItems : null,
+            'users' => $item ? $users : null,
+            'characters' => $item ? $characters : null,
+            'designUpdates' => $item ? $designUpdates :null,
+            'trades' => $item ? $trades : null,
+            'submissions' => $item ? $submissions : null,
+        ]);
     }
 
     /**
