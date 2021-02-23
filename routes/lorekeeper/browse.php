@@ -61,14 +61,11 @@ Route::group(['prefix' => 'user', 'namespace' => 'Users'], function() {
     Route::get('{name}/item-logs', 'UserController@getUserItemLogs');
     Route::get('{name}/ownership', 'UserController@getUserOwnershipLogs');
     Route::get('{name}/submissions', 'UserController@getUserSubmissions');
-<<<<<<< HEAD
     Route::get('{name}/exp-logs', 'UserController@getUserExpLogs');
     Route::get('{name}/level-logs', 'UserController@getUserLevelLogs');
     Route::get('{name}/stat-logs', 'UserController@getUserStatLogs');
-=======
 
     Route::get('{name}/recipe-logs', 'UserController@getUserRecipeLogs');
->>>>>>> d6c2d037946decba62b3720114d4ce721774e437
 });
 
 /**************************************************************************************************
@@ -119,15 +116,12 @@ Route::group(['prefix' => 'world'], function() {
     Route::get('trait-categories', 'WorldController@getFeatureCategories');
     Route::get('traits', 'WorldController@getFeatures');
     Route::get('character-categories', 'WorldController@getCharacterCategories');
-<<<<<<< HEAD
     Route::get('levels', 'WorldController@getLevels');
     Route::get('levels/{type}', 'WorldController@getLevelTypes');
     Route::get('levels/{type}/{level}', 'WorldController@getSingleLevel');
     Route::get('stats', 'WorldController@getStats');
-=======
     Route::get('recipes', 'WorldController@getRecipes');
     Route::get('recipes/{id}', 'WorldController@getRecipe');
->>>>>>> d6c2d037946decba62b3720114d4ce721774e437
 });
 
 Route::group(['prefix' => 'prompts'], function() {

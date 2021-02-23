@@ -287,17 +287,14 @@ Route::group(['prefix' => 'grants', 'namespace' => 'Users', 'middleware' => 'pow
 
     Route::get('items', 'GrantController@getItems');
     Route::post('items', 'GrantController@postItems');
-<<<<<<< HEAD
 
     Route::get('exp', 'GrantController@getExp');
     Route::post('exp', 'GrantController@postExp');
-=======
     
     Route::get('item-search', 'GrantController@getItemSearch');
 
     Route::get('recipes', 'GrantController@getRecipes');
     Route::post('recipes', 'GrantController@postRecipes');
->>>>>>> d6c2d037946decba62b3720114d4ce721774e437
 });
 
 

@@ -397,7 +397,6 @@ class WorldController extends Controller
             'categories' => ['none' => 'Any Category'] + PromptCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
-<<<<<<< HEAD
     /**
      * 
      *  LEVELS
@@ -441,7 +440,8 @@ class WorldController extends Controller
         return view('world.level_single', [
             'level' => $levels,
             'type' => $type
-=======
+            ]);
+    }
 
     /**
      * Shows the items page.
@@ -480,12 +480,10 @@ class WorldController extends Controller
 
         return view('world.recipes.recipes', [
             'recipes' => $query->paginate(20)->appends($request->query()),
->>>>>>> d6c2d037946decba62b3720114d4ce721774e437
         ]);
     }
 
     /**
-<<<<<<< HEAD
      * STATS
      */
     public function getStats()
@@ -494,8 +492,10 @@ class WorldController extends Controller
 
         return view('world.stats', [
             'stats' => $stats,
-=======
-     * Shows an individual recipe;ss page.
+            
+        ]);
+    }
+     /** Shows an individual recipe;ss page.
      *
      * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
@@ -510,7 +510,6 @@ class WorldController extends Controller
             'imageUrl' => $recipe->imageUrl,
             'name' => $recipe->displayName,
             'description' => $recipe->parsed_description,
->>>>>>> d6c2d037946decba62b3720114d4ce721774e437
         ]);
     }
 }

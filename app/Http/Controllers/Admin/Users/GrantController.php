@@ -20,11 +20,8 @@ use App\Models\Submission\Submission;
 use App\Models\Character\Character;
 use App\Services\CurrencyManager;
 use App\Services\InventoryManager;
-<<<<<<< HEAD
 use App\Services\Stats\ExperienceManager;
-=======
 use App\Services\RecipeService;
->>>>>>> d6c2d037946decba62b3720114d4ce721774e437
 
 use App\Http\Controllers\Controller;
 
