@@ -1,5 +1,13 @@
 <ul>
     <li class="sidebar-header"><a href="{{ url('world') }}" class="card-link">Encyclopedia</a></li>
+    @if(isset($sections) && $sections->count() > 0)
+    <li class="sidebar-section">
+        <div class="sidebar-section-header">Info</div>
+        @foreach($sections as $section)
+            <div class="sidebar-item"><a href="{{ url($section->url) }}" class="{{ set_active('world/info/'.$section->key) }}">{{ $section->name }}</a></div>
+        @endforeach
+    </li>
+    @endif
     <li class="sidebar-section">
         <div class="sidebar-section-header">Characters</div>
         <div class="sidebar-item"><a href="{{ url('world/species') }}" class="{{ set_active('world/species*') }}">Species</a></div>

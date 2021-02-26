@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Config;
+use DB;
 use App\Models\Model;
 
 use App\Traits\Commentable;
@@ -17,7 +18,11 @@ class SitePage extends Model
      * @var array
      */
     protected $fillable = [
+<<<<<<< HEAD
         'key', 'title', 'text', 'parsed_text', 'is_visible', 'can_comment'
+=======
+        'key', 'title', 'text', 'parsed_text', 'is_visible', 'page_category_id'
+>>>>>>> ca44b4dc19ec8dc7b06589a1ab1753c3adfcd58a
     ];
 
     /**
@@ -40,6 +45,7 @@ class SitePage extends Model
      * @var array
      */
     public static $createRules = [
+        'page_category_id' => 'nullable',
         'key' => 'required|unique:site_pages|between:3,25|alpha_dash',
         'title' => 'required|between:3,25',
         'text' => 'nullable',
@@ -51,6 +57,7 @@ class SitePage extends Model
      * @var array
      */
     public static $updateRules = [
+        'page_category_id' => 'nullable',
         'key' => 'required|between:3,25|alpha_dash',
         'title' => 'required|between:3,25',
         'text' => 'nullable',
@@ -66,6 +73,7 @@ class SitePage extends Model
         return url('info/'.$this->key);
     }
 
+<<<<<<< HEAD
     /**
      * Displays the news post title, linked to the news post itself.
      *
@@ -75,4 +83,50 @@ class SitePage extends Model
     {
         return '<a href="'.$this->url.'">'.$this->title.'</a>';
     }
+=======
+     /**********************************************************************************************
+    
+        RELATIONS
+
+    **********************************************************************************************/
+    
+    /**
+     * Get the category the page belongs to.
+     */
+    public function category() 
+    {
+        return $this->belongsTo('App\Models\SitePageCategory', 'page_category_id');
+    }
+
+    /**********************************************************************************************
+    
+        SCOPES
+
+    **********************************************************************************************/
+    
+    /**
+     * Scope a query to sort pages in alphabetical order.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  bool                                   $reverse
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSortAlphabetical($query, $reverse = false)
+    {
+        return $query->orderBy('name', $reverse ? 'DESC' : 'ASC');
+    }
+    
+    /**
+     * Scope a query to sort page in category order.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSortCategory($query)
+    {
+        $ids = SitePageCategory::orderBy('sort', 'DESC')->pluck('id')->toArray();
+        return count($ids) ? $query->orderByRaw(DB::raw('FIELD(page_category_id, '.implode(',', $ids).')')) : $query;
+    }
+
+>>>>>>> ca44b4dc19ec8dc7b06589a1ab1753c3adfcd58a
 }

@@ -249,6 +249,31 @@ Route::group(['prefix' => 'pages', 'middleware' => 'power:edit_pages'], function
     Route::post('delete/{id}', 'PageController@postDeletePage');
 });
 
+# PAGE CATEGORIES
+Route::group(['prefix'=> 'page-categories', 'middleware' => 'power:edit_pages'], function() {
+
+    Route::get('/', 'PageController@getCategoryIndex');
+    Route::get('create', 'PageController@getCreatePageCategory');
+    Route::get('edit/{id}', 'PageController@getEditPageCategory');
+    Route::get('delete/{id}', 'PageController@getDeletePageCategory');
+    Route::post('create', 'PageController@postCreateEditPageCategory');
+    Route::post('edit/{id?}', 'PageController@postCreateEditPageCategory');
+    Route::post('delete/{id}', 'PageController@postDeletePageCategory');
+    Route::post('sort', 'PageController@postSortPageCategory');
+});
+
+# PAGE SECTIONS
+Route::group(['prefix'=> 'page-sections', 'middleware' => 'power:edit_pages'], function() {
+
+    Route::get('/', 'PageController@getSectionIndex');
+    Route::get('create', 'PageController@getCreatePageSection');
+    Route::get('edit/{id}', 'PageController@getEditPageSection');
+    Route::get('delete/{id}', 'PageController@getDeletePageSection');
+    Route::post('create', 'PageController@postCreateEditPageSection');
+    Route::post('edit/{id?}', 'PageController@postCreateEditPageSection');
+    Route::post('delete/{id}', 'PageController@postDeletePageSection');
+    Route::post('sort', 'PageController@postSortPageSection');
+});
 
 # NEWS
 Route::group(['prefix' => 'news', 'middleware' => 'power:edit_pages'], function() {
