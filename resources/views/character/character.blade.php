@@ -47,7 +47,7 @@
     </div>
     <div class="card-body tab-content">
         <div class="tab-pane fade show active" id="stats">
-            @include('character._tab_stats', ['character' => $character])
+            @include('character._tab_stats', ['character' => $character, 'parent' => $parent, 'children' => $children])
         </div>
         <div class="tab-pane fade" id="notes">
             @include('character._tab_notes', ['character' => $character])

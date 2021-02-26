@@ -90,6 +90,17 @@
         {!! Form::submit('Send Transfer', ['class' => 'btn btn-primary']) !!}
     </div>
     {!! Form::close() !!}
+    
+    <h3>Admin Binding</h3>
+    {!! Form::open(['url' => $character->is_myo_slot ? 'admin/myo/'.$character->id.'/bind' : 'admin/character/' . $character->slug . '/bind']) !!}
+    <div class="form-group">
+        {!! Form::label('Bound to (Optional)') !!} {!! add_help('This binds a character to another existing character as a child, which overrides ALL other transfer options.') !!}
+        {!! Form::select('parent_id', $characterOptions, $parent, ['class' => 'form-control selectize mr-2 default character-select']) !!}
+    </div>
+    <div class="text-right">
+        {!! Form::submit('Update Binding', ['class' => 'btn btn-primary']) !!}
+    </div>
+    {!! Form::close() !!}
 @endif
 
 @endsection

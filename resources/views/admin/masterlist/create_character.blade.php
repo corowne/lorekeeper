@@ -42,6 +42,11 @@
             </div>
         </div>
     </div>
+    <div class="form-group">
+        {!! Form::label('Bound to (Optional)') !!} {!! add_help('This binds a character to another existing character as a child, which overrides transfer options.') !!}
+        {!! Form::select('parent_id', $characterOptions, old('parent_id'), ['class' => 'form-control selectize mr-2 default character-select']) !!}
+    </div>
+
 
     @if(!$isMyo)
         <div class="row">
@@ -258,6 +263,9 @@
 
 @section('scripts')
 @parent
+<script>
+    $('.selectize').selectize();
+</script>
 @include('widgets._character_create_options_js')
 @include('widgets._image_upload_js')
 @if(!$isMyo)

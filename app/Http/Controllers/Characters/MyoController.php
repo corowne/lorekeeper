@@ -15,6 +15,7 @@ use App\Models\Currency\CurrencyLog;
 use App\Models\User\UserCurrency;
 use App\Models\Character\CharacterCurrency;
 use App\Models\Character\CharacterTransfer;
+use App\Models\Character\CharacterLink;
 
 use App\Services\CurrencyManager;
 use App\Services\CharacterManager;
@@ -68,6 +69,8 @@ class MyoController extends Controller
     {
         return view('character.myo.character', [
             'character' => $this->character,
+            'parent' => CharacterLink::where('child_id', $this->character->id)->orderBy('parent_id', 'DESC')->first(),
+            'children' => CharacterLink::where('parent_id', $this->character->id)->orderBy('child_id', 'DESC')->get()
         ]);
     }
 
@@ -183,6 +186,9 @@ class MyoController extends Controller
         $isMod = Auth::user()->hasPower('manage_characters');
         $isOwner = ($this->character->user_id == Auth::user()->id);
         if(!$isMod && !$isOwner) abort(404);
+        
+        $parent = CharacterLink::where('child_id', $this->character->id)->orderBy('parent_id', 'DESC')->first();
+        if($parent) $parent = $parent->parent->id;
 
         return view('character.transfer', [
             'character' => $this->character,
@@ -190,6 +196,8 @@ class MyoController extends Controller
             'cooldown' => Settings::get('transfer_cooldown'),
             'transfersQueue' => Settings::get('open_transfers_queue'),
             'userOptions' => User::visible()->orderBy('name')->pluck('name', 'id')->toArray(),
+            'parent' => $parent,
+            'characterOptions' => [null => 'Unbound'] + Character::visible()->myo(0)->orderBy('slug','ASC')->get()->pluck('fullName','id')->toArray()
         ]);
     }
 
@@ -204,8 +212,15 @@ class MyoController extends Controller
     public function postTransfer(Request $request, CharacterManager $service, $id)
     {
         if(!Auth::check()) abort(404);
-
-        if($service->createTransfer($request->only(['recipient_id', 'user_reason']), $this->character, Auth::user())) {
+        
+        $parent = CharacterLink::where('child_id', $this->character->id)->first();
+        $child = CharacterLink::where('parent_id', $this->character->id)->first();
+        if($parent && $child) $mutual = CharacterLink::where('child_id', $parent->parent->id)->where('parent_id', $this->character->id)->first();
+        if($parent && !isset($mutual)) {
+            flash('This character is bound and cannot be transfered. You must transfer the character it is bound to.')->error();
+            return redirect()->back();
+        }
+        if($service->createTransfer($request->only(['recipient_id']), $this->character, Auth::user())) {
             flash('Transfer created successfully.')->success();
         }
         else {
