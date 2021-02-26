@@ -93,11 +93,7 @@ class CharacterManager extends Service
         try {
             if(!$isMyo && Character::where('slug', $data['slug'])->exists()) throw new \Exception("Please enter a unique character code.");
 
-<<<<<<< HEAD
-            if(!(isset($data['user_id']) && $data['user_id']) && !(isset($data['owner_url']) && $data['owner_url']))
-=======
             if(!(isset($data['user_id']) && $data['user_id']) && !(isset($data['owner_alias']) && $data['owner_alias']) && !(isset($data['parent_id']) && $data['parent_id'])) 
->>>>>>> bc6ff557b1bb88befde2f4aad3e351c8991564ce
                 throw new \Exception("Please select an owner.");
             if(!$isMyo)
             {
@@ -115,10 +111,6 @@ class CharacterManager extends Service
             // Get owner info
             $url = null;
             $recipientId = null;
-<<<<<<< HEAD
-            if(isset($data['user_id']) && $data['user_id']) $recipient = User::find($data['user_id']);
-            elseif(isset($data['owner_url']) && $data['owner_url']) $recipient = checkAlias($data['owner_url']);
-=======
             $alias = null;
             if(isset($data['parent_id']) && $data['parent_id'])
             {
@@ -134,7 +126,6 @@ class CharacterManager extends Service
             }
             elseif(isset($data['user_id']) && $data['user_id']) $recipient = User::find($data['user_id']);
             elseif(isset($data['owner_alias']) && $data['owner_alias']) $recipient = User::where('alias', $data['owner_alias'])->first();
->>>>>>> bc6ff557b1bb88befde2f4aad3e351c8991564ce
 
             if(is_object($recipient)) {
                 $recipientId = $recipient->id;
@@ -1486,12 +1477,8 @@ class CharacterManager extends Service
             }
 
             $sender = $character->user;
-<<<<<<< HEAD
-
-=======
             
             // Move the character
->>>>>>> bc6ff557b1bb88befde2f4aad3e351c8991564ce
             $this->moveCharacter($character, $recipient, 'Transferred by ' . $user->displayName . (isset($data['reason']) ? ': ' . $data['reason'] : ''), isset($data['cooldown']) ? $data['cooldown'] : -1);
 
             // Find all of the children of this character
