@@ -236,9 +236,6 @@
 
 @section('scripts')
 @parent
-<script>
-    $('.selectize').selectize();
-</script>
 @include('widgets._character_create_options_js')
 @include('widgets._image_upload_js')
 @if(!$isMyo)
