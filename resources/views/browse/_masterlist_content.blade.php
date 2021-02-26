@@ -30,11 +30,11 @@
                     {!! Form::text('username', Request::get('username'), ['class' => 'form-control']) !!}
                 </div>
                 <div class="masterlist-search-field">
-                    {!! Form::label('artist', 'Artist Alias: ') !!}
+                    {!! Form::label('artist', 'Artist Username: ') !!}
                     {!! Form::text('artist', Request::get('artist'), ['class' => 'form-control']) !!}
                 </div>
                 <div class="masterlist-search-field">
-                    {!! Form::label('designer', 'Designer Alias: ') !!}
+                    {!! Form::label('designer', 'Designer Username: ') !!}
                     {!! Form::text('designer', Request::get('designer'), ['class' => 'form-control']) !!}
                 </div>
                 <hr />
@@ -50,6 +50,10 @@
                     <div class="masterlist-search-field">
                         {!! Form::label('is_gift_art_allowed', 'Gift Art Status: ') !!}
                         {!! Form::select('is_gift_art_allowed', [0 => 'Any', 2 => 'Ask First', 1 => 'Yes', 3 => 'Yes OR Ask First'], Request::get('is_gift_art_allowed'), ['class' => 'form-control']) !!}
+                    </div>
+                    <div class="masterlist-search-field">
+                        {!! Form::label('is_gift_writing_allowed', 'Gift Writing Status: ') !!}
+                        {!! Form::select('is_gift_writing_allowed', [0 => 'Any', 2 => 'Ask First', 1 => 'Yes', 3 => 'Yes OR Ask First'], Request::get('is_gift_writing_allowed'), ['class' => 'form-control']) !!}
                     </div>
                 @endif
                 <br />

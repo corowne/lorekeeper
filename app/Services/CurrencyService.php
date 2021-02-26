@@ -81,7 +81,7 @@ class CurrencyService extends Service
             // More specific validation
             if(!isset($data['is_user_owned']) && !isset($data['is_character_owned'])) throw new \Exception("Please choose if this currency is attached to users and/or characters.");
             if(Currency::where('name', $data['name'])->where('id', '!=', $currency->id)->exists()) throw new \Exception("The name has already been taken.");
-            if(Currency::where('abbreviation', $data['abbreviation'])->where('id', '!=', $currency->id)->exists()) throw new \Exception("The abbreviation has already been taken.");
+            if(isset($data['abbreviation']) && Currency::where('abbreviation', $data['abbreviation'])->where('id', '!=', $currency->id)->exists()) throw new \Exception("The abbreviation has already been taken.");
 
             $data = $this->populateData($data, $currency);
 
