@@ -42,7 +42,6 @@ class PageController extends Controller
 
     **********************************************************************************************/
     
-<<<<<<< HEAD
 
     /**
      * Shows the credits page.
@@ -57,7 +56,6 @@ class PageController extends Controller
         ]);
     }
     
-=======
     /**
      * Shows the world lore page.
      *
@@ -74,5 +72,4 @@ class PageController extends Controller
             'categories' => SitePageCategory::orderBy('sort', 'DESC')->get()
         ]);
     }
->>>>>>> ca44b4dc19ec8dc7b06589a1ab1753c3adfcd58a
 }
