@@ -29,7 +29,6 @@
     <p>No pages found.</p>
 @else
     {!! $pages->render() !!}
-<<<<<<< HEAD
       <div class="row ml-md-2">
         <div class="d-flex row flex-wrap col-12 pb-1 px-0 ubt-bottom">
           <div class="col-12 col-md-5 font-weight-bold">Title</div>
@@ -49,7 +48,6 @@
 
     <div class="text-center mt-4 small text-muted">{{ $pages->total() }} result{{ $pages->total() == 1 ? '' : 's' }} found.</div>
 
-=======
     <table class="table table-sm page-table">
         <thead>
             <tr>
@@ -82,7 +80,6 @@
     </table>
     {!! $pages->render() !!}
     <div class="text-center mt-4 small text-muted">{{ $pages->total() }} result{{ $pages->total() == 1 ? '' : 's' }} found.</div>
->>>>>>> ca44b4dc19ec8dc7b06589a1ab1753c3adfcd58a
 @endif
 
 @endsection

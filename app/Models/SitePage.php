@@ -18,11 +18,7 @@ class SitePage extends Model
      * @var array
      */
     protected $fillable = [
-<<<<<<< HEAD
-        'key', 'title', 'text', 'parsed_text', 'is_visible', 'can_comment'
-=======
-        'key', 'title', 'text', 'parsed_text', 'is_visible', 'page_category_id'
->>>>>>> ca44b4dc19ec8dc7b06589a1ab1753c3adfcd58a
+        'key', 'title', 'text', 'parsed_text', 'is_visible', 'can_comment', 'page_category_id'
     ];
 
     /**
@@ -73,7 +69,6 @@ class SitePage extends Model
         return url('info/'.$this->key);
     }
 
-<<<<<<< HEAD
     /**
      * Displays the news post title, linked to the news post itself.
      *
@@ -83,7 +78,6 @@ class SitePage extends Model
     {
         return '<a href="'.$this->url.'">'.$this->title.'</a>';
     }
-=======
      /**********************************************************************************************
     
         RELATIONS
@@ -128,5 +122,4 @@ class SitePage extends Model
         return count($ids) ? $query->orderByRaw(DB::raw('FIELD(page_category_id, '.implode(',', $ids).')')) : $query;
     }
 
->>>>>>> ca44b4dc19ec8dc7b06589a1ab1753c3adfcd58a
 }

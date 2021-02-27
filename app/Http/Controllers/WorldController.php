@@ -16,7 +16,6 @@ use App\Models\Feature\Feature;
 use App\Models\Character\CharacterCategory;
 use App\Models\Prompt\PromptCategory;
 use App\Models\Prompt\Prompt;
-<<<<<<< HEAD
 use App\Models\Shop\Shop;
 use App\Models\Shop\ShopStock;
 use App\Models\User\User;
@@ -25,11 +24,8 @@ use App\Models\Stats\User\Level;
 use App\Models\Stats\Character\CharaLevels;
 use App\Models\Stats\User\UserLevel;
 use App\Models\Stats\Character\Stat;
-
 use App\Models\Recipe\Recipe;
-=======
 use App\Models\SitePageSection;
->>>>>>> ca44b4dc19ec8dc7b06589a1ab1753c3adfcd58a
 
 class WorldController extends Controller
 {
@@ -297,7 +293,6 @@ class WorldController extends Controller
         return view('world.items', [
             'items' => $query->paginate(20)->appends($request->query()),
             'categories' => ['none' => 'Any Category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-<<<<<<< HEAD
             'shops' => Shop::orderBy('sort', 'DESC')->get(),
             'artists' => ['none' => 'Any Artist'] + User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray()
         ]);
@@ -322,9 +317,7 @@ class WorldController extends Controller
             'description' => $item->parsed_description,
             'categories' => $categories->keyBy('id'),
             'shops' => Shop::whereIn('id', ShopStock::where('item_id', $item->id)->pluck('shop_id')->unique()->toArray())->orderBy('sort', 'DESC')->get()
-=======
             'sections' => SitePageSection::orderBy('sort', 'DESC')->get()
->>>>>>> ca44b4dc19ec8dc7b06589a1ab1753c3adfcd58a
         ]);
     }
 
@@ -341,7 +334,7 @@ class WorldController extends Controller
         if($name) $query->where('name', 'LIKE', '%'.$name.'%')->orWhere('code', 'LIKE', '%'.$name.'%');
         return view('world.character_categories', [
             'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
-            'sections' => SitePageSection::orderBy('sort', 'DESC')->get()
+            'sections' => SitePageSection::orderBy('sort', 'DESC')->get(),
         ]);
     }
 
