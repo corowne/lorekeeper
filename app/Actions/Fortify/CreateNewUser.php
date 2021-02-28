@@ -3,7 +3,7 @@
 namespace App\Actions\Fortify;
 
 use Settings;
-use App\Models\User;
+use App\Models\User\User;
 use App\Models\Invitation;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
