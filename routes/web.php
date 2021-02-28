@@ -12,8 +12,6 @@
 */
 
 Route::get('/', 'HomeController@getIndex')->name('home');
-Route::get('login', 'Auth\LoginController@getNewReply');
-Auth::routes(['verify' => true]);
 
 # BROWSE
 require_once __DIR__.'/lorekeeper/browse.php';

@@ -27,6 +27,11 @@ Route::group(['prefix' => 'account', 'namespace' => 'Users'], function() {
     Route::post('email', 'AccountController@postEmail');
     Route::post('avatar', 'AccountController@postAvatar');
 
+    Route::get('two-factor/confirm', 'AccountController@getConfirmTwoFactor');
+    Route::post('two-factor/enable', 'AccountController@postEnableTwoFactor');
+    Route::post('two-factor/confirm', 'AccountController@postConfirmTwoFactor');
+    Route::post('two-factor/disable', 'AccountController@postDisableTwoFactor');
+
     Route::get('bookmarks', 'BookmarkController@getBookmarks');
     Route::get('bookmarks/create', 'BookmarkController@getCreateBookmark');
     Route::get('bookmarks/edit/{id}', 'BookmarkController@getEditBookmark');

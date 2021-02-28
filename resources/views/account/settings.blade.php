@@ -74,4 +74,33 @@
     </div>
 {!! Form::close() !!}
 
+<h3>Two-Factor Authentication</h3>
+
+<p>Two-factor authentication acts as a second layer of protection for your account. It uses an app on your phone-- such as Google Authenticator-- and information provided by the site to generate a random code that changes frequently.</p>
+
+@if(!isset(Auth::user()->two_factor_secret))
+    <p>In order to enable two-factor authentication, you will need to scan a QR code with an authenticator app on your phone. Two-factor authentication will not be enabled until you do so and confirm by entering one of the codes provided by your authentication app.</p>
+    {!! Form::open(['url' => 'account/two-factor/enable']) !!}
+        <div class="text-right">
+            {!! Form::submit('Enable', ['class' => 'btn btn-primary']) !!}
+        </div>
+    {!! Form::close() !!}
+@elseif(isset(Auth::user()->two_factor_secret))
+    <p>Two-factor authentication is currently enabled.</p>
+
+    <h4>Disable Two-Factor Authentication</h4>
+    <p>To disable two-factor authentication, you must enter a code from your authenticator app.</p>
+    {!! Form::open(['url' => 'account/two-factor/disable']) !!}
+    <div class="form-group row">
+        <label class="col-md-2 col-form-label">Code</label>
+        <div class="col-md-10">
+            {!! Form::text('code', null, ['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="text-right">
+        {!! Form::submit('Disable', ['class' => 'btn btn-primary']) !!}
+    </div>
+    {!! Form::close() !!}
+@endif
+
 @endsection
