@@ -54,13 +54,4 @@ class PermalinkController extends Controller
             'comment' => $comment,            
         ]);
     }
-
-     /**
-     * returns replies recursively
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-     public function replies() {
-        return ' what ';
-    }
 }
