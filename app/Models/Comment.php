@@ -80,7 +80,7 @@ class Comment extends Model
      */
     public function children()
     {
-        return $this->hasMany('App\Models\Comment', 'child_id');
+        return $this->hasMany('App\Models\Comment', 'child_id')->with('children');
     }
 
     /**
@@ -88,7 +88,7 @@ class Comment extends Model
      */
     public function parent()
     {
-        return $this->belongsTo('App\Models\Comment', 'child_id');
+        return $this->belongsTo('App\Models\Comment', 'child_id')->with('children');
     }
 
     /**
@@ -100,6 +100,29 @@ class Comment extends Model
     {
         return url('comment/' . $this->id);
     }
+    /**
+     * Gets / Creates permalink for comments - allows user to go directly to comment
+     *
+     * @return string
+     */
+    public function getThreadUrlAttribute()
+    {
+        return url('forum/'.$this->commentable_id . '/' . $this->topComment->id);
+    }
+
+    /**
+     * Gets and Returns a display name for the comment.
+     * If this is the start of a forum topic, uses the Title attribute and leads to a forum
+     */
+    public function getDisplayNameAttribute()
+    {
+        if($this->commentable_type == 'App\Models\Forum') {
+            if(isset($this->title)) return '<a href="'.$this->threadUrl.'">'.$this->title.'</a>';
+            else return '<a href="'.$this->threadUrl.'">Re: '.$this->topComment->title.'</a>';
+        }
+        else return '<a href="'.$this->url.'">Comment</a> by '.$this->commenter->displayName;
+    }
+
 
     /**
      * Gets top comment
@@ -110,6 +133,38 @@ class Comment extends Model
     {
         if(!$this->parent) { return $this; }
         else {return $this->parent->topComment;}
+    }
+
+
+    /**
+     * Gets top comment
+     *
+     * @return string
+     */
+    public function getLatestReplyAttribute()
+    {
+        return Comment::where('child_id',$this->id)->latest()->first();
+    }
+
+    public function getLatestReplyTimeAttribute()
+    {
+        if($this->latestReply) return $this->latestReply->created_at;
+        else return $this->created_at;
+    }
+
+
+
+
+    public function getAllChildren()
+    {
+        $sections = collect();
+
+        foreach ($this->children as $section) {
+            $sections->push($section);
+            $sections = $sections->merge($section->getAllChildren());
+        }
+
+        return $sections;
     }
 
 }

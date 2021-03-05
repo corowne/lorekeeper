@@ -21,6 +21,7 @@ use App\Models\Character\CharacterBookmark;
 use App\Models\Gallery\GallerySubmission;
 use App\Models\Gallery\GalleryCollaborator;
 use App\Models\Gallery\GalleryFavorite;
+use App\Models\Comment;
 use App\Traits\Commenter;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -159,7 +160,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get all of the user's gallery submissions.
      */
-    public function gallerySubmissions() 
+    public function gallerySubmissions()
     {
         return $this->hasMany('App\Models\Gallery\GallerySubmission')->where('user_id', $this->id)->orWhereIn('id', GalleryCollaborator::where('user_id', $this->id)->where('type', 'Collab')->pluck('gallery_submission_id')->toArray())->visible($this)->accepted()->orderBy('created_at', 'DESC');
     }
@@ -167,7 +168,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get all of the user's favorited gallery submissions.
      */
-    public function galleryFavorites() 
+    public function galleryFavorites()
     {
         return $this->hasMany('App\Models\Gallery\GalleryFavorite')->where('user_id', $this->id);
     }
@@ -324,6 +325,16 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getLogTypeAttribute()
     {
         return 'User';
+    }
+
+    /**
+     * Gets the user's log type for log creation.
+     *
+     * @return string
+     */
+    public function getForumCountAttribute()
+    {
+        return Comment::where('commentable_type','App\Models\Forum')->count();
     }
 
     /**********************************************************************************************
