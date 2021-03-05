@@ -434,3 +434,16 @@ Route::group(['prefix' => 'designs', 'middleware' => 'power:manage_characters'],
     Route::post('vote/{id}/{action}', 'DesignController@postVote')->where('action', 'approve|reject');
 });
 Route::get('{type}/{status}', 'DesignController@getDesignIndex')->where('type', 'myo-approvals|design-approvals')->where('status', 'pending|approved|rejected');
+
+
+# FORUMS
+Route::group(['prefix' => 'forums', 'middleware' => 'power:edit_data'], function() {
+
+    Route::get('/', 'ForumController@getIndex');
+    Route::get('create', 'ForumController@getCreateForum');
+    Route::get('edit/{id}', 'ForumController@getEditForum');
+    Route::get('delete/{id}', 'ForumController@getDeleteForum');
+    Route::post('create', 'ForumController@postCreateEditForum');
+    Route::post('edit/{id?}', 'ForumController@postCreateEditForum');
+    Route::post('delete/{id}', 'ForumController@postDeleteForum');
+});

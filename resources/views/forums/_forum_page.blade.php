@@ -1,5 +1,5 @@
 <div class="float-right mb-2"><a class="btn btn-primary" href="{{ url('forum/'.$forum->id.'/new') }}">New Thread</a></div>
-
+@include('forums._forum_topper', ['forum' => $forum])
 @if($posts->count())
     <div class="card mb-2" style="clear:both;">
         <ul class="list-group list-group-flush">

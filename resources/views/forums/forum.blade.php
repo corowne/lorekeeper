@@ -15,6 +15,7 @@
 @if(isset($forum->parent))
     @include('forums._forum_page',['forum' => $forum, 'posts' => $posts])
 @else
+    @include('forums._forum_topper', ['forum' => $forum])
     <h5 class="text-center" style="clear:both;">Boards in {!! $forum->name !!}</h5>
     @include('forums._category_page',['forum' => $forum, 'forums' => $forum->children])
 @endif

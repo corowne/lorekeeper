@@ -6,9 +6,11 @@ use Auth;
 use Config;
 use App\Models\Model;
 use App\Traits\Commentable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Forum extends Model
 {
+    use SoftDeletes;
     use Commentable;
 
     /**
@@ -26,6 +28,13 @@ class Forum extends Model
      * @var string
      */
     protected $table = 'forums';
+
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
 
     /**********************************************************************************************
 

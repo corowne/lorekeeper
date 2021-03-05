@@ -35,6 +35,12 @@ class CreateForumsTable extends Migration
             $table->boolean('has_image')->default(0);
             $table->string('extension', 191)->nullable()->default(null);
 
+            $table->timestamps();
+            $table->softDeletes();
+
+        });
+        Schema::table('comments', function (Blueprint $table) {
+            $table->string('title', 191)->nullable()->default(null);
         });
     }
 
@@ -45,6 +51,9 @@ class CreateForumsTable extends Migration
      */
     public function down()
     {
+        Schema::table('comments', function (Blueprint $table) {
+            $table->dropColumn('title');
+        });
         Schema::dropIfExists('forums');
     }
 }
