@@ -316,7 +316,7 @@ class WorldController extends Controller
             'name' => $item->displayName,
             'description' => $item->parsed_description,
             'categories' => $categories->keyBy('id'),
-            'shops' => Shop::whereIn('id', ShopStock::where('item_id', $item->id)->pluck('shop_id')->unique()->toArray())->orderBy('sort', 'DESC')->get()
+            'shops' => Shop::whereIn('id', ShopStock::where('item_id', $item->id)->pluck('shop_id')->unique()->toArray())->orderBy('sort', 'DESC')->get(),
             'sections' => SitePageSection::orderBy('sort', 'DESC')->get()
         ]);
     }
@@ -334,7 +334,7 @@ class WorldController extends Controller
         if($name) $query->where('name', 'LIKE', '%'.$name.'%')->orWhere('code', 'LIKE', '%'.$name.'%');
         return view('world.character_categories', [
             'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
-            'sections' => SitePageSection::orderBy('sort', 'DESC')->get(),
+            'sections' => SitePageSection::orderBy('sort', 'DESC')->get()
         ]);
     }
 
