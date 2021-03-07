@@ -44,7 +44,11 @@ class CommentPolicy
      */
     public function update($user, Comment $comment) : bool
     {
-        return $user->getKey() == $comment->commenter_id;
+        if($comment->topComment->is_locked || $comment->commentable_type == 'App\Models\Forum' && $comment->commentable->canUsersPost()) {
+            if($user->isStaff) return $user->getKey() == $comment->commenter_id;
+            else return false;
+        }
+        else return $user->getKey() == $comment->commenter_id;
     }
 
     /**
@@ -56,7 +60,12 @@ class CommentPolicy
      */
     public function reply($user, Comment $comment) : bool
     {
-        return $user->getKey();
+        if($comment->topComment->is_locked || $comment->commentable_type == 'App\Models\Forum' && $comment->commentable->canUsersPost())
+        {
+            if($user->isStaff) return $user->getKey() == $user->getKey();
+            else return false;
+        }
+        else return $user->getKey();
     }
 }
 

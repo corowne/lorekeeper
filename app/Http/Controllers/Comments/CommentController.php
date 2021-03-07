@@ -173,14 +173,35 @@ class CommentController extends Controller implements CommentControllerInterface
     {
         Gate::authorize('delete-comment', $comment);
 
+        $forum = null;
+        if($comment->commentable_type == 'App\Models\Forum' && $comment->children && isset($comment->child_id)){
+            foreach($comment->children as $child)
+            {
+                $child->child_id = $comment->child_id;
+                $child->save();
+            }
+        }
+
+        if($comment->commentable_type == 'App\Models\Forum')
+        {
+            if($comment->parent) {
+                $forum = $comment->parent->threadUrl;
+                flash('Reply deleted successfully.')->success();
+            }
+            else {
+                $forum = $comment->commentable->url;
+                flash('Thread deleted successfully.')->success();
+            }
+        }
+
         if (Config::get('comments.soft_deletes') == true) {
 			$comment->delete();
 		}
 		else {
 			$comment->forceDelete();
 		}
-
-        return Redirect::back();
+        if(isset($forum)) return redirect($forum);
+        else return redirect()->back();
     }
 
     /**

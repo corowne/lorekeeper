@@ -23,8 +23,23 @@ class ForumController extends Controller
      */
     public function getIndex()
     {
+        $forums = Forum::with('children')->has('children')->visible()->category()->orderBy('sort', 'DESC')->staff()->get();
+        $customforums = collect();
+
+        foreach($forums as $key => $forum)
+        {
+            foreach($forum->children as $child)
+            {
+                if(!$child->hasRestrictions || Auth::check() && Auth::user()->canVisitForum($forum->id)) {
+                    $customforums->push($forum);
+                    break;
+                }
+            }
+
+        }
+
         return view('forums.index', [
-            'forums' => Forum::visible()->category()->orderBy('sort', 'DESC')->staff()->get()
+            'forums' => $customforums
         ]);
     }
 
@@ -39,9 +54,14 @@ class ForumController extends Controller
         $board = Forum::where('id',$id)->visible()->first();
         if(!$board) abort(404);
 
+        if($board->hasRestrictions && (!Auth::check() || Auth::check() && !Auth::user()->canVisitForum($id))) {
+            flash('You do not have permission to access this forum.')->error();
+            return redirect(url('/'));
+        }
+
         return view('forums.forum', [
             'forum' => $board,
-            'posts' => $board->comments->whereNull('child_id')->sortByDesc('latestReplyTime')->paginate(20)
+            'posts' => $board->comments->whereNull('child_id')->sortByDesc('latestReplyTime')->sortByDesc('is_featured')->paginate(20)
         ]);
     }
 
@@ -55,9 +75,14 @@ class ForumController extends Controller
         $thread = Comment::where('id',$id)->where('commentable_type','App\Models\Forum')->first();
         if(!$thread) abort(404);
 
+        if($thread->commentable->hasRestrictions && (!Auth::check() || Auth::check() && !Auth::user()->canVisitForum($board_id))) {
+            flash('You do not have permission to access this thread.')->error();
+            return redirect(url('/'));
+        }
+
         return view('forums.thread', [
             'thread' => $thread,
-            'replies' => $thread->children->sortBy('created_at')->paginate(15)
+            'replies' => $thread->getAllChildren()->sortBy('created_at')->paginate(15)
         ]);
     }
 

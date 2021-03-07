@@ -10,55 +10,15 @@
 {!! breadcrumbs(['Forum' => 'forum', $forum->name => 'forum/'.$forum->id]) !!}
 @endif
 
-<h1 class="float-left">{!! $forum->displayName !!}</h1>
+    <h1 class="float-left">{!! $forum->displayName !!}</h1>
 
-@if(isset($forum->parent))
-    @include('forums._forum_page',['forum' => $forum, 'posts' => $posts])
-@else
-    @include('forums._forum_topper', ['forum' => $forum])
-    <h5 class="text-center" style="clear:both;">Boards in {!! $forum->name !!}</h5>
-    @include('forums._category_page',['forum' => $forum, 'forums' => $forum->children])
-@endif
-
-
-
-
-
-
-
-
-
-
-
-
-@inject('markdown', 'Parsedown')
-@php
-    $markdown->setSafeMode(true);
-@endphp
-
-
-
-
-
-
-
-
-
-
-<br><br><br><br><br><br><br><br><br><br><br><br>
-
-
-
-
-
-
-
-
-
-@comments(['model' => $forum,
-        'perPage' => 5
-    ])
-
-
+    @if(isset($forum->parent))
+        @include('forums._forum_page',['forum' => $forum, 'posts' => $posts])
+    @else
+        @include('forums._forum_topper', ['forum' => $forum])
+        <hr style="clear:both;">
+        <h5 class="text-center mb-3" style="clear:both;">Boards in {!! $forum->name !!}</h5>
+        @include('forums._category_page',['forum' => $forum, 'forums' => $forum->children])
+    @endif
 
 @endsection

@@ -162,6 +162,20 @@ class Forum extends Model
         else return false;
     }
 
+    public function getAccessibleSubforumsAttribute()
+    {
+        $children = collect();
+        if($this->children) {
+            foreach($this->children as $child)
+            {
+                if(!$child->hasRestrictions || Auth::check() && Auth::user()->canVisitForum($child->id)) {
+                    $children->push($child);
+                }
+            }
+        }
+        return $children;
+    }
+
 
     /**
      * Gets the file directory containing the model's image.
@@ -215,6 +229,15 @@ class Forum extends Model
         return Comment::where('commentable_type','App\Models\Forum')->where('commentable_id',$this->id)->get();
     }
 
+    public function canUsersPost($board = null)
+    {
+        if($board == null) $board = $this;
+        if($board->is_locked) return false;
+        elseif(isset($board->parent_id)) {
+            if(!$board->canUsersPost($board->parent)) return false;
+        }
+        return true;
+    }
 
     /**********************************************************************************************
 

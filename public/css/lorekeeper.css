@@ -1,6 +1,6 @@
 /**************************************************************************************************
-    
-    Font definitions 
+
+    Font definitions
 
 **************************************************************************************************/
 
@@ -14,15 +14,15 @@
 }
 
 /**************************************************************************************************
-    
+
     Base styles
-    
+
 **************************************************************************************************/
 
 h1, h2, h3, h4, h5,
 .h1, .h2, .h3, .h4, .h5 {
     text-transform: uppercase;
-    font-family: Roboto Condensed, serif; 
+    font-family: Roboto Condensed, serif;
     font-weight: bold;
 }
 
@@ -46,15 +46,15 @@ a:hover {
 
 body {
     background-color: transparent;
-    font-family: Lato, sans-serif; 
+    font-family: Lato, sans-serif;
     min-height: 100vh;
     font-size: 80%;
 }
 
 /**************************************************************************************************
-    
+
     Helpers
-    
+
 **************************************************************************************************/
 
 .hide {
@@ -67,9 +67,9 @@ body {
 }
 
 /**************************************************************************************************
-    
+
     Layout
-    
+
 **************************************************************************************************/
 
 #app {
@@ -105,7 +105,7 @@ main > .row {
 
 .navbar .navbar-brand, .navbar .nav-item {
     text-transform: uppercase;
-    font-family: Roboto Condensed, serif; 
+    font-family: Roboto Condensed, serif;
 }
 
 .navbar .row { width: 100%; }
@@ -129,14 +129,14 @@ main > .row {
     border-bottom-left-radius: .25rem;
     margin-bottom: 1em;
     padding: 0.4em 0;
-    
+
     box-shadow: 0px 0px 6px 3px rgba(0,0,0,0.1);
 }
 
 .sidebar .sidebar-header,
 .sidebar .sidebar-section .sidebar-section-header {
     text-transform: uppercase;
-    font-family: Roboto Condensed, serif; 
+    font-family: Roboto Condensed, serif;
     font-weight: bold;
 }
 
@@ -186,7 +186,7 @@ main > .row {
 	.site-mobile-header {
 		top: 54px !important;
     }
-    
+
     .timestamp {
 		margin-left: 1rem!important;
 		margin-right: 1rem!important;
@@ -234,7 +234,7 @@ main > .row {
     }
     .sidebar.active {
         left: 0%;
-    } 
+    }
 
     .sidebar > ul {
         padding-top: 0px;
@@ -252,19 +252,19 @@ main > .row {
         border-radius: 0;
         margin-bottom: 1em;
         padding: 0.4em 0;
-        
+
         box-shadow: none;
     }
-	
+
 	/*fix for screen being over-wide on mobile*/
 	.row {
 		margin:0; max-width:100%;
 	}
-    
+
 	.container-fluid {
 		padding:0px;
 	}
-    
+
 	.site-footer .navbar .navbar-nav {
 		flex-wrap: wrap; justify-content: center;
 	}
@@ -297,9 +297,9 @@ main > .row {
 }
 
 /**************************************************************************************************
-    
+
     Content
-    
+
 **************************************************************************************************/
 .modal-header {
     border-bottom: 0px;
@@ -309,7 +309,7 @@ main > .row {
 }
 
 .tooltip-inner {
-    max-width: 350px !important; 
+    max-width: 350px !important;
 }
 
 .nav-tabs .nav-link.active {
@@ -625,7 +625,196 @@ tr.accountbound {
         padding-left: 3rem;
         border-left-width: 2px!important;
     }
-    
+
 @media only screen and (max-width: 600px) {
     .comment_replies { padding-left:1rem;}
 }
+
+/* RESPONSIVE BORDERS https://stackoverflow.com/questions/46412541/applying-borders-on-elements-depending-on-device-size-with-bootstrap */
+@media (min-width: 576px) {
+    .border-sm-top {
+      border-top: 1px solid #e3e7eb !important;
+    }
+    .border-sm-right {
+      border-right: 1px solid #e3e7eb !important;
+    }
+    .border-sm-bottom {
+      border-bottom: 1px solid #e3e7eb !important;
+    }
+    .border-sm-left {
+      border-left: 1px solid #e3e7eb !important;
+    }
+    .border-sm-top-0 {
+      border-top: 0 !important;
+    }
+    .border-sm-right-0 {
+      border-right: 0 !important;
+    }
+    .border-sm-bottom-0 {
+      border-bottom: 0 !important;
+    }
+    .border-sm-left-0 {
+      border-left: 0 !important;
+    }
+    .border-sm-x {
+      border-left: 1px solid #e3e7eb !important;
+      border-right: 1px solid #e3e7eb !important;
+    }
+    .border-sm-y {
+      border-top: 1px solid #e3e7eb !important;
+      border-bottom: 1px solid #e3e7eb !important;
+    }
+    .border-sm {
+      border-top: 1px solid #e3e7eb !important;
+      border-bottom: 1px solid #e3e7eb !important;
+      border-left: 1px solid #e3e7eb !important;
+      border-right: 1px solid #e3e7eb !important;
+    }
+    .border-sm-0 {
+      border-top: 0 !important;
+      border-bottom: 0 !important;
+      border-left: 0 !important;
+      border-right: 0 !important;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .border-md-top {
+      border-top: 1px solid #e3e7eb !important;
+    }
+    .border-md-right {
+      border-right: 1px solid #e3e7eb !important;
+    }
+    .border-md-bottom {
+      border-bottom: 1px solid #e3e7eb !important;
+    }
+    .border-md-left {
+      border-left: 1px solid #e3e7eb !important;
+    }
+    .border-md-top-0 {
+      border-top: 0 !important;
+    }
+    .border-md-right-0 {
+      border-right: 0 !important;
+    }
+    .border-md-bottom-0 {
+      border-bottom: 0 !important;
+    }
+    .border-md-left-0 {
+      border-left: 0 !important;
+    }
+    .border-md-x {
+      border-left: 1px solid #e3e7eb !important;
+      border-right: 1px solid #e3e7eb !important;
+    }
+    .border-md-y {
+      border-top: 1px solid #e3e7eb !important;
+      border-bottom: 1px solid #e3e7eb !important;
+    }
+    .border-md {
+      border-top: 1px solid #e3e7eb !important;
+      border-bottom: 1px solid #e3e7eb !important;
+      border-left: 1px solid #e3e7eb !important;
+      border-right: 1px solid #e3e7eb !important;
+    }
+    .border-md-0 {
+      border-top: 0 !important;
+      border-bottom: 0 !important;
+      border-left: 0 !important;
+      border-right: 0 !important;
+    }
+  }
+
+  @media (min-width: 992px) {
+    .border-lg-top {
+      border-top: 1px solid #e3e7eb !important;
+    }
+    .border-lg-right {
+      border-right: 1px solid #e3e7eb !important;
+    }
+    .border-lg-bottom {
+      border-bottom: 1px solid #e3e7eb !important;
+    }
+    .border-lg-left {
+      border-left: 1px solid #e3e7eb !important;
+    }
+    .border-lg-top-0 {
+      border-top: 0 !important;
+    }
+    .border-lg-right-0 {
+      border-right: 0 !important;
+    }
+    .border-lg-bottom-0 {
+      border-bottom: 0 !important;
+    }
+    .border-lg-left-0 {
+      border-left: 0 !important;
+    }
+    .border-lg-x {
+      border-left: 1px solid #e3e7eb !important;
+      border-right: 1px solid #e3e7eb !important;
+    }
+    .border-lg-y {
+      border-top: 1px solid #e3e7eb !important;
+      border-bottom: 1px solid #e3e7eb !important;
+    }
+    .border-lg {
+      border-top: 1px solid #e3e7eb !important;
+      border-bottom: 1px solid #e3e7eb !important;
+      border-left: 1px solid #e3e7eb !important;
+      border-right: 1px solid #e3e7eb !important;
+    }
+    .border-lg-0 {
+      border-top: 0 !important;
+      border-bottom: 0 !important;
+      border-left: 0 !important;
+      border-right: 0 !important;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .border-xl-top {
+      border-top: 1px solid #e3e7eb !important;
+    }
+    .border-xl-right {
+      border-right: 1px solid #e3e7eb !important;
+    }
+    .border-xl-bottom {
+      border-bottom: 1px solid #e3e7eb !important;
+    }
+    .border-xl-left {
+      border-left: 1px solid #e3e7eb !important;
+    }
+    .border-xl-top-0 {
+      border-top: 0 !important;
+    }
+    .border-xl-right-0 {
+      border-right: 0 !important;
+    }
+    .border-xl-bottom-0 {
+      border-bottom: 0 !important;
+    }
+    .border-xl-left-0 {
+      border-left: 0 !important;
+    }
+    .border-xl-x {
+      border-left: 1px solid #e3e7eb !important;
+      border-right: 1px solid #e3e7eb !important;
+    }
+    .border-xl-y {
+      border-top: 1px solid #e3e7eb !important;
+      border-bottom: 1px solid #e3e7eb !important;
+    }
+    .border-xl {
+      border-top: 1px solid #e3e7eb !important;
+      border-bottom: 1px solid #e3e7eb !important;
+      border-left: 1px solid #e3e7eb !important;
+      border-right: 1px solid #e3e7eb !important;
+    }
+    .border-xl-0 {
+      border-top: 0 !important;
+      border-bottom: 0 !important;
+      border-left: 0 !important;
+      border-right: 0 !important;
+    }
+  }

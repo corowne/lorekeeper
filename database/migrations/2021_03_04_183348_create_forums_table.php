@@ -41,6 +41,7 @@ class CreateForumsTable extends Migration
         });
         Schema::table('comments', function (Blueprint $table) {
             $table->string('title', 191)->nullable()->default(null);
+            $table->boolean('is_locked')->default(0);
         });
     }
 
@@ -53,6 +54,7 @@ class CreateForumsTable extends Migration
     {
         Schema::table('comments', function (Blueprint $table) {
             $table->dropColumn('title');
+            $table->dropColumn('is_locked');
         });
         Schema::dropIfExists('forums');
     }
