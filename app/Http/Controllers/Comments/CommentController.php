@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 use App\Models\Comment;
 use App\Models\Sales;
@@ -80,6 +81,7 @@ class CommentController extends Controller implements CommentControllerInterface
         $comment->comment = $request->message;
         $comment->approved = !Config::get('comments.approval_required');
         $comment->type = isset($request['type']) && $request['type'] ? $request['type'] : "User-User";
+        $comment->title = isset($request['title']) && $request['title'] ? $request['title'] : null;
         $comment->save();
 
         $recipient = null;
@@ -127,6 +129,10 @@ class CommentController extends Controller implements CommentControllerInterface
                 else $recipient = $submission->user;
                 $post = (($type != 'User-User') ? 'your gallery submission\'s staff comments' : 'your gallery submission');
                 $link = (($type != 'User-User') ? $submission->queueUrl . '/#comment-' . $comment->getKey() : $submission->url . '/#comment-' . $comment->getKey());
+                break;
+            case 'App\Models\Forum':
+                flash('Thread created successfully.')->success();
+                return redirect('/forum/'.$comment->commentable_id.'/~'.$comment->id);
                 break;
             }
 
@@ -203,8 +209,19 @@ class CommentController extends Controller implements CommentControllerInterface
         $sender = User::find($reply->commenter_id);
         $recipient = User::find($comment->commenter_id);
 
-        // if($sender == $recipient)
-        if($recipient != $sender) {
+        if($reply->commentable_type == 'App\Models\Forum'){
+            Notifications::create('THREAD_REPLY', $recipient, [
+            'sender_url' => $sender->url,
+            'sender' => $sender->name,
+            'comment_url' => $reply->id,
+            'thread_url' => $comment->topComment->id,
+            'thread_title' => $comment->topComment->title,
+            'forum_url' => $comment->commentable_id,
+            'forum_name' => $comment->commentable->name
+            ]);
+            return redirect(URL::previous() . '#comment-' . $reply->getKey());
+        }
+        elseif($recipient != $sender) {
             Notifications::create('COMMENT_REPLY', $recipient, [
             'sender_url' => $sender->url,
             'sender' => $sender->name,

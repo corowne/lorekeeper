@@ -190,3 +190,11 @@ Route::group(['prefix' => 'comments', 'namespace' => 'Comments'], function() {
     Route::post('/{comment}', 'CommentController@reply')->name('comments.reply');
     Route::post('/{id}/feature', 'CommentController@feature')->name('comments.feature');
 });
+
+
+/**************************************************************************************************
+    Forums
+**************************************************************************************************/
+Route::group(['prefix' => 'forum'], function() {
+    Route::get('{id}/new', 'ForumController@getCreateThread');
+});

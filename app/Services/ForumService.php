@@ -114,6 +114,7 @@ class ForumService extends Service
 
         if(!isset($data['is_active'])) $data['is_active'] = 0;
         if(!isset($data['is_locked'])) $data['is_locked'] = 0;
+        if(!isset($data['sort'])) $data['sort'] = 0;
         if(!isset($data['staff_only'])) $data['staff_only'] = 0;
         if(!isset($data['role_limit'])) $data['role_limit'] = null;
         if(!isset($data['parent_id'])) $data['parent_id'] = null;

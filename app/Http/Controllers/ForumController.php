@@ -41,7 +41,7 @@ class ForumController extends Controller
 
         return view('forums.forum', [
             'forum' => $board,
-            'posts' => $board->comments->whereNull('child_id')->sortByDesc('latestReplyTime')->paginate(10)
+            'posts' => $board->comments->whereNull('child_id')->sortByDesc('latestReplyTime')->paginate(20)
         ]);
     }
 
@@ -57,7 +57,23 @@ class ForumController extends Controller
 
         return view('forums.thread', [
             'thread' => $thread,
-            'replies' => $thread->children->sortByDesc('id')->paginate(2)
+            'replies' => $thread->children->sortBy('created_at')->paginate(15)
+        ]);
+    }
+
+    /**
+     * Shows the create forum forum.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCreateThread($id)
+    {
+        if(!Auth::user()->canVisitForum($id)) abort(404);
+        $forum = Forum::find($id);
+        return view('forums.create_thread', [
+            'forum' => $forum,
+            'thread' => new Comment
+
         ]);
     }
 

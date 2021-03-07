@@ -32,21 +32,21 @@ class Notification extends Model
 
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the user who owns notification.
      */
-    public function user() 
+    public function user()
     {
         return $this->belongsTo('App\Models\User\User');
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -72,10 +72,10 @@ class Notification extends Model
 
         $message = $notification['message'];
 
-        // Replace the URL... 
+        // Replace the URL...
         $message = str_replace('{url}', url($notification['url']), $message);
 
-        // Replace any variables in data... 
+        // Replace any variables in data...
         $data = $this->data;
         if($data && count($data)) {
             foreach($data as $key => $value) {
@@ -97,7 +97,7 @@ class Notification extends Model
     }
 
     /**********************************************************************************************
-    
+
         CONSTANTS
 
     **********************************************************************************************/
@@ -142,6 +142,7 @@ class Notification extends Model
     const BOOKMARK_IMAGE                    = 37;
     const CHARACTER_TRANSFER_ACCEPTABLE     = 38;
     const BOOKMARK_GIFT_WRITING             = 39;
+    const THREAD_REPLY                      = 110; // URI - Forums
     const REPORT_ASSIGNED                   = 220;
     const REPORT_CLOSED                     = 221;
     const COMMENT_MADE                      = 239;

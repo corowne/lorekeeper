@@ -19,7 +19,7 @@ class Forum extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'parsed_description', 'is_locked', 'staff_only', 'role_limit', 'parent_id', 'has_image', 'extension'
+        'name', 'description', 'parsed_description', 'is_locked', 'staff_only', 'role_limit', 'parent_id', 'has_image', 'extension', 'sort', 'is_active'
     ];
 
     /**
@@ -149,6 +149,17 @@ class Forum extends Model
             else return '<span>'. $icon . $this->name . '</span>';
         }
         else return '<a href="'.$this->url.'" class="display-forum">'. $icon . $this->name .'</a>';
+    }
+
+    /**
+     * Determines if Forum has any restrictions
+     *
+     * @return string
+     */
+    public function getHasRestrictionsAttribute()
+    {
+        if($this->is_locked || $this->staff_only || $this->role) return true;
+        else return false;
     }
 
 

@@ -6,11 +6,17 @@
 
 @section('content')
 
-<h1>Comments on {!! ($comment->commentable_type == 'App\Models\User\UserProfile') ? $comment->commentable->user->displayName : $comment->commentable->displayName !!}</h1>
+<h1>
+    Comments on
+    @if($comment->commentable_type == 'App\Models\User\UserProfile') {!! $comment->commentable->user->displayName !!}
+    @elseif($comment->commentable_type == 'App\Models\Forum') {!! $comment->topComment->displayName !!} in {!! $comment->commentable->displayName !!}
+    @else {!! $comment->commentable->displayName !!}
+    @endif
+</h1>
 <h5>
-    @if(isset($comment->child_id)) 
-        <a href="{{ url('comment/').'/'. $comment->child_id }}" class="btn btn-secondary btn-sm mr-2">See Parent</a>    
-        <a href="{{ url('comment/').'/'. $comment->topComment->id }}" class="btn btn-secondary btn-sm mr-2">Go To Top Comment</a> 
+    @if(isset($comment->child_id))
+        <a href="{{ url('comment/').'/'. $comment->child_id }}" class="btn btn-secondary btn-sm mr-2">See Parent</a>
+        <a href="{{ url('comment/').'/'. $comment->topComment->id }}" class="btn btn-secondary btn-sm mr-2">Go To Top Comment</a>
     @endif
 </h5>
 

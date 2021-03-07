@@ -107,7 +107,7 @@ class Comment extends Model
      */
     public function getThreadUrlAttribute()
     {
-        return url('forum/'.$this->commentable_id . '/' . $this->topComment->id);
+        return url('forum/'.$this->commentable_id . '/~' . $this->topComment->id);
     }
 
     /**
