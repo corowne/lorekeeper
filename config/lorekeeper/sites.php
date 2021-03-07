@@ -23,10 +23,13 @@ return [
 
     // Sites in this section use two additional keys; dA is used here as an example to demonstrate them
     // 1 = true/0 = false for both of them.
-    'dA' => [
-        'fullName' => 'deviantArt',
+    'deviantart' => [
+        'full_name' => 'deviantART',
+        'display_name' => 'dA',
         'regex' => '/deviantart\.com\/([A-Za-z0-9_-]+)/',
         'link' => 'deviantart.com',
+        'icon' => 'fab fa-deviantart',
+
         // Auth is for whether or not the site should offer this provider as an option for users
         // to authenticate with,
         'auth' => 1,
@@ -41,43 +44,60 @@ return [
     **********************************************************************************************/
 
     'twitter' => [
-        'fullName' => 'Twitter',
+        'full_name' => 'Twitter',
+        'display_name' => 'twitter',
         'regex' => '/twitter\.com\/([A-Za-z0-9_-]+)/',
-        'link' => 'twitter.com'
+        'link' => 'twitter.com',
+        'icon' => 'fab fa-twitter'
     ],
-    'ig' => [
-        'fullName' => 'Instagram',
+    'instagram' => [
+        'full_name' => 'Instagram',
+        'display_name' => 'ig',
         'regex' => '/instagram\.com\/([A-Za-z0-9_-]+)/',
-        'link' => 'instagram.com'
+        'link' => 'instagram.com',
+        'icon' => 'fab fa-instagram'
     ],
     'tumblr' => [
-        'fullName' => 'Tumblr',
+        'full_name' => 'Tumblr',
+        'display_name' => 'tumblr',
         'regex' => '/([A-Za-z0-9_-]+)\.tumblr\.com/',
-        'link' => 'tumblr.com'
+        'link' => 'tumblr.com',
+        'icon' => 'fab fa-tumblr'
     ],
-    'TH' => [
-        'fullName' => 'Toyhou.se',
+    'imgur' => [
+        'full_name' => 'Imgur',
+        'display_name' => 'imgur',
+        'regex' => '/imgur\.com\/user\/([A-Za-z0-9_-]+)/',
+        'link' => 'imgur.com/user/',
+        'icon' => 'far fa-image'
+    ],
+    'twitch' => [
+        'full_name' => 'Twitch.tv',
+        'display_name' => 'twitch',
+        'regex' => '/twitch\.tv\/([A-Za-z0-9_-]+)/',
+        'link' => 'twitch.tv',
+        'icon' => 'fab fa-twitch'
+    ],
+
+    // Sites below this line CANNOT be used for authentication.
+
+    'toyhouse' => [
+        'full_name' => 'Toyhou.se',
+        'display_name' => 'TH',
         'regex' => '/toyhou\.se\/([A-Za-z0-9_-]+)/',
-        'link' => 'toyhou.se'
+        'link' => 'toyhou.se',
+        'icon' => 'fas fa-home'
     ],
     'artstation' => [
-        'fullName' => 'Artstation',
+        'full_name' => 'Artstation',
+        'display_name' => 'artstation',
         'regex' => '/artstation\.com\/([A-Za-z0-9_-]+)/',
         'link' => 'artstation.com'
     ],
     'picarto' => [
-        'fullName' => 'Picarto',
+        'full_name' => 'Picarto',
+        'display_name' => 'picarto',
         'regex' => '/picarto\.tv\/([A-Za-z0-9_-]+)/',
         'link' => 'picarto.tv'
-    ],
-    'twitch' => [
-        'fullName' => 'Twitch.tv',
-        'regex' => '/twitch\.tv\/([A-Za-z0-9_-]+)/',
-        'link' => 'twitch.tv'
-    ],
-    'imgur' => [
-        'fullName' => 'Imgur',
-        'regex' => '/imgur\.com\/user\/([A-Za-z0-9_-]+)/',
-        'link' => 'imgur.com/user/'
     ],
 ];
