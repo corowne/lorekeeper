@@ -152,6 +152,11 @@ class Comment extends Model
         else return $this->created_at;
     }
 
+    // public function getPublicAttribute()
+    // {
+    //     if(!$this->commentable->visible() || $this->commentable->restrictedRecursive()) return false;
+    //     else return true;
+    // }
 
 
 
@@ -166,5 +171,6 @@ class Comment extends Model
 
         return $sections;
     }
+
 
 }

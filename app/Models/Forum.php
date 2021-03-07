@@ -176,7 +176,6 @@ class Forum extends Model
         return $children;
     }
 
-
     /**
      * Gets the file directory containing the model's image.
      *

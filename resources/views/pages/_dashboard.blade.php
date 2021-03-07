@@ -4,6 +4,11 @@
         <i class="far fa-clock"></i> {!! format_date(Carbon\Carbon::now()) !!}
     </div>
 </div>
+
+
+@include('widgets._recent_forum_posts', ['posts' => $posts])
+
+
 <div class="row">
     <div class="col-md-6">
         <div class="card mb-4">

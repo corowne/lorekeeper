@@ -174,13 +174,22 @@ class CommentController extends Controller implements CommentControllerInterface
         Gate::authorize('delete-comment', $comment);
 
         $forum = null;
-        if($comment->commentable_type == 'App\Models\Forum' && $comment->children && isset($comment->child_id)){
-            foreach($comment->children as $child)
+        if($comment->commentable_type == 'App\Models\Forum' && $comment->children){
+            if(isset($comment->child_id))
             {
-                $child->child_id = $comment->child_id;
-                $child->save();
+                foreach($comment->children as $child)
+                {
+                    $child->child_id = $comment->child_id;
+                    $child->save();
+                }
             }
-        }
+            else{
+                foreach($comment->children as $child)
+                {
+                    $child->delete();
+                }
+            }
+        } // You may want to remove the inner if statement and move the isset into the container if statement if you don't want comments deleted when their threads are deleted.
 
         if($comment->commentable_type == 'App\Models\Forum')
         {

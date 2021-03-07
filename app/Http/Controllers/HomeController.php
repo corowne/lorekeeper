@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\Models\SitePage;
+use App\Models\Comment;
 
 use App\Services\DeviantArtService;
 
@@ -31,7 +32,8 @@ class HomeController extends Controller
     public function getIndex()
     {
         return view('welcome', [
-            'about' => SitePage::where('key', 'about')->first()
+            'about' => SitePage::where('key', 'about')->first(),
+            'posts' => Comment::where('commentable_type','App\Models\Forum')->orderBy('created_at', 'DESC')->get()->take(5)
         ]);
     }
 
@@ -56,7 +58,7 @@ class HomeController extends Controller
         }
         // Step 3: receive the access token
         elseif($request->get('code')){
-            $token = $deviantart->getAccessToken( $request->get('code')); 
+            $token = $deviantart->getAccessToken( $request->get('code'));
             return redirect()->to(url()->current().'?access_token='.$token['access_token'].'&refresh_token='.$token['refresh_token']);
             //header('Location: ?granted='.$servicename);
         }
@@ -77,5 +79,5 @@ class HomeController extends Controller
         // Step 1: display a login link
         return view('auth.link');
     }
-    
+
 }
