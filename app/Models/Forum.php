@@ -151,6 +151,16 @@ class Forum extends Model
         else return '<a href="'.$this->url.'" class="display-forum">'. $icon . $this->name .'</a>';
     }
 
+    /**
+     * Determines if Forum has any restrictions
+     *
+     * @return string
+     */
+    public function getHasRestrictionsAttribute()
+    {
+        if($this->is_locked || $this->staff_only || $this->role) return true;
+        else return false;
+    }
 
     public function getAccessibleSubforumsAttribute()
     {

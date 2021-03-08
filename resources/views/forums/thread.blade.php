@@ -15,7 +15,7 @@
     @auth
         @can('reply-to-comment', $thread)
             <div class="col-md text-right">
-                <button data-toggle="modal" data-target="#reply-modal-{{ $thread->getKey() }}" class="btn px-3 py-2 px-sm-4 py-sm-1  btn-faded text-uppercase"><i class="fas fa-comment"></i><span class="ml-2 d-none d-sm-inline-block">Reply to Thread</span></button>
+                <button data-toggle="modal" data-target="#reply-modal-{{ $thread->getKey() }}" class="btn px-3 py-2 px-sm-4 py-sm-1 btn-primary text-uppercase"><i class="fas fa-comment"></i><span class="ml-2 d-none d-sm-inline-block">Reply to Thread</span></button>
             </div>
         @endcan
     @endauth
@@ -139,5 +139,13 @@
         </form>
     </div>
 @endcan
+
+@if(Auth::check() && Auth::user()->hasPower('edit_data'))
+    <div class="mt-2 d-flex justify-content-end">
+        <div class="my-auto mr-2"><strong>ADMIN:</strong> </div>
+        <button data-toggle="modal" data-target="#lock-modal-{{ $thread->getKey() }}" class="btn btn-sm btn-primary mx-1 text-uppercase"><i class="fas fa-lock"></i><span class="ml-2 d-none d-sm-inline-block">{{ $thread->is_locked ? 'Unlock' : 'Lock'}} Thread</span></button>
+        <button data-toggle="modal" data-target="#pin-modal-{{ $thread->getKey() }}" class="btn btn-sm btn-primary mx-1 text-uppercase"><i class="fas fa-thumbtack"></i><span class="ml-2 d-none d-sm-inline-block">{{ $thread->is_featured ? 'Unpin' : 'Pin'}} Thread</span></button>
+    </div>
+@endif
 
 @endsection

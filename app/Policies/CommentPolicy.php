@@ -60,7 +60,7 @@ class CommentPolicy
      */
     public function reply($user, Comment $comment) : bool
     {
-        if($comment->topComment->is_locked || $comment->commentable_type == 'App\Models\Forum' && $comment->commentable->canUsersPost())
+        if($comment->topComment->is_locked || $comment->commentable_type == 'App\Models\Forum' && !$comment->commentable->canUsersPost())
         {
             if($user->isStaff) return $user->getKey() == $user->getKey();
             else return false;

@@ -278,12 +278,31 @@ class CommentController extends Controller implements CommentControllerInterface
      */
     public function feature($id) {
         $comment = Comment::find($id);
+        $comment->timestamps = false;
         if($comment->is_featured == 0) {
             $comment->update(['is_featured' => 1]);
         }
         else {
             $comment->update(['is_featured' => 0]);
         }
+        $comment->timestamps = true;
+
+        return Redirect::to(URL::previous() . '#comment-' . $comment->getKey());
+    }
+
+    /**
+     * Is featured for comments
+     */
+    public function lock($id) {
+        $comment = Comment::find($id);
+        $comment->timestamps = false;
+        if($comment->is_locked == 0) {
+            $comment->update(['is_locked' => 1]);
+        }
+        else {
+            $comment->update(['is_locked' => 0]);
+        }
+        $comment->timestamps = true;
 
         return Redirect::to(URL::previous() . '#comment-' . $comment->getKey());
     }

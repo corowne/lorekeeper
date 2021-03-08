@@ -101,3 +101,52 @@
         </div>
     </div>
 </div>
+
+
+@if(Auth::check() && Auth::user()->hasPower('edit_data'))
+
+    <div class="modal fade" id="lock-modal-{{ $thread->getKey() }}" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ $thread->is_featured ? 'Unl' : 'L' }}ock Thread</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">Are you sure you want to {{ $thread->is_featured ? 'un' : '' }}lock this thread?</div>
+                    <p>A locked thread cannot be posted in or edited by regular users.</p>
+                </div>
+                {!! Form::open(['url' => 'comments/'.$thread->id.'/lock']) !!}
+                    @if(!$thread->is_featured) {!! Form::submit('Lock Thread', ['class' => 'btn btn-primary w-100 mb-0 mx-0']) !!}
+                    @else {!! Form::submit('Unlock Thread', ['class' => 'btn btn-primary w-100 mb-0 mx-0']) !!}
+                    @endif
+                {!! Form::close() !!}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="pin-modal-{{ $thread->getKey() }}" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ $thread->is_featured ? 'Unp' : 'P' }}in Thread</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">Are you sure you want to {{ $thread->is_featured ? 'un' : '' }}pin this thread?</div>
+                    <p>It will be pinned to the top of the {!! $thread->commentable->displayName !!} board.</p>
+                </div>
+                {!! Form::open(['url' => 'comments/'.$thread->id.'/feature']) !!}
+                    @if(!$thread->is_featured) {!! Form::submit('Pin Thread', ['class' => 'btn btn-primary w-100 mb-0 mx-0']) !!}
+                    @else {!! Form::submit('Unpin Thread', ['class' => 'btn btn-primary w-100 mb-0 mx-0']) !!}
+                    @endif
+                {!! Form::close() !!}
+            </div>
+        </div>
+    </div>
+
+@endif

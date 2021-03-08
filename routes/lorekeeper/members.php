@@ -189,6 +189,7 @@ Route::group(['prefix' => 'comments', 'namespace' => 'Comments'], function() {
     Route::put('/{comment}', 'CommentController@update')->name('comments.update');
     Route::post('/{comment}', 'CommentController@reply')->name('comments.reply');
     Route::post('/{id}/feature', 'CommentController@feature')->name('comments.feature');
+    Route::post('/{id}/lock', 'CommentController@lock')->name('comments.lock');
 });
 
 

@@ -31,12 +31,12 @@ class ForumController extends Controller
         {
             foreach($forum->children as $child)
             {
-                if(!$child->hasRestrictions || Auth::check() && Auth::user()->canVisitForum($forum->id)) {
+                if($forum->hasRestrictions && !Auth::check()) break;
+                elseif(!$child->hasRestrictions || Auth::check() && Auth::user()->canVisitForum($forum->id)) {
                     $customforums->push($forum);
                     break;
                 }
             }
-
         }
 
         return view('forums.index', [
@@ -55,17 +55,15 @@ class ForumController extends Controller
         $board = Forum::where('id',$id)->visible()->first();
         if(!$board) abort(404);
 
-
-
         if($board->hasRestrictions && (!Auth::check() || Auth::check() && !Auth::user()->canVisitForum($id))) {
             flash('You do not have permission to access this forum.')->error();
             return redirect(url('/'));
         }
-        elseif($board->parent ? (!Auth::check() || Auth::check() && !Auth::user()->canVisitForum($board->parent->id)) : false) {
+        elseif($board->parent ? (($board->parent->hasRestrictions && !Auth::check()) || Auth::check() && !Auth::user()->canVisitForum($board->parent->id)) : false) {
             flash('You do not have permission to access this forum.')->error();
             return redirect(url('/'));
         }
-        elseif($board->parent && $board->parent->parent ? (!Auth::check() || Auth::check() && !Auth::user()->canVisitForum($board->parent->parent->id)) : false) {
+        elseif($board->parent && $board->parent->parent ? (($board->parent->parent->hasRestrictions && !Auth::check()) || Auth::check() && !Auth::user()->canVisitForum($board->parent->parent->id)) : false) {
             flash('You do not have permission to access this forum.')->error();
             return redirect(url('/'));
         }
@@ -90,11 +88,11 @@ class ForumController extends Controller
             flash('You do not have permission to access this thread.')->error();
             return redirect(url('/'));
         }
-        elseif($thread->commentable->parent ? (!Auth::check() || Auth::check() && !Auth::user()->canVisitForum($thread->commentable->parent->id)) : false) {
+        elseif($thread->commentable->parent ? (($thread->commentable->parent->hasRestriction && !Auth::check()) || Auth::check() && !Auth::user()->canVisitForum($thread->commentable->parent->id)) : false) {
             flash('You do not have permission to access this thread.')->error();
             return redirect(url('/'));
         }
-        elseif($thread->commentable->parent && $thread->commentable->parent->parent ? (!Auth::check() || Auth::check() && !Auth::user()->canVisitForum($thread->commentable->parent->parent->id)) : false) {
+        elseif($thread->commentable->parent && $thread->commentable->parent->parent ? (($thread->commentable->parent->parent->hasRestriction && !Auth::check()) || Auth::check() && !Auth::user()->canVisitForum($thread->commentable->parent->parent->id)) : false) {
             flash('You do not have permission to access this thread.')->error();
             return redirect(url('/'));
         }
