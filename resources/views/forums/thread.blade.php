@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title') Forum :: {{ $thread->name }} @endsection
+@section('title') Forum :: {{ $thread->title }} @endsection
 
 @section('content')
 {!! breadcrumbs(['Forum' => 'forum' , $thread->commentable->name => 'forum/'.$thread->commentable->id, $thread->name => 'forum/'.$thread->commentable->id.'/'.$thread->id ]) !!}
@@ -33,7 +33,7 @@
     <div class="col-md-2 text-center border-md-right border-bottom border-md-bottom-0">
         <img class="mt-2 mw-100" src="/images/avatars/{{ $thread->commenter->avatar }}" style="max-width:100px; max-height:100px; border-radius:50%;" alt="{{ $thread->commenter->name }} Avatar">
         <h5>{!! $thread->commenter->displayName !!}</h5>
-        <p>{!! $thread->commenter->forumCount !!} Posts</p>
+        <p>@auth <a href="{{ $thread->commenter->url}}/forum"> @endauth{!! $thread->commenter->forumCount !!} Posts @auth </a>@endauth</p>
     </div>
     <div class="col-md">
         <div class="mb-2 border-bottom p-2">
@@ -49,21 +49,21 @@
                 </div>
                 <div class="col text-right">
                 @if(Auth::check())
-                        @can('reply-to-comment', $thread)
-                            <a role="button" data-toggle="modal" data-target="#reply-modal-{{ $thread->getKey() }}" class="px-2 py-2 px-sm-2 py-sm-1 text-uppercase" style="cursor: pointer;"><i class="fas fa-comment"></i><span class="ml-2 d-none d-sm-inline-block">Reply</span></a>
-                        @endcan
-                        @can('edit-comment', $thread)
-                            <a role="button" data-toggle="modal" data-target="#comment-modal-{{ $thread->getKey() }}" class="px-2 py-2 px-sm-2 py-sm-1 text-uppercase" style="cursor: pointer;"><i class="fas fa-edit"></i><span class="ml-2 d-none d-sm-inline-block">Edit</span></a>
-                        @endcan
-                        @can('delete-comment', $thread)
-                            <a role="button" data-toggle="modal" data-target="#delete-modal-{{ $thread->getKey() }}" class="px-2 py-2 px-sm-2 py-sm-1 text-danger text-uppercase" style="cursor: pointer;"><i class="fas fa-minus-circle"></i><span class="ml-2 d-none d-sm-inline-block">Delete</span></a>
-                        @endcan
+                    @can('reply-to-comment', $thread)
+                        <a role="button" data-toggle="modal" data-target="#reply-modal-{{ $thread->getKey() }}" class="px-2 py-2 px-sm-2 py-sm-1 text-uppercase" style="cursor: pointer;"><i class="fas fa-comment"></i><span class="ml-2 d-none d-sm-inline-block">Reply</span></a>
+                    @endcan
+                    @can('edit-comment', $thread)
+                        <a href="{!! $thread->threadUrl.'/edit' !!}" class="px-2 py-2 px-sm-2 py-sm-1 text-uppercase" style="cursor: pointer;"><i class="fas fa-edit"></i><span class="ml-2 d-none d-sm-inline-block">Edit</span></a>
+                    @endcan
+                    @can('delete-comment', $thread)
+                        <a role="button" data-toggle="modal" data-target="#delete-modal-{{ $thread->getKey() }}" class="px-2 py-2 px-sm-2 py-sm-1 text-danger text-uppercase" style="cursor: pointer;"><i class="fas fa-minus-circle"></i><span class="ml-2 d-none d-sm-inline-block">Delete</span></a>
+                    @endcan
                 @endif
                 </div>
             </div>
         </div>
         <div class="p-2">
-            <p>{!! nl2br($markdown->line($thread->comment)) !!}</p>
+            <p>{!! nl2br($thread->comment) !!}</p>
         </div>
     </div>
 </div>
@@ -79,7 +79,7 @@
             <div class="col-md-3 text-center border-md-right border-bottom border-md-bottom-0">
                 <img class="mt-2 mw-100" src="/images/avatars/{{ $comment->commenter->avatar }}" style="max-width:100px; max-height:100px; border-radius:50%;" alt="{{ $comment->commenter->name }} Avatar">
                 <h5>{!! $comment->commenter->displayName !!}</h5>
-                <p>{!! $comment->commenter->forumCount !!} Posts</p>
+                <p>@auth <a href="{{ $comment->commenter->url}}/forum"> @endauth{!! $comment->commenter->forumCount !!} Posts @auth </a>@endauth</p>
             </div>
             <div class="col-md">
                 <div class="mb-2 border-bottom p-2">

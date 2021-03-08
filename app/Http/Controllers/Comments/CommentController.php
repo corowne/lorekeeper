@@ -78,7 +78,10 @@ class CommentController extends Controller implements CommentControllerInterface
         }
 
         $comment->commentable()->associate($model);
-        $comment->comment = $request->message;
+
+        if($comment->commentable_type == 'App\Models\Forum') $comment->comment = parse($request->message);
+        else $comment->comment = $request->message;
+
         $comment->approved = !Config::get('comments.approval_required');
         $comment->type = isset($request['type']) && $request['type'] ? $request['type'] : "User-User";
         $comment->title = isset($request['title']) && $request['title'] ? $request['title'] : null;
@@ -156,11 +159,19 @@ class CommentController extends Controller implements CommentControllerInterface
         Gate::authorize('edit-comment', $comment);
 
         Validator::make($request->all(), [
-            'message' => 'required|string'
+            'message' => 'required|string',
+            'title' => 'nullable|string'
         ])->validate();
 
+        if($comment->commentable_type == 'App\Models\Forum') {
+            $request->message = parse($request->message);
+            flash('Thread edited successfully.')->success();
+        }
+        else flash('Comment edited successfully.')->success();
+
         $comment->update([
-            'comment' => $request->message
+            'comment' => $request->message,
+            'title' => isset($request->title) ? $request->title : null
         ]);
 
         return Redirect::to(URL::previous() . '#comment-' . $comment->getKey());
@@ -239,7 +250,7 @@ class CommentController extends Controller implements CommentControllerInterface
         $sender = User::find($reply->commenter_id);
         $recipient = User::find($comment->commenter_id);
 
-        if($reply->commentable_type == 'App\Models\Forum'){
+        if($reply->commentable_type == 'App\Models\Forum' && $recipient != $sender){
             Notifications::create('THREAD_REPLY', $recipient, [
             'sender_url' => $sender->url,
             'sender' => $sender->name,

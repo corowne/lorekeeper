@@ -27,6 +27,9 @@ use App\Models\Character\CharacterImage;
 use App\Models\Character\Character;
 use App\Models\Character\Sublist;
 
+use App\Models\Comment;
+use App\Models\Forum;
+
 use App\Http\Controllers\Controller;
 
 class UserController extends Controller
@@ -65,7 +68,7 @@ class UserController extends Controller
     {
         $characters = $this->user->characters();
         if(!Auth::check() || !(Auth::check() && Auth::user()->hasPower('manage_characters'))) $characters->visible();
-        
+
         return view('user.profile', [
             'user' => $this->user,
             'items' => $this->user->items()->where('count', '>', 0)->orderBy('user_items.updated_at', 'DESC')->take(4)->get(),
@@ -320,6 +323,33 @@ class UserController extends Controller
             'characters' => true,
             'favorites' => $this->user->characters->count() ? GallerySubmission::whereIn('id', $userFavorites)->whereIn('id', GalleryCharacter::whereIn('character_id', $userCharacters)->pluck('gallery_submission_id')->toArray())->visible(Auth::check() ? Auth::user() : null)->accepted()->orderBy('created_at', 'DESC')->paginate(20) : null,
             'sublists' => Sublist::orderBy('sort', 'DESC')->get()
+        ]);
+    }
+
+    /**
+     * Shows a user's gallery submission favorites that contain characters they own.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserForumPosts($name)
+    {
+        $user = $this->user;
+
+        $forums = Forum::all();
+        $public = [];
+        $posts = collect();
+
+        foreach($forums as $key => $forum)
+        {
+            if(Auth::user()->canVisitForum($forum->id) && ($forum->parent ? (Auth::user()->canVisitForum($forum->parent->id) && ($forum->parent->parent ? Auth::user()->canVisitForum($forum->parent->parent->id) : true) ) : true)) $public[] = $forum->id;
+        }
+        $posts = Comment::with('parent')->where('commentable_type','App\Models\Forum')->where('commenter_id',$user->id)->orderBy('created_at', 'DESC')->get()->whereIn('commentable_id',$public);
+
+        return view('user.forum_posts', [
+            'user' => $this->user,
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get(),
+            'posts' => $posts->paginate(20)
         ]);
     }
 }

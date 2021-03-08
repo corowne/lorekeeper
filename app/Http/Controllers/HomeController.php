@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\SitePage;
 use App\Models\Comment;
+use App\Models\Forum;
 
 use App\Services\DeviantArtService;
 
@@ -32,8 +33,7 @@ class HomeController extends Controller
     public function getIndex()
     {
         return view('welcome', [
-            'about' => SitePage::where('key', 'about')->first(),
-            'posts' => Comment::where('commentable_type','App\Models\Forum')->orderBy('created_at', 'DESC')->get()->take(5)
+            'about' => SitePage::where('key', 'about')->first()
         ]);
     }
 

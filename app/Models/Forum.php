@@ -151,16 +151,6 @@ class Forum extends Model
         else return '<a href="'.$this->url.'" class="display-forum">'. $icon . $this->name .'</a>';
     }
 
-    /**
-     * Determines if Forum has any restrictions
-     *
-     * @return string
-     */
-    public function getHasRestrictionsAttribute()
-    {
-        if($this->is_locked || $this->staff_only || $this->role) return true;
-        else return false;
-    }
 
     public function getAccessibleSubforumsAttribute()
     {
@@ -228,6 +218,15 @@ class Forum extends Model
         return Comment::where('commentable_type','App\Models\Forum')->where('commentable_id',$this->id)->get();
     }
 
+    /**********************************************************************************************
+
+        OTHER FUNCTIONS
+
+    **********************************************************************************************/
+
+    /**
+     * Checks if a board is locked
+     */
     public function canUsersPost($board = null)
     {
         if($board == null) $board = $this;
@@ -238,11 +237,6 @@ class Forum extends Model
         return true;
     }
 
-    /**********************************************************************************************
-
-        OTHER FUNCTIONS
-
-    **********************************************************************************************/
 
 
 }

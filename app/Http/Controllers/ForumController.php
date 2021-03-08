@@ -7,6 +7,7 @@ use Config;
 use Auth;
 use View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 use App\Models\User\User;
 use App\Models\Comment;
@@ -54,7 +55,17 @@ class ForumController extends Controller
         $board = Forum::where('id',$id)->visible()->first();
         if(!$board) abort(404);
 
+
+
         if($board->hasRestrictions && (!Auth::check() || Auth::check() && !Auth::user()->canVisitForum($id))) {
+            flash('You do not have permission to access this forum.')->error();
+            return redirect(url('/'));
+        }
+        elseif($board->parent ? (!Auth::check() || Auth::check() && !Auth::user()->canVisitForum($board->parent->id)) : false) {
+            flash('You do not have permission to access this forum.')->error();
+            return redirect(url('/'));
+        }
+        elseif($board->parent && $board->parent->parent ? (!Auth::check() || Auth::check() && !Auth::user()->canVisitForum($board->parent->parent->id)) : false) {
             flash('You do not have permission to access this forum.')->error();
             return redirect(url('/'));
         }
@@ -79,6 +90,14 @@ class ForumController extends Controller
             flash('You do not have permission to access this thread.')->error();
             return redirect(url('/'));
         }
+        elseif($thread->commentable->parent ? (!Auth::check() || Auth::check() && !Auth::user()->canVisitForum($thread->commentable->parent->id)) : false) {
+            flash('You do not have permission to access this thread.')->error();
+            return redirect(url('/'));
+        }
+        elseif($thread->commentable->parent && $thread->commentable->parent->parent ? (!Auth::check() || Auth::check() && !Auth::user()->canVisitForum($thread->commentable->parent->parent->id)) : false) {
+            flash('You do not have permission to access this thread.')->error();
+            return redirect(url('/'));
+        }
 
         return view('forums.thread', [
             'thread' => $thread,
@@ -98,6 +117,32 @@ class ForumController extends Controller
         return view('forums.create_thread', [
             'forum' => $forum,
             'thread' => new Comment
+
+        ]);
+    }
+
+    /**
+     * Shows the create forum forum.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getEditThread($id, $thread_id)
+    {
+
+        $thread = Comment::find(intval($thread_id));
+        if(!$thread) abort(404);
+
+        $forum = Forum::find($id);
+        if(!$forum) abort(404);
+        if($thread->commentable_id != $id) abort(404);
+
+        if(!Gate::check('edit-comment', [$thread])) {
+            flash('You do not have permission to edit this thread.')->error();
+            return redirect()->back();
+        }
+        return view('forums.edit_thread', [
+            'forum' => $forum,
+            'thread' => $thread
 
         ]);
     }

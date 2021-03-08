@@ -28,7 +28,7 @@ class Comment extends Model
      * @var array
      */
     protected $fillable = [
-        'comment', 'approved', 'guest_name', 'guest_email', 'is_featured', 'type'
+        'comment', 'approved', 'guest_name', 'guest_email', 'is_featured', 'type', 'title'
     ];
 
     /**
@@ -152,14 +152,9 @@ class Comment extends Model
         else return $this->created_at;
     }
 
-    // public function getPublicAttribute()
-    // {
-    //     if(!$this->commentable->visible() || $this->commentable->restrictedRecursive()) return false;
-    //     else return true;
-    // }
-
-
-
+    /**
+     * Returns all children of this comment, not just direct.
+     */
     public function getAllChildren()
     {
         $sections = collect();

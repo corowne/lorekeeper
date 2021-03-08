@@ -1,5 +1,5 @@
 @inject('markdown', 'Parsedown')
-@php 
+@php
     $markdown->setSafeMode(true);
 @endphp
 @if(isset($reply) && $reply === true)
@@ -18,10 +18,13 @@
             </h5>
             @if($comment->is_featured)<div class="ml-1 text-muted text-right col-6 mx-0 pr-1"><small class="text-success">Featured by Owner</small></div> @endif
         </div>
-        <div class="border p-3 rounded {{ $limit == 0 ? 'shadow-sm border-info' : '' }} {{ ($comment->is_featured && ($limit != 0)) ? 'border-success' : '' }} "><p>{!! nl2br($markdown->line($comment->comment)) !!} </p>
+        <div class="border p-3 rounded {{ $limit == 0 ? 'shadow-sm border-info' : '' }} {{ ($comment->is_featured && ($limit != 0)) ? 'border-success' : '' }} ">
+            <p>
+                {!! ($comment->commentable_type == 'App\Models\Forum' && $comment->id == $comment->topComment->id) ? nl2br($comment->comment) : nl2br($markdown->line($comment->comment)) !!}
+            </p>
         <p class="border-top pt-1 text-right mb-0">
             <small class="text-muted">{!! $comment->created_at !!}
-            @if($comment->created_at != $comment->updated_at) 
+            @if($comment->created_at != $comment->updated_at)
                 <span class="text-muted border-left mx-1 px-1">(Edited {!! ($comment->updated_at) !!})</span>
             @endif
             </small>
@@ -44,7 +47,7 @@
             @endcan
         </div>
     @endif
-    
+
         @can('edit-comment', $comment)
             <div class="modal fade" id="comment-modal-{{ $comment->getKey() }}" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
@@ -102,7 +105,7 @@
                     </div>
                 </div>
             </div>
-        @endcan 
+        @endcan
 
         @can('delete-comment', $comment)
             <div class="modal fade" id="delete-modal-{{ $comment->getKey() }}" tabindex="-1" role="dialog">
@@ -125,7 +128,7 @@
                     </div>
                 </div>
             </div>
-        @endcan 
+        @endcan
 
         <div class="modal fade" id="feature-modal-{{ $comment->getKey() }}" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
@@ -150,7 +153,7 @@
     </div>
 </div>
 
-        
+
 {{-- add a limit check so if limit is reached but replies are still presnt to display a button with current amount of replies
 use child function
 url should be equal to the last replies permalink (e.g reply 5)--}}
@@ -162,7 +165,7 @@ url should be equal to the last replies permalink (e.g reply 5)--}}
             @foreach($children as $reply)
                 @php $limit++; @endphp
 
-                @if($limit >= 5 && $depth >= 1) 
+                @if($limit >= 5 && $depth >= 1)
                     <a href="{{ url('comment/').'/'.$comment->id }}"><span class="btn btn-secondary w-100">See More Replies</span></a>
                     @break
                 @endif

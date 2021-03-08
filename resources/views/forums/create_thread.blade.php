@@ -30,10 +30,10 @@
                 {!! Form::text('title',  Request::get('title'), ['class' => 'form-control', 'required']) !!}
             </div>
             <div class="form-group">
-                {!! Form::label('message', 'Messsage') !!}
-                {!! Form::textarea('message',  Request::get('message'), ['class' => 'form-control', 'required']) !!}
-                <small class="form-text text-muted"><a target="_blank" href="https://help.github.com/articles/basic-writing-and-formatting-syntax">Markdown</a> cheatsheet.</small>
+                {!! Form::label('message', 'Message') !!}
+                {!! Form::textarea('message',  Request::get('message'), ['class' => 'form-control ', 'required']) !!}
             </div>
+            <small class="form-text text-muted mb-2">Thread starter posts use HTML.</small>
             <button type="submit" class="btn btn-sm btn-outline-success text-uppercase">Submit</button>
         </form>
     </div>
