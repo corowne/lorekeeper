@@ -3,7 +3,7 @@
 @section('title') Forum :: {{ $thread->title }} @endsection
 
 @section('content')
-{!! breadcrumbs(['Forum' => 'forum' , $thread->commentable->name => 'forum/'.$thread->commentable->id, $thread->name => 'forum/'.$thread->commentable->id.'/'.$thread->id ]) !!}
+{!! breadcrumbs(['Forum' => 'forum' , $thread->commentable->name => 'forum/'.$thread->commentable->id, $thread->title => 'forum/'.$thread->commentable->id.'/'.$thread->id ]) !!}
 
 <div class="row no-gutters">
 
