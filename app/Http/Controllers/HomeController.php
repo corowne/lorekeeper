@@ -36,6 +36,21 @@ class HomeController extends Controller
             'about' => SitePage::where('key', 'about')->first()
         ]);
     }
+    
+    /**
+     * Shows the account linking page.
+     *
+     * @param  \Illuminate\Http\Request        $request
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getLink(Request $request)
+    {
+        // If the user already has a username associated with their account, redirect them
+        if(Auth::check() && Auth::user()->hasAlias) redirect()->to('home');
+
+        // Display the login link
+        return view('auth.link');
+    }
 
     /**
      * Redirects to the appropriate provider.
