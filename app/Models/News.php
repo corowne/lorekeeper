@@ -48,7 +48,7 @@ class News extends Model
      * @var array
      */
     public static $createRules = [
-        'title' => 'required|between:3,25',
+        'title' => 'required|between:3,100',
         'text' => 'required',
     ];
     
@@ -58,7 +58,7 @@ class News extends Model
      * @var array
      */
     public static $updateRules = [
-        'title' => 'required|between:3,25',
+        'title' => 'required|between:3,100',
         'text' => 'required',
     ];
 
