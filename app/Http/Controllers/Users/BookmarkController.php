@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 use App\Services\BookmarkManager;
 use App\Models\Character\CharacterBookmark;
+use App\Models\Character\Character;
 
 use App\Http\Controllers\Controller;
 
@@ -25,15 +26,41 @@ class BookmarkController extends Controller
     /**
      * Shows the bookmarks page.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getBookmarks()
+    public function getBookmarks(Request $request)
     {
+        $query = CharacterBookmark::join('characters', 'character_bookmarks.character_id', '=', 'characters.id')->with('character.image')->with('character.user')->visible()->where('character_bookmarks.user_id', Auth::user()->id);
+
+        switch($request->get('sort')) {
+            case 'number_desc':
+                $query->orderBy('characters.number', 'DESC');
+                break;
+            case 'number_asc':
+                $query->orderBy('characters.number', 'ASC');
+                break;
+            case 'id_desc':
+                $query->orderBy('characters.id', 'DESC');
+                break;
+            case 'id_asc':
+                $query->orderBy('characters.id', 'ASC');
+                break;
+            case 'sale_value_desc':
+                $query->orderBy('characters.sale_value', 'DESC');
+                break;
+            case 'sale_value_asc':
+                $query->orderBy('characters.sale_value', 'ASC');
+                break;
+            default:
+                $query->orderBy('characters.number', 'DESC');
+        }
+
         return view('account.bookmarks', [
-            'bookmarks' => CharacterBookmark::with('character.image')->with('character.user')->visible()->where('character_bookmarks.user_id', Auth::user()->id)->paginate(20)
+            'bookmarks' => $query->paginate(20)
         ]);
     }
-    
+
     /**
      * Gets the bookmark creation modal.
      *
@@ -45,7 +72,7 @@ class BookmarkController extends Controller
             'bookmark' => new CharacterBookmark,
         ]);
     }
-    
+
     /**
      * Gets the bookmark editing modal.
      *
@@ -87,7 +114,7 @@ class BookmarkController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Gets the bookmark deletion modal.
      *
