@@ -42,7 +42,7 @@ class Prompt extends Model
      */
     public static $createRules = [
         'prompt_category_id' => 'nullable',
-        'name' => 'required|unique:prompts|between:3,25',
+        'name' => 'required|unique:prompts|between:3,100',
         'prefix' => 'nullable|unique:prompts|between:2,10',
         'summary' => 'nullable',
         'description' => 'nullable',
@@ -56,7 +56,7 @@ class Prompt extends Model
      */
     public static $updateRules = [
         'prompt_category_id' => 'nullable',
-        'name' => 'required|between:3,25',
+        'name' => 'required|between:3,100',
         'prefix' => 'nullable|between:2,10',
         'summary' => 'nullable',
         'description' => 'nullable',

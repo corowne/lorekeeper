@@ -149,6 +149,12 @@ class BrowseController extends Controller
                 $query->where('user_id', $owner->id);
             });
         }
+        if($request->get('owner_url')) {
+            $ownerUrl = $request->get('owner_url');
+            $query->where(function($query) use ($ownerUrl) {
+                $query->where('owner_url','LIKE', '%'.$ownerUrl.'%');
+            });
+        }
 
         // Search only main images
         if(!$request->get('search_images')) {
@@ -176,6 +182,18 @@ class BrowseController extends Controller
             $designer = User::find($request->get('designer'));
             $imageQuery->whereHas('designers', function($query) use ($designer) {
                 $query->where('user_id', $designer->id);
+            });
+        }
+        if($request->get('artist_url')) {
+            $artistUrl = $request->get('artist_url');
+            $imageQuery->whereHas('artists', function($query) use ($artistUrl) {
+                $query->where('url', 'LIKE', '%'.$artistUrl.'%');
+            });
+        }
+        if($request->get('designer_url')) {
+            $designerUrl = $request->get('designer_url');
+            $imageQuery->whereHas('designers', function($query) use ($designerUrl) {
+                $query->where('url', 'LIKE', '%'.$designerUrl.'%');
             });
         }
 
@@ -273,6 +291,12 @@ class BrowseController extends Controller
                 $query->where('user_id', $owner->id);
             });
         }
+        if($request->get('owner_url')) {
+            $ownerUrl = $request->get('owner_url');
+            $query->where(function($query) use ($ownerUrl) {
+                $query->where('owner_url','LIKE', '%'.$ownerUrl.'%');
+            });
+        }
 
         // Search only main images
         if(!$request->get('search_images')) {
@@ -291,6 +315,18 @@ class BrowseController extends Controller
             $designer = User::find($request->get('designer'));
             $imageQuery->whereHas('designers', function($query) use ($designer) {
                 $query->where('user_id', $designer->id);
+            });
+        }
+        if($request->get('artist_url')) {
+            $artistUrl = $request->get('artist_url');
+            $imageQuery->whereHas('artists', function($query) use ($artistUrl) {
+                $query->where('url', 'LIKE', '%'.$artistUrl.'%');
+            });
+        }
+        if($request->get('designer_url')) {
+            $designerUrl = $request->get('designer_url');
+            $imageQuery->whereHas('designers', function($query) use ($designerUrl) {
+                $query->where('url', 'LIKE', '%'.$designerUrl.'%');
             });
         }
         if($request->get('feature_id')) {
@@ -393,6 +429,12 @@ class BrowseController extends Controller
                 $query->where('user_id', $owner->id);
             });
         }
+        if($request->get('owner_url')) {
+            $ownerUrl = $request->get('owner_url');
+            $query->where(function($query) use ($ownerUrl) {
+                $query->where('owner_url','LIKE', '%'.$ownerUrl.'%');
+            });
+        }
 
         // Search only main images
         if(!$request->get('search_images')) {
@@ -420,6 +462,18 @@ class BrowseController extends Controller
             $designer = User::find($request->get('designer'));
             $imageQuery->whereHas('designers', function($query) use ($designer) {
                 $query->where('user_id', $designer->id);
+            });
+        }
+        if($request->get('artist_url')) {
+            $artistUrl = $request->get('artist_url');
+            $imageQuery->whereHas('artists', function($query) use ($artistUrl) {
+                $query->where('url', 'LIKE', '%'.$artistUrl.'%');
+            });
+        }
+        if($request->get('designer_url')) {
+            $designerUrl = $request->get('designer_url');
+            $imageQuery->whereHas('designers', function($query) use ($designerUrl) {
+                $query->where('url', 'LIKE', '%'.$designerUrl.'%');
             });
         }
 
