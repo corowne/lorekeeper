@@ -13,7 +13,7 @@
         <div class="form-inline justify-content-end mb-3">
             <div class="form-group mr-3">
                 {!! Form::label('sort', 'Sort: ', ['class' => 'mr-2']) !!}
-                {!! Form::select('sort', ['number_desc' => 'Number Descending', 'number_asc' => 'Number Ascending', 'id_desc' => 'Newest First', 'id_asc' => 'Oldest First', 'sale_value_desc' => 'Highest Sale Value', 'sale_value_asc' => 'Lowest Sale Value'], Request::get('sort'), ['class' => 'form-control']) !!}
+                {!! Form::select('sort', ['number_desc' => 'Number Descending', 'number_asc' => 'Number Ascending', 'id_desc' => 'Newest Characters First', 'id_asc' => 'Oldest Characters First', 'sale_value_desc' => 'Highest Sale Value', 'sale_value_asc' => 'Lowest Sale Value', 'species_asc' => 'Species', 'species_desc' => 'Species (Reverse)', 'trade_asc' => 'Trade Status', 'trade_desc' => 'Trade Status (Reverse)', 'gift_art_asc' => 'Gift Art Status', 'gift_art_desc' => 'Gift Art Status (Reverse)', 'gift_write_asc' => 'Gift Writing Status', 'gift_write_desc' => 'Gift Writing Status (Reverse)'], Request::get('sort'), ['class' => 'form-control']) !!}
             </div>
             {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
         </div>

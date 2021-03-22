@@ -31,7 +31,10 @@ class BookmarkController extends Controller
      */
     public function getBookmarks(Request $request)
     {
-        $query = CharacterBookmark::join('characters', 'character_bookmarks.character_id', '=', 'characters.id')->with('character.image')->with('character.user')->visible()->where('character_bookmarks.user_id', Auth::user()->id);
+        $query = CharacterBookmark::join('characters', 'character_bookmarks.character_id', '=', 'characters.id')
+        ->join('character_images', 'characters.character_image_id', '=', 'character_images.id')
+        ->with('character.image')->with('character.user')->visible()
+        ->where('character_bookmarks.user_id', Auth::user()->id);
 
         switch($request->get('sort')) {
             case 'number_desc':
@@ -52,12 +55,36 @@ class BookmarkController extends Controller
             case 'sale_value_asc':
                 $query->orderBy('characters.sale_value', 'ASC');
                 break;
+            case 'species_asc':
+                $query->orderBy('character_images.species_id', 'ASC');
+                break;
+            case 'species_desc':
+                $query->orderBy('character_images.species_id', 'DESC');
+                break;
+            case 'trade_asc':
+                $query->orderBy('characters.is_trading', 'ASC');
+                break;
+            case 'trade_desc':
+                $query->orderBy('characters.is_trading', 'DESC');
+                break;
+            case 'gift_art_asc':
+                $query->orderBy('characters.is_gift_art_allowed', 'ASC');
+                break;
+            case 'gift_art_desc':
+                $query->orderBy('characters.is_gift_art_allowed', 'DESC');
+                break;
+            case 'gift_write_asc':
+                $query->orderBy('characters.is_gift_writing_allowed', 'ASC');
+                break;
+            case 'gift_write_desc':
+                $query->orderBy('characters.is_gift_writing_allowed', 'DESC');
+                break;
             default:
                 $query->orderBy('characters.number', 'DESC');
         }
 
         return view('account.bookmarks', [
-            'bookmarks' => $query->paginate(20)
+            'bookmarks' => $query->paginate(20)->appends($request->query())
         ]);
     }
 
