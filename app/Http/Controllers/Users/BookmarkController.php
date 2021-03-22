@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 
 use App\Services\BookmarkManager;
 use App\Models\Character\CharacterBookmark;
-use App\Models\Character\Character;
 
 use App\Http\Controllers\Controller;
 
