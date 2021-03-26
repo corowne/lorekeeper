@@ -380,7 +380,7 @@ class SubmissionManager extends Service
                 // Users might not pass in clean arrays (may contain redundant data) so we need to clean that up
                 $assets = $this->processRewards($data + ['character_id' => $c->id, 'currencies' => $currencies], true);
 
-                if(!fillCharacterAssets($assets, $user, $c, $promptLogType, $promptData)) throw new \Exception("Failed to distribute rewards to character.");
+                if(!fillCharacterAssets($assets, $user, $c, $promptLogType, $promptData, $submission->user)) throw new \Exception("Failed to distribute rewards to character.");
 
                 SubmissionCharacter::create([
                     'character_id' => $c->id,
