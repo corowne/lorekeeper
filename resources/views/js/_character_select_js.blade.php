@@ -44,6 +44,7 @@
                 $(this).parent().parent().find('.character-rewards').append($clone);
                 attachRewardTypeListener(node.find('.character-rewardable-type'));
             });
+            attachRewardTypeListener(node.find('.character-rewardable-type'));
         }
 
         function attachRewardTypeListener(node) {
@@ -63,13 +64,11 @@
                     $cell.children('.character-currencies').addClass('show');
                     $cell.children('.character-currencies').removeClass('hide');
                 }
-                @if(isset($showLootTables) && $showLootTables)
-                    else if (val == 'LootTable'){
-                        $cell.children('.character-tables').addClass('show');
-                        $cell.children('.character-tables').addClass('show');
-                        $cell.children('.character-tables').removeClass('hide');
-                    }
-                @endif
+                else if (val == 'LootTable'){
+                    $cell.children('.character-tables').addClass('show');
+                    $cell.children('.character-tables').addClass('show');
+                    $cell.children('.character-tables').removeClass('hide');
+                }
             });
         }
 

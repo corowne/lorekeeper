@@ -293,6 +293,7 @@ function fillCharacterAssets($assets, $sender, $recipient, $logType, $data, $sub
     if(!Config::get('lorekeeper.extensions.character_reward_expansion.default_recipient') && $recipient->user) $item_recipient = $recipient->user;
     else $item_recipient = $submitter;
 
+
     // Roll on any loot tables
     if(isset($assets['loot_tables']))
     {
@@ -309,13 +310,14 @@ function fillCharacterAssets($assets, $sender, $recipient, $logType, $data, $sub
         {
             $service = new \App\Services\CurrencyManager;
             foreach($contents as $asset)
-                if(!$service->creditCurrency($sender, $recipient, $logType, $data['data'], $asset['asset'], $asset['quantity'])) return false;
+                if(!$service->creditCurrency($sender, ( $asset['asset']->is_character_owned ? $recipient : $item_recipient), $logType, $data['data'], $asset['asset'], $asset['quantity'])) return false;
         }
         elseif($key == 'items' && count($contents))
         {
             $service = new \App\Services\InventoryManager;
-            if(!$service->creditItem($sender, ( ($asset['asset']->category && $asset['asset']->category->is_character_owned) ? $recipient : $item_recipient), $logType, $data, $asset['asset'], $asset['quantity'])) return false;
+            foreach($contents as $asset)
+                if(!$service->creditItem($sender, ( ($asset['asset']->category && $asset['asset']->category->is_character_owned) ? $recipient : $item_recipient), $logType, $data, $asset['asset'], $asset['quantity'])) return false;
         }
     }
-    return true;
+    return $assets;
 }
