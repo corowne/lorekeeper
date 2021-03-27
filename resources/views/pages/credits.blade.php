@@ -75,6 +75,9 @@
     <p class="mb-0 col-md-4">
         <strong>Group Traits by Category</strong> by <a href="https://github.com/preimpression">Preimpression</a> ({{ Config::get('lorekeeper.extensions.traits_by_category') ? 'Enabled' : 'Disabled' }})
     </p>
+    <p class="mb-0 col-md-4">
+        <strong>Character Rewards</strong> by <a href="https://github.com/preimpression">Preimpression</a> ({{ Config::get('lorekeeper.extensions.character_reward_expansion.expanded') ? 'Enabled' : 'Disabled' }}/{{ Config::get('lorekeeper.extensions.character_reward_expansion.default_recipient') ? 'Submitter' : 'Character Owner' }})
+    </p>
 </div>
 
 <hr/>
