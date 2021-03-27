@@ -29,10 +29,17 @@
                             @foreach($character->rewards as $reward)
                                 <tr class="character-reward-row">
                                     <td>
-                                        {!! Form::select('character_currency_id['.$character->character_id.'][]', $characterCurrencies, $reward->rewardable_id, ['class' => 'form-control currency-id']) !!}
+                                        @if($expanded_rewards)
+                                            {!! Form::select('character_rewardable_type['.$character->character_id.'][]', ['Item' => 'Item', 'Currency' => 'Currency'] + (isset($showLootTables) && $showLootTables ? ['LootTable' => 'Loot Table'] : []), null, ['class' => 'form-control character-rewardable-type', 'placeholder' => 'Select Reward Type']) !!}
+                                        @else
+                                            {!! Form::hidden('character_rewardable_type['.$character->character_id.'][]', 'Currency', ['class' => 'character-rewardable-type']) !!}
+                                        @endif
+                                    </td>
+                                    <td class="character-loot-row">
+                                        {!! Form::select('character_rewardable_id['.$character->character_id.'][]', $characterCurrencies, $reward->rewardable_id, ['class' => 'form-control character-rewardable-id', 'placeholder' => 'Select Reward']) !!}
                                     </td>
                                     <td class="d-flex align-items-center">
-                                        {!! Form::text('character_quantity['.$character->character_id.'][]', $reward->quantity, ['class' => 'form-control mr-2 quantity']) !!}
+                                        {!! Form::text('character_rewardable_quantity['.$character->character_id.'][]', $reward->quantity, ['class' => 'form-control mr-2 character-rewardable-quantity']) !!}
                                         <a href="#" class="remove-reward d-block"><i class="fas fa-times text-muted"></i></a>
                                     </td>
                                 </tr>
@@ -47,3 +54,4 @@
         </div>
     </div>
 </div>
+

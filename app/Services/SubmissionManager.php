@@ -46,6 +46,7 @@ class SubmissionManager extends Service
         DB::beginTransaction();
 
         try {
+
             // 1. check that the prompt can be submitted at this time
             // 2. check that the characters selected exist (are visible too)
             // 3. check that the currencies selected can be attached to characters
@@ -126,6 +127,10 @@ class SubmissionManager extends Service
                     ]) // list of rewards and addons
             ] + ($isClaim ? [] : ['prompt_id' => $prompt->id,]));
 
+            // $clearNull = function($value, $key){
+            //     return array_filter
+            // };
+
             // Retrieve all currency IDs for characters
             $currencyIds = [];
             if(isset($data['character_currency_id'])) {
@@ -133,6 +138,14 @@ class SubmissionManager extends Service
                 {
                     foreach($c as $currencyId) $currencyIds[] = $currencyId;
                 }
+            }
+            elseif(isset($data['character_rewardable_type']))
+            {
+                dd('line 144 of SubmissionManager');
+                // foreach($data['character_rewardable_type'] as $key => $type)
+                // {
+                //     if()
+                // }
             }
             array_unique($currencyIds);
             $currencies = Currency::whereIn('id', $currencyIds)->where('is_character_owned', 1)->get()->keyBy('id');
@@ -172,11 +185,14 @@ class SubmissionManager extends Service
         if($isCharacter)
         {
             $assets = createAssetsArray(true);
-            if(isset($data['character_currency_id'][$data['character_id']]) && isset($data['character_quantity'][$data['character_id']]))
+
+            if(isset($data['character_rewardable_type'][$data['character_id']]) && isset($data['character_rewardable_id'][$data['character_id']]) && isset($data['character_rewardable_quantity'][$data['character_id']]))
             {
-                foreach($data['character_currency_id'][$data['character_id']] as $key => $currency)
+                $ids = array_values(array_filter($data['character_rewardable_id'][$data['character_id']]));
+                dd($assets, $data, $ids);
+                foreach($data['character_rewardable_type'][$data['character_id']] as $key => $type)
                 {
-                    if($data['character_quantity'][$data['character_id']][$key]) addAsset($assets, $data['currencies'][$currency], $data['character_quantity'][$data['character_id']][$key]);
+                    if($data['character_rewardable_quantity'][$data['character_id']][$key]) addAsset($assets, $data['currencies'][$currency], $data['character_quantity'][$data['character_id']][$key]);
                 }
             }
             return $assets;
