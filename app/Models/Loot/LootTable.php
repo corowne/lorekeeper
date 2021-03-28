@@ -128,6 +128,7 @@ class LootTable extends Model
                 // If this is chained to another loot table, roll on that table
                 if($result->rewardable_type == 'LootTable') $rewards = mergeAssetsArrays($rewards, $result->reward->roll($result->quantity));
                 elseif($result->rewardable_type == 'ItemCategory' || $result->rewardable_type == 'ItemCategoryRarity') $rewards = mergeAssetsArrays($rewards, $this->rollCategory($result->rewardable_id, $result->quantity, (isset($result->data['criteria']) ? $result->data['criteria'] : null), (isset($result->data['rarity']) ? $result->data['rarity'] : null)));
+                elseif($result->rewardable_type == 'ItemRarity') $rewards = mergeAssetsArrays($rewards, $this->rollRarityItem($result->quantity, $result->data['criteria'], $result->data['rarity']));
                 else addAsset($rewards, $result->reward, $result->quantity);
             }
         }
@@ -149,6 +150,38 @@ class LootTable extends Model
 
         if(isset($criteria) && $criteria && isset($rarity) && $rarity) $loot = Item::where('item_category_id', $id)->released()->whereNotNull('data')->whereRaw('JSON_EXTRACT(`data`, \'$.rarity\')'. $criteria . $rarity)->get();
         else $loot = Item::where('item_category_id', $id)->released()->get();
+        if(!$loot->count()) throw new \Exception('There are no items to select from!');
+
+        $totalWeight = $loot->count();
+
+        for($i = 0; $i < $quantity; $i++)
+        {
+            $roll = mt_rand(0, $totalWeight - 1);
+            $result = null;
+
+            $result = $loot[$roll];
+
+            if($result) {
+                // If this is chained to another loot table, roll on that table
+                addAsset($rewards, $result, 1);
+            }
+        }
+        return $rewards;
+    }
+
+    /**
+     * Rolls on an item rarity.
+     *
+     * @param  int    $quantity
+     * @param  string $condition
+     * @param  string $rarity
+     * @return \Illuminate\Support\Collection
+     */
+    public function rollRarityItem($quantity = 1, $criteria, $rarity)
+    {
+        $rewards = createAssetsArray();
+
+        $loot = Item::released()->whereNotNull('data')->whereRaw('JSON_EXTRACT(`data`, \'$.rarity\')'. $criteria . $rarity)->get();
         if(!$loot->count()) throw new \Exception('There are no items to select from!');
 
         $totalWeight = $loot->count();

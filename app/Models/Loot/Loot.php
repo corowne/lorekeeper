@@ -63,6 +63,8 @@ class Loot extends Model
         {
             case 'Item':
                 return $this->belongsTo('App\Models\Item\Item', 'rewardable_id');
+            case 'ItemRarity':
+                return $this->belongsTo('App\Models\Item\Item', 'rewardable_id');
             case 'Currency':
                 return $this->belongsTo('App\Models\Currency\Currency', 'rewardable_id');
             case 'LootTable':
