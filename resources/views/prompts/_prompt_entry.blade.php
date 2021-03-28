@@ -52,6 +52,7 @@
                 </div>
                 <div class="col">
                     <h4>Stat & Level Rewards</h4>
+                    @if($prompt->expreward)
                     <div class="row">
                         <div class="col">
                             @if(!$prompt->expreward->user_exp && !$prompt->expreward->user_points)
@@ -72,6 +73,9 @@
                             @endif
                         </div>
                     </div>
+                    @else
+                        @if(Auth::check() && Auth::user()->isStaff)<div class="alert alert-warning">There is currently no EXP rewards in existance on this prompt. Please press "edit" in the prompt admin page to allow it to generate! Users will see a blank block until it is generated.</div>@endif
+                    @endif
                 </div>
             </div>
         </div>
