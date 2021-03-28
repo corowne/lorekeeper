@@ -28,7 +28,7 @@
         <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Bootstrap_Tables"><strong>Bootstrap Tables</strong></a> by <a href="https://github.com/preimpression">Preimpression</a>
     </p>
     <p class="mb-0 col-md-4">
-        <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Watermarking"><strong>Watermarking</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
+        <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Watermarking"><strong>Watermarking</strong></a> by <a href="https://github.com/itinerare">itinerare</a> with masterlist image automation by <a href="https://github.com/SpeedyD">Speedy</a>
     </p>
     <p class="mb-0 col-md-4">
         <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Separate_Prompts"><strong>Separate Prompts</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
@@ -74,6 +74,9 @@
     </p>
     <p class="mb-0 col-md-4">
         <strong>Group Traits by Category</strong> by <a href="https://github.com/preimpression">Preimpression</a> ({{ Config::get('lorekeeper.extensions.traits_by_category') ? 'Enabled' : 'Disabled' }})
+    </p>
+    <p class="mb-0 col-md-4">
+        <strong>Character Rewards</strong> by <a href="https://github.com/preimpression">Preimpression</a> ({{ Config::get('lorekeeper.extensions.character_reward_expansion.expanded') ? 'Enabled' : 'Disabled' }}/{{ Config::get('lorekeeper.extensions.character_reward_expansion.default_recipient') ? 'Submitter' : 'Character Owner' }})
     </p>
 </div>
 
