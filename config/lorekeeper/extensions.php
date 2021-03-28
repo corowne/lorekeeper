@@ -36,7 +36,7 @@ return [
 
     // Item Entry Expansion - Mercury
     'item_entry_expansion' => [
-        'extra_fields' => 0,
+        'extra_fields' => 1,
         'resale_function' => 0,
     ],
 

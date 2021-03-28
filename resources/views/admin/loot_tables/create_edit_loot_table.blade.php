@@ -37,10 +37,10 @@
     <thead>
         <tr>
             <th width="25%">Loot Type</th>
-            <th width="25%">Reward</th>
+            <th width="35%">Reward</th>
             <th width="10%">Quantity</th>
             <th width="10%">Weight {!! add_help('A higher weight means a reward is more likely to be rolled. Weights have to be integers above 0 (round positive number, no decimals) and do not have to add up to be a particular number.') !!}</th>
-            <th width="20%">Chance</th>
+            <th width="10%">Chance</th>
             <th width="10%"></th>
         </tr>
     </thead>
@@ -48,7 +48,7 @@
         @if($table->id)
             @foreach($table->loot as $loot)
                 <tr class="loot-row">
-                    <td>{!! Form::select('rewardable_type[]', ['Item' => 'Item', 'Currency' => 'Currency', 'LootTable' => 'Loot Table', 'None' => 'None'], $loot->rewardable_type, ['class' => 'form-control reward-type', 'placeholder' => 'Select Reward Type']) !!}</td>
+                    <td>{!! Form::select('rewardable_type[]', ['Item' => 'Item', 'Currency' => 'Currency', 'LootTable' => 'Loot Table', 'ItemCategory' => 'Item Category', 'ItemCategoryRarity' => 'Item Category (Conditional)', 'None' => 'None'], $loot->rewardable_type, ['class' => 'form-control reward-type', 'placeholder' => 'Select Reward Type']) !!}</td>
                     <td class="loot-row-select">
                         @if($loot->rewardable_type == 'Item')
                             {!! Form::select('rewardable_id[]', $items, $loot->rewardable_id, ['class' => 'form-control item-select selectize', 'placeholder' => 'Select Item']) !!}
@@ -56,6 +56,14 @@
                             {!! Form::select('rewardable_id[]', $currencies, $loot->rewardable_id, ['class' => 'form-control currency-select selectize', 'placeholder' => 'Select Currency']) !!}
                         @elseif($loot->rewardable_type == 'LootTable')
                             {!! Form::select('rewardable_id[]', $tables, $loot->rewardable_id, ['class' => 'form-control table-select selectize', 'placeholder' => 'Select Loot Table']) !!}
+                        @elseif($loot->rewardable_type == 'ItemCategoryRarity')
+                            <div class="category-rarity-select d-flex">
+                                {!! Form::select('rewardable_id[]', $categories, $loot->rewardable_id, ['class' => 'form-control selectize', 'placeholder' => 'Select Item Category']) !!}
+                                {!! Form::select('criteria[]', ['=' => '=', '<' => '<', '>' => '>', '<=' => '<=', '>=' => '>='], isset($loot->data['criteria']) ? $loot->data['criteria'] : null, ['class' => 'form-control', 'placeholder' => 'Select Criteria']) !!}
+                                {!! Form::select('rarity[]', $rarities, isset($loot->data['rarity']) ? $loot->data['rarity'] : null, ['class' => 'form-control', 'placeholder' => 'Select Rarity']) !!}
+                            </div>
+                        @elseif($loot->rewardable_type == 'ItemCategory')
+                            {!! Form::select('rewardable_id[]', $categories, $loot->rewardable_id, ['class' => 'form-control item-select selectize', 'placeholder' => 'Select Item']) !!}
                         @elseif($loot->rewardable_type == 'None')
                             {!! Form::select('rewardable_id[]', [1 => 'No reward given.'], $loot->rewardable_id, ['class' => 'form-control']) !!}
                         @endif
@@ -80,7 +88,7 @@
     <table class="table table-sm">
         <tbody id="lootRow">
             <tr class="loot-row">
-                <td>{!! Form::select('rewardable_type[]', ['Item' => 'Item', 'Currency' => 'Currency', 'LootTable' => 'Loot Table', 'None' => 'None'], null, ['class' => 'form-control reward-type', 'placeholder' => 'Select Reward Type']) !!}</td>
+                <td>{!! Form::select('rewardable_type[]', ['Item' => 'Item', 'Currency' => 'Currency', 'LootTable' => 'Loot Table', 'ItemCategory' => 'Item Category', 'ItemCategoryRarity' => 'Item Category (Conditional)', 'None' => 'None'], null, ['class' => 'form-control reward-type', 'placeholder' => 'Select Reward Type']) !!}</td>
                 <td class="loot-row-select"></td>
                 <td>{!! Form::text('quantity[]', 1, ['class' => 'form-control']) !!}</td>
                 <td class="loot-row-weight">{!! Form::text('weight[]', 1, ['class' => 'form-control loot-weight']) !!}</td>
@@ -92,6 +100,12 @@
     {!! Form::select('rewardable_id[]', $items, null, ['class' => 'form-control item-select', 'placeholder' => 'Select Item']) !!}
     {!! Form::select('rewardable_id[]', $currencies, null, ['class' => 'form-control currency-select', 'placeholder' => 'Select Currency']) !!}
     {!! Form::select('rewardable_id[]', $tables, null, ['class' => 'form-control table-select', 'placeholder' => 'Select Loot Table']) !!}
+    {!! Form::select('rewardable_id[]', $categories, null, ['class' => 'form-control category-select', 'placeholder' => 'Select Item Category']) !!}
+    <div class="category-rarity-select d-flex">
+        {!! Form::select('rewardable_id[]', $categories, null, ['class' => 'form-control', 'placeholder' => 'Category']) !!}
+        {!! Form::select('criteria[]', ['=' => '=', '<' => '<', '>' => '>', '<=' => '<=', '>=' => '>='], null, ['class' => 'form-control criteria-select', 'placeholder' => 'Criteria']) !!}
+        {!! Form::select('rarity[]', $rarities, null, ['class' => 'form-control criteria-select', 'placeholder' => 'Rarity']) !!}
+    </div>
     {!! Form::select('rewardable_id[]', [1 => 'No reward given.'], null, ['class' => 'form-control none-select']) !!}
 </div>
 
@@ -119,6 +133,8 @@ $( document ).ready(function() {
     var $itemSelect = $('#lootRowData').find('.item-select');
     var $currencySelect = $('#lootRowData').find('.currency-select');
     var $tableSelect = $('#lootRowData').find('.table-select');
+    var $categorySelect = $('#lootRowData').find('.category-select');
+    var $categoryRaritySelect = $('#lootRowData').find('.category-rarity-select');
     var $noneSelect = $('#lootRowData').find('.none-select');
 
     refreshChances();
@@ -152,6 +168,8 @@ $( document ).ready(function() {
         var $clone = null;
         if(val == 'Item') $clone = $itemSelect.clone();
         else if (val == 'Currency') $clone = $currencySelect.clone();
+        else if (val == 'ItemCategory') $clone = $categorySelect.clone();
+        else if (val == 'ItemCategoryRarity') $clone = $categoryRaritySelect.clone();
         else if (val == 'LootTable') $clone = $tableSelect.clone();
         else if (val == 'None') $clone = $noneSelect.clone();
 
@@ -166,13 +184,15 @@ $( document ).ready(function() {
 
             var $clone = null;
             if(val == 'Item') $clone = $itemSelect.clone();
+            else if (val == 'ItemCategory') $clone = $categorySelect.clone();
+            else if (val == 'ItemCategoryRarity') $clone = $categoryRaritySelect.clone();
             else if (val == 'Currency') $clone = $currencySelect.clone();
             else if (val == 'LootTable') $clone = $tableSelect.clone();
             else if (val == 'None') $clone = $noneSelect.clone();
 
             $cell.html('');
             $cell.append($clone);
-            $clone.selectize();
+            if (val != 'ItemCategoryRarity') $clone.selectize();
         });
     }
 
