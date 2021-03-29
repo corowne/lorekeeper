@@ -160,8 +160,6 @@ class LootTable extends Model
         for($i = 0; $i < $quantity; $i++)
         {
             $roll = mt_rand(0, $totalWeight - 1);
-            $result = null;
-
             $result = $loot[$roll];
 
             if($result) {
@@ -193,8 +191,6 @@ class LootTable extends Model
         for($i = 0; $i < $quantity; $i++)
         {
             $roll = mt_rand(0, $totalWeight - 1);
-            $result = null;
-
             $result = $loot[$roll];
 
             if($result) {
