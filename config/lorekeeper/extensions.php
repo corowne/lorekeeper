@@ -38,6 +38,7 @@ return [
     'item_entry_expansion' => [
         'extra_fields' => 1,
         'resale_function' => 0,
+        'loot_tables' => 0, // Adds the ability to use either rarity criteria for items or item categories with rarity criteria in loot tables. Note that disabling this does not apply retroactively.
     ],
 
     // Group Traits By Category - Uri
