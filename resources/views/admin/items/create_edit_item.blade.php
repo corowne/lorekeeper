@@ -43,7 +43,7 @@
         <div class="col-md">
             <div class="form-group">
                 {!! Form::label('Item Rarity (Optional)') !!} {!! add_help('This should be a number.') !!}
-                {!! Form::text('rarity', $item && $item->rarity ? $item->rarity : '', ['class' => 'form-control']) !!}
+                {!! Form::number('rarity', $item && $item->rarity ? $item->rarity : '', ['class' => 'form-control']) !!}
             </div>
         </div>
     @endif
