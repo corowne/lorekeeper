@@ -196,7 +196,7 @@ class LevelController extends Controller
      * Gets the level deletion modal.
      *
      */
-    public function getDeleteCharaLevel($id)
+    public function getCharaDeleteLevel($id)
     {
         $level = CharacterLevel::find($id);
         return view('admin.stats.character._delete_level', [
@@ -208,7 +208,7 @@ class LevelController extends Controller
      * Creates or edits an level.
      *
      */
-    public function postDeleteCharaLevel(Request $request, LevelService $service, $id)
+    public function postCharaDeleteLevel(Request $request, LevelService $service, $id)
     {
         if($id && $service->deleteCharaLevel(CharacterLevel::find($id))) {
             flash('Level deleted successfully.')->success();
