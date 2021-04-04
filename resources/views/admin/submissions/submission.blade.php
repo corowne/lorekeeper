@@ -5,7 +5,7 @@
 @section('home-content')
 @if($submission->prompt_id)
     {!! breadcrumbs(['Admin Panel' => 'admin', 'Prompt Queue' => 'admin/submissions/pending', 'Submission (#' . $submission->id . ')' => $submission->viewUrl]) !!}
-@else 
+@else
     {!! breadcrumbs(['Admin Panel' => 'admin', 'Claim Queue' => 'admin/claims/pending', 'Claim (#' . $submission->id . ')' => $submission->viewUrl]) !!}
 @endif
 
@@ -175,7 +175,7 @@
     @endif
         <div id="characters" class="mb-3">
             @foreach($submission->characters as $character)
-                @include('widgets._character_select_entry', ['characterCurrencies' => $characterCurrencies, 'character' => $character])
+                @include('widgets._character_select_entry', ['characterCurrencies' => $characterCurrencies, 'items' => $items, 'tables' => $tables, 'character' => $character, 'expanded_rewards' => $expanded_rewards])
             @endforeach
         </div>
         <div class="text-right mb-3">
@@ -261,7 +261,12 @@
                             <table class="table table-sm">
                                 <thead>
                                     <tr>
+                                        @if($expanded_rewards)
+                                        <th width="35%">Reward Type</th>
+                                        <th width="35%">Reward</th>
+                                        @else
                                         <th width="70%">Reward</th>
+                                        @endif
                                         <th width="30%">Amount</th>
                                     </tr>
                                 </thead>
@@ -278,11 +283,25 @@
         </div>
         <table>
             <tr class="character-reward-row">
-                <td>
-                    {!! Form::select('character_currency_id[]', $characterCurrencies, 0, ['class' => 'form-control currency-id']) !!}
-                </td>
+
+                    @if($expanded_rewards)
+                    <td>
+                        {!! Form::select('character_rewardable_type[]', ['Item' => 'Item', 'Currency' => 'Currency', 'LootTable' => 'Loot Table'], null, ['class' => 'form-control character-rewardable-type', 'placeholder' => 'Select Reward Type']) !!}
+                    </td>
+                    <td class="lootDivs">
+                        <div class="character-currencies hide">{!! Form::select('character_rewardable_id[]', $characterCurrencies, 0, ['class' => 'form-control character-currency-id', 'placeholder' => 'Select Currency']) !!}</div>
+                        <div class="character-items hide">{!! Form::select('character_rewardable_id[]', $items, 0, ['class' => 'form-control character-item-id', 'placeholder' => 'Select Item']) !!}</div>
+                        <div class="character-tables hide">{!! Form::select('character_rewardable_id[]', $tables, 0, ['class' => 'form-control character-table-id', 'placeholder' => 'Select Loot Table']) !!}</div>
+                    </td>
+                    @else
+                        <td class="lootDivs">
+                            {!! Form::hidden('character_rewardable_type[]', 'Currency', ['class' => 'character-rewardable-type']) !!}
+                            {!! Form::select('character_rewardable_id[]', $characterCurrencies, 0, ['class' => 'form-control character-currency-id', 'placeholder' => 'Select Currency']) !!}
+                        </td>
+                    @endif
+
                 <td class="d-flex align-items-center">
-                    {!! Form::text('character_quantity[]', 0, ['class' => 'form-control mr-2 quantity']) !!}
+                    {!! Form::text('character_quantity[]', 0, ['class' => 'form-control mr-2  character-rewardable-quantity']) !!}
                     <a href="#" class="remove-reward d-block"><i class="fas fa-times text-muted"></i></a>
                 </td>
             </tr>
@@ -326,13 +345,13 @@
 @endsection
 
 @section('scripts')
-@parent 
+@parent
 @if($submission->status == 'Pending')
     @include('js._loot_js', ['showLootTables' => true, 'showRaffles' => true, 'showRecipes' => true])
     @include('js._character_select_js')
 
     <script>
-        
+
         $(document).ready(function() {
             var $confirmationModal = $('#confirmationModal');
             var $submissionForm = $('#submissionForm');
@@ -344,14 +363,14 @@
             var $rejectionButton = $('#rejectionButton');
             var $rejectionContent = $('#rejectionContent');
             var $rejectionSubmit = $('#rejectionSubmit');
-            
+
             $approvalButton.on('click', function(e) {
                 e.preventDefault();
                 $approvalContent.removeClass('hide');
                 $rejectionContent.addClass('hide');
                 $confirmationModal.modal('show');
             });
-            
+
             $rejectionButton.on('click', function(e) {
                 e.preventDefault();
                 $rejectionContent.removeClass('hide');

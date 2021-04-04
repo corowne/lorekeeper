@@ -42,42 +42,67 @@
                 });
                 updateRewardNames($clone, node.find('.character-info').data('id'));
                 $(this).parent().parent().find('.character-rewards').append($clone);
-                attachRewardTypeListener(node.find('.character-rewardable-type'));
             });
-            attachRewardTypeListener(node.find('.character-rewardable-type'));
         }
+
+
+        $('.character-rewardable-type').on('change', function(e) {
+                console.log('hello');
+            var val = $(this).val();
+            var $cell = $(this).parent().find('.character-loot-row-select');
+                console.log($cell);
+
+            var $clone = null;
+            if(val == 'Item') $clone = $itemSelect.clone();
+            else if (val == 'Currency') $clone = $currencySelect.clone();
+            @if(isset($showLootTables) && $showLootTables)
+                else if (val == 'LootTable') $clone = $tableSelect.clone();
+            @endif
+
+            $cell.html('');
+            $cell.append($clone);
+        });
 
         function attachRewardTypeListener(node) {
             node.on('change', function(e) {
+                console.log($(this));
+                console.log('hello');
                 var val = $(this).val();
-                var $cell = $(this).parent().parent().find('.lootDivs');
+                var $cell = $(this).parent().parent().find('.character-loot-row-select');
 
-                $cell.children().addClass('hide');
-                $cell.children().children().val(null);
+                var $clone = null;
+                if(val == 'Item') $clone = $itemSelect.clone();
+                else if (val == 'Currency') $clone = $currencySelect.clone();
+                @if(isset($showLootTables) && $showLootTables)
+                    else if (val == 'LootTable') $clone = $tableSelect.clone();
+                @endif
 
-                if(val == 'Item') {
-                    $cell.children('.character-items').addClass('show');
-                    $cell.children('.character-items').removeClass('hide');
-                    $cell.children('.character-items');
-                }
-                else if (val == 'Currency'){
-                    $cell.children('.character-currencies').addClass('show');
-                    $cell.children('.character-currencies').removeClass('hide');
-                }
-                else if (val == 'LootTable'){
-                    $cell.children('.character-tables').addClass('show');
-                    $cell.children('.character-tables').addClass('show');
-                    $cell.children('.character-tables').removeClass('hide');
-                }
+                $cell.html('');
+                $cell.append($clone);
+                $clone.selectize();
             });
+        }
+
+        function updateOptions() {
+            if(flat) $('#flatOptions').removeClass('hide');
+            else $('#flatOptions').addClass('hide');
+
+            if(range) $('#rangeOptions').removeClass('hide');
+            else $('#rangeOptions').addClass('hide');
+
+            if(min) $('#minOptions').removeClass('hide');
+            else $('#minOptions').addClass('hide');
+
+            if(rate) $('#rateOptions').removeClass('hide');
+            else $('#rateOptions').addClass('hide');
         }
 
         function updateRewardNames(node, id) {
             node.find('.character-rewardable-type').attr('name', 'character_rewardable_type[' + id + '][]');
             node.find('.character-rewardable-quantity').attr('name', 'character_rewardable_quantity[' + id + '][]');
-            node.find('.character-currency-id').attr('name', 'character_rewardable_id[' + id + '][]');
-            node.find('.character-item-id').attr('name', 'character_rewardable_id[' + id + '][]');
-            node.find('.character-table-id').attr('name', 'character_rewardable_id[' + id + '][]');
+            node.find('.character-currency-id').attr('name', 'character_currency_id[' + id + '][]');
+            node.find('.character-item-id').attr('name', 'character_item_id[' + id + '][]');
+            node.find('.character-table-id').attr('name', 'character_table_id[' + id + '][]');
         }
 
     });

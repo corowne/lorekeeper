@@ -31,7 +31,7 @@ class ItemCategory extends Model
      * @var array
      */
     public static $createRules = [
-        'name' => 'required|unique:item_categories|between:3,25',
+        'name' => 'required|unique:item_categories|between:3,100',
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
@@ -42,7 +42,7 @@ class ItemCategory extends Model
      * @var array
      */
     public static $updateRules = [
-        'name' => 'required|between:3,25',
+        'name' => 'required|between:3,100',
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];

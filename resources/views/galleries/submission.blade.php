@@ -81,6 +81,9 @@
                         <hr/>
                         <p>
                             <strong>Submitted By</strong> {!! $submission->user->displayName !!}
+                            @if($submission->prompt_id)
+                                <strong>for</strong> {!! $submission->prompt->displayName !!}
+                            @endif
                             @if($submission->favorites->count())
                                  ・ <a class="view-favorites" href="#">View Favorites</a>
                             @endif

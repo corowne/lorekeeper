@@ -263,7 +263,7 @@ class MyoController extends Controller
 
         return view('character.update_form', [
             'character' => $this->character,
-            'queueOpen' => Settings::get('is_design_updates_open'),
+            'queueOpen' => Settings::get('is_myos_open'),
             'request' => $this->character->designUpdate()->active()->first()
         ]);
     }

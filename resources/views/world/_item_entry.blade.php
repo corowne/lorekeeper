@@ -22,7 +22,7 @@
                     </div>
                 @endif
             @endif
-            @if(isset($item->data['resell']) && $item->data['resell'] && Config::get('lorekeeper.extensions.item_entry_expansion.resale_function'))
+            @if(isset($item->data['resell']) && $item->data['resell'] && App\Models\Currency\Currency::where('id', $item->resell->flip()->pop())->first() && Config::get('lorekeeper.extensions.item_entry_expansion.resale_function'))
                 <div class="col-md">
                     <p><strong>Resale Value:</strong> {!! App\Models\Currency\Currency::find($item->resell->flip()->pop())->display($item->resell->pop()) !!}</p>
                 </div>
