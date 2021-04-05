@@ -10,7 +10,7 @@ use Illuminate\Database\Schema\Blueprint;
 
 use App\Models\User\User;
 use App\Models\Character\Character;
-
+use App\Models\Prompt\Prompt;
 class Addlevels extends Command
 {
     /**
