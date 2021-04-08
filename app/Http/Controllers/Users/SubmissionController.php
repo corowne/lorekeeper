@@ -151,11 +151,7 @@ class SubmissionController extends Controller
     public function postNewSubmission(Request $request, SubmissionManager $service)
     {
         $request->validate(Submission::$createRules);
-<<<<<<< HEAD
-        if($service->createSubmission($request->only(['url', 'prompt_id', 'comments', 'slug', 'character_quantity', 'character_currency_id', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity','focus_chara']), Auth::user())) {
-=======
-        if($service->createSubmission($request->only(['url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity']), Auth::user())) {
->>>>>>> 597c5e65b398b785791e5b9f3c7e18e6cefa48a8
+        if($service->createSubmission($request->only(['url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity','focus_chara']), Auth::user())) {
             flash('Prompt submitted successfully.')->success();
         }
         else {
@@ -232,13 +228,9 @@ class SubmissionController extends Controller
             'items' => Item::orderBy('name')->released()->pluck('name', 'id'),
             'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
             'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
-<<<<<<< HEAD
             'recipes'=> Recipe::orderBy('name')->pluck('name', 'id'),
-            'page' => 'submission'
-=======
             'page' => 'submission',
             'expanded_rewards' => Config::get('lorekeeper.extensions.character_reward_expansion.expanded')
->>>>>>> 597c5e65b398b785791e5b9f3c7e18e6cefa48a8
         ]));
     }
 

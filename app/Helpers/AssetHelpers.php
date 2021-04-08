@@ -67,13 +67,8 @@ function calculateGroupCurrency($data)
  */
 function getAssetKeys($isCharacter = false)
 {
-<<<<<<< HEAD
     if(!$isCharacter) return ['items', 'currencies', 'raffle_tickets', 'loot_tables', 'user_items', 'characters', 'recipes'];
-    else return ['currencies'];
-=======
-    if(!$isCharacter) return ['items', 'currencies', 'raffle_tickets', 'loot_tables', 'user_items', 'characters'];
     else return ['currencies', 'items', 'character_items', 'loot_tables'];
->>>>>>> 597c5e65b398b785791e5b9f3c7e18e6cefa48a8
 }
 
 /**
@@ -118,15 +113,13 @@ function getAssetModelString($type, $namespaced = true)
             else return 'Character';
             break;
 
-<<<<<<< HEAD
         case 'recipes':
             if($namespaced) return '\App\Models\Recipe\Recipe';
             else return 'Recipe';
-=======
+            break;
         case 'character_items':
             if($namespaced) return '\App\Models\Character\CharacterItem';
             else return 'CharacterItem';
->>>>>>> 597c5e65b398b785791e5b9f3c7e18e6cefa48a8
             break;
     }
     return null;

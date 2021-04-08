@@ -31,7 +31,6 @@
                     <p class="text-info">Submissions to this prompt are hidden.</p>
                 @endif
             </div>
-<<<<<<< HEAD
             <div class="row">
                 <div class="col">
                     <h4>Rewards</h4>
@@ -80,29 +79,6 @@
                     </div>
                 </div>
             </div>
-=======
-            <h4>Rewards</h4>
-            @if(!count($prompt->rewards))
-                No rewards.
-            @else
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th width="70%">Reward</th>
-                            <th width="30%">Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($prompt->rewards as $reward)
-                            <tr>
-                                <td>{!! $reward->reward->displayName !!}</td>
-                                <td>{{ $reward->quantity }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @endif
->>>>>>> 597c5e65b398b785791e5b9f3c7e18e6cefa48a8
         </div>
         <div class="text-right mt-1">
             @if($prompt->level_req)
