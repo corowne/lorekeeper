@@ -81,6 +81,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   is_registration_open / Default: 1");
         }
         else $this->line("Skipped: is_registration_open");
+        $this->addSiteSetting('is_registration_open', 1, '0: Registration closed, 1: Registration open. When registration is closed, invitation keys can still be used to register.');
 
         if(!DB::table('site_settings')->where('key', 'transfer_cooldown')->exists()) {
             DB::table('site_settings')->insert([
@@ -94,6 +95,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   transfer_cooldown / Default: 0");
         }
         else $this->line("Skipped: transfer_cooldown");
+        $this->addSiteSetting('transfer_cooldown', 0, 'Number of days to add to the cooldown timer when a character is transferred.');
 
         if(!DB::table('site_settings')->where('key', 'open_transfers_queue')->exists()) {
             DB::table('site_settings')->insert([
@@ -107,6 +109,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   open_transfers_queue / Default: 0");
         }
         else $this->line("Skipped: open_transfers_queue");
+        $this->addSiteSetting('open_transfers_queue', 0, '0: Character transfers do not need mod approval, 1: Transfers must be approved by a mod.');
 
         if(!DB::table('site_settings')->where('key', 'is_prompts_open')->exists()) {
             DB::table('site_settings')->insert([
@@ -120,6 +123,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   is_prompts_open / Default: 1");
         }
         else $this->line("Skipped: is_prompts_open");
+        $this->addSiteSetting('is_prompts_open', 1, '0: New prompt submissions cannot be made (mods can work on the queue still), 1: Prompts are submittable.');
 
         if(!DB::table('site_settings')->where('key', 'is_claims_open')->exists()) {
             DB::table('site_settings')->insert([
@@ -133,6 +137,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   is_claims_open / Default: 1");
         }
         else $this->line("Skipped: is_claims_open");
+        $this->addSiteSetting('is_claims_open', 1, '0: New claims cannot be made (mods can work on the queue still), 1: Claims are submittable.');
 
         if(!DB::table('site_settings')->where('key', 'is_reports_open')->exists()) {
             DB::table('site_settings')->insert([
@@ -146,6 +151,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   is_reports_open / Default: 1");
         }
         else $this->line("Skipped: is_reports_open");
+        $this->addSiteSetting('is_reports_open', 1, '0: New reports cannot be made (mods can work on the queue still), 1: Reports are submittable.');
 
         if(!DB::table('site_settings')->where('key', 'is_myos_open')->exists()) {
             DB::table('site_settings')->insert([
@@ -159,6 +165,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   is_myos_open / Default: 1");
         }
         else $this->line("Skipped: is_myos_open");
+        $this->addSiteSetting('is_myos_open', 1, '0: MYO slots cannot be submitted for design approval, 1: MYO slots can be submitted for approval.');
 
         if(!DB::table('site_settings')->where('key', 'is_design_updates_open')->exists()) {
             DB::table('site_settings')->insert([
@@ -172,6 +179,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   is_design_updates_open / Default: 1");
         }
         else $this->line("Skipped: is_design_updates_open");
+        $this->addSiteSetting('is_design_updates_open', 1, '0: Characters cannot be submitted for design update approval, 1: Characters can be submitted for design update approval.');
 
         if(!DB::table('site_settings')->where('key', 'blacklist_privacy')->exists()) {
             DB::table('site_settings')->insert([
@@ -185,6 +193,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   blacklist_privacy / Default: 0");
         }
         else $this->line("Skipped: blacklist_privacy");
+        $this->addSiteSetting('blacklist_privacy', 0, 'Who can view the blacklist? 0: Admin only, 1: Staff only, 2: Members only, 3: Public.');
 
         if(!DB::table('site_settings')->where('key', 'blacklist_link')->exists()) {
             DB::table('site_settings')->insert([
@@ -198,6 +207,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   blacklist_link / Default: 0");
         }
         else $this->line("Skipped: blacklist_link");
+        $this->addSiteSetting('blacklist_link', 0, '0: No link to the blacklist is displayed anywhere, 1: Link to the blacklist is shown on the user list.');
 
         if(!DB::table('site_settings')->where('key', 'blacklist_key')->exists()) {
             DB::table('site_settings')->insert([
@@ -211,6 +221,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   blacklist_key / Default: 0");
         }
         else $this->line("Skipped: blacklist_key");
+        $this->addSiteSetting('blacklist_key', 0, 'Optional key to view the blacklist. Enter "0" to not require one.');
 
         if(!DB::table('site_settings')->where('key', 'design_votes_needed')->exists()) {
             DB::table('site_settings')->insert([
@@ -224,6 +235,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   design_votes_needed / Default: 3");
         }
         else $this->line("Skipped: design_votes_needed");
+        $this->addSiteSetting('design_votes_needed', 3, 'Number of approval votes needed for a design update or MYO submission to be considered as having approval.');
 
         if(!DB::table('site_settings')->where('key', 'admin_user')->exists()) {
             DB::table('site_settings')->insert([
@@ -237,6 +249,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   admin_user / Default: 1");
         }
         else $this->line("Skipped: admin_user");
+        $this->addSiteSetting('admin_user', 1, 'ID of the site\'s admin user.');
 
         if(!DB::table('site_settings')->where('key', 'gallery_submissions_open')->exists()) {
             DB::table('site_settings')->insert([
@@ -250,6 +263,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   gallery_submissions_open / Default: 1");
         }
         else $this->line("Skipped: gallery_submissions_open");
+        $this->addSiteSetting('gallery_submissions_open', 1, '0: Gallery submissions closed, 1: Gallery submissions open.');
 
         if(!DB::table('site_settings')->where('key', 'gallery_submissions_require_approval')->exists()) {
             DB::table('site_settings')->insert([
@@ -263,6 +277,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   gallery_submissions_require_approval / Default: 1");
         }
         else $this->line("Skipped: gallery_submissions_require_approval");
+        $this->addSiteSetting('gallery_submissions_require_approval', 1, '0: Gallery submissions do not require approval, 1: Gallery submissions require approval.');
 
         if(!DB::table('site_settings')->where('key', 'gallery_submissions_reward_currency')->exists()) {
             DB::table('site_settings')->insert([
@@ -276,6 +291,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   gallery_submissions_reward_currency / Default: 0");
         }
         else $this->line("Skipped: gallery_submissions_reward_currency");
+        $this->addSiteSetting('gallery_submissions_reward_currency', 0, '0: Gallery submissions do not reward currency, 1: Gallery submissions reward currency.');
 
         if(!DB::table('site_settings')->where('key', 'group_currency')->exists()) {
             DB::table('site_settings')->insert([
@@ -289,6 +305,7 @@ class AddSiteSettings extends Command
             $this->info("Added:   group_currency / Default: 1");
         }
         else $this->line("Skipped: group_currency");
+        $this->addSiteSetting('group_currency', 1, 'ID of the group currency to award from gallery submissions (if enabled).');
 
         $this->line("\nSite settings up to date!");
 
