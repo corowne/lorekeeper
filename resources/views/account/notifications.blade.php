@@ -8,8 +8,8 @@
 <h1>Notifications</h1>
 
 <div class="text-right mb-3">
-    {!! Form::open(['url' => 'notifications/clear']) !!}
-        {!! Form::submit('Clear All', ['class' => 'btn btn-primary']) !!}
+    {!! Form::open(['url' => 'notifications/clear', 'id' => 'clearForm']) !!}
+        <a href="#" class="btn btn-primary" id="clearButton">Clear All</a>
     {!! Form::close() !!}
 </div>
 {!! $notifications->render() !!}
@@ -25,9 +25,9 @@
                     </span>
                     {!! Form::submit('x clear', ['class' => 'badge btn-primary', 'style' => 'display:inline; border: 0;']) !!}
                 {!! Form::close() !!}
-            </span> 
-            <a class="card-title h5 collapse-title mb-2" href="#{{ str_replace(' ', '_', Config::get('lorekeeper.notifications.'.$type.'.name')) }}" data-toggle="collapse">{{ Config::get('lorekeeper.notifications.'.$type.'.name') }}   
-            </a> 
+            </span>
+            <a class="card-title h5 collapse-title mb-2" href="#{{ str_replace(' ', '_', Config::get('lorekeeper.notifications.'.$type.'.name')) }}" data-toggle="collapse">{{ Config::get('lorekeeper.notifications.'.$type.'.name') }}
+            </a>
         <div id="{{ str_replace(' ', '_', Config::get('lorekeeper.notifications.'.$type.'.name')) }}" class="collapse {{ $notifications->where('notification_type_id', $type)->count() < 5 ? 'show' : '' }} mt-2">
             <table class="table notifications-table">
                 <thead>
@@ -58,11 +58,43 @@
 
 {!! $notifications->render() !!}
 
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title h5 mb-0">Clear All Notifications</span>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>This will clear <strong>all</strong> of your notifications. Are you certain you wish to do so?</p>
+                <div class="text-right">
+                    <a href="#" id="clearSubmit" class="btn btn-primary">Clear All</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 @section('scripts')
 @parent
 <script>
     $( document ).ready(function(){
+
+        var $confirmationModal = $('#confirmationModal');
+        var $clearButton = $('#clearButton');
+        var $clearSubmit = $('#clearSubmit');
+        var $clearForm = $('#clearForm');
+
+        $clearButton.on('click', function(e) {
+            e.preventDefault();
+            $confirmationModal.modal('show');
+        });
+
+        $clearSubmit.on('click', function(e) {
+            e.preventDefault();
+            $clearForm.submit();
+        });
 
         $('.clear-notification').on('click', function(e) {
             e.preventDefault();

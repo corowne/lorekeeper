@@ -1,5 +1,5 @@
 <ul>
-    <li class="sidebar-header"><a href="{{ $user->url }}" class="card-link">{{ $user->name }}</a></li>
+    <li class="sidebar-header"><a href="{{ $user->url }}" class="card-link">{{ Illuminate\Support\Str::limit($user->name, 10, $end='...') }}</a></li>
     <li class="sidebar-section">
         <div class="sidebar-section-header">Gallery</div>
         <div class="sidebar-item"><a href="{{ $user->url.'/gallery' }}" class="{{ set_active('user/'.$user->name.'/gallery*') }}">Gallery</a></div>
@@ -26,7 +26,7 @@
         <div class="sidebar-item"><a href="{{ $user->url.'/currency-logs' }}" class="{{ set_active($user->url.'/currency-logs*') }}">Currency Logs</a></div>
         <div class="sidebar-item"><a href="{{ $user->url.'/submissions' }}" class="{{ set_active($user->url.'/submissions*') }}">Submissions</a></div>
     </li>
-    
+
     @if(Auth::check() && Auth::user()->hasPower('edit_user_info') && Auth::user()->canEditRank($user->rank))
         <li class="sidebar-section">
             <div class="sidebar-section-header">Admin</div>

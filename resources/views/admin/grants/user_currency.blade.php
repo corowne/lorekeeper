@@ -12,8 +12,8 @@
 <h3>Basic Information</h3>
 
 <div class="form-group">
-    {!! Form::label('names', 'Username(s)') !!} {!! add_help('You can list multiple users as a comma-separated list, e.g. "user1, user2, user3"') !!}
-    {!! Form::text('names', null, ['class' => 'form-control']) !!}
+    {!! Form::label('names[]', 'Username(s)') !!} {!! add_help('You can select up to 10 users at once.') !!}
+    {!! Form::select('names[]', $users, null, ['id' => 'usernameList', 'class' => 'form-control', 'multiple']) !!}
 </div>
 
 <div class="row">
@@ -41,5 +41,13 @@
 </div>
 
 {!! Form::close() !!}
+
+<script>
+    $(document).ready(function() {
+        $('#usernameList').selectize({
+            maxItems: 10
+        });
+    });
+</script>
 
 @endsection

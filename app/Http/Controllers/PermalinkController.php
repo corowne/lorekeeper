@@ -25,6 +25,9 @@ class PermalinkController extends Controller
         $comments = Comment::all();
         //$comments = $comments->sortByDesc('created_at');
         $comment = $comments->find($id);
+         
+        if(!$comment) abort(404);
+        if(!$comment->commentable) abort(404);
 
         // Check if the comment can be viewed
         switch($comment->type) {
@@ -50,14 +53,5 @@ class PermalinkController extends Controller
         return view('comments._perma_layout',[
             'comment' => $comment,            
         ]);
-    }
-
-     /**
-     * returns replies recursively
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-     public function replies() {
-        return ' what ';
     }
 }
