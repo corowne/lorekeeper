@@ -209,7 +209,7 @@ return [
     'default_purchase_limit' => 99,
 
     'donation_shop' => [
-        'item_donations' => 3,
+        'item_donations' => 0,
         'cooldown' => 5,
     ]
 ];
