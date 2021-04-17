@@ -166,7 +166,7 @@ class ShopManager extends Service
 
             // Check that the user hasn't collected from the shop too recently
             $log = ItemLog::where('recipient_id', $user->id)->where('log_type', 'Collected from Donation Shop')->orderBy('id', 'DESC')->first();
-            if($log && $log->created_at->addMinutes(5) > Carbon::now()) throw new \Exception("You've collected an item too recently. Please try again later.");
+            if($log && $log->created_at->addMinutes(Config::get('lorekeeper.settings.donation_shop.cooldown')) > Carbon::now()) throw new \Exception("You've collected an item too recently. Please try again later.");
 
             // Check if the item has a quantity, and if it does, check there is enough stock remaining
             if($stock->stock == 0) throw new \Exception("This item is out of stock.");
