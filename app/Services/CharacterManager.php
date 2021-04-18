@@ -1374,6 +1374,15 @@ class CharacterManager extends Service
             if(!$recipient) throw new \Exception("Invalid user selected.");
             if($recipient->is_banned) throw new \Exception("Cannot transfer character to a banned member.");
 
+            // deletes any pending design drafts
+            foreach($character->designUpdate as $update)
+            {
+                if($update->status == 'Draft')
+                {
+                   if(!$this->rejectRequest('Cancelled by '.$user->displayName.' in order to transfer character to another user', $update, $user, true, false)) throw new \Exception('Could not cancel pending request.');
+                }
+            }
+
             $queueOpen = Settings::get('open_transfers_queue');
 
             CharacterTransfer::create([
@@ -1432,6 +1441,14 @@ class CharacterManager extends Service
                 $transfer->status = 'Canceled';
                 $transfer->reason = 'Transfer canceled by '.$user->displayName.' in order to transfer character to another user';
                 $transfer->save();
+            }
+            // deletes any pending design drafts
+            foreach($character->designUpdate as $update)
+            {
+                if($update->status == 'Draft')
+                {
+                   if(!$this->rejectRequest('Cancelled by '.$user->displayName.' in order to transfer character to another user', $update, $user, true, false)) throw new \Exception('Could not cancel pending request.');
+                }
             }
 
             $sender = $character->user;
@@ -2283,7 +2300,7 @@ is_object($sender) ? $sender->id : null,
      * @param  bool                                         $forceReject
      * @return  bool
      */
-    public function rejectRequest($data, $request, $user, $forceReject = false)
+    public function rejectRequest($data, $request, $user, $forceReject = false, $notification = true)
     {
         DB::beginTransaction();
 
@@ -2330,12 +2347,15 @@ is_object($sender) ? $sender->id : null,
             $request->status = 'Rejected';
             $request->save();
 
-            // Notify the user
-            Notifications::create('DESIGN_REJECTED', $request->user, [
-                'design_url' => $request->url,
-                'character_url' => $request->character->url,
-                'name' => $request->character->fullName
-            ]);
+            if($notification)
+            {
+                // Notify the user
+                Notifications::create('DESIGN_REJECTED', $request->user, [
+                    'design_url' => $request->url,
+                    'character_url' => $request->character->url,
+                    'name' => $request->character->fullName
+                ]);
+            }
 
             return $this->commitReturn(true);
         } catch(\Exception $e) {

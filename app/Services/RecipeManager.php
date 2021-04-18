@@ -52,17 +52,17 @@ class RecipeManager extends Service
                     switch($limitType)
                     {
                         case 'Item':
-                            $check = UserItem::where('item_id', $limit->reward->id)->where('user_id', $user->id)->where('count', '>', 0)->first();
+                            $check = UserItem::where('item_id', $limit->reward->id)->where('user_id', $user->id)->where('count', '>=', $limit->quantity)->first();
                             break;
                         case 'Currency':
-                            $check = UserCurrency::where('currency_id', $limit->reward->id)->where('user_id', $user->id)->where('quantity', '>', 0)->first();
+                            $check = UserCurrency::where('currency_id', $limit->reward->id)->where('user_id', $user->id)->where('quantity', '>=', $limit->quantity)->first();
                             break;
                         case 'Recipe':
                             $check = UserRecipe::where('recipe_id', $limit->reward->id)->where('user_id', $user->id)->first();
                             break;
                     }
 
-                    if(!$check) throw new \Exception('You require ' . $limit->reward->name . ' to craft this');
+                    if(!$check) throw new \Exception('You require ' . $limit->reward->name . ' x '. $limit->quantity . ' to craft this');
                 }
             }
             // Check for sufficient currencies
