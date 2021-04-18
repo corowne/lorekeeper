@@ -12,11 +12,11 @@ use App\Models\Loot\LootTable;
 use App\Models\Raffle\Raffle;
 use App\Models\Recipe\Recipe;
 
-class BoxService extends Service
+class RecipeService extends Service
 {
     /*
     |--------------------------------------------------------------------------
-    | Box Service
+    | Recipe Service
     |--------------------------------------------------------------------------
     |
     | Handles the editing and usage of box type items.
@@ -31,11 +31,6 @@ class BoxService extends Service
     public function getEditData()
     {
         return [
-            'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
-            'items' => Item::orderBy('name')->pluck('name', 'id'),
-            'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
-            'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
-            'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
             'recipes'=> Recipe::orderBy('name')->pluck('name', 'id'),
         ];
     }
@@ -84,26 +79,11 @@ class BoxService extends Service
 
             // The data will be stored as an asset table, json_encode()d.
             // First build the asset table, then prepare it for storage.
+
+            $type = 'App\Models\Recipe\Recipe';
+
             $assets = createAssetsArray();
-            foreach($data['rewardable_type'] as $key => $r) {
-                switch ($r)
-                {
-                    case 'Item':
-                        $type = 'App\Models\Item\Item';
-                        break;
-                    case 'Currency':
-                        $type = 'App\Models\Currency\Currency';
-                        break;
-                    case 'LootTable':
-                        $type = 'App\Models\Loot\LootTable';
-                        break;
-                    case 'Raffle':
-                        $type = 'App\Models\Raffle\Raffle';
-                        break;
-                    case 'Recipe':
-                        $type = 'App\Models\Recipe\Recipe';
-                        break;
-                }
+            foreach($data['rewardable_id'] as $key => $r) {
                 $asset = $type::find($data['rewardable_id'][$key]);
                 addAsset($assets, $asset, $data['quantity'][$key]);
             }
@@ -138,14 +118,14 @@ class BoxService extends Service
                 if($stack->user_id != $user->id) throw new \Exception("This item does not belong to you.");
 
                 // Next, try to delete the box item. If successful, we can start distributing rewards.
-                if((new InventoryManager)->debitStack($stack->user, 'Box Opened', ['data' => ''], $stack, $data['quantities'][$key])) {
+                if((new InventoryManager)->debitStack($stack->user, 'Recipe Opened', ['data' => ''], $stack, $data['quantities'][$key])) {
 
                     for($q=0; $q<$data['quantities'][$key]; $q++) {
                         // Distribute user rewards
-                        if(!$rewards = fillUserAssets(parseAssetData($stack->item->tag('box')->data), $user, $user, 'Box Rewards', [
+                        if(!$rewards = fillUserAssets(parseAssetData($stack->item->tag('box')->data), $user, $user, 'Recipe Rewards', [
                             'data' => 'Received rewards from opening '.$stack->item->name
                         ])) throw new \Exception("Failed to open box.");
-                        flash($this->getBoxRewardsString($rewards));
+                        flash($this->getRecipeRewardsString($rewards));
                     }
                 }
             }
@@ -162,7 +142,7 @@ class BoxService extends Service
      * @param  array                  $rewards
      * @return string
      */
-    private function getBoxRewardsString($rewards)
+    private function getRecipeRewardsString($rewards)
     {
         $results = "You have received: ";
         $result_elements = [];
