@@ -19,7 +19,7 @@
     @if($user && $user->hasPower('edit_inventories'))
         <p class="alert alert-warning my-2">Note: Your rank allows you to transfer account-bound items to another user.</p>
     @endif
-    
+
     {!! Form::open(['url' => 'inventory/edit']) !!}
     <div class="card" style="border: 0px">
         <table class="table table-sm">
@@ -65,7 +65,7 @@
             </tbody>
         </table>
     </div>
-    
+
     @if($user && !$readOnly && ($stack->first()->user_id == $user->id || $user->hasPower('edit_inventories')))
         <div class="card mt-3">
             <ul class="list-group list-group-flush">
@@ -76,7 +76,7 @@
                         @endif
                     @endforeach
                 @endif
-                
+
                 @if(isset($item->category) && $item->category->is_character_owned)
                     <li class="list-group-item">
                         <a class="card-title h5 collapse-title" data-toggle="collapse" href="#characterTransferForm">@if($stack->first()->user_id != $user->id) [ADMIN] @endif Transfer Item to Character</a>
@@ -91,7 +91,7 @@
                         </div>
                     </li>
                 @endif
-                @if(isset($item->data['resell']) && Config::get('lorekeeper.extensions.item_entry_expansion.resale_function'))
+                @if(isset($item->data['resell']) && App\Models\Currency\Currency::where('id', $item->resell->flip()->pop())->first() && Config::get('lorekeeper.extensions.item_entry_expansion.resale_function'))
                     <li class="list-group-item">
                         <a class="card-title h5 collapse-title" data-toggle="collapse" href="#resellForm">@if($stack->first()->user_id != $user->id) [ADMIN] @endif Sell Item</a>
                         <div id="resellForm" class="collapse">

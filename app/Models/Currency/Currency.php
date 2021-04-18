@@ -32,7 +32,7 @@ class Currency extends Model
      * @var array
      */
     public static $createRules = [
-        'name' => 'required|unique:currencies|between:3,25',
+        'name' => 'required|unique:currencies|between:3,100',
         'abbreviation' => 'nullable|unique:currencies|between:1,25',
         'description' => 'nullable',
         'icon' => 'mimes:png',
@@ -45,7 +45,7 @@ class Currency extends Model
      * @var array
      */
     public static $updateRules = [
-        'name' => 'required|between:3,25',
+        'name' => 'required|between:3,100',
         'abbreviation' => 'nullable|between:1,25',
         'description' => 'nullable',
         'icon' => 'mimes:png',

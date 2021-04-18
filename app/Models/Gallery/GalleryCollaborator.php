@@ -2,6 +2,7 @@
 
 namespace App\Models\Gallery;
 
+use Settings;
 use Config;
 use DB;
 use Carbon\Carbon;
