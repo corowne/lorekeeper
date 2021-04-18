@@ -10,6 +10,7 @@ use App\Models\Item\Item;
 use App\Models\Currency\Currency;
 use App\Models\Loot\LootTable;
 use App\Models\Raffle\Raffle;
+use App\Models\Recipe\Recipe;
 
 class BoxService extends Service
 {
@@ -98,6 +99,9 @@ class BoxService extends Service
                         break;
                     case 'Raffle':
                         $type = 'App\Models\Raffle\Raffle';
+                        break;
+                    case 'Recipe':
+                        $type = 'App\Models\Recipe\Recipe';
                         break;
                 }
                 $asset = $type::find($data['rewardable_id'][$key]);
