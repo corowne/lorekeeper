@@ -139,7 +139,7 @@ class RecipeService extends Service
                     for($q=0; $q<$data['quantities'][$key]; $q++) {
 
                         $random = array_rand($options);
-                        $thisRecipe['recipes'] = [ array_slice($options, $random, 1)[0] => 1 ];
+                        $thisRecipe['recipes'] = [ $options[$random] => 1 ];
                         unset($options[$random]);
 
                         // Distribute user rewards
