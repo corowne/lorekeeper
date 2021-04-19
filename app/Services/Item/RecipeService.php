@@ -31,7 +31,7 @@ class RecipeService extends Service
     public function getEditData()
     {
         return [
-            'recipes'=> Recipe::orderBy('name')->pluck('name', 'id'),
+            'recipes'=> Recipe::orderBy('name')->where('needs_unlocking',1)->pluck('name', 'id'),
         ];
     }
 
@@ -43,6 +43,8 @@ class RecipeService extends Service
      */
     public function getTagData($tag)
     {
+        if(isset($tag->data['all_recipes'])) return 'All';
+        // if($tag->data)
         $rewards = [];
         if($tag->data) {
             $assets = parseAssetData($tag->data);
@@ -75,19 +77,21 @@ class RecipeService extends Service
 
         try {
             // If there's no data, return.
-            if(!isset($data['rewardable_type'])) return true;
+            if(!isset($data['rewardable_id']) && !isset($data['all_recipes'])) return true;
+            if(isset($data['all_recipes'])) $assets = ['all_recipes' => 1];
+            else {
+                // The data will be stored as an asset table, json_encode()d.
+                // First build the asset table, then prepare it for storage.
 
-            // The data will be stored as an asset table, json_encode()d.
-            // First build the asset table, then prepare it for storage.
+                $type = 'App\Models\Recipe\Recipe';
 
-            $type = 'App\Models\Recipe\Recipe';
-
-            $assets = createAssetsArray();
-            foreach($data['rewardable_id'] as $key => $r) {
-                $asset = $type::find($data['rewardable_id'][$key]);
-                addAsset($assets, $asset, $data['quantity'][$key]);
+                $assets = createAssetsArray();
+                foreach($data['rewardable_id'] as $key => $r) {
+                    $asset = $type::find($data['rewardable_id'][$key]);
+                    addAsset($assets, $asset, $data['quantity'][$key]);
+                }
+                $assets = getDataReadyAssets($assets);
             }
-            $assets = getDataReadyAssets($assets);
 
             $tag->update(['data' => json_encode($assets)]);
 
@@ -112,19 +116,36 @@ class RecipeService extends Service
         DB::beginTransaction();
 
         try {
+            $firstData = $stacks->first()->item->tag('recipe')->data;
+            if(isset($firstData['all_recipes']) && $firstData['all_recipes']){
+                $recipeOptions = Recipe::where('needs_unlocking',1)->whereNotIn('id',$user->recipes->pluck('id')->toArray())->get();
+            }
+            elseif(isset($firstData['recipes']) && count($firstData['recipes'])) {
+                $recipeOptions = Recipe::find(array_keys($firstData['recipes']))->where('needs_unlocking',1)->whereNotIn('id',$user->recipes->pluck('id')->toArray());
+            }
+
+            $options = $recipeOptions->pluck('id')->toArray();
+            if(!count($options)) throw new \Exception("There are no more options for this recipe redemption item.");
+            if(count($options) < array_sum($data['quantities'])) throw new \Exception("You have selected a quantity too high for the quantity of recipes you can unlock with this item.");
+
             foreach($stacks as $key=>$stack) {
+
                 // We don't want to let anyone who isn't the owner of the box open it,
                 // so do some validation...
                 if($stack->user_id != $user->id) throw new \Exception("This item does not belong to you.");
 
                 // Next, try to delete the box item. If successful, we can start distributing rewards.
-                if((new InventoryManager)->debitStack($stack->user, 'Recipe Opened', ['data' => ''], $stack, $data['quantities'][$key])) {
-
+                if((new InventoryManager)->debitStack($stack->user, 'Recipe Redeemed', ['data' => ''], $stack, $data['quantities'][$key])) {
                     for($q=0; $q<$data['quantities'][$key]; $q++) {
+
+                        $random = array_rand($options);
+                        $thisRecipe['recipes'] = [ array_slice($options, $random, 1)[0] => 1 ];
+                        unset($options[$random]);
+
                         // Distribute user rewards
-                        if(!$rewards = fillUserAssets(parseAssetData($stack->item->tag('box')->data), $user, $user, 'Recipe Rewards', [
-                            'data' => 'Received rewards from opening '.$stack->item->name
-                        ])) throw new \Exception("Failed to open box.");
+                        if(!$rewards = fillUserAssets(parseAssetData($thisRecipe), $user, $user, 'Recipe Redemption', [
+                            'data' => 'Received recipe from opening '.$stack->item->name
+                        ])) throw new \Exception("Failed to open recipe redemption item.");
                         flash($this->getRecipeRewardsString($rewards));
                     }
                 }
@@ -144,7 +165,7 @@ class RecipeService extends Service
      */
     private function getRecipeRewardsString($rewards)
     {
-        $results = "You have received: ";
+        $results = "You have unlocked the following recipe: ";
         $result_elements = [];
         foreach($rewards as $assetType)
         {
@@ -152,7 +173,7 @@ class RecipeService extends Service
             {
                 foreach($assetType as $asset)
                 {
-                    array_push($result_elements, $asset['asset']->name.(class_basename($asset['asset']) == 'Raffle' ? ' (Raffle Ticket)' : '')." x".$asset['quantity']);
+                    array_push($result_elements, $asset['asset']->displayName);
                 }
             }
         }

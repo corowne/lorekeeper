@@ -157,7 +157,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany('App\Models\Item\Item', 'user_items')->withPivot('count', 'data', 'updated_at', 'id')->whereNull('user_items.deleted_at');
     }
-    
+
     /**
      * Get the user's items.
      */
@@ -169,7 +169,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get all of the user's gallery submissions.
      */
-    public function gallerySubmissions() 
+    public function gallerySubmissions()
     {
         return $this->hasMany('App\Models\Gallery\GallerySubmission')->where('user_id', $this->id)->orWhereIn('id', GalleryCollaborator::where('user_id', $this->id)->where('type', 'Collab')->pluck('gallery_submission_id')->toArray())->visible($this)->accepted()->orderBy('created_at', 'DESC');
     }
@@ -177,7 +177,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get all of the user's favorited gallery submissions.
      */
-    public function galleryFavorites() 
+    public function galleryFavorites()
     {
         return $this->hasMany('App\Models\Gallery\GalleryFavorite')->where('user_id', $this->id);
     }
@@ -540,9 +540,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return CharacterBookmark::where('user_id', $this->id)->where('character_id', $character->id)->first();
     }
 
-    /** 
+    /**
      * Checks if the user has the named recipe
-     * 
+     *
      * @return bool
      */
     public function hasRecipe($recipe_id)
@@ -552,4 +552,27 @@ class User extends Authenticatable implements MustVerifyEmail
         $default = !$recipe->needs_unlocking;
         return $default ? true : $user_has;
     }
+
+
+    /**
+     * Returned recipes listed that are owned
+     * Reversal simply
+     *
+     * @return object
+     */
+    public function ownedRecipes($ids, $reverse = false)
+    {
+        $recipes = Recipe::find($ids); $recipeCollection = [];
+        foreach($recipes as $recipe)
+        {
+            if($reverse) {
+                if(!$this->recipes->contains($recipe)) $recipeCollection[] = $recipe;
+            }
+            else {
+                if($this->recipes->contains($recipe)) $recipeCollection[] = $recipe;
+            }
+        }
+        return $recipeCollection;
+    }
+
 }
