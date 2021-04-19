@@ -144,7 +144,7 @@ class RecipeService extends Service
 
                         // Distribute user rewards
                         if(!$rewards = fillUserAssets(parseAssetData($thisRecipe), $user, $user, 'Recipe Redemption', [
-                            'data' => 'Received recipe from opening '.$stack->item->name
+                            'data' => 'Redeemed from '.$stack->item->name
                         ])) throw new \Exception("Failed to open recipe redemption item.");
                         flash($this->getRecipeRewardsString($rewards));
                     }
