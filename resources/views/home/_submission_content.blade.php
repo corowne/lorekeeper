@@ -79,14 +79,33 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach(parseAssetData($character->data) as $type)
+                            @foreach(parseAssetData($character->data) as $key => $type)
+
                                 @foreach($type as $asset)
                                     <tr>
-                                        <td>{!! $asset['asset']->displayName !!}</td>
+                                        <td>{!! $asset['asset']->displayName !!} ({!! ucfirst($key) !!})</td>
                                         <td>{{ $asset['quantity'] }}</td>
                                     </tr>
                                 @endforeach
                             @endforeach
+
+                            {{--
+
+                            If you want to "Categorize" the rewards by type, uncomment this and comment or remove the above @foreach.
+
+                            @foreach(parseAssetData($character->data) as $key => $type)
+                                @if(count($type))
+                                <tr><td colspan="2"><strong>{!! strtoupper($key) !!}</strong></td></tr>
+                                    @foreach($type as $asset)
+                                        <tr>
+                                            <td>{!! $asset['asset']->displayName !!}</td>
+                                            <td>{{ $asset['quantity'] }}</td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            @endforeach
+
+                            --}}
                         </tbody>
                     </table>
                     </div>
