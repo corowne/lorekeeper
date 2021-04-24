@@ -12,7 +12,7 @@
 
     <div class="row mb-2">
         @foreach($sales->characters as $character)
-            <div class="col-lg">
+            <div class="col-lg mb-2">
                 @include('sales._character', ['character' => $character, 'loop' => $loop])
             </div>
             {!! $loop->even ? '<div class="w-100"></div>' : '' !!}
