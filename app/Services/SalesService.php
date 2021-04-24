@@ -112,10 +112,8 @@ class SalesService extends Service
      */
     private function processCharacters($sales, $data, $characters)
     {
-        foreach($characters as $key=>$character) {
-            // Double-check to ensure that the data for the right character is being used
-            // This probably shouldn't occur assuming no duplicate characters are entered, but it's here as insurance
-            if($data['slug'][$key] != $character->slug) throw new \Exception('Character slug does not match!');
+        foreach($data['slug'] as $key=>$slug) {
+            $character = $characters->where('slug', $slug)->first();
 
             // Assemble data
             $charData[$key] = [];
@@ -155,7 +153,7 @@ class SalesService extends Service
                 'data' => json_encode($charData[$key]),
                 'description' => isset($data['description'][$key]) ? $data['description'][$key] : null,
                 'link' => isset($data['link'][$key]) ? $data['link'][$key] : null,
-                'is_open' => isset($data['character_is_open'][$character->slug]) ? $data['character_is_open'][$character->slug] : 0
+                'is_open' => isset($data['character_is_open'][$key]) ? $data['character_is_open'][$key] : 0
             ]);
         }
     }

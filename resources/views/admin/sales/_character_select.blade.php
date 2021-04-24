@@ -63,8 +63,6 @@
                             {!! Form::label('Link (Optional)') !!} {!! add_help('The URL for where to buy, bid, etc. on the character.') !!}
                             {!! Form::text('link[]', null, ['class' => 'form-control', 'placeholder' => 'URL']) !!}
                         </div>
-
-                        {!! Form::hidden('character_is_open['.$character->character->slug.']', 1) !!}
                     </div>
                 </div>
             </div>
