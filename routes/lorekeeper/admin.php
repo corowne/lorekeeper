@@ -263,6 +263,8 @@ Route::group(['prefix' => 'sales', 'middleware' => 'power:edit_pages'], function
     Route::post('create', 'SalesController@postCreateEditSales');
     Route::post('edit/{id?}', 'SalesController@postCreateEditSales');
     Route::post('delete/{id}', 'SalesController@postDeleteSales');
+
+    Route::get('character/{slug}', 'SalesController@getCharacterInfo');
 });
 
 # SITE SETTINGS
