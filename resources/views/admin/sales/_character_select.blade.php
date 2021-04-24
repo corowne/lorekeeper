@@ -64,7 +64,7 @@
                             {!! Form::text('link[]', null, ['class' => 'form-control', 'placeholder' => 'URL']) !!}
                         </div>
 
-                        {!! Form::hidden('character_is_open[]', 1) !!}
+                        {!! Form::hidden('character_is_open['.$character->character->slug.']', 1) !!}
                     </div>
                 </div>
             </div>
