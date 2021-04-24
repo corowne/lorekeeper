@@ -1,7 +1,7 @@
 <div class="card mb-2">
     <div class="m-1">
         <div class="row">
-            <div class="col-md-6 text-center">
+            <div class="col-md-6 text-center align-self-center">
                 <a href="{{ $character->character->url }}"><img src="{{ $loop->count == 1 ? $character->image->imageUrl : $character->image->thumbnailUrl }}" class="mw-100 img-thumbnail" /></a>
             </div>
             <div class="col-md text-center">
