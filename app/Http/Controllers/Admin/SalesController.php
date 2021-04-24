@@ -83,7 +83,7 @@ class SalesController extends Controller
         $data = $request->only([
             'title', 'text', 'post_at', 'is_visible', 'bump', 'is_open', 'comments_open_at',
             // Character information
-            'slug', 'sale_type', 'price', 'starting_bid', 'min_increment', 'autobuy', 'end_point', 'description', 'link', 'character_is_open'
+            'slug', 'sale_type', 'price', 'starting_bid', 'min_increment', 'autobuy', 'end_point', 'minimum', 'description', 'link', 'character_is_open', 'new_entry'
         ]);
         if($id && $service->updateSales(Sales::find($id), $data, Auth::user())) {
             flash('Sales updated successfully.')->success();

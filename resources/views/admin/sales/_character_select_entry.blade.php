@@ -21,7 +21,7 @@
 
                     <div class="form-group mb-2">
                         {!! Form::label('Type') !!}
-                        {!! Form::select('sale_type[]', ['flatsale' => 'Flatsale', 'auction' => 'Auction', 'ota' => 'OTA', 'xta' => 'XTA', 'raffle' => 'Raffle', 'flaffle' => 'Flatsale Raffle'], $character->type, ['class' => 'form-control character-sale-type', 'placeholder' => 'Select Sale Type']) !!}
+                        {!! Form::select('sale_type[]', ['flatsale' => 'Flatsale', 'auction' => 'Auction', 'ota' => 'OTA', 'xta' => 'XTA', 'raffle' => 'Raffle', 'flaffle' => 'Flatsale Raffle', 'pwyw' => 'Pay What You Want'], $character->type, ['class' => 'form-control character-sale-type', 'placeholder' => 'Select Sale Type']) !!}
                     </div>
 
                     <div class="saleType">
@@ -53,6 +53,13 @@
                                 {!! Form::text('end_point[]', isset($character->data['end_point']) ? $character->data['end_point'] : null, ['class' => 'form-control', 'placeholder' => 'Provide information about when bids/offers close']) !!}
                             </div>
                         </div>
+
+                        <div class="mb-3 {{ $character->type == 'pwyw' || $character->type == 'ota' || $character->type == 'xta' ? 'show' : 'hide' }} pwywOptions">
+                            <div class="form-group">
+                                {!! Form::label('Minimum Offer (Optional)') !!}
+                                {!! Form::number('minimum[]', isset($character->data['minimum']) ? $character->data['minimum'] : null, ['class' => 'form-control', 'placeholder' => 'Enter a Minimum']) !!}
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group mt-2">
@@ -66,9 +73,11 @@
                     </div>
 
                     <div class="form-group text-right">
-                        {!! Form::checkbox('character_is_open[]', 1, $character->is_open, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+                        {!! Form::checkbox('character_is_open['.$character->character->slug.']', 1, $character->is_open, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
                         {!! Form::label('character_is_open', 'Is Open', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Whether or not this particular character is open or available. If the sale post itself is closed, all character sales attached will also be displayed as closed.') !!}
                     </div>
+
+                    {!! Form::hidden('new_entry[]', 0) !!}
                 </div>
             </div>
         </div>

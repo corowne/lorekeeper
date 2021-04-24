@@ -54,6 +54,12 @@
                 else if (val == 'ota' || val == 'xta'){
                     $cell.children('.xtaOptions').addClass('show');
                     $cell.children('.xtaOptions').removeClass('hide');
+                    $cell.children('.pwywOptions').addClass('show');
+                    $cell.children('.pwywOptions').removeClass('hide');
+                }
+                else if (val == 'pwyw'){
+                    $cell.children('.pwywOptions').addClass('show');
+                    $cell.children('.pwywOptions').removeClass('hide');
                 }
             });
         }

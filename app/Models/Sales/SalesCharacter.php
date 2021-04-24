@@ -109,6 +109,9 @@ class SalesCharacter extends Model
             case 'raffle':
                 return 'Raffle';
                 break;
+            case 'pwyw':
+                return 'PWYW';
+                break;
         }
     }
 
@@ -137,6 +140,9 @@ class SalesCharacter extends Model
                 break;
             case 'raffle':
                 return 'Enter Here';
+                break;
+            case 'pwyw':
+                return 'Claim Here';
                 break;
         }
     }
@@ -169,6 +175,9 @@ class SalesCharacter extends Model
                 break;
             case 'flaffle':
                 return 'Price: '.$symbol.$this->data['price'];
+                break;
+            case 'pwyw':
+                return 'Minimum: '.$symbol.$this->data['minimum'];
                 break;
         }
     }

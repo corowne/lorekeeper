@@ -20,7 +20,7 @@
 
                         <div class="form-group mb-2">
                             {!! Form::label('Type') !!}
-                            {!! Form::select('sale_type[]', ['flatsale' => 'Flatsale', 'auction' => 'Auction', 'ota' => 'OTA', 'xta' => 'XTA', 'raffle' => 'Raffle', 'flaffle' => 'Flatsale Raffle'], null, ['class' => 'form-control character-sale-type', 'placeholder' => 'Select Sale Type']) !!}
+                            {!! Form::select('sale_type[]', ['flatsale' => 'Flatsale', 'auction' => 'Auction', 'ota' => 'OTA', 'xta' => 'XTA', 'raffle' => 'Raffle', 'flaffle' => 'Flatsale Raffle', 'pwyw' => 'Pay What You Want'], null, ['class' => 'form-control character-sale-type', 'placeholder' => 'Select Sale Type']) !!}
                         </div>
 
                         <div class="saleType">
@@ -52,6 +52,13 @@
                                     {!! Form::text('end_point[]', null, ['class' => 'form-control', 'placeholder' => 'Provide information about when bids/offers close']) !!}
                                 </div>
                             </div>
+
+                            <div class="mb-3 hide pwywOptions">
+                                <div class="form-group">
+                                    {!! Form::label('Minimum Offer (Optional)') !!}
+                                    {!! Form::number('minimum[]', null, ['class' => 'form-control', 'placeholder' => 'Enter a Minimum']) !!}
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form-group my-2">
@@ -63,6 +70,8 @@
                             {!! Form::label('Link (Optional)') !!} {!! add_help('The URL for where to buy, bid, etc. on the character.') !!}
                             {!! Form::text('link[]', null, ['class' => 'form-control', 'placeholder' => 'URL']) !!}
                         </div>
+
+                        {!! Form::hidden('new_entry[]', 1) !!}
                     </div>
                 </div>
             </div>
