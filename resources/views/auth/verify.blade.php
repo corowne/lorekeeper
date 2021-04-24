@@ -4,15 +4,15 @@
 
 @section('content')
 <h1>Verify Email</h1>
-@if (session('resent'))
+@if (session('status') == 'verification-link-sent')
     <div class="alert alert-success" role="alert">
-        {{ __('A fresh verification link has been sent to your email address.') }}
+        {{ __('A new verification link has been sent to your email address.') }}
     </div>
 @endif
 
 {{ __('Before proceeding, please check your email for a verification link.') }}
-{{ __('If you did not receive the email') }}, 
-<form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
+{{ __('If you did not receive the email') }},
+<form class="d-inline" method="POST" action="{{ url('email/verification-notification') }}">
     @csrf
     <button type="submit" class="btn btn-link p-0 m-0 align-baseline">
         {{ __('click here to request another') }}
