@@ -155,7 +155,7 @@ class SalesService extends Service
                 'data' => json_encode($charData[$key]),
                 'description' => isset($data['description'][$key]) ? $data['description'][$key] : null,
                 'link' => isset($data['link'][$key]) ? $data['link'][$key] : null,
-                'is_open' => isset($data['character_is_open'][$key]) ? $data['character_is_open'][$key] : 0
+                'is_open' => isset($data['character_is_open'][$character->slug]) ? $data['character_is_open'][$character->slug] : 0
             ]);
         }
     }
