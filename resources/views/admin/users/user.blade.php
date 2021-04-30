@@ -91,4 +91,20 @@
         {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
     </div>
 {!! Form::close() !!}
+
+@if(!$user->checkBirthday)<p class="text-danger">This user is currently set to an underage DOB</p>@endif
+{!! Form::open(['url' => 'admin/users/'.$user->name.'/birthday']) !!}
+    <div class="form-group row">
+        <label class="col-md-2 col-form-label">Birthday</label>
+        <div class="col-md-10 row">
+            {{ Form::selectRange('dob[day]', 1, 31, Carbon\Carbon::parse($user->birthday)->format('d'), ['class' => 'form-control col-2 mr-1']) }}
+            {{ Form::selectMonth('dob[month]', Carbon\Carbon::parse($user->birthday)->format('M'), ['class' => 'form-control col-2 mr-1']) }}
+            {{ Form::selectYear('dob[year]', date('Y'), date('Y') - 70, Carbon\Carbon::parse($user->birthday)->format('Y'), ['class' => 'form-control col-2']) }}
+        </div>
+    </div>    
+
+    <div class="text-right">
+        {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
+    </div>
+{!! Form::close() !!}
 @endsection

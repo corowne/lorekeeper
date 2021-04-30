@@ -32,6 +32,20 @@
     </div>
 {!! Form::close() !!}
 
+<h3>Birthday Publicity</h3>
+
+{!! Form::open(['url' => 'account/dob']) !!}
+    <div class="form-group row">
+        <label class="col-md-2 col-form-label">Setting</label>
+        <div class="col-md-10">
+            {!! Form::select('birthday_setting', ['0' => '0: No one can see your birthday.', '1' => '1: Members can see your day and month.', '2' => '2: Anyone can see your day and month.', '3' => '3: Full date public.'],Auth::user()->settings->birthday_setting, ['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="text-right">
+        {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
+    </div>
+{!! Form::close() !!}
+
 <h3>Email Address</h3>
 
 <p>Changing your email address will require you to re-verify your email address.</p>
