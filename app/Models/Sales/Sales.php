@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Sales;
 
 use Carbon\Carbon;
 use Config;
@@ -17,7 +17,7 @@ class Sales extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'text', 'parsed_text', 'title', 'is_visible', 'post_at', 
+        'user_id', 'text', 'parsed_text', 'title', 'is_visible', 'post_at',
         'is_open', 'comments_open_at'
     ];
 
@@ -51,7 +51,7 @@ class Sales extends Model
         'title' => 'required|between:3,100',
         'text' => 'required',
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -63,21 +63,29 @@ class Sales extends Model
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the user who created the Sales post.
      */
-    public function user() 
+    public function user()
     {
         return $this->belongsTo('App\Models\User\User');
     }
 
+    /**
+     * Get the characters associated with the sales post.
+     */
+    public function characters()
+    {
+        return $this->hasMany('App\Models\Sales\SalesCharacter', 'sales_id');
+    }
+
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -105,7 +113,7 @@ class Sales extends Model
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
