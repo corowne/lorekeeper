@@ -173,6 +173,14 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany('App\Models\Gallery\GalleryFavorite')->where('user_id', $this->id);
     }
+    
+    /**
+     * Get all of the user's character bookmarks.
+     */
+    public function bookmarks() 
+    {
+        return $this->hasMany('App\Models\Character\CharacterBookmark')->where('user_id', $this->id);
+    }
 
     /**********************************************************************************************
 

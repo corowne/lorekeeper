@@ -109,6 +109,7 @@ class ItemService extends Service
 
         isset($data['is_character_owned']) && $data['is_character_owned'] ? $data['is_character_owned'] : $data['is_character_owned'] = 0;
         isset($data['character_limit']) && $data['character_limit'] ? $data['character_limit'] : $data['character_limit'] = 0;
+        isset($data['can_name']) && $data['can_name'] ? $data['can_name'] : $data['can_name'] = 0;
 
         if(isset($data['remove_image']))
         {
