@@ -25,6 +25,9 @@ class CreateSalesCharacters extends Migration
             // Columns for character sale type and pricing data
             $table->string('type');
             $table->string('data')->nullable()->default(null);
+
+            $table->boolean('is_open')->default(1);
+            $table->string('link')->nullable()->default(null);
         });
     }
 
