@@ -90,8 +90,8 @@ class CharacterController extends Controller
             'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
             'isMyo' => true,
             'stats' => Stat::orderBy('name')->get(),
-            'characterOptions' => [null => 'Unbound'] + Character::visible()->myo(0)->orderBy('slug','ASC')->get()->pluck('fullName','id')->toArray()
-            'parameters' => ['0' => 'Pick a Species First'()
+            'characterOptions' => [null => 'Unbound'] + Character::visible()->myo(0)->orderBy('slug','ASC')->get()->pluck('fullName','id')->toArray(),
+            'parameters' => ['0' => 'Pick a Species First'],
             
         ]);
     }
