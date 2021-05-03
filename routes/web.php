@@ -29,6 +29,12 @@ Route::group(['middleware' => ['auth', 'verified']], function() {
     Route::get('/auth/redirect/{driver}', 'HomeController@getAuthRedirect');
     Route::get('/auth/callback/{driver}', 'HomeController@getAuthCallback');
 
+    # SET BIRTHDATE
+    Route::get('/birthday', 'HomeController@getBirthday')->name('birthday');
+    Route::post('/birthday', 'HomeController@postBirthday')->name('birthday');
+
+    Route::get('/blocked', 'HomeController@getBirthdayBlocked')->name('blocked');
+
     # BANNED
     Route::get('banned', 'Users\AccountController@getBanned');
 

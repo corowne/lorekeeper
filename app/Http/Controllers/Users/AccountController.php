@@ -129,6 +129,24 @@ class AccountController extends Controller
     }
 
     /**
+     * Changes user birthday setting
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\UserService  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postBirthday(Request $request, UserService $service)
+    {
+        if($service->updateDOB($request->input('birthday_setting'), Auth::user())) {
+            flash('Setting updated successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
      * Shows the notifications page.
      *
      * @return \Illuminate\Contracts\Support\Renderable

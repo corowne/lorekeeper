@@ -33,6 +33,7 @@ Route::group(['prefix' => 'account', 'namespace' => 'Users'], function() {
     Route::post('hide-alias/{id}', 'AccountController@postHideAlias');
     Route::get('remove-alias/{id}', 'AccountController@getRemoveAlias');
     Route::post('remove-alias/{id}', 'AccountController@postRemoveAlias');
+    Route::post('dob', 'AccountController@postBirthday');
 
     Route::get('bookmarks', 'BookmarkController@getBookmarks');
     Route::get('bookmarks/create', 'BookmarkController@getCreateBookmark');

@@ -302,7 +302,7 @@ class Item extends Model
      */
     public function getRarityAttribute()
     {
-        if (!$this->data) return null;
+        if (!isset($this->data) || !isset($this->data['rarity'])) return null;
         return $this->data['rarity'];
     }
 

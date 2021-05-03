@@ -173,6 +173,31 @@ class UserController extends Controller
         return redirect()->back();
     }
 
+    public function postUserBirthday(Request $request, $name)
+    {
+        $user = User::where('name', $name)->first();
+        if(!$user) {
+            flash('Invalid user.')->error();
+        }
+
+        $service = new UserService;
+        // Make birthday into format we can store
+        $data = $request->input('dob');
+        $date = $data['day']."-".$data['month']."-".$data['year'];
+
+        $formatDate = Carbon::parse($date);
+        $logData = ['old_date' => $user->birthday->isoFormat('DD-MM-YYYY')] + ['new_date' => $date];
+
+        if($service->updateBirthday($formatDate, $user)) {
+            UserUpdateLog::create(['staff_id' => Auth::user()->id, 'user_id' => $user->id, 'data' => json_encode($logData), 'type' => 'Birth Date Change']);
+            flash('Birthday updated successfully!')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
     /**
      * Show a user's account update log.
      *
