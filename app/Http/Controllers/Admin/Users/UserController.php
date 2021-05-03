@@ -184,9 +184,13 @@ class UserController extends Controller
         // Make birthday into format we can store
         $data = $request->input('dob');
         $date = $data['day']."-".$data['month']."-".$data['year'];
-        $formatDate = carbon::parse($date);
+        $oldDate = $user->birthday->isoFormat('DD-MM-YYYY');
+
+        $formatDate = Carbon::parse($date);
+        $logData = ['old_date' => $oldDate] + ['new_date' => $date];
 
         if($service->updateBirthday($formatDate, $user)) {
+            UserUpdateLog::create(['staff_id' => Auth::user()->id, 'user_id' => $user->id, 'data' => json_encode($logData), 'type' => 'Birth Date Change']);
             flash('Birthday updated successfully!')->success();
         }
         else {
