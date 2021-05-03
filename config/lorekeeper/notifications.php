@@ -419,6 +419,7 @@ return [
         'name' => 'Recipe Grant',
         'message' => 'You have received a staff grant of the crafting recipe {recipe_name} from <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Unlocked Recipes</a>)',
         'url' => 'crafting'
+    ],
     // GALLERY_SUBMISSION_VALUED_MULT
     516 => [
         'name' => 'Gallery Submission Valued',
