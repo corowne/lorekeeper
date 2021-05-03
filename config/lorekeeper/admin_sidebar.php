@@ -199,6 +199,10 @@ return [
                 'url' => 'admin/data/shops'
             ],
             [
+                'name' => 'Character Drops',
+                'url' => 'admin/data/character-drops'
+            ],
+            [
                 'name' => 'Currencies',
                 'url' => 'admin/data/currencies'
             ],

@@ -25,6 +25,7 @@ use App\Models\Item\ItemCategory;
 use App\Models\User\UserItem;
 use App\Models\Character\CharacterItem;
 use App\Models\Item\ItemLog;
+use App\Models\Character\CharacterDrop;
 
 use App\Models\Character\CharacterTransfer;
 use App\Models\Character\CharacterLink;
@@ -353,6 +354,45 @@ class CharacterController extends Controller
     {
         if($service->deleteStack($this->character, CharacterItem::find($request->get('ids')), $request->get('quantities'))) {
             flash('Item deleted successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Shows a character's drops page.
+     *
+     * @param  string  $slug
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterDrops($slug)
+    {
+        if(!$this->character->image->species->hasDrops || (!$this->character->drops->dropData->isActive && (!Auth::check() || !Auth::user()->hasPower('manage_characters')))) abort(404);
+        return view('character.drops', [
+            'character' => $this->character,
+            'drops' => $this->character->drops
+        ]);
+    }
+
+    /**
+     * Claims character drops.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\InventoryManager  $service
+     * @param  string                         $slug
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postClaimCharacterDrops(Request $request, InventoryManager $service, $slug)
+    {
+        if(!Auth::check()) abort(404);
+        if($this->character->user_id != Auth::user()->id) abort(404);
+        $drops = $this->character->drops;
+        if(!$drops) abort(404);
+
+        if($service->claimCharacterDrops($this->character, $this->character->user, $this->character->drops)) {
+            flash('Drops claimed successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

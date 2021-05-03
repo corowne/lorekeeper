@@ -164,7 +164,7 @@ function parseCharacters($text, &$characters) {
     if($count) {
         $matches = array_unique($matches[1]);
         foreach($matches as $match) {
-            $character = \App\Models\Character\Character::where('slug', $match)->first();
+            $character = App\Models\Character\Character::where('slug', $match)->first();
             if($character) {
                 $characters[] = $character;
                 $text = preg_replace('/\[character='.$match.'\]/', $character->displayName, $text);

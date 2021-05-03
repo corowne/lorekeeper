@@ -22,8 +22,8 @@ class Species extends Model
      * @var string
      */
     protected $table = 'specieses';
-    
-    
+
+
     /**
      * Validation rules for creation.
      *
@@ -34,8 +34,8 @@ class Species extends Model
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
-    
-    
+
+
     /**
      * Validation rules for updating.
      *
@@ -48,7 +48,7 @@ class Species extends Model
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -56,33 +56,41 @@ class Species extends Model
     /**
      * Get the subtypes for this species.
      */
-    public function subtypes() 
+    public function subtypes()
     {
-        return $this->hasMany('App\Models\Species\Subtype');
+        return $this->hasMany('App\Models\Species\Subtype')->orderBy('sort', 'DESC');
     }
 
     /**
      * Get the sub masterlist for this species.
      */
-    public function sublist() 
+    public function sublist()
     {
         return $this->belongsTo('App\Models\Character\Sublist', 'masterlist_sub_id');
     }
-    
+
     /**
      * Get the features associated with this species.
      */
-    public function features() 
+    public function features()
     {
         return $this->hasMany('App\Models\Feature\Feature');
     }
 
+    /**
+     * Get the drop data associated with this species.
+     */
+    public function dropData()
+    {
+        return $this->hasOne('App\Models\Character\CharacterDropData');
+    }
+
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
-    
+
     /**
      * Displays the model's name, linked to its encyclopedia page.
      *
@@ -122,7 +130,7 @@ class Species extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
@@ -165,5 +173,16 @@ class Species extends Model
     public function getVisualTraitsUrlAttribute()
     {
         return url('/world/species/'.$this->id.'/traits');
+    }
+
+    /**
+     * Gets whether or not the .
+     *
+     * @return string
+     */
+    public function getHasDropsAttribute()
+    {
+        if($this->dropData) return 1;
+        else return 0;
     }
 }

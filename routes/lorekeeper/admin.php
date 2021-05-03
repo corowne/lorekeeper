@@ -116,6 +116,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('species/edit/{id?}', 'SpeciesController@postCreateEditSpecies');
     Route::post('species/delete/{id}', 'SpeciesController@postDeleteSpecies');
     Route::post('species/sort', 'SpeciesController@postSortSpecies');
+
     Route::get('subtypes', 'SpeciesController@getSubtypeIndex');
     Route::get('subtypes/create', 'SpeciesController@getCreateSubtype');
     Route::get('subtypes/edit/{id}', 'SpeciesController@getEditSubtype');
@@ -124,6 +125,14 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('subtypes/edit/{id?}', 'SpeciesController@postCreateEditSubtype');
     Route::post('subtypes/delete/{id}', 'SpeciesController@postDeleteSubtype');
     Route::post('subtypes/sort', 'SpeciesController@postSortSubtypes');
+
+    Route::get('character-drops', 'SpeciesController@getDropIndex');
+    Route::get('character-drops/create', 'SpeciesController@getCreateDrop');
+    Route::get('character-drops/edit/{id}', 'SpeciesController@getEditDrop');
+    Route::get('character-drops/delete/{id}', 'SpeciesController@getDeleteDrop');
+    Route::post('character-drops/create', 'SpeciesController@postCreateEditDrop');
+    Route::post('character-drops/edit/{id?}', 'SpeciesController@postCreateEditDrop');
+    Route::post('character-drops/delete/{id}', 'SpeciesController@postDeleteDrop');
 
     # ITEMS
     Route::get('item-categories', 'ItemController@getIndex');
@@ -345,6 +354,7 @@ Route::group(['prefix' => 'masterlist', 'namespace' => 'Characters', 'middleware
     Route::post('create-myo', 'CharacterController@postCreateMyo');
 
     Route::get('check-subtype', 'CharacterController@getCreateCharacterMyoSubtype');
+    Route::get('check-group', 'CharacterController@getCreateCharacterMyoGroup');
 });
 Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware' => 'power:edit_inventories'], function() {
     Route::post('{slug}/grant', 'GrantController@postCharacterCurrency');
@@ -389,6 +399,8 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware'
 
     Route::get('{slug}/profile', 'CharacterController@getEditCharacterProfile');
     Route::post('{slug}/profile', 'CharacterController@postEditCharacterProfile');
+
+    Route::post('{slug}/drops', 'CharacterController@postEditCharacterDrop');
 
     Route::get('{slug}/delete', 'CharacterController@getCharacterDelete');
     Route::post('{slug}/delete', 'CharacterController@postCharacterDelete');

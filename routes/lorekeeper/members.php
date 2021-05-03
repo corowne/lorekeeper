@@ -113,6 +113,11 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() 
     # EXP
     Route::post('{slug}/level-area/exp-grant', 'LevelController@postExpGrant');
     Route::post('{slug}/level-area/stat-grant', 'LevelController@postStatGrant');
+
+    Route::get('{slug}/profile/edit', 'CharacterController@getEditCharacterProfile');
+    Route::post('{slug}/profile/edit', 'CharacterController@postEditCharacterProfile');
+
+    Route::post('{slug}/drops', 'CharacterController@postClaimCharacterDrops');
 });
 Route::group(['prefix' => 'myo', 'namespace' => 'Characters'], function() {
     Route::get('{id}/profile/edit', 'MyoController@getEditCharacterProfile');
