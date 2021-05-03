@@ -6,7 +6,7 @@
 |--------------------------------------------------------------------------
 |
 | These are settings that affect how the site works.
-| These are not expected to be changed often or on short schedule and are 
+| These are not expected to be changed often or on short schedule and are
 | therefore separate from the settings modifiable in the admin panel.
 | It's highly recommended that you do any required modifications to this file
 | as well as config/app.php before you start using the site.
@@ -14,7 +14,7 @@
 */
 
 return [
-    
+
     /*
     |--------------------------------------------------------------------------
     | Site Name
@@ -38,7 +38,7 @@ return [
     |
     */
     'site_desc' => 'A Lorekeeper ARPG',
-    
+
     /*
     |--------------------------------------------------------------------------
     | Character Codes
@@ -49,34 +49,34 @@ return [
     |       {category}: This is replaced by the character category code.
     |       {number}: This is replaced by the character number.
     |
-    |       e.g. Under the default setting ({category}-{number}), 
+    |       e.g. Under the default setting ({category}-{number}),
     |       a character in a category called "MYO" (code "MYO") with number 001
     |       will have the character code of MYO-001.
     |
     |       !IMPORTANT!
-    |       As this is used to generate the character's URL, sticking to 
+    |       As this is used to generate the character's URL, sticking to
     |       alphanumeric, hyphen (-) and underscore (_) characters
     |       is advised.
     |
-    | character_number_digits: 
+    | character_number_digits:
     |       This specifies the default number of digits for {number} when
-    |       pulled automatically. 
+    |       pulled automatically.
     |
     |       e.g. If the next number is 2, setting this to 3 would give 002.
     |
-    | character_pull_number: 
+    | character_pull_number:
     |       This determines if the next {number} is pulled from the highest
     |       existing number, or the highest number in the category.
     |       This value can be "all" (default) or "category".
-    |       
+    |
     |       e.g. if the following characters exist:
     |       Standard (STD) category: STD-001, STD-002, STD-003
-    |       MYO (MYO) category:      MYO-001, MYO-002 
-    |       If character_pull_number is 'all': 
+    |       MYO (MYO) category:      MYO-001, MYO-002
+    |       If character_pull_number is 'all':
     |           The next number pulled will be 004 regardless of category.
     |       If character_pull_number is 'category':
     |           The next number pulled for STD will be 004.
-    |           The next number pulled for MYO will be 003. 
+    |           The next number pulled for MYO will be 003.
     |
     | reset_character_status_on_transfer:
     |       This determines whether owner-set character status--
@@ -109,7 +109,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | 0: Do not watermark. 1: Automatically watermark masterlist images.
-    | 
+    |
     | Dimension, in pixels, to scale the shorter dimension (between width/height)
     | of submitted masterlist images to. Enter "0" to disable resizing.
     |
@@ -118,7 +118,7 @@ return [
     | Example:
     | 'masterlist_image_format' => null,
     |
-    | Color to fill non-png images in when masterlist_image_format is set. 
+    | Color to fill non-png images in when masterlist_image_format is set.
     | This is in an endeavor to make images with a transparent background
     | compress better. Set to null to disable.
     | Example:
@@ -129,16 +129,16 @@ return [
     'masterlist_image_dimension' => 0,
     'masterlist_image_format' => null,
     'masterlist_image_background' => '#ffffff',
-    
+
     /*
     |--------------------------------------------------------------------------
     | Masterlist Image Fullsizes
     |--------------------------------------------------------------------------
     |
-    | 0: Do not store full-sized masterlist images (for view by the character\'s owner) and staff. 
+    | 0: Do not store full-sized masterlist images (for view by the character\'s owner) and staff.
     | 1: Store full-sized images uploaded to the masterlist. Not retroactive either way.
-    | 
-    | Size, in pixels, to cap full-sized masterlist images at (if storing full-sized images is enabled). 
+    |
+    | Size, in pixels, to cap full-sized masterlist images at (if storing full-sized images is enabled).
     | Images above this cap in either dimension will be resized to suit. Enter "0" to disable resizing.
     |
     */
@@ -154,7 +154,7 @@ return [
     | Using a smallish size is recommended to reduce the amount of time
     | needed to load the masterlist pages.
     |
-    | 0: Default thumbnail cropping behavior. 1: Watermark thumbnails. 
+    | 0: Default thumbnail cropping behavior. 1: Watermark thumbnails.
     | Expects the whole of the character to be visible in the thumbnail.
     |
     */
@@ -194,12 +194,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Shop Purchase Limit
+    | Shops
     |--------------------------------------------------------------------------
     |
-    | This is an arbitrary upper limit on how many items a uses can buy in a
+    | Purchase limit:
+    |       This is an arbitrary upper limit on how many items a uses can buy in a
     | single shop transaction.
     |
+    | Donation Shop:
+    |       Item donations: Controls restrictions (or lack thereof) on user item donations. 0: No restrictions. Any item can be donated. 1: Only items of certain categories may be donated (configure when creating/editing item categories). 2: Only items with the 'donatable' tag may be donated. 3: Items in certain categories or that have the 'donateable' tag may be donated. Default: 0.
+    |       Cooldown: Time (in minutes) that users must wait between "purchases". Default: 5.
+    |
     */
-    'default_purchase_limit' => 99
+    'default_purchase_limit' => 99,
+
+    'donation_shop' => [
+        'item_donations' => 0,
+        'cooldown' => 5,
+    ]
 ];

@@ -4,10 +4,13 @@ use App\Services\Service;
 
 use DB;
 use Config;
+use Carbon\Carbon;
 
 use App\Models\Character\Character;
 use App\Models\Shop\Shop;
 use App\Models\Shop\ShopStock;
+use App\Models\Shop\UserItemDonation;
+use App\Models\Item\ItemLog;
 use App\Models\Shop\ShopLog;
 
 class ShopManager extends Service
@@ -76,7 +79,7 @@ class ShopManager extends Service
             }
 
             // If the item has a limited quantity, decrease the quantity
-            if($shopStock->is_limited_stock) 
+            if($shopStock->is_limited_stock)
             {
                 $shopStock->quantity -= $quantity;
                 $shopStock->save();
@@ -84,23 +87,23 @@ class ShopManager extends Service
 
             // Add a purchase log
             $shopLog = ShopLog::create([
-                'shop_id' => $shop->id, 
-                'character_id' => $character ? $character->id : null, 
-                'user_id' => $user->id, 
-                'currency_id' => $shopStock->currency->id, 
-                'cost' => $total_cost, 
-                'item_id' => $shopStock->item_id, 
+                'shop_id' => $shop->id,
+                'character_id' => $character ? $character->id : null,
+                'user_id' => $user->id,
+                'currency_id' => $shopStock->currency->id,
+                'cost' => $total_cost,
+                'item_id' => $shopStock->item_id,
                 'quantity' => $quantity
             ]);
-            
+
             // Give the user the item, noting down 1. whose currency was used (user or character) 2. who purchased it 3. which shop it was purchased from
             if(!(new InventoryManager)->creditItem(null, $user, 'Shop Purchase', [
-                'data' => $shopLog->itemData, 
+                'data' => $shopLog->itemData,
                 'notes' => 'Purchased ' . format_date($shopLog->created_at)
             ], $shopStock->item, $quantity)) throw new \Exception("Failed to purchase item.");
 
             return $this->commitReturn($shop);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -143,5 +146,45 @@ class ShopManager extends Service
             if($shopStock->quantity < $limit) $limit = $shopStock->quantity;
         }
         return $limit;
+    }
+
+    /**
+     * Collects an item from the donation shop.
+     *
+     * @param  array                 $data
+     * @param  \App\Models\User\User $user
+     * @return bool|App\Models\Shop\Shop
+     */
+    public function collectDonation($data, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            // Check that the stock exists and belongs to the shop
+            $stock = UserItemDonation::where('id', $data['stock_id'])->first();
+            if(!$stock) throw new \Exception("Invalid item selected.");
+
+            // Check that the user hasn't collected from the shop too recently
+            $log = ItemLog::where('recipient_id', $user->id)->where('log_type', 'Collected from Donation Shop')->orderBy('id', 'DESC')->first();
+            if($log && $log->created_at->addMinutes(Config::get('lorekeeper.settings.donation_shop.cooldown')) > Carbon::now()) throw new \Exception("You've collected an item too recently. Please try again later.");
+
+            // Check if the item has a quantity, and if it does, check there is enough stock remaining
+            if($stock->stock == 0) throw new \Exception("This item is out of stock.");
+
+            // Decrease the quantity
+            $stock->stock -= 1;
+            $stock->save();
+
+            // Give the user the item
+            if(!(new InventoryManager)->creditItem(null, $user, 'Collected from Donation Shop', [
+                'data' => isset($stock->stack->data['data']) ? $stock->stack->data['data'] : null,
+                'notes' => isset($stock->stack->data['notes']) ? $stock->stack->data['notes'] : null,
+            ], $stock->item, 1)) throw new \Exception("Failed to collect item.");
+
+            return $this->commitReturn($stock);
+        } catch(\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
     }
 }

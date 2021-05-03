@@ -41,4 +41,14 @@ return [
         'version' => '1.0.0',
         ],
 
+
+    'donation_shop' => [
+        'key' => 'donation_shop',
+        'wiki_key' => 'Donation_Shop',
+        'creators' => json_encode([
+            'Mercury' => 'https://github.com/itinerare/',
+        ]),
+        'version' => '1.0.0',
+    ],
+
 ];

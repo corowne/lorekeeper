@@ -91,6 +91,17 @@
                         </div>
                     </li>
                 @endif
+                @if($item->canDonate)
+                    <li class="list-group-item">
+                        <a class="card-title h5 collapse-title" data-toggle="collapse" href="#donateForm">@if($stack->first()->user_id != $user->id) [ADMIN] @endif Donate Item</a>
+                        <div id="donateForm" class="collapse">
+                            <p>This will donate this item to the <a href="{{ url('shops/donation-shop') }}">Donation Shop</a>, where it will be available for other users to take. This action is not reversible. Are you sure you want to donate this item?</p>
+                            <div class="text-right">
+                                {!! Form::button('Donate', ['class' => 'btn btn-warning', 'name' => 'action', 'value' => 'donate', 'type' => 'submit']) !!}
+                            </div>
+                        </div>
+                    </li>
+                @endif
                 @if(isset($item->data['resell']) && App\Models\Currency\Currency::where('id', $item->resell->flip()->pop())->first() && Config::get('lorekeeper.extensions.item_entry_expansion.resale_function'))
                     <li class="list-group-item">
                         <a class="card-title h5 collapse-title" data-toggle="collapse" href="#resellForm">@if($stack->first()->user_id != $user->id) [ADMIN] @endif Sell Item</a>

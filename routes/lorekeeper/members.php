@@ -211,6 +211,7 @@ Route::group(['prefix' => 'designs', 'namespace' => 'Characters'], function() {
 
 Route::group(['prefix' => 'shops'], function() {
     Route::post('buy', 'ShopController@postBuy');
+    Route::post('collect', 'ShopController@postCollect');
     Route::get('history', 'ShopController@getPurchaseHistory');
 });
 

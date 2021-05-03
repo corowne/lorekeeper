@@ -13,7 +13,7 @@ class ItemCategory extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_character_owned', 'character_limit', 'can_name'
+        'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_character_owned', 'character_limit', 'can_name', 'can_donate'
     ];
 
     protected $appends = ['image_url'];
@@ -24,7 +24,7 @@ class ItemCategory extends Model
      * @var string
      */
     protected $table = 'item_categories';
-    
+
     /**
      * Validation rules for creation.
      *
@@ -35,7 +35,7 @@ class ItemCategory extends Model
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -48,7 +48,7 @@ class ItemCategory extends Model
     ];
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -92,7 +92,7 @@ class ItemCategory extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
