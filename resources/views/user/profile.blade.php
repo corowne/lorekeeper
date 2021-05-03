@@ -12,12 +12,8 @@
 @endif
 <h1>
 <img src="/images/avatars/{{ $user->avatar }}" style="width:125px; height:125px; float:left; border-radius:50%; margin-right:25px;">
-<<<<<<< HEAD
     {!! $user->displayName !!}
     
-=======
-    {!! $user->displayName !!} 
->>>>>>> 5f1e344880616bbfe416c7693905203fed450962
     <small><small><a href="{{ url('reports/new?url=') . $user->url }}"><i class="fas fa-exclamation-triangle fa-xs" data-toggle="tooltip" title="Click here to report this user." style="opacity: 50%;"></i></a></small></small>
     <span class="badge badge-info float-right text-white mx-1" data-toggle="tooltip" title="Current user level. Checkout the level area for more info.">Lvl: {{ $user->level->current_level }}</span>
     @if($user->settings->is_fto)
