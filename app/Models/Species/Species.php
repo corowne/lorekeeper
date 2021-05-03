@@ -30,7 +30,7 @@ class Species extends Model
      * @var array
      */
     public static $createRules = [
-        'name' => 'required|unique:specieses|between:3,25',
+        'name' => 'required|unique:specieses|between:3,100',
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
@@ -42,7 +42,7 @@ class Species extends Model
      * @var array
      */
     public static $updateRules = [
-        'name' => 'required|between:3,25',
+        'name' => 'required|between:3,100',
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];

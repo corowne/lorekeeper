@@ -17,7 +17,7 @@
                     <a href="{{ $myo->url }}"><img src="{{ $myo->image->thumbnailUrl }}" class="img-thumbnail" /></a>
                 </div>
                 <div class="mt-1 h5">
-                    {!! $myo->displayName !!}
+                    @if(!$myo->is_visible) <i class="fas fa-eye-slash"></i> @endif {!! $myo->displayName !!}
                 </div>
             </div>
         @endforeach
