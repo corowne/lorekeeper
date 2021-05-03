@@ -616,7 +616,7 @@ class GalleryManager extends Service
                 // Process data and award currency for each user associated with the submission
                 // First, set up CurrencyManager instance and log information
                 $currencyManager = new CurrencyManager;
-                $currency = Currency::find(Settings::get('group_currency'));
+                $currencies = Currency::whereIn('id', ($submission->gallery->use_alternate_currency == 2 ? $submission->gallery->currencyId : [$submission->gallery->currencyId]))->get();
 
                 $awardType = 'Gallery Submission Reward';
                 $awardData = 'Received reward for gallery submission (<a href="'.$submission->url.'">#'.$submission->id.'</a>)';
@@ -624,35 +624,38 @@ class GalleryManager extends Service
                 $grantedList = [];
                 $awardQuantity = [];
 
-                // Then cycle through associated users and award currency
-                if(isset($data['value']['submitted'])) {
-                    if(!$currencyManager->creditCurrency($user, $submission->user, $awardType, $awardData, $currency, $data['value']['submitted'][$submission->user->id])) throw new \Exception("Failed to award currency to submitting user.");
+                foreach($currencies as $currency) {
+                    // Then cycle through associated users and award currency
+                    if(isset($data['value']['submitted'])) {
+                        if(!$currencyManager->creditCurrency($user, $submission->user, $awardType, $awardData, $currency, $data['value']['submitted'][$submission->user->id][$currency->id])) throw new \Exception("Failed to award currency to submitting user.");
 
-                    $grantedList[] = $submission->user;
-                    $awardQuantity[] = $data['value']['submitted'][$submission->user->id];
-                }
+                        $grantedList[] = $submission->user;
+                        $awardQuantity[$submission->user->id][$currency->id] = $data['value']['submitted'][$submission->user->id][$currency->id];
 
-                if(isset($data['value']['collaborator'])) {
-                    foreach($submission->collaborators as $collaborator) {
-                        if($data['value']['collaborator'][$collaborator->user->id] > 0) {
-                            // Double check that the submitting user isn't being awarded currency twice
-                            if(isset($data['value']['submitted']) && $collaborator->user->id == $submission->user->id) throw new \Exception("Can't award currency to the submitting user twice.");
+                    }
 
-                            if(!$currencyManager->creditCurrency($user, $collaborator->user, $awardType, $awardData, $currency, $data['value']['collaborator'][$collaborator->user->id])) throw new \Exception("Failed to award currency to one or more collaborators.");
+                    if(isset($data['value']['collaborator'])) {
+                        foreach($submission->collaborators as $collaborator) {
+                            if($data['value']['collaborator'][$collaborator->user->id] > 0) {
+                                // Double check that the submitting user isn't being awarded currency twice
+                                if(isset($data['value']['submitted']) && $collaborator->user->id == $submission->user->id) throw new \Exception("Can't award currency to the submitting user twice.");
 
-                            $grantedList[] = $collaborator->user;
-                            $awardQuantity[] = $data['value']['collaborator'][$collaborator->user->id];
+                                if(!$currencyManager->creditCurrency($user, $collaborator->user, $awardType, $awardData, $currency, $data['value']['collaborator'][$collaborator->user->id][$currency->id])) throw new \Exception("Failed to award currency to one or more collaborators.");
+
+                                $grantedList[] = $collaborator->user;
+                                $awardQuantity[$collaborator->user->id][$currency->id] = $data['value']['collaborator'][$collaborator->user->id][$currency->id];
+                            }
                         }
                     }
-                }
 
-                if(isset($data['value']['participant'])) {
-                    foreach($submission->participants as $participant) {
-                        if($data['value']['participant'][$participant->user->id] > 0) {
-                            if(!$currencyManager->creditCurrency($user, $participant->user, $awardType, $awardData, $currency, $data['value']['participant'][$participant->user->id])) throw new \Exception("Failed to award currency to one or more participants.");
+                    if(isset($data['value']['participant'])) {
+                        foreach($submission->participants as $participant) {
+                            if($data['value']['participant'][$participant->user->id] > 0) {
+                                if(!$currencyManager->creditCurrency($user, $participant->user, $awardType, $awardData, $currency, $data['value']['participant'][$participant->user->id][$currency->id])) throw new \Exception("Failed to award currency to one or more participants.");
 
-                            $grantedList[] = $participant->user;
-                            $awardQuantity[] = $data['value']['participant'][$participant->user->id];
+                                $grantedList[] = $participant->user;
+                                $awardQuantity[$participant->user->id][$currency->id] = $data['value']['participant'][$participant->user->id][$currency->id];
+                            }
                         }
                     }
                 }
@@ -673,13 +676,23 @@ class GalleryManager extends Service
                 ]);
 
                 // Send a notification to each user that received a currency award
-                foreach($grantedList as $key=>$grantedUser) {
-                    Notifications::create('GALLERY_SUBMISSION_VALUED', $grantedUser, [
-                        'currency_quantity' => $awardQuantity[$key],
-                        'currency_name' => $currency->name,
-                        'submission_title' => $submission->title,
-                        'submission_id' => $submission->id,
-                    ]);
+                foreach(array_unique($grantedList) as $grantedUser) {
+                    if($submission->gallery->use_alternate_currency < 2)
+                        Notifications::create('GALLERY_SUBMISSION_VALUED', $grantedUser, [
+                            'currency_quantity' => $awardQuantity[$grantedUser->id][$submission->gallery->currencyId],
+                            'currency_name' => Currency::find($submission->gallery->currencyId)->name,
+                            'submission_title' => $submission->title,
+                            'submission_id' => $submission->id,
+                        ]);
+                    else
+                        Notifications::create('GALLERY_SUBMISSION_VALUED_MULT', $grantedUser, [
+                            'currency_quantity' => $awardQuantity[$grantedUser->id][Settings::get('group_currency')],
+                            'currency_name' => Currency::find(Settings::get('group_currency'))->name,
+                            'currency_quantity_alt' => $awardQuantity[$grantedUser->id][Settings::get('group_currency_alt')],
+                            'currency_name_alt' => Currency::find(Settings::get('group_currency_alt'))->name,
+                            'submission_title' => $submission->title,
+                            'submission_id' => $submission->id,
+                        ]);
                 }
             }
             else {

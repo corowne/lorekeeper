@@ -75,7 +75,7 @@ class GalleryController extends Controller
     {
         $id ? $request->validate(Gallery::$updateRules) : $request->validate(Gallery::$createRules);
         $data = $request->only([
-            'name', 'sort', 'parent_id', 'description', 'submissions_open', 'currency_enabled', 'votes_required', 'start_at', 'end_at', 'hide_before_start', 'prompt_selection'
+            'name', 'sort', 'parent_id', 'description', 'submissions_open', 'currency_enabled', 'votes_required', 'start_at', 'end_at', 'hide_before_start', 'prompt_selection', 'use_alternate_currency'
         ]);
         if($id && $service->updateGallery(Gallery::find($id), $data, Auth::user())) {
             flash('Gallery updated successfully.')->success();

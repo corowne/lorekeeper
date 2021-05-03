@@ -16,25 +16,29 @@
         @if(Settings::get('gallery_submissions_reward_currency') && $submission->gallery->currency_enabled)
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5>{!! $currency->displayName !!} Award Info <a class="small inventory-collapse-toggle collapse-toggle {{ $submission->status == 'Accepted' ? '' : 'collapsed' }}" href="#currencyForm" data-toggle="collapse">Show</a></h5>
+                    <h5>{!! $submission->gallery->use_alternate_currency < 2 ? $currencies->first()->displayName : 'Group Currency' !!} Award Info <a class="small inventory-collapse-toggle collapse-toggle {{ $submission->status == 'Accepted' ? '' : 'collapsed' }}" href="#currencyForm" data-toggle="collapse">Show</a></h5>
                 </div>
                 <div class="card-body collapse {{ $submission->status == 'Accepted' ? 'show' : '' }}" id="currencyForm">
                     @if($submission->status == 'Accepted')
                         @if(!$submission->is_valued)
                             @if(Auth::user()->hasPower('manage_submissions'))
-                                <p>Enter in the amount of {{ $currency->name }} that {{ $submission->collaborators->count() ? 'each collaborator' : 'the submitting user'}}{{ $submission->participants->count() ? ' and any participants' : '' }} should receive. The suggested amount has been pre-filled for you based on the provided form responses, but this is only a guideline based on user input and should be verified and any adjustments made as necessary.</p>
+                                <p>Enter in the amount of {!! $submission->gallery->use_alternate_currency < 2 ? $currencies->first()->name : 'group currency' !!} that {{ $submission->collaborators->count() ? 'each collaborator' : 'the submitting user'}}{{ $submission->participants->count() ? ' and any participants' : '' }} should receive. The suggested amount has been pre-filled for you based on the provided form responses, but this is only a guideline based on user input and should be verified and any adjustments made as necessary.</p>
                                 {!! Form::open(['url' => 'admin/gallery/edit/'.$submission->id.'/value']) !!}
+                                @foreach($currencies as $currency)
+                                @if($submission->gallery->use_alternate_currency == 2)
+                                    <h5>{{ $currency->name }}</h5>
+                                @endif
                                     @if(!$submission->collaborators->count() || $submission->collaborators->where('user_id', $submission->user_id)->first() == null)
                                         <div class="form-group">
                                             {!! Form::label($submission->user->name) !!}:
-                                            {!! Form::number('value[submitted]['.$submission->user->id.']', isset($submission->data['total']) ? round(($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')) : 0, ['class' => 'form-control']) !!}
+                                            {!! Form::number('value[submitted]['.$submission->user->id.']['.$currency->id.']', isset($submission->data['total']) ? round(($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')) : 0, ['class' => 'form-control']) !!}
                                         </div>
                                     @endif
                                     @if($submission->collaborators->count())
                                         @foreach($submission->collaborators as $key=>$collaborator)
                                             <div class="form-group">
                                                 {!! Form::label($collaborator->user->name.' ('.$collaborator->data.')') !!}:
-                                                {!! Form::number('value[collaborator]['.$collaborator->user->id.']', isset($submission->data['total']) ? round(($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')) : 0, ['class' => 'form-control']) !!}
+                                                {!! Form::number('value[collaborator]['.$collaborator->user->id.']['.$currency->id.']', isset($submission->data['total']) ? round(($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')) : 0, ['class' => 'form-control']) !!}
                                             </div>
                                         @endforeach
                                     @endif
@@ -42,17 +46,19 @@
                                         @foreach($submission->participants as $key=>$participant)
                                             <div class="form-group">
                                                 {!! Form::label($participant->user->name.' ('.$participant->displayType.')') !!}:
-                                                {!! Form::number('value[participant]['.$participant->user->id.']', isset($submission->data['total']) ? ($participant->type == 'Comm' ? round(($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')/2) : 0) : 0, ['class' => 'form-control']) !!}
+                                                {!! Form::number('value[participant]['.$participant->user->id.']['.$currency->id.']', isset($submission->data['total']) ? ($participant->type == 'Comm' ? round(($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')/2) : 0) : 0, ['class' => 'form-control']) !!}
                                             </div>
                                         @endforeach
                                     @endif
-                                    <div class="form-group">
-                                        {!! Form::checkbox('ineligible', 1, false, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'data-onstyle' => 'danger']) !!}
-                                        {!! Form::label('ineligible', 'Inelegible/Award No Currency', ['class' => 'form-check-label ml-3']) !!} {!! add_help('When on, this will mark the submission as valued, but will not award currency to any of the users listed.') !!}
-                                    </div>
-                                    <div class="text-right">
-                                        {!! Form::submit('Submit', ['class' => 'btn btn-primary']) !!}
-                                    </div>
+                                @endforeach
+                                <div class="form-group">
+                                    {!! Form::checkbox('ineligible', 1, false, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'data-onstyle' => 'danger']) !!}
+                                    {!! Form::label('ineligible', 'Inelegible/Award No Currency', ['class' => 'form-check-label ml-3']) !!} {!! add_help('When on, this will mark the submission as valued, but will not award currency to any of the users listed.') !!}
+                                </div>
+
+                                <div class="text-right">
+                                    {!! Form::submit('Submit', ['class' => 'btn btn-primary']) !!}
+                                </div>
                                 {!! Form::close() !!}
                             @else
                                 <p>This submission hasn't been evaluated yet. You'll receive a notification once it has!</p>
@@ -60,32 +66,34 @@
                         @else
                             @if(isset($submission->data['staff']))<p><strong>Processed By:</strong> {!! App\Models\User\User::find($submission->data['staff'])->displayName !!}</p>@endif
                             @if(isset($submission->data['ineligible']) && $submission->data['ineligible'] == 1)
-                                <p>This submission has been evaluated as ineligible for {{ $currency->name }} rewards.</p>
+                                <p>This submission has been evaluated as ineligible for {{ $submission->gallery->use_alternate_currency < 2 ? $currencies->first()->name : 'group currency' }} rewards.</p>
                             @else
-                                <p>{{ $currency->name }} has been awarded for this submission.</p>
-                                <div class="row">
-                                    @if(isset($submission->data['value']['submitted']))
-                                        <div class="col-md-4">
-                                        {!! $submission->user->displayName !!}: {!! $currency->display($submission->data['value']['submitted'][$submission->user->id]) !!}
-                                        </div>
-                                    @endif
-                                    @if($submission->collaborators->count())
-                                        <div class="col-md-4">
-                                        @foreach($submission->collaborators as $collaborator)
-                                            {!! $collaborator->user->displayName !!} ({{ $collaborator->data }}): {!! $currency->display($submission->data['value']['collaborator'][$collaborator->user->id]) !!}
-                                        <br/>
-                                        @endforeach
-                                        </div>
-                                    @endif
-                                    @if($submission->participants->count())
-                                        <div class="col-md-4">
-                                        @foreach($submission->participants as $participant)
-                                            {!! $participant->user->displayName !!} ({{ $participant->displayType }}): {!! $currency->display($submission->data['value']['participant'][$participant->user->id]) !!}
-                                        <br/>
-                                        @endforeach
-                                        </div>
-                                    @endif
-                                </div>
+                                <p>{{ $submission->gallery->use_alternate_currency < 2 ? $currencies->first()->name : 'Group currency' }} has been awarded for this submission.</p>
+                                @foreach($currencies as $currency)
+                                    <div class="row">
+                                        @if(isset($submission->data['value']['submitted']))
+                                            <div class="col-md-4">
+                                            {!! $submission->user->displayName !!}: {!! $currency->display(isset($submission->data['value']['submitted'][$submission->user->id][$currency->id]) ? $submission->data['value']['submitted'][$submission->user->id][$currency->id] : $submission->data['value']['submitted'][$submission->user->id]) !!}
+                                            </div>
+                                        @endif
+                                        @if($submission->collaborators->count())
+                                            <div class="col-md-4">
+                                            @foreach($submission->collaborators as $collaborator)
+                                                {!! $collaborator->user->displayName !!} ({{ $collaborator->data }}): {!! $currency->display(isset($submission->data['value']['collaborator'][$collaborator->user->id][$currency->id]) ? $submission->data['value']['collaborator'][$collaborator->user->id][$currency->id] : $submission->data['value']['collaborator'][$collaborator->user->id]) !!}
+                                            <br/>
+                                            @endforeach
+                                            </div>
+                                        @endif
+                                        @if($submission->participants->count())
+                                            <div class="col-md-4">
+                                            @foreach($submission->participants as $participant)
+                                                {!! $participant->user->displayName !!} ({{ $participant->displayType }}): {!! $currency->display(isset($submission->data['value']['participant'][$participant->user->id][$currency->id]) ? $submission->data['value']['participant'][$participant->user->id][$currency->id] : $submission->data['value']['participant'][$participant->user->id]) !!}
+                                            <br/>
+                                            @endforeach
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endforeach
                             @endif
                         @endif
                     @else
@@ -127,11 +135,15 @@
                                         ・ <strong> Times {{ $submission->characters->count() }} Characters:</strong> {{ round(round($submission->data['total'] * $submission->characters->count()) / $submission->collaborators->count()) }}
                                     @endif
                                 @endif
-                                <br/>For a suggested {!! $currency->display(
-                                    round(
-                                        ($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')
+                                <br/>For a suggested
+                                @foreach($currencies as $currency)
+                                    {!! $currency->display(
+                                        round(
+                                            ($submission->characters->count() ? round($submission->data['total'] * $submission->characters->count()) : $submission->data['total']) / ($submission->collaborators->count() ? $submission->collaborators->count() : '1')
+                                        )
                                     )
-                                ) !!}{{ $submission->collaborators->count() ? ' per collaborator' : ''}}
+                                    !!}{{ $submission->collaborators->count() ? ' per collaborator' : ''}}
+                                @endforeach
                             </p>
                         @endif
                     @else

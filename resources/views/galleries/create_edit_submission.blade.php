@@ -95,7 +95,7 @@
                 <p>
                     Add the characters included in this piece.
                     @if(Settings::get('gallery_submissions_reward_currency'))
-                     This helps the staff processing your submission award {!! $currency->displayName !!} for it, so be sure to add every character.
+                     This helps the staff processing your submission award {!! $gallery->use_alternate_currency < 2 ? $currency->name : 'group currency' !!} for it, so be sure to add every character.
                     @endif
                 </p>
                 <div id="characters" class="mb-3">
@@ -161,7 +161,7 @@
                                         <div class="mb-2">
                                             <div class="d-flex">{!! Form::select('participant_id[]', $users, $participant->user_id, ['class' => 'form-control mr-2 participant-select original', 'placeholder' => 'Select User']) !!}</div>
                                             <div class="d-flex">
-                                                {!! Form::select('participant_type[]', ['Gift' => 'Gift For', 'Trade' => 'Traded For', 'Comm' => 'Commissioned', 'Comm (Currency)' => 'Commissioned ('.$currency->name.')'], $participant->type, ['class' => 'form-control mr-2', 'placeholder' => 'Select Role']) !!}
+                                                {!! Form::select('participant_type[]', ['Gift' => 'Gift For', 'Trade' => 'Traded For', 'Comm' => 'Commissioned', 'Comm (Currency)' => 'Commissioned (Group Currency)'], $participant->type, ['class' => 'form-control mr-2', 'placeholder' => 'Select Role']) !!}
                                                 <a href="#" class="remove-participant btn btn-danger mb-2">×</a>
                                             </div>
                                         </div>
@@ -182,10 +182,10 @@
                 @if(Settings::get('gallery_submissions_reward_currency') && $gallery->currency_enabled && !$submission->id)
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5>{!! $currency->name !!} Awards</h5>
+                            <h5>{!! $gallery->use_alternate_currency < 2 ? $currency->displayName : 'Group Currency' !!} Awards</h5>
                         </div>
                         <div class="card-body">
-                            <p>Please select options as appropriate for this piece. This will help the staff processing your submission award {!! $currency->displayName !!} for it. You <strong>will not</strong> be able to edit this after creating the submission.</p>
+                            <p>Please select options as appropriate for this piece. This will help the staff processing your submission award {!! $gallery->use_alternate_currency < 2 ? $currency->name : 'group currency' !!} for it. You <strong>will not</strong> be able to edit this after creating the submission.</p>
 
                             @foreach(Config::get('lorekeeper.group_currency_form') as $key=>$field)
                                 <div class="form-group">
@@ -237,7 +237,7 @@
     <div class="participant-row hide mb-2">
         {!! Form::select('participant_id[]', $users, null, ['class' => 'form-control mr-2 participant-select', 'placeholder' => 'Select User']) !!}
         <div class="d-flex">
-            {!! Form::select('participant_type[]', ['Gift' => 'Gift For', 'Trade' => 'Traded For', 'Comm' => 'Commissioned', 'Comm (Currency)' => 'Commissioned ('.$currency->name.')'], null, ['class' => 'form-control mr-2', 'placeholder' => 'Select Role']) !!}
+            {!! Form::select('participant_type[]', ['Gift' => 'Gift For', 'Trade' => 'Traded For', 'Comm' => 'Commissioned', 'Comm (Currency)' => 'Commissioned (Group Currency)'], null, ['class' => 'form-control mr-2', 'placeholder' => 'Select Role']) !!}
             <a href="#" class="remove-participant btn btn-danger mb-2">×</a>
         </div>
     </div>

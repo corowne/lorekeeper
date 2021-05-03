@@ -90,6 +90,13 @@
     </div>
 </div>
 
+@if(Settings::get('gallery_submissions_reward_currency'))
+    <div class="form-group">
+        {!! Form::label('use_alternate_currency', 'Use Alternate Currency') !!} {!! add_help('Whether to use the primary or alternate group currency for rewards from this gallery, or to be able to use both/either. Has no effect if currency rewards are disabled.') !!}
+        {!! Form::select('use_alternate_currency', [0 => 'Primary Group Currency', 1 => 'Alt Group Currency', 2 => 'Both/Either' ], $gallery->id ? $gallery->use_alternate_currency : 0, ['class' => 'form-control']) !!}
+    </div>
+@endif
+
 <div class="text-right">
     {!! Form::submit($gallery->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
 </div>

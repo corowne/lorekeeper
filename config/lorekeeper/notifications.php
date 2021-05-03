@@ -24,7 +24,7 @@ return [
         'message' => 'You have received a staff grant of {item_name} (×{item_quantity}) from <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Inventory</a>)',
         'url' => 'inventory'
     ],
-    
+
     // CURRENCY_REMOVAL
     2 => [
         'name' => 'Currency Removal',
@@ -73,21 +73,21 @@ return [
         'message' => '{character_name} has received a staff grant of {currency_quantity} {currency_name} from <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Bank</a>)',
         'url' => 'character/{character_slug}/bank'
     ],
-    
+
     // CHARACTER_CURRENCY_REMOVAL
     9 => [
         'name' => 'Character Currency Removal',
         'message' => '{currency_quantity} {currency_name} was removed from {character_name} by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Bank</a>)',
         'url' => 'character/{character_slug}/bank'
     ],
-    
+
     // CHARACTER_PROFILE_EDIT
     10 => [
         'name' => 'Character Profile Edited',
         'message' => '{character_name}\'s profile was edited by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Character</a>)',
         'url' => 'character/{character_slug}/profile'
     ],
-    
+
     // IMAGE_UPLOAD
     11 => [
         'name' => 'Image Upload',
@@ -419,5 +419,10 @@ return [
         'name' => 'Recipe Grant',
         'message' => 'You have received a staff grant of the crafting recipe {recipe_name} from <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Unlocked Recipes</a>)',
         'url' => 'crafting'
+    // GALLERY_SUBMISSION_VALUED_MULT
+    516 => [
+        'name' => 'Gallery Submission Valued',
+        'message' => 'You have been awarded {currency_quantity} {currency_name} and {currency_quantity_alt} {currency_name_alt} for the gallery submission <strong>{submission_title}</strong> (#{submission_id}). (<a href="{url}">View Submission</a>)',
+        'url' => 'gallery/queue/{submission_id}'
     ],
 ];

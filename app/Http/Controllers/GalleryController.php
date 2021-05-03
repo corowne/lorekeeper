@@ -167,7 +167,7 @@ class GalleryController extends Controller
 
         return view('galleries.submission_log', [
             'submission' => $submission,
-            'currency' => Currency::find(Settings::get('group_currency')),
+            'currencies' => Currency::whereIn('id', ($submission->gallery->use_alternate_currency == 2 ? $submission->gallery->currencyId : [$submission->gallery->currencyId]))->get(),
             'galleryPage' => true,
             'sideGallery' => $submission->gallery
         ]);
@@ -212,7 +212,7 @@ class GalleryController extends Controller
             'submission' => new GallerySubmission,
             'prompts' => Prompt::active()->sortAlphabetical()->pluck('name', 'id')->toArray(),
             'users' => User::visible()->orderBy('name')->pluck('name', 'id')->toArray(),
-            'currency' => Currency::find(Settings::get('group_currency')),
+            'currency' => $gallery->use_alternate_currency < 2 ? Currency::find($gallery->currencyId) : Currency::whereIn('id', $gallery->currencyId)->get(),
             'galleryPage' => true,
             'sideGallery' => $gallery
         ]));
@@ -243,7 +243,7 @@ class GalleryController extends Controller
             'prompts' => $prompts->sortAlphabetical()->pluck('name', 'id')->toArray(),
             'submission' => $submission,
             'users' => User::visible()->orderBy('name')->pluck('name', 'id')->toArray(),
-            'currency' => Currency::find(Settings::get('group_currency')),
+            'currency' => $submission->gallery->use_alternate_currency < 2 ? Currency::find($submission->gallery->currencyId) : Currency::whereIn('id', $submission->gallery->currencyId)->get(),
             'galleryPage' => true,
             'sideGallery' => $submission->gallery
         ]);
