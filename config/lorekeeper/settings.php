@@ -212,4 +212,14 @@ return [
         'item_donations' => 0,
         'cooldown' => 5,
     ]
+    /*
+    |--------------------------------------------------------------------------
+    | Currency Symbol
+    |--------------------------------------------------------------------------
+    |
+    | Symbol for the (real world) currency used for sales posts.
+    |
+    */
+    'currency_symbol' => '$'
+
 ];
