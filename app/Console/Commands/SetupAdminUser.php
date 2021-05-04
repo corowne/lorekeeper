@@ -86,7 +86,12 @@ class SetupAdminUser extends Command
                     'name' => $name,
                     'email' => $email,
                     'rank_id' => $adminRank->id,
-                    'password' => $password
+                    'password' => $password,
+                    'dob' => [
+                        'day' => '01',
+                        'month' => '01',
+                        'year' => '1971'
+                    ],
                 ]);
 
                 $this->line('Admin account created. You can now log in with the registered email and password.');
