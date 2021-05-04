@@ -211,7 +211,7 @@ return [
     'donation_shop' => [
         'item_donations' => 0,
         'cooldown' => 5,
-    ]
+    ],
     /*
     |--------------------------------------------------------------------------
     | Currency Symbol
@@ -221,5 +221,5 @@ return [
     |
     */
     'currency_symbol' => '$'
-    
+      
 ];
