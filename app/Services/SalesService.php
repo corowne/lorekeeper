@@ -112,7 +112,7 @@ class SalesService extends Service
     private function processCharacters($sales, $data)
     {
         foreach($data['slug'] as $key=>$slug) {
-            $character = Character::where('slug', $slug)->first();
+            $character = Character::myo(0)->visible()->where('slug', $slug)->first();
 
             // Assemble data
             $charData[$key] = [];
