@@ -220,6 +220,6 @@ return [
     | Symbol for the (real world) currency used for sales posts.
     |
     */
-    'currency_symbol' => '$'
-
+    'currency_symbol' => '$',
+    
 ];
