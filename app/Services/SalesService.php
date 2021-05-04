@@ -50,7 +50,7 @@ class SalesService extends Service
             else $characters = [];
 
             // Process entered character data
-            $this->processCharacters($sales, $data, $characters);
+            $this->processCharacters($sales, $data);
 
             if($sales->is_visible) $this->alertUsers();
 
@@ -91,7 +91,7 @@ class SalesService extends Service
 
             // Remove existing attached characters, then process entered character data
             $sales->characters()->delete();
-            $this->processCharacters($sales, $data, $characters);
+            $this->processCharacters($sales, $data);
 
             $sales->update($data);
 
@@ -107,13 +107,12 @@ class SalesService extends Service
      *
      * @param  App\Models\Sales\Sales                   $sales
      * @param  array                                    $data
-     * @param  Illuminate\Database\Eloquent\Collection  $characters
      * @return bool
      */
-    private function processCharacters($sales, $data, $characters)
+    private function processCharacters($sales, $data)
     {
         foreach($data['slug'] as $key=>$slug) {
-            $character = $characters->where('slug', $slug)->first();
+            $character = Character::myo(0)->visible()->where('slug', $slug)->first();
 
             // Assemble data
             $charData[$key] = [];
