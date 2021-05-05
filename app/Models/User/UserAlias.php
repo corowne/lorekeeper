@@ -69,7 +69,7 @@ class UserAlias extends Model
     public function getUrlAttribute()
     {
         if($this->site == 'tumblr') return 'https://'.$this->alias.Config::get('lorekeeper.sites.tumblr.link');
-        else return 'https://'.Config::get('lorekeeper.sites.'.$this->siteDisplayName.'.link').'/'.$this->alias;
+        else return 'https://'.Config::get('lorekeeper.sites.'.$this->site.'.link').'/'.$this->alias;
     }
 
     /**
