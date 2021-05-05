@@ -2,14 +2,14 @@
     <div class="m-1">
         <div class="row">
             <div class="col-md-6 text-center align-self-center">
-                <a href="{{ $character->character->url }}"><img src="{{ $loop->count == 1 ? $character->image->imageUrl : $character->image->thumbnailUrl }}" class="mw-100 img-thumbnail" /></a>
+                <a href="{{ $character->character->url }}"><img src="{{ $loop->count == 1 ? $character->character->image->imageUrl : $character->character->image->thumbnailUrl }}" class="mw-100 img-thumbnail" /></a>
             </div>
             <div class="col-md text-center">
                 <div class="mt-2">
                     <h5>
                         {{ $character->displayType }}: <a href="{{ $character->character->url }}">{!! $character->character->slug !!}</a> ・ <span class="{{ $character->is_open && $character->sales->is_open ? 'text-success' : '' }}">[{{ $character->is_open && $character->sales->is_open ? 'Open' : 'Closed' }}]</span><br/>
                         <small>
-                            {!! $character->image->species->displayName !!} ・ {!! $character->image->rarity->displayName !!}<br/>
+                            {!! $character->character->image->species->displayName !!} ・ {!! $character->character->image->rarity->displayName !!}<br/>
                         </small>
                     </h5>
 
@@ -17,8 +17,8 @@
                         <div class="mb-2">
                             @if(Config::get('lorekeeper.extensions.traits_by_category'))
                                 <div>
-                                    @php $traitgroup = $character->image->features()->get()->groupBy('feature_category_id') @endphp
-                                    @if($character->image->features()->count())
+                                    @php $traitgroup = $character->character->image->features()->get()->groupBy('feature_category_id') @endphp
+                                    @if($character->character->image->features()->count())
                                         @foreach($traitgroup as $key => $group)
                                         <div>
                                             @if(!$key)
@@ -46,7 +46,7 @@
                                 </div>
                             @else
                                 <div>
-                                    <?php $features = $character->image->features()->with('feature.category')->get(); ?>
+                                    <?php $features = $character->character->image->features()->with('feature.category')->get(); ?>
                                     @if($features->count())
                                         @foreach($features as $feature)
                                             <div>@if($feature->feature->feature_category_id) <strong>{!! $feature->feature->category->displayName !!}:</strong> @endif {!! $feature->feature->displayName !!} @if($feature->data) ({{ $feature->data }}) @endif</div>
@@ -62,11 +62,11 @@
                     <h6>
                         <div class="mb-2">
                             Design:
-                            @foreach($character->image->designers as $designer)
+                            @foreach($character->character->image->designers as $designer)
                                 {!! $designer->displayLink() !!}{{ !$loop->last ? ', ' : '' }}
                             @endforeach ・
                             Art:
-                            @foreach($character->image->artists as $artist)
+                            @foreach($character->character->image->artists as $artist)
                                 {!! $artist->displayLink() !!}{{ !$loop->last ? ', ' : '' }}
                             @endforeach
                         </div>
