@@ -57,6 +57,13 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
+     * Dates on the model to convert to Carbon instances.
+     *
+     * @var array
+     */
+    protected $dates = ['birthday'];
+
+    /**
      * Accessors to append to the model.
      *
      * @var array
@@ -161,7 +168,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get all of the user's gallery submissions.
      */
-    public function gallerySubmissions() 
+    public function gallerySubmissions()
     {
         return $this->hasMany('App\Models\Gallery\GallerySubmission')->where('user_id', $this->id)->orWhereIn('id', GalleryCollaborator::where('user_id', $this->id)->where('type', 'Collab')->pluck('gallery_submission_id')->toArray())->visible($this)->accepted()->orderBy('created_at', 'DESC');
     }
@@ -169,9 +176,17 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get all of the user's favorited gallery submissions.
      */
-    public function galleryFavorites() 
+    public function galleryFavorites()
     {
         return $this->hasMany('App\Models\Gallery\GalleryFavorite')->where('user_id', $this->id);
+    }
+    
+    /**
+     * Get all of the user's character bookmarks.
+     */
+    public function bookmarks() 
+    {
+        return $this->hasMany('App\Models\Character\CharacterBookmark')->where('user_id', $this->id);
     }
 
     /**********************************************************************************************
@@ -335,14 +350,16 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         //
         $icon = null;
-        $bday = carbon::parse($this->birthday);
+        $bday = $this->birthday;
+        if(!isset($bday)) return 'N/A';
+
         if($bday->format('d M') == carbon::now()->format('d M')) $icon = '<i class="fas fa-birthday-cake ml-1"></i>';
         //
         switch($this->settings->birthday_setting) {
             case 0:
                 return null;
             break;
-            case 1: 
+            case 1:
                 if(Auth::check()) return $bday->format('d M') . $icon;
             break;
             case 2:
@@ -359,7 +376,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getcheckBirthdayAttribute()
     {
-        $bday = carbon::parse($this->birthday);
+        $bday = $this->birthday;
         if($bday->diffInYears(carbon::now()) < 13) return false;
         else return true;
     }

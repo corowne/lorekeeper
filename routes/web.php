@@ -25,6 +25,9 @@ Route::group(['middleware' => ['auth', 'verified']], function() {
 
     # LINK DA ACCOUNT
     Route::get('/link', 'HomeController@getLink')->name('link');
+    
+    Route::get('/auth/redirect/{driver}', 'HomeController@getAuthRedirect');
+    Route::get('/auth/callback/{driver}', 'HomeController@getAuthCallback');
 
     # SET BIRTHDATE
     Route::get('/birthday', 'HomeController@getBirthday')->name('birthday');
