@@ -36,7 +36,7 @@ trait Commentable
      */
     public function commentz()
     {
-        return $this->morphMany('App\Models\Comment', 'commentable');
+        return $this->morphMany('App\Models\Comment', 'commentable')->withTrashed();
     }
 
     /**
@@ -44,6 +44,6 @@ trait Commentable
      */
     public function approvedComments()
     {
-        return $this->morphMany('App\Models\Comment', 'commentable')->where('approved', true);
+        return $this->morphMany('App\Models\Comment', 'commentable')->where('approved', true)->withTrashed();
     }
 }
