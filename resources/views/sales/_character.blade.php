@@ -21,18 +21,15 @@
                                     @if($character->image->features()->count())
                                         @foreach($traitgroup as $key => $group)
                                         <div>
-                                            @if(!$key)
-                                                <strong>Miscellaneous:</strong>
-                                            @endif
                                             @if($group->count() > 1)
                                                 <div>
-                                                    <strong>{!! $group->first()->feature->category->displayName !!}:</strong>
+                                                    <strong>{!! $key ? $group->first()->feature->category->displayName : 'Miscellaneous' !!}:</strong>
                                                     @foreach($group as $feature)
                                                         {!! $feature->feature->displayName !!}@if($feature->data) ({{ $feature->data }})@endif{{ !$loop->last ? ', ' : '' }}
                                                     @endforeach
                                                 </div>
                                             @else
-                                                <strong>{!! $group->first()->feature->category->displayName !!}:</strong>
+                                                <strong>{!! $key ? $group->first()->feature->category->displayName : 'Miscellaneous' !!}:</strong>
                                                 {!! $group->first()->feature->displayName !!}
                                                     @if($group->first()->data)
                                                         ({{ $group->first()->data }})
