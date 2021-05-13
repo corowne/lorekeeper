@@ -9,14 +9,14 @@ return [
     |
     | This is a list of sites and appropriate regex for use in url matching,
     | for formatting links or for performing auth operations.
-    | Feel free to add more sites to the "General" section, it is used solely 
+    | Feel free to add more sites to the "General" section, it is used solely
     | for link formatting, but be careful about making changes to any sites in the
     | "Auth" section as they are used for site functions.
     |
     */
 
     /**********************************************************************************************
-     
+
         AUTH
 
     **********************************************************************************************/
@@ -37,49 +37,61 @@ return [
         'primary_alias' => 1
     ],
 
-    /**********************************************************************************************
-     
-        GENERAL
-
-    **********************************************************************************************/
-
     'twitter' => [
         'full_name' => 'Twitter',
         'display_name' => 'twitter',
         'regex' => '/twitter\.com\/([A-Za-z0-9_-]+)/',
         'link' => 'twitter.com',
-        'icon' => 'fab fa-twitter'
+        'icon' => 'fab fa-twitter',
+        'auth' => 0,
+        'primary_alias' => 0
     ],
+
     'instagram' => [
         'full_name' => 'Instagram',
         'display_name' => 'ig',
         'regex' => '/instagram\.com\/([A-Za-z0-9_-]+)/',
         'link' => 'instagram.com',
-        'icon' => 'fab fa-instagram'
+        'icon' => 'fab fa-instagram',
+        'auth' => 0,
+        'primary_alias' => 0
     ],
+
     'tumblr' => [
         'full_name' => 'Tumblr',
         'display_name' => 'tumblr',
         'regex' => '/([A-Za-z0-9_-]+)\.tumblr\.com/',
         'link' => 'tumblr.com',
-        'icon' => 'fab fa-tumblr'
+        'icon' => 'fab fa-tumblr',
+        'auth' => 0,
+        'primary_alias' => 0
     ],
+
     'imgur' => [
         'full_name' => 'Imgur',
         'display_name' => 'imgur',
         'regex' => '/imgur\.com\/user\/([A-Za-z0-9_-]+)/',
         'link' => 'imgur.com/user/',
-        'icon' => 'far fa-image'
+        'icon' => 'far fa-image',
+        'auth' => 0,
+        'primary_alias' => 0
     ],
+
     'twitch' => [
         'full_name' => 'Twitch.tv',
         'display_name' => 'twitch',
         'regex' => '/twitch\.tv\/([A-Za-z0-9_-]+)/',
         'link' => 'twitch.tv',
-        'icon' => 'fab fa-twitch'
+        'icon' => 'fab fa-twitch',
+        'auth' => 0,
+        'primary_alias' => 0
     ],
 
-    // Sites below this line CANNOT be used for authentication.
+    /**********************************************************************************************
+
+        GENERAL
+
+    **********************************************************************************************/
 
     'toyhouse' => [
         'full_name' => 'Toyhou.se',
@@ -88,12 +100,14 @@ return [
         'link' => 'toyhou.se',
         'icon' => 'fas fa-home'
     ],
+
     'artstation' => [
         'full_name' => 'Artstation',
         'display_name' => 'artstation',
         'regex' => '/artstation\.com\/([A-Za-z0-9_-]+)/',
         'link' => 'artstation.com'
     ],
+
     'picarto' => [
         'full_name' => 'Picarto',
         'display_name' => 'picarto',
