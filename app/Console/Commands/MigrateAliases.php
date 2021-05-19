@@ -67,7 +67,7 @@ class MigrateAliases extends Command
                         DB::table('user_aliases')->insert([
                             [
                                 'user_id' => $user->id,
-                                'site' => 'dA',
+                                'site' => 'deviantart',
                                 'alias' => $user->alias,
                                 'is_visible' => 1,
                                 'is_primary_alias' => 1,
@@ -228,6 +228,17 @@ class MigrateAliases extends Command
             else $this->line("Skipped: Item artist aliases (nothing to migrate)");
         }
         else $this->line("Skipped: Item artist aliases (column no longer exists)");
+
+        $daAliases = UserAlias::where('site', 'dA')->get();
+        if($daAliases->count()) {
+            $this->line('Updating '.$daAliases->count().' deviantArt aliases...');
+            foreach($daAliases as $alias) {
+                $alias->site = 'deviantart';
+                $alias->save();
+            }
+            $this->info('deviantArt aliases updated!');
+        }
+        else $this->line('No deviantArt aliases to update!');
 
         if($this->option('drop-columns')) {
             // Drop alias columns from the impacted tables.
