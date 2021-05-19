@@ -85,37 +85,38 @@
         <div class="form-group row">
             <label class="col-md-2 col-form-label">Birthday</label>
             <div class="col-md-10 row">
-                {{ Form::selectRange('dob[day]', 1, 31, intval($user->birthday->format('d')), ['class' => 'form-control col-2 mr-1']) }}
-                {{ Form::selectMonth('dob[month]', intval($user->birthday->format('m')), ['class' => 'form-control col-2 mr-1']) }}
-                {{ Form::selectYear('dob[year]', date('Y'), date('Y') - 70, intval($user->birthday->format('Y')), ['class' => 'form-control col-2']) }}
+                {{ Form::selectRange('dob[day]', 1, 31, $user->birthday ? intval($user->birthday->format('d')) : null, ['class' => 'form-control col-2 mr-1']) }}
+                {{ Form::selectMonth('dob[month]', $user->birthday ? intval($user->birthday->format('m')) : null, ['class' => 'form-control col-2 mr-1']) }}
+                {{ Form::selectYear('dob[year]', date('Y'), date('Y') - 70, $user->birthday ? intval($user->birthday->format('Y')) : null, ['class' => 'form-control col-2']) }}
             </div>
         </div>
-
         <div class="text-right">
             {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
         </div>
     {!! Form::close() !!}
 </div>
 
+<div class="card p-3 mb-2">
 <h3>Aliases</h3>
-<p>As users are supposed to verify that they own their account(s) themselves, aliases cannot be edited directly. If a user wants to change their alias, clear it here and ask them to go through the verification process again while logged into their new account. If the alias is the user's primary alias, their remaining aliases will be checked to see if they have a valid primary alias. If they do, it will become their new primary alias.</p>
-@if($user->aliases->count())
-    @foreach($user->aliases as $alias)
-    <div class="form-group row">
-        <div class="col-2">
-            <label>Alias{{ $alias->is_primary_alias ? ' (Primary)' : '' }}</label>
-        </div>
-        <div class="col-10">
-            <div class="d-flex">
-                {!! Form::text('alias', $alias->alias . '@' . $alias->siteDisplayName . (!$alias->is_visible ? ' (Hidden)' : ''), ['class' => 'form-control', 'disabled']) !!}
-                {!! Form::open(['url' => 'admin/users/'.$user->name.'/alias/'.$alias->id]) !!}
-                <div class="text-right ml-2">{!! Form::submit('Clear Alias', ['class' => 'btn btn-danger']) !!}</div>
+    <p>As users are supposed to verify that they own their account(s) themselves, aliases cannot be edited directly. If a user wants to change their alias, clear it here and ask them to go through the verification process again while logged into their new account. If the alias is the user's primary alias, their remaining aliases will be checked to see if they have a valid primary alias. If they do, it will become their new primary alias.</p>
+    @if($user->aliases->count())
+        @foreach($user->aliases as $alias)
+        <div class="form-group row">
+            <div class="col-2">
+                <label>Alias{{ $alias->is_primary_alias ? ' (Primary)' : '' }}</label>
             </div>
+            <div class="col-10">
+                <div class="d-flex">
+                    {!! Form::text('alias', $alias->alias . '@' . $alias->siteDisplayName . (!$alias->is_visible ? ' (Hidden)' : ''), ['class' => 'form-control', 'disabled']) !!}
+                    {!! Form::open(['url' => 'admin/users/'.$user->name.'/alias/'.$alias->id]) !!}
+                    <div class="text-right ml-2">{!! Form::submit('Clear Alias', ['class' => 'btn btn-danger']) !!}</div>
+                </div>
+            </div>
+            {!! Form::close() !!}
         </div>
-        {!! Form::close() !!}
-    </div>
-    @endforeach
-@else
-    <p>No aliases found.</p>
-@endif
+        @endforeach
+    @else
+        <p>No aliases found.</p>
+    @endif
+</div>
 @endsection
