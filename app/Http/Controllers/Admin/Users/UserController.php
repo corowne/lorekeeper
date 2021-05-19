@@ -186,7 +186,7 @@ class UserController extends Controller
         $date = $data['day']."-".$data['month']."-".$data['year'];
 
         $formatDate = Carbon::parse($date);
-        $logData = ['old_date' => $user->birthday->isoFormat('DD-MM-YYYY')] + ['new_date' => $date];
+        $logData = ['old_date' => $user->birthday ? $user->birthday->isoFormat('DD-MM-YYYY') : Carbon::now()->isoFormat('DD-MM-YYYY')] + ['new_date' => $date];
 
         if($service->updateBirthday($formatDate, $user)) {
             UserUpdateLog::create(['staff_id' => Auth::user()->id, 'user_id' => $user->id, 'data' => json_encode($logData), 'type' => 'Birth Date Change']);
