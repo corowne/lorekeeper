@@ -90,7 +90,7 @@ class SetupAdminUser extends Command
                     'dob' => [
                         'day' => '01',
                         'month' => '01',
-                        'year' => '1971'
+                        'year' => '1970'
                     ],
                 ]);
 

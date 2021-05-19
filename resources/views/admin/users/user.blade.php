@@ -88,10 +88,8 @@
                 {{ Form::selectRange('dob[day]', 1, 31, $user->birthday ? intval($user->birthday->format('d')) : null, ['class' => 'form-control col-2 mr-1']) }}
                 {{ Form::selectMonth('dob[month]', $user->birthday ? intval($user->birthday->format('m')) : null, ['class' => 'form-control col-2 mr-1']) }}
                 {{ Form::selectYear('dob[year]', date('Y'), date('Y') - 70, $user->birthday ? intval($user->birthday->format('Y')) : null, ['class' => 'form-control col-2']) }}
-                @endif
             </div>
         </div>
-
         <div class="text-right">
             {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
         </div>
