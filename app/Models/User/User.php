@@ -377,6 +377,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getcheckBirthdayAttribute()
     {
         $bday = $this->birthday;
+        if(!$bday) return false;  
         if($bday->diffInYears(carbon::now()) < 13) return false;
         else return true;
     }

@@ -85,9 +85,16 @@
         <div class="form-group row">
             <label class="col-md-2 col-form-label">Birthday</label>
             <div class="col-md-10 row">
+                @if($user->birthday)
                 {{ Form::selectRange('dob[day]', 1, 31, intval($user->birthday->format('d')), ['class' => 'form-control col-2 mr-1']) }}
                 {{ Form::selectMonth('dob[month]', intval($user->birthday->format('m')), ['class' => 'form-control col-2 mr-1']) }}
                 {{ Form::selectYear('dob[year]', date('Y'), date('Y') - 70, intval($user->birthday->format('Y')), ['class' => 'form-control col-2']) }}
+                @else
+                <p class="mr-5">No birthday currently set.</p>
+                {{ Form::selectRange('dob[day]', 1, 31, null, ['class' => 'form-control col-2 mr-1']) }}
+                {{ Form::selectMonth('dob[month]', null, ['class' => 'form-control col-2 mr-1']) }}
+                {{ Form::selectYear('dob[year]', date('Y'), date('Y') - 70, null, ['class' => 'form-control col-2']) }}
+                @endif
             </div>
         </div>
 
