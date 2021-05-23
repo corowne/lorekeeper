@@ -50,7 +50,7 @@ class SalesService extends Service
             else $characters = [];
 
             // Process entered character data
-            $this->processCharacters($sales, $data);
+            if(isset($data['slug'])) $this->processCharacters($sales, $data);
 
             if($sales->is_visible) $this->alertUsers();
 
@@ -91,7 +91,7 @@ class SalesService extends Service
 
             // Remove existing attached characters, then process entered character data
             $sales->characters()->delete();
-            $this->processCharacters($sales, $data);
+            if(isset($data['slug'])) $this->processCharacters($sales, $data);
 
             $sales->update($data);
 
