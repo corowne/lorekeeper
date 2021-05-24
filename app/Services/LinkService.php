@@ -19,11 +19,12 @@ class LinkService extends Service
     
     /**
      * Get the Auth URL for dA.
-     * 
+     *
      * @return string
      */
     public function getAuthRedirect($provider) {
-        return Socialite::driver($provider)->redirect();
+        if($provider == 'deviantart') return Socialite::driver($provider)->setScopes(['user'])->redirect();
+        else return Socialite::driver($provider)->redirect();
     }
 
     /**
