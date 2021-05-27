@@ -26,6 +26,7 @@ class EventServiceProvider extends ServiceProvider
             'SocialiteProviders\\Tumblr\\TumblrExtendSocialite@handle',
             'SocialiteProviders\\Imgur\\ImgurExtendSocialite@handle',
             'SocialiteProviders\\Twitch\\TwitchExtendSocialite@handle',
+            'SocialiteProviders\\Discord\\DiscordExtendSocialite@handle',
         ]
     ];
 

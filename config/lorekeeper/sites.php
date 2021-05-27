@@ -87,6 +87,14 @@ return [
         'primary_alias' => 0
     ],
 
+    'discord' => [
+        'full_name' => 'Discord',
+        'display_name' => 'discord',
+        'icon' => 'fab fa-discord',
+        'auth' => 0,
+        'primary_alias' => 0
+    ],
+
     /**********************************************************************************************
 
         GENERAL

@@ -34,7 +34,8 @@
         "socialiteproviders/tumblr": "^4.1",
         "socialiteproviders/twitch": "^5.3",
         "socialiteproviders/twitter": "^4.1",
-        "spatie/laravel-honeypot": "^2.3.0"
+        "spatie/laravel-honeypot": "^2.3.0",
+        "socialiteproviders/discord": "^4.1"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
