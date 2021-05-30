@@ -90,6 +90,7 @@ return [
     'discord' => [
         'full_name' => 'Discord',
         'display_name' => 'discord',
+        'regex' => '/^((.+?)#\d{4})/',
         'icon' => 'fab fa-discord',
         'auth' => 0,
         'primary_alias' => 0
