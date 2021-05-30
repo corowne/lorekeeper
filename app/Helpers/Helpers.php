@@ -229,7 +229,7 @@ function checkAlias($url, $failOnError = true)
     $matches = [];
     // Check to see if url is 1. from a site used for auth
     foreach(Config::get('lorekeeper.sites') as $key=>$site) if(isset($site['auth']) && $site['auth']) {
-        preg_match_all($site['regex'], $url, $matches);
+        preg_match($site['regex'], $url, $matches);
         if($matches != []) {$urlSite = $key; break;}
     }
     if($matches[0] == [] && $failOnError) throw new \Exception('This URL is from an invalid site. Please provide a URL for a user profile from a site used for authentication.');
