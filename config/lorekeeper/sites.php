@@ -90,7 +90,7 @@ return [
     'discord' => [
         'full_name' => 'Discord',
         'display_name' => 'discord',
-        'regex' => '/([A-Za-z0-9_-]+)#([A-Za-z0-9_-]+)/m',
+        'regex' => '/([A-Za-z0-9_-]+)#([0-9]+)/m',
         'icon' => 'fab fa-discord',
         'auth' => 0,
         'primary_alias' => 0
