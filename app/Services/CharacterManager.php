@@ -262,21 +262,22 @@ class CharacterManager extends Service
             $image = CharacterImage::create($imageData);
 
             // Check if entered url(s) have aliases associated with any on-site users
-            foreach($data['designer_url'] as $key=>$url) {
+            $designers = array_filter($data['designer_url']); // filter null values
+            foreach($designers as $key=>$url) {
                 $recipient = checkAlias($url, false);
                 if(is_object($recipient)) {
                     $data['designer_id'][$key] = $recipient->id;
-                    $data['designer_url'][$key] = null;
+                    $designers[$key] = null;
                 }
             }
-            foreach($data['artist_url'] as $key=>$url) {
+            $artists = array_filter($data['artist_url']);  // filter null values
+            foreach($artists as $key=>$url) {
                 $recipient = checkAlias($url, false);
                 if(is_object($recipient)) {
                     $data['artist_id'][$key] = $recipient->id;
-                    $data['artist_url'][$key] = null;
+                    $artists[$key] = null;
                 }
             }
-
             // Check that users with the specified id(s) exist on site
             foreach($data['designer_id'] as $id) {
                 if(isset($id) && $id) {
