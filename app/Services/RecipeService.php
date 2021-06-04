@@ -359,7 +359,7 @@ class RecipeService extends Service
             // if($recipient->recipes->contains($recipe)) throw new \Exception($recipient->name." already has the recipe ".$recipe->displayName);
             if($recipient->recipes->contains($recipe)) {
                 flash($recipient->name." already has the recipe ".$recipe->displayName, 'warning');
-                return $this->commitReturn(true);
+                return $this->commitReturn(false);
             }
             
             $record = UserRecipe::where('user_id', $recipient->id)->where('recipe_id', $recipe->id)->first();
