@@ -42,6 +42,7 @@ class UserController extends Controller
         if(!$this->user) abort(404);
 
         $this->user->updateCharacters();
+        $this->user->updateArtDesignCredits();
     }
 
     /**

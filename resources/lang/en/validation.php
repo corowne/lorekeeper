@@ -131,6 +131,12 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'designer_url.*' => [
+            'url' => 'One or more of the designer URL(s) is invalid.',
+        ],
+        'artist_url.*' => [
+            'url' => 'One or more of the artist URL(s) is invalid.',
+        ]
     ],
 
     /*
