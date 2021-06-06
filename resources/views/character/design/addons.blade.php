@@ -25,7 +25,7 @@
     {!! Form::close() !!}
 @else
     <p>Items and/or currency listed have been removed from their holders and will be refunded if the request is rejected.</p>
-    @if(count($inventory))
+    @if($inventory && count($inventory))
         <h3>{!! $request->user->displayName !!}'s Inventory</h3>
         <div class="card mb-3">
             <div class="card-body">
