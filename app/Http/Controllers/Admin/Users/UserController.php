@@ -118,7 +118,7 @@ class UserController extends Controller
         $user = User::where('name', $name)->first();
         $alias = UserAlias::find($id);
 
-        $logData = ['old_alias' => $user ? $alias : null];
+        $logData = ['old_alias' => $user ? $alias->alias : null, 'old_site' => $user ? $alias->site : null];
         $isPrimary = $alias->is_primary_alias;
 
         if(!$user) flash('Invalid user.')->error();
