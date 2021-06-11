@@ -33,7 +33,7 @@
             var rowId = "#itemRow" + $checkbox.val()
             if($checkbox.is(":checked")) {
                 $(rowId).addClass('category-selected');
-                $(rowId).find('.quantity-select').prop('name', 'stack_quantity[]')
+                $(rowId).find('.quantity-select').prop('name', 'stack_quantity['+$checkbox.val()+']')
             }
             else {
                 $(rowId).removeClass('category-selected');
