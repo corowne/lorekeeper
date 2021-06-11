@@ -1,3 +1,6 @@
+@php
+    if(old('stack_id')) $old_selection = array_combine(old('stack_id'), old('stack_quantity'));
+@endphp
 <h3>Your Inventory <a class="small inventory-collapse-toggle collapse-toggle collapsed" href="#userInventory" data-toggle="collapse">Show</a></h3>
 <hr>
 <div class="collapse" id="userInventory">
@@ -48,7 +51,9 @@
                                 <td class="col-4">{!! array_key_exists('data', $itemRow->data) ? ($itemRow->data['data'] ? $itemRow->data['data'] : 'N/A') : 'N/A' !!}</td>
                                 <td class="col-3">{!! array_key_exists('notes', $itemRow->data) ? ($itemRow->data['notes'] ? $itemRow->data['notes'] : 'N/A') : 'N/A' !!}</td>
                                 @if($itemRow->availableQuantity || in_array($itemRow->id, array_keys($selected)))
-                                    @if(in_array($itemRow->id, array_keys($selected)))
+                                    @if(isset($old_selection) && isset($old_selection[$itemRow->id]))
+                                        <td class="col-2">{!! Form::selectRange('stack_quantity[]', 1, $itemRow->getAvailableContextQuantity($selected[$itemRow->id] ?? 0), $old_selection[$itemRow->id], ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;']) !!} /{{ $itemRow->getAvailableContextQuantity($selected[$itemRow->id] ?? 0) }} @if($page == 'trade') @if($itemRow->getOthers($selected[$itemRow->id], 0)) {{ $itemRow->getOthers($selected[$itemRow->id], 0) }} @endif @elseif($page == 'update') @if($itemRow->getOthers(0, $selected[$itemRow->id])) {{ $itemRow->getOthers(0, $selected[$itemRow->id]) }} @endif @endif</td>
+                                    @elseif(in_array($itemRow->id, array_keys($selected)))
                                         <td class="col-2">{!! Form::selectRange('stack_quantity[]', 1, $itemRow->getAvailableContextQuantity($selected[$itemRow->id]), $selected[$itemRow->id], ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;']) !!} /{{ $itemRow->getAvailableContextQuantity($selected[$itemRow->id]) }} @if($page == 'trade') @if($itemRow->getOthers($selected[$itemRow->id], 0)) {{ $itemRow->getOthers($selected[$itemRow->id], 0) }} @endif @elseif($page == 'update') @if($itemRow->getOthers(0, $selected[$itemRow->id])) {{ $itemRow->getOthers(0, $selected[$itemRow->id]) }} @endif @endif</td>
                                     @else
                                         <td class="col-2">{!! Form::selectRange('', 1, $itemRow->availableQuantity, 1, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;']) !!} /{{ $itemRow->availableQuantity }} @if($itemRow->getOthers()) {{ $itemRow->getOthers() }} @endif</td>
