@@ -98,6 +98,7 @@ class SubmissionManager extends Service
                     foreach($currencyIds as $key=>$currencyId) {
                         $currency = Currency::find($currencyId);
                         if(!$currency) throw new \Exception("Invalid currency selected.");
+                        if($data['currency_quantity'][$holderKey][$key] < 0) throw new \Exception('Cannot attach a negative amount of currency.');
                         if(!$currencyManager->debitCurrency($holder, null, null, null, $currency, $data['currency_quantity'][$holderKey][$key])) throw new \Exception("Invalid currency/quantity selected.");
 
                         addAsset($userAssets, $currency, $data['currency_quantity'][$holderKey][$key]);
