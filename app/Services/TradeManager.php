@@ -169,6 +169,7 @@ class TradeManager extends Service
                 foreach($data['stack_id'] as $stackId) {
                     $stack = UserItem::with('item')->find($stackId);
                     if(!$stack || $stack->user_id != $user->id) throw new \Exception("Invalid item selected.");
+                    if(!isset($data['stack_quantity'][$stackId])) throw new \Exception("Invalid quantity selected.");
                     if(!$stack->item->allow_transfer || isset($stack->data['disallow_transfer'])) throw new \Exception("One or more of the selected items cannot be transferred.");
                     $stack->trade_count += $data['stack_quantity'][$stackId];
                     $stack->save();

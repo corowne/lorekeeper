@@ -1964,6 +1964,7 @@ is_object($sender) ? $sender->id : null,
                 foreach($data['stack_id'] as $stackId) {
                     $stack = UserItem::with('item')->find($stackId);
                     if(!$stack || $stack->user_id != $request->user_id) throw new \Exception("Invalid item selected.");
+                    if(!isset($data['stack_quantity'][$stackId])) throw new \Exception("Invalid quantity selected.");
                     $stack->update_count += $data['stack_quantity'][$stackId];
                     $stack->save();
 
