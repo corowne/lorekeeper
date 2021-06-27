@@ -73,8 +73,8 @@
                         @if(isset($character->data['end_point']))
                             {{ $character->data['end_point'] }}
                         @endif
-                        {{ isset($character->link) && isset($character->data['end_point']) ? ' ・ ' : '' }}
-                        @if(isset($character->link))
+                        {{ (isset($character->link) && ((!isset($character->sales->comments_open_at) || Auth::check() && Auth::user()->hasPower('edit_pages')) || $character->sales->comments_open_at < Carbon\Carbon::now())) && isset($character->data['end_point']) ? ' ・ ' : '' }}
+                        @if(isset($character->link) && ((!isset($character->sales->comments_open_at) || Auth::check() && Auth::user()->hasPower('edit_pages')) || $character->sales->comments_open_at < Carbon\Carbon::now()))
                             <a href="{{ $character->link }}">{{ $character->typeLink }}</a>
                         @endif
                     </h6>
