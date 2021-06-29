@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use Auth;
 use App\Models\Comment;
+use Config;
 
 class CommentPolicy
 {
@@ -44,8 +45,10 @@ class CommentPolicy
      */
     public function update($user, Comment $comment) : bool
     {
+        $canEdit = Config::Get('lorekeeper.extensions.forum_author_edit');
         if($comment->topComment->is_locked || $comment->commentable_type == 'App\Models\Forum' && $comment->commentable->canUsersPost()) {
             if($user->isStaff) return $user->getKey() == $comment->commenter_id;
+            else if($comment->commentable_type == 'App\Models\Forum' && $canEdit) return $user->getKey() == $comment->commenter_id;
             else return false;
         }
         else return $user->getKey() == $comment->commenter_id;

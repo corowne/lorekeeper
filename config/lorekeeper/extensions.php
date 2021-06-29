@@ -43,4 +43,7 @@ return [
     // Group Traits By Category - Uri
     'traits_by_category' => 0,
 
+    //Forum Posts Editable by Author - Wych
+    'forum_author_edit' => 0,
+
 ];
