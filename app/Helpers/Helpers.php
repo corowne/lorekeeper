@@ -230,19 +230,26 @@ function checkAlias($url, $failOnError = true)
         $matches = [];
         // Check to see if url is 1. from a site used for auth
         foreach(Config::get('lorekeeper.sites') as $key=>$site) if(isset($site['auth']) && $site['auth']) {
-            preg_match_all($site['regex'], $url, $matches);
+            preg_match_all($site['regex'], $url, $matches, PREG_SET_ORDER, 0);
             if($matches != []) {$urlSite = $key; break;}
         }
         if($matches[0] == [] && $failOnError) throw new \Exception('This URL is from an invalid site. Please provide a URL for a user profile from a site used for authentication.');
 
         // and 2. if it contains an alias associated with a user on-site.
-        if($matches[1] != [] && isset($matches[1][0])) {
-            $alias = App\Models\User\UserAlias::where('site', $urlSite)->where('alias', $matches[1][0])->first();
+
+        if($matches[0] != [] && isset($matches[0][1])) {
+            if($urlSite != 'discord') {
+                $alias = App\Models\User\UserAlias::where('site', $urlSite)->where('alias', $matches[0][1])->first();
+            }
+            else {
+                $alias = App\Models\User\UserAlias::where('site', $urlSite)->where('alias', $matches[0][0])->first();
+            }
             if($alias) $recipient = $alias->user;
             else $recipient = $url;
         }
 
-        return $recipient;
+            return $recipient;
+        }
     }
 }
 
@@ -261,7 +268,7 @@ function prettyProfileLink($url)
     }
 
     // Return formatted link if possible; failing that, an unformatted link
-    if(isset($name) && isset($site) && isset($link)) return '<a href="https://'.$link.'">'.$name.'@'.$site.'</a>';
+    if(isset($name) && isset($site) && isset($link)) return '<a href="https://'.$link.'">'.$name.'@'.(Config::get('lorekeeper.sites.'.$site.'.display_name') != null ? Config::get('lorekeeper.sites.'.$site.'.display_name') : $site).'</a>';
     else return '<a href="'.$url.'">'.$url.'</a>';
 }
 
@@ -280,6 +287,6 @@ function prettyProfileName($url)
     }
 
     // Return formatted name if possible; failing that, an unformatted url
-    if(isset($name) && isset($site)) return $name.'@'.$site;
+    if(isset($name) && isset($site)) return $name.'@'.(Config::get('lorekeeper.sites.'.$site.'.display_name') != null ? Config::get('lorekeeper.sites.'.$site.'.display_name') : $site);
     else return $url;
 }

@@ -13,7 +13,7 @@
     @if($galleryPage && $sideGallery->children->count())
         <li class="sidebar-section">
             <div class="sidebar-section-header">{{ $sideGallery->name }}: Sub-Galleries</div>
-            @foreach($sideGallery->children as $child)
+            @foreach($sideGallery->children()->visible()->get() as $child)
                 <div class="sidebar-item"><a href="{{ url('gallery/'.$child->id) }}" class="{{ set_active('gallery/'.$child->id) }}">{{ $child->name }}</a></div>
             @endforeach
         </li>

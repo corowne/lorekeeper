@@ -1,4 +1,4 @@
-@if($log->character->is_visible == 1)
+@if($log->character && $log->character->is_visible == 1)
 <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-top">
   <div class="col-6 col-md">
     <i class="btn py-1 m-0 px-2 btn-{{ (!$user || $log->recipient_id == $user->id) ? 'success' : 'danger' }} fas {{ (!$user || $log->recipient_id == $user->id) ? 'fa-arrow-up' : 'fa-arrow-down' }} mr-2"></i>

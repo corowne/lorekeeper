@@ -3,6 +3,7 @@
     $markdown->setSafeMode(true);
 @endphp
 
+@if($comment->deleted_at == null)
 @if(isset($reply) && $reply === true)
   <div id="comment-{{ $comment->getKey() }}" class="comment_replies border-left col-12 column mw-100 pr-0 pt-4" style="flex-basis: 100%;">
 @else
@@ -180,4 +181,53 @@
             </div>
 
     </div>
-  </div>
+</div>
+@else
+    @if(isset($reply) && $reply === true)
+    <div id="comment-{{ $comment->getKey() }}" class="comment_replies border-left col-12 column mw-100 pr-0 pt-4" style="flex-basis: 100%;">
+    @else
+    <div id="comment-{{ $comment->getKey() }}"  class="pt-4" style="flex-basis: 100%;">
+    @endif
+        <div class="media-body row mw-100 mx-0" style="flex:1;flex-wrap:wrap;">
+            @if(isset($compact) && !$compact)
+            <div class="d-none d-md-block">
+                <img class="mr-3 mt-2" src="/images/avatars/default.jpg" style="width:70px; height:70px; border-radius:50%;" alt="Default Avatar">
+            </div>
+            @endif
+            <div class="d-block bg-light" style="flex:1">
+                <div class="border p-3 rounded"><p>Comment deleted</p>
+                <p class="border-top pt-1 text-right mb-0">
+                    <small class="text-muted">{!! $comment->created_at !!}
+                    @if($comment->created_at != $comment->deleted_at)
+                        <span class="text-muted border-left mx-1 px-1">(Deleted {!! ($comment->deleted_at) !!})</span>
+                    @endif
+                    </small>
+                    @if($comment->type == "User-User")
+                        <a href="{{ url('comment/').'/'.$comment->id }}"><i class="fas fa-link ml-1" style="opacity: 50%;"></i></a>
+                    @endif
+                </p>
+            </div>
+        </div>
+        <br /><br />{{-- Margin bottom --}}
+        {{-- Recursion for children --}}
+        <div class="w-100 mw-100">
+            @if($grouped_comments->has($comment->getKey()))
+                @foreach($grouped_comments[$comment->getKey()] as $child)
+                    @php $limit++; @endphp
+
+                    @if($limit >= 3) 
+                        <a href="{{ url('comment/').'/'.$comment->id }}"><span class="btn btn-secondary w-100 my-2">See More Replies</span></a>
+                        @break
+                    @endif
+
+                    @include('comments::_comment', [
+                        'comment' => $child,
+                        'reply' => true,
+                        'grouped_comments' => $grouped_comments
+                    ])
+                @endforeach
+            @endif
+        </div>
+    </div>
+</div>
+@endif

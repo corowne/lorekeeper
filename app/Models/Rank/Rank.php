@@ -31,7 +31,7 @@ class Rank extends Model
      * @var array
      */
     public static $rules = [
-        'name' => 'required|between:3,25',
+        'name' => 'required|between:3,100',
         'description' => 'nullable',
         'color' => 'nullable|regex:/^#?[0-9a-fA-F]{6}$/i',
         'icon' => 'nullable'

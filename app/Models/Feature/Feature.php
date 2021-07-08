@@ -37,7 +37,7 @@ class Feature extends Model
         'species_id' => 'nullable',
         'subtype_id' => 'nullable',
         'rarity_id' => 'required|exists:rarities,id',
-        'name' => 'required|unique:features|between:3,25',
+        'name' => 'required|unique:features|between:3,100',
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
@@ -52,7 +52,7 @@ class Feature extends Model
         'species_id' => 'nullable',
         'subtype_id' => 'nullable',
         'rarity_id' => 'required|exists:rarities,id',
-        'name' => 'required|between:3,25',
+        'name' => 'required|between:3,100',
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];

@@ -29,7 +29,7 @@ class CharacterCategory extends Model
      * @var array
      */
     public static $createRules = [
-        'name' => 'required|unique:character_categories|between:3,25',
+        'name' => 'required|unique:character_categories|between:3,100',
         'code' => 'required|unique:character_categories|between:1,25',
         'description' => 'nullable',
         'image' => 'mimes:png',
@@ -41,7 +41,7 @@ class CharacterCategory extends Model
      * @var array
      */
     public static $updateRules = [
-        'name' => 'required|between:3,25',
+        'name' => 'required|between:3,100',
         'code' => 'required|between:1,25',
         'description' => 'nullable',
         'image' => 'mimes:png',
