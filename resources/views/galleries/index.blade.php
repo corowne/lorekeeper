@@ -31,7 +31,7 @@
                         @if($gallery->children->count())
                             Sub-galleries:
                             @foreach($gallery->children()->visible()->get() as $count=>$child)
-                                {!! $child->displayName !!}{{ !$loop->final ? ', ' : '' }}
+                                {!! $child->displayName !!}{{ !$loop->last ? ', ' : '' }}
                             @endforeach
                         @endif
                     </p>
