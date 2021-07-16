@@ -1961,13 +1961,14 @@ is_object($sender) ? $sender->id : null,
             // We're also not going to add logs as this might add unnecessary fluff to the logs and the items still belong to the user.
             // Perhaps later I'll add a way to locate items that are being held by updates/trades.
             if(isset($data['stack_id'])) {
-                foreach($data['stack_id'] as $key=>$stackId) {
+                foreach($data['stack_id'] as $stackId) {
                     $stack = UserItem::with('item')->find($stackId);
                     if(!$stack || $stack->user_id != $request->user_id) throw new \Exception("Invalid item selected.");
-                    $stack->update_count += $data['stack_quantity'][$key];
+                    if(!isset($data['stack_quantity'][$stackId])) throw new \Exception("Invalid quantity selected.");
+                    $stack->update_count += $data['stack_quantity'][$stackId];
                     $stack->save();
 
-                    addAsset($userAssets, $stack, $data['stack_quantity'][$key]);
+                    addAsset($userAssets, $stack, $data['stack_quantity'][$stackId]);
                 }
             }
 
