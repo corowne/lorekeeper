@@ -38,7 +38,11 @@
                 <td>{{ $log->type }}</td>
                 <td>
                     @foreach($log->data as $key => $value)
-                        <div><strong>{{ ucfirst(str_replace('_', ' ', $key)) }}: </strong>{{ $value }}</div>
+                        <div>
+                            @if(is_string($value))
+                                <strong>{{ ucfirst(str_replace('_', ' ', $key)) }}: </strong>{{ $value }}
+                            @endif
+                        </div>
                     @endforeach
                 </td>
                 <td>{!! format_date($log->created_at) !!}</td>

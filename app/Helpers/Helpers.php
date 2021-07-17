@@ -259,7 +259,7 @@ function prettyProfileLink($url)
     }
 
     // Return formatted link if possible; failing that, an unformatted link
-    if(isset($name) && isset($site) && isset($link)) return '<a href="https://'.$link.'">'.$name.'@'.$site.'</a>';
+    if(isset($name) && isset($site) && isset($link)) return '<a href="https://'.$link.'">'.$name.'@'.(Config::get('lorekeeper.sites.'.$site.'.display_name') != null ? Config::get('lorekeeper.sites.'.$site.'.display_name') : $site).'</a>';
     else return '<a href="'.$url.'">'.$url.'</a>';
 }
 
@@ -278,6 +278,6 @@ function prettyProfileName($url)
     }
 
     // Return formatted name if possible; failing that, an unformatted url
-    if(isset($name) && isset($site)) return $name.'@'.$site;
+    if(isset($name) && isset($site)) return $name.'@'.(Config::get('lorekeeper.sites.'.$site.'.display_name') != null ? Config::get('lorekeeper.sites.'.$site.'.display_name') : $site);
     else return $url;
 }

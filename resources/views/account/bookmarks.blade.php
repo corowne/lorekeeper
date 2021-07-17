@@ -9,6 +9,16 @@
 
 <p>Bookmarks allow you to keep track of characters that other users own without notifying them in any way. You can add new bookmarks by visiting the character's page and clicking the Bookmark button. You cannot bookmark your own characters, but characters you have bookmarked that are transferred to you will preserve the bookmarks until you delete them. Bookmarks on characters you own will not give you notifications.</p>
 
+{!! Form::open(['method' => 'GET']) !!}
+        <div class="form-inline justify-content-end mb-3">
+            <div class="form-group mr-3">
+                {!! Form::label('sort', 'Sort: ', ['class' => 'mr-2']) !!}
+                {!! Form::select('sort', ['number_desc' => 'Number Descending', 'number_asc' => 'Number Ascending', 'id_desc' => 'Newest Characters First', 'id_asc' => 'Oldest Characters First', 'sale_value_desc' => 'Highest Sale Value', 'sale_value_asc' => 'Lowest Sale Value', 'species_asc' => 'Species', 'species_desc' => 'Species (Reverse)', 'trade_asc' => 'Trade Status', 'trade_desc' => 'Trade Status (Reverse)', 'gift_art_asc' => 'Gift Art Status', 'gift_art_desc' => 'Gift Art Status (Reverse)', 'gift_write_asc' => 'Gift Writing Status', 'gift_write_desc' => 'Gift Writing Status (Reverse)'], Request::get('sort'), ['class' => 'form-control']) !!}
+            </div>
+            {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
+        </div>
+    {!! Form::close() !!}
+
 <div class="text-right mb-3">
     <div class="btn-group">
         <button type="button" class="btn btn-secondary active thumb-view-button" data-toggle="tooltip" title="Thumbnail View" alt="Grid View"><i class="fas fa-th-list"></i></button>
@@ -62,8 +72,8 @@
 
                     </td>
                     <td class="text-right">
-                        <a href="#" class="btn btn-outline-primary btn-sm edit-bookmark-button" data-id="{{ $bookmark->id }}">Edit</a>
-                        <a href="#" class="btn btn-outline-danger btn-sm delete-bookmark-button" data-id="{{ $bookmark->id }}">Delete</a>
+                        <a href="#" class="btn btn-outline-primary btn-sm edit-bookmark-button" data-id="{{ Auth::user()->bookmarks()->where('character_id', $bookmark->character_id)->first()->id }}">Edit</a>
+                        <a href="#" class="btn btn-outline-danger btn-sm delete-bookmark-button" data-id="{{ Auth::user()->bookmarks()->where('character_id', $bookmark->character_id)->first()->id }}">Delete</a>
                     </td>
                 </tr>
             @endforeach

@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 
 use Auth;
 
-use App\Models\Sales;
+use App\Models\Sales\Sales;
+use App\Models\Character\Character;
+
 use App\Services\SalesService;
 
 use App\Http\Controllers\Controller;
@@ -24,9 +26,9 @@ class SalesController extends Controller
             'saleses' => Sales::orderBy('post_at', 'DESC')->paginate(20)
         ]);
     }
-    
+
     /**
-     * Shows the create Sales page. 
+     * Shows the create Sales page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -36,7 +38,7 @@ class SalesController extends Controller
             'sales' => new Sales
         ]);
     }
-    
+
     /**
      * Shows the edit Sales page.
      *
@@ -53,6 +55,21 @@ class SalesController extends Controller
     }
 
     /**
+     * Shows character information.
+     *
+     * @param  string  $slug
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterInfo($slug)
+    {
+        $character = Character::visible()->where('slug', $slug)->first();
+
+        return view('home._character', [
+            'character' => $character,
+        ]);
+    }
+
+    /**
      * Creates or edits a Sales page.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -64,7 +81,9 @@ class SalesController extends Controller
     {
         $id ? $request->validate(Sales::$updateRules) : $request->validate(Sales::$createRules);
         $data = $request->only([
-            'title', 'text', 'post_at', 'is_visible', 'bump', 'is_open', 'comments_open_at'
+            'title', 'text', 'post_at', 'is_visible', 'bump', 'is_open', 'comments_open_at',
+            // Character information
+            'slug', 'sale_type', 'price', 'starting_bid', 'min_increment', 'autobuy', 'end_point', 'minimum', 'description', 'link', 'character_is_open', 'new_entry'
         ]);
         if($id && $service->updateSales(Sales::find($id), $data, Auth::user())) {
             flash('Sales updated successfully.')->success();
@@ -78,7 +97,7 @@ class SalesController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Gets the Sales deletion modal.
      *

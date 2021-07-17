@@ -5,7 +5,9 @@ namespace App\Models\User;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Auth;
 use Config;
+use Carbon\Carbon;
 
 use App\Models\Character\Character;
 use App\Models\Character\CharacterImageCreator;
@@ -35,7 +37,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned', 'has_alias', 'avatar', 'is_sales_unread'
+        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned', 'has_alias', 'avatar', 'is_sales_unread', 'birthday'
     ];
 
     /**
@@ -55,6 +57,13 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Dates on the model to convert to Carbon instances.
+     *
+     * @var array
+     */
+    protected $dates = ['birthday'];
 
     /**
      * Accessors to append to the model.
@@ -172,6 +181,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public function galleryFavorites()
     {
         return $this->hasMany('App\Models\Gallery\GalleryFavorite')->where('user_id', $this->id);
+    }
+
+    /**
+     * Get all of the user's character bookmarks.
+     */
+    public function bookmarks()
+    {
+        return $this->hasMany('App\Models\Character\CharacterBookmark')->where('user_id', $this->id);
     }
 
     /**********************************************************************************************
@@ -328,6 +345,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return 'User';
     }
 
+
+
     /**
      * Gets the user's forum post count.
      *
@@ -338,6 +357,45 @@ class User extends Authenticatable implements MustVerifyEmail
         return Comment::where('commentable_type','App\Models\Forum')->where('commenter_id',$this->id)->count();
     }
 
+
+
+    /**
+     * Get's user birthday setting
+     */
+    public function getBirthdayDisplayAttribute()
+    {
+        //
+        $icon = null;
+        $bday = $this->birthday;
+        if(!isset($bday)) return 'N/A';
+
+        if($bday->format('d M') == carbon::now()->format('d M')) $icon = '<i class="fas fa-birthday-cake ml-1"></i>';
+        //
+        switch($this->settings->birthday_setting) {
+            case 0:
+                return null;
+            break;
+            case 1:
+                if(Auth::check()) return $bday->format('d M') . $icon;
+            break;
+            case 2:
+                return $bday->format('d M') . $icon;
+            break;
+            case 3:
+                return $bday->format('d M Y') . $icon;
+            break;
+        }
+    }
+
+    /**
+     * Check if user is of age
+     */
+    public function getcheckBirthdayAttribute()
+    {
+        $bday = $this->birthday;
+        if(!$bday || $bday->diffInYears(carbon::now()) < 13) return false;
+        else return true;
+    }
     /**********************************************************************************************
 
         OTHER FUNCTIONS

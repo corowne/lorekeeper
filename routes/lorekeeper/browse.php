@@ -50,6 +50,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'Users'], function() {
     Route::get('{name}/favorites/own-characters', 'UserController@getUserOwnCharacterFavorites');
 
     Route::get('{name}', 'UserController@getUser');
+    Route::get('{name}/aliases', 'UserController@getUserAliases');
     Route::get('{name}/characters', 'UserController@getUserCharacters');
     Route::get('{name}/sublist/{key}', 'UserController@getUserSublist');
     Route::get('{name}/myos', 'UserController@getUserMyoSlots');
