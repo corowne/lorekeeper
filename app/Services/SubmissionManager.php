@@ -376,7 +376,7 @@ class SubmissionManager extends Service
             {
                 foreach($addonData['currencies'] as $currencyId=>$quantity) {
                     $currency = Currency::find($currencyId);
-                    if(!$currencyManager->createLog($submission->user->id, 'User', null, null,
+                    if(!$currencyManager->createLog($submission->user_id, 'User', null, null,
                     $submission->prompt_id ? 'Prompt Approved' : 'Claim Approved', 'Used in ' . ($submission->prompt_id ? 'prompt' : 'claim') . ' (<a href="'.$submission->viewUrl.'">#'.$submission->id.'</a>)', $currencyId, $quantity))
                         throw new \Exception("Failed to create currency log.");
                 }
