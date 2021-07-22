@@ -60,6 +60,7 @@ class InventoryManager extends Service
 
             foreach($users as $user) {
                 foreach($items as $item) {
+                    if(!logAdminAction($staff, 'Item Grant', 'Granted '.$keyed_quantities[$item->id].' '.$item->displayName.' to '.$user->displayname)) throw new \Exception("Failed to log admin action.");
                     if($this->creditItem($staff, $user, 'Staff Grant', Arr::only($data, ['data', 'disallow_transfer', 'notes']), $item, $keyed_quantities[$item->id]))
                     {
                         Notifications::create('ITEM_GRANT', $user, [
@@ -116,6 +117,7 @@ class InventoryManager extends Service
             if(!count($items)) throw new \Exception("No valid items found.");
             
             foreach($items as $item) {
+                if(!logAdminAction($staff, 'Item Grant', 'Granted '.$keyed_quantities[$item->id].' '.$item->displayName.' to '.$character->displayname)) throw new \Exception("Failed to log admin action.");
                 $this->creditItem($staff, $character, 'Staff Grant', Arr::only($data, ['data', 'disallow_transfer', 'notes']), $item, $keyed_quantities[$item->id]);
                 if($character->is_visible && $character->user_id) {
                     Notifications::create('CHARACTER_ITEM_GRANT', $character->user, [

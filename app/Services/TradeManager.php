@@ -419,6 +419,8 @@ class TradeManager extends Service
                     'trade_id' => $trade->id
                 ]);
 
+                if(!logAdminAction($staff, 'Approved Trade', 'Approved trade <a href="'.$trade->url.'">#'.$trade->id.'</a>')) throw new \Exception("Failed to log admin action.");
+
                 $trade->status = 'Completed';
                 $trade->staff_id = $user->id;
                 $trade->save();
@@ -456,6 +458,8 @@ class TradeManager extends Service
                 Notifications::create('TRADE_REJECTED', $trade->recipient, [
                     'trade_id' => $trade->id
                 ]);
+
+                if(!logAdminAction($staff, 'Rejected Trade', 'Rejected trade <a href="'.$trade->url.'">#'.$trade->id.'</a>')) throw new \Exception("Failed to log admin action.");
 
                 $trade->reason = isset($data['reason']) ? $data['reason'] : '';
                 $trade->status = 'Rejected';

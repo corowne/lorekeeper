@@ -281,3 +281,22 @@ function prettyProfileName($url)
     if(isset($name) && isset($site)) return $name.'@'.(Config::get('lorekeeper.sites.'.$site.'.display_name') != null ? Config::get('lorekeeper.sites.'.$site.'.display_name') : $site);
     else return $url;
 }
+
+/**
+ * Creates an admin log entry after an action is performed.
+ * 
+ * @param  string  $action
+ * @param  object  $user
+ * @param  string  $action
+ */
+function logAdminAction($user, $action, $action_details)
+{
+    $log = \App\Models\AdminLog::create([
+        'user_id' => $user->id,
+        'action' => $action,
+        'action_details' => $action_details,
+    ]);
+
+    if($log) return true;
+    else return false;
+}

@@ -229,7 +229,7 @@ class UserService extends Service
                 $galleryManager = new GalleryManager;
                 $gallerySubmissions = GallerySubmission::where('user_id', $user->id)->where('status', 'Pending')->get();
                 foreach($gallerySubmissions as $submission) {
-                    $galleryManager->rejectSubmission($submission);
+                    $galleryManager->rejectSubmission($submission, $staff);
                     $galleryManager->postStaffComments($submission->id, ['staff_comments' => 'User has been banned from site activity.'], $staff);
                 }
                 $gallerySubmissions = GallerySubmission::where('user_id', $user->id)->where('status', 'Accepted')->get();
