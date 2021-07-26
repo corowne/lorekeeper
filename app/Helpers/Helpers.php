@@ -248,10 +248,10 @@ function checkAlias($url, $failOnError = true)
             else $recipient = $url;
         }
 
-            return $recipient;
-        }
+        return $recipient;
     }
 }
+
 
 /**
  * Prettifies links to user profiles on various sites in a "user@site" format.
