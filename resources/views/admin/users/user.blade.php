@@ -32,7 +32,7 @@
                 @if($user->isAdmin)
                     {!! add_help('The rank of the admin user cannot be edited.') !!}
                 @elseif(!Auth::user()->canEditRank($user->rank))
-                    add_help('Your rank is not high enough to edit this user.')
+                    {!! add_help('Your rank is not high enough to edit this user.') !!}
                 @endif
             </label>
             <div class="col-md-10">
