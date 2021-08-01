@@ -389,6 +389,51 @@ class CharacterController extends Controller
     }
 
     /**
+     * Shows a character's item logs.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterExpLogs($slug)
+    {
+        $character = $this->character;
+        return view('character.stats.exp_logs', [
+            'character' => $this->character,
+            'logs' => $this->character->getExpLogs(0)
+        ]);
+    }
+
+    /**
+     * Shows a user's stat logs.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterStatLogs($slug)
+    {
+        $character = $this->character;
+        return view('character.stats.stat_logs', [
+            'character' => $this->character,
+            'logs' => $this->character->getStatLogs(0)
+        ]);
+    }
+
+    /**
+     * Shows a user's count logs.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterCountLogs($slug)
+    {
+        $character = $this->character;
+        return view('character.stats.count_logs', [
+            'character' => $this->character,
+            'logs' => $this->character->getCountLogs(0)
+        ]);
+    }
+
+    /**
      * Shows a character's ownership logs.
      *
      * @param  string  $slug

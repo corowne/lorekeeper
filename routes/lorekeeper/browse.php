@@ -86,6 +86,9 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() 
     Route::get('{slug}/ownership', 'CharacterController@getCharacterOwnershipLogs');
     Route::get('{slug}/change-log', 'CharacterController@getCharacterLogs');
     Route::get('{slug}/submissions', 'CharacterController@getCharacterSubmissions');
+    Route::get('{slug}/exp-logs', 'CharacterController@getCharacterExpLogs');
+    Route::get('{slug}/stat-logs', 'CharacterController@getCharacterStatLogs');
+    Route::get('{slug}/count-logs', 'CharacterController@getCharacterCountLogs');
 
     Route::get('{slug}/gallery', 'CharacterController@getCharacterGallery');
 });

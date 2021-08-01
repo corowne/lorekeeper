@@ -1,6 +1,6 @@
-@extends('character.layout')
+@extends('character.layout', ['isMyo' => $character->is_myo_slot])
 
-@section('profile-title') {{ $character->slug }}'s EXP Logs @endsection
+@section('profile-title') {{ $character->slug }}'s Stat Logs @endsection
 
 @section('profile-content')
 {!! breadcrumbs(['Characters' => 'characters', $character->slug => $character->url, 'Level' => $character->url . '/level', 'Logs' => $character->url.'/stat-logs']) !!}
