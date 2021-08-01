@@ -13,6 +13,7 @@ use App\Models\Character\Character;
 use App\Models\Species\Species;
 use App\Models\Rarity;
 use App\Models\Feature\Feature;
+use App\Models\Character\CharacterProfile;
 
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
@@ -124,6 +125,8 @@ class CharacterController extends Controller
         $isMod = Auth::user()->hasPower('manage_characters');
         $isOwner = ($this->character->user_id == Auth::user()->id);
         if(!$isMod && !$isOwner) abort(404);
+
+        $request->validate(CharacterProfile::$rules);
 
         if($service->updateCharacterProfile($request->only(['name', 'link', 'text', 'is_gift_art_allowed', 'is_gift_writing_allowed', 'is_trading', 'alert_user']), $this->character, Auth::user(), !$isOwner)) {
             flash('Profile edited successfully.')->success();

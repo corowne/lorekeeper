@@ -101,6 +101,7 @@ class SubmissionManager extends Service
                     foreach($currencyIds as $key=>$currencyId) {
                         $currency = Currency::find($currencyId);
                         if(!$currency) throw new \Exception("Invalid currency selected.");
+                        if($data['currency_quantity'][$holderKey][$key] < 0) throw new \Exception('Cannot attach a negative amount of currency.');
                         if(!$currencyManager->debitCurrency($holder, null, null, null, $currency, $data['currency_quantity'][$holderKey][$key])) throw new \Exception("Invalid currency/quantity selected.");
 
                         addAsset($userAssets, $currency, $data['currency_quantity'][$holderKey][$key]);
@@ -398,7 +399,7 @@ class SubmissionManager extends Service
             {
                 foreach($addonData['currencies'] as $currencyId=>$quantity) {
                     $currency = Currency::find($currencyId);
-                    if(!$currencyManager->createLog($user->id, 'User', null, null,
+                    if(!$currencyManager->createLog($submission->user_id, 'User', null, null,
                     $submission->prompt_id ? 'Prompt Approved' : 'Claim Approved', 'Used in ' . ($submission->prompt_id ? 'prompt' : 'claim') . ' (<a href="'.$submission->viewUrl.'">#'.$submission->id.'</a>)', $currencyId, $quantity))
                         throw new \Exception("Failed to create currency log.");
                 }
