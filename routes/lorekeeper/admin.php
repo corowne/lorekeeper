@@ -459,7 +459,7 @@ Route::group(['prefix' => 'stats', 'namespace' => 'Stats', 'middleware' => 'powe
 Route::group(['prefix' => 'levels', 'namespace' => 'Stats', 'middleware' => 'power:edit_levels'], function() {
     # USER 
     // GET
-    Route::get('/', 'LevelController@getIndex');
+    Route::get('/user', 'LevelController@getIndex');
     Route::get('/create', 'LevelController@getCreateLevel');
     Route::get('/edit/{id}', 'LevelController@getEditLevel');
     Route::get('/delete/{id}', 'LevelController@getDeleteLevel');
