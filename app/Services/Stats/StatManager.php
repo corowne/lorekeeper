@@ -169,7 +169,7 @@ class StatManager extends Service
             $stat->save();
 
             $type =  'Staff Edit';
-            $data = 'Editted by staff';
+            $data = 'Edited by staff';
             
             if(!$this->createCountLog($sender->id, $sender->logtype, $character, $type, $data, $quantity)) throw new \Exception('Error creating log.');
 

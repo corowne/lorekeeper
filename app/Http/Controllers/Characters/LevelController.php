@@ -164,7 +164,7 @@ class LevelController extends Controller
         $stat = CharacterStat::find($id);
         if($service->editCharaStat($stat, $character, $quantity)) 
         {
-            flash('Characters stat editted successfully!')->success();
+            flash('Characters stat edited successfully!')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
