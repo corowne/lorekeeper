@@ -109,6 +109,9 @@ class LevelController extends Controller
                     ]);
                 }
             }
+
+            // Refresh the model instance so that newly created stats are immediately available
+            $character->refresh();
         }
 
         return view('character.stats.stat_area', [
