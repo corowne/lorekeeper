@@ -7,7 +7,7 @@
         <div class="sidebar-item"><a href="{{ $character->url . '/gallery' }}" class="{{ set_active('character/'.$character->slug.'/gallery') }}">Gallery</a></div>
         <div class="sidebar-item"><a href="{{ $character->url . '/inventory' }}" class="{{ set_active('character/'.$character->slug.'/inventory') }}">Inventory</a></div>
         <div class="sidebar-item"><a href="{{ $character->url . '/bank' }}" class="{{ set_active('character/'.$character->slug.'/bank') }}">Bank</a></div>
-        <div class="sidebar-item"><a href="{{ $character->url . '/level-logs' }}" class="{{ set_active('character/'.$character->slug.'/level-logs') }}">Level Logs</a></div>
+        <div class="sidebar-item"><a href="{{ $character->url . '/level' }}" class="{{ set_active('character/'.$character->slug.'/level') }}">Level Logs</a></div>
     </li>
     <li class="sidebar-section">
         <div class="sidebar-section-header">History</div>

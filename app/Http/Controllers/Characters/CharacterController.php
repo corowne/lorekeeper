@@ -419,6 +419,21 @@ class CharacterController extends Controller
     }
 
     /**
+     * Shows a user's level logs.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterLevelLogs($slug)
+    {
+        $character = $this->character;
+        return view('character.stats.level_logs', [
+            'character' => $this->character,
+            'logs' => $this->character->getLevelLogs(0)
+        ]);
+    }
+
+    /**
      * Shows a user's count logs.
      *
      * @param  string  $name

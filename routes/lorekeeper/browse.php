@@ -77,7 +77,7 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() 
     Route::get('{slug}', 'CharacterController@getCharacter');
     Route::get('{slug}/profile', 'CharacterController@getCharacterProfile');
     Route::get('{slug}/bank', 'CharacterController@getCharacterBank');
-    Route::get('{slug}/level-logs', 'CharacterController@getCharacterLevel');
+    Route::get('{slug}/level', 'CharacterController@getCharacterLevel');
     Route::get('{slug}/inventory', 'CharacterController@getCharacterInventory');
     Route::get('{slug}/images', 'CharacterController@getCharacterImages');
     
@@ -88,6 +88,7 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() 
     Route::get('{slug}/submissions', 'CharacterController@getCharacterSubmissions');
     Route::get('{slug}/exp-logs', 'CharacterController@getCharacterExpLogs');
     Route::get('{slug}/stat-logs', 'CharacterController@getCharacterStatLogs');
+    Route::get('{slug}/level-logs', 'CharacterController@getCharacterLevelLogs');
     Route::get('{slug}/count-logs', 'CharacterController@getCharacterCountLogs');
 
     Route::get('{slug}/gallery', 'CharacterController@getCharacterGallery');

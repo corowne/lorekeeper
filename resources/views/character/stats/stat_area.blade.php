@@ -62,7 +62,7 @@
 </div>
 
 <div class="text-right mt-2 mb-4">
-    <a href="{{ url($character->url.'/level-logs') }}">View logs...</a>
+    <a href="{{ url($character->url.'/level') }}">View logs...</a>
 </div>
 
 @if(Auth::check() && Auth::user()->isStaff)
