@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 
+use App\Services\InvitationService;
+
 class CreateNewUser implements CreatesNewUsers
 {
     use PasswordValidationRules;
@@ -37,10 +39,16 @@ class CreateNewUser implements CreatesNewUsers
             ]
         ])->validate();
 
-        return User::create([
+        $user = User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
+            'rank_id' => 2,
         ]);
+
+        if(isset($input['code']))
+            if(!(new InvitationService)->useInvitation(Invitation::where('code', $input['code'])->whereNull('recipient_id')->first(), $user)) throw new \Exception('An error occurred while using the invitation code.');
+
+        return $user;
     }
 }
