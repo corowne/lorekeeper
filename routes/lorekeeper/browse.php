@@ -50,6 +50,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'Users'], function() {
     Route::get('{name}/favorites/own-characters', 'UserController@getUserOwnCharacterFavorites');
 
     Route::get('{name}', 'UserController@getUser');
+    Route::get('{name}/aliases', 'UserController@getUserAliases');
     Route::get('{name}/characters', 'UserController@getUserCharacters');
     Route::get('{name}/sublist/{key}', 'UserController@getUserSublist');
     Route::get('{name}/myos', 'UserController@getUserMyoSlots');
@@ -76,7 +77,7 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() 
     Route::get('{slug}', 'CharacterController@getCharacter');
     Route::get('{slug}/profile', 'CharacterController@getCharacterProfile');
     Route::get('{slug}/bank', 'CharacterController@getCharacterBank');
-    Route::get('{slug}/level-logs', 'CharacterController@getCharacterLevel');
+    Route::get('{slug}/level', 'CharacterController@getCharacterLevel');
     Route::get('{slug}/inventory', 'CharacterController@getCharacterInventory');
     Route::get('{slug}/images', 'CharacterController@getCharacterImages');
     
@@ -85,6 +86,10 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() 
     Route::get('{slug}/ownership', 'CharacterController@getCharacterOwnershipLogs');
     Route::get('{slug}/change-log', 'CharacterController@getCharacterLogs');
     Route::get('{slug}/submissions', 'CharacterController@getCharacterSubmissions');
+    Route::get('{slug}/exp-logs', 'CharacterController@getCharacterExpLogs');
+    Route::get('{slug}/stat-logs', 'CharacterController@getCharacterStatLogs');
+    Route::get('{slug}/level-logs', 'CharacterController@getCharacterLevelLogs');
+    Route::get('{slug}/count-logs', 'CharacterController@getCharacterCountLogs');
 
     Route::get('{slug}/gallery', 'CharacterController@getCharacterGallery');
 });

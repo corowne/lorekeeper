@@ -50,10 +50,10 @@
                                     }
                                     if(isset($item->update_count) && $item->update_count > 0)
                                         foreach($userUpdates as $update)
-                                            if($update->data['user'] != [] && isset($update->data['user']['user_items']) && isset($update->data['user']['user_items'][$item->id])) $holdLocations['update'][$update->id] = $update->data['user']['user_items'][$item->id];
+                                            if(isset($update->data['user']) && $update->data['user'] != [] && isset($update->data['user']['user_items']) && isset($update->data['user']['user_items'][$item->id])) $holdLocations['update'][$update->id] = $update->data['user']['user_items'][$item->id];
                                     if(isset($item->submission_count) && $item->submission_count > 0)
                                         foreach($userSubmissions as $submission)
-                                            if($submission->data['user'] != [] && isset($submission->data['user']['user_items']) && isset($submission->data['user']['user_items'][$item->id])) $holdLocations['submission'][$submission->id] = $submission->data['user']['user_items'][$item->id];
+                                            if(isset($update->data['user']) && $submission->data['user'] != [] && isset($submission->data['user']['user_items']) && isset($submission->data['user']['user_items'][$item->id])) $holdLocations['submission'][$submission->id] = $submission->data['user']['user_items'][$item->id];
 
                                     // Format a string with all the places a stack is held
                                     $held = [];

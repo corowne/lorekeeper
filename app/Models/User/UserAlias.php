@@ -40,6 +40,23 @@ class UserAlias extends Model
 
     /**********************************************************************************************
 
+        SCOPES
+
+    **********************************************************************************************/
+
+    /**
+     * Scope a query to only include visible aliases.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeVisible($query)
+    {
+        return $query->where('is_visible', 1);
+    }
+
+    /**********************************************************************************************
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -62,6 +79,36 @@ class UserAlias extends Model
      */
     public function getDisplayAliasAttribute()
     {
-        return '<a href="'.$this->url.'">'.$this->alias.'@'.$this->site.'</a>';
+        return '<a href="'.$this->url.'">'.$this->alias.'@'.$this->siteDisplayName.'</a>';
+    }
+
+    /**
+     * Retrieves the config data for the site.
+     *
+     * @return string
+     */
+    public function getConfigAttribute()
+    {
+        return Config::get('lorekeeper.sites.' . $this->site);
+    }
+
+    /**
+     * Retrieves the display name of the alias's site.
+     *
+     * @return string
+     */
+    public function getSiteDisplayNameAttribute()
+    {
+        return Config::get('lorekeeper.sites.' . $this->site . '.display_name');
+    }
+
+    /**
+     * Checks if this alias can be made a primary alias.
+     *
+     * @return string
+     */
+    public function getCanMakePrimaryAttribute()
+    {
+        return Config::get('lorekeeper.sites.' . $this->site . '.primary_alias');
     }
 }

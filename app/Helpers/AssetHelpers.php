@@ -318,12 +318,6 @@ function fillCharacterAssets($assets, $sender, $recipient, $logType, $data, $sub
             foreach($contents as $asset)
                 if(!$service->creditItem($sender, ( ($asset['asset']->category && $asset['asset']->category->is_character_owned) ? $recipient : $item_recipient), $logType, $data, $asset['asset'], $asset['quantity'])) return false;
         }
-        if($key == 'items' && count($contents))
-        {
-            $service = new \App\Services\InventoryManager;
-            foreach($contents as $asset)
-                if(!$service->creditItem($sender, $recipient, $logType, $data, $asset['asset'], $asset['quantity'])) return false;
-        }
     }
     return $assets;
 }

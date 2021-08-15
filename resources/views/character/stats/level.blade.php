@@ -55,7 +55,7 @@
     <a href="{{ url($character->url.'/stat-logs') }}">View all...</a>
 </div>
 
-<h3>Latest Level-UP Activity</h3>
+<h3>Latest Level-Up Activity</h3>
 <table class="table table-sm">
     <thead>
         <th></th>
@@ -84,7 +84,7 @@
    </thead>
     <tbody>
         @foreach($counts as $count)
-            @include('character.stats._count_log_row', ['exp' => $count, 'owner' => $character])
+            @include('character.stats._count_log_row', ['count' => $count, 'owner' => $character])
         @endforeach
     </tbody>
 </table>

@@ -16,7 +16,7 @@
         @endif
         {{ $gallery->start_at && $gallery->end_at ? ' ・ ' : '' }}
         @if($gallery->end_at)
-            <strong>Close{{ $gallery->end_at->isFuture() ? 's' : 'ed' }}: </strong>{!! pretty_date($gallery->end_at) !!}
+            <strong>Close{{ $gallery->end_at->isFuture() ? 's' : 'd' }}: </strong>{!! pretty_date($gallery->end_at) !!}
         @endif
     </p>
 @endif

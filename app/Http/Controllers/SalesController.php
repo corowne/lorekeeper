@@ -7,7 +7,7 @@ use Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\Models\Sales;
+use App\Models\Sales\Sales;
 
 class SalesController extends Controller
 {
@@ -30,7 +30,7 @@ class SalesController extends Controller
         if(Auth::check() && Auth::user()->is_sales_unread) Auth::user()->update(['is_sales_unread' => 0]);
         return view('sales.index', ['saleses' => Sales::visible()->orderBy('id', 'DESC')->paginate(10)]);
     }
-    
+
     /**
      * Shows a sales post.
      *

@@ -20,7 +20,7 @@
 <h5><i class="text-{{ $character->is_sellable ? 'success far fa-circle' : 'danger fas fa-times'  }} fa-fw mr-2"></i> {{ $character->is_sellable ? 'Can' : 'Cannot'  }} be sold</h5>
 <div class="row">
     <div class="col-lg-3 col-4"><h5>Sale Value</h5></div>
-    <div class="col-lg-9 col-8">${{ $character->sale_value }}</div>
+    <div class="col-lg-9 col-8">{{ Config::get('lorekeeper.settings.currency_symbol') }}{{ $character->sale_value }}</div>
 </div>
 @if($character->transferrable_at && $character->transferrable_at->isFuture())
     <div class="row">

@@ -50,7 +50,7 @@ class LevelManager extends Service
 
             if(!$service->debitExp($user, 'Level Up', 'Used EXP in level up.', $level, $next->exp_required))
             {
-                throw new \Exception('Error debitting exp.');
+                throw new \Exception('Error debiting exp.');
             }
 
             // give stat points
@@ -136,7 +136,7 @@ class LevelManager extends Service
 
             if(!$service->debitExp($character, 'Level Up', 'Used EXP in level up.', $level, $next->exp_required))
             {
-                throw new \Exception('Error debitting exp.');
+                throw new \Exception('Error debiting exp.');
             }
 
             // give stat points

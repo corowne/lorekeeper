@@ -1,4 +1,4 @@
-@extends('character.layout')
+@extends('character.layout', ['isMyo' => $character->is_myo_slot])
 
 @section('profile-title') {{ $character->slug }}'s EXP Logs @endsection
 
@@ -20,7 +20,7 @@
     </thead>
     <tbody>
         @foreach($logs as $log)
-            @include('character._exp_log_row', ['exp' => $log, 'owner' => $character])
+            @include('character.stats._exp_log_row', ['exp' => $log, 'owner' => $character])
         @endforeach
     </tbody>
 </table>

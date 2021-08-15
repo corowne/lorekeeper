@@ -44,7 +44,7 @@
 </div>
 
 <div class="text-right mb-4">
-    <a href="{{ url($user->url.'/level-logs') }}">View logs...</a>
+    <a href="{{ url($user->url.'/level') }}">View logs...</a>
 </div>
 <hr>
 <div class="container">

@@ -13,6 +13,7 @@ use App\Models\Character\Character;
 use App\Models\Species\Species;
 use App\Models\Rarity;
 use App\Models\Feature\Feature;
+use App\Models\Character\CharacterProfile;
 
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
@@ -124,6 +125,8 @@ class CharacterController extends Controller
         $isMod = Auth::user()->hasPower('manage_characters');
         $isOwner = ($this->character->user_id == Auth::user()->id);
         if(!$isMod && !$isOwner) abort(404);
+
+        $request->validate(CharacterProfile::$rules);
 
         if($service->updateCharacterProfile($request->only(['name', 'link', 'text', 'is_gift_art_allowed', 'is_gift_writing_allowed', 'is_trading', 'alert_user']), $this->character, Auth::user(), !$isOwner)) {
             flash('Profile edited successfully.')->success();
@@ -382,6 +385,66 @@ class CharacterController extends Controller
         return view('character.item_logs', [
             'character' => $this->character,
             'logs' => $this->character->getItemLogs(0)
+        ]);
+    }
+
+    /**
+     * Shows a character's item logs.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterExpLogs($slug)
+    {
+        $character = $this->character;
+        return view('character.stats.exp_logs', [
+            'character' => $this->character,
+            'logs' => $this->character->getExpLogs(0)
+        ]);
+    }
+
+    /**
+     * Shows a user's stat logs.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterStatLogs($slug)
+    {
+        $character = $this->character;
+        return view('character.stats.stat_logs', [
+            'character' => $this->character,
+            'logs' => $this->character->getStatLogs(0)
+        ]);
+    }
+
+    /**
+     * Shows a user's level logs.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterLevelLogs($slug)
+    {
+        $character = $this->character;
+        return view('character.stats.level_logs', [
+            'character' => $this->character,
+            'logs' => $this->character->getLevelLogs(0)
+        ]);
+    }
+
+    /**
+     * Shows a user's count logs.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterCountLogs($slug)
+    {
+        $character = $this->character;
+        return view('character.stats.count_logs', [
+            'character' => $this->character,
+            'logs' => $this->character->getCountLogs(0)
         ]);
     }
 

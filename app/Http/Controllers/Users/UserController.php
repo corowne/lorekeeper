@@ -75,6 +75,23 @@ class UserController extends Controller
     }
 
     /**
+     * Shows a user's aliases.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserAliases($name)
+    {
+        $aliases = $this->user->aliases();
+        if(!Auth::check() || !(Auth::check() && Auth::user()->hasPower('edit_user_info'))) $aliases->visible();
+        
+        return view('user.aliases', [
+            'user' => $this->user,
+            'aliases' => $aliases->orderBy('is_primary_alias', 'DESC')->orderBy('site')->get(),
+        ]);
+    }
+
+    /**
      * Shows a user's characters.
      *
      * @param  string  $name
@@ -260,7 +277,7 @@ class UserController extends Controller
     }
 
     /**
-     * Shows a user's item logs.
+     * Shows a user's exp logs.
      *
      * @param  string  $name
      * @return \Illuminate\Contracts\Support\Renderable
@@ -276,12 +293,12 @@ class UserController extends Controller
     }
 
     /**
-     * Shows a user's item logs.
+     * Shows a user's level logs.
      *
      * @param  string  $name
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUserlevelLogs($name)
+    public function getUserLevelLogs($name)
     {
         $user = $this->user;
         return view('user.level_logs', [
@@ -292,7 +309,7 @@ class UserController extends Controller
     }
 
     /**
-     * Shows a user's item logs.
+     * Shows a user's stat logs.
      *
      * @param  string  $name
      * @return \Illuminate\Contracts\Support\Renderable

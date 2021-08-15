@@ -21,6 +21,7 @@ Route::group(['prefix' => 'users', 'namespace' => 'Users'], function() {
         Route::post('{name}/basic', 'UserController@postUserBasicInfo');
         Route::post('{name}/alias/{id}', 'UserController@postUserAlias');
         Route::post('{name}/account', 'UserController@postUserAccount');
+        Route::post('{name}/birthday', 'UserController@postUserBirthday');
         Route::get('{name}/updates', 'UserController@getUserUpdates');
         Route::get('{name}/ban', 'UserController@getBan');
         Route::get('{name}/ban-confirm', 'UserController@getBanConfirmation');
@@ -263,6 +264,8 @@ Route::group(['prefix' => 'sales', 'middleware' => 'power:edit_pages'], function
     Route::post('create', 'SalesController@postCreateEditSales');
     Route::post('edit/{id?}', 'SalesController@postCreateEditSales');
     Route::post('delete/{id}', 'SalesController@postDeleteSales');
+
+    Route::get('character/{slug}', 'SalesController@getCharacterInfo');
 });
 
 # SITE SETTINGS
@@ -456,7 +459,7 @@ Route::group(['prefix' => 'stats', 'namespace' => 'Stats', 'middleware' => 'powe
 Route::group(['prefix' => 'levels', 'namespace' => 'Stats', 'middleware' => 'power:edit_levels'], function() {
     # USER 
     // GET
-    Route::get('/', 'LevelController@getIndex');
+    Route::get('/user', 'LevelController@getIndex');
     Route::get('/create', 'LevelController@getCreateLevel');
     Route::get('/edit/{id}', 'LevelController@getEditLevel');
     Route::get('/delete/{id}', 'LevelController@getDeleteLevel');
