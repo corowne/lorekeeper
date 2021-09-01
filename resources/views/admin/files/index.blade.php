@@ -166,14 +166,22 @@
                 {{-- Upload a file --}}
                 {!! Form::open(['url' => 'admin/files/upload', 'id' => 'uploadForm', 'class' => 'file-form', 'files' => true]) !!}
                     <p>Select a file to upload. (Maximum size {{ min(ini_get("upload_max_filesize"), ini_get("post_max_size")) }}B.)</p>
-                    <div class="form-group">
-                        {!! Form::file('file', ['class' => 'form-control']) !!}
+                    <div id="fileList">
+                        <div class="d-flex mb-2">
+                            {!! Form::file('files[]', ['class' => 'form-control']) !!}
+                        </div>
                     </div>
                     <div class="text-right">
                         {!! Form::submit('Upload', ['class' => 'btn btn-primary']) !!}
                     </div>
                     {!! Form::hidden('folder', $folder, ['class' => 'edit-folder']) !!}
+                    <div class="btn btn-primary" id="add-file">
+                        Add File
+                    </div>
                 {!! Form::close() !!}
+                <div class="file-row hide mb-2">
+                    {!! Form::file('files[]', ['class' => 'form-control']) !!}
+                </div>
             </div>
         </div>
     </div>
@@ -184,6 +192,19 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
+        //////////
+        $('#add-file').on('click', function(e) {
+            e.preventDefault();
+            addFileRow();
+        });
+        function addFileRow() {
+            var $clone = $('.file-row').clone();
+            $('#fileList').append($clone);
+            $clone.removeClass('hide file-row');
+            $clone.addClass('d-flex');
+        }
+
+        /////////
         $('#createFolder').on('click', function(e) {
             e.preventDefault();
             $('#createModal').modal('show');

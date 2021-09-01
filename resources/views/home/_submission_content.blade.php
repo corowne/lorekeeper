@@ -51,7 +51,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(parseAssetData($submission->data) as $type)
+        @foreach(parseAssetData( isset($submission->data['rewards']) ? $submission->data['rewards'] : $submission->data ) as $type)
             @foreach($type as $asset)
                 <tr>
                     <td>{!! $asset['asset']->displayName !!}</td>
@@ -79,14 +79,33 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach(parseAssetData($character->data) as $type)
+                            @foreach(parseAssetData($character->data) as $key => $type)
+
                                 @foreach($type as $asset)
                                     <tr>
-                                        <td>{!! $asset['asset']->displayName !!}</td>
+                                        <td>{!! $asset['asset']->displayName !!} ({!! ucfirst($key) !!})</td>
                                         <td>{{ $asset['quantity'] }}</td>
                                     </tr>
                                 @endforeach
                             @endforeach
+
+                            {{--
+
+                            If you want to "Categorize" the rewards by type, uncomment this and comment or remove the above @foreach.
+
+                            @foreach(parseAssetData($character->data) as $key => $type)
+                                @if(count($type))
+                                <tr><td colspan="2"><strong>{!! strtoupper($key) !!}</strong></td></tr>
+                                    @foreach($type as $asset)
+                                        <tr>
+                                            <td>{!! $asset['asset']->displayName !!}</td>
+                                            <td>{{ $asset['quantity'] }}</td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            @endforeach
+
+                            --}}
                         </tbody>
                     </table>
                     </div>
@@ -95,3 +114,48 @@
         </div>
     </div>
 @endforeach
+
+@if(isset($inventory['user_items']))
+<h2>Add-Ons</h2>
+<p>These items have been removed from the {{ $submission->prompt_id ? 'submitter' : 'claimant' }}'s inventory and will be refunded if the request is rejected or consumed if it is approved.</p>
+            <table class="table table-sm">
+                <thead class="thead-light">
+                        <tr class="d-flex">
+                            <th class="col-2">Item</th>
+                            <th class="col-4">Source</th>
+                            <th class="col-4">Notes</th>
+                            <th class="col-2">Quantity</th>
+                        </tr>
+                </thead>
+                <tbody>
+                    @foreach($inventory['user_items'] as $itemRow)
+                        <tr class="d-flex">
+                            <td class="col-2">@if(isset($itemsrow[$itemRow['asset']->item_id]->image_url)) <img class="small-icon" src="{{ $itemsrow[$itemRow['asset']->item_id]->image_url }}"> @endif {!! $itemsrow[$itemRow['asset']->item_id]->name !!}
+                            <td class="col-4">{!! array_key_exists('data', $itemRow['asset']->data) ? ($itemRow['asset']->data['data'] ? $itemRow['asset']->data['data'] : 'N/A') : 'N/A' !!}</td>
+                            <td class="col-4">{!! array_key_exists('notes', $itemRow['asset']->data) ? ($itemRow['asset']->data['notes'] ? $itemRow['asset']->data['notes'] : 'N/A') : 'N/A' !!}</td>
+                            <td class="col-2">{!! $itemRow['quantity'] !!}
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+@endif
+
+@if(isset($inventory['currencies']))
+    <h3>{!! $submission->user->displayName !!}'s Bank</h3>
+    <table class="table table-sm mb-3">
+        <thead>
+            <tr>
+                <th width="70%">Currency</th>
+                <th width="30%">Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($inventory['currencies'] as $currency)
+                <tr>
+                    <td>{!! $currency['asset']->name !!}</td>
+                    <td>{{ $currency['quantity'] }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+@endif
