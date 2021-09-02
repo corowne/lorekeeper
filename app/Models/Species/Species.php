@@ -13,7 +13,7 @@ class Species extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description'
+        'name', 'sort', 'has_image', 'description', 'parsed_description', 'masterlist_sub_id'
     ];
 
     /**
@@ -30,7 +30,7 @@ class Species extends Model
      * @var array
      */
     public static $createRules = [
-        'name' => 'required|unique:specieses|between:3,25',
+        'name' => 'required|unique:specieses|between:3,100',
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
@@ -42,7 +42,7 @@ class Species extends Model
      * @var array
      */
     public static $updateRules = [
-        'name' => 'required|between:3,25',
+        'name' => 'required|between:3,100',
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
@@ -59,6 +59,22 @@ class Species extends Model
     public function subtypes() 
     {
         return $this->hasMany('App\Models\Species\Subtype');
+    }
+
+    /**
+     * Get the sub masterlist for this species.
+     */
+    public function sublist() 
+    {
+        return $this->belongsTo('App\Models\Character\Sublist', 'masterlist_sub_id');
+    }
+    
+    /**
+     * Get the features associated with this species.
+     */
+    public function features() 
+    {
+        return $this->hasMany('App\Models\Feature\Feature');
     }
 
     /**********************************************************************************************
@@ -135,6 +151,19 @@ class Species extends Model
      */
     public function getSearchUrlAttribute()
     {
+        if($this->masterlist_sub_id != 0 && $this->sublist->show_main == 0)
+        return url('sublist/'.$this->sublist->key.'?species_id='.$this->id);
+        else
         return url('masterlist?species_id='.$this->id);
+    }
+
+    /**
+     * Gets the URL the visual index of this species' traits.
+     *
+     * @return string
+     */
+    public function getVisualTraitsUrlAttribute()
+    {
+        return url('/world/species/'.$this->id.'/traits');
     }
 }

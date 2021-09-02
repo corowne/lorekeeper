@@ -11,7 +11,18 @@
             <!-- Left Side Of Navbar -->
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url('news') }}">News</a>
+                    @if(Auth::check() && Auth::user()->is_news_unread && Config::get('lorekeeper.extensions.navbar_news_notif'))
+                        <a class="nav-link d-flex text-warning" href="{{ url('news') }}"><strong>News</strong><i class="fas fa-bell"></i></a>
+                    @else
+                        <a class="nav-link" href="{{ url('news') }}">News</a>
+                    @endif
+                </li>
+                <li class="nav-item">
+                    @if(Auth::check() && Auth::user()->is_sales_unread && Config::get('lorekeeper.extensions.navbar_news_notif'))
+                        <a class="nav-link d-flex text-warning" href="{{ url('sales') }}"><strong>Sales</strong><i class="fas fa-bell"></i></a>
+                    @else
+                        <a class="nav-link" href="{{ url('sales') }}">Sales</a>
+                    @endif
                 </li>
                 @if(Auth::check())
                     <li class="nav-item dropdown">
@@ -45,6 +56,9 @@
                             <a class="dropdown-item" href="{{ url('claims') }}">
                                 Claims
                             </a>
+                            <a class="dropdown-item" href="{{ url('reports') }}">
+                                My Reports
+                            </a>
                             <a class="dropdown-item" href="{{ url('designs') }}">
                                 Design Approvals
                             </a>
@@ -77,6 +91,10 @@
                         <a class="dropdown-item" href="{{ url('raffles') }}">
                             Raffles
                         </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ url('reports/bug-reports') }}">
+                            Bug Reports
+                        </a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">
@@ -88,13 +106,16 @@
                         <a class="dropdown-item" href="{{ url('world') }}">
                             Encyclopedia
                         </a>
-                        <a class="dropdown-item" href="{{ url('world/prompts') }}">
+                        <a class="dropdown-item" href="{{ url('prompts/prompts') }}">
                             Prompts
                         </a>
                         <a class="dropdown-item" href="{{ url('shops') }}">
                             Shops
                         </a>
                     </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('gallery') }}">Gallery</a>
                 </li>
             </ul>
 
@@ -133,6 +154,9 @@
                             </a>
                             <a class="dropdown-item" href="{{ url('claims/new') }}">
                                 Submit Claim
+                            </a>
+                            <a class="dropdown-item" href="{{ url('reports/new') }}">
+                                Submit Report
                             </a>
                         </div>
                     </li>

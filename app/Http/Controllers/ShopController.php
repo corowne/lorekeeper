@@ -15,6 +15,7 @@ use App\Models\Shop\ShopLog;
 use App\Models\Item\Item;
 use App\Models\Currency\Currency;
 use App\Models\Item\ItemCategory;
+use App\Models\User\UserItem;
 
 class ShopController extends Controller
 {
@@ -38,7 +39,7 @@ class ShopController extends Controller
             'shops' => Shop::where('is_active', 1)->orderBy('sort', 'DESC')->get()
             ]);
     }
-    
+
     /**
      * Shows a shop.
      *
@@ -71,19 +72,26 @@ class ShopController extends Controller
     public function getShopStock(ShopManager $service, $id, $stockId)
     {
         $shop = Shop::where('id', $id)->where('is_active', 1)->first();
-        if(!$shop) abort(404);
-
         $stock = ShopStock::with('item')->where('id', $stockId)->where('shop_id', $id)->first();
 
-        if(Auth::user()){
+        $user = Auth::user();
+        $quantityLimit = 0; $userPurchaseCount = 0; $purchaseLimitReached = false;
+        if($user){
+            $quantityLimit = $service->getStockPurchaseLimit($stock, Auth::user());
+            $userPurchaseCount = $service->checkUserPurchases($stock, Auth::user());
             $purchaseLimitReached = $service->checkPurchaseLimitReached($stock, Auth::user());
-        } else $purchaseLimitReached = false;
+            $userOwned = UserItem::where('user_id', $user->id)->where('item_id', $stock->item->id)->where('count', '>', 0)->get();
+        }
 
+        if(!$shop) abort(404);
         return view('shops._stock_modal', [
             'shop' => $shop,
             'stock' => $stock,
-            'purchaseLimitReached' => $purchaseLimitReached
-        ]);
+            'quantityLimit' => $quantityLimit,
+            'userPurchaseCount' => $userPurchaseCount,
+            'purchaseLimitReached' => $purchaseLimitReached,
+            'userOwned' => $user ? $userOwned : null
+		]);
     }
 
     /**
@@ -96,7 +104,7 @@ class ShopController extends Controller
     public function postBuy(Request $request, ShopManager $service)
     {
         $request->validate(ShopLog::$createRules);
-        if($service->buyStock($request->only(['stock_id', 'shop_id', 'slug', 'bank']), Auth::user())) {
+        if($service->buyStock($request->only(['stock_id', 'shop_id', 'slug', 'bank', 'quantity']), Auth::user())) {
             flash('Successfully purchased item.')->success();
         }
         else {

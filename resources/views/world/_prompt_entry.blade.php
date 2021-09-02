@@ -25,6 +25,11 @@
                 @else 
                     <p>No further details.</p>
                 @endif
+                @if($prompt->hide_submissions == 1 && isset($prompt->end_at) && $prompt->end_at > Carbon\Carbon::now())
+                    <p class="text-info">Submissions to this prompt are hidden until this prompt ends.</p>
+                @elseif($prompt->hide_submissions == 2)
+                    <p class="text-info">Submissions to this prompt are hidden.</p>
+                @endif
             </div>
             <h4>Rewards</h4>
             @if(!count($prompt->rewards))

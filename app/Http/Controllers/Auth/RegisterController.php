@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Auth;
 
 use DB;
 use Settings;
+use Carbon\Carbon;
 
 use App\Models\User\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Arr;
 
 use App\Models\Invitation;
 use App\Services\UserService;
@@ -70,6 +72,17 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'agreement' => ['required', 'accepted'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'dob' => ['required', function ($attribute, $value, $fail) {
+                     {
+                        $date = $value['day']."-".$value['month']."-".$value['year'];
+                        $formatDate = carbon::parse($date);
+                        $now = Carbon::now();
+                        if($formatDate->diffInYears($now) < 13) {
+                            $fail('You must be 13 or older to access this site.');
+                        }
+                    }
+                }
+            ],
             'code' => ['string', function ($attribute, $value, $fail) {
                     if(!Settings::get('is_registration_open')) {
                         if(!$value) $fail('An invitation code is required to register an account.');
@@ -91,7 +104,7 @@ class RegisterController extends Controller
     {
         DB::beginTransaction();
         $service = new UserService;
-        $user = $service->createUser(array_only($data, ['name', 'email', 'password']));
+        $user = $service->createUser(Arr::only($data, ['name', 'email', 'password', 'dob']));
         if(!Settings::get('is_registration_open')) {
             (new InvitationService)->useInvitation(Invitation::where('code', $data['code'])->first(), $user);
         }

@@ -16,7 +16,7 @@ class CharacterProfile extends Model
      * @var array
      */
     protected $fillable = [
-        'character_id', 'text', 'parsed_text',
+        'character_id', 'text', 'parsed_text', 'link'
     ];
 
     /**
@@ -33,16 +33,25 @@ class CharacterProfile extends Model
      */
     public $primaryKey = 'character_id';
 
+    /**
+     * Validation rules for character profile updating.
+     *
+     * @var array
+     */
+    public static $rules = [
+        'link' => 'url|nullable'
+    ];
+
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the character this profile belongs to.
      */
-    public function character() 
+    public function character()
     {
         return $this->belongsTo('App\Models\Character\Character', 'character_id');
     }

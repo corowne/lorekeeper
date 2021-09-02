@@ -98,7 +98,32 @@
           </div>
       @endif
     @endif
-    @if (!Auth::user()->hasPower('manage_submissions') && !Auth::user()->hasPower('manage_characters'))
+    @if (Auth::user()->hasPower('manage_reports'))
+      <div class="col-sm-6">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Reports @if($reportCount||$assignedReportCount)<span class="badge badge-primary">{{ $reportCount + $assignedReportCount }}</span>@endif</h5>
+                <p class="card-text">
+                    @if($reportCount||$assignedReportCount)
+                        @if($reportCount)
+                            {{ $reportCount }} report{{ $reportCount == 1 ? '' : 's' }} awaiting assignment.
+                        @endif
+                        {!! $reportCount && $assignedReportCount ? '<br/>' : '' !!}
+                        @if($assignedReportCount)
+                            {{ $assignedReportCount }} report{{ $assignedReportCount == 1 ? '' : 's' }} awaiting processing.
+                        @endif
+                    @else
+                        The report queue is clear. Hooray!
+                    @endif
+                </p>
+                <div class="text-right">
+                    <a href="{{ url('admin/reports/pending') }}" class="card-link">View Queue <span class="fas fa-caret-right ml-1"></span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+    @if(!Auth::user()->hasPower('manage_submissions') && !Auth::user()->hasPower('manage_characters') && !Auth::user()->hasPower('manage_reports'))
       <div class="card p-4 col-12">
         <h5 class="card-title">You do not have a rank that allows you to access any queues.</h5>
         <p class="mb-1">
@@ -108,6 +133,44 @@
           If you believe this to be in error, contact your site administrator.
         </p>
       </div>
+    @endif
+    @if($galleryRequireApproval)
+        <div class="col-sm-6">        
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Gallery Submissions @if($gallerySubmissionCount)<span class="badge badge-primary">{{ $gallerySubmissionCount }}</span>@endif</h5>
+                    <p class="card-text">
+                        @if($gallerySubmissionCount)
+                            {{ $gallerySubmissionCount }} gallery submission{{$gallerySubmissionCount == 1 ? '' : 's' }} awaiting processing.
+                        @else 
+                            The gallery submission queue is clear. Hooray!
+                        @endif
+                    </p>
+                    <div class="text-right">
+                        <a href="{{ url('admin/gallery/submissions/pending') }}" class="card-link">View Queue <span class="fas fa-caret-right ml-1"></span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+    @if($galleryCurrencyAwards)
+        <div class="col-sm-6">        
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Gallery Currency Awards @if($galleryAwardCount)<span class="badge badge-primary">{{ $galleryAwardCount }}</span>@endif</h5>
+                    <p class="card-text">
+                        @if($galleryAwardCount)
+                            {{ $galleryAwardCount }} gallery submission{{$galleryAwardCount == 1 ? '' : 's' }} awaiting currency rewards.
+                        @else 
+                            The gallery currency award queue is clear. Hooray!
+                        @endif
+                    </p>
+                    <div class="text-right">
+                        <a href="{{ url('admin/gallery/currency/pending') }}" class="card-link">View Queue <span class="fas fa-caret-right ml-1"></span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
     @endif
 </div>
 @endsection

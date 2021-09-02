@@ -60,7 +60,7 @@ class RankController extends Controller
     public function postCreateEditRank(Request $request, RankService $service, $id = null)
     {
         $request->validate(Rank::$rules);
-        $data = $request->only(['name', 'description', 'color', 'powers']);
+        $data = $request->only(['name', 'description', 'color', 'powers', 'icon']);
         if($id && $service->updateRank(Rank::find($id), $data, Auth::user())) {
             flash('Rank updated successfully.')->success();
         }

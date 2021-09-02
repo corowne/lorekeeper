@@ -21,34 +21,45 @@
   </li>
 </ul>
 
-
-
 {!! $requests->render() !!}
-<table class="table table-sm">
-    <thead>
-        <tr>
-            <th>{{ $isMyo ? 'MYO Slot' : 'Character' }}</th>
-            <th>User</th>
-            <th width="20%">Submitted</th>
-            <th width="20%">Status</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($requests as $r)
-            <tr>
-                <td>{!! $r->character ? $r->character->displayName : 'Deleted Character [#'.$r->character_id.']' !!}</td>
-                <td>{!! $r->user->displayName !!}</td>
-                <td>{!! $r->submitted_at ? format_date($r->submitted_at) : '---' !!}</td>
-                <td>
-                    <span class="badge badge-{{ $r->status == 'Pending' ? 'secondary' : ($r->status == 'Approved' ? 'success' : 'danger') }}">{{ $r->status }}</span>
-                </td>
-                <td class="text-right"><a href="{{ $r->url }}" class="btn btn-primary btn-sm">Details</a></td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
+  <div class="row ml-md-2">
+    <div class="d-flex row flex-wrap col-12 pb-1 px-0 ubt-bottom">
+      <div class="col-md-3 font-weight-bold">{{ $isMyo ? 'MYO Slot' : 'Character' }}</div>
+      <div class="col-3 col-md-3 font-weight-bold">User</div>
+      <div class="col-2 col-md-2 font-weight-bold">Submitted</div>
+      @if(Config::get('lorekeeper.extensions.design_update_voting'))
+        <div class="col-2 col-md-2 font-weight-bold">Votes</div>
+      @endif
+      <div class="col-4 col-md-2 font-weight-bold">Status</div>
+    </div>
+    @foreach($requests as $r)
+    @if(Config::get('lorekeeper.extensions.design_update_voting'))
+        <?php
+            $rejectSum = 0;
+            $approveSum = 0;
+            foreach($r->voteData as $voter=>$vote) {
+                if($vote == 1) $rejectSum += 1;
+                if($vote == 2) $approveSum += 1;
+            }
+        ?>
+    @endif
+    <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-top">
+      <div class="col-md-3">{!! $r->character ? $r->character->displayName : 'Deleted Character [#'.$r->character_id.']' !!}</div>
+      <div class="col-3 col-md-3">{!! $r->user->displayName !!}</div>
+      <div class="col-2 col-md-2">{!! $r->submitted_at ? pretty_date($r->submitted_at) : '---' !!}</div>
+      @if(Config::get('lorekeeper.extensions.design_update_voting'))
+        <div class="col-2 col-md-2"><strong>
+            <span class="text-danger">{{ $rejectSum }}/{{ Settings::get('design_votes_needed') }}</span> :
+            <span class="text-success">{{ $approveSum }}/{{ Settings::get('design_votes_needed') }}</span>
+        </strong></div>
+      @endif
+      <div class="col-4 col-md-1"><span class="btn btn-{{ $r->status == 'Pending' ? 'secondary' : ($r->status == 'Approved' ? 'success' : 'danger') }} btn-sm py-0 px-1">{{ $r->status }}</span></div>
+      <div class="col-4 col-md-1"><a href="{{ $r->url }}" class="btn btn-primary btn-sm">Details</a></div>
+    </div>
+    @endforeach
+  </div>
 {!! $requests->render() !!}
 
+<div class="text-center mt-4 small text-muted">{{ $requests->total() }} result{{ $requests->total() == 1 ? '' : 's' }} found.</div>
 
 @endsection
