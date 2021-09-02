@@ -25,7 +25,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('check-news')
-                 ->everyMinute();
+                ->everyMinute();
+        $schedule->exec('rm public/images/avatars/*.tmp')
+                ->daily();
+        $schedule->command('check-sales')
+                ->everyMinute();
+
     }
 
     /**

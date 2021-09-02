@@ -5,7 +5,7 @@
 @section('home-content')
 @if($submission->prompt_id)
     {!! breadcrumbs(['Admin Panel' => 'admin', 'Prompt Queue' => 'admin/submissions/pending', 'Submission (#' . $submission->id . ')' => $submission->viewUrl]) !!}
-@else 
+@else
     {!! breadcrumbs(['Admin Panel' => 'admin', 'Claim Queue' => 'admin/claims/pending', 'Claim (#' . $submission->id . ')' => $submission->viewUrl]) !!}
 @endif
 
@@ -56,7 +56,7 @@
     {!! Form::open(['url' => url()->current(), 'id' => 'submissionForm']) !!}
 
         <h2>Rewards</h2>
-        @include('widgets._loot_select', ['loots' => $submission->rewards, 'showLootTables' => true])
+        @include('widgets._loot_select', ['loots' => $submission->rewards, 'showLootTables' => true, 'showRaffles' => true])
         @if($submission->prompt_id)
             <div class="mb-3">
                 @include('home._prompt', ['prompt' => $submission->prompt, 'staffView' => true])
@@ -66,16 +66,63 @@
         <h2>Characters</h2>
         <div id="characters" class="mb-3">
             @foreach($submission->characters as $character)
-                @include('widgets._character_select_entry', ['characterCurrencies' => $characterCurrencies, 'character' => $character])
+                @include('widgets._character_select_entry', ['characterCurrencies' => $characterCurrencies, 'items' => $items, 'tables' => $tables, 'character' => $character, 'expanded_rewards' => $expanded_rewards])
             @endforeach
         </div>
         <div class="text-right mb-3">
             <a href="#" class="btn btn-outline-info" id="addCharacter">Add Character</a>
         </div>
+
+        @if(isset($inventory['user_items']))
+        <h2>Add-Ons</h2>
+        <p>These items have been removed from the {{ $submission->prompt_id ? 'submitter' : 'claimant' }}'s inventory and will be refunded if the request is rejected or consumed if it is approved.</p>
+            <table class="table table-sm">
+                <thead class="thead-light">
+                        <tr class="d-flex">
+                            <th class="col-2">Item</th>
+                            <th class="col-4">Source</th>
+                            <th class="col-4">Notes</th>
+                            <th class="col-2">Quantity</th>
+                        </tr>
+                </thead>
+                <tbody>
+                    @foreach($inventory['user_items'] as $itemRow)
+                        <tr class="d-flex">
+                            <td class="col-2">@if(isset($itemsrow[$itemRow['asset']->item_id]->image_url)) <img class="small-icon" src="{{ $itemsrow[$itemRow['asset']->item_id]->image_url }}"> @endif {!! $itemsrow[$itemRow['asset']->item_id]->name !!}
+                            <td class="col-4">{!! array_key_exists('data', $itemRow['asset']->data) ? ($itemRow['asset']->data['data'] ? $itemRow['asset']->data['data'] : 'N/A') : 'N/A' !!}</td>
+                            <td class="col-4">{!! array_key_exists('notes', $itemRow['asset']->data) ? ($itemRow['asset']->data['notes'] ? $itemRow['asset']->data['notes'] : 'N/A') : 'N/A' !!}</td>
+                            <td class="col-2">{!! $itemRow['quantity'] !!}
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
+
+        @if(isset($inventory['currencies']))
+            <h3>{!! $submission->user->displayName !!}'s Bank</h3>
+            <table class="table table-sm mb-3">
+                <thead>
+                    <tr>
+                        <th width="70%">Currency</th>
+                        <th width="30%">Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($inventory['currencies'] as $currency)
+                        <tr>
+                            <td>{!! $currency['asset']->name !!}</td>
+                            <td>{{ $currency['quantity'] }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
+
 		<div class="form-group">
             {!! Form::label('staff_comments', 'Staff Comments (Optional)') !!}
 			{!! Form::textarea('staff_comments', $submission->staffComments, ['class' => 'form-control wysiwyg']) !!}
         </div>
+
         <div class="text-right">
             <a href="#" class="btn btn-danger mr-2" id="rejectionButton">Reject</a>
             <a href="#" class="btn btn-success" id="approvalButton">Approve</a>
@@ -105,7 +152,12 @@
                             <table class="table table-sm">
                                 <thead>
                                     <tr>
+                                        @if($expanded_rewards)
+                                        <th width="35%">Reward Type</th>
+                                        <th width="35%">Reward</th>
+                                        @else
                                         <th width="70%">Reward</th>
+                                        @endif
                                         <th width="30%">Amount</th>
                                     </tr>
                                 </thead>
@@ -122,17 +174,31 @@
         </div>
         <table>
             <tr class="character-reward-row">
-                <td>
-                    {!! Form::select('character_currency_id[]', $characterCurrencies, 0, ['class' => 'form-control currency-id']) !!}
-                </td>
+
+                    @if($expanded_rewards)
+                    <td>
+                        {!! Form::select('character_rewardable_type[]', ['Item' => 'Item', 'Currency' => 'Currency', 'LootTable' => 'Loot Table'], null, ['class' => 'form-control character-rewardable-type', 'placeholder' => 'Select Reward Type']) !!}
+                    </td>
+                    <td class="lootDivs">
+                        <div class="character-currencies hide">{!! Form::select('character_rewardable_id[]', $characterCurrencies, 0, ['class' => 'form-control character-currency-id', 'placeholder' => 'Select Currency']) !!}</div>
+                        <div class="character-items hide">{!! Form::select('character_rewardable_id[]', $items, 0, ['class' => 'form-control character-item-id', 'placeholder' => 'Select Item']) !!}</div>
+                        <div class="character-tables hide">{!! Form::select('character_rewardable_id[]', $tables, 0, ['class' => 'form-control character-table-id', 'placeholder' => 'Select Loot Table']) !!}</div>
+                    </td>
+                    @else
+                        <td class="lootDivs">
+                            {!! Form::hidden('character_rewardable_type[]', 'Currency', ['class' => 'character-rewardable-type']) !!}
+                            {!! Form::select('character_rewardable_id[]', $characterCurrencies, 0, ['class' => 'form-control character-currency-id', 'placeholder' => 'Select Currency']) !!}
+                        </td>
+                    @endif
+
                 <td class="d-flex align-items-center">
-                    {!! Form::text('character_quantity[]', 0, ['class' => 'form-control mr-2 quantity']) !!}
+                    {!! Form::text('character_quantity[]', 0, ['class' => 'form-control mr-2  character-rewardable-quantity']) !!}
                     <a href="#" class="remove-reward d-block"><i class="fas fa-times text-muted"></i></a>
                 </td>
             </tr>
         </table>
     </div>
-    @include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'showLootTables' => false])
+    @include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'showLootTables' => true, 'showRaffles' => true])
 
     <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -170,13 +236,13 @@
 @endsection
 
 @section('scripts')
-@parent 
+@parent
 @if($submission->status == 'Pending')
-    @include('js._loot_js', ['showLootTables' => true])
+    @include('js._loot_js', ['showLootTables' => true, 'showRaffles' => true])
     @include('js._character_select_js')
 
     <script>
-        
+
         $(document).ready(function() {
             var $confirmationModal = $('#confirmationModal');
             var $submissionForm = $('#submissionForm');
@@ -188,14 +254,14 @@
             var $rejectionButton = $('#rejectionButton');
             var $rejectionContent = $('#rejectionContent');
             var $rejectionSubmit = $('#rejectionSubmit');
-            
+
             $approvalButton.on('click', function(e) {
                 e.preventDefault();
                 $approvalContent.removeClass('hide');
                 $rejectionContent.addClass('hide');
                 $confirmationModal.modal('show');
             });
-            
+
             $rejectionButton.on('click', function(e) {
                 e.preventDefault();
                 $rejectionContent.removeClass('hide');

@@ -15,9 +15,19 @@
 
 <h3>Basic Information</h3>
 
-<div class="form-group">
-    {!! Form::label('Name') !!}
-    {!! Form::text('name', $prompt->name, ['class' => 'form-control']) !!}
+<div class="row">
+    <div class="col-md-8">
+        <div class="form-group">
+            {!! Form::label('Name') !!}
+            {!! Form::text('name', $prompt->name, ['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="col-md">
+        <div class="form-group">
+            {!! Form::label('Prefix (Optional)') !!} {!! add_help('This is used to label submissions associated with this prompt in the gallery.') !!}
+            {!! Form::text('prefix', $prompt->prefix, ['class' => 'form-control']) !!}
+        </div>
+    </div>
 </div>
 
 <div class="form-group">
@@ -82,10 +92,15 @@
     {!! Form::label('is_active', 'Is Active', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Prompts that are not active will be hidden from the prompt list. The start/end time hide settings override this setting, i.e. if this is set to active, it will still be hidden outside of the start/end times.') !!}
 </div>
 
+<div class="form-group">
+    {!! Form::label('Hide Submissions (Optional)') !!} {!! add_help('Hide submissions to this prompt until the prompt ends, or forever. <strong>Hiding until the prompt ends requires a set end time.</strong>') !!}
+    {!! Form::select('hide_submissions', [0 => 'Submissions Visible After Approval', 1 => 'Hide Submissions Until Prompt Ends', 2 => 'Hide Submissions Always'], $prompt->hide_submissions, ['class' => 'form-control']) !!}
+</div>
+
 <h3>Rewards</h3>
 <p>Rewards are credited on a per-user basis. Mods are able to modify the specific rewards granted at approval time.</p>
 <p>You can add loot tables containing any kind of currencies (both user- and character-attached), but be sure to keep track of which are being distributed! Character-only currencies cannot be given to users.</p>
-@include('widgets._loot_select', ['loots' => $prompt->rewards, 'showLootTables' => true])
+@include('widgets._loot_select', ['loots' => $prompt->rewards, 'showLootTables' => true, 'showRaffles' => true])
 
 <div class="text-right">
     {!! Form::submit($prompt->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
@@ -93,13 +108,13 @@
 
 {!! Form::close() !!}
 
-@include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables, 'showLootTables' => true])
+@include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables, 'raffles' => $raffles, 'showLootTables' => true, 'showRaffles' => true])
 
 @if($prompt->id)
     <h3>Preview</h3>
     <div class="card mb-3">
         <div class="card-body">
-            @include('world._prompt_entry', ['prompt' => $prompt])
+            @include('prompts._prompt_entry', ['prompt' => $prompt])
         </div>
     </div>
 @endif
@@ -108,7 +123,7 @@
 
 @section('scripts')
 @parent
-@include('js._loot_js', ['showLootTables' => true])
+@include('js._loot_js', ['showLootTables' => true, 'showRaffles' => true])
 <script>
 $( document ).ready(function() {    
     $('.delete-prompt-button').on('click', function(e) {

@@ -21,6 +21,18 @@
         </div>
     </div>
 
+    <div class="form-group row px-0 mx-0">
+        <div class="col-5 align-self-center">
+          {!! Form::label('Icon (Font-awesome code; optional)') !!}
+        </div>
+        <div class="col-1 align-self-center text-right p-0">
+          <i id="rankitem" class="{{ $rank->icon }}"></i>
+        </div>
+        <div class="input-group col-6">
+            {!! Form::text('icon', $rank->icon, ['class' => 'form-control', 'id' => 'icon']) !!}
+        </div>
+    </div>
+
     @if($editable != 2)
         {{-- Powers --}}
         <div class="form-group">
@@ -47,6 +59,16 @@
     </div>
 
     {!! Form::close() !!}
+
+    <script>
+        $(document).ready(function() {
+          $("#icon").change(function(){
+             var text = $('#icon').val();
+            $("#rankitem").removeClass();
+            $("#rankitem").addClass(text);
+          });
+        });
+     </script>
 @else 
     Invalid rank selected.
 @endif

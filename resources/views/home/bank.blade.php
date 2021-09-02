@@ -12,7 +12,7 @@
 <h3>Currencies</h3>
 <div class="card mb-2">
     <ul class="list-group list-group-flush">
-    
+
         @foreach(Auth::user()->getCurrencies(true) as $currency)
             <li class="list-group-item">
                 <div class="row">
@@ -37,7 +37,7 @@
 </div>
 
 <h3>Transfer Currency</h3>
-<p>If you are transferring currency as part of a trade for on-site resources (items, currency, characters), using the <a href="{{ url('trades') }}">trade system</a> is recommended instead to protect yourself from being scammed.</p>
+<p>If you are transferring currency as part of a trade for on-site resources (items, currency, characters), using the <a href="{{ url('trades/open') }}">trade system</a> is recommended instead to protect yourself from being scammed.</p>
 {!! Form::open(['url' => 'bank/transfer']) !!}
     <div class="form-group">
         {!! Form::label('user_id', 'Recipient') !!}

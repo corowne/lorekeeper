@@ -395,6 +395,10 @@ main > .row {
     overflow-wrap: break-word;
     word-break: break-word;
 }
+.small-icon {
+    height: 2rem;
+    padding-right: .5rem;
+}
 
 /* NOTIFICATIONS *********************************************************************************/
 
@@ -482,6 +486,10 @@ tr.outflow {
     color: inherit;
     text-decoration: none;
 }
+tr.accountbound {
+    background-color: rgba(0,0,0,0.05);
+    border-radius: .25rem;
+}
 
 /* CHARACTERS ************************************************************************************/
 
@@ -550,6 +558,9 @@ tr.outflow {
     background-color: rgba(0,0,0,0.05);
     border-radius: .25rem;
 }
+.user-items .category-selected.select-item-row {
+    background-color: rgba(0,0,0,0.05);
+}
 
 /* SHOPS *****************************************************************************************/
 .shops-row img {
@@ -588,4 +599,33 @@ tr.outflow {
 
 .bookmark-table .img-thumbnail {
     width: 100px;
+}
+
+/* BOOTSTRAP TABLES *************************************************************************************/
+.ubt-bottom {
+  border-bottom:1px solid #dee2e6;
+}
+
+.ubt-top {
+  border-top:1px solid #dee2e6;
+}
+
+.ubt-texthide {
+  width:100%;
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* COMMENTS *************************************************************************************/
+.comment_replies {
+        padding-left: 3rem;
+        border-left-width: 2px!important;
+    }
+    
+@media only screen and (max-width: 600px) {
+    .comment_replies { padding-left:1rem;}
 }
