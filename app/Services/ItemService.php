@@ -414,7 +414,7 @@ class ItemService extends Service
             if(!$item) throw new \Exception("Invalid item selected.");
             if(!$item->tags()->where('tag', $tag)->exists()) throw new \Exception("This item does not have this tag attached to it.");
 
-            if(!logAdminAction($user, 'Editted Item Tag', 'Editted '.$tag.' tag on '.$item->displayName)) throw new \Exception("Failed to log admin action.");
+            if(!logAdminAction($user, 'Edited Item Tag', 'Edited '.$tag.' tag on '.$item->displayName)) throw new \Exception("Failed to log admin action.");
 
             $tag = $item->tags()->where('tag', $tag)->first();
 

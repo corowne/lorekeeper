@@ -79,7 +79,7 @@ class CharacterCategoryService extends Service
 
             $category->update($data);
 
-            if(!logAdminAction($user, 'Editted Character Category', 'Editted '.$category->displayName)) throw new \Exception("Failed to log admin action.");
+            if(!logAdminAction($user, 'Edited Character Category', 'Edited '.$category->displayName)) throw new \Exception("Failed to log admin action.");
 
             if ($category) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
 

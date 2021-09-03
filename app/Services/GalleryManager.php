@@ -169,7 +169,7 @@ class GalleryManager extends Service
             // Check that there is text and/or an image, including if there is an existing image (via the existence of a hash)
             if((!isset($data['image']) && !isset($submission->hash)) && !$data['text']) throw new \Exception("Please submit either text or an image.");
 
-            if($user->isStaff) if(!logAdminAction($user, 'Editted Gallery Submission', 'Editted gallery submission '.$submission->displayName)) throw new \Exception("Failed to log admin action.");
+            if($user->isStaff) if(!logAdminAction($user, 'Edited Gallery Submission', 'Edited gallery submission '.$submission->displayName)) throw new \Exception("Failed to log admin action.");
 
             // If still pending, perform validation on and process collaborators and participants
             if($submission->status == 'Pending') {

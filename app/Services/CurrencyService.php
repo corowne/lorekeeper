@@ -184,7 +184,7 @@ class CurrencyService extends Service
             if(DB::table('prompt_rewards')->where('rewardable_type', 'Currency')->where('rewardable_id', $currency->id)->exists()) throw new \Exception("A prompt currently distributes this currency as a reward. Please remove the currency before deleting it.");
             if(DB::table('shop_stock')->where('currency_id', $currency->id)->exists()) throw new \Exception("A shop currently requires this currency to purchase an currency. Please change the currency before deleting it.");
             // Disabled for now due to issues with JSON lookup with older mysql versions/mariaDB
-            // if(DB::table('currencys')->where('data->resell', $currency->id)->exists()) throw new \Exception("An currency currently uses this currency for its resale value. Please change the resale information before deleting this currency.");
+            // if(DB::table('items')->where('data->resell', $currency->id)->exists()) throw new \Exception("An item currently uses this currency for its resale value. Please change the resale information before deleting this currency.");
 
             // This will delete the currency in users' possession as well.
             // The reason this is allowed is that in instances where event currencies
