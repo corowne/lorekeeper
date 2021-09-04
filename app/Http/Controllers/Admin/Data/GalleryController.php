@@ -114,7 +114,7 @@ class GalleryController extends Controller
      */
     public function postDeleteGallery(Request $request, GalleryService $service, $id)
     {
-        if($id && $service->deleteGallery(Gallery::find($id))) {
+        if($id && $service->deleteGallery(Gallery::find($id), Auth::user())) {
             flash('Gallery deleted successfully.')->success();
         }
         else {

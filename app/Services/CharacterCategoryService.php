@@ -42,6 +42,8 @@ class CharacterCategoryService extends Service
 
             $category = CharacterCategory::create($data);
 
+            if(!logAdminAction($user, 'Created Character Category', 'Created '.$category->displayName)) throw new \Exception("Failed to log admin action.");
+
             if ($image) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
 
             return $this->commitReturn($category);
@@ -76,6 +78,8 @@ class CharacterCategoryService extends Service
             }
 
             $category->update($data);
+
+            if(!logAdminAction($user, 'Edited Character Category', 'Edited '.$category->displayName)) throw new \Exception("Failed to log admin action.");
 
             if ($category) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
 
@@ -124,6 +128,8 @@ class CharacterCategoryService extends Service
             // Check first if the category is currently in use
             if(Character::where('character_category_id', $category->id)->exists()) throw new \Exception("An character with this category exists. Please change its category first.");
             
+            if(!logAdminAction($user, 'Deleted Character Category', 'Deleted '.$category->name)) throw new \Exception("Failed to log admin action.");
+
             if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
             $category->delete();
 

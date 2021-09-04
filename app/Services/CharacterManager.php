@@ -158,6 +158,8 @@ class CharacterManager extends Service
                 ));
             }
 
+            if(!logAdminAction($user, 'Created Character', 'Created '.$character->displayName)) throw new \Exception("Failed to log admin action.");
+
             return $this->commitReturn($character);
         } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
@@ -636,6 +638,8 @@ class CharacterManager extends Service
             $character->character_image_id = $image->id;
             $character->save();
 
+            if(!logAdminAction($user, 'Created Image', 'Created character image <a href="'.$character->url.'">#'.$image->id.'</a>')) throw new \Exception("Failed to log admin action.");
+
             // Add a log for the character
             // This logs all the updates made to the character
             $this->createLog($user->id, null, $character->user_id, ($character->user_id ? null : $character->owner_url), $character->id, 'Character Image Uploaded', '[#'.$image->id.']', 'character');
@@ -681,6 +685,8 @@ class CharacterManager extends Service
                 if(!(isset($data['species_id']) && $data['species_id'])) throw new \Exception('Species must be selected to select a subtype.');
                 if(!$subtype || $subtype->species_id != $data['species_id']) throw new \Exception('Selected subtype invalid or does not match species.');
             }
+
+            if(!logAdminAction($user, 'Updated Image', 'Updated character image features on <a href="'.$image->character->url.'">#'.$image->id.'</a>')) throw new \Exception("Failed to log admin action.");
 
             // Log old features
             $old = [];
@@ -760,6 +766,8 @@ class CharacterManager extends Service
             $image->parsed_description = parse($data['description']);
             $image->save();
 
+            if(!logAdminAction($user, 'Updated Image Notes', 'Updated image <a href="'.$image->character->url.'">#'.$image->id.'</a>')) throw new \Exception("Failed to log admin action.");
+
             // Add a log for the character
             // This logs all the updates made to the character
             $this->createLog($user->id, null, null, null, $image->character_id, 'Image Notes Updated', '[#'.$image->id.']', 'character', true, $old, $image->parsed_description);
@@ -784,6 +792,8 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            if(!logAdminAction($user, 'Updated Image Credits', 'Updated character image credits on <a href="'.$image->character->url.'">#'.$image->id.'</a>')) throw new \Exception("Failed to log admin action.");
+
             $old = $this->generateCredits($image);
 
             // Clear old artists/designers
@@ -881,6 +891,8 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            if(!logAdminAction($user, 'Reuploaded Image', 'Reuploaded character image <a href="'.$image->character->url.'">#'.$image->id.'</a>')) throw new \Exception("Failed to log admin action.");
+
             if(Config::get('lorekeeper.settings.masterlist_image_format') != null) {
                 // Remove old versions so that images in various filetypes don't pile up
                 unlink($image->imagePath . '/' . $image->imageFileName);
@@ -931,6 +943,8 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            if(!logAdminAction($user, 'Deleted Image', 'Deleted character image <a href="'.$image->character->url.'">#'.$image->id.'</a>')) throw new \Exception("Failed to log admin action.");
+            
             if($image->character->character_image_id == $image->id) throw new \Exception("Cannot delete a character's active image.");
 
             $image->features()->delete();
@@ -966,6 +980,8 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            if(!logAdminAction($user, 'Updated Image', 'Updated character image settings on <a href="'.$image->character->url.'">#'.$image->id.'</a>')) throw new \Exception("Failed to log admin action.");
+
             if($image->character->character_image_id == $image->id && !isset($data['is_visible'])) throw new \Exception("Cannot hide a character's active image.");
 
             $image->is_valid = isset($data['is_valid']);
@@ -995,6 +1011,8 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            if(!logAdminAction($user, 'Updated Image', 'Set image <a href="'.$image->character->url.'">#'.$image->id.'</a> to active image')) throw new \Exception("Failed to log admin action.");
+
             if($image->character->character_image_id == $image->id) return true;
             if(!$image->is_visible) throw new \Exception("Cannot set a non-visible image as the character's active image.");
 
@@ -1101,6 +1119,8 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            if(!logAdminAction($user, 'Updated Stats', 'Updated character stats on '.$character->displayname)) throw new \Exception("Failed to log admin action.");
+
             if(!$character->is_myo_slot && Character::where('slug', $data['slug'])->where('id', '!=', $character->id)->exists()) throw new \Exception("Character code must be unique.");
 
             $characterData = Arr::only($data, [
@@ -1197,6 +1217,8 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+            if(!logAdminAction($user, 'Updated Character Description', 'Updated character description on '.$character->displayname)) throw new \Exception("Failed to log admin action.");
+
             $old = $character->parsed_description;
 
             // Update the image's notes
@@ -1228,6 +1250,9 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
+
+            if(!logAdminAction($user, 'Updated Character Settings', 'Updated character settings on '.$character->displayname)) throw new \Exception("Failed to log admin action.");
+
             $old = ['is_visible' => $character->is_visible];
 
             $character->is_visible = isset($data['is_visible']);
@@ -1277,6 +1302,9 @@ class CharacterManager extends Service
                 $character->is_trading = isset($data['is_trading']);
                 $character->save();
             }
+            else {
+                if(!logAdminAction($user, 'Updated Character Profile', 'Updated character profile on '.$character->displayname)) throw new \Exception("Failed to log admin action.");
+            }
 
             // Update the character's profile
             if(!$character->is_myo_slot) $character->name = $data['name'];
@@ -1325,6 +1353,8 @@ class CharacterManager extends Service
             if($character->user_id) {
                 $character->user->settings->save();
         }
+
+            if(!logAdminAction($user, 'Deleted Character', 'Deleted character '.$character->slug)) throw new \Exception("Failed to log admin action.");
 
             // Delete associated bookmarks
             CharacterBookmark::where('character_id', $character->id)->delete();
@@ -1431,10 +1461,12 @@ class CharacterManager extends Service
                 $recipient = User::find($data['recipient_id']);
                 if(!$recipient) throw new \Exception("Invalid user selected.");
                 if($character->user_id == $recipient->id) throw new \Exception("Cannot transfer a character to the same user.");
+                if(!logAdminAction($user, 'Admin Transfer', 'Admin transferred '.$character->displayname.' to '.$recipient->displayName)) throw new \Exception("Failed to log admin action.");
             }
             else if(isset($data['recipient_url']) && $data['recipient_url']) {
                 // Transferring to an off-site user
                 $recipient = checkAlias($data['recipient_url']);
+                if(!logAdminAction($user, 'Admin Transfer', 'Admin transferred '.$character->displayname.' to '.$recipient)) throw new \Exception("Failed to log admin action.");
             }
             else throw new \Exception("Please enter a recipient for the transfer.");
 
@@ -1501,6 +1533,7 @@ class CharacterManager extends Service
             if(!$transfer) throw new \Exception("Invalid transfer selected.");
 
             if($data['action'] == 'Accept') {
+
                 $cooldown = Settings::get('transfer_cooldown');
 
                 $transfer->status = 'Accepted';
@@ -1526,6 +1559,7 @@ class CharacterManager extends Service
                 }
             }
             else {
+
                 $transfer->status = 'Rejected';
                 $transfer->data = json_encode([
                     'staff_id' => null
@@ -1606,6 +1640,7 @@ class CharacterManager extends Service
 
                 // Process the character move if the recipient has already accepted the transfer
                 if($transfer->status == 'Accepted') {
+                    if(!logAdminAction($user, 'Approved Transfer', 'Approved transfer of '.$transfer->character->displayname.' to '.$transfer->recipient->displayname)) throw new \Exception("Failed to log admin action.");
                     $this->moveCharacter($transfer->character, $transfer->recipient, 'User Transfer', isset($data['cooldown']) ? $data['cooldown'] : -1);
 
                     // Notify both parties of the successful transfer
@@ -1624,6 +1659,8 @@ class CharacterManager extends Service
 
                 }
                 else {
+                    if(!logAdminAction($user, 'Approved Transfer', 'Approved transfer of '.$transfer->character->displayname.' to '.$transfer->recipient->displayname)) throw new \Exception("Failed to log admin action.");
+                    
                     // Still pending a response from the recipient
                     Notifications::create('CHARACTER_TRANSFER_ACCEPTABLE', $transfer->recipient, [
                         'character_name' => $transfer->character->slug,
@@ -1635,6 +1672,8 @@ class CharacterManager extends Service
                 }
             }
             else {
+                if(!logAdminAction($user, 'Rejected Transfer', 'Rejected transfer of '.$transfer->character->displayname.' to '.$transfer->recipient->displayname)) throw new \Exception("Failed to log admin action.");
+                
                 $transfer->status = 'Rejected';
                 $transfer->reason = isset($data['reason']) ? $data['reason'] : null;
                 $transfer->data = json_encode([
@@ -2118,6 +2157,9 @@ is_object($sender) ? $sender->id : null,
             if(!isset($data['number'])) throw new \Exception("Please enter a character number.");
             if(!isset($data['slug']) || Character::where('slug', $data['slug'])->where('id', '!=', $request->character_id)->exists()) throw new \Exception("Please enter a unique character code.");
 
+
+            if(!logAdminAction($user, 'Approved Design Update', 'Approved design update <a href="'. $request->url .'">#'.$request->id.'</a>')) throw new \Exception("Failed to log admin action.");
+
             // Remove any added items/currency
             // Currency has already been removed, so no action required
             // However logs need to be added for each of these
@@ -2310,6 +2352,8 @@ is_object($sender) ? $sender->id : null,
         try {
             if(!$forceReject && $request->status != 'Pending') throw new \Exception("This request cannot be processed.");
 
+            if(!logAdminAction($user, 'Rejected Design Update', 'Rejected design update <a href="'. $request->url .'">#'.$request->id.'</a>')) throw new \Exception("Failed to log admin action.");
+
             // This hard rejects the request - items/currency are returned to user
             // and the user will need to open a new request to resubmit.
             // Use when rejecting a request the user shouldn't have submitted at all.
@@ -2381,6 +2425,8 @@ is_object($sender) ? $sender->id : null,
 
         try {
             if($request->status != 'Pending') throw new \Exception("This request cannot be processed.");
+
+            if(!logAdminAction($user, 'Cancelled Design Update', 'Cancelled design update <a href="'. $request->url .'">#'.$request->id.'</a>')) throw new \Exception("Failed to log admin action.");
 
             // Soft removes the request from the queue -
             // it preserves all the data entered, but allows the staff member
