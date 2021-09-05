@@ -72,10 +72,14 @@
                         {!! Form::text('link[]', $character->link, ['class' => 'form-control', 'placeholder' => 'URL']) !!}
                     </div>
 
-                    <div class="form-group text-right">
-                        {!! Form::checkbox('character_is_open['.$character->character->slug.']', 1, $character->is_open, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-                        {!! Form::label('character_is_open', 'Is Open', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Whether or not this particular character is open or available. If the sale post itself is closed, all character sales attached will also be displayed as closed.') !!}
-                    </div>
+                    @if($sales->characters->count() > 1)
+                        <div class="form-group text-right">
+                            {!! Form::checkbox('character_is_open['.$character->character->slug.']', 1, $character->is_open, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+                            {!! Form::label('character_is_open', 'Is Open', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Whether or not this particular character is open or available. If the sale post itself is closed, all character sales attached will also be displayed as closed.') !!}
+                        </div>
+                    @else
+                        {!! Form::hidden('character_is_open['.$character->character->slug.']', 1) !!}
+                    @endif
 
                     {!! Form::hidden('new_entry[]', 0) !!}
                 </div>
