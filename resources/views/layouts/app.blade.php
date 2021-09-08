@@ -72,6 +72,7 @@
         <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
     @endif
 
+    @include('feed::links')
 </head>
 <body>
     <div id="app">

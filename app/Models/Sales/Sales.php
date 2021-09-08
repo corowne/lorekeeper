@@ -7,8 +7,10 @@ use Config;
 use App\Models\Model;
 use App\Traits\Commentable;
 use Illuminate\Support\Str;
+use Spatie\Feed\Feedable;
+use Spatie\Feed\FeedItem;
 
-class Sales extends Model
+class Sales extends Model implements Feedable
 {
     use Commentable;
     /**
@@ -146,5 +148,39 @@ class Sales extends Model
     public function getUrlAttribute()
     {
         return url('sales/'.$this->slug);
+    }
+
+    /**********************************************************************************************
+
+        OTHER FUNCTIONS
+
+    **********************************************************************************************/
+
+    /**
+     * Returns all feed items.
+     *
+     */
+    public static function getFeedItems()
+    {
+        return Sales::visible()->get();
+    }
+
+    /**
+     * Generates feed item information.
+     *
+     * @return /Spatie/Feed/FeedItem;
+     */
+    public function toFeedItem(): FeedItem
+    {
+        $summary = ($this->characters->count() ? $this->characters->count().' character'.($this->characters->count() > 1 ? 's are' : ' is').' associated with this sale. Click through to read more.<hr/>' : '').$this->parsed_text;
+
+        return FeedItem::create([
+            'id' => '/sales/'.$this->id,
+            'title' => $this->title,
+            'summary' => $summary,
+            'updated' => $this->updated_at,
+            'link' => $this->url,
+            'author' => $this->user->name
+        ]);
     }
 }
