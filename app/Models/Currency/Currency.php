@@ -13,7 +13,7 @@ class Currency extends Model
      * @var array
      */
     protected $fillable = [
-        'is_user_owned', 'is_character_owned', 
+        'is_user_owned', 'is_character_owned',
         'name', 'abbreviation', 'description', 'parsed_description', 'sort_user', 'sort_character',
         'is_displayed', 'allow_user_to_user', 'allow_user_to_character', 'allow_character_to_user',
         'has_icon', 'has_image'
@@ -25,7 +25,7 @@ class Currency extends Model
      * @var string
      */
     protected $table = 'currencies';
-    
+
     /**
      * Validation rules for creation.
      *
@@ -38,7 +38,7 @@ class Currency extends Model
         'icon' => 'mimes:png',
         'image' => 'mimes:png'
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -53,7 +53,7 @@ class Currency extends Model
     ];
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -65,7 +65,7 @@ class Currency extends Model
      */
     public function getDisplayIconAttribute()
     {
-        return '<img src="'.$this->currencyIconUrl.'" title="'.$this->name . ($this->abbreviation ? ' ('.$this->abbreviation.')' : '') .'" data-toggle="tooltip" />';
+        return '<img src="'.$this->currencyIconUrl.'" title="'.$this->name . ($this->abbreviation ? ' ('.$this->abbreviation.')' : '') .'" data-toggle="tooltip" alt="'.$this->name.'"/>';
     }
 
     /**
@@ -117,7 +117,7 @@ class Currency extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
@@ -128,7 +128,7 @@ class Currency extends Model
         if (!$this->has_image) return null;
         return asset($this->imageDirectory . '/' . $this->currencyImageFileName);
     }
-    
+
     /**
      * Gets the URL of the model's icon image.
      *
@@ -141,11 +141,11 @@ class Currency extends Model
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
-    
+
     /**
      * Displays the model's name, linked to its encyclopedia page.
      *
@@ -155,7 +155,7 @@ class Currency extends Model
     {
         return '<a href="'.$this->url.'" class="display-currency">'.$this->name.'</a>';
     }
-    
+
     /**
      * Gets the URL of the model's encyclopedia page.
      *
@@ -177,7 +177,7 @@ class Currency extends Model
     }
 
     /**********************************************************************************************
-    
+
         OTHER FUNCTIONS
 
     **********************************************************************************************/
@@ -187,7 +187,7 @@ class Currency extends Model
      *
      * @return string
      */
-    public function display($value) 
+    public function display($value)
     {
         $ret = '<span class="display-currency">' . $value . ' ';
         if($this->has_icon) $ret .= $this->displayIcon;
