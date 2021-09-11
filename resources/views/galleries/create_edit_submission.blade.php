@@ -33,13 +33,13 @@
             @if($submission->id && isset($submission->hash) && $submission->hash)
                 <div class="card mb-2" id="existingImage">
                     <div class="card-body text-center">
-                        <img src="{{ $submission->imageUrl }}" style="max-width:100%; max-height:60vh;" />
+                        <img src="{{ $submission->imageUrl }}" style="max-width:100%; max-height:60vh;" alt="Image submission"/>
                     </div>
                 </div>
             @endif
             <div class="card mb-2 hide" id="imageContainer">
                 <div class="card-body text-center">
-                    <img src="#" id="image" style="max-width:100%; max-height:60vh;" />
+                    <img src="#" id="image" style="max-width:100%; max-height:60vh;" alt="Image submission"/>
                 </div>
             </div>
             <div class="card p-2">
