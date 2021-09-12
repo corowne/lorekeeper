@@ -8,7 +8,7 @@
     <div class="col-md-6">
         <div class="card mb-4">
             <div class="card-body text-center">
-                <img src="{{ asset('images/account.png') }}" />
+                <img src="{{ asset('images/account.png') }}" alt="Account" />
                 <h5 class="card-title">Account</h5>
             </div>
             <ul class="list-group list-group-flush">
@@ -21,7 +21,7 @@
     <div class="col-md-6">
         <div class="card mb-4">
             <div class="card-body text-center">
-                <img src="{{ asset('images/characters.png') }}" />
+                <img src="{{ asset('images/characters.png') }}" alt="Characters" />
                 <h5 class="card-title">Characters</h5>
             </div>
             <ul class="list-group list-group-flush">
@@ -36,7 +36,7 @@
     <div class="col-md-6">
         <div class="card mb-4">
             <div class="card-body text-center">
-                <img src="{{ asset('images/inventory.png') }}" />
+                <img src="{{ asset('images/inventory.png') }}" alt="Inventory" />
                 <h5 class="card-title">Inventory</h5>
             </div>
             <ul class="list-group list-group-flush">
@@ -48,7 +48,7 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-body text-center">
-                <img src="{{ asset('images/currency.png') }}" />
+                <img src="{{ asset('images/currency.png') }}" alt="Bank" />
                 <h5 class="card-title">Bank</h5>
             </div>
             <ul class="list-group list-group-flush">

@@ -14,7 +14,7 @@
     @foreach($slots as $slot)
         <div class="col-md-3 col-6 text-center mb-2">
             <div>
-                <a href="{{ $slot->url }}"><img src="{{ $slot->image->thumbnailUrl }}" class="img-thumbnail" /></a>
+                <a href="{{ $slot->url }}"><img src="{{ $slot->image->thumbnailUrl }}" class="img-thumbnail" alt="Thumbnail for {{ $slot->fullName }}" /></a>
             </div>
             <div class="mt-1 h5">
                 {!! $slot->displayName !!}

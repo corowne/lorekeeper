@@ -2,7 +2,7 @@
     <div class="text-center">Invalid stack selected.</div>
 @else
     <div class="text-center">
-        <div class="mb-1"><a href="{{ $item->url }}"><img src="{{ $item->imageUrl }}" /></a></div>
+        <div class="mb-1"><a href="{{ $item->url }}"><img src="{{ $item->imageUrl }}" alt="{{ $item->name }}"/></a></div>
         <div @if(count($item->tags)) class="mb-1" @endif><a href="{{ $item->url }}">{{ $item->name }}</a></div>
     </div>
 
@@ -10,13 +10,13 @@
     @if($user && $user->hasPower('edit_inventories'))
         <p class="alert alert-warning my-2">Note: Your rank allows you to transfer character-bound items.</p>
     @endif
-    
+
     {!! Form::open(['url' => 'character/'.$character->slug.'/inventory/edit']) !!}
     <div class="card" style="border: 0px">
         <table class="table table-sm">
             <thead class="thead">
                 <tr class="d-flex">
-                    @if($user && !$readOnly && 
+                    @if($user && !$readOnly &&
                     ($owner_id == $user->id || $has_power == TRUE))
                         <th class="col-1"><input id="toggle-checks" type="checkbox" onclick="toggleChecks(this)"></th>
                     @endif
@@ -36,7 +36,7 @@
                             <td class="col-1">{!! Form::checkbox('ids[]', $itemRow->id, false, ['class' => 'item-check', 'onclick' => 'updateQuantities(this)']) !!}</td>
                         @endif
                         @if($item->category->can_name)
-                            <td class="col-2">{!! htmlentities($itemRow->stack_name) ? : 'N/A' !!}</td> 
+                            <td class="col-2">{!! htmlentities($itemRow->stack_name) ? : 'N/A' !!}</td>
                         @endif
                         <td class="col">{!! array_key_exists('data', $itemRow->data) ? ($itemRow->data['data'] ? $itemRow->data['data'] : 'N/A') : 'N/A' !!}</td>
                         <td class="col">{!! array_key_exists('notes', $itemRow->data) ? ($itemRow->data['notes'] ? $itemRow->data['notes'] : 'N/A') : 'N/A' !!}</td>
@@ -60,7 +60,7 @@
         </table>
     </div>
 
-    @if($user && !$readOnly && 
+    @if($user && !$readOnly &&
         ($owner_id == $user->id || $has_power == TRUE))
         <div class="card mt-3">
             <ul class="list-group list-group-flush">

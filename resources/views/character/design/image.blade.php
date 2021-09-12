@@ -16,18 +16,18 @@
                 <div class="col-md-6">
                     <h3 class="text-center">Main Image</h3>
                     <div class="text-center">
-                        <a href="{{ $request->imageUrl }}"><img src="{{ $request->imageUrl }}" class="mw-100" /></a>
+                        <a href="{{ $request->imageUrl }}"><img src="{{ $request->imageUrl }}" class="mw-100" alt="Request {{ $request->id }}" /></a>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <h3 class="text-center">Thumbnail Image</h3>
                     <div class="text-center">
-                        <a href="{{ $request->thumbnailUrl }}"><img src="{{ $request->thumbnailUrl }}" class="mw-100" /></a>
+                        <a href="{{ $request->thumbnailUrl }}"><img src="{{ $request->thumbnailUrl }}" class="mw-100" alt="Thumbnail for request {{ $request->id }}" /></a>
                     </div>
                 </div>
             </div>
         </div>
-            
+
         @if(!($request->status == 'Draft' && $request->user_id == Auth::user()->id))
             <div class="card-body">
                 <h4 class="mb-3">Credits</h4>
@@ -55,7 +55,7 @@
 @if(($request->status == 'Draft' && $request->user_id == Auth::user()->id) || ($request->status == 'Pending' && Auth::user()->hasPower('manage_characters')))
     @if($request->status == 'Draft' && $request->user_id == Auth::user()->id)
         <p>Select the image you would like to use on the masterlist and an optional thumbnail. Please only upload images that you are allowed to use AND are able to credit to the artist! Note that while staff members cannot edit your uploaded image, they may choose to recrop or upload a different thumbnail.</p>
-    @else 
+    @else
         <p>As a staff member, you may modify the thumbnail of the uploaded image and/or the credits, but not the image itself. If you have recropped the thumbnail, you may need to hard refresh to see the new one.</p>
     @endif
     {!! Form::open(['url' => 'designs/'.$request->id.'/image', 'files' => true]) !!}
@@ -64,7 +64,7 @@
                 {!! Form::label('Image') !!} {!! add_help('This is the image that will be used on the masterlist. Note that the image is not protected in any way, so take precautions to avoid art/design theft.') !!}
                 <div>{!! Form::file('image', ['id' => 'mainImage']) !!}</div>
             </div>
-        @else 
+        @else
             <div class="form-group">
                 {!! Form::checkbox('modify_thumbnail', 1, 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
                 {!! Form::label('modify_thumbnail', 'Modify Thumbnail', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Toggle this option to modify the thumbnail, otherwise only the credits will be saved.') !!}
@@ -92,7 +92,7 @@
         <div class="card mb-3" id="thumbnailCrop">
             <div class="card-body">
                 <div id="cropSelect">Select an image to use the thumbnail cropper.</div>
-                <img src="#" id="cropper" class="hide" />
+                <img src="#" id="cropper" class="hide" alt="" />
                 {!! Form::hidden('x0', null, ['id' => 'cropX0']) !!}
                 {!! Form::hidden('x1', null, ['id' => 'cropX1']) !!}
                 {!! Form::hidden('y0', null, ['id' => 'cropY0']) !!}
@@ -118,7 +118,7 @@
                     <div class="mb-2 d-flex">
                         {!! Form::select('designer_id['.$designer->id.']', $users, $designer->user_id, ['class'=> 'form-control mr-2 selectize', 'placeholder' => 'Select a Designer']) !!}
                         {!! Form::text('designer_url['.$designer->id.']', $designer->url, ['class' => 'form-control mr-2', 'placeholder' => 'Designer URL']) !!}
-                        
+
                         <a href="#" class="add-designer btn btn-link" data-toggle="tooltip" title="Add another designer"
                         @if($count != $designerCount - 1)
                             style="visibility: hidden;"
@@ -172,7 +172,7 @@
         <div class="text-right">
             {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
         </div>
-    
+
     {!! Form::close() !!}
 @endif
 
