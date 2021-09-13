@@ -12,6 +12,74 @@
     @endif
 @endif
 
+@if($request->status != 'Draft' && Auth::user()->hasPower('manage_characters') && Config::get('lorekeeper.extensions.design_update_voting'))
+    <?php
+        $rejectSum = 0;
+        $approveSum = 0;
+        foreach($request->voteData as $voter=>$vote) {
+            if($vote == 1) $rejectSum += 1;
+            if($vote == 2) $approveSum += 1;
+        }
+    ?>
+    <div class="card mb-3"><div class="card-body">
+        <h5 class="text-left">{{$request->status == 'Pending' ? 'Vote' : 'Past Votes'}} on this {{ $request->update_type == 'MYO' ? 'MYO Submission' : 'Design Update' }}
+        @if($request->status == 'Pending')
+            <span class="text-right float-right">
+                <div class="row">
+                    <div class="col-sm-6 text-center text-danger">
+                        {{ $rejectSum }}/{{ Settings::get('design_votes_needed') }}
+                        {!! Form::open(['url' => 'admin/designs/vote/'.$request->id.'/reject', 'id' => 'voteRejectForm']) !!}
+                            <button class="btn {{ $request->voteData->get(Auth::user()->id) == 1 ? 'btn-danger' : 'btn-outline-danger' }}" style="min-width:40px;" data-action="reject"><i class="fas fa-times"></i></button>
+                        {!! Form::close() !!}
+                    </div>
+                    <div class="col-sm-6 text-center text-success">
+                        {{ $approveSum }}/{{ Settings::get('design_votes_needed') }}
+                        {!! Form::open(['url' => 'admin/designs/vote/'.$request->id.'/approve', 'id' => 'voteApproveForm']) !!}
+                            <button class="btn {{ $request->voteData->get(Auth::user()->id) == 2 ? 'btn-success' : 'btn-outline-success' }}" style="min-width:40px;" data-action="approve"><i class="fas fa-check"></i></button>
+                        {!! Form::close() !!}
+                    </div>
+                </div>
+            </span>
+        @endif
+        </h5>
+            <p>
+                {{ $request->update_type == 'MYO' ? 'MYO Submissions' : 'Design updates' }} need {{ Settings::get('design_votes_needed') }} votes before they are considered approved. Note that this does not automatically process the submission in any case, only indicate a consensus.
+            </p>
+        <hr/>
+        @if(isset($request->vote_data) && $request->vote_data)
+            <h4>Votes:</h4>
+                <div class="row">
+                    <div class="col-md">
+                        <h5>Reject:</h5>
+                        <ul>
+                        @foreach($request->voteData as $voter=>$vote)
+                            @if($vote == 1)
+                            <li>
+                                {!! App\Models\User\User::find($voter)->displayName !!} {{ $voter == Auth::user()->id ? '(you)' : '' }}
+                            </li>
+                            @endif
+                        @endforeach
+                        </ul>
+                    </div>
+                    <div class="col-md">
+                        <h5>Approve:</h5>
+                        <ul>
+                        @foreach($request->voteData as $voter=>$vote)
+                            @if($vote == 2)
+                            <li>
+                                {!! App\Models\User\User::find($voter)->displayName !!} {{ $voter == Auth::user()->id ? '(you)' : '' }}
+                            </li>
+                            @endif
+                        @endforeach
+                        </ul>
+                    </div>
+                </div>
+        @else
+            <p>No votes have been cast yet!</p>
+        @endif
+    </div></div>
+@endif
+
 <ul class="nav nav-tabs mb-3">
     <li class="nav-item">
         <a class="nav-link {{ set_active('designs/' . $request->id) }}" href="{{ url('designs/' . $request->id) }}">@if($request->is_complete)<i class="text-success fas fa-check-circle fa-fw mr-2"></i> @endif Status</a>

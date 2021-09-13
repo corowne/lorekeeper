@@ -20,7 +20,7 @@ class CharacterImage extends Model
      */
     protected $fillable = [
         'character_id', 'user_id', 'species_id', 'subtype_id', 'rarity_id', 'url',
-        'extension', 'use_cropper', 'hash', 'sort', 
+        'extension', 'use_cropper', 'hash', 'fullsize_hash', 'sort', 
         'x0', 'x1', 'y0', 'y1',
         'description', 'parsed_description',
         'is_valid', 
@@ -209,6 +209,39 @@ class CharacterImage extends Model
     public function getImageUrlAttribute()
     {
         return asset($this->imageDirectory . '/' . $this->imageFileName);
+    }
+
+    /**
+     * Gets the file name of the model's fullsize image.
+     *
+     * @return string
+     */
+    public function getFullsizeFileNameAttribute()
+    {
+        return $this->id . '_'.$this->hash.'_'.$this->fullsize_hash.'_full.'.$this->extension;
+    }
+
+    /**
+     * Gets the file name of the model's fullsize image.
+     *
+     * @return string
+     */
+    public function getFullsizeUrlAttribute()
+    {
+        return asset($this->imageDirectory . '/' . $this->fullsizeFileName);
+    }
+
+    /**
+     * Gets the file name of the model's fullsize image.
+     *
+     * @param  user
+     * @return string
+     */
+    public function canViewFull($user = null)
+    {
+        if(((isset($this->character->user_id) && ($user ? $this->character->user->id == $user->id : false)) || ($user ? $user->hasPower('manage_characters') : false)))
+        return true;
+        else return false;
     }
 
     /**

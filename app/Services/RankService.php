@@ -54,6 +54,8 @@ class RankService extends Service
             $data['color'] = isset($data['color']) ? str_replace('#', '', $data['color']) : null;
             if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
 
+            $data['icon'] = isset($data['icon']) ? $data['icon'] : 'fas fa-user';
+
             $rank = Rank::create($data);
             if($powers) foreach($powers as $power) DB::table('rank_powers')->insert(['rank_id' => $rank->id, 'power' => $power]);
 
@@ -92,6 +94,8 @@ class RankService extends Service
 
             $data['color'] = isset($data['color']) ? str_replace('#', '', $data['color']) : null;
             if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
+
+            $data['icon'] = isset($data['icon']) ? $data['icon'] : 'fas fa-user';
 
             $rank->update($data);
             if($powers) {

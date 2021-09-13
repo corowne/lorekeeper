@@ -8,7 +8,7 @@
 @if(count($newses))
     {!! $newses->render() !!}
     @foreach($newses as $news)
-        @include('news._news', ['news' => $news])
+        @include('news._news', ['news' => $news, 'page' => FALSE])
     @endforeach
     {!! $newses->render() !!}
 @else

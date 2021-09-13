@@ -100,6 +100,16 @@ class Raffle extends Model
         return 'raffle_tickets';
     }
 
+    /**
+     * Gets the raffle's url. 
+     *
+     * @return string
+     */
+    public function getUrlAttribute()
+    {
+        return url('raffles/view/'.$this->id);
+    }
+
     /**********************************************************************************************
     
         OTHER FUNCTIONS

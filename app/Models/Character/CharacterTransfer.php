@@ -14,7 +14,7 @@ class CharacterTransfer extends Model
      * @var array
      */
     protected $fillable = [
-        'character_id', 'sender_id', 'recipient_id', 
+        'character_id', 'sender_id', 'user_reason', 'recipient_id',
         'status', 'is_approved', 'reason', 'data'
     ];
 
@@ -33,7 +33,7 @@ class CharacterTransfer extends Model
     public $timestamps = true;
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -41,7 +41,7 @@ class CharacterTransfer extends Model
     /**
      * Get the user who initiated the transfer.
      */
-    public function sender() 
+    public function sender()
     {
         return $this->belongsTo('App\Models\User\User', 'sender_id');
     }
@@ -49,7 +49,7 @@ class CharacterTransfer extends Model
     /**
      * Get the user who received the transfer.
      */
-    public function recipient() 
+    public function recipient()
     {
         return $this->belongsTo('App\Models\User\User', 'recipient_id');
     }
@@ -57,13 +57,13 @@ class CharacterTransfer extends Model
     /**
      * Get the character to be transferred.
      */
-    public function character() 
+    public function character()
     {
         return $this->belongsTo('App\Models\Character\Character');
     }
 
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -102,7 +102,7 @@ class CharacterTransfer extends Model
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/

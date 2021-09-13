@@ -39,10 +39,28 @@ class TradeController extends Controller
         $user = Auth::user();
         $trades = Trade::with('recipient')->with('sender')->with('staff')->where(function($query) {
             $query->where('recipient_id', Auth::user()->id)->orWhere('sender_id', Auth::user()->id);
-        })->where('status', ucfirst($status));
+        })->where('status', ucfirst($status))->orderBy('id', 'DESC');
+
+        $stacks = array();
+        foreach($trades->get() as $trade) {
+            foreach($trade->data as $side=>$assets) {
+                if(isset($assets['user_items'])) {
+                    $user_items = UserItem::with('item')->find(array_keys($assets['user_items']));
+                    $items = array();
+                    foreach($assets['user_items'] as $id=>$quantity) {
+                        $user_item = $user_items->find($id);
+                        $user_item['quantity'] = $quantity;
+                        array_push($items,$user_item);
+                    }
+                    $items = collect($items)->groupBy('item_id');
+                    $stacks[$trade->id][$side] = $items;
+                }
+            }
+        }
 
         return view('home.trades.index', [
-            'trades' => $trades->where('status', ucfirst($status))->orderBy('id', 'DESC')->paginate(20)
+            'trades' => $trades->paginate(20),
+            'stacks' => $stacks
         ]);
     }
 
@@ -54,17 +72,17 @@ class TradeController extends Controller
      */
     public function getTrade($id)
     {
-        
         $trade = Trade::find($id);
         
         if($trade->status != 'Completed' && !Auth::user()->hasPower('manage_characters') && !($trade->sender_id == Auth::user()->id || $trade->recipient_id == Auth::user()->id))   $trade = null;
-        
+
         if(!$trade) abort(404);
         return view('home.trades.trade', [
             'trade' => $trade,
             'partner' => (Auth::user()->id == $trade->sender_id) ? $trade->recipient : $trade->sender,
             'senderData' => isset($trade->data['sender']) ? parseAssetData($trade->data['sender']) : null,
-            'recipientData' => isset($trade->data['recipient']) ? parseAssetData($trade->data['recipient']) : null
+            'recipientData' => isset($trade->data['recipient']) ? parseAssetData($trade->data['recipient']) : null,
+            'items' => Item::all()->keyBy('id')
         ]);
     }
 
@@ -76,13 +94,20 @@ class TradeController extends Controller
      */
     public function getCreateTrade()
     {
-        $inventory = UserItem::with('item')->whereNull('deleted_at')->where('user_id', Auth::user()->id)->whereNull('holding_id')->get();
+        $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)
+        ->get()
+        ->filter(function($userItem){
+            return $userItem->isTransferrable == true;
+        })
+        ->sortBy('item.name');;
         return view('home.trades.create_trade', [
             'categories' => ItemCategory::orderBy('sort', 'DESC')->get(),
+            'item_filter' => Item::orderBy('name')->get()->keyBy('id'),
             'inventory' => $inventory,
-            'userOptions' => User::visible()->orderBy('name')->pluck('name', 'id')->toArray(),
+            'userOptions' => User::visible()->where('id', '!=', Auth::user()->id)->orderBy('name')->pluck('name', 'id')->toArray(),
             'characters' => Auth::user()->allCharacters()->visible()->tradable()->with('designUpdate')->get(),
             'characterCategories' => CharacterCategory::orderBy('sort', 'DESC')->get(),
+            'page' => 'trade'
         ]);
     }
 
@@ -99,20 +124,23 @@ class TradeController extends Controller
         })->where('status', 'Open')->first();
 
         if($trade)
-            $inventory = UserItem::with('item')->whereNull('deleted_at')->where('user_id', Auth::user()->id)->where(function($query) use ($trade) {
-                $query->whereNull('holding_id')->orWhere(function($query) use ($trade) {
-                    $query->where('holding_type', 'Trade')->where('holding_id', $trade->id);
-                });
-            })->get();
+            $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)
+            ->get()
+            ->filter(function($userItem){
+                return $userItem->isTransferrable == true;
+            })
+            ->sortBy('item.name');
         else $trade = null;
         return view('home.trades.edit_trade', [
             'trade' => $trade,
             'partner' => (Auth::user()->id == $trade->sender_id) ? $trade->recipient : $trade->sender,
             'categories' => ItemCategory::orderBy('sort', 'DESC')->get(),
+            'item_filter' => Item::orderBy('name')->get()->keyBy('id'),
             'inventory' => $inventory,
             'userOptions' => User::visible()->orderBy('name')->pluck('name', 'id')->toArray(),
             'characters' => Auth::user()->allCharacters()->visible()->with('designUpdate')->get(),
             'characterCategories' => CharacterCategory::orderBy('sort', 'DESC')->get(),
+            'page' => 'trade'
         ]);
     }
     
@@ -125,7 +153,7 @@ class TradeController extends Controller
      */
     public function postCreateTrade(Request $request, TradeManager $service)
     {
-        if($trade = $service->createTrade($request->only(['recipient_id', 'comments', 'stack_id', 'currency_id', 'currency_quantity', 'character_id']), Auth::user())) {
+        if($trade = $service->createTrade($request->only(['recipient_id', 'comments', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity', 'character_id']), Auth::user())) {
             flash('Trade created successfully.')->success();
             return redirect()->to($trade->url);
         }
@@ -145,7 +173,7 @@ class TradeController extends Controller
      */
     public function postEditTrade(Request $request, TradeManager $service, $id)
     {
-        if($trade = $service->editTrade($request->only(['comments', 'stack_id', 'currency_id', 'currency_quantity', 'character_id']) + ['id' => $id], Auth::user())) {
+        if($trade = $service->editTrade($request->only(['comments', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity', 'character_id']) + ['id' => $id], Auth::user())) {
             flash('Trade offer edited successfully.')->success();
         }
         else {

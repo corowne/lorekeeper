@@ -79,6 +79,23 @@
         @endif
 
         <div class="form-group row">
+            {{ Form::label('dob', 'Date of Birth', ['class' => 'col-md-4 col-form-label text-md-right']) }}
+            <div class="col-md-6">
+                <div class="col-md row">
+                {{ Form::selectRange('dob[day]', 1, 31, null, ['class' => 'form-control col-2 mr-1']) }}
+                {{ Form::selectMonth('dob[month]', null, ['class' => 'form-control col-2 mr-1']) }}
+                {{ Form::selectYear('dob[year]', date('Y'), date('Y') - 70, null, ['class' => 'form-control col-2']) }}
+            </div>
+
+            </div>
+            @if ($errors->has('dob'))
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $errors->first('dob') }}</strong>
+                </span>
+            @endif
+        </div>
+
+        <div class="form-group row">
             <div class="col-md-6 offset-md-4">
                 <div class="form-check">
                     <label class="form-check-label">
