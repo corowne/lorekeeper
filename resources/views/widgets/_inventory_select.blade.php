@@ -86,7 +86,7 @@
                                             @endif
                                         </td>
                                     @else
-                                        <td class="col-2">{!! Form::selectRange('stack_quantity['.$itemRow->id.']', 1, $itemRow->availableQuantity, 1, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;']) !!} /{{ $itemRow->availableQuantity }} @if($itemRow->getOthers()) {{ $itemRow->getOthers() }} @endif</td>
+                                        <td class="col-2">{!! Form::selectRange('', 1, $itemRow->availableQuantity, 1, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;']) !!} /{{ $itemRow->availableQuantity }} @if($itemRow->getOthers()) {{ $itemRow->getOthers() }} @endif</td>
                                     @endif
                                 @else
                                     <td class="col-2">{!! Form::selectRange('', 0, 0, 0, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;', 'disabled']) !!} /{{ $itemRow->availableQuantity }} @if($itemRow->getOthers()) {{ $itemRow->getOthers() }} @endif</td>
