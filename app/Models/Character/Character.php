@@ -87,8 +87,8 @@ class Character extends Model
         'slug' => 'required|alpha_dash',
         'description' => 'nullable',
         'sale_value' => 'nullable',
-        'image' => 'required|mimes:jpeg,gif,png|max:20000',
-        'thumbnail' => 'nullable|mimes:jpeg,gif,png|max:20000',
+        'image' => 'required|mimes:jpeg,jpg,gif,png|max:20000',
+        'thumbnail' => 'nullable|mimes:jpeg,jpg,gif,png|max:20000',
         'owner_url' => 'url|nullable',
     ];
 
