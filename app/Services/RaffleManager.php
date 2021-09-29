@@ -21,25 +21,24 @@ class RaffleManager extends Service
 
     /**
      * Adds tickets to a raffle.
-     * One ticket is added per name in $names, which is a
-     * string containing comma-separated names.
      *
      * @param  \App\Models\Raffle\Raffle $raffle
-     * @param  string                    $names
+     * @param  array                     $data
      * @return int
      */
-    public function addTickets($raffle, $names)
+    public function addTickets($raffle, $data)
     {
-        $names = explode(',', $names);
         $count = 0;
-        foreach($names as $name)
+        foreach($data['user_id'] as $key=>$id)
         {
-            $name = trim($name);
-            if(strlen($name) == 0) continue;
-            if ($user = User::where('name', $name)->first())
-                $count += $this->addTicket($user, $raffle);
-            else
-                $count += $this->addTicket($name, $raffle);
+            if ($user = User::where('id', $id)->first()) {
+                if($this->addTicket($user, $raffle, $data['ticket_count'][$key]))
+                    $count += $data['ticket_count'][$key];
+            }
+            else {
+                if($this->addTicket($data['alias'][$key], $raffle, $data['ticket_count'][$key]))
+                    $count += $data['ticket_count'][$key];
+            }
         }
         return $count;
     }

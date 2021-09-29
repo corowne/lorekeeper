@@ -139,6 +139,7 @@ class RaffleController extends Controller
         return view('admin.raffle.ticket_index', [
             'raffle' => $raffle,
             'tickets' => $raffle->tickets()->orderBy('id')->paginate(200),
+            'users' => User::visible()->orderBy('name')->pluck('name', 'id')->toArray(),
             "page" => $request->get('page') ? $request->get('page') - 1 : 0
         ]);
     }
@@ -153,7 +154,8 @@ class RaffleController extends Controller
      */
     public function postCreateRaffleTickets(Request $request, RaffleManager $service, $id)
     {
-        $data = $request->get('names');
+        $request->validate(RaffleTicket::$createRules);
+        $data = $request->only('user_id', 'alias', 'ticket_count');
         if ($count = $service->addTickets(Raffle::find($id), $data)) {
             flash($count . ' tickets added!')->success();
             return redirect()->back();

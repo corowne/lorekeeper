@@ -169,6 +169,8 @@ class GalleryManager extends Service
             // Check that there is text and/or an image, including if there is an existing image (via the existence of a hash)
             if((!isset($data['image']) && !isset($submission->hash)) && !$data['text']) throw new \Exception("Please submit either text or an image.");
 
+            if($user->isStaff) if(!logAdminAction($user, 'Edited Gallery Submission', 'Edited gallery submission '.$submission->displayName)) throw new \Exception("Failed to log admin action.");
+
             // If still pending, perform validation on and process collaborators and participants
             if($submission->status == 'Pending') {
                 // Check that associated collaborators exist
@@ -428,7 +430,7 @@ class GalleryManager extends Service
 
             // And if so, process the submission
             if($action == 'reject' && $rejectSum >= $submission->gallery->votes_required)
-            $this->rejectSubmission($submission);
+            $this->rejectSubmission($submission, $user);
             if($action == 'accept' && $approveSum >= $submission->gallery->votes_required) $this->acceptSubmission($submission);
 
             return $this->commitReturn(true);
@@ -548,7 +550,7 @@ class GalleryManager extends Service
      * @param  \App\Models\Gallery\GallerySubmission  $submission
      * @return bool|\App\Models\Gallery\GallerySubmission
      */
-    private function rejectSubmission($submission)
+    private function rejectSubmission($submission, $user)
     {
         DB::beginTransaction();
 
@@ -556,6 +558,8 @@ class GalleryManager extends Service
             // Check that the submission exists and is pending
             if(!$submission) throw new \Exception("Invalid submission selected.");
             if($submission->status != 'Pending') throw new \Exception("This submission isn't pending.");
+
+            if(!logAdminAction($user, 'Rejected Gallery Submission', 'Rejected gallery submission '.$submission->displayName)) throw new \Exception("Failed to log admin action.");
 
             $submission->update(['status' => 'Rejected']);
 
@@ -584,6 +588,8 @@ class GalleryManager extends Service
         try {
             if(!$submission) throw new \Exception("Invalid submission selected.");
             if($submission->user->id != $user->id && !$user->hasPower('manage_submissions')) throw new \Exception("You can't archive this submission.");
+
+            if($user->isStaff) if(!logAdminAction($user, 'Archived Gallery Submission', 'Archived gallery submission '.$submission->displayName)) throw new \Exception("Failed to log admin action.");
 
             if($submission->is_visible) $submission->update(['is_visible' => 0]);
             else $submission->update(['is_visible' => 1]);
@@ -671,6 +677,8 @@ class GalleryManager extends Service
                     'data' => $valueData,
                     'is_valued' => 1,
                 ]);
+
+                if(!logAdminAction($user, 'Awarded Gallery Submission', 'Awarded gallery submission '.$submission->displayName)) throw new \Exception("Failed to log admin action.");
 
                 // Send a notification to each user that received a currency award
                 foreach($grantedList as $key=>$grantedUser) {

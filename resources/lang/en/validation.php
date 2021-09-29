@@ -131,6 +131,9 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'g-recaptcha-response' => [
+            'recaptchav3' => 'A captcha error has occurred. If you believe this is in error, please contact the site administrator.',
+        ],
         'designer_url.*' => [
             'url' => 'One or more of the designer URL(s) is invalid.',
         ],
