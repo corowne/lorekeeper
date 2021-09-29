@@ -9,6 +9,9 @@
     @if($page->id && !Config::get('lorekeeper.text_pages.'.$page->key))
         <a href="#" class="btn btn-danger float-right delete-page-button">Delete Page</a>
     @endif
+    @if($page->id)
+        <a href="{{ $page->url }}" class="btn btn-info float-right mr-md-2">View Page</a>
+    @endif
 </h1>
 
 {!! Form::open(['url' => $page->id ? 'admin/pages/edit/'.$page->id : 'admin/pages/create', 'files' => true]) !!}

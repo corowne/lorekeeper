@@ -31,7 +31,7 @@ Route::group(['middleware' => ['auth', 'verified']], function() {
 
     # SET BIRTHDATE
     Route::get('/birthday', 'HomeController@getBirthday')->name('birthday');
-    Route::post('/birthday', 'HomeController@postBirthday')->name('birthday');
+    Route::post('/birthday', 'HomeController@postBirthday');
 
     Route::get('/blocked', 'HomeController@getBirthdayBlocked')->name('blocked');
 

@@ -20,7 +20,7 @@
                         <div class="col-sm-3 col-6 text-center align-self-center inventory-item">
                             @if($feature->first()->has_image)
                                 <a class="badge" style="border-radius:.5em; {{ $feature->first()->rarity->color ? 'background-color:#'.$feature->first()->rarity->color : '' }}" href="{{ $feature->first()->url }}">
-                                    <img class="my-1" style="max-height:100%; height:150px; border-radius:.5em;" src="{{ $feature->first()->imageUrl }}" />
+                                    <img class="my-1" style="max-height:100%; height:150px; border-radius:.5em;" src="{{ $feature->first()->imageUrl }}" alt="{{ $feature->first()->name }}" />
                                 </a>
                             @endif
                             <p>
