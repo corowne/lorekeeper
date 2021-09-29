@@ -67,7 +67,7 @@ class RaffleController extends Controller
      */
     public function postCreateEditRaffle(Request $request, RaffleService $service, $id = null)
     {
-        $data = $request->only(['name', 'is_active', 'winner_count', 'group_id', 'order']);
+        $data = $request->only(['name', 'is_active', 'winner_count', 'group_id', 'order', 'ticket_cap']);
         $raffle = null;
         if (!$id) $raffle = $service->createRaffle($data);
         else if ($id) $raffle = $service->updateRaffle($data, Raffle::find($id));
@@ -77,10 +77,10 @@ class RaffleController extends Controller
         }
         else {
             flash('Couldn\'t create raffle.')->error();
-            return redirect()->back()->withInput();  
+            return redirect()->back()->withInput();
         }
     }
-    
+
     /**
      * Shows the create/edit raffle group modal.
      *
@@ -120,7 +120,7 @@ class RaffleController extends Controller
         }
         else {
             flash('Couldn\'t create raffle group.')->error();
-            return redirect()->back()->withInput();  
+            return redirect()->back()->withInput();
         }
     }
 
@@ -160,7 +160,7 @@ class RaffleController extends Controller
         }
         else {
             flash('Couldn\'t add tickets.')->error();
-            return redirect()->back()->withInput();  
+            return redirect()->back()->withInput();
         }
     }
 
@@ -180,7 +180,7 @@ class RaffleController extends Controller
         }
         else {
             flash('Couldn\'t remove ticket.')->error();
-            return redirect()->back()->withInput();  
+            return redirect()->back()->withInput();
         }
     }
 
@@ -215,7 +215,7 @@ class RaffleController extends Controller
         }
         else {
             flash('Error in rolling winners.')->error();
-            return redirect()->back()->withInput();  
+            return redirect()->back()->withInput();
         }
     }
 
@@ -250,7 +250,7 @@ class RaffleController extends Controller
         }
         else {
             flash('Error in rolling winners.')->error();
-            return redirect()->back()->withInput();  
+            return redirect()->back()->withInput();
         }
     }
 }
