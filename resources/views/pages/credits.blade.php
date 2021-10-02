@@ -55,6 +55,9 @@
         <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Galleries"><strong>Galleries</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
     </p>
     <p class="mb-0 col-md-4">
+        <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Captcha"><strong>Captcha</strong> (v3)</a> by <a href="https://github.com/itinerare">itinerare</a>
+    </p>
+    <p class="mb-0 col-md-4">
         <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Navbar_News_Notif"><strong>Navbar News Notif</strong></a> by <a href="https://github.com/junijwi">Junijwi</a> ({{ Config::get('lorekeeper.extensions.navbar_news_notif') ? 'Enabled' : 'Disabled' }})
     </p>
     <p class="mb-0 col-md-4">
