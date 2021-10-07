@@ -498,11 +498,11 @@ class CharacterController extends Controller
     /**
      * Opens a new design update approval request for a character.
      *
-     * @param  App\Services\CharacterManager  $service
-     * @param  string                         $slug
+     * @param  App\Services\DesignUpdateManager  $service
+     * @param  string                            $slug
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCharacterApproval($slug, CharacterManager $service)
+    public function postCharacterApproval($slug, DesignUpdateManager $service)
     {
         if(!Auth::check() || $this->character->user_id != Auth::user()->id) abort(404);
 
