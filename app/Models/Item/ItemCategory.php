@@ -13,8 +13,10 @@ class ItemCategory extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description'
+        'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_character_owned', 'character_limit', 'can_name'
     ];
+
+    protected $appends = ['image_url'];
 
     /**
      * The table associated with the model.
@@ -29,7 +31,7 @@ class ItemCategory extends Model
      * @var array
      */
     public static $createRules = [
-        'name' => 'required|unique:item_categories|between:3,25',
+        'name' => 'required|unique:item_categories|between:3,100',
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
@@ -40,7 +42,7 @@ class ItemCategory extends Model
      * @var array
      */
     public static $updateRules = [
-        'name' => 'required|between:3,25',
+        'name' => 'required|between:3,100',
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];

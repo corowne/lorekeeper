@@ -14,6 +14,7 @@
             e.preventDefault();
             $clone = $components.find('.submission-character').clone();
             attachListeners($clone);
+            attachRewardTypeListener($clone.find('.character-rewardable-type'));
             $characters.append($clone);
             count++;
         });
@@ -41,12 +42,42 @@
                 });
                 updateRewardNames($clone, node.find('.character-info').data('id'));
                 $(this).parent().parent().find('.character-rewards').append($clone);
+                attachRewardTypeListener(node.find('.character-rewardable-type'));
+            });
+            attachRewardTypeListener(node.find('.character-rewardable-type'));
+        }
+
+        function attachRewardTypeListener(node) {
+            node.on('change', function(e) {
+                var val = $(this).val();
+                var $cell = $(this).parent().parent().find('.lootDivs');
+
+                $cell.children().addClass('hide');
+                $cell.children().children().val(null);
+
+                if(val == 'Item') {
+                    $cell.children('.character-items').addClass('show');
+                    $cell.children('.character-items').removeClass('hide');
+                    $cell.children('.character-items');
+                }
+                else if (val == 'Currency'){
+                    $cell.children('.character-currencies').addClass('show');
+                    $cell.children('.character-currencies').removeClass('hide');
+                }
+                else if (val == 'LootTable'){
+                    $cell.children('.character-tables').addClass('show');
+                    $cell.children('.character-tables').addClass('show');
+                    $cell.children('.character-tables').removeClass('hide');
+                }
             });
         }
 
         function updateRewardNames(node, id) {
-            node.find('.currency-id').attr('name', 'character_currency_id[' + id + '][]');
-            node.find('.quantity').attr('name', 'character_quantity[' + id + '][]');
+            node.find('.character-rewardable-type').attr('name', 'character_rewardable_type[' + id + '][]');
+            node.find('.character-rewardable-quantity').attr('name', 'character_rewardable_quantity[' + id + '][]');
+            node.find('.character-currency-id').attr('name', 'character_rewardable_id[' + id + '][]');
+            node.find('.character-item-id').attr('name', 'character_rewardable_id[' + id + '][]');
+            node.find('.character-table-id').attr('name', 'character_rewardable_id[' + id + '][]');
         }
 
     });

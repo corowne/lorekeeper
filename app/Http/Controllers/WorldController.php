@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Config;
 
 use App\Models\Currency\Currency;
 use App\Models\Rarity;
@@ -15,6 +16,11 @@ use App\Models\Feature\Feature;
 use App\Models\Character\CharacterCategory;
 use App\Models\Prompt\PromptCategory;
 use App\Models\Prompt\Prompt;
+use App\Models\Shop\Shop;
+use App\Models\Shop\ShopStock;
+use App\Models\User\User;
+
+use App\Models\Recipe\Recipe;
 
 class WorldController extends Controller
 {
@@ -49,7 +55,7 @@ class WorldController extends Controller
         $query = Currency::query();
         $name = $request->get('name');
         if($name) $query->where('name', 'LIKE', '%'.$name.'%')->orWhere('abbreviation', 'LIKE', '%'.$name.'%');
-        return view('world.currencies', [  
+        return view('world.currencies', [
             'currencies' => $query->orderBy('name')->paginate(20)->appends($request->query()),
         ]);
     }
@@ -65,7 +71,7 @@ class WorldController extends Controller
         $query = Rarity::query();
         $name = $request->get('name');
         if($name) $query->where('name', 'LIKE', '%'.$name.'%');
-        return view('world.rarities', [  
+        return view('world.rarities', [
             'rarities' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
@@ -81,7 +87,7 @@ class WorldController extends Controller
         $query = Species::query();
         $name = $request->get('name');
         if($name) $query->where('name', 'LIKE', '%'.$name.'%');
-        return view('world.specieses', [  
+        return view('world.specieses', [
             'specieses' => $query->with(['subtypes' => function($query) {
                 $query->orderBy('sort', 'DESC');
             }])->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
@@ -99,11 +105,11 @@ class WorldController extends Controller
         $query = Subtype::query();
         $name = $request->get('name');
         if($name) $query->where('name', 'LIKE', '%'.$name.'%');
-        return view('world.subtypes', [  
+        return view('world.subtypes', [
             'subtypes' => $query->with('species')->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
-    
+
     /**
      * Shows the item categories page.
      *
@@ -115,11 +121,11 @@ class WorldController extends Controller
         $query = ItemCategory::query();
         $name = $request->get('name');
         if($name) $query->where('name', 'LIKE', '%'.$name.'%');
-        return view('world.item_categories', [  
+        return view('world.item_categories', [
             'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
-    
+
     /**
      * Shows the trait categories page.
      *
@@ -131,11 +137,11 @@ class WorldController extends Controller
         $query = FeatureCategory::query();
         $name = $request->get('name');
         if($name) $query->where('name', 'LIKE', '%'.$name.'%');
-        return view('world.feature_categories', [  
+        return view('world.feature_categories', [
             'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
-    
+
     /**
      * Shows the traits page.
      *
@@ -146,16 +152,16 @@ class WorldController extends Controller
     {
         $query = Feature::with('category')->with('rarity')->with('species');
         $data = $request->only(['rarity_id', 'feature_category_id', 'species_id', 'name', 'sort']);
-        if(isset($data['rarity_id']) && $data['rarity_id'] != 'none') 
+        if(isset($data['rarity_id']) && $data['rarity_id'] != 'none')
             $query->where('rarity_id', $data['rarity_id']);
-        if(isset($data['feature_category_id']) && $data['feature_category_id'] != 'none') 
+        if(isset($data['feature_category_id']) && $data['feature_category_id'] != 'none')
             $query->where('feature_category_id', $data['feature_category_id']);
-        if(isset($data['species_id']) && $data['species_id'] != 'none') 
+        if(isset($data['species_id']) && $data['species_id'] != 'none')
             $query->where('species_id', $data['species_id']);
-        if(isset($data['name'])) 
+        if(isset($data['name']))
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
 
-        if(isset($data['sort'])) 
+        if(isset($data['sort']))
         {
             switch($data['sort']) {
                 case 'alpha':
@@ -183,7 +189,7 @@ class WorldController extends Controller
                     $query->sortOldest();
                     break;
             }
-        } 
+        }
         else $query->sortCategory();
 
         return view('world.features', [
@@ -195,6 +201,43 @@ class WorldController extends Controller
     }
 
     /**
+     * Shows a species' visual trait list.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getSpeciesFeatures($id)
+    {
+        $categories = FeatureCategory::orderBy('sort', 'DESC')->get();
+        $rarities = Rarity::orderBy('sort', 'ASC')->get();
+        $species = Species::where('id', $id)->first();
+        if(!$species) abort(404);
+        if(!Config::get('lorekeeper.extensions.species_trait_index')) abort(404);
+
+        $features = count($categories) ?
+            $species->features()
+                ->orderByRaw('FIELD(feature_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
+                ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
+                ->orderBy('has_image', 'DESC')
+                ->orderBy('name')
+                ->get()
+                ->groupBy(['feature_category_id', 'id']) :
+            $species->features()
+                ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
+                ->orderBy('has_image', 'DESC')
+                ->orderBy('name')
+                ->get()
+                ->groupBy(['feature_category_id', 'id']);
+
+        return view('world.species_features', [
+            'species' => $species,
+            'categories' => $categories->keyBy('id'),
+            'rarities' => $rarities->keyBy('id'),
+            'features' => $features,
+        ]);
+    }
+
+    /**
      * Shows the items page.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -202,14 +245,16 @@ class WorldController extends Controller
      */
     public function getItems(Request $request)
     {
-        $query = Item::with('category');
+        $query = Item::with('category')->released();
         $data = $request->only(['item_category_id', 'name', 'sort']);
-        if(isset($data['item_category_id']) && $data['item_category_id'] != 'none') 
+        if(isset($data['item_category_id']) && $data['item_category_id'] != 'none')
             $query->where('item_category_id', $data['item_category_id']);
-        if(isset($data['name'])) 
+        if(isset($data['name']))
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
+        if(isset($data['artist']) && $data['artist'] != 'none')
+            $query->where('artist_id', $data['artist']);
 
-        if(isset($data['sort'])) 
+        if(isset($data['sort']))
         {
             switch($data['sort']) {
                 case 'alpha':
@@ -228,12 +273,36 @@ class WorldController extends Controller
                     $query->sortOldest();
                     break;
             }
-        } 
+        }
         else $query->sortCategory();
 
         return view('world.items', [
             'items' => $query->paginate(20)->appends($request->query()),
-            'categories' => ['none' => 'Any Category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
+            'categories' => ['none' => 'Any Category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'shops' => Shop::orderBy('sort', 'DESC')->get(),
+            'artists' => ['none' => 'Any Artist'] + User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray()
+        ]);
+    }
+
+    /**
+     * Shows an individual item's page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getItem($id)
+    {
+        $categories = ItemCategory::orderBy('sort', 'DESC')->get();
+        $item = Item::where('id', $id)->released()->first();
+        if(!$item) abort(404);
+
+        return view('world.item_page', [
+            'item' => $item,
+            'imageUrl' => $item->imageUrl,
+            'name' => $item->displayName,
+            'description' => $item->parsed_description,
+            'categories' => $categories->keyBy('id'),
+            'shops' => Shop::whereIn('id', ShopStock::where('item_id', $item->id)->pluck('shop_id')->unique()->toArray())->orderBy('sort', 'DESC')->get()
         ]);
     }
 
@@ -248,11 +317,11 @@ class WorldController extends Controller
         $query = CharacterCategory::query();
         $name = $request->get('name');
         if($name) $query->where('name', 'LIKE', '%'.$name.'%')->orWhere('code', 'LIKE', '%'.$name.'%');
-        return view('world.character_categories', [  
+        return view('world.character_categories', [
             'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
-    
+
     /**
      * Shows the prompt categories page.
      *
@@ -264,7 +333,7 @@ class WorldController extends Controller
         $query = PromptCategory::query();
         $name = $request->get('name');
         if($name) $query->where('name', 'LIKE', '%'.$name.'%');
-        return view('world.prompt_categories', [  
+        return view('world.prompt_categories', [
             'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
@@ -279,12 +348,12 @@ class WorldController extends Controller
     {
         $query = Prompt::active()->with('category');
         $data = $request->only(['prompt_category_id', 'name', 'sort']);
-        if(isset($data['prompt_category_id']) && $data['prompt_category_id'] != 'none') 
+        if(isset($data['prompt_category_id']) && $data['prompt_category_id'] != 'none')
             $query->where('prompt_category_id', $data['prompt_category_id']);
-        if(isset($data['name'])) 
+        if(isset($data['name']))
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
 
-        if(isset($data['sort'])) 
+        if(isset($data['sort']))
         {
             switch($data['sort']) {
                 case 'alpha':
@@ -315,12 +384,71 @@ class WorldController extends Controller
                     $query->sortEnd(true);
                     break;
             }
-        } 
+        }
         else $query->sortCategory();
 
         return view('world.prompts', [
             'prompts' => $query->paginate(20)->appends($request->query()),
             'categories' => ['none' => 'Any Category'] + PromptCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
+        ]);
+    }
+
+    /**
+     * Shows the items page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getRecipes(Request $request)
+    {
+        $query = Recipe::query();
+        $data = $request->only(['name', 'sort']);
+        if(isset($data['name']))
+            $query->where('name', 'LIKE', '%'.$data['name'].'%');
+
+        if(isset($data['sort']))
+        {
+            switch($data['sort']) {
+                case 'alpha':
+                    $query->sortAlphabetical();
+                    break;
+                case 'alpha-reverse':
+                    $query->sortAlphabetical(true);
+                    break;
+                case 'newest':
+                    $query->sortNewest();
+                    break;
+                case 'oldest':
+                    $query->sortOldest();
+                    break;
+                case 'locked':
+                    $query->sortNeedsUnlocking();
+                    break;
+            }
+        }
+        else $query->sortNewest();
+
+        return view('world.recipes.recipes', [
+            'recipes' => $query->paginate(20)->appends($request->query()),
+        ]);
+    }
+
+    /**
+     * Shows an individual recipe;ss page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getRecipe($id)
+    {
+        $recipe = Recipe::where('id', $id)->first();
+        if(!$recipe) abort(404);
+
+        return view('world.recipes._recipe_page', [
+            'recipe' => $recipe,
+            'imageUrl' => $recipe->imageUrl,
+            'name' => $recipe->displayName,
+            'description' => $recipe->parsed_description,
         ]);
     }
 }
