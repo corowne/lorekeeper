@@ -67,7 +67,7 @@ class RaffleController extends Controller
      */
     public function postCreateEditRaffle(Request $request, RaffleService $service, $id = null)
     {
-        $data = $request->only(['name', 'is_active', 'winner_count', 'group_id', 'order']);
+        $data = $request->only(['name', 'is_active', 'winner_count', 'group_id', 'order', 'ticket_cap']);
         $raffle = null;
         if (!$id) $raffle = $service->createRaffle($data);
         else if ($id) $raffle = $service->updateRaffle($data, Raffle::find($id));
