@@ -65,18 +65,39 @@
     </div>
 </div>
 
+<h3>Characters</h3>
+<p>
+    Add characters to be featured in this sales post.
+</p>
+
+<div id="characters" class="mb-3">
+    @if($sales->id)
+        @foreach($sales->characters as $character)
+            @include('admin.sales._character_select_entry', ['character' => $character])
+        @endforeach
+    @endif
+</div>
+<div class="text-right mb-3">
+    <a href="#" class="btn btn-outline-info" id="addCharacter">Add Character</a>
+</div>
+
 <div class="text-right">
     {!! Form::submit($sales->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
 </div>
 
 {!! Form::close() !!}
 
+@include('admin.sales._character_select')
+
 @endsection
 
 @section('scripts')
 @parent
+
+@include('admin.sales._character_select_js')
+
 <script>
-$( document ).ready(function() {    
+$( document ).ready(function() {
     $('.delete-sales-button').on('click', function(e) {
         e.preventDefault();
         loadModal("{{ url('admin/sales/delete') }}/{{ $sales->id }}", 'Delete Post');
@@ -86,6 +107,6 @@ $( document ).ready(function() {
         dateFormat: "yy-mm-dd",
         timeFormat: 'HH:mm:ss',
     });
-}); 
+});
 </script>
 @endsection

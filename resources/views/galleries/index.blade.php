@@ -30,8 +30,8 @@
                         {{ $gallery->children->count() && (isset($gallery->start_at) || isset($gallery->end_at)) ? ' ・ ' : '' }}
                         @if($gallery->children->count())
                             Sub-galleries:
-                            @foreach($gallery->children as $count=>$child)
-                                {!! $child->displayName !!}{{ $count < $gallery->children->count() - 1 ? ', ' : '' }}
+                            @foreach($gallery->children()->visible()->get() as $count=>$child)
+                                {!! $child->displayName !!}{{ !$loop->last ? ', ' : '' }}
                             @endforeach
                         @endif
                     </p>

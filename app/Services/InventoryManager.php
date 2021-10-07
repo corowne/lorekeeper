@@ -207,7 +207,7 @@ class InventoryManager extends Service
         try {
             foreach($stacks as $key=>$stack) {
                 $quantity = $quantities[$key];
-                if(!$sender->hasAlias) throw new \Exception("Your deviantART account must be verified before you can perform this action.");
+                if(!$sender->hasAlias) throw new \Exception("You need to have a linked social media account before you can perform this action.");
                 if(!$stack) throw new \Exception("An invalid item was selected.");
                 if($stack->user_id != $sender->id && !$sender->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected items.");
                 if($stack->user_id == $recipient->id) throw new \Exception("Cannot send items to the item's owner.");
@@ -259,7 +259,7 @@ class InventoryManager extends Service
                 foreach($stacks as $key=>$stack) {
                     $user = Auth::user();
                     $quantity = $quantities[$key];
-                    if(!$owner->hasAlias) throw new \Exception("Your deviantART account must be verified before you can perform this action.");
+                    if(!$owner->hasAlias) throw new \Exception("You need to have a linked social media account before you can perform this action.");
                     if(!$stack) throw new \Exception("An invalid item was selected.");
                     if($stack->user_id != $owner->id && !$user->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected items.");
                     if($stack->count < $quantity) throw new \Exception("Quantity to delete exceeds item count.");
@@ -282,7 +282,7 @@ class InventoryManager extends Service
                 foreach($stacks as $key=>$stack) {
                     $quantity = $quantities[$key];
                     $user = Auth::user();
-                    if(!$user->hasAlias) throw new \Exception("Your deviantART account must be verified before you can perform this action.");
+                    if(!$user->hasAlias) throw new \Exception("You need to have a linked social media account before you can perform this action.");
                     if(!$stack) throw new \Exception("An invalid item was selected.");
                     if($stack->character->user_id != $user->id && !$user->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected items.");
                     if($stack->count < $quantity) throw new \Exception("Quantity to delete exceeds item count.");
@@ -323,7 +323,7 @@ class InventoryManager extends Service
         try {
             foreach($stacks as $key=>$stack) {
                 $quantity = $quantities[$key];
-                if(!$user->hasAlias) throw new \Exception("Your deviantART account must be verified before you can perform this action.");
+                if(!$user->hasAlias) throw new \Exception("You need to have a linked social media account before you can perform this action.");
                 if(!$stack) throw new \Exception("An invalid item was selected.");
                 if($stack->user_id != $user->id && !$user->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected items.");
                 if($stack->count < $quantity) throw new \Exception("Quantity to sell exceeds item count.");
@@ -490,7 +490,7 @@ class InventoryManager extends Service
         try {
             foreach($stacks as $key=>$stack) {
                 $user = Auth::user();
-                if(!$user->hasAlias) throw new \Exception("Your deviantART account must be verified before you can perform this action.");
+                if(!$user->hasAlias) throw new \Exception("You need to have a linked social media account before you can perform this action.");
                 if(!$stack) throw new \Exception("An invalid item was selected.");
                 if($stack->character->user_id != $user->id && !$user->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected items.");
 

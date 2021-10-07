@@ -40,7 +40,7 @@
     @if(isset($submission->hash) && $submission->hash)
         <div class="text-center mb-4">
             <a href="{{ $submission->imageUrl }}" data-lightbox="entry" data-title="{{ $submission->displayTitle }}">
-                <img src="{{ $submission->imageUrl }}" class="image" style="max-width:100%; {{ isset($submission->parsed_text) && $submission->parsed_text ? 'max-height:50vh;' : 'max-height:70vh;' }} border-radius:.5em;" data-toggle="tooltip" title="Click to view larger size"/>
+                <img src="{{ $submission->imageUrl }}" class="image" style="max-width:100%; {{ isset($submission->parsed_text) && $submission->parsed_text ? 'max-height:50vh;' : 'max-height:70vh;' }} border-radius:.5em;" data-toggle="tooltip" title="Click to view larger size" alt="{{ $submission->displayTitle }}"/>
             </a>
         </div>
     @endif
@@ -54,7 +54,7 @@
     <div class="col-md mb-4">
         <div class="row mb-4 no-gutters">
             <div class="col-md-2 mb-4 mobile-hide text-center">
-                <a href="/user/{{ $submission->user->name }}"><img src="/images/avatars/{{ $submission->user->avatar }}" style="border-radius:50%; margin-right:25px; max-width:100%;" data-toggle="tooltip" title="{{ $submission->user->name }}"/></a>
+                <a href="/user/{{ $submission->user->name }}"><img src="/images/avatars/{{ $submission->user->avatar }}" style="border-radius:50%; margin-right:25px; max-width:100%;" data-toggle="tooltip" title="{{ $submission->user->name }}" alt="{{ $submission->user->name }}"/></a>
             </div>
             <div class="col-md ml-md-2">
                 <div class="card">

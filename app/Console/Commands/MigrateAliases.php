@@ -62,12 +62,12 @@ class MigrateAliases extends Command
 
             if($aliasUsers->count()) {
                 foreach($aliasUsers as $user) {
-                    if(!DB::table('user_aliases')->where('user_id', $user->id)->where('site', 'dA')->where('alias', $user->alias)->exists()) {
+                    if(!DB::table('user_aliases')->where('user_id', $user->id)->where('site', 'deviantart')->where('alias', $user->alias)->exists()) {
                         // Create a new row for the user's current dA alias
                         DB::table('user_aliases')->insert([
                             [
                                 'user_id' => $user->id,
-                                'site' => 'dA',
+                                'site' => 'deviantart',
                                 'alias' => $user->alias,
                                 'is_visible' => 1,
                                 'is_primary_alias' => 1,
@@ -87,6 +87,17 @@ class MigrateAliases extends Command
         }
         else $this->line("Skipped: User aliases (column no longer exists)");
 
+        $daAliases = UserAlias::where('site', 'dA')->get();
+        if($daAliases->count()) {
+            $this->line('Updating '.$daAliases->count().' deviantArt aliases...');
+            foreach($daAliases as $alias) {
+                $alias->site = 'deviantart';
+                $alias->save();
+            }
+            $this->info('deviantArt aliases updated!');
+        }
+        else $this->line('No deviantArt aliases to update!');
+
         /** MOVE CHARACTER OWNER ALIASES */
         if(Schema::hasColumn('characters', 'owner_alias')) {
             // This and the following section operate on the assumption that all aliases to this point have been dA accounts
@@ -97,7 +108,7 @@ class MigrateAliases extends Command
             if($aliasCharacters->count()) {
                 foreach($aliasCharacters as $character) {
                     // Just in case, check to update character ownership
-                    $userAlias = UserAlias::where('site', 'dA')->where('alias', $character->owner_alias)->first();
+                    $userAlias = UserAlias::where('site', 'deviantart')->where('alias', $character->owner_alias)->first();
                     if($userAlias) {
                         $character->update(['owner_alias' => null, 'user_id' => $userAlias->user_id]);
                     }
@@ -121,7 +132,7 @@ class MigrateAliases extends Command
 
             if($aliasImageCreators->count()){
                 foreach($aliasImageCreators as $creator) {
-                    $userAlias = UserAlias::where('site', 'dA')->where('alias', $creator->alias)->first();
+                    $userAlias = UserAlias::where('site', 'deviantart')->where('alias', $creator->alias)->first();
                     if($userAlias) {
                         $creator->update(['alias' => null, 'user_id' => $userAlias->user_id]);
                     }
@@ -146,7 +157,7 @@ class MigrateAliases extends Command
 
             if($aliasCharacterLogs->count()) {
                 foreach($aliasCharacterLogs as $characterLog) {
-                    $userAlias = UserAlias::where('site', 'dA')->where('alias', $characterLog->recipient_alias)->first();
+                    $userAlias = UserAlias::where('site', 'deviantart')->where('alias', $characterLog->recipient_alias)->first();
                     if($userAlias) {
                         $characterLog->update(['recipient_alias' => null, 'recipient_id' => $userAlias->user_id]);
                     }
@@ -157,7 +168,7 @@ class MigrateAliases extends Command
                 }
 
                 foreach($aliasCharacterLogsSender as $characterLog) {
-                    $userAlias = UserAlias::where('site', 'dA')->where('alias', $characterLog->sender_alias)->first();
+                    $userAlias = UserAlias::where('site', 'deviantart')->where('alias', $characterLog->sender_alias)->first();
                     if($userAlias) {
                         $characterLog->update(['sender_alias' => null, 'sender_id' => $userAlias->user_id]);
                     }
@@ -180,7 +191,7 @@ class MigrateAliases extends Command
 
             if($aliasUserCharacterLogs->count() || $aliasUserCharacterLogsSender->count()) {
                 foreach($aliasUserCharacterLogs as $characterLog) {
-                    $userAlias = UserAlias::where('site', 'dA')->where('alias', $characterLog->recipient_alias)->first();
+                    $userAlias = UserAlias::where('site', 'deviantart')->where('alias', $characterLog->recipient_alias)->first();
                     if($userAlias) {
                         $characterLog->update(['recipient_alias' => null, 'recipient_id' => $userAlias->user_id]);
                     }
@@ -191,7 +202,7 @@ class MigrateAliases extends Command
                 }
 
                 foreach($aliasUserCharacterLogsSender as $characterLog) {
-                    $userAlias = UserAlias::where('site', 'dA')->where('alias', $characterLog->sender_alias)->first();
+                    $userAlias = UserAlias::where('site', 'deviantart')->where('alias', $characterLog->sender_alias)->first();
                     if($userAlias) {
                         $characterLog->update(['sender_alias' => null, 'sender_id' => $userAlias->user_id]);
                     }
@@ -213,7 +224,7 @@ class MigrateAliases extends Command
 
             if($aliasItemArtists->count()) {
                 foreach($aliasItemArtists as $itemArtist) {
-                    $userAlias = UserAlias::where('site', 'dA')->where('alias', $itemArtist->artist_alias)->first();
+                    $userAlias = UserAlias::where('site', 'deviantart')->where('alias', $itemArtist->artist_alias)->first();
                     if($userAlias) {
                         $itemArtist->update(['artist_alias' => null, 'artist_id' => $userAlias->user_id]);
                     }

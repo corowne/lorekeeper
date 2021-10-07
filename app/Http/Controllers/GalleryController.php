@@ -35,7 +35,7 @@ class GalleryController extends Controller
     public function __construct()
     {
         parent::__construct();
-        View::share('sidebarGalleries', Gallery::whereNull('parent_id')->active()->sort()->get());
+        View::share('sidebarGalleries', Gallery::whereNull('parent_id')->visible()->sort()->get());
     }
 
     /**
@@ -61,7 +61,7 @@ class GalleryController extends Controller
      */
     public function getGallery($id, Request $request)
     {
-        $gallery = Gallery::find($id);
+        $gallery = Gallery::visible()->where('id', $id)->first();
         if(!$gallery) abort(404);
 
         $query = GallerySubmission::where('gallery_id', $gallery->id)->visible(Auth::check() ? Auth::user() : null)->accepted();
