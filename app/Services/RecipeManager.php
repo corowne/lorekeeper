@@ -78,7 +78,7 @@ class RecipeManager extends Service
             {
                 // Fetch the stacks from DB
                 $stacks = UserItem::whereIn('id', $data['stack_id'])->get()->map(function($stack) use ($data) {
-                    $stack->count = (int)$data['stack_quantity'][array_search($stack->id, $data['stack_id'])];
+                    $stack->count = (int)$data['stack_quantity'][$stack->id];
                     return $stack;
                 });
 
