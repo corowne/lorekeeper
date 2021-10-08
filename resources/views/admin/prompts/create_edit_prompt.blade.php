@@ -108,7 +108,7 @@
 
 {!! Form::close() !!}
 
-@include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables, 'raffles' => $raffles, 'showLootTables' => true, 'showRaffles' => true])
+@include('widgets._loot_select_row', ['showLootTables' => true, 'showRaffles' => true])
 
 @if($prompt->id)
     <h3>Preview</h3>
@@ -125,17 +125,17 @@
 @parent
 @include('js._loot_js', ['showLootTables' => true, 'showRaffles' => true])
 <script>
-$( document ).ready(function() {    
+$( document ).ready(function() {
     $('.delete-prompt-button').on('click', function(e) {
         e.preventDefault();
         loadModal("{{ url('admin/data/prompts/delete') }}/{{ $prompt->id }}", 'Delete Prompt');
     });
-    
+
     $( ".datepicker" ).datetimepicker({
         dateFormat: "yy-mm-dd",
         timeFormat: 'HH:mm:ss',
     });
 });
-    
+
 </script>
 @endsection
