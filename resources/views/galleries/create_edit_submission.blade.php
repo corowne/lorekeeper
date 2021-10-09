@@ -33,13 +33,13 @@
             @if($submission->id && isset($submission->hash) && $submission->hash)
                 <div class="card mb-2" id="existingImage">
                     <div class="card-body text-center">
-                        <img src="{{ $submission->imageUrl }}" style="max-width:100%; max-height:60vh;" />
+                        <img src="{{ $submission->imageUrl }}" style="max-width:100%; max-height:60vh;" alt="Image submission"/>
                     </div>
                 </div>
             @endif
             <div class="card mb-2 hide" id="imageContainer">
                 <div class="card-body text-center">
-                    <img src="#" id="image" style="max-width:100%; max-height:60vh;" />
+                    <img src="#" id="image" style="max-width:100%; max-height:60vh;" alt="Image submission"/>
                 </div>
             </div>
             <div class="card p-2">
@@ -74,7 +74,7 @@
                 @if($gallery->prompt_selection == 1 && (!$submission->id || Auth::user()->hasPower('manage_submissions')))
                     <div class="form-group">
                         {!! Form::label('prompt_id', ($submission->id && Auth::user()->hasPower('manage_submissions') ? '[Admin] ' : '').'Prompt (Optional)') !!} {!! add_help('This <strong>does not</strong> automatically submit to the selected prompt, and you will need to submit to it separately. The prompt selected here will be displayed on the submission page for future reference. You will not be able to edit this after creating the submission.') !!}
-                        {!! Form::select('prompt_id', $prompts, null, ['class' => 'form-control selectize', 'id' => 'prompt', 'placeholder' => 'Select a Prompt']) !!}
+                        {!! Form::select('prompt_id', $prompts, $submission->prompt_id, ['class' => 'form-control selectize', 'id' => 'prompt', 'placeholder' => 'Select a Prompt']) !!}
                     </div>
                 @else
                     {!! $submission->prompt_id ? '<p><strong>Prompt:</strong> '.$submission->prompt->displayName.'</p>' : '' !!}

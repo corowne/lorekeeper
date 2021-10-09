@@ -44,4 +44,41 @@ return [
         ],
     ],
 
+    'deviantart' => [
+        'client_id' => env('DEVIANTART_CLIENT_ID'),
+        'client_secret' => env('DEVIANTART_CLIENT_SECRET'),
+        'redirect' => env('DEVIANTART_REDIRECT_URI', '/auth/callback/deviantart'),
+    ],
+
+    'twitter' => [
+        'client_id' => env('TWITTER_CLIENT_ID'),
+        'client_secret' => env('TWITTER_CLIENT_SECRET'),
+        'redirect' => env('TWITTER_REDIRECT_URI', '/auth/callback/twitter'),
+    ],
+
+    'instagram' => [
+        'client_id' => env('INSTAGRAM_CLIENT_ID'),  
+        'client_secret' => env('INSTAGRAM_CLIENT_SECRET'),  
+        'redirect' => env('INSTAGRAM_REDIRECT_URI', '/auth/callback/instagram') 
+    ],
+
+    'tumblr' => [
+        'client_id' => env('TUMBLR_CLIENT_ID'),  
+        'client_secret' => env('TUMBLR_CLIENT_SECRET'),  
+        'redirect' => env('TUMBLR_REDIRECT_URI', '/auth/callback/tumblr') 
+    ],
+
+    'imgur' => [
+        'client_id' => env('IMGUR_CLIENT_ID'),  
+        'client_secret' => env('IMGUR_CLIENT_SECRET'),  
+        'redirect' => env('IMGUR_REDIRECT_URI', '/auth/callback/imgur') 
+    ],
+
+    'twitch' => [    
+        'client_id' => env('TWITCH_CLIENT_ID'),  
+        'client_secret' => env('TWITCH_CLIENT_SECRET'),  
+        'redirect' => env('TWITCH_REDIRECT_URI', '/auth/callback/twitch') 
+    ],
+
+
 ];

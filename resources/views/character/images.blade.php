@@ -5,7 +5,7 @@
 @section('meta-img') {{ $character->image->thumbnailUrl }} @endsection
 
 @section('profile-content')
-{!! breadcrumbs([($character->category->masterlist_sub_id ? $character->category->sublist->name.' Masterlist' : 'Character masterlist') => ($character->category->masterlist_sub_id ? 'sublist/'.$character->category->sublist->key : 'masterlist' ), $character->fullName => $character->url, 'Images' => $character->url . '/images']) !!} 
+{!! breadcrumbs([($character->category->masterlist_sub_id ? $character->category->sublist->name.' Masterlist' : 'Character masterlist') => ($character->category->masterlist_sub_id ? 'sublist/'.$character->category->sublist->key : 'masterlist' ), $character->fullName => $character->url, 'Images' => $character->url . '/images']) !!}
 
 @include('character._header', ['character' => $character])
 
@@ -16,7 +16,7 @@
                 <div class="col-md-7">
                     <div class="text-center">
                         <a href="{{ $image->canViewFull(Auth::check() ? Auth::user() : null) && file_exists( public_path($image->imageDirectory.'/'.$image->fullsizeFileName)) ? $image->fullsizeUrl : $image->imageUrl }}" data-lightbox="entry" data-title="{{ $character->fullName }} [#{{ $image->id }}] {{ $image->canViewFull(Auth::check() ? Auth::user() : null) && file_exists( public_path($image->imageDirectory.'/'.$image->fullsizeFileName)) ? ' : Full-size Image' : ''}}">
-                            <img src="{{ $image->canViewFull(Auth::check() ? Auth::user() : null) && file_exists( public_path($image->imageDirectory.'/'.$image->fullsizeFileName)) ? $image->fullsizeUrl : $image->imageUrl }}" class="image" />
+                            <img src="{{ $image->canViewFull(Auth::check() ? Auth::user() : null) && file_exists( public_path($image->imageDirectory.'/'.$image->fullsizeFileName)) ? $image->fullsizeUrl : $image->imageUrl }}" class="image" alt="{{ $image->character->fullName }}" />
                         </a>
                     </div>
                     @if($image->canViewFull(Auth::check() ? Auth::user() : null) && file_exists( public_path($image->imageDirectory.'/'.$image->fullsizeFileName)))
@@ -39,7 +39,7 @@
 <ul class="row nav image-nav mb-2" @if($canManage) id="sortable" @endif>
     @foreach($character->images($user)->get() as $image)
         <li class="col-md-3 col-6 text-center nav-item sort-item" data-id="{{ $image->id }}">
-            <a id="thumbnail-{{ $image->id }}" data-toggle="tab" href="#image-{{ $image->id }}" role="tab" class="{{ $image->id == $character->character_image_id ? 'active' : '' }}"><img src="{{ $image->thumbnailUrl }}" class="img-thumbnail" /></a>
+            <a id="thumbnail-{{ $image->id }}" data-toggle="tab" href="#image-{{ $image->id }}" role="tab" class="{{ $image->id == $character->character_image_id ? 'active' : '' }}"><img src="{{ $image->thumbnailUrl }}" class="img-thumbnail" alt="Thumbnail for {{ $image->character->fullName }}"/></a>
         </li>
     @endforeach
 </ul>

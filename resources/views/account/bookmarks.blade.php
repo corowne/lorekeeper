@@ -43,7 +43,7 @@
                 <tr>
                     <td class="thumbnail-hide">
                         <div>
-                            <a href="{{ $bookmark->character->url }}"><img src="{{ $bookmark->character->image->thumbnailUrl }}" class="img-thumbnail" /></a>
+                            <a href="{{ $bookmark->character->url }}"><img src="{{ $bookmark->character->image->thumbnailUrl }}" class="img-thumbnail" alt="{{ $bookmark->character->fullName }}" /></a>
                         </div>
                     </td>
                     <td>
@@ -72,8 +72,8 @@
 
                     </td>
                     <td class="text-right">
-                        <a href="#" class="btn btn-outline-primary btn-sm edit-bookmark-button" data-id="{{ $bookmark->id }}">Edit</a>
-                        <a href="#" class="btn btn-outline-danger btn-sm delete-bookmark-button" data-id="{{ $bookmark->id }}">Delete</a>
+                        <a href="#" class="btn btn-outline-primary btn-sm edit-bookmark-button" data-id="{{ Auth::user()->bookmarks()->where('character_id', $bookmark->character_id)->first()->id }}">Edit</a>
+                        <a href="#" class="btn btn-outline-danger btn-sm delete-bookmark-button" data-id="{{ Auth::user()->bookmarks()->where('character_id', $bookmark->character_id)->first()->id }}">Delete</a>
                     </td>
                 </tr>
             @endforeach
