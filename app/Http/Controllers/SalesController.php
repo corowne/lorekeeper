@@ -59,7 +59,7 @@ class SalesController extends Controller
                     break;
             }
         } 
-        else $query->sortBump();
+        else $query->sortBump(true);
 
         return view('sales.index', [
             'saleses' => $query->paginate(10)->appends($request->query()),

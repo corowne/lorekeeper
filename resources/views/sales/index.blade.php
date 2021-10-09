@@ -25,7 +25,7 @@
                     'oldest'         => 'Created Oldest',
                     'alpha'          => 'Sort Alphabetically (A-Z)',
                     'alpha-reverse'  => 'Sort Alphabetically (Z-A)'
-                ], Request::get('sort') ? : 'Updated First', ['class' => 'form-control']) !!}
+                ], Request::get('sort') ? : 'Updated Newest', ['class' => 'form-control']) !!}
             </div>
             <div class="form-group ml-3 mb-3">
                 {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
