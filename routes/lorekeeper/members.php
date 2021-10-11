@@ -192,7 +192,7 @@ Route::group(['prefix' => 'shops'], function() {
     Comments
 **************************************************************************************************/
 Route::group(['prefix' => 'comments', 'namespace' => 'Comments'], function() {
-    Route::post('/{model}/{id}', 'CommentController@store');
+    Route::post('make/{model}/{id}', 'CommentController@store');
     Route::delete('/{comment}', 'CommentController@destroy')->name('comments.destroy');
     Route::put('/{comment}', 'CommentController@update')->name('comments.update');
     Route::post('/{comment}', 'CommentController@reply')->name('comments.reply');

@@ -85,7 +85,7 @@
                 <div class="modal fade" id="reply-modal-{{ $comment->getKey() }}" tabindex="-1" role="dialog">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                            <form method="POST" action="{{ route('comments.reply', $comment->getKey()) }}">
+                            {!! Form::open(['url' => 'comments/'.$comment->getKey()]) !!}
                                 @csrf
                                 <div class="modal-header">
                                     <h5 class="modal-title">Reply to Comment</h5>
@@ -95,16 +95,16 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group">
-                                        <label for="message">Enter your message here:</label>
-                                        <textarea required class="form-control" name="message" rows="3"></textarea>
-                                        <small class="form-text text-muted"><a target="_blank" href="https://help.github.com/articles/basic-writing-and-formatting-syntax">Markdown cheatsheet.</a></small>
-                                    </div>
+                                        {!! Form::label('message', 'Enter your message here:') !!}
+                                        {!! Form::textarea('message', null, ['class' => 'form-control', 'rows' => 3, 'required']) !!}
+                                        <small class="form-text text-muted"><a target="_blank" href="https://help.github.com/articles/basic-writing-and-formatting-syntax">Markdown</a> cheatsheet.</small>
+                                    </div> 
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-sm btn-outline-secondary text-uppercase" data-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-sm btn-outline-success text-uppercase">Reply</button>
+                                    {!! Form::submit('Reply', ['class' => 'btn btn-sm btn-outline-success text-uppercase']) !!}
                                 </div>
-                            </form>
+                            {!! Form::close() !!}
                         </div>
                     </div>
                 </div>
@@ -146,7 +146,7 @@
                             <div class="form-group">Are you sure you want to {{ $comment->is_featured ? 'un' : '' }}feature this comment?</div>
                         </div>
                         <div class="alert alert-warning">Comments can be unfeatured.</div>
-                        {!! Form::open(['url' => 'comments/'.$comment->id.'/feature']) !!}
+                        {!! Form::open(['url' => 'comments/feature/'.$comment->id]) !!}
                             @if(!$comment->is_featured) {!! Form::submit('Feature', ['class' => 'btn btn-primary w-100 mb-0 mx-0']) !!}
                             @else {!! Form::submit('Unfeature', ['class' => 'btn btn-primary w-100 mb-0 mx-0']) !!}
                             @endif

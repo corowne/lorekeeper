@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-body">
-        {!! Form::open(['url' => 'comments/'.base64_encode(urlencode(get_class($model))).'/'.$model->getKey()]) !!}
+        {!! Form::open(['url' => 'comments/make/'.base64_encode(urlencode(get_class($model))).'/'.$model->getKey()]) !!}
         <div class="form-group">
             {!! Form::label('message', 'Enter your message here:') !!}
             {!! Form::textarea('message', null, ['class' => 'form-control', 'rows' => 3, 'required']) !!}
