@@ -92,7 +92,7 @@ class CommentController extends Controller
                 $post = 'your profile';
                 $link = $recipient->url . '/#comment-' . $comment->getKey();
                 break;
-            case 'App\Models\Sales':
+            case 'App\Models\Sales\Sales':
                 $sale = Sales::find($comment->commentable_id);
                 $recipient = $sale->user; // User that has been commented on (or owner of sale post)
                 $post = 'your sales post'; // Simple message to show if it's profile/sales/news
