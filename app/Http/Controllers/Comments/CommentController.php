@@ -23,11 +23,10 @@ use App\Models\SitePage;
 
 use Notifications;
 
-class CommentController extends Controller implements CommentControllerInterface
+class CommentController extends Controller
 {
     public function __construct()
     {
-
         $this->middleware('web');
 
         if (Config::get('comments.guest_commenting') == true) {
@@ -41,8 +40,9 @@ class CommentController extends Controller implements CommentControllerInterface
     /**
      * Creates a new comment for given model.
      */
-    public function store(Request $request)
+    public function store(Request $request, $model, $id)
     {
+        $model = urldecode(base64_decode($model));
 
         // If guest commenting is turned off, authorize this action.
         if (Config::get('comments.guest_commenting') == false) {
@@ -59,12 +59,10 @@ class CommentController extends Controller implements CommentControllerInterface
 
         // Merge guest rules, if any, with normal validation rules.
         Validator::make($request->all(), array_merge($guest_rules ?? [], [
-            'commentable_type' => 'required|string',
-            'commentable_id' => 'required|string|min:1',
             'message' => 'required|string'
         ]))->validate();
 
-        $model = $request->commentable_type::findOrFail($request->commentable_id);
+        $base = $model::findOrFail($id);
 
         $commentClass = Config::get('comments.model');
         $comment = new $commentClass;
@@ -76,7 +74,7 @@ class CommentController extends Controller implements CommentControllerInterface
             $comment->commenter()->associate(Auth::user());
         }
 
-        $comment->commentable()->associate($model);
+        $comment->commentable()->associate($base);
         $comment->comment = $request->message;
         $comment->approved = !Config::get('comments.approval_required');
         $comment->type = isset($request['type']) && $request['type'] ? $request['type'] : "User-User";
@@ -84,18 +82,17 @@ class CommentController extends Controller implements CommentControllerInterface
 
         $recipient = null;
         $post = null;
-        $model_type = $comment->commentable_type;
         //getting user who commented
         $sender = User::find($comment->commenter_id);
         $type = $comment->type;
 
-        switch($model_type) {
+        switch($model) {
             case 'App\Models\User\UserProfile':
                 $recipient = User::find($comment->commentable_id);
                 $post = 'your profile';
                 $link = $recipient->url . '/#comment-' . $comment->getKey();
                 break;
-            case 'App\Models\Sales\Sales':
+            case 'App\Models\Sales':
                 $sale = Sales::find($comment->commentable_id);
                 $recipient = $sale->user; // User that has been commented on (or owner of sale post)
                 $post = 'your sales post'; // Simple message to show if it's profile/sales/news
@@ -127,6 +124,9 @@ class CommentController extends Controller implements CommentControllerInterface
                 else $recipient = $submission->user;
                 $post = (($type != 'User-User') ? 'your gallery submission\'s staff comments' : 'your gallery submission');
                 $link = (($type != 'User-User') ? $submission->queueUrl . '/#comment-' . $comment->getKey() : $submission->url . '/#comment-' . $comment->getKey());
+                break;
+            default:
+                throw new \Exception('Comment type not supported.');
                 break;
             }
 

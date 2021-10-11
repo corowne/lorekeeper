@@ -28,6 +28,7 @@ class PermalinkController extends Controller
          
         if(!$comment) abort(404);
         if(!$comment->commentable) abort(404);
+        if(isset($comment->commentable->is_visible) && !$comment->commentable->is_visible) abort(404);
 
         // Check if the comment can be viewed
         switch($comment->type) {
