@@ -55,9 +55,7 @@
                 <div class="modal fade" id="comment-modal-{{ $comment->getKey() }}" tabindex="-1" role="dialog">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                            <form method="POST" action="{{ route('comments.update', $comment->getKey()) }}">
-                                @method('PUT')
-                                @csrf
+                            {!! Form::open(array('route' => array('comments.update', $comment->getKey()))) !!}
                                 <div class="modal-header">
                                     <h5 class="modal-title">Edit Comment</h5>
                                     <button type="button" class="close" data-dismiss="modal">
@@ -66,16 +64,16 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group">
-                                        <label for="message">Update your message here:</label>
-                                        <textarea required class="form-control" name="message" rows="3">{{ $comment->comment }}</textarea>
-                                        <small class="form-text text-muted"><a target="_blank" href="https://help.github.com/articles/basic-writing-and-formatting-syntax">Markdown cheatsheet.</a></small>
-                                    </div>
+                                        {!! Form::label('message', 'Update your message here:') !!}
+                                        {!! Form::textarea('message', $comment->comment, ['class' => 'form-control', 'rows' => 3, 'required']) !!}
+                                        <small class="form-text text-muted"><a target="_blank" href="https://help.github.com/articles/basic-writing-and-formatting-syntax">Markdown</a> cheatsheet.</small>
+                                    </div> 
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-sm btn-outline-secondary text-uppercase" data-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-sm btn-outline-success text-uppercase">Update</button>
+                                    {!! Form::submit('Update', ['class' => 'btn btn-sm btn-outline-success text-uppercase']) !!}
                                 </div>
-                            </form>
+                            {!! Form::close() !!}
                         </div>
                     </div>
                 </div>
@@ -86,7 +84,6 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             {!! Form::open(['url' => 'comments/'.$comment->getKey()]) !!}
-                                @csrf
                                 <div class="modal-header">
                                     <h5 class="modal-title">Reply to Comment</h5>
                                     <button type="button" class="close" data-dismiss="modal">
@@ -146,7 +143,7 @@
                             <div class="form-group">Are you sure you want to {{ $comment->is_featured ? 'un' : '' }}feature this comment?</div>
                         </div>
                         <div class="alert alert-warning">Comments can be unfeatured.</div>
-                        {!! Form::open(['url' => 'comments/feature/'.$comment->id]) !!}
+                        {!! Form::open(['url' => 'comments/'.$comment->id.'/feature']) !!}
                             @if(!$comment->is_featured) {!! Form::submit('Feature', ['class' => 'btn btn-primary w-100 mb-0 mx-0']) !!}
                             @else {!! Form::submit('Unfeature', ['class' => 'btn btn-primary w-100 mb-0 mx-0']) !!}
                             @endif
@@ -154,30 +151,27 @@
                     </div>
                 </div>
             </div>
-
-            
         </div>
 
-            <br /><br />{{-- Margin bottom --}}
-            {{-- Recursion for children --}}
-            <div class="w-100 mw-100">
-                @if($grouped_comments->has($comment->getKey()))
-                    @foreach($grouped_comments[$comment->getKey()] as $child)
-                        @php $limit++; @endphp
+        <br /><br />{{-- Margin bottom --}}
+        {{-- Recursion for children --}}
+        <div class="w-100 mw-100">
+            @if($grouped_comments->has($comment->getKey()))
+                @foreach($grouped_comments[$comment->getKey()] as $child)
+                    @php $limit++; @endphp
 
-                        @if($limit >= 3) 
-                            <a href="{{ url('comment/').'/'.$comment->id }}"><span class="btn btn-secondary w-100 my-2">See More Replies</span></a>
-                            @break
-                        @endif
+                    @if($limit >= 3) 
+                        <a href="{{ url('comment/').'/'.$comment->id }}"><span class="btn btn-secondary w-100 my-2">See More Replies</span></a>
+                        @break
+                    @endif
 
-                        @include('comments::_comment', [
-                            'comment' => $child,
-                            'reply' => true,
-                            'grouped_comments' => $grouped_comments
-                        ])
-                    @endforeach
-                @endif
-            </div>
-
+                    @include('comments::_comment', [
+                        'comment' => $child,
+                        'reply' => true,
+                        'grouped_comments' => $grouped_comments
+                    ])
+                @endforeach
+            @endif
+        </div>
     </div>
   </div>
