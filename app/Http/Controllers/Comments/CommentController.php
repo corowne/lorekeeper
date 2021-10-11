@@ -44,6 +44,19 @@ class CommentController extends Controller
     {
         $model = urldecode(base64_decode($model));
 
+        $accepted_models = [
+            'App\Models\User\UserProfile',
+            'App\Models\News',
+            'App\Models\Sales\Sales',
+            'App\Models\Gallery\GallerySubmission',
+            'App\Models\Report\Report',
+            'App\Models\SitePage',
+        ];
+
+        if(!in_array($model, $accepted_models)) {
+            abort(404);
+        }
+
         // If guest commenting is turned off, authorize this action.
         if (Config::get('comments.guest_commenting') == false) {
             Gate::authorize('create-comment', Comment::class);
@@ -63,6 +76,7 @@ class CommentController extends Controller
         ]))->validate();
 
         $base = $model::findOrFail($id);
+        if(isset($base->is_visible) && !$base->is_visible) { flash('Invalid Model')->error(); return redirect()->back(); }
 
         $commentClass = Config::get('comments.model');
         $comment = new $commentClass;
