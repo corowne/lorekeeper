@@ -53,6 +53,7 @@ class UpdateLorekeeperV2 extends Command
             $this->line("\n".'Clearing caches...');
             $this->call('optimize');
             $this->call('view:clear');
+            $this->call('route:clear');
 
             // Run miscellaneous commands
             $this->line("\n".'Updating site pages and settings...');
