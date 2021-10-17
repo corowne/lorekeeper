@@ -173,7 +173,7 @@ class InventoryController extends Controller
     }
 
     /**
-     * Transfers inventory items to another user.
+     * Transfers inventory items to a character.
      *
      * @param  \Illuminate\Http\Request       $request
      * @param  App\Services\InventoryManager  $service

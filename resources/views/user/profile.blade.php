@@ -11,7 +11,7 @@
     <div class="alert alert-danger">This user has been banned.</div>
 @endif
 <h1>
-    <img src="/images/avatars/{{ $user->avatar }}" style="width:125px; height:125px; float:left; border-radius:50%; margin-right:25px;">
+    <img src="/images/avatars/{{ $user->avatar }}" style="width:125px; height:125px; float:left; border-radius:50%; margin-right:25px;" />
     {!! $user->displayName !!}
     <a href="{{ url('reports/new?url=') . $user->url }}"><i class="fas fa-exclamation-triangle fa-xs" data-toggle="tooltip" title="Click here to report this user." style="opacity: 50%; font-size:0.5em;"></i></a>
 
@@ -112,8 +112,7 @@
 @endforeach
 
 <div class="text-right"><a href="{{ $user->url.'/characters' }}">View all...</a></div>
-<hr>
-<br><br>
+<hr class="mb-5" />
 
 @comments(['model' => $user->profile,
         'perPage' => 5

@@ -25,7 +25,7 @@ class SalesController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex()
+    public function getIndex(Request $request)
     {
         if(Auth::check() && Auth::user()->is_sales_unread) Auth::user()->update(['is_sales_unread' => 0]);
         return view('sales.index', ['saleses' => Sales::visible()->orderBy('id', 'DESC')->paginate(10)]);
