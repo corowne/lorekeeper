@@ -462,8 +462,6 @@ tr.outflow {
 }
 
 /* These are not truly tables, but divs styled to look like tables */
-.logs-table {
-}
 .logs-table .logs-table-header {
     border-top: 1px solid #dee2e6;
     border-bottom: 2px solid #dee2e6;
@@ -478,7 +476,8 @@ tr.outflow {
 .logs-table .logs-table-body > .logs-table-row:first-of-type {
     border-top-width: 0;
 }
-.logs-table .logs-table-body > .logs-table-row {
+.logs-table .logs-table-body > .logs-table-row,
+.logs-table-row .logs-table-row {
     border-top: 1px solid #dee2e6;
 }
 .logs-table .logs-table-body .logs-table-cell .inflow,
