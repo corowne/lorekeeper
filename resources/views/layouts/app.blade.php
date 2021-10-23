@@ -93,7 +93,12 @@
                 <div class="main-content col-lg-8 p-4">
                     <div>
                         @if(Settings::get('is_maintenance_mode'))
-                            <div class="alert alert-secondary">The site is currently in maintenance mode! You can browse public content, but cannot make any submissions.</div>
+                            <div class="alert alert-secondary">
+                                The site is currently in maintenance mode! 
+                                @if(!Auth::user()->hasPower('maintenance_access'))
+                                    You can browse public content, but cannot make any submissions.
+                                @endif
+                            </div>
                         @endif
                         @if(Auth::check() && !Config::get('lorekeeper.extensions.navbar_news_notif'))
                             @if(Auth::user()->is_news_unread)
