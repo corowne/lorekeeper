@@ -6,7 +6,7 @@
                     <div class="text-center inventory-item">
                         <div class="mb-1">
                             @if(isset($stack->first()->item->imageUrl))
-                                <a class="inventory-stack"><img src="{{ $stack->first()->item->imageUrl }}" class="mw-100" /></a>
+                                <a class="inventory-stack"><img src="{{ $stack->first()->item->imageUrl }}" class="mw-100" alt="{{ $stack->first()->item->name }}" /></a>
                             @else
                                 {{ $stack->first()->item->name }}
                             @endif
@@ -23,7 +23,7 @@
                 <div class="col-sm-3 col-4 mb-3">
                     <div class="text-center inventory-item">
                         <div class="mb-1">
-                            <a class="inventory-stack"><img src="{{ $character['asset']->image->thumbnailUrl }}" class="img-thumbnail" title="{{ $character['asset']->fullName }}" data-toggle="tooltip" /></a>
+                            <a class="inventory-stack"><img src="{{ $character['asset']->image->thumbnailUrl }}" class="img-thumbnail" title="{{ $character['asset']->fullName }}" data-toggle="tooltip" alt="Thumbnail for {{ $character['asset']->fullName }}"/></a>
                         </div>
                     </div>
                 </div>

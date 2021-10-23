@@ -1,5 +1,5 @@
 <div class="transfer-row mb-2">
-    <div class="transfer-thumbnail"><a href="{{ $transfer->character->url }}"><img src="{{ $transfer->character->image->thumbnailUrl }}" class="img-thumbnail" /></a></div>
+    <div class="transfer-thumbnail"><a href="{{ $transfer->character->url }}"><img src="{{ $transfer->character->image->thumbnailUrl }}" class="img-thumbnail" alt="Thumbnail for {{ $transfer->character->fullName }}" /></a></div>
     <div class="transfer-info card ml-2">
         <div class="card-body">
             <div class="transfer-info-content">

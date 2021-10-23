@@ -166,14 +166,15 @@ class TradeManager extends Service
             // Attach items. Technically, the user doesn't lose ownership of the item - we're just adding an additional holding field.
             // Unlike for design updates, we're keeping track of attached items here.
             if(isset($data['stack_id'])) {
-                foreach($data['stack_id'] as $key=>$stackId) {
+                foreach($data['stack_id'] as $stackId) {
                     $stack = UserItem::with('item')->find($stackId);
                     if(!$stack || $stack->user_id != $user->id) throw new \Exception("Invalid item selected.");
+                    if(!isset($data['stack_quantity'][$stackId])) throw new \Exception("Invalid quantity selected.");
                     if(!$stack->item->allow_transfer || isset($stack->data['disallow_transfer'])) throw new \Exception("One or more of the selected items cannot be transferred.");
-                    $stack->trade_count += $data['stack_quantity'][$key];
+                    $stack->trade_count += $data['stack_quantity'][$stackId];
                     $stack->save();
 
-                    addAsset($userAssets, $stack, $data['stack_quantity'][$key]);
+                    addAsset($userAssets, $stack, $data['stack_quantity'][$stackId]);
                     $assetCount++;
                 }
             }
@@ -419,6 +420,8 @@ class TradeManager extends Service
                     'trade_id' => $trade->id
                 ]);
 
+                if(!logAdminAction($user, 'Approved Trade', 'Approved trade <a href="'.$trade->url.'">#'.$trade->id.'</a>')) throw new \Exception("Failed to log admin action.");
+
                 $trade->status = 'Completed';
                 $trade->staff_id = $user->id;
                 $trade->save();
@@ -456,6 +459,8 @@ class TradeManager extends Service
                 Notifications::create('TRADE_REJECTED', $trade->recipient, [
                     'trade_id' => $trade->id
                 ]);
+
+                if(!logAdminAction($user, 'Rejected Trade', 'Rejected trade <a href="'.$trade->url.'">#'.$trade->id.'</a>')) throw new \Exception("Failed to log admin action.");
 
                 $trade->reason = isset($data['reason']) ? $data['reason'] : '';
                 $trade->status = 'Rejected';

@@ -36,7 +36,7 @@ return [
 
     // Item Entry Expansion - Mercury
     'item_entry_expansion' => [
-        'extra_fields' => 1,
+        'extra_fields' => 0,
         'resale_function' => 0,
         'loot_tables' => [
             // Adds the ability to use either rarity criteria for items or item categories with rarity criteria in loot tables. Note that disabling this does not apply retroactively.
@@ -47,6 +47,9 @@ return [
 
     // Group Traits By Category - Uri
     'traits_by_category' => 0,
+
+    // Scroll To Top - Uri
+    'scroll_to_top' => 0, // 1 - On, 0 - off
 
     // Character Reward Expansion - Uri
     'character_reward_expansion' => [

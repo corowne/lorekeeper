@@ -6,7 +6,13 @@
 {!! breadcrumbs(['Raffles' => 'raffles', 'Raffle: ' . $raffle->name => 'raffles/view/'.$raffle->id]) !!}
 <h1>Raffle: {{ $raffle->name }}</h1>
 @if($raffle->is_active == 1)
-    <div class="alert alert-success">This raffle is currently open. (Number of winners to be drawn: {{ $raffle->winner_count }})</div>
+    <div class="alert alert-success text-center">
+        This raffle is currently open.
+        ・ Number of winners to be drawn: {{ $raffle->winner_count }}
+        @if($raffle->ticket_cap)
+            ・ This raffle has a cap of {{ $raffle->ticket_cap }} tickets per individual.
+        @endif
+    </div>
 @elseif($raffle->is_active == 2)
     <div class="alert alert-danger">This raffle is closed. Rolled: {!! format_date($raffle->rolled_at) !!}</div>
     <div class="card mb-3">

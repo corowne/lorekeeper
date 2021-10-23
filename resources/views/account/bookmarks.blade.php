@@ -43,7 +43,7 @@
                 <tr>
                     <td class="thumbnail-hide">
                         <div>
-                            <a href="{{ $bookmark->character->url }}"><img src="{{ $bookmark->character->image->thumbnailUrl }}" class="img-thumbnail" /></a>
+                            <a href="{{ $bookmark->character->url }}"><img src="{{ $bookmark->character->image->thumbnailUrl }}" class="img-thumbnail" alt="{{ $bookmark->character->fullName }}" /></a>
                         </div>
                     </td>
                     <td>

@@ -6,10 +6,12 @@ use Carbon\Carbon;
 use Config;
 use App\Models\Model;
 use Illuminate\Support\Str;
+use Spatie\Feed\Feedable;
+use Spatie\Feed\FeedItem;
 
 use App\Traits\Commentable;
 
-class News extends Model
+class News extends Model implements Feedable
 {
     use Commentable;
     /**
@@ -51,7 +53,7 @@ class News extends Model
         'title' => 'required|between:3,100',
         'text' => 'required',
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -63,21 +65,21 @@ class News extends Model
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the user who created the news post.
      */
-    public function user() 
+    public function user()
     {
         return $this->belongsTo('App\Models\User\User');
     }
 
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -105,7 +107,7 @@ class News extends Model
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -138,5 +140,37 @@ class News extends Model
     public function getUrlAttribute()
     {
         return url('news/'.$this->slug);
+    }
+
+    /**********************************************************************************************
+
+        OTHER FUNCTIONS
+
+    **********************************************************************************************/
+
+    /**
+     * Returns all feed items.
+     *
+     */
+    public static function getFeedItems()
+    {
+        return News::visible()->get();
+    }
+
+    /**
+     * Generates feed item information.
+     *
+     * @return /Spatie/Feed/FeedItem;
+     */
+    public function toFeedItem(): FeedItem
+    {
+        return FeedItem::create([
+            'id' => '/news/'.$this->id,
+            'title' => $this->title,
+            'summary' => $this->parsed_text,
+            'updated' => $this->updated_at,
+            'link' => $this->url,
+            'author' => $this->user->name
+        ]);
     }
 }

@@ -4,8 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <?php
+        header("Permissions-Policy: interest-cohort=()");
+    ?>
+
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!-- ReCaptcha v3 -->
+    {!! RecaptchaV3::initJs() !!}
 
     <title>{{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} -@yield('title')</title>
 
@@ -68,6 +74,7 @@
         <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
     @endif
 
+    @include('feed::links')
 </head>
 <body>
     <div id="app">

@@ -244,7 +244,7 @@ class WorldController extends Controller
     public function getItems(Request $request)
     {
         $query = Item::with('category')->released();
-        $data = $request->only(['item_category_id', 'name', 'sort']);
+        $data = $request->only(['item_category_id', 'name', 'sort', 'artist']);
         if(isset($data['item_category_id']) && $data['item_category_id'] != 'none')
             $query->where('item_category_id', $data['item_category_id']);
         if(isset($data['name']))

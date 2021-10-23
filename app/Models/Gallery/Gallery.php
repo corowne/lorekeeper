@@ -123,6 +123,23 @@ class Gallery extends Model
 
     }
 
+    /**
+     * Scope a query to only include visible galleries.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeVisible($query)
+    {
+        return $query
+            ->where(function($query) {
+                $query->whereNull('start_at')->orWhere('start_at', '<', Carbon::now())->orWhere(function($query) {
+                    $query->where('start_at', '>=', Carbon::now())->where('hide_before_start', 0);
+                });
+        });
+
+    }
+
     /**********************************************************************************************
 
         ACCESSORS

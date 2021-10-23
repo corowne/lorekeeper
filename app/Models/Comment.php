@@ -72,7 +72,7 @@ class Comment extends Model
      */
     public function commentable()
     {
-        return $this->morphTo();
+        return $this->morphTo()->withTrashed();
     }
 
     /**
@@ -80,7 +80,7 @@ class Comment extends Model
      */
     public function children()
     {
-        return $this->hasMany('App\Models\Comment', 'child_id');
+        return $this->hasMany('App\Models\Comment', 'child_id')->withTrashed();
     }
 
     /**
@@ -88,7 +88,7 @@ class Comment extends Model
      */
     public function parent()
     {
-        return $this->belongsTo('App\Models\Comment', 'child_id');
+        return $this->belongsTo('App\Models\Comment', 'child_id')->withTrashed();
     }
 
     /**

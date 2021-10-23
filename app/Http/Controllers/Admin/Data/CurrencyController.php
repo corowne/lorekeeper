@@ -116,7 +116,7 @@ class CurrencyController extends Controller
      */
     public function postDeleteCurrency(Request $request, CurrencyService $service, $id)
     {
-        if($id && $service->deleteCurrency(Currency::find($id))) {
+        if($id && $service->deleteCurrency(Currency::find($id), Auth::user())) {
             flash('Currency deleted successfully.')->success();
         }
         else {
