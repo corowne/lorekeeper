@@ -16,8 +16,14 @@ class CheckAlias
      */
     public function handle($request, Closure $next)
     {
-        if (is_null($request->user()->alias)) {
+        if(!$request->user()->has_alias) {
             return redirect('/link');
+        }
+        if(!$request->user()->birthday) {
+            return redirect('/birthday');
+        }
+        if(!$request->user()->checkBirthday) {
+            return redirect('/blocked');
         }
         if($request->user()->is_banned) {
             return redirect('/banned');

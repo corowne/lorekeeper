@@ -40,7 +40,7 @@ class Submission extends Model
      * @var array
      */
     public static $createRules = [
-        'url' => 'required|url',
+        'url' => 'nullable|url',
     ];
 
     /**
@@ -49,7 +49,7 @@ class Submission extends Model
      * @var array
      */
     public static $updateRules = [
-        'url' => 'required|url',
+        'url' => 'nullable|url',
     ];
 
     /**********************************************************************************************
@@ -113,12 +113,21 @@ class Submission extends Model
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeViewable($query, $user)
+    public function scopeViewable($query, $user = null)
     {
+        $forbiddenSubmissions = $this
+        ->whereHas('prompt', function($q) {
+            $q->where('hide_submissions', 1)->whereNotNull('end_at')->where('end_at', '>', Carbon::now());
+        })
+        ->orWhereHas('prompt', function($q) {
+            $q->where('hide_submissions', 2);
+        })
+        ->orWhere('status', '!=', 'Approved')->pluck('id')->toArray();
+
         if($user && $user->hasPower('manage_submissions')) return $query;
-        return $query->where(function($query) use ($user) {
-            if($user) $query->where('user_id', $user->id)->orWhere('status', 'Approved');
-            else $query->where('status', 'Approved');
+        else return $query->where(function($query) use ($user, $forbiddenSubmissions) {
+            if($user) $query->whereNotIn('id', $forbiddenSubmissions)->orWhere('user_id', $user->id);
+            else $query->whereNotIn('id', $forbiddenSubmissions);
         });
     }
 
@@ -161,6 +170,28 @@ class Submission extends Model
     }
 
     /**
+     * Gets the inventory of the user for selection.
+     *
+     * @return array
+     */
+    public function getInventory($user)
+    {
+        return $this->data && isset($this->data['user']['user_items']) ? $this->data['user']['user_items'] : [];
+        return $inventory;
+    }
+
+    /**
+     * Gets the currencies of the given user for selection.
+     *
+     * @param  \App\Models\User\User $user
+     * @return array
+     */
+    public function getCurrencies($user)
+    {
+        return $this->data && isset($this->data['user']) && isset($this->data['user']['currencies']) ? $this->data['user']['currencies'] : [];
+    }
+
+    /**
      * Get the viewing URL of the submission/claim.
      *
      * @return string
@@ -187,6 +218,9 @@ class Submission extends Model
      */
     public function getRewardsAttribute()
     {
+        if(isset($this->data['rewards']))
+        $assets = parseAssetData($this->data['rewards']);
+        else
         $assets = parseAssetData($this->data);
         $rewards = [];
         foreach($assets as $type => $a)

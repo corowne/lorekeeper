@@ -24,20 +24,36 @@
     {!! Form::label('Character Image') !!} {!! add_help('This is the full masterlist image. Note that the image is not protected in any way, so take precautions to avoid art/design theft.') !!}
     <div>{!! Form::file('image', ['id' => 'mainImage']) !!}</div>
 </div>
+@if (Config::get('lorekeeper.settings.masterlist_image_automation') === 1)
 <div class="form-group">
     {!! Form::checkbox('use_cropper', 1, 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'useCropper']) !!}
-    {!! Form::label('use_cropper', 'Use Image Cropper', ['class' => 'form-check-label ml-3']) !!} {!! add_help('A thumbnail is required for the upload (used for the masterlist). You can use the image cropper (crop dimensions can be adjusted in the site code), or upload a custom thumbnail.') !!}
+    {!! Form::label('use_cropper', 'Use Thumbnail Automation', ['class' => 'form-check-label ml-3']) !!} {!! add_help('A thumbnail is required for the upload (used for the masterlist). You can use the Thumbnail Automation, or upload a custom thumbnail.') !!}
+</div>
+<div class="card mb-3" id="thumbnailCrop">
+    <div class="card-body">
+        <div id="cropSelect">By using this function, the thumbnail will be automatically generated from the full image.</div>
+        {!! Form::hidden('x0', 1) !!}
+        {!! Form::hidden('x1', 1) !!}
+        {!! Form::hidden('y0', 1) !!}
+        {!! Form::hidden('y1', 1) !!}
+    </div>
+</div>
+@else
+<div class="form-group">
+    {!! Form::checkbox('use_cropper', 1, 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'useCropper']) !!}
+        {!! Form::label('use_cropper', 'Use Image Cropper', ['class' => 'form-check-label ml-3']) !!} {!! add_help('A thumbnail is required for the upload (used for the masterlist). You can use the image cropper (crop dimensions can be adjusted in the site code), or upload a custom thumbnail.') !!}
 </div>
 <div class="card mb-3" id="thumbnailCrop">
     <div class="card-body">
         <div id="cropSelect">Select an image to use the thumbnail cropper.</div>
-        <img src="#" id="cropper" class="hide" />
+        <img src="#" id="cropper" class="hide" alt="" />
         {!! Form::hidden('x0', null, ['id' => 'cropX0']) !!}
         {!! Form::hidden('x1', null, ['id' => 'cropX1']) !!}
         {!! Form::hidden('y0', null, ['id' => 'cropY0']) !!}
         {!! Form::hidden('y1', null, ['id' => 'cropY1']) !!}
     </div>
 </div>
+@endif
 <div class="card mb-3" id="thumbnailUpload">
     <div class="card-body">
         {!! Form::label('Thumbnail Image') !!} {!! add_help('This image is shown on the masterlist page.') !!}
@@ -52,13 +68,13 @@
     {!! Form::label('Designer(s)') !!}
     <div id="designerList">
         <div class="mb-2 d-flex">
-            {!! Form::select('designer_alias[]', $users, null, ['class'=> 'form-control mr-2 selectize', 'placeholder' => 'Select a Designer']) !!}
+            {!! Form::select('designer_id[]', $users, null, ['class'=> 'form-control mr-2 selectize', 'placeholder' => 'Select a Designer']) !!}
             {!! Form::text('designer_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Designer URL']) !!}
             <a href="#" class="add-designer btn btn-link" data-toggle="tooltip" title="Add another designer">+</a>
         </div>
     </div>
     <div class="designer-row hide mb-2">
-        {!! Form::select('designer_alias[]', $users, null, ['class'=> 'form-control mr-2 designer-select', 'placeholder' => 'Select a Designer']) !!}
+        {!! Form::select('designer_id[]', $users, null, ['class'=> 'form-control mr-2 designer-select', 'placeholder' => 'Select a Designer']) !!}
         {!! Form::text('designer_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Designer URL']) !!}
         <a href="#" class="add-designer btn btn-link" data-toggle="tooltip" title="Add another designer">+</a>
     </div>
@@ -67,13 +83,13 @@
     {!! Form::label('Artist(s)') !!}
     <div id="artistList">
         <div class="mb-2 d-flex">
-            {!! Form::select('artist_alias[]', $users, null, ['class'=> 'form-control mr-2 selectize', 'placeholder' => 'Select an Artist']) !!}
+            {!! Form::select('artist_id[]', $users, null, ['class'=> 'form-control mr-2 selectize', 'placeholder' => 'Select an Artist']) !!}
             {!! Form::text('artist_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Artist URL']) !!}
             <a href="#" class="add-artist btn btn-link" data-toggle="tooltip" title="Add another artist">+</a>
         </div>
     </div>
     <div class="artist-row hide mb-2">
-        {!! Form::select('artist_alias[]', $users, null, ['class'=> 'form-control mr-2 artist-select', 'placeholder' => 'Select an Artist']) !!}
+        {!! Form::select('artist_id[]', $users, null, ['class'=> 'form-control mr-2 artist-select', 'placeholder' => 'Select an Artist']) !!}
         {!! Form::text('artist_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Artist URL']) !!}
         <a href="#" class="add-artist btn btn-link mb-2" data-toggle="tooltip" title="Add another artist">+</a>
     </div>

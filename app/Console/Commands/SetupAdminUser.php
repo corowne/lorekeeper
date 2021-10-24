@@ -4,8 +4,11 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
+use App;
+use Carbon\Carbon;
 use App\Services\UserService;
 use App\Models\User\User;
+use App\Models\User\UserAlias;
 use App\Models\Rank\Rank;
 
 class SetupAdminUser extends Command
@@ -45,17 +48,17 @@ class SetupAdminUser extends Command
         $this->info('* ADMIN USER SETUP *');
         $this->info('********************'."\n");
 
-        // First things first, check if user ranks exist... 
+        // First things first, check if user ranks exist...
         if(!Rank::count()) {
 
             // These need to be created even if the seeder isn't run for the site to work correctly.
             $adminRank = Rank::create([
-                'name' => 'Admin', 
+                'name' => 'Admin',
                 'description' => 'The site admin. Has the ability to view/edit any data on the site.',
                 'sort' => 1
             ]);
             Rank::create([
-                'name' => 'Member', 
+                'name' => 'Member',
                 'description' => 'A regular member of the site.',
                 'sort' => 0
             ]);
@@ -80,14 +83,50 @@ class SetupAdminUser extends Command
             $this->line("Email: ".$email);
             $confirm = $this->confirm("Proceed to create account with this information?");
 
+            // If env variables indicate a local instance, double-check
+            // and then if so, help them set up verified email and alias
+            if(App::environment('local')) {
+                if($this->confirm('Are you on a local/testing instance and not a live site?')) {
+                    if($this->confirm('Would you like to mark your email address as verified and enter an alias now?')) {
+                        $verifiedAt = Carbon::now();
+                        $this->line('Provide an alias. By default, this will be entered as a deviantArt account name, but (assuming a local/testing environment) you may use any username.');
+                        $alias = $this->ask('What alias would you like to use?');
+                    }
+                }
+                else {
+                    $this->info('Please adjust your APP_ENV to Production and APP_DEBUG to false in your .env file before continuing set-up!');
+                    return;
+                }
+            }
+
             if($confirm) {
                 $service = new UserService;
-                $service->createUser([
+                $user = $service->createUser([
                     'name' => $name,
                     'email' => $email,
                     'rank_id' => $adminRank->id,
-                    'password' => $password
+                    'password' => $password,
+                    'dob' => [
+                        'day' => '01',
+                        'month' => '01',
+                        'year' => '1970'
+                    ],
+                    'has_alias' => isset($alias) ? 1 : 0
                 ]);
+                if(isset($verifiedAt)) {
+                    $user->email_verified_at = $verifiedAt;
+                    $user->save();
+                }
+
+                if(isset($alias)) {
+                    UserAlias::create([
+                        'user_id' => $user->id,
+                        'site' => 'deviantart',
+                        'alias' => $alias,
+                        'is_primary_alias' => 1,
+                        'is_visible' => 1
+                    ]);
+                }
 
                 $this->line('Admin account created. You can now log in with the registered email and password.');
                 $this->line('If necessary, you can run this command again to change the email address and password of the admin account.');
@@ -109,13 +148,52 @@ class SetupAdminUser extends Command
                         'email' => $email,
                         'password' => $password
                     ]);
-                    
+
                     $this->line('Admin account email and password changed.');
-                    return;
+
                 }
             }
+
+            // If env variables indicate a local instance, double-check
+            // and then if so, help them set up verified email and alias
+            if(App::environment('local')) {
+                if($this->confirm('Are you on a local/testing instance and not a live site?')) {
+                    if($this->confirm('Would you like to mark your email address as verified?')) {
+                        $verifiedAt = Carbon::now();
+                    }
+                    if(!$user->has_alias && $this->confirm('Would you like to enter an alias now?')) {
+                        $this->line('Provide an alias. By default, this will be entered as a deviantArt account name, but (assuming a local/testing environment) you may use any username.');
+                        $alias = $this->ask('What alias would you like to use?');
+                    }
+                }
+                else {
+                    $this->info('Please adjust your APP_ENV to Production and APP_DEBUG to false in your .env file before continuing set-up!');
+                    return;
+                }
+
+                if(isset($verifiedAt)) {
+                    $this->line('Marking email address as verified...');
+                    $user->email_verified_at = $verifiedAt;
+                    $user->save();
+                }
+
+                if(isset($alias)) {
+                    $this->line('Adding user alias...');
+                    $user->update(['has_alias' => 1]);
+                    UserAlias::create([
+                        'user_id' => $user->id,
+                        'site' => 'deviantart',
+                        'alias' => $alias,
+                        'is_primary_alias' => 1,
+                        'is_visible' => 1
+                    ]);
+                }
+
+                $this->line('Updates complete.');
+            }
+            return;
         }
         $this->line('Action cancelled.');
-        
+
     }
 }
