@@ -41,25 +41,31 @@
     <p>No traits found.</p>
 @else
     {!! $features->render() !!}
-      <div class="row ml-md-2">
-        <div class="d-flex row flex-wrap col-12 pb-1 px-0 ubt-bottom">
-          <div class="col-12 col-md-3 font-weight-bold">Name</div>
-          <div class="col-6 col-md-2 font-weight-bold">Rarity</div>
-          <div class="col-6 col-md-2 font-weight-bold">Category</div>
-          <div class="col-6 col-md-2 font-weight-bold">Species</div>
-          <div class="col-6 col-md-2 font-weight-bold">Subtype</div>
+    <div class="mb-4 logs-table">
+        <div class="logs-table-header">
+            <div class="row">
+                <div class="col-12 col-md-3"><div class="logs-table-cell">Name</div></div>
+                <div class="col-6 col-md-2"><div class="logs-table-cell">Rarity</div></div>
+                <div class="col-6 col-md-2"><div class="logs-table-cell">Category</div></div>
+                <div class="col-6 col-md-2"><div class="logs-table-cell">Species</div></div>
+                <div class="col-6 col-md-2"><div class="logs-table-cell">Subtype</div></div>
+            </div>
         </div>
-        @foreach($features as $feature)
-        <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-top">
-          <div class="col-12 col-md-3">{{ $feature->name }}</div>
-          <div class="col-6 col-md-2">{!! $feature->rarity->displayName !!}</div>
-          <div class="col-6 col-md-2">{{ $feature->category ? $feature->category->name : '---' }}</div>
-          <div class="col-6 col-md-2">{{ $feature->species ? $feature->species->name : '---' }}</div>
-          <div class="col-6 col-md-2">{{ $feature->subtype ? $feature->subtype->name : '---' }}</div>
-          <div class="col-12 col-md-1"><a href="{{ url('admin/data/traits/edit/'.$feature->id) }}" class="btn btn-primary py-0 px-1 w-100">Edit</a></div>
+        <div class="logs-table-body">
+            @foreach($features as $feature)
+                <div class="logs-table-row">
+                    <div class="row flex-wrap">
+                        <div class="col-12 col-md-3"><div class="logs-table-cell">{{ $feature->name }}</div></div>
+                        <div class="col-6 col-md-2"><div class="logs-table-cell">{!! $feature->rarity->displayName !!}</div></div>
+                        <div class="col-6 col-md-2"><div class="logs-table-cell">{{ $feature->category ? $feature->category->name : '---' }}</div></div>
+                        <div class="col-6 col-md-2"><div class="logs-table-cell">{{ $feature->species ? $feature->species->name : '---' }}</div></div>
+                        <div class="col-6 col-md-2"><div class="logs-table-cell">{{ $feature->subtype ? $feature->subtype->name : '---' }}</div></div>
+                        <div class="col-12 col-md-1"><div class="logs-table-cell"><a href="{{ url('admin/data/traits/edit/'.$feature->id) }}" class="btn btn-primary py-0 px-1 w-100">Edit</a></div></div>
+                    </div>
+                </div>
+            @endforeach
         </div>
-        @endforeach
-      </div>
+    </div>
     {!! $features->render() !!}
     <div class="text-center mt-4 small text-muted">{{ $features->total() }} result{{ $features->total() == 1 ? '' : 's' }} found.</div>
 @endif
