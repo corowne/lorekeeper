@@ -51,5 +51,15 @@ return [
         'name' => 'Meta Tag Image',
         'description' => 'The image displayed in meta tag previews on social media, discord, and the like. PNG format, no size restriction.',
         'filename' => 'meta-image.png'
-    ]
+    ],
+    'watermark' => [
+        'name' => 'Watermark Image',
+        'description' => 'Watermark for applying to masterlist images.',
+        'filename' => 'watermark.png'
+    ],
+    'content_warning' => [
+        'name' => 'Content Warning Thumbnail',
+        'description' => 'Thumbnail used for gallery submissions with a set content warning. PNG format, size of masterlist thumbnails.',
+        'filename' => 'content_warning.png'
+    ],
 ];

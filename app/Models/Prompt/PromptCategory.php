@@ -29,7 +29,7 @@ class PromptCategory extends Model
      * @var array
      */
     public static $createRules = [
-        'name' => 'required|unique:prompt_categories|between:3,25',
+        'name' => 'required|unique:prompt_categories|between:3,100',
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
@@ -40,7 +40,7 @@ class PromptCategory extends Model
      * @var array
      */
     public static $updateRules = [
-        'name' => 'required|between:3,25',
+        'name' => 'required|between:3,100',
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
@@ -109,7 +109,7 @@ class PromptCategory extends Model
      */
     public function getUrlAttribute()
     {
-        return url('world/prompt-categories?name='.$this->name);
+        return url('prompts/prompt-categories?name='.$this->name);
     }
 
     /**
@@ -119,6 +119,6 @@ class PromptCategory extends Model
      */
     public function getSearchUrlAttribute()
     {
-        return url('world/prompts?prompt_category_id='.$this->id);
+        return url('prompts/prompts?prompt_category_id='.$this->id);
     }
 }

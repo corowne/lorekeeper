@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Auth;
 
 use App\Models\Item\Item;
+use App\Models\Item\ItemCategory;
 use App\Models\Currency\Currency;
 use App\Models\Loot\LootTable;
 
@@ -36,7 +37,7 @@ class LootTableController extends Controller
             'tables' => LootTable::paginate(20)
         ]);
     }
-    
+
     /**
      * Shows the create loot table page.
      *
@@ -44,14 +45,19 @@ class LootTableController extends Controller
      */
     public function getCreateLootTable()
     {
+        $rarities = Item::whereNotNull('data')->get()->pluck('rarity')->unique()->toArray();
+        sort($rarities);
+
         return view('admin.loot_tables.create_edit_loot_table', [
             'table' => new LootTable,
             'items' => Item::orderBy('name')->pluck('name', 'id'),
+            'categories' => ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id'),
             'currencies' => Currency::orderBy('name')->pluck('name', 'id'),
-            'tables' => LootTable::orderBy('name')->pluck('name', 'id')
+            'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
+            'rarities' => array_filter($rarities),
         ]);
     }
-    
+
     /**
      * Shows the edit loot table page.
      *
@@ -62,11 +68,17 @@ class LootTableController extends Controller
     {
         $table = LootTable::find($id);
         if(!$table) abort(404);
+
+        $rarities = Item::whereNotNull('data')->get()->pluck('rarity')->unique()->toArray();
+        sort($rarities);
+
         return view('admin.loot_tables.create_edit_loot_table', [
             'table' => $table,
             'items' => Item::orderBy('name')->pluck('name', 'id'),
+            'categories' => ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id'),
             'currencies' => Currency::orderBy('name')->pluck('name', 'id'),
-            'tables' => LootTable::orderBy('name')->pluck('name', 'id')
+            'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
+            'rarities' => array_filter($rarities),
         ]);
     }
 
@@ -82,7 +94,8 @@ class LootTableController extends Controller
     {
         $id ? $request->validate(LootTable::$updateRules) : $request->validate(LootTable::$createRules);
         $data = $request->only([
-            'name', 'display_name', 'rewardable_type', 'rewardable_id', 'quantity', 'weight'
+            'name', 'display_name', 'rewardable_type', 'rewardable_id', 'quantity', 'weight',
+            'criteria', 'rarity'
         ]);
         if($id && $service->updateLootTable(LootTable::find($id), $data)) {
             flash('Loot table updated successfully.')->success();
@@ -96,7 +109,7 @@ class LootTableController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Gets the loot table deletion modal.
      *
@@ -129,7 +142,7 @@ class LootTableController extends Controller
         }
         return redirect()->to('admin/data/loot-tables');
     }
-    
+
     /**
      * Gets the loot table test roll modal.
      *

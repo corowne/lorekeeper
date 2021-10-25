@@ -21,7 +21,7 @@ class ItemService extends Service
     */
 
     /**********************************************************************************************
-     
+
         ITEM CATEGORIES
 
     **********************************************************************************************/
@@ -54,7 +54,7 @@ class ItemService extends Service
             if ($image) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
 
             return $this->commitReturn($category);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -78,7 +78,7 @@ class ItemService extends Service
 
             $data = $this->populateCategoryData($data, $category);
 
-            $image = null;            
+            $image = null;
             if(isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
                 $image = $data['image'];
@@ -90,7 +90,7 @@ class ItemService extends Service
             if ($category) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
 
             return $this->commitReturn($category);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -106,13 +106,17 @@ class ItemService extends Service
     private function populateCategoryData($data, $category = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
-        
+
+        isset($data['is_character_owned']) && $data['is_character_owned'] ? $data['is_character_owned'] : $data['is_character_owned'] = 0;
+        isset($data['character_limit']) && $data['character_limit'] ? $data['character_limit'] : $data['character_limit'] = 0;
+        isset($data['can_name']) && $data['can_name'] ? $data['can_name'] : $data['can_name'] = 0;
+
         if(isset($data['remove_image']))
         {
-            if($category && $category->has_image && $data['remove_image']) 
-            { 
-                $data['has_image'] = 0; 
-                $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
+            if($category && $category->has_image && $data['remove_image'])
+            {
+                $data['has_image'] = 0;
+                $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName);
             }
             unset($data['remove_image']);
         }
@@ -133,12 +137,12 @@ class ItemService extends Service
         try {
             // Check first if the category is currently in use
             if(Item::where('item_category_id', $category->id)->exists()) throw new \Exception("An item with this category exists. Please change its category first.");
-            
-            if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
+
+            if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName);
             $category->delete();
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -163,14 +167,14 @@ class ItemService extends Service
             }
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
-    
+
     /**********************************************************************************************
-     
+
         ITEMS
 
     **********************************************************************************************/
@@ -178,7 +182,7 @@ class ItemService extends Service
     /**
      * Creates a new item.
      *
-     * @param  array                  $data 
+     * @param  array                  $data
      * @param  \App\Models\User\User  $user
      * @return bool|\App\Models\Item\Item
      */
@@ -203,10 +207,20 @@ class ItemService extends Service
 
             $item = Item::create($data);
 
+            $item->update([
+                'data' => json_encode([
+                    'rarity' => isset($data['rarity']) && $data['rarity'] ? $data['rarity'] : null,
+                    'uses' => isset($data['uses']) && $data['uses'] ? $data['uses'] : null,
+                    'release' => isset($data['release']) && $data['release'] ? $data['release'] : null,
+                    'prompts' => isset($data['prompts']) && $data['prompts'] ? $data['prompts'] : null,
+                    'resell' => isset($data['currency_quantity']) ? [$data['currency_id'] => $data['currency_quantity']] : null,
+                    ]) // rarity, availability info (original source, purchase locations, drop locations)
+            ]);
+
             if ($image) $this->handleImage($image, $item->imagePath, $item->imageFileName);
 
             return $this->commitReturn($item);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -216,7 +230,7 @@ class ItemService extends Service
      * Updates an item.
      *
      * @param  \App\Models\Item\Item  $item
-     * @param  array                  $data 
+     * @param  array                  $data
      * @param  \App\Models\User\User  $user
      * @return bool|\App\Models\Item\Item
      */
@@ -233,7 +247,7 @@ class ItemService extends Service
 
             $data = $this->populateData($data);
 
-            $image = null;            
+            $image = null;
             if(isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
                 $image = $data['image'];
@@ -242,10 +256,20 @@ class ItemService extends Service
 
             $item->update($data);
 
+            $item->update([
+                'data' => json_encode([
+                    'rarity' => isset($data['rarity']) && $data['rarity'] ? $data['rarity'] : null,
+                    'uses' => isset($data['uses']) && $data['uses'] ? $data['uses'] : null,
+                    'release' => isset($data['release']) && $data['release'] ? $data['release'] : null,
+                    'prompts' => isset($data['prompts']) && $data['prompts'] ? $data['prompts'] : null,
+                    'resell' => isset($data['currency_quantity']) ? [$data['currency_id'] => $data['currency_quantity']] : null,
+                    ]) // rarity, availability info (original source, purchase locations, drop locations)
+            ]);
+
             if ($item) $this->handleImage($image, $item->imagePath, $item->imageFileName);
 
             return $this->commitReturn($item);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -254,29 +278,32 @@ class ItemService extends Service
     /**
      * Processes user input for creating/updating an item.
      *
-     * @param  array                  $data 
+     * @param  array                  $data
      * @param  \App\Models\Item\Item  $item
      * @return array
      */
     private function populateData($data, $item = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
-        
+        else $data['parsed_description'] = null;
+
         if(!isset($data['allow_transfer'])) $data['allow_transfer'] = 0;
+        if(!isset($data['is_released']) && Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields')) $data['is_released'] = 0;
+        else $data['is_released'] = 1;
 
         if(isset($data['remove_image']))
         {
-            if($item && $item->has_image && $data['remove_image']) 
-            { 
-                $data['has_image'] = 0; 
-                $this->deleteImage($item->imagePath, $item->imageFileName); 
+            if($item && $item->has_image && $data['remove_image'])
+            {
+                $data['has_image'] = 0;
+                $this->deleteImage($item->imagePath, $item->imageFileName);
             }
             unset($data['remove_image']);
         }
 
         return $data;
     }
-    
+
     /**
      * Deletes an item.
      *
@@ -289,28 +316,32 @@ class ItemService extends Service
 
         try {
             // Check first if the item is currently owned or if some other site feature uses it
-            if(DB::table('user_items')->where('item_id', $item->id)->exists()) throw new \Exception("At least one user currently owns this item. Please remove the item(s) before deleting it.");
+            if(DB::table('user_items')->where([['item_id', '=', $item->id], ['count', '>', 0]])->exists()) throw new \Exception("At least one user currently owns this item. Please remove the item(s) before deleting it.");
+            if(DB::table('character_items')->where([['item_id', '=', $item->id], ['count', '>', 0]])->exists()) throw new \Exception("At least one character currently owns this item. Please remove the item(s) before deleting it.");
             if(DB::table('loots')->where('rewardable_type', 'Item')->where('rewardable_id', $item->id)->exists()) throw new \Exception("A loot table currently distributes this item as a potential reward. Please remove the item before deleting it.");
             if(DB::table('prompt_rewards')->where('rewardable_type', 'Item')->where('rewardable_id', $item->id)->exists()) throw new \Exception("A prompt currently distributes this item as a reward. Please remove the item before deleting it.");
             if(DB::table('shop_stock')->where('item_id', $item->id)->exists()) throw new \Exception("A shop currently stocks this item. Please remove the item before deleting it.");
-            
+
+            DB::table('items_log')->where('item_id', $item->id)->delete();
+            DB::table('user_items')->where('item_id', $item->id)->delete();
+            DB::table('character_items')->where('item_id', $item->id)->delete();
             $item->tags()->delete();
-            if($item->has_image) $this->deleteImage($item->imagePath, $item->imageFileName); 
+            if($item->has_image) $this->deleteImage($item->imagePath, $item->imageFileName);
             $item->delete();
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
-    
+
     /**********************************************************************************************
-     
+
         ITEM TAGS
 
     **********************************************************************************************/
-    
+
     /**
      * Gets a list of item tags for selection.
      *
@@ -325,7 +356,7 @@ class ItemService extends Service
 
         return $result;
     }
-    
+
     /**
      * Adds an item tag to an item.
      *
@@ -341,19 +372,19 @@ class ItemService extends Service
             if(!$item) throw new \Exception("Invalid item selected.");
             if($item->tags()->where('tag', $tag)->exists()) throw new \Exception("This item already has this tag attached to it.");
             if(!$tag) throw new \Exception("No tag selected.");
-            
+
             $tag = ItemTag::create([
                 'item_id' => $item->id,
                 'tag' => $tag
             ]);
 
             return $this->commitReturn($tag);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
-    
+
     /**
      * Edits the data associated with an item tag on an item.
      *
@@ -369,7 +400,7 @@ class ItemService extends Service
         try {
             if(!$item) throw new \Exception("Invalid item selected.");
             if(!$item->tags()->where('tag', $tag)->exists()) throw new \Exception("This item does not have this tag attached to it.");
-            
+
             $tag = $item->tags()->where('tag', $tag)->first();
 
             $service = $tag->service;
@@ -383,12 +414,12 @@ class ItemService extends Service
             $tag->save();
 
             return $this->commitReturn($tag);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
-    
+
     /**
      * Removes an item tag from an item.
      *
@@ -403,11 +434,11 @@ class ItemService extends Service
         try {
             if(!$item) throw new \Exception("Invalid item selected.");
             if(!$item->tags()->where('tag', $tag)->exists()) throw new \Exception("This item does not have this tag attached to it.");
-            
+
             $item->tags()->where('tag', $tag)->delete();
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);

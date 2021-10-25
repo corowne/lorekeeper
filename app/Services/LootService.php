@@ -5,6 +5,7 @@ use App\Services\Service;
 use DB;
 use Config;
 
+use Illuminate\Support\Arr;
 use App\Models\Loot\LootTable;
 use App\Models\Loot\Loot;
 use App\Models\Prompt\PromptReward;
@@ -31,22 +32,26 @@ class LootService extends Service
         DB::beginTransaction();
 
         try {
-            
+
             // More specific validation
             foreach($data['rewardable_type'] as $key => $type)
             {
                 if(!$type) throw new \Exception("Loot type is required.");
-                if(!$data['rewardable_id'][$key]) throw new \Exception("Reward is required.");
+                if($type != 'ItemRarity' && !$data['rewardable_id'][$key]) throw new \Exception("Reward is required.");
                 if(!$data['quantity'][$key] || $data['quantity'][$key] < 1) throw new \Exception("Quantity is required and must be an integer greater than 0.");
                 if(!$data['weight'][$key] || $data['weight'][$key] < 1) throw new \Exception("Weight is required and must be an integer greater than 0.");
+                if($type == 'ItemCategoryRarity') {
+                    if(!isset($data['criteria'][$key]) || !$data['criteria'][$key]) throw new \Exception("Criteria is required for conditional item categories.");
+                    if(!isset($data['rarity'][$key]) || !$data['rarity'][$key]) throw new \Exception("A rarity is required for conditional item categories.");
+                }
             }
 
-            $table = LootTable::create(array_only($data, ['name', 'display_name']));
+            $table = LootTable::create(Arr::only($data, ['name', 'display_name']));
 
-            $this->populateLootTable($table, array_only($data, ['rewardable_type', 'rewardable_id', 'quantity', 'weight']));
+            $this->populateLootTable($table, Arr::only($data, ['rewardable_type', 'rewardable_id', 'quantity', 'weight', 'criteria', 'rarity']));
 
             return $this->commitReturn($table);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -56,7 +61,7 @@ class LootService extends Service
      * Updates a loot table.
      *
      * @param  \App\Models\Loot\LootTable  $table
-     * @param  array                       $data 
+     * @param  array                       $data
      * @return bool|\App\Models\Loot\LootTable
      */
     public function updateLootTable($table, $data)
@@ -64,22 +69,26 @@ class LootService extends Service
         DB::beginTransaction();
 
         try {
-            
+
             // More specific validation
             foreach($data['rewardable_type'] as $key => $type)
             {
                 if(!$type) throw new \Exception("Loot type is required.");
-                if(!$data['rewardable_id'][$key]) throw new \Exception("Reward is required.");
+                if($type != 'ItemRarity' && !$data['rewardable_id'][$key]) throw new \Exception("Reward is required.");
                 if(!$data['quantity'][$key] || $data['quantity'][$key] < 1) throw new \Exception("Quantity is required and must be an integer greater than 0.");
                 if(!$data['weight'][$key] || $data['weight'][$key] < 1) throw new \Exception("Weight is required and must be an integer greater than 0.");
+                if($type == 'ItemCategoryRarity') {
+                    if(!isset($data['criteria'][$key]) || !$data['criteria'][$key]) throw new \Exception("Criteria is required for conditional item categories.");
+                    if(!isset($data['rarity'][$key]) || !$data['rarity'][$key]) throw new \Exception("A rarity is required for conditional item categories.");
+                }
             }
 
-            $table->update(array_only($data, ['name', 'display_name']));
+            $table->update(Arr::only($data, ['name', 'display_name']));
 
-            $this->populateLootTable($table, array_only($data, ['rewardable_type', 'rewardable_id', 'quantity', 'weight']));
+            $this->populateLootTable($table, Arr::only($data, ['rewardable_type', 'rewardable_id', 'quantity', 'weight', 'criteria', 'rarity']));
 
             return $this->commitReturn($table);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -89,7 +98,7 @@ class LootService extends Service
      * Handles the creation of loot for a loot table.
      *
      * @param  \App\Models\Loot\LootTable  $table
-     * @param  array                       $data 
+     * @param  array                       $data
      */
     private function populateLootTable($table, $data)
     {
@@ -98,12 +107,19 @@ class LootService extends Service
 
         foreach($data['rewardable_type'] as $key => $type)
         {
+            if($type == 'ItemCategoryRarity' || $type == 'ItemRarity')
+                $lootData = [
+                    'criteria' => $data['criteria'][$key],
+                    'rarity' => $data['rarity'][$key]
+                ];
+
             Loot::create([
                 'loot_table_id'   => $table->id,
                 'rewardable_type' => $type,
-                'rewardable_id'   => $data['rewardable_id'][$key],
+                'rewardable_id'   => isset($data['rewardable_id'][$key]) ? $data['rewardable_id'][$key] : 1,
                 'quantity'        => $data['quantity'][$key],
-                'weight'          => $data['weight'][$key]
+                'weight'          => $data['weight'][$key],
+                'data'            => isset($lootData) ? json_encode($lootData) : null
             ]);
         }
     }
@@ -123,12 +139,12 @@ class LootService extends Service
             // - Prompts
             // - Box rewards (unfortunately this can't be checked easily)
             if(PromptReward::where('rewardable_type', 'LootTable')->where('rewardable_id', $table->id)->exists()) throw new \Exception("A prompt uses this table to distribute rewards. Please remove it from the rewards list first.");
-            
+
             $table->loot()->delete();
             $table->delete();
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);

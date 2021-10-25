@@ -5,9 +5,13 @@ namespace App\Models;
 use Carbon\Carbon;
 use Config;
 use App\Models\Model;
+use Illuminate\Support\Str;
+
+use App\Traits\Commentable;
 
 class News extends Model
 {
+    use Commentable;
     /**
      * The attributes that are mass assignable.
      *
@@ -44,7 +48,7 @@ class News extends Model
      * @var array
      */
     public static $createRules = [
-        'title' => 'required|between:3,25',
+        'title' => 'required|between:3,100',
         'text' => 'required',
     ];
     
@@ -54,7 +58,7 @@ class News extends Model
      * @var array
      */
     public static $updateRules = [
-        'title' => 'required|between:3,25',
+        'title' => 'required|between:3,100',
         'text' => 'required',
     ];
 
@@ -113,7 +117,7 @@ class News extends Model
      */
     public function getSlugAttribute()
     {
-        return $this->id . '.' . str_slug($this->title);
+        return $this->id . '.' . Str::slug($this->title);
     }
 
     /**
