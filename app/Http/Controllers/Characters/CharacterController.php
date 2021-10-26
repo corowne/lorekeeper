@@ -268,7 +268,7 @@ class CharacterController extends Controller
                 $sender = Auth::user();
                 $recipient = $this->character;
 
-                if($service->transferCharacterStack($sender, $recipient, UserItem::find($request->get('stack_id')), $request->get('stack_quantity'))) {
+                if($service->transferCharacterStack($sender, $recipient, UserItem::find($request->get('stack_id')), $request->get('stack_quantity'), Auth::user())) {
                     flash('Item transferred successfully.')->success();
                 }
                 else {
@@ -298,7 +298,7 @@ class CharacterController extends Controller
      */
     private function postItemTransfer(Request $request, InventoryManager $service)
     {
-        if($service->transferCharacterStack($this->character, $this->character->user, CharacterItem::find($request->get('ids')), $request->get('quantities'))) {
+        if($service->transferCharacterStack($this->character, $this->character->user, CharacterItem::find($request->get('ids')), $request->get('quantities'), Auth::user())) {
             flash('Item transferred successfully.')->success();
         }
         else {
@@ -316,7 +316,7 @@ class CharacterController extends Controller
      */
     private function postName(Request $request, InventoryManager $service)
     {
-        if($service->nameStack($this->character, CharacterItem::find($request->get('ids')), $request->get('stack_name'))) {
+        if($service->nameStack($this->character, CharacterItem::find($request->get('ids')), $request->get('stack_name'), Auth::user())) {
             flash('Item named successfully.')->success();
         }
         else {
@@ -334,7 +334,7 @@ class CharacterController extends Controller
      */
     private function postDelete(Request $request, InventoryManager $service)
     {
-        if($service->deleteStack($this->character, CharacterItem::find($request->get('ids')), $request->get('quantities'))) {
+        if($service->deleteStack($this->character, CharacterItem::find($request->get('ids')), $request->get('quantities'), Auth::user())) {
             flash('Item deleted successfully.')->success();
         }
         else {
@@ -498,11 +498,11 @@ class CharacterController extends Controller
     /**
      * Opens a new design update approval request for a character.
      *
-     * @param  App\Services\CharacterManager  $service
-     * @param  string                         $slug
+     * @param  App\Services\DesignUpdateManager  $service
+     * @param  string                            $slug
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCharacterApproval($slug, CharacterManager $service)
+    public function postCharacterApproval($slug, DesignUpdateManager $service)
     {
         if(!Auth::check() || $this->character->user_id != Auth::user()->id) abort(404);
 

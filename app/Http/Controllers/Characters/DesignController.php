@@ -17,7 +17,9 @@ use App\Models\Species\Subtype;
 use App\Models\Rarity;
 use App\Models\Feature\Feature;
 use App\Models\Item\ItemCategory;
+
 use App\Services\CharacterManager;
+use App\Services\DesignUpdateManager;
 
 use App\Http\Controllers\Controller;
 
@@ -74,12 +76,12 @@ class DesignController extends Controller
     /**
      * Edits a design update request's comments section.
      *
-     * @param  \Illuminate\Http\Request       $request
-     * @param  App\Services\CharacterManager  $service
-     * @param  int                            $id
+     * @param  \Illuminate\Http\Request          $request
+     * @param  App\Services\DesignUpdateManager  $service
+     * @param  int                               $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postComments(Request $request, CharacterManager $service, $id)
+    public function postComments(Request $request, DesignUpdateManager $service, $id)
     {
         $r = CharacterDesignUpdate::find($id);
         if(!$r) abort(404);
@@ -113,12 +115,12 @@ class DesignController extends Controller
     /**
      * Edits a design update request's image upload section.
      *
-     * @param  \Illuminate\Http\Request       $request
-     * @param  App\Services\CharacterManager  $service
-     * @param  int                            $id
+     * @param  \Illuminate\Http\Request          $request
+     * @param  App\Services\DesignUpdateManager  $service
+     * @param  int                               $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postImage(Request $request, CharacterManager $service, $id)
+    public function postImage(Request $request, DesignUpdateManager $service, $id)
     {
         $r = CharacterDesignUpdate::find($id);
         if(!$r) abort(404);
@@ -145,9 +147,9 @@ class DesignController extends Controller
     {
         $r = CharacterDesignUpdate::find($id);
         if(!$r || ($r->user_id != Auth::user()->id && !Auth::user()->hasPower('manage_characters'))) abort(404);
-        if($r->status == 'Draft' && $r->user_id == Auth::user()->id) 
+        if($r->status == 'Draft' && $r->user_id == Auth::user()->id)
             $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', $r->user_id)->get();
-        else 
+        else
             $inventory = isset($r->data['user']) ? parseAssetData($r->data['user']) : null;
         return view('character.design.addons', [
             'request' => $r,
@@ -162,12 +164,12 @@ class DesignController extends Controller
     /**
      * Edits a design update request's addons section.
      *
-     * @param  \Illuminate\Http\Request       $request
-     * @param  App\Services\CharacterManager  $service
-     * @param  int                            $id
+     * @param  \Illuminate\Http\Request          $request
+     * @param  App\Services\DesignUpdateManager  $service
+     * @param  int                               $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postAddons(Request $request, CharacterManager $service, $id)
+    public function postAddons(Request $request, DesignUpdateManager $service, $id)
     {
         $r = CharacterDesignUpdate::find($id);
         if(!$r) abort(404);
@@ -221,12 +223,12 @@ class DesignController extends Controller
     /**
      * Edits a design update request's features section.
      *
-     * @param  \Illuminate\Http\Request       $request
-     * @param  App\Services\CharacterManager  $service
-     * @param  int                            $id
+     * @param  \Illuminate\Http\Request          $request
+     * @param  App\Services\DesignUpdateManager  $service
+     * @param  int                               $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postFeatures(Request $request, CharacterManager $service, $id)
+    public function postFeatures(Request $request, DesignUpdateManager $service, $id)
     {
         $r = CharacterDesignUpdate::find($id);
         if(!$r) abort(404);
@@ -259,11 +261,11 @@ class DesignController extends Controller
     /**
      * Submits a design update request for approval.
      *
-     * @param  App\Services\CharacterManager  $service
-     * @param  int                            $id
+     * @param  App\Services\DesignUpdateManager  $service
+     * @param  int                               $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postSubmit(CharacterManager $service, $id)
+    public function postSubmit(DesignUpdateManager $service, $id)
     {
         $r = CharacterDesignUpdate::find($id);
         if(!$r) abort(404);
@@ -296,11 +298,11 @@ class DesignController extends Controller
     /**
      * Deletes a design update request.
      *
-     * @param  App\Services\CharacterManager  $service
-     * @param  int                            $id
+     * @param  App\Services\DesignUpdateManager  $service
+     * @param  int                               $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postDelete(CharacterManager $service, $id)
+    public function postDelete(DesignUpdateManager $service, $id)
     {
         $r = CharacterDesignUpdate::find($id);
         if(!$r) abort(404);

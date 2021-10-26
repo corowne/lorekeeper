@@ -124,7 +124,7 @@ class FeatureController extends Controller
      */
     public function postDeleteFeatureCategory(Request $request, FeatureService $service, $id)
     {
-        if($id && $service->deleteFeatureCategory(FeatureCategory::find($id))) {
+        if($id && $service->deleteFeatureCategory(FeatureCategory::find($id), Auth::user())) {
             flash('Category deleted successfully.')->success();
         }
         else {
@@ -273,7 +273,7 @@ class FeatureController extends Controller
      */
     public function postDeleteFeature(Request $request, FeatureService $service, $id)
     {
-        if($id && $service->deleteFeature(Feature::find($id))) {
+        if($id && $service->deleteFeature(Feature::find($id), Auth::user())) {
             flash('Trait deleted successfully.')->success();
         }
         else {

@@ -4,7 +4,6 @@ use Carbon\Carbon;
 use App\Services\Service;
 
 use DB;
-use Auth;
 use Config;
 use Notifications;
 
@@ -60,6 +59,7 @@ class InventoryManager extends Service
 
             foreach($users as $user) {
                 foreach($items as $item) {
+                    if(!logAdminAction($staff, 'Item Grant', 'Granted '.$keyed_quantities[$item->id].' '.$item->displayName.' to '.$user->displayname)) throw new \Exception("Failed to log admin action.");
                     if($this->creditItem($staff, $user, 'Staff Grant', Arr::only($data, ['data', 'disallow_transfer', 'notes']), $item, $keyed_quantities[$item->id]))
                     {
                         Notifications::create('ITEM_GRANT', $user, [
@@ -116,6 +116,7 @@ class InventoryManager extends Service
             if(!count($items)) throw new \Exception("No valid items found.");
             
             foreach($items as $item) {
+                if(!logAdminAction($staff, 'Item Grant', 'Granted '.$keyed_quantities[$item->id].' '.$item->displayName.' to '.$character->displayname)) throw new \Exception("Failed to log admin action.");
                 $this->creditItem($staff, $character, 'Staff Grant', Arr::only($data, ['data', 'disallow_transfer', 'notes']), $item, $keyed_quantities[$item->id]);
                 if($character->is_visible && $character->user_id) {
                     Notifications::create('CHARACTER_ITEM_GRANT', $character->user, [
@@ -145,7 +146,7 @@ class InventoryManager extends Service
      * @param  int                                                            $quantities
      * @return bool
      */
-    public function transferCharacterStack($sender, $recipient, $stacks, $quantities)
+    public function transferCharacterStack($sender, $recipient, $stacks, $quantities, $user)
     {
         DB::beginTransaction();
 
@@ -163,10 +164,10 @@ class InventoryManager extends Service
                 if($sender->logType == 'Character' && $quantity <= 0 && $stack->count > 0) $quantity = $stack->count;
                 if($quantity <= 0) throw new \Exception("Invalid quantity entered.");
                 
-                if(($recipient->logType == 'Character' && !$sender->hasPower('edit_inventories') && !Auth::user() == $recipient->user) || ($recipient->logType == 'User' && !Auth::user()->hasPower('edit_inventories') && !Auth::user() == $sender->user)) throw new \Exception("Cannot transfer items to/from a character you don't own.");
+                if(($recipient->logType == 'Character' && !$sender->hasPower('edit_inventories') && !$user == $recipient->user) || ($recipient->logType == 'User' && !$user->hasPower('edit_inventories') && !$user == $sender->user)) throw new \Exception("Cannot transfer items to/from a character you don't own.");
                 
                 if($recipient->logType == 'Character' && !$stack->item->category->is_character_owned) throw new \Exception("One of the selected items cannot be owned by characters.");
-                if((!$stack->item->allow_transfer || isset($stack->data['disallow_transfer'])) && !Auth::user()->hasPower('edit_inventories')) throw new \Exception("One of the selected items cannot be transferred.");
+                if((!$stack->item->allow_transfer || isset($stack->data['disallow_transfer'])) && !$user->hasPower('edit_inventories')) throw new \Exception("One of the selected items cannot be transferred.");
                 if($stack->count < $quantity) throw new \Exception("Quantity to transfer exceeds item count.");
 
                 //Check that hold count isn't being exceeded
@@ -250,14 +251,13 @@ class InventoryManager extends Service
      * @param  int                                                            $quantities
      * @return bool
      */
-    public function deleteStack($owner, $stacks, $quantities)
+    public function deleteStack($owner, $stacks, $quantities, $user)
     {
         DB::beginTransaction();
 
         try {
             if($owner->logType == 'User') {
                 foreach($stacks as $key=>$stack) {
-                    $user = Auth::user();
                     $quantity = $quantities[$key];
                     if(!$owner->hasAlias) throw new \Exception("You need to have a linked social media account before you can perform this action.");
                     if(!$stack) throw new \Exception("An invalid item was selected.");
@@ -281,7 +281,6 @@ class InventoryManager extends Service
             else {
                 foreach($stacks as $key=>$stack) {
                     $quantity = $quantities[$key];
-                    $user = Auth::user();
                     if(!$user->hasAlias) throw new \Exception("You need to have a linked social media account before you can perform this action.");
                     if(!$stack) throw new \Exception("An invalid item was selected.");
                     if($stack->character->user_id != $user->id && !$user->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected items.");
@@ -483,13 +482,12 @@ class InventoryManager extends Service
      * @param  int                                                            $quantities
      * @return bool
      */
-    public function nameStack($owner, $stacks, $name)
+    public function nameStack($owner, $stacks, $name, $user)
     {
         DB::beginTransaction();
 
         try {
             foreach($stacks as $key=>$stack) {
-                $user = Auth::user();
                 if(!$user->hasAlias) throw new \Exception("You need to have a linked social media account before you can perform this action.");
                 if(!$stack) throw new \Exception("An invalid item was selected.");
                 if($stack->character->user_id != $user->id && !$user->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected items.");
@@ -536,5 +534,72 @@ class InventoryManager extends Service
                 'updated_at' => Carbon::now()
             ]
         );
+    }
+
+    /**
+     * Consolidates a user's item stacks.
+     *
+     * @param  \App\Models\User\User          $user
+     * @return bool
+     */
+    public function consolidateInventory($user)
+    {
+        DB::beginTransaction();
+
+        try {
+            if(!$user->hasAlias) throw new \Exception("You need to have a linked social media account before you can perform this action.");
+            
+            // Making a very large assumption here that there aren't going to be a huge number
+            // of items to process, due to the nature of ARPGs.
+
+            // Group owned items by ID.
+            // We'll exclude stacks that are partially contained in trades, updates and submissions.
+            $items = UserItem::where('user_id', $user->id)->whereNull('deleted_at')
+                             ->where(function($query) { 
+                                 $query->where('trade_count', 0)->orWhereNull('trade_count'); 
+                             })->where(function($query) { 
+                                $query->where('update_count', 0)->orWhereNull('update_count'); 
+                             })->where(function($query) { 
+                                $query->where('submission_count', 0)->orWhereNull('submission_count'); 
+                             })->get()->groupBy('item_id');
+
+            foreach($items as $itemId => $itemVariations) {
+
+                $variations = [];
+                
+                // We'll loop over the user items to obtain the first of each variant of item, to update with the final count.
+                // Variations are distinguished by having the same data field.
+                foreach($itemVariations as $typeVariation) {
+                    $isNew = true;
+                    foreach($variations as $foundVariation) {
+                        // Found an existing match. 
+                        // The count can be added to the existing variation, and this row can be deleted.
+                        // Just for the sake of reducing confusion when looking in the DB,
+                        // We'll also reduce its count to 0 before deletion.
+                        if($foundVariation->data == $typeVariation->data) {
+                            $isNew = false;
+                            $foundVariation->count += $typeVariation->count;
+                            $typeVariation->count = 0;
+                            $typeVariation->save();
+                            $typeVariation->delete();
+                            break;
+                        }
+                    }
+                    // No match, add a new variation
+                    if($isNew) {
+                        $variations[] = $typeVariation;
+                    }
+                }
+
+                // At the end, save the rows in the variations array
+                foreach($variations as $variation) {
+                    $variation->save();
+                }
+            }
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
     }
 }
