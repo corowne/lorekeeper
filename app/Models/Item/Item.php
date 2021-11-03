@@ -122,8 +122,8 @@ class Item extends Model
      */
     public function scopeSortCategory($query)
     {
-        $ids = ItemCategory::orderBy('sort', 'DESC')->pluck('id')->toArray();
-        return count($ids) ? $query->orderByRaw(DB::raw('FIELD(item_category_id, '.implode(',', $ids).')')) : $query;
+        if(ItemCategory::all()->count()) return $query->orderBy(ItemCategory::select('sort')->whereColumn('items.item_category_id', 'item_categories.id'), 'DESC');
+        return $query;
     }
 
     /**
