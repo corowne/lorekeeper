@@ -140,14 +140,15 @@ class CharacterController extends Controller
     /**
      * Shows a character's gallery.
      *
-     * @param  string  $slug
+     * @param  \Illuminate\Http\Request       $request
+     * @param  string                         $slug
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCharacterGallery($slug)
+    public function getCharacterGallery(Request $request, $slug)
     {
         return view('character.gallery', [
             'character' => $this->character,
-            'submissions' => GallerySubmission::whereIn('id', $this->character->gallerySubmissions->pluck('gallery_submission_id')->toArray())->visible()->accepted()->orderBy('created_at', 'DESC')->paginate(20),
+            'submissions' => GallerySubmission::whereIn('id', $this->character->gallerySubmissions->pluck('gallery_submission_id')->toArray())->visible()->accepted()->orderBy('created_at', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
 
