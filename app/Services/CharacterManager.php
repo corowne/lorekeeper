@@ -932,16 +932,17 @@ class CharacterManager extends Service
      *
      * @param  \App\Models\Character\CharacterImage  $image
      * @param  \App\Models\User\User                 $user
+     * @param  bool                                  $forceDelete
      * @return  bool
      */
-    public function deleteImage($image, $user)
+    public function deleteImage($image, $user, $forceDelete = false)
     {
         DB::beginTransaction();
 
         try {
             if(!logAdminAction($user, 'Deleted Image', 'Deleted character image <a href="'.$image->character->url.'">#'.$image->id.'</a>')) throw new \Exception("Failed to log admin action.");
 
-            if($image->character->character_image_id == $image->id) throw new \Exception("Cannot delete a character's active image.");
+            if(!$forceDelete && $image->character->character_image_id == $image->id) throw new \Exception("Cannot delete a character's active image.");
 
             $image->features()->delete();
 
