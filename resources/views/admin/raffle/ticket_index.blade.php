@@ -8,12 +8,22 @@
 <h1>Raffle Tickets: {{ $raffle->name }}</h1>
 
 @if($raffle->is_active == 0)
-    <p>This raffle is currently hidden. (Number of winners to be drawn: {{ $raffle->winner_count }})</p>
+    <p>
+        This raffle is currently hidden. (Number of winners to be drawn: {{ $raffle->winner_count }})<br/>
+        @if($raffle->ticket_cap)
+            This raffle has a cap of {{ $raffle->ticket_cap }} tickets per individual.
+        @endif
+    </p>
     <div class="text-right form-group">
         <a class="btn btn-success edit-tickets" href="#" data-id="">Add Tickets</a>
     </div>
 @elseif($raffle->is_active == 1)
-    <p>This raffle is currently open. (Number of winners to be drawn: {{ $raffle->winner_count }})</p>
+    <p>
+        This raffle is currently open. (Number of winners to be drawn: {{ $raffle->winner_count }})<br/>
+        @if($raffle->ticket_cap)
+            This raffle has a cap of {{ $raffle->ticket_cap }} tickets per individual.
+        @endif
+    </p>
     <div class="text-right form-group">
         <a class="btn btn-success edit-tickets" href="#" data-id="">Add Tickets</a>
     </div>

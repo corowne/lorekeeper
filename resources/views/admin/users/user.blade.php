@@ -80,7 +80,11 @@
 
 <div class="card p-3 mb-2">
     <h3>Birthdate</h3>
-    @if(!$user->checkBirthday)<p class="text-danger">This user is currently set to an underage DOB</p>@endif
+    @if($user->birthday)
+        @if(!$user->checkBirthday)<p class="text-danger">This user is currently set to an underage DOB.</p>@endif
+    @else 
+        <p class="text-danger">This user has not set their DOB.</p>
+    @endif
     {!! Form::open(['url' => 'admin/users/'.$user->name.'/birthday']) !!}
         <div class="form-group row">
             <label class="col-md-2 col-form-label">Birthday</label>

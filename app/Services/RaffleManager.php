@@ -57,6 +57,8 @@ class RaffleManager extends Service
         else if (!$raffle) return 0;
         else if ($count == 0) return 0;
         else if ($raffle->rolled_at != null) return 0;
+        else if ($raffle->ticket_cap > 0 && ((is_string($user) ? $raffle->tickets()->where('alias', $user)->count() : $raffle->tickets()->where('user_id', $user->id)->count()) > $raffle->ticket_cap || (is_string($user) ? $raffle->tickets()->where('alias', $user)->count() : $raffle->tickets()->where('user_id', $user->id)->count()) + $count > $raffle->ticket_cap)) return 0;
+
         else {
             DB::beginTransaction();
             $data = ["raffle_id" => $raffle->id, 'created_at' => Carbon::now()] + (is_string($user) ? ['alias' => $user] : ['user_id' => $user->id]);

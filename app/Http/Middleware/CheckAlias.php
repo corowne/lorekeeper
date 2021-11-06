@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Settings;
 
 class CheckAlias
 {
@@ -16,6 +17,9 @@ class CheckAlias
      */
     public function handle($request, Closure $next)
     {
+        if(Settings::get('is_maintenance_mode') == 1 && !$request->user()->hasPower('maintenance_access')) {
+            return redirect('/');
+        }
         if(!$request->user()->has_alias) {
             return redirect('/link');
         }

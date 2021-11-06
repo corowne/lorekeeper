@@ -50,6 +50,10 @@ return [
     'manage_reports' => [
         'name' => 'Manage Reports',
         'description' => 'Allow rank to view the reports queue.'
+    ],
+    'maintenance_access' => [
+        'name' => 'Has Maintenance Access',
+        'description' => 'Allow rank to browse the site normally during maintenance mode.'
     ]
 
 

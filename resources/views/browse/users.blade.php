@@ -36,22 +36,28 @@
     {!! Form::close() !!}
 </div>
 {!! $users->render() !!}
-  <div class="row ml-md-2">
-    <div class="d-flex row flex-wrap col-12 pb-1 px-0 ubt-bottom">
-      <div class="col-12 col-md-4 font-weight-bold">Username</div>
-      <div class="col-4 col-md-3 font-weight-bold">Primary Alias</div>
-      <div class="col-4 col-md-2 font-weight-bold">Rank</div>
-      <div class="col-4 col-md-3 font-weight-bold">Joined</div>
+<div class="mb-4 logs-table">
+    <div class="logs-table-header">
+        <div class="row">
+            <div class="col-12 col-md-4"><div class="logs-table-cell">Username</div></div>
+            <div class="col-4 col-md-3"><div class="logs-table-cell">Primary Alias</div></div>
+            <div class="col-4 col-md-2"><div class="logs-table-cell">Rank</div></div>
+            <div class="col-4 col-md-3"><div class="logs-table-cell">Joined</div></div>
+        </div>
     </div>
-    @foreach($users as $user)
-    <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-top">
-      <div class="col-12 col-md-4 ">{!! $user->displayName !!}</div>
-      <div class="col-4 col-md-3">{!! $user->displayAlias !!}</div>
-      <div class="col-4 col-md-2">{!! $user->rank->displayName !!}</div>
-      <div class="col-4 col-md-3">{!! pretty_date($user->created_at, false) !!}</div>
+    <div class="logs-table-body">
+        @foreach($users as $user)
+            <div class="logs-table-row">
+                <div class="row flex-wrap">
+                    <div class="col-12 col-md-4"><div class="logs-table-cell">{!! $user->displayName !!}</div></div>
+                    <div class="col-4 col-md-3"><div class="logs-table-cell">{!! $user->displayAlias !!}</div></div>
+                    <div class="col-4 col-md-2"><div class="logs-table-cell">{!! $user->rank->displayName !!}</div></div>
+                    <div class="col-4 col-md-3"><div class="logs-table-cell">{!! pretty_date($user->created_at, false) !!}</div></div>
+                </div>
+            </div>
+        @endforeach
     </div>
-    @endforeach
-  </div>
+</div>
 {!! $users->render() !!}
 
 <div class="text-center mt-4 small text-muted">{{ $users->total() }} result{{ $users->total() == 1 ? '' : 's' }} found.</div>

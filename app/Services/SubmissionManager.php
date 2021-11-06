@@ -34,6 +34,16 @@ class SubmissionManager extends Service
     */
 
     /**
+     * Helper function to remove all empty/zero/falsey values.
+     *
+     * @param  array $value
+     * @return array
+     */
+    private function innerNull($value){
+        return array_values(array_filter($value));
+    }
+
+    /**
      * Creates a new submission.
      *
      * @param  array                  $data
@@ -178,10 +188,6 @@ class SubmissionManager extends Service
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
-    }
-
-    private function innerNull($value){
-        return array_values(array_filter($value));
     }
 
     /**
