@@ -173,7 +173,7 @@ class InventoryController extends Controller
     }
 
     /**
-     * Transfers inventory items to another user.
+     * Transfers inventory items to a character.
      *
      * @param  \Illuminate\Http\Request       $request
      * @param  App\Services\InventoryManager  $service
@@ -181,7 +181,7 @@ class InventoryController extends Controller
      */
     private function postTransferToCharacter(Request $request, InventoryManager $service)
     {
-        if($service->transferCharacterStack(Auth::user(), Character::visible()->where('id', $request->get('character_id'))->first(), UserItem::find($request->get('ids')), $request->get('quantities'))) {
+        if($service->transferCharacterStack(Auth::user(), Character::visible()->where('id', $request->get('character_id'))->first(), UserItem::find($request->get('ids')), $request->get('quantities'), Auth::user())) {
             flash('Item transferred successfully.')->success();
         }
         else {
@@ -199,7 +199,7 @@ class InventoryController extends Controller
      */
     private function postDelete(Request $request, InventoryManager $service)
     {
-        if($service->deleteStack(Auth::user(), UserItem::find($request->get('ids')), $request->get('quantities'))) {
+        if($service->deleteStack(Auth::user(), UserItem::find($request->get('ids')), $request->get('quantities'), Auth::user())) {
             flash('Item deleted successfully.')->success();
         }
         else {
@@ -294,5 +294,35 @@ class InventoryController extends Controller
             'trades' => $item ? $trades : null,
             'submissions' => $item ? $submissions : null,
         ]);
+    }
+
+    /**
+     * Shows the confirmation modal for inventory consolidation.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getConsolidateInventory(Request $request)
+    {
+        return view('home._inventory_consolidate');
+    }
+
+    /**
+     * Consolidates the user's inventory.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\InventoryManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postConsolidateInventory(Request $request, InventoryManager $service)
+    {
+        if($service->consolidateInventory(Auth::user())) {
+            flash('Inventory consolidated.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
     }
 }

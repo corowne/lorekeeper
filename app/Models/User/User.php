@@ -353,7 +353,7 @@ class User extends Authenticatable implements MustVerifyEmail
         $bday = $this->birthday;
         if(!isset($bday)) return 'N/A';
 
-        if($bday->format('d M') == carbon::now()->format('d M')) $icon = '<i class="fas fa-birthday-cake ml-1"></i>';
+        if($bday->format('d M') == Carbon::now()->format('d M')) $icon = '<i class="fas fa-birthday-cake ml-1"></i>';
         //
         switch($this->settings->birthday_setting) {
             case 0:

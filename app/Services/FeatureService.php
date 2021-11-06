@@ -51,6 +51,8 @@ class FeatureService extends Service
 
             $category = FeatureCategory::create($data);
 
+            if(!logAdminAction($user, 'Created Feature Category', 'Created '.$category->displayName)) throw new \Exception("Failed to log admin action.");
+
             if ($image) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
 
             return $this->commitReturn($category);
@@ -86,6 +88,8 @@ class FeatureService extends Service
             }
 
             $category->update($data);
+            
+            if(!logAdminAction($user, 'Updated Feature Category', 'Updated '.$category->displayName)) throw new \Exception("Failed to log admin action.");
 
             if ($category) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
 
@@ -126,13 +130,15 @@ class FeatureService extends Service
      * @param  \App\Models\Feature\FeatureCategory  $category
      * @return bool
      */
-    public function deleteFeatureCategory($category)
+    public function deleteFeatureCategory($category, $user)
     {
         DB::beginTransaction();
 
         try {
             // Check first if the category is currently in use
             if(Feature::where('feature_category_id', $category->id)->exists()) throw new \Exception("A trait with this category exists. Please change its category first.");
+            
+            if(!logAdminAction($user, 'Deleted Feature Category', 'Deleted '.$category->name)) throw new \Exception("Failed to log admin action.");
             
             if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
             $category->delete();
@@ -212,6 +218,8 @@ class FeatureService extends Service
             else $data['has_image'] = 0;
 
             $feature = Feature::create($data);
+            
+            if(!logAdminAction($user, 'Created Feature', 'Created '.$feature->displayName)) throw new \Exception("Failed to log admin action.");
 
             if ($image) $this->handleImage($image, $feature->imagePath, $feature->imageFileName);
 
@@ -260,6 +268,8 @@ class FeatureService extends Service
             }
 
             $feature->update($data);
+            
+            if(!logAdminAction($user, 'Updated Feature', 'Updated '.$feature->displayName)) throw new \Exception("Failed to log admin action.");
 
             if ($feature) $this->handleImage($image, $feature->imagePath, $feature->imageFileName);
 
@@ -301,7 +311,7 @@ class FeatureService extends Service
      * @param  \App\Models\Feature\Feature  $feature
      * @return bool
      */
-    public function deleteFeature($feature)
+    public function deleteFeature($feature, $user)
     {
         DB::beginTransaction();
 
@@ -309,6 +319,8 @@ class FeatureService extends Service
             // Check first if the feature is currently in use
             if(DB::table('character_features')->where('feature_id', $feature->id)->exists()) throw new \Exception("A character with this trait exists. Please remove the trait first.");
             
+            if(!logAdminAction($user, 'Deleted Feature', 'Deleted '.$feature->name)) throw new \Exception("Failed to log admin action.");
+
             if($feature->has_image) $this->deleteImage($feature->imagePath, $feature->imageFileName); 
             $feature->delete();
 
