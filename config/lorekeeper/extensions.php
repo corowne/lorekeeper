@@ -59,6 +59,6 @@ return [
 
     // MYO Image Hide/Remove - Mercury
     // Adds an option when approving MYO submissions to hide or delete the MYO placeholder image
-    'remove_myo_image' => 1,
+    'remove_myo_image' => 0,
 
 ];
