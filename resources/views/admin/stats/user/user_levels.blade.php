@@ -3,7 +3,7 @@
 @section('admin-title') Levels @endsection
 
 @section('admin-content')
-{!! breadcrumbs(['Admin Panel' => 'admin', 'User Levels' => 'admin/levels']) !!}
+{!! breadcrumbs(['Admin Panel' => 'admin', 'User Levels' => 'admin/levels/user']) !!}
 <h1> User Levels</h1>
 
 <p>This is a list of levels in the game.</p>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Stats\User;
+namespace App\Models\Level;
 
 use Config;
 use App\Models\Model;
@@ -13,7 +13,7 @@ class Level extends Model
      * @var array
      */
     protected $fillable = [
-        'level', 'exp_required','stat_points', 'description'
+        'level', 'exp_required', 'stat_points', 'description', 'level_type'
     ];
 
     /**
@@ -21,7 +21,7 @@ class Level extends Model
      *
      * @var string
      */
-    protected $table = 'level_users';
+    protected $table = 'levels';
     
     /**
      * Validation rules for creation.
@@ -29,7 +29,7 @@ class Level extends Model
      * @var array
      */
     public static $createRules = [
-        'level' => 'required|unique:level_users',
+        'level' => 'required',
     ];
     
     /**
@@ -52,11 +52,17 @@ class Level extends Model
      */
     public function rewards()
     {
-        return $this->hasMany('App\Models\Stats\User\UserLevelReward', 'level_id');
+        if($this->level_type == 'User')
+            return $this->hasMany('App\Models\Level\UserLevelReward', 'level_id');
+        else
+        return $this->hasMany('App\Models\Level\UserLevelReward', 'level_id');
     }
     
     public function limits()
     {
-        return $this->hasMany('App\Models\Stats\User\UserLevelRequirement');
+        if ($this->level_type == 'User')
+            return $this->hasMany('App\Models\Level\UserLevelRequirement', 'level_id');
+        else
+            return $this->hasMany('App\Models\Level\CharacterLevelRequirement', 'level_id');
     }
 }

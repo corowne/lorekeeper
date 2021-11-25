@@ -8,9 +8,9 @@ use Settings;
 
 use Illuminate\Http\Request;
 
-use App\Models\Stats\Character\Stat;
+use App\Models\Stat\Stat;
 
-use App\Services\Stats\StatService;
+use App\Services\Stat\StatService;
 use App\Services\CharacterManager;
 
 use App\Http\Controllers\Controller;

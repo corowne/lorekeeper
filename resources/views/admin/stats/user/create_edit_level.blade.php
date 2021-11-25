@@ -3,7 +3,7 @@
 @section('admin-title') Levels @endsection
 
 @section('admin-content')
-{!! breadcrumbs(['Admin Panel' => 'admin', 'Levels' => 'admin/levels', ($level->id ? 'Edit' : 'Create').' Level' => $level->id ? 'admin/levels/edit/'.$level->id : 'admin/levels/create']) !!}
+{!! breadcrumbs(['Admin Panel' => 'admin', 'Levels' => 'admin/levels/user', ($level->id ? 'Edit' : 'Create').' Level' => $level->id ? 'admin/levels/user/edit/'.$level->id : 'admin/levels/user/create']) !!}
 
 <h1>{{ $level->id ? 'Edit' : 'Create' }} Level
     @if($level->id)

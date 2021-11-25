@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\Stats;
+namespace App\Models\Stat;
 
 use Config;
 use App\Models\Model;
 
-class ExpLog extends Model
+class StatTransferLog extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -23,7 +23,7 @@ class ExpLog extends Model
      *
      * @var string
      */
-    protected $table = 'exp_log';
+    protected $table = 'stat_transfer_log';
 
     /**
      * Whether the model contains timestamps to be saved and updated.

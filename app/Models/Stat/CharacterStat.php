@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\Stats\User;
+namespace App\Models\Stat;
 
 use Config;
 use App\Models\Model;
 
-class UserLevel extends Model
+class CharacterStat extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -13,7 +13,7 @@ class UserLevel extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id','current_level', 'current_exp', 'current_points'
+        'character_id', 'stat_id', 'stat_level', 'count', 'current_count'
     ];
 
     /**
@@ -21,7 +21,7 @@ class UserLevel extends Model
      *
      * @var string
      */
-    protected $table = 'user_levels';
+    protected $table = 'character_stats';
 
     /**********************************************************************************************
     
@@ -29,17 +29,14 @@ class UserLevel extends Model
 
     **********************************************************************************************/
 
-    /**
-     * Get the shop stock.
-     */
-    public function user() 
+    public function character() 
     {
-        return $this->belongsTo('App\Models\User\User');
-    }
-    
-    public function level() 
-    {
-        return $this->belongsTo('App\Models\Stats\User\Level', 'current_level');
+        return $this->belongsTo('App\Models\Character\Character');
     }
 
+    public function stat() 
+    {
+        return $this->belongsTo('App\Models\Stat\Stat');
+    }
+    
 }

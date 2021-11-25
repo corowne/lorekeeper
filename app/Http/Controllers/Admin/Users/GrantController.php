@@ -19,7 +19,7 @@ use App\Models\Submission\Submission;
 use App\Models\Character\Character;
 use App\Services\CurrencyManager;
 use App\Services\InventoryManager;
-use App\Services\Stats\ExperienceManager;
+use App\Services\Stat\ExperienceManager;
 
 use App\Http\Controllers\Controller;
 

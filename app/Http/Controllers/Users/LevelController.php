@@ -12,12 +12,12 @@ use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
 use App\Services\CurrencyManager;
 
-use App\Models\Stats\User\Level;
+use App\Models\Level\Level;
 use App\Models\Character\Character;
 
-use App\Services\Stats\ExperienceManager;
-use App\Services\Stats\StatManager;
-use App\Services\Stats\LevelManager;
+use App\Services\Stat\ExperienceManager;
+use App\Services\Stat\StatManager;
+use App\Services\Stat\LevelManager;
 
 use App\Http\Controllers\Controller;
 

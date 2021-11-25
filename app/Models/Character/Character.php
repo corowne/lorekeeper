@@ -11,7 +11,6 @@ use App\Models\Model;
 use App\Models\User\User;
 use App\Models\User\UserCharacterLog;
 
-use App\Models\Character\Character;
 use App\Models\Character\CharacterCategory;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Character\CharacterBookmark;
@@ -24,10 +23,10 @@ use App\Models\Character\CharacterItem;
 use App\Models\Item\Item;
 use App\Models\Item\ItemLog;
 
-use App\Models\Stats\ExpLog;
-use App\Models\Stats\StatTransferLog;
-use App\Models\Stats\LevelLog;
-use App\Models\Stats\CountLog;
+use App\Models\Stat\ExpLog;
+use App\Models\Stat\StatTransferLog;
+use App\Models\Level\LevelLog;
+use App\Models\Stat\CountLog;
 
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
@@ -178,7 +177,7 @@ class Character extends Model
      */
     public function level() 
     {
-        return $this->hasOne('App\Models\Stats\Character\CharaLevels');
+        return $this->hasOne('App\Models\Level\CharacterLevel');
     }
 
     /**
@@ -186,7 +185,7 @@ class Character extends Model
      */
     public function stats() 
     {
-        return $this->hasMany('App\Models\Stats\Character\CharacterStat');
+        return $this->hasMany('App\Models\Stat\CharacterStat');
     }
 
     /**

@@ -1,4 +1,4 @@
-<?php namespace App\Services\Stats;
+<?php namespace App\Services\Stat;
 
 use App\Services\Service;
 
@@ -6,13 +6,12 @@ use DB;
 use Config;
 
 use Illuminate\Support\Arr;
-use App\Models\Stats\User\Level;
-use App\Models\Stats\User\UserLevelReward;
-use App\Models\Stats\Character\CharacterLevel;
-use App\Models\Stats\Character\CharacterLevelReward;
 use App\Models\Item\Item;
-use App\Models\Stats\User\UserLevelRequirement;
-use App\Models\Stats\Character\CharacterLevelRequirement;
+use App\Models\Level\Level;
+use App\Models\Level\UserLevelReward;
+use App\Models\Level\CharacterLevelReward;
+use App\Models\Level\UserLevelRequirement;
+use App\Models\Level\CharacterLevelRequirement;
 
 class LevelService extends Service
 {
@@ -98,7 +97,9 @@ class LevelService extends Service
 
         try {
             if(!isset($data['stat_points'])) $data['stat_points'] = 0;
-            $level = CharacterLevel::create($data);
+            $level = Level::create($data);
+            $level->level_type = 'Character';
+            $level->save();
 
             $this->populateRewards(Arr::only($data, ['rewardable_type', 'rewardable_id', 'quantity']), $level, true);
             $this->populateLimits($level, Arr::only($data, ['limit_type', 'limit_id', 'limit_quantity']), true);
@@ -121,6 +122,8 @@ class LevelService extends Service
         try {
             if(!isset($data['stat_points'])) $data['stat_points'] = 0;
             $level->update($data);
+            $level->level_type = 'Character';
+            $level->save();
 
             $this->populateRewards(Arr::only($data, ['rewardable_type', 'rewardable_id', 'quantity']), $level, true);
             $this->populateLimits($level, Arr::only($data, ['limit_type', 'limit_id', 'limit_quantity']), true);
@@ -187,7 +190,7 @@ class LevelService extends Service
             if(isset($data['rewardable_type'])) {
                 foreach($data['rewardable_type'] as $key => $type)
                 {
-                    CharacterLevelReward::create([
+                    LevelReward::create([
                         'level_id'       => $level->id,
                         'rewardable_type' => $type,
                         'rewardable_id'   => $data['rewardable_id'][$key],
@@ -206,7 +209,7 @@ class LevelService extends Service
             if(isset($data['limit_type'])) {
                 foreach($data['limit_type'] as $key => $type)
                 {
-                    CharacterLevelRequirement::create([
+                    LevelRequirement::create([
                         'level_id'       => $level->id,
                         'limit_type' => $type,
                         'limit_id'   => $data['limit_id'][$key],

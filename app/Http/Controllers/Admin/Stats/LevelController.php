@@ -8,10 +8,9 @@ use Settings;
 
 use Illuminate\Http\Request;
 
-use App\Models\Stats\User\Level;
-use App\Models\Stats\Character\CharacterLevel;
+use App\Models\Level\Level;
 
-use App\Services\Stats\LevelService;
+use App\Services\Stat\LevelService;
 use App\Services\CharacterManager;
 
 use App\Http\Controllers\Controller;
@@ -27,7 +26,7 @@ class LevelController extends Controller
     // index for levels
     public function getIndex(Request $request)
     {
-        $query = Level::query();
+        $query = Level::query()->where('level_type', 'User');
         $data = $request->only(['level']);
         if(isset($data['level'])) 
             $query->where('level', 'LIKE', '%'.$data['level'].'%');
@@ -124,7 +123,7 @@ class LevelController extends Controller
     // index for levels
     public function getCharaIndex(Request $request)
     {
-        $query = CharacterLevel::query();
+        $query = Level::query()->where('level_type', 'Character');
         $data = $request->only(['level']);
         if(isset($data['level'])) 
             $query->where('level', 'LIKE', '%'.$data['level'].'%');
@@ -142,7 +141,7 @@ class LevelController extends Controller
         $itemOptions = Item::whereIn('item_category_id', $categories->pluck('id'));
         $item = Item::whereIn('id', $itemOptions->pluck('id'))->pluck('name', 'id');
         return view('admin.stats.character.create_edit_character_level', [
-            'level' => new CharacterLevel,
+            'level' => new Level,
             'items' => $item,
             'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
             'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
@@ -155,7 +154,7 @@ class LevelController extends Controller
      */
     public function getCharaEditLevel($id)
     {
-        $level = CharacterLevel::find($id);
+        $level = Level::find($id);
         if(!$level) abort(404);
 
         $categories = ItemCategory::where('is_character_owned', '1')->orderBy('sort', 'DESC')->get();
@@ -175,11 +174,11 @@ class LevelController extends Controller
      */
     public function postCharaCreateEditLevel(Request $request, LevelService $service, $id = null)
     {
-        $id ? $request->validate(CharacterLevel::$updateRules) : $request->validate(CharacterLevel::$createRules);
+        $id ? $request->validate(Level::$updateRules) : $request->validate(Level::$createRules);
         $data = $request->only([
             'level', 'exp_required', 'stat_points', 'rewardable_type', 'rewardable_id', 'quantity', 'description', 'limit_type', 'limit_id', 'limit_quantity'
         ]);
-        if($id && $service->updateCharaLevel(CharacterLevel::find($id), $data)) {
+        if($id && $service->updateCharaLevel(Level::find($id), $data)) {
             flash('Level updated successfully.')->success();
         }
         else if (!$id && $level = $service->createCharaLevel($data, Auth::user())) {
@@ -198,7 +197,7 @@ class LevelController extends Controller
      */
     public function getCharaDeleteLevel($id)
     {
-        $level = CharacterLevel::find($id);
+        $level = Level::find($id);
         return view('admin.stats.character._delete_level', [
             'level' => $level,
         ]);
@@ -210,7 +209,7 @@ class LevelController extends Controller
      */
     public function postCharaDeleteLevel(Request $request, LevelService $service, $id)
     {
-        if($id && $service->deleteCharaLevel(CharacterLevel::find($id))) {
+        if($id && $service->deleteCharaLevel(Level::find($id))) {
             flash('Level deleted successfully.')->success();
         }
         else {

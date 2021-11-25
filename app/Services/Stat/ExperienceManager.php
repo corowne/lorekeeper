@@ -1,4 +1,4 @@
-<?php namespace App\Services\Stats;
+<?php namespace App\Services\Stat;
 
 use Carbon\Carbon;
 use App\Services\Service;
@@ -10,8 +10,9 @@ use Notifications;
 
 use App\Models\User\User;
 use App\Models\Character\Character;
-use App\Models\Stats\Character\CharaLevels;
-use App\Models\Stats\User\UserLevel;
+use App\Models\Level\Level;
+use App\Models\Level\CharacterLevel;
+use App\Models\Level\UserLevel;
 
 class ExperienceManager extends Service
 {
@@ -75,10 +76,10 @@ class ExperienceManager extends Service
             }
             // for character
             else {
-                $recipient_stack = CharaLevels::where('character_id', $recipient->id)->first();
+                $recipient_stack = Characterlevel::where('character_id', $recipient->id)->first();
                 
                 if(!$recipient_stack)
-                    $recipient_stack = CharaLevels::create(['character_id' => $recipient->id]);
+                    $recipient_stack = Characterlevel::create(['character_id' => $recipient->id]);
                 $recipient_stack->current_exp += $quantity;
                 $recipient_stack->save();
             }

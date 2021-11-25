@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\Stats\Character;
+namespace App\Models\Stat;
 
 use Config;
 use App\Models\Model;
 
-class CharacterLevel extends Model
+class Stat extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -13,7 +13,7 @@ class CharacterLevel extends Model
      * @var array
      */
     protected $fillable = [
-        'level', 'exp_required','stat_points', 'description'
+        'name', 'abbreviation', 'default', 'step', 'multiplier', 'max_level'
     ];
 
     /**
@@ -21,7 +21,7 @@ class CharacterLevel extends Model
      *
      * @var string
      */
-    protected $table = 'level_characters';
+    protected $table = 'stats';
     
     /**
      * Validation rules for creation.
@@ -29,7 +29,7 @@ class CharacterLevel extends Model
      * @var array
      */
     public static $createRules = [
-        'level' => 'required|unique:level_characters',
+        'name' => 'required|unique:stats|between:3,25',
     ];
     
     /**
@@ -38,7 +38,7 @@ class CharacterLevel extends Model
      * @var array
      */
     public static $updateRules = [
-        'level' => 'required',
+        'name' => 'required|between:3,25',
     ];
 
     /**********************************************************************************************
@@ -46,17 +46,13 @@ class CharacterLevel extends Model
         RELATIONS
 
     **********************************************************************************************/
-    
-    /**
-     * Get the rewards attached to this prompt.
-     */
-    public function rewards()
-    {
-        return $this->hasMany('App\Models\Stats\Character\CharacterLevelReward', 'level_id');
-    }
 
-    public function limits()
+    /**
+     * Get the shop stock.
+     */
+    public function stock() 
     {
-        return $this->hasMany('App\Models\Stats\Character\CharacterLevelRequirement', 'level_id');
+        return $this->hasMany('App\Models\Shop\ShopStock');
     }
+    
 }

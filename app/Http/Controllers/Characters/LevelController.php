@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Characters;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use DB;
@@ -10,16 +11,14 @@ use Route;
 
 use App\Models\Character\Character;
 
-use App\Models\Stats\Character\CharaLevels;
-use App\Models\Stats\Character\CharacterLevel;
-use App\Models\Stats\Character\CharacterStat;
-use App\Models\Stats\Character\Stat;
+use App\Models\Level\CharacterLevel;
+use App\Models\Level\Level;
+use App\Models\Stat\CharacterStat;
+use App\Models\Stat\Stat;
 
-use App\Services\Stats\StatManager;
-
-use App\Http\Controllers\Controller;
-use App\Services\Stats\ExperienceManager;
-use App\Services\Stats\LevelManager;
+use App\Services\Stat\ExperienceManager;
+use App\Services\Stat\LevelManager;
+use App\Services\Stat\StatManager;
 
 class LevelController extends Controller
 {
@@ -64,7 +63,7 @@ class LevelController extends Controller
         }
         //
         $level = $character->level->current_level + 1;
-        $next = CharacterLevel::where('level', $level)->first();
+        $next = Level::where('level', $level)->where('level_type', 'Character')->first();
 
         if(!$next) {
             $next = null;

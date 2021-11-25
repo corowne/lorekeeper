@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Stats\Character;
+namespace App\Models\Level;
 
 use App;
 use Config;
@@ -44,7 +44,7 @@ class CharacterLevelRequirement extends Model
             //    return $this->belongsTo('App\Models\Recipe\Recipe', 'limit_id');
             case 'None':
                 // Laravel requires a relationship instance to be returned (cannot return null), so returning one that doesn't exist here.
-                return $this->belongsTo('App\Models\Stat\CharacterLevelRequirement', 'limit_id', 'level_id')->whereNull('level_id');
+                return $this->belongsTo('App\Models\Level\CharacterLevelRequirement', 'limit_id', 'level_id')->whereNull('level_id');
         }
         return null;
     }

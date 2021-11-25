@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\Stats;
+namespace App\Models\Stat;
 
 use Config;
 use App\Models\Model;
 
-class StatTransferLog extends Model
+class CountLog extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -15,7 +15,7 @@ class StatTransferLog extends Model
     protected $fillable = [
         'sender_id', 'recipient_id', 
         'log', 'quantity', 'log_type', 'data',
-        'sender_type', 'recipient_type'
+        'sender_type',
     ];
 
     /**
@@ -23,7 +23,7 @@ class StatTransferLog extends Model
      *
      * @var string
      */
-    protected $table = 'stat_transfer_log';
+    protected $table = 'count_log';
 
     /**
      * Whether the model contains timestamps to be saved and updated.
@@ -45,14 +45,5 @@ class StatTransferLog extends Model
     {
         if($this->sender_type == 'User') return $this->belongsTo('App\Models\User\User', 'sender_id');
         return $this->belongsTo('App\Models\Character\Character', 'sender_id');
-    }
-
-    /**
-     * Get the user who received the logged action.
-     */
-    public function recipient() 
-    {
-        if($this->recipient_type == 'User') return $this->belongsTo('App\Models\User\User', 'recipient_id');
-        return $this->belongsTo('App\Models\Character\Character', 'recipient_id');
     }
 }

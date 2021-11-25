@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Stats\Character;
+namespace App\Models\Level;
 
 use Config;
 use App\Models\Model;

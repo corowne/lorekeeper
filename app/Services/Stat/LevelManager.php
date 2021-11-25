@@ -1,4 +1,4 @@
-<?php namespace App\Services\Stats;
+<?php namespace App\Services\Stat;
 
 use Carbon\Carbon;
 use App\Services\Service;
@@ -8,13 +8,11 @@ use Auth;
 use Config;
 use Notifications;
 
-use App\Models\Stats\User\Level;
-
 use App\Models\User\User;
 use App\Models\Character\Character;
-use App\Models\Stats\Character\CharaLevels;
-use App\Models\Stats\Character\CharacterLevel;
-use App\Models\Stats\User\UserLevel;
+use App\Models\Level\Level;
+use App\Models\Level\UserLevel;
+use App\Models\Level\CharacterLevel;
 
 use App\Models\Currency\Currency;
 use App\Models\Item\Item;
@@ -42,7 +40,7 @@ class LevelManager extends Service
 
             // getting the next level
             $check = $user->level->current_level + 1;
-            $next = Level::where('level', $check)->first();
+            $next = Level::where('level', $check)->where('level_type', 'User')->first();
 
             // validation
             if(!$next) throw new \Exception('You are at the max level!');
@@ -116,6 +114,9 @@ class LevelManager extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Levels up a character
+     */
     public function characterLevel($character)
     {        
         DB::beginTransaction();
@@ -128,7 +129,7 @@ class LevelManager extends Service
 
             // getting the next level
             $check = $character->level->current_level + 1;
-            $next = CharacterLevel::where('level', $check)->first();
+            $next = Level::where('level', $check)->where('level_type', 'Character')->first();
 
             // validation
             if(!$next) throw new \Exception('You are at the max level!');

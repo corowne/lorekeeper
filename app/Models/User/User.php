@@ -15,9 +15,9 @@ use App\Models\Rank\RankPower;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
 use App\Models\Item\ItemLog;
-use App\Models\Stats\ExpLog;
-use App\Models\Stats\StatTransferLog;
-use App\Models\Stats\LevelLog;
+use App\Models\Stat\ExpLog;
+use App\Models\Stat\StatTransferLog;
+use App\Models\Level\LevelLog;
 use App\Models\Shop\ShopLog;
 use App\Models\User\UserCharacterLog;
 use App\Models\Submission\Submission;
@@ -109,7 +109,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function level() 
     {
-        return $this->hasOne('App\Models\Stats\User\UserLevel');
+        return $this->hasOne('App\Models\Level\UserLevel');
     }
 
     /*

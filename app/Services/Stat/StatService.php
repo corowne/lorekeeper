@@ -1,11 +1,11 @@
-<?php namespace App\Services\Stats;
+<?php namespace App\Services\Stat;
 
 use App\Services\Service;
 
 use DB;
 use Config;
 
-use App\Models\Stats\Character\Stat;
+use App\Models\Stat\Stat;
 use App\Models\Item\Item;
 
 class StatService extends Service
@@ -22,7 +22,7 @@ class StatService extends Service
             if(!isset($data['name'])) throw new \Exception('Please name the stat');
             if(!isset($data['default'])) throw new \Exception('Please set a default.');
             if(!isset($data['abbreviation'])) throw new \Exception('Please add an abbreviation.');
-            
+
             $stat = Stat::create($data);
 
             return $this->commitReturn($stat);

@@ -22,8 +22,8 @@ use App\Models\Loot\LootTable;
 use App\Models\Raffle\Raffle;
 use App\Models\Prompt\Prompt;
 
-use App\Services\Stats\ExperienceManager;
-use App\Services\Stats\StatManager;
+use App\Services\Stat\ExperienceManager;
+use App\Services\Stat\StatManager;
 
 class SubmissionManager extends Service
 {

@@ -18,7 +18,7 @@ use App\Models\Feature\Feature;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Trade;
 use App\Models\User\UserItem;
-use App\Models\Stats\Character\Stat;
+use App\Models\Stat\Stat;
 
 use App\Services\CharacterManager;
 use App\Services\CurrencyManager;

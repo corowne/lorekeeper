@@ -1,4 +1,4 @@
-<?php namespace App\Services\Stats;
+<?php namespace App\Services\Stat;
 
 use Carbon\Carbon;
 use App\Services\Service;
@@ -8,18 +8,22 @@ use DB;
 use Config;
 use Notifications;
 
-use App\Models\Stats\Character\Stat;
+use App\Models\Stat\Stat;
 use App\Models\Item\Item;
 
 use App\Models\User\User;
 use App\Models\Character\Character;
-use App\Models\Stats\Character\CharacterLevel;
-use App\Models\Stats\Character\CharacterStat;
-use App\Models\Stats\Character\CharaLevels;
-use App\Models\Stats\User\UserLevel;
+use App\Models\Level\CharacterLevel;
+use App\Models\Stat\CharacterStat;
+use App\Models\Level\UserLevel;
 
 class StatManager extends Service
 {
+    /**
+     * Gives user stat points to use on characters.
+     * @param  object $user
+     * @param  int $points
+     */
     public function creditUserStat($user, $type, $data, $next)
     {
         DB::beginTransaction();
@@ -43,12 +47,15 @@ class StatManager extends Service
         return $this->rollbackReturn(false);
     }
 
+    /**
+     * Transfers stat points from a user to a character from the user's built up points.
+     */
     public function userToCharacter($user, $character, $quantity)
     {
         DB::beginTransaction();
 
         try {
-            if($user->level->current_points < $quantity) throw new \Exception('Not enough points to transfer this amount');
+            if($user->level->current_points < $quantity) throw new \Exception('Not enough points to transfer this amount.');
 
             $recipient_stack = $character->level;
             $stack = $user->level;
@@ -79,7 +86,6 @@ class StatManager extends Service
     */
 
     /*
-    *
     *   Level the stat
     */
     public function levelCharaStat($stat, $character, $isStaff = false)
@@ -130,7 +136,8 @@ class StatManager extends Service
         return $this->rollbackReturn(false);
     }
 
-    /* Credit stat
+    /* 
+    * Credit stat
     */
     public function creditCharaStat($chara, $type, $data, $next)
     {
@@ -155,7 +162,8 @@ class StatManager extends Service
         return $this->rollbackReturn(false);
     }
 
-    /* edit stat
+    /* 
+    * Edit stat
     */
     public function editCharaStat($stat, $character, $quantity)
     {
