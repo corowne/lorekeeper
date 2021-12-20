@@ -61,7 +61,7 @@ class DesignController extends Controller
         elseif($action == 'approve' && $service->approveRequest($request->only([
                 'character_category_id', 'number', 'slug', 'description',
                 'is_giftable', 'is_tradeable', 'is_sellable', 'sale_value',
-                'transferrable_at', 'set_active', 'invalidate_old',
+                'transferrable_at', 'set_active', 'invalidate_old', 'remove_myo_image'
             ]), $r, Auth::user())) {
             flash('Request approved successfully.')->success();
         }
