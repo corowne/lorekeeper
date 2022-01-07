@@ -27,7 +27,7 @@
                 </div>
 
                 {{-- Comment --}}
-                <div class="border p-3 rounded {{ $comment->is_featured ? 'border-success bg-light' : '' }} ">
+                <div class="comment border p-3 rounded {{ $comment->is_featured ? 'border-success bg-light' : '' }} ">
                     <p>{!! nl2br($markdown->line($comment->comment)) !!} </p>
                     <p class="border-top pt-1 text-right mb-0">
                         <small class="text-muted">{!! $comment->created_at !!}
