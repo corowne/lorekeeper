@@ -20,7 +20,7 @@
             </h5>
             @if($comment->is_featured)<div class="ml-1 text-muted text-right col-6 mx-0 pr-1"><small class="text-success">Featured by Owner</small></div> @endif
         </div>
-        <div class="border p-3 rounded {{ $limit == 0 ? 'shadow-sm border-info' : '' }} {{ ($comment->is_featured && ($limit != 0)) ? 'border-success' : '' }} "><p>{!! nl2br($markdown->line($comment->comment)) !!} </p>
+        <div class="comment border p-3 rounded {{ $limit == 0 ? 'shadow-sm border-info' : '' }} {{ ($comment->is_featured && ($limit != 0)) ? 'border-success' : '' }} "><p>{!! nl2br($markdown->line($comment->comment)) !!} </p>
         <p class="border-top pt-1 text-right mb-0">
             <small class="text-muted">{!! $comment->created_at !!}
             @if($comment->created_at != $comment->updated_at) 

@@ -663,6 +663,11 @@ tr.accountbound {
         border-left-width: 2px!important;
     }
     
+.comment>p>img {
+        max-width: 100%;
+        height: auto;
+    }
+
 @media only screen and (max-width: 600px) {
     .comment_replies { padding-left:1rem;}
 }
