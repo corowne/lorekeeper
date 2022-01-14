@@ -48,10 +48,17 @@ return [
     // Group Traits By Category - Uri
     'traits_by_category' => 0,
 
+    // Scroll To Top - Uri
+    'scroll_to_top' => 0, // 1 - On, 0 - off
+
     // Character Reward Expansion - Uri
     'character_reward_expansion' => [
         'expanded' => 1,
         'default_recipient' => 0, // 0 to default to the character's owner (if a user), 1 to default to the submission user.
     ],
+
+    // MYO Image Hide/Remove - Mercury
+    // Adds an option when approving MYO submissions to hide or delete the MYO placeholder image
+    'remove_myo_image' => 0,
 
 ];

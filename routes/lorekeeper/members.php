@@ -48,6 +48,8 @@ Route::group(['prefix' => 'inventory', 'namespace' => 'Users'], function() {
     Route::get('/', 'InventoryController@getIndex');
     Route::post('edit', 'InventoryController@postEdit');
     Route::get('account-search', 'InventoryController@getAccountSearch');
+    Route::get('consolidate-inventory', 'InventoryController@getConsolidateInventory');
+    Route::post('consolidate', 'InventoryController@postConsolidateInventory');
 
     Route::get('selector', 'InventoryController@getSelector');
 });

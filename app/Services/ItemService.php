@@ -51,6 +51,8 @@ class ItemService extends Service
 
             $category = ItemCategory::create($data);
 
+            if(!logAdminAction($user, 'Created Item Category', 'Created '.$category->displayName)) throw new \Exception("Failed to log admin action.");
+
             if ($image) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
 
             return $this->commitReturn($category);
@@ -87,6 +89,8 @@ class ItemService extends Service
 
             $category->update($data);
 
+            if(!logAdminAction($user, 'Updated Item Category', 'Updated '.$category->displayName)) throw new \Exception("Failed to log admin action.");
+
             if ($category) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
 
             return $this->commitReturn($category);
@@ -105,7 +109,9 @@ class ItemService extends Service
      */
     private function populateCategoryData($data, $category = null)
     {
-        if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
+        if(isset($data['description']) && $data['description'])
+            $data['parsed_description'] = parse($data['description']);
+        else $data['parsed_description'] = null;
 
         isset($data['is_character_owned']) && $data['is_character_owned'] ? $data['is_character_owned'] : $data['is_character_owned'] = 0;
         isset($data['character_limit']) && $data['character_limit'] ? $data['character_limit'] : $data['character_limit'] = 0;
@@ -130,13 +136,14 @@ class ItemService extends Service
      * @param  \App\Models\Item\ItemCategory  $category
      * @return bool
      */
-    public function deleteItemCategory($category)
+    public function deleteItemCategory($category, $user)
     {
         DB::beginTransaction();
 
         try {
             // Check first if the category is currently in use
             if(Item::where('item_category_id', $category->id)->exists()) throw new \Exception("An item with this category exists. Please change its category first.");
+            if(!logAdminAction($user, 'Deleted Item Category', 'Deleted '.$category->name)) throw new \Exception("Failed to log admin action.");
 
             if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName);
             $category->delete();
@@ -207,6 +214,8 @@ class ItemService extends Service
 
             $item = Item::create($data);
 
+            if(!logAdminAction($user, 'Created Item', 'Created '.$item->displayName)) throw new \Exception("Failed to log admin action.");
+
             $item->update([
                 'data' => json_encode([
                     'rarity' => isset($data['rarity']) && $data['rarity'] ? $data['rarity'] : null,
@@ -255,6 +264,8 @@ class ItemService extends Service
             }
 
             $item->update($data);
+
+            if(!logAdminAction($user, 'Updated Item', 'Updated '.$item->displayName)) throw new \Exception("Failed to log admin action.");
 
             $item->update([
                 'data' => json_encode([
@@ -310,7 +321,7 @@ class ItemService extends Service
      * @param  \App\Models\Item\Item  $item
      * @return bool
      */
-    public function deleteItem($item)
+    public function deleteItem($item, $user)
     {
         DB::beginTransaction();
 
@@ -321,6 +332,8 @@ class ItemService extends Service
             if(DB::table('loots')->where('rewardable_type', 'Item')->where('rewardable_id', $item->id)->exists()) throw new \Exception("A loot table currently distributes this item as a potential reward. Please remove the item before deleting it.");
             if(DB::table('prompt_rewards')->where('rewardable_type', 'Item')->where('rewardable_id', $item->id)->exists()) throw new \Exception("A prompt currently distributes this item as a reward. Please remove the item before deleting it.");
             if(DB::table('shop_stock')->where('item_id', $item->id)->exists()) throw new \Exception("A shop currently stocks this item. Please remove the item before deleting it.");
+
+            if(!logAdminAction($user, 'Deleted Item', 'Deleted '.$item->name)) throw new \Exception("Failed to log admin action.");
 
             DB::table('items_log')->where('item_id', $item->id)->delete();
             DB::table('user_items')->where('item_id', $item->id)->delete();
@@ -364,7 +377,7 @@ class ItemService extends Service
      * @param  string                 $tag
      * @return string|bool
      */
-    public function addItemTag($item, $tag)
+    public function addItemTag($item, $tag, $user)
     {
         DB::beginTransaction();
 
@@ -372,6 +385,8 @@ class ItemService extends Service
             if(!$item) throw new \Exception("Invalid item selected.");
             if($item->tags()->where('tag', $tag)->exists()) throw new \Exception("This item already has this tag attached to it.");
             if(!$tag) throw new \Exception("No tag selected.");
+
+            if(!logAdminAction($user, 'Added Item Tag', 'Added '.$tag.' tag to '.$item->displayName)) throw new \Exception("Failed to log admin action.");
 
             $tag = ItemTag::create([
                 'item_id' => $item->id,
@@ -393,13 +408,15 @@ class ItemService extends Service
      * @param  array                  $data
      * @return string|bool
      */
-    public function editItemTag($item, $tag, $data)
+    public function editItemTag($item, $tag, $data, $user)
     {
         DB::beginTransaction();
 
         try {
             if(!$item) throw new \Exception("Invalid item selected.");
             if(!$item->tags()->where('tag', $tag)->exists()) throw new \Exception("This item does not have this tag attached to it.");
+
+            if(!logAdminAction($user, 'Edited Item Tag', 'Edited '.$tag.' tag on '.$item->displayName)) throw new \Exception("Failed to log admin action.");
 
             $tag = $item->tags()->where('tag', $tag)->first();
 
@@ -427,13 +444,15 @@ class ItemService extends Service
      * @param  string                 $tag
      * @return string|bool
      */
-    public function deleteItemTag($item, $tag)
+    public function deleteItemTag($item, $tag, $user)
     {
         DB::beginTransaction();
 
         try {
             if(!$item) throw new \Exception("Invalid item selected.");
             if(!$item->tags()->where('tag', $tag)->exists()) throw new \Exception("This item does not have this tag attached to it.");
+
+            if(!logAdminAction($user, 'Deleted Item Tag', 'Deleted '.$tag.' tag on '.$item->displayName)) throw new \Exception("Failed to log admin action.");
 
             $item->tags()->where('tag', $tag)->delete();
 

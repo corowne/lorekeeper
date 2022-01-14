@@ -20,6 +20,10 @@ return [
             [
                 'name' => 'User Ranks',
                 'url' => 'admin/users/ranks'
+            ],
+            [
+                'name' => 'Admin Logs',
+                'url' => 'admin/logs'
             ]
         ]
     ],

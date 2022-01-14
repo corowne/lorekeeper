@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card mt-3">
     <div class="card-body">
         @if($errors->has('commentable_type'))
             <div class="alert alert-danger" role="alert">

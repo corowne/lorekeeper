@@ -18,6 +18,7 @@ use App\Models\Character\CharacterTransfer;
 
 use App\Services\CurrencyManager;
 use App\Services\CharacterManager;
+use App\Services\DesignUpdateManager;
 
 use App\Http\Controllers\Controller;
 
@@ -256,11 +257,11 @@ class MyoController extends Controller
     /**
      * Opens a new design approval request for an MYO slot.
      *
-     * @param  App\Services\CharacterManager  $service
-     * @param  int                            $id
+     * @param  App\Services\DesignUpdateManager  $service
+     * @param  int                               $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCharacterApproval(CharacterManager $service, $id)
+    public function postCharacterApproval(DesignUpdateManager $service, $id)
     {
         if(!Auth::check() || $this->character->user_id != Auth::user()->id) abort(404);
 

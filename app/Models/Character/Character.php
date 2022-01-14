@@ -11,7 +11,6 @@ use App\Models\Model;
 use App\Models\User\User;
 use App\Models\User\UserCharacterLog;
 
-use App\Models\Character\Character;
 use App\Models\Character\CharacterCategory;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Character\CharacterBookmark;
@@ -388,10 +387,10 @@ class Character extends Model
     /**
      * Get the character's held currencies.
      *
-     * @param  bool  $displayedOnly
+     * @param  bool  $showAll
      * @return \Illuminate\Support\Collection
      */
-    public function getCurrencies($displayedOnly = false)
+    public function getCurrencies($showAll = false)
     {
         // Get a list of currencies that need to be displayed
         // On profile: only ones marked is_displayed
@@ -400,7 +399,7 @@ class Character extends Model
         $owned = CharacterCurrency::where('character_id', $this->id)->pluck('quantity', 'currency_id')->toArray();
 
         $currencies = Currency::where('is_character_owned', 1);
-        if($displayedOnly) $currencies->where(function($query) use($owned) {
+        if($showAll) $currencies->where(function($query) use($owned) {
             $query->where('is_displayed', 1)->orWhereIn('id', array_keys($owned));
         });
         else $currencies = $currencies->where('is_displayed', 1);

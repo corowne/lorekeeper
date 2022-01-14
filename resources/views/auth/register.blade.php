@@ -81,10 +81,10 @@
         <div class="form-group row">
             {{ Form::label('dob', 'Date of Birth', ['class' => 'col-md-4 col-form-label text-md-right']) }}
             <div class="col-md-6">
-                <div class="col-md row">
-                {{ Form::selectRange('dob[day]', 1, 31, null, ['class' => 'form-control col-2 mr-1']) }}
-                {{ Form::selectMonth('dob[month]', null, ['class' => 'form-control col-2 mr-1']) }}
-                {{ Form::selectYear('dob[year]', date('Y'), date('Y') - 70, null, ['class' => 'form-control col-2']) }}
+                <div class="d-flex col-md-row">
+                {{ Form::selectRange('dob[day]', 1, 31, null, ['class' => 'form-control col-3']) }}
+                {{ Form::selectMonth('dob[month]', null, ['class' => 'form-control col-4']) }}
+                {{ Form::selectYear('dob[year]', date('Y'), date('Y') - 70, null, ['class' => 'form-control col-3']) }}
             </div>
 
             </div>
@@ -106,9 +106,11 @@
             </div>
         </div>
 
+        {!! RecaptchaV3::field('register') !!}
+
         <div class="form-group row mb-0">
             <div class="col-md-6 offset-md-4">
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" value="register" class="btn btn-primary">
                     {{ __('Register') }}
                 </button>
             </div>
