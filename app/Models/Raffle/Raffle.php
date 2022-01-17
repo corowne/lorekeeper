@@ -11,7 +11,7 @@ class Raffle extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'is_active', 'winner_count', 'group_id', 'order'
+        'name', 'is_active', 'winner_count', 'group_id', 'order', 'ticket_cap'
     ];
 
     /**
@@ -40,14 +40,14 @@ class Raffle extends Model
      *
      * @var string
      */
-    public $timestamps = false; 
+    public $timestamps = false;
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the raffle tickets attached to this raffle.
      */
@@ -55,7 +55,7 @@ class Raffle extends Model
     {
         return $this->hasMany('App\Models\Raffle\RaffleTicket');
     }
-    
+
     /**
      * Get the group that this raffle belongs to.
      */
@@ -65,7 +65,7 @@ class Raffle extends Model
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -91,7 +91,7 @@ class Raffle extends Model
     }
 
     /**
-     * Gets the raffle's asset type for asset management. 
+     * Gets the raffle's asset type for asset management.
      *
      * @return string
      */
@@ -101,7 +101,7 @@ class Raffle extends Model
     }
 
     /**
-     * Gets the raffle's url. 
+     * Gets the raffle's url.
      *
      * @return string
      */
@@ -111,7 +111,7 @@ class Raffle extends Model
     }
 
     /**********************************************************************************************
-    
+
         OTHER FUNCTIONS
 
     **********************************************************************************************/

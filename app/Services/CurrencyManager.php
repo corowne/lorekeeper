@@ -38,8 +38,8 @@ class CurrencyManager extends Service
             if($data['quantity'] == 0) throw new \Exception("Please enter a non-zero quantity.");
 
             // Process names
-            $users = User::whereIn('name', array_map('trim', explode(',', $data['names'])))->get();
-            if(!count($users)) throw new \Exception("No valid users found.");
+            $users = User::find($data['names']);
+            if(count($users) != count($data['names'])) throw new \Exception("An invalid user was selected.");
 
             // Process currency
             $currency = Currency::find($data['currency_id']);
@@ -48,6 +48,7 @@ class CurrencyManager extends Service
 
             if($data['quantity'] < 0)
                 foreach($users as $user) {
+                    if(!logAdminAction($staff, 'Currency Debit', 'Debited '.$data['quantity'].' '.$currency->displayName.' from '.$user->displayname)) throw new \Exception("Failed to log admin action.");
                     $this->debitCurrency($user, $staff, 'Staff Removal', $data['data'], $currency, -$data['quantity']);
                     Notifications::create('CURRENCY_REMOVAL', $user, [
                         'currency_name' => $currency->name,
@@ -58,6 +59,7 @@ class CurrencyManager extends Service
                 }
             else
                 foreach($users as $user) {
+                    if(!logAdminAction($staff, 'Currency Grant', 'Granted '.$data['quantity'].' '.$currency->displayName.' to '.$user->displayname)) throw new \Exception("Failed to log admin action.");
                     $this->creditCurrency($staff, $user, 'Staff Grant', $data['data'], $currency, $data['quantity']);
                     Notifications::create('CURRENCY_GRANT', $user, [
                         'currency_name' => $currency->name,

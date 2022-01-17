@@ -37,7 +37,7 @@ class Feature extends Model
         'species_id' => 'nullable',
         'subtype_id' => 'nullable',
         'rarity_id' => 'required|exists:rarities,id',
-        'name' => 'required|unique:features|between:3,25',
+        'name' => 'required|unique:features|between:3,100',
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
@@ -52,7 +52,7 @@ class Feature extends Model
         'species_id' => 'nullable',
         'subtype_id' => 'nullable',
         'rarity_id' => 'required|exists:rarities,id',
-        'name' => 'required|between:3,25',
+        'name' => 'required|between:3,100',
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
@@ -122,8 +122,8 @@ class Feature extends Model
      */
     public function scopeSortCategory($query)
     {
-        $ids = FeatureCategory::orderBy('sort', 'DESC')->pluck('id')->toArray();
-        return count($ids) ? $query->orderByRaw(DB::raw('FIELD(feature_category_id, '.implode(',', $ids).')')) : $query;
+        if(FeatureCategory::all()->count()) return $query->orderBy(FeatureCategory::select('sort')->whereColumn('features.feature_category_id', 'feature_categories.id'), 'DESC');
+        return $query;
     }
 
     /**

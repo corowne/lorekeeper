@@ -63,15 +63,20 @@
         function removeFeatureRow($trigger) {
             $trigger.parent().remove();
         }
+		refreshSubtype();
     });
 
     $( "#species" ).change(function() {
+		refreshSubtype();
+    });
+	
+    function refreshSubtype() {
       var species = $('#species').val();
       var id = '<?php echo($image->id); ?>';
       $.ajax({
         type: "GET", url: "{{ url('admin/character/image/traits/subtype') }}?species="+species+"&id="+id, dataType: "text"
       }).done(function (res) { $("#subtypes").html(res); }).fail(function (jqXHR, textStatus, errorThrown) { alert("AJAX call failed: " + textStatus + ", " + errorThrown); });
 
-    });
+    };
 
 </script>

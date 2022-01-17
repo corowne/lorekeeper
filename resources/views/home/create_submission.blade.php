@@ -80,11 +80,11 @@
         </div>
     {!! Form::close() !!}
 
-    @include('widgets._character_select', ['characterCurrencies' => $characterCurrencies])
+    @include('widgets._character_select', ['characterCurrencies' => $characterCurrencies, 'showLootTables' => false])
     @if($isClaim)
-        @include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'showLootTables' => false, 'showRaffles' => true])
+        @include('widgets._loot_select_row', ['showLootTables' => false, 'showRaffles' => true])
     @else
-        @include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'showLootTables' => false, 'showRaffles' => false])
+        @include('widgets._loot_select_row', ['showLootTables' => false, 'showRaffles' => false])
     @endif
 
     <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog">

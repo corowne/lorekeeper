@@ -13,6 +13,7 @@ use App\Models\Character\Character;
 use App\Models\Species\Species;
 use App\Models\Rarity;
 use App\Models\Feature\Feature;
+use App\Models\Character\CharacterProfile;
 
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
@@ -125,6 +126,8 @@ class CharacterController extends Controller
         $isOwner = ($this->character->user_id == Auth::user()->id);
         if(!$isMod && !$isOwner) abort(404);
 
+        $request->validate(CharacterProfile::$rules);
+
         if($service->updateCharacterProfile($request->only(['name', 'link', 'text', 'is_gift_art_allowed', 'is_gift_writing_allowed', 'is_trading', 'alert_user']), $this->character, Auth::user(), !$isOwner)) {
             flash('Profile edited successfully.')->success();
         }
@@ -137,14 +140,15 @@ class CharacterController extends Controller
     /**
      * Shows a character's gallery.
      *
-     * @param  string  $slug
+     * @param  \Illuminate\Http\Request       $request
+     * @param  string                         $slug
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCharacterGallery($slug)
+    public function getCharacterGallery(Request $request, $slug)
     {
         return view('character.gallery', [
             'character' => $this->character,
-            'submissions' => GallerySubmission::whereIn('id', $this->character->gallerySubmissions->pluck('gallery_submission_id')->toArray())->visible()->accepted()->orderBy('created_at', 'DESC')->paginate(20),
+            'submissions' => GallerySubmission::whereIn('id', $this->character->gallerySubmissions->pluck('gallery_submission_id')->toArray())->visible()->accepted()->orderBy('created_at', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -265,7 +269,7 @@ class CharacterController extends Controller
                 $sender = Auth::user();
                 $recipient = $this->character;
 
-                if($service->transferCharacterStack($sender, $recipient, UserItem::find($request->get('stack_id')), $request->get('stack_quantity'))) {
+                if($service->transferCharacterStack($sender, $recipient, UserItem::find($request->get('stack_id')), $request->get('stack_quantity'), Auth::user())) {
                     flash('Item transferred successfully.')->success();
                 }
                 else {
@@ -295,7 +299,7 @@ class CharacterController extends Controller
      */
     private function postItemTransfer(Request $request, InventoryManager $service)
     {
-        if($service->transferCharacterStack($this->character, $this->character->user, CharacterItem::find($request->get('ids')), $request->get('quantities'))) {
+        if($service->transferCharacterStack($this->character, $this->character->user, CharacterItem::find($request->get('ids')), $request->get('quantities'), Auth::user())) {
             flash('Item transferred successfully.')->success();
         }
         else {
@@ -313,7 +317,7 @@ class CharacterController extends Controller
      */
     private function postName(Request $request, InventoryManager $service)
     {
-        if($service->nameStack($this->character, CharacterItem::find($request->get('ids')), $request->get('stack_name'))) {
+        if($service->nameStack($this->character, CharacterItem::find($request->get('ids')), $request->get('stack_name'), Auth::user())) {
             flash('Item named successfully.')->success();
         }
         else {
@@ -331,7 +335,7 @@ class CharacterController extends Controller
      */
     private function postDelete(Request $request, InventoryManager $service)
     {
-        if($service->deleteStack($this->character, CharacterItem::find($request->get('ids')), $request->get('quantities'))) {
+        if($service->deleteStack($this->character, CharacterItem::find($request->get('ids')), $request->get('quantities'), Auth::user())) {
             flash('Item deleted successfully.')->success();
         }
         else {
@@ -495,11 +499,11 @@ class CharacterController extends Controller
     /**
      * Opens a new design update approval request for a character.
      *
-     * @param  App\Services\CharacterManager  $service
-     * @param  string                         $slug
+     * @param  App\Services\DesignUpdateManager  $service
+     * @param  string                            $slug
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCharacterApproval($slug, CharacterManager $service)
+    public function postCharacterApproval($slug, DesignUpdateManager $service)
     {
         if(!Auth::check() || $this->character->user_id != Auth::user()->id) abort(404);
 

@@ -2,7 +2,7 @@
     <div class="text-center">Invalid item selected.</div>
 @else
     <div class="text-center mb-3">
-        <div class="mb-1"><a href="{{ $stock->item->idUrl }}"><img src="{{ $stock->item->imageUrl }}" /></a></div>
+        <div class="mb-1"><a href="{{ $stock->item->idUrl }}"><img src="{{ $stock->item->imageUrl }}" alt="{{ $stock->item->name }}" /></a></div>
         <div><a href="{{ $stock->item->idUrl }}"><strong>{{ $stock->item->name }}</strong></a></div>
         <div><strong>Cost: </strong> {!! $stock->currency->display($stock->cost) !!}</div>
         @if($stock->is_limited_stock) <div>Stock: {{ $stock->quantity }}</div> @endif
@@ -21,12 +21,17 @@
     @endif
 
     @if(Auth::check())
-        <h5>Purchase</h5>
+        <h5>
+            Purchase
+            <span class="float-right">
+                In Inventory: {{ $userOwned->pluck('count')->sum() }}
+            </span>
+        </h5>
         @if($stock->is_limited_stock && $stock->quantity == 0)
             <div class="alert alert-warning mb-0">This item is out of stock.</div>
         @elseif($purchaseLimitReached)
             <div class="alert alert-warning mb-0">You have already purchased the limit of {{ $stock->purchase_limit }} of this item.</div>
-        @else 
+        @else
             @if($stock->purchase_limit) <div class="alert alert-warning mb-3">You have purchased this item {{ $userPurchaseCount }} times.</div>@endif
             {!! Form::open(['url' => 'shops/buy']) !!}
                 {!! Form::hidden('shop_id', $shop->id) !!}
@@ -68,7 +73,7 @@
                 </div>
             {!! Form::close() !!}
         @endif
-    @else 
+    @else
         <div class="alert alert-danger">You must be logged in to purchase this item.</div>
     @endif
 @endif
@@ -79,7 +84,7 @@
         $('.bank-select').on('click', function(e) {
             if($('input[name=bank]:checked').val() == 'character')
                 $useCharacterBank.removeClass('hide');
-            else 
+            else
                 $useCharacterBank.addClass('hide');
         });
 

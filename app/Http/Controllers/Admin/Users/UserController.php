@@ -96,6 +96,8 @@ class UserController extends Controller
             flash('You cannot edit the information of a user that has a higher rank than yourself.')->error();
         }
         else {
+            if(!logAdminAction($staff, 'Edited User', 'Edited '.$user->displayname)) { flash('Failed to log admin action.')->error(); return redirect()->back();}
+
             $request->validate([
                 'name' => 'required|between:3,25'
             ]);
@@ -118,7 +120,7 @@ class UserController extends Controller
         $user = User::where('name', $name)->first();
         $alias = UserAlias::find($id);
 
-        $logData = ['old_alias' => $user ? $alias : null];
+        $logData = ['old_alias' => $user ? $alias->alias : null, 'old_site' => $user ? $alias->site : null];
         $isPrimary = $alias->is_primary_alias;
 
         if(!$user) flash('Invalid user.')->error();
@@ -143,6 +145,8 @@ class UserController extends Controller
                     if(!$user->primaryAlias) $user->update(['has_alias' => 0]);
                 }
             }
+            if(!logAdminAction($staff, 'Edited User', 'Cleared '.$user->displayname.'\' alias')) { flash('Failed to log admin action.')->error(); return redirect()->back(); }
+
             UserUpdateLog::create(['staff_id' => Auth::user()->id, 'user_id' => $user->id, 'data' => json_encode($logData), 'type' => 'Clear Alias']);
             flash('Cleared user\'s alias successfully.')->success();
         }
@@ -164,11 +168,40 @@ class UserController extends Controller
             flash('You cannot edit the information of a user that has a higher rank than yourself.')->error();
         }
         else if($user->settings->update(['is_fto' => $request->get('is_fto') ?: 0])) {
+            if(!logAdminAction($staff, 'Edited User', 'Edited '.$user->displayname)) { flash('Failed to log admin action.')->error(); return redirect()->back();}
+
             UserUpdateLog::create(['staff_id' => Auth::user()->id, 'user_id' => $user->id, 'data' => json_encode(['is_fto' => $request->get('is_fto') ? 'Yes' : 'No']), 'type' => 'FTO Status Change']);
             flash('Updated user\'s account information successfully.')->success();
         }
         else {
             flash('Failed to update user\'s account information.')->error();
+        }
+        return redirect()->back();
+    }
+
+    public function postUserBirthday(Request $request, $name)
+    {
+        $user = User::where('name', $name)->first();
+        if(!$user) {
+            flash('Invalid user.')->error();
+        }
+
+        $service = new UserService;
+        // Make birthday into format we can store
+        $data = $request->input('dob');
+        $date = $data['day']."-".$data['month']."-".$data['year'];
+
+        $formatDate = Carbon::parse($date);
+        $logData = ['old_date' => $user->birthday ? $user->birthday->isoFormat('DD-MM-YYYY') : Carbon::now()->isoFormat('DD-MM-YYYY')] + ['new_date' => $date];
+        if(!logAdminAction($staff, 'Edited User', 'Edited '.$user->displayname.' birthday')) { flash('Failed to log admin action.')->error(); return redirect()->back();}
+
+        if($service->updateBirthday($formatDate, $user)) {
+            
+            UserUpdateLog::create(['staff_id' => Auth::user()->id, 'user_id' => $user->id, 'data' => json_encode($logData), 'type' => 'Birth Date Change']);
+            flash('Birthday updated successfully!')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
         return redirect()->back();
     }

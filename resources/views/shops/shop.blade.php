@@ -10,7 +10,7 @@
 </h1>
 
 <div class="text-center">
-    <img src="{{ $shop->shopImageUrl }}" style="max-width:100%" />
+    <img src="{{ $shop->shopImageUrl }}" style="max-width:100%" alt="{{ $shop->name }}" />
     <p>{!! $shop->parsed_description !!}</p>
 </div>
 
@@ -22,10 +22,10 @@
         <div class="card-body inventory-body">
             @foreach($categoryItems->chunk(4) as $chunk)
                 <div class="row mb-3">
-                    @foreach($chunk as $item) 
+                    @foreach($chunk as $item)
                         <div class="col-sm-3 col-6 text-center inventory-item" data-id="{{ $item->pivot->id }}">
                             <div class="mb-1">
-                                <a href="#" class="inventory-stack"><img src="{{ $item->imageUrl }}" /></a>
+                                <a href="#" class="inventory-stack"><img src="{{ $item->imageUrl }}" alt="{{ $item->name }}" /></a>
                             </div>
                             <div>
                                 <a href="#" class="inventory-stack inventory-stack-name"><strong>{{ $item->name }}</strong></a>
@@ -48,7 +48,7 @@
     $(document).ready(function() {
         $('.inventory-item').on('click', function(e) {
             e.preventDefault();
-            
+
             loadModal("{{ url('shops/'.$shop->id) }}/" + $(this).data('id'), 'Purchase Item');
         });
     });

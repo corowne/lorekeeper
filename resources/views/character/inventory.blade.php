@@ -34,7 +34,7 @@
                         ?>
                         <div class="col-sm-3 col-6 text-center inventory-item" data-id="{{ $stack->first()->pivot->id }}" data-name="{!! $canName && $stackName ? htmlentities($stackNameClean).' [' : null !!}{{ $character->name ? $character->name : $character->slug }}'s {{ $stack->first()->name }}{!! $canName && $stackName ? ']' : null !!}">
                             <div class="mb-1">
-                                <a href="#" class="inventory-stack"><img src="{{ $stack->first()->imageUrl }}" /></a>
+                                <a href="#" class="inventory-stack"><img src="{{ $stack->first()->imageUrl }}" alt="{{ $stack->first()->name }}"/></a>
                             </div>
                             <div class="{{ $canName ? 'text-muted' : '' }}">
                                 <a href="#" class="inventory-stack inventory-stack-name">{{ $stack->first()->name }} x{{ $stack->sum('pivot.count') }}</a>
@@ -53,17 +53,23 @@
 @endforeach
 
 <h3>Latest Activity</h3>
-<div class="row ml-md-2 mb-4">
-  <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-bottom">
-    <div class="col-6 col-md-2 font-weight-bold">Sender</div>
-    <div class="col-6 col-md-2 font-weight-bold">Recipient</div>
-    <div class="col-6 col-md-2 font-weight-bold">Character</div>
-    <div class="col-6 col-md-4 font-weight-bold">Log</div>
-    <div class="col-6 col-md-2 font-weight-bold">Date</div>
-  </div>
-      @foreach($logs as $log)
-          @include('user._item_log_row', ['log' => $log, 'owner' => $character])
-      @endforeach
+<div class="mb-4 logs-table">
+    <div class="logs-table-header">
+        <div class="row">
+            <div class="col-6 col-md-2"><div class="logs-table-cell">Sender</div></div>
+            <div class="col-6 col-md-2"><div class="logs-table-cell">Recipient</div></div>
+            <div class="col-6 col-md-2"><div class="logs-table-cell">Character</div></div>
+            <div class="col-6 col-md-4"><div class="logs-table-cell">Log</div></div>
+            <div class="col-6 col-md-2"><div class="logs-table-cell">Date</div></div>
+        </div>
+    </div>
+    <div class="logs-table-body">
+        @foreach($logs as $log)
+            <div class="logs-table-row">
+                @include('user._item_log_row', ['log' => $log, 'owner' => $character])
+            </div>
+        @endforeach
+    </div>
 </div>
 <div class="text-right">
     <a href="{{ url($character->url.'/item-logs') }}">View all...</a>

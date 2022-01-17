@@ -12,6 +12,7 @@ use App\Models\Gallery\GallerySubmission;
 use App\Models\Character\CharacterDesignUpdate;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Trade;
+use App\Models\AdminLog;
 use App\Models\Report\Report;
 
 use App\Http\Controllers\Controller;
@@ -42,6 +43,18 @@ class HomeController extends Controller
             'galleryCurrencyAwards' => $galleryCurrencyAwards,
             'gallerySubmissionCount' => GallerySubmission::collaboratorApproved()->where('status', 'Pending')->count(),
             'galleryAwardCount' => GallerySubmission::requiresAward()->where('is_valued', 0)->count()
+        ]);
+    }
+
+    /**
+     * Show admin logs.
+     * 
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getLogs()
+    {
+        return view('admin.logs', [
+            'logs' => Adminlog::orderBy('created_at', 'DESC')->get()->paginate(20)
         ]);
     }
 }

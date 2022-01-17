@@ -8,12 +8,8 @@
     }
 @endphp
 
-@if($comments->count() < 1)
-    <div class="alert alert-warning">There are no comments yet.</div>
-@endif
-
 @if(!isset($type) || $type == "User-User")
-<h2>Comments</h2>
+    <h2>Comments</h2>
 @endif
 <div class="d-flex mw-100 row mx-0" style="overflow:hidden;">
     @php
@@ -60,15 +56,18 @@
     @endforeach
 </div>
 
+@if($comments->count() < 1)
+    <div class="alert alert-warning">There are no comments yet.</div>
+@endif
+
 @isset ($perPage)
-    {{ $grouped_comments->links() }}
+    <div class="ml-auto mt-2">{{ $grouped_comments->links() }}</div>
 @endisset
 
-<br><br><br>
 @auth
     @include('comments._form')
 @else
-    <div class="card">
+    <div class="card mt-3">
         <div class="card-body">
             <h5 class="card-title">Authentication required</h5>
             <p class="card-text">You must log in to post a comment.</p>

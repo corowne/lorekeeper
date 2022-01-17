@@ -46,11 +46,16 @@ class UserService extends Service
         // If the rank is not given, create a user with the lowest existing rank.
         if(!isset($data['rank_id'])) $data['rank_id'] = Rank::orderBy('sort')->first()->id;
 
+        // Make birthday into format we can store
+        $date = $data['dob']['day']."-".$data['dob']['month']."-".$data['dob']['year'];
+        $formatDate = carbon::parse($date);
+
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'rank_id' => $data['rank_id'],
             'password' => Hash::make($data['password']),
+            'birthday' => $formatDate,
         ]);
         $user->settings()->create([
             'user_id' => $user->id,
@@ -120,6 +125,28 @@ class UserService extends Service
 
         return true;
     }
+
+    /**
+    * Updates user's birthday
+    */
+   public function updateBirthday($data, $user)
+   {
+       $user->birthday = $data;
+       $user->save();
+
+       return true;
+   }
+
+   /**
+    * Updates user's birthday setting
+    */
+   public function updateDOB($data, $user)
+   {
+       $user->settings->birthday_setting = $data;
+       $user->settings->save();
+
+       return true;
+   }
 
     /**
      * Confirms a user's two-factor auth.
@@ -241,6 +268,7 @@ class UserService extends Service
         try {
             if(!$user->is_banned) {
                 // New ban (not just editing the reason), clear all their engagements
+                if(!logAdminAction($staff, 'Banned User', 'Banned '.$user->displayname)) throw new \Exception("Failed to log admin action.");
 
                 // 1. Character transfers
                 $characterManager = new CharacterManager;
@@ -260,7 +288,7 @@ class UserService extends Service
                 $galleryManager = new GalleryManager;
                 $gallerySubmissions = GallerySubmission::where('user_id', $user->id)->where('status', 'Pending')->get();
                 foreach($gallerySubmissions as $submission) {
-                    $galleryManager->rejectSubmission($submission);
+                    $galleryManager->rejectSubmission($submission, $staff);
                     $galleryManager->postStaffComments($submission->id, ['staff_comments' => 'User has been banned from site activity.'], $staff);
                 }
                 $gallerySubmissions = GallerySubmission::where('user_id', $user->id)->where('status', 'Accepted')->get();
@@ -318,6 +346,8 @@ class UserService extends Service
         DB::beginTransaction();
 
         try {
+            if(!logAdminAction($staff, 'Unbanned User', 'Unbanned '.$user->displayname)) throw new \Exception("Failed to log admin action.");
+
             if($user->is_banned) {
                 $user->is_banned = 0;
                 $user->save();

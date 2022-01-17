@@ -126,7 +126,7 @@ class ItemController extends Controller
      */
     public function postDeleteItemCategory(Request $request, ItemService $service, $id)
     {
-        if($id && $service->deleteItemCategory(ItemCategory::find($id))) {
+        if($id && $service->deleteItemCategory(ItemCategory::find($id), Auth::user())) {
             flash('Category deleted successfully.')->success();
         }
         else {
@@ -268,7 +268,7 @@ class ItemController extends Controller
      */
     public function postDeleteItem(Request $request, ItemService $service, $id)
     {
-        if($id && $service->deleteItem(Item::find($id))) {
+        if($id && $service->deleteItem(Item::find($id), Auth::user())) {
             flash('Item deleted successfully.')->success();
         }
         else {
@@ -311,7 +311,7 @@ class ItemController extends Controller
     {
         $item = Item::find($id);
         $tag = $request->get('tag');
-        if($tag = $service->addItemTag($item, $tag)) {
+        if($tag = $service->addItemTag($item, $tag, Auth::user())) {
             flash('Tag added successfully.')->success();
             return redirect()->to($tag->adminUrl);
         }
@@ -350,7 +350,7 @@ class ItemController extends Controller
     public function postEditItemTag(Request $request, ItemService $service, $id, $tag)
     {
         $item = Item::find($id);
-        if($service->editItemTag($item, $tag, $request->all())) {
+        if($service->editItemTag($item, $tag, $request->all(), Auth::user())) {
             flash('Tag edited successfully.')->success();
         }
         else {
@@ -388,7 +388,7 @@ class ItemController extends Controller
     public function postDeleteItemTag(Request $request, ItemService $service, $id, $tag)
     {
         $item = Item::find($id);
-        if($service->deleteItemTag($item, $tag)) {
+        if($service->deleteItemTag($item, $tag, Auth::user())) {
             flash('Tag deleted successfully.')->success();
         }
         else {

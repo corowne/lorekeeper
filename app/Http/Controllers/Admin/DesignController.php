@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\Character\CharacterDesignUpdate;
 use App\Models\Character\CharacterCategory;
 
-use App\Services\CharacterManager;
+use App\Services\DesignUpdateManager;
 
 use App\Http\Controllers\Controller;
 
@@ -28,7 +28,7 @@ class DesignController extends Controller
         $requests = CharacterDesignUpdate::where('status', ucfirst($status));
         if($type == 'myo-approvals') $requests = $requests->myos();
         else $requests = $requests->characters();
-        
+
         return view('admin.designs.index', [
             'requests' => $requests->paginate(30)->appends($request->query()),
             'isMyo' => ($type == 'myo-approvals')
@@ -51,7 +51,7 @@ class DesignController extends Controller
         ] : []));
     }
 
-    public function postDesign($id, $action, Request $request, CharacterManager $service)
+    public function postDesign($id, $action, Request $request, DesignUpdateManager $service)
     {
         $r = CharacterDesignUpdate::where('id', $id)->where('status', 'Pending')->first();
 
@@ -60,8 +60,8 @@ class DesignController extends Controller
         }
         elseif($action == 'approve' && $service->approveRequest($request->only([
                 'character_category_id', 'number', 'slug', 'description',
-                'is_giftable', 'is_tradeable', 'is_sellable', 'sale_value', 
-                'transferrable_at', 'set_active', 'invalidate_old',
+                'is_giftable', 'is_tradeable', 'is_sellable', 'sale_value',
+                'transferrable_at', 'set_active', 'invalidate_old', 'remove_myo_image'
             ]), $r, Auth::user())) {
             flash('Request approved successfully.')->success();
         }
@@ -79,7 +79,7 @@ class DesignController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function postVote($id, $action, Request $request, CharacterManager $service)
+    public function postVote($id, $action, Request $request, DesignUpdateManager $service)
     {
         $r = CharacterDesignUpdate::where('id', $id)->where('status', 'Pending')->first();
         if(!$r) throw new \Exception ("Invalid design update.");
