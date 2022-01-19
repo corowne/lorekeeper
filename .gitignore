@@ -12,3 +12,4 @@ yarn-error.log
 /composer.lock
 *.env
 /composer.phar
+*.cache

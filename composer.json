@@ -42,6 +42,7 @@
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
         "filp/whoops": "^2.0",
+        "friendsofphp/php-cs-fixer": "^3.5",
         "fzaninotto/faker": "^1.4",
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^5.0",
@@ -87,6 +88,12 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "sniff": [
+            "./vendor/bin/php-cs-fixer fix -vvv --dry-run --show-progress=dots"
+        ],
+        "lint": [
+            "./vendor/bin/php-cs-fixer fix -vvv --show-progress=dots"
         ]
     }
 }
