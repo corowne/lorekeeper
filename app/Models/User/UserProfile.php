@@ -10,13 +10,6 @@ class UserProfile extends Model
     use Commentable;
 
     /**
-     * The primary key of the model.
-     *
-     * @var string
-     */
-    public $primaryKey = 'user_id';
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -31,6 +24,13 @@ class UserProfile extends Model
      * @var string
      */
     protected $table = 'user_profiles';
+
+    /**
+     * The primary key of the model.
+     *
+     * @var string
+     */
+    public $primaryKey = 'user_id';
 
     /**********************************************************************************************
 

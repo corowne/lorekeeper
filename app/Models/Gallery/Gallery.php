@@ -9,6 +9,23 @@ use Settings;
 class Gallery extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'id', 'parent_id', 'name', 'sort', 'description',
+        'currency_enabled', 'votes_required', 'submissions_open',
+        'start_at', 'end_at', 'hide_before_start', 'prompt_selection',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'galleries';
+    /**
      * Dates on the model to convert to Carbon instances.
      *
      * @var array
@@ -34,23 +51,6 @@ class Gallery extends Model
         'name'        => 'required|between:3,50',
         'description' => 'nullable',
     ];
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'id', 'parent_id', 'name', 'sort', 'description',
-        'currency_enabled', 'votes_required', 'submissions_open',
-        'start_at', 'end_at', 'hide_before_start', 'prompt_selection',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'galleries';
 
     /**********************************************************************************************
 

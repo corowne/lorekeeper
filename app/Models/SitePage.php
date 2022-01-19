@@ -9,6 +9,22 @@ class SitePage extends Model
     use Commentable;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'key', 'title', 'text', 'parsed_text', 'is_visible', 'can_comment',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'site_pages';
+
+    /**
      * Whether the model contains timestamps to be saved and updated.
      *
      * @var string
@@ -36,22 +52,6 @@ class SitePage extends Model
         'title' => 'required|between:3,100',
         'text'  => 'nullable',
     ];
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'key', 'title', 'text', 'parsed_text', 'is_visible', 'can_comment',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'site_pages';
 
     /**
      * Gets the URL of the public-facing page.

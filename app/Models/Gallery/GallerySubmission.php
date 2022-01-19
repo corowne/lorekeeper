@@ -14,6 +14,27 @@ class GallerySubmission extends Model
     use Commentable;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'user_id', 'gallery_id', 'hash', 'extension',
+        'text', 'parsed_text', 'content_warning',
+        'title', 'description', 'parsed_description',
+        'prompt_id', 'data', 'is_visible', 'status',
+        'vote_data', 'staff_id', 'is_valued',
+        'staff_comments', 'parsed_staff_comments',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'gallery_submissions';
+
+    /**
      * Whether the model contains timestamps to be saved and updated.
      *
      * @var string
@@ -42,27 +63,6 @@ class GallerySubmission extends Model
         'description' => 'nullable',
         'image'       => 'mimes:png,jpeg,jpg,gif|max:3000',
     ];
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'user_id', 'gallery_id', 'hash', 'extension',
-        'text', 'parsed_text', 'content_warning',
-        'title', 'description', 'parsed_description',
-        'prompt_id', 'data', 'is_visible', 'status',
-        'vote_data', 'staff_id', 'is_valued',
-        'staff_comments', 'parsed_staff_comments',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'gallery_submissions';
 
     /**********************************************************************************************
 

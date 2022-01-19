@@ -8,13 +8,6 @@ use App\Models\User\User;
 class CharacterImageCreator extends Model
 {
     /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = false;
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -29,6 +22,12 @@ class CharacterImageCreator extends Model
      * @var string
      */
     protected $table = 'character_image_creators';
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = false;
 
     /**********************************************************************************************
 

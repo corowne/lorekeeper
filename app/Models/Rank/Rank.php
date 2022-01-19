@@ -9,18 +9,6 @@ use Illuminate\Support\Arr;
 class Rank extends Model
 {
     /**
-     * Validation rules for ranks.
-     *
-     * @var array
-     */
-    public static $rules = [
-        'name'        => 'required|between:3,100',
-        'description' => 'nullable',
-        'color'       => 'nullable|regex:/^#?[0-9a-fA-F]{6}$/i',
-        'icon'        => 'nullable',
-    ];
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -35,6 +23,17 @@ class Rank extends Model
      * @var string
      */
     protected $table = 'ranks';
+    /**
+     * Validation rules for ranks.
+     *
+     * @var array
+     */
+    public static $rules = [
+        'name'        => 'required|between:3,100',
+        'description' => 'nullable',
+        'color'       => 'nullable|regex:/^#?[0-9a-fA-F]{6}$/i',
+        'icon'        => 'nullable',
+    ];
 
     /**********************************************************************************************
 

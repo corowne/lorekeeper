@@ -11,6 +11,21 @@ use Spatie\Feed\FeedItem;
 class News extends Model implements Feedable
 {
     use Commentable;
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'user_id', 'text', 'parsed_text', 'title', 'is_visible', 'post_at',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'news';
 
     /**
      * Whether the model contains timestamps to be saved and updated.
@@ -45,21 +60,6 @@ class News extends Model implements Feedable
         'title' => 'required|between:3,100',
         'text'  => 'required',
     ];
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'user_id', 'text', 'parsed_text', 'title', 'is_visible', 'post_at',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'news';
 
     /**********************************************************************************************
 

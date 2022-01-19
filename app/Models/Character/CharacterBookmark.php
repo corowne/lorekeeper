@@ -7,6 +7,21 @@ use App\Models\Model;
 class CharacterBookmark extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'user_id', 'character_id', 'notify_on_trade_status', 'notify_on_gift_art_status', 'notify_on_gift_writing_status', 'notify_on_transfer', 'notify_on_image', 'comment',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'character_bookmarks';
+    /**
      * Validation rules for creation.
      *
      * @var array
@@ -24,22 +39,6 @@ class CharacterBookmark extends Model
     public static $updateRules = [
         'comment' => 'string|nullable|max:500',
     ];
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'user_id', 'character_id', 'notify_on_trade_status', 'notify_on_gift_art_status', 'notify_on_gift_writing_status', 'notify_on_transfer', 'notify_on_image', 'comment',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'character_bookmarks';
 
     /**********************************************************************************************
 

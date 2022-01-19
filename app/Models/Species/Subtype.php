@@ -7,29 +7,6 @@ use App\Models\Model;
 class Subtype extends Model
 {
     /**
-     * Validation rules for creation.
-     *
-     * @var array
-     */
-    public static $createRules = [
-        'species_id'  => 'required',
-        'name'        => 'required|between:3,100',
-        'description' => 'nullable',
-        'image'       => 'mimes:png',
-    ];
-
-    /**
-     * Validation rules for updating.
-     *
-     * @var array
-     */
-    public static $updateRules = [
-        'species_id'  => 'required',
-        'name'        => 'required|between:3,100',
-        'description' => 'nullable',
-        'image'       => 'mimes:png',
-    ];
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -52,6 +29,29 @@ class Subtype extends Model
      */
     protected $appends = [
         'name_with_species',
+    ];
+    /**
+     * Validation rules for creation.
+     *
+     * @var array
+     */
+    public static $createRules = [
+        'species_id'  => 'required',
+        'name'        => 'required|between:3,100',
+        'description' => 'nullable',
+        'image'       => 'mimes:png',
+    ];
+
+    /**
+     * Validation rules for updating.
+     *
+     * @var array
+     */
+    public static $updateRules = [
+        'species_id'  => 'required',
+        'name'        => 'required|between:3,100',
+        'description' => 'nullable',
+        'image'       => 'mimes:png',
     ];
 
     /**********************************************************************************************

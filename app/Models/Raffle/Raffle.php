@@ -7,6 +7,21 @@ use App\Models\Model;
 class Raffle extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'is_active', 'winner_count', 'group_id', 'order', 'ticket_cap',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'raffles';
+    /**
      * Dates on the model to convert to Carbon instances.
      *
      * @var array
@@ -26,21 +41,6 @@ class Raffle extends Model
      * @var string
      */
     public $timestamps = false;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name', 'is_active', 'winner_count', 'group_id', 'order', 'ticket_cap',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'raffles';
 
     /**********************************************************************************************
 

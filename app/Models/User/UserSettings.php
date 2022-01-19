@@ -7,13 +7,6 @@ use App\Models\Model;
 class UserSettings extends Model
 {
     /**
-     * The primary key of the model.
-     *
-     * @var string
-     */
-    public $primaryKey = 'user_id';
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -35,6 +28,12 @@ class UserSettings extends Model
      * @var array
      */
     protected $dates = ['banned_at'];
+    /**
+     * The primary key of the model.
+     *
+     * @var string
+     */
+    public $primaryKey = 'user_id';
 
     /**********************************************************************************************
 

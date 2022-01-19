@@ -12,6 +12,26 @@ class CharacterImage extends Model
     use SoftDeletes;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'character_id', 'user_id', 'species_id', 'subtype_id', 'rarity_id', 'url',
+        'extension', 'use_cropper', 'hash', 'fullsize_hash', 'sort',
+        'x0', 'x1', 'y0', 'y1',
+        'description', 'parsed_description',
+        'is_valid',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'character_images';
+
+    /**
      * Whether the model contains timestamps to be saved and updated.
      *
      * @var string
@@ -42,26 +62,6 @@ class CharacterImage extends Model
         'rarity_id'    => 'required',
         'description'  => 'nullable',
     ];
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'character_id', 'user_id', 'species_id', 'subtype_id', 'rarity_id', 'url',
-        'extension', 'use_cropper', 'hash', 'fullsize_hash', 'sort',
-        'x0', 'x1', 'y0', 'y1',
-        'description', 'parsed_description',
-        'is_valid',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'character_images';
 
     /**********************************************************************************************
 

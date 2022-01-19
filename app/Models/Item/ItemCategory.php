@@ -7,6 +7,21 @@ use App\Models\Model;
 class ItemCategory extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_character_owned', 'character_limit', 'can_name',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'item_categories';
+    /**
      * Validation rules for creation.
      *
      * @var array
@@ -27,21 +42,6 @@ class ItemCategory extends Model
         'description' => 'nullable',
         'image'       => 'mimes:png',
     ];
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_character_owned', 'character_limit', 'can_name',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'item_categories';
 
     /**********************************************************************************************
 

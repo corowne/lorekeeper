@@ -7,6 +7,24 @@ use App\Models\Model;
 class Currency extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'is_user_owned', 'is_character_owned',
+        'name', 'abbreviation', 'description', 'parsed_description', 'sort_user', 'sort_character',
+        'is_displayed', 'allow_user_to_user', 'allow_user_to_character', 'allow_character_to_user',
+        'has_icon', 'has_image',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'currencies';
+    /**
      * Validation rules for creation.
      *
      * @var array
@@ -31,24 +49,6 @@ class Currency extends Model
         'icon'         => 'mimes:png',
         'image'        => 'mimes:png',
     ];
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'is_user_owned', 'is_character_owned',
-        'name', 'abbreviation', 'description', 'parsed_description', 'sort_user', 'sort_character',
-        'is_displayed', 'allow_user_to_user', 'allow_user_to_character', 'allow_character_to_user',
-        'has_icon', 'has_image',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'currencies';
 
     /**********************************************************************************************
 

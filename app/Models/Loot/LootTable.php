@@ -9,6 +9,21 @@ use Config;
 class LootTable extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'display_name',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'loot_tables';
+    /**
      * Validation rules for creation.
      *
      * @var array
@@ -27,21 +42,6 @@ class LootTable extends Model
         'name'         => 'required',
         'display_name' => 'required',
     ];
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name', 'display_name',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'loot_tables';
 
     /**********************************************************************************************
 

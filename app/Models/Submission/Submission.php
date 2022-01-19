@@ -8,6 +8,23 @@ use Carbon\Carbon;
 class Submission extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'prompt_id', 'user_id', 'staff_id', 'url',
+        'comments', 'staff_comments', 'parsed_staff_comments',
+        'status', 'data',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'submissions';
+    /**
      * Whether the model contains timestamps to be saved and updated.
      *
      * @var string
@@ -31,23 +48,6 @@ class Submission extends Model
     public static $updateRules = [
         'url' => 'nullable|url',
     ];
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'prompt_id', 'user_id', 'staff_id', 'url',
-        'comments', 'staff_comments', 'parsed_staff_comments',
-        'status', 'data',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'submissions';
 
     /**********************************************************************************************
 

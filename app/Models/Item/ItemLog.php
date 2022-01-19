@@ -7,12 +7,6 @@ use App\Models\Model;
 class ItemLog extends Model
 {
     /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -30,6 +24,12 @@ class ItemLog extends Model
      * @var string
      */
     protected $table = 'items_log';
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
 
     /**********************************************************************************************
 

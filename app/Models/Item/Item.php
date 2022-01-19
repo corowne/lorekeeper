@@ -11,6 +11,24 @@ use App\Models\User\UserItem;
 class Item extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'item_category_id', 'name', 'has_image', 'description', 'parsed_description', 'allow_transfer',
+        'data', 'reference_url', 'artist_alias', 'artist_url', 'artist_id', 'is_released',
+    ];
+
+    protected $appends = ['image_url'];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'items';
+    /**
      * Validation rules for creation.
      *
      * @var array
@@ -42,24 +60,6 @@ class Item extends Model
         'release'           => 'nullable|between:3,100',
         'currency_quantity' => 'nullable|integer|min:1',
     ];
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'item_category_id', 'name', 'has_image', 'description', 'parsed_description', 'allow_transfer',
-        'data', 'reference_url', 'artist_alias', 'artist_url', 'artist_id', 'is_released',
-    ];
-
-    protected $appends = ['image_url'];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'items';
 
     /**********************************************************************************************
 

@@ -10,6 +10,24 @@ class Report extends Model
     use Commentable;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'user_id', 'staff_id', 'url',
+        'comments', 'staff_comments', 'parsed_staff_comments',
+        'status', 'data', 'error_type', 'is_br',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'reports';
+
+    /**
      * Whether the model contains timestamps to be saved and updated.
      *
      * @var string
@@ -33,24 +51,6 @@ class Report extends Model
     public static $updateRules = [
         'url' => 'required',
     ];
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'user_id', 'staff_id', 'url',
-        'comments', 'staff_comments', 'parsed_staff_comments',
-        'status', 'data', 'error_type', 'is_br',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'reports';
 
     /**********************************************************************************************
 

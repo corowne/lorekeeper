@@ -8,12 +8,6 @@ use Settings;
 class Trade extends Model
 {
     /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -30,6 +24,12 @@ class Trade extends Model
      * @var string
      */
     protected $table = 'trades';
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
 
     /**********************************************************************************************
 

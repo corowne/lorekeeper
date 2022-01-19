@@ -7,12 +7,6 @@ use App\Models\Model;
 class CharacterLog extends Model
 {
     /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -28,6 +22,12 @@ class CharacterLog extends Model
      * @var string
      */
     protected $table = 'character_log';
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
 
     /**********************************************************************************************
 

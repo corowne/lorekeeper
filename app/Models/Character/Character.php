@@ -7,7 +7,6 @@ use App\Models\Currency\CurrencyLog;
 use App\Models\Item\Item;
 use App\Models\Item\ItemLog;
 use App\Models\Model;
-
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
 use App\Models\User\User;
@@ -19,6 +18,27 @@ use Notifications;
 class Character extends Model
 {
     use SoftDeletes;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'character_image_id', 'character_category_id', 'rarity_id', 'user_id',
+        'owner_alias', 'number', 'slug', 'description', 'parsed_description',
+        'is_sellable', 'is_tradeable', 'is_giftable',
+        'sale_value', 'transferrable_at', 'is_visible',
+        'is_gift_art_allowed', 'is_gift_writing_allowed', 'is_trading', 'sort',
+        'is_myo_slot', 'name', 'trade_id', 'owner_url',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'characters';
 
     /**
      * Whether the model contains timestamps to be saved and updated.
@@ -88,27 +108,6 @@ class Character extends Model
         'image'       => 'nullable|mimes:jpeg,gif,png|max:20000',
         'thumbnail'   => 'nullable|mimes:jpeg,gif,png|max:20000',
     ];
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'character_image_id', 'character_category_id', 'rarity_id', 'user_id',
-        'owner_alias', 'number', 'slug', 'description', 'parsed_description',
-        'is_sellable', 'is_tradeable', 'is_giftable',
-        'sale_value', 'transferrable_at', 'is_visible',
-        'is_gift_art_allowed', 'is_gift_writing_allowed', 'is_trading', 'sort',
-        'is_myo_slot', 'name', 'trade_id', 'owner_url',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'characters';
 
     /**********************************************************************************************
 

@@ -12,6 +12,22 @@ use Spatie\Feed\FeedItem;
 class Sales extends Model implements Feedable
 {
     use Commentable;
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'user_id', 'text', 'parsed_text', 'title', 'is_visible', 'post_at',
+        'is_open', 'comments_open_at',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'sales';
 
     /**
      * Whether the model contains timestamps to be saved and updated.
@@ -46,22 +62,6 @@ class Sales extends Model implements Feedable
         'title' => 'required|between:3,100',
         'text'  => 'required',
     ];
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'user_id', 'text', 'parsed_text', 'title', 'is_visible', 'post_at',
-        'is_open', 'comments_open_at',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'sales';
 
     /**********************************************************************************************
 

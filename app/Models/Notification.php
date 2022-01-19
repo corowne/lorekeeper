@@ -6,6 +6,28 @@ use Config;
 
 class Notification extends Model
 {
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'user_id', 'notification_type_id', 'is_unread', 'data',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'notifications';
+
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
     /**********************************************************************************************
 
         CONSTANTS
@@ -69,28 +91,6 @@ class Notification extends Model
     const GALLERY_SUBMISSION_STAFF_COMMENTS = 513;
     const GALLERY_SUBMISSION_EDITED = 514;
     const GALLERY_SUBMISSION_PARTICIPANT = 515;
-
-    /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'user_id', 'notification_type_id', 'is_unread', 'data',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'notifications';
 
     /**********************************************************************************************
 

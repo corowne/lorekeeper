@@ -8,6 +8,23 @@ use Carbon\Carbon;
 class Prompt extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active',
+        'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image', 'prefix',
+        'hide_submissions',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'prompts';
+    /**
      * Dates on the model to convert to Carbon instances.
      *
      * @var array
@@ -41,23 +58,6 @@ class Prompt extends Model
         'description'        => 'nullable',
         'image'              => 'mimes:png',
     ];
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active',
-        'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image', 'prefix',
-        'hide_submissions',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'prompts';
 
     /**********************************************************************************************
 

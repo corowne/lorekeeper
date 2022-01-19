@@ -7,6 +7,22 @@ use App\Models\Model;
 class Loot extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'loot_table_id', 'rewardable_type', 'rewardable_id',
+        'quantity', 'weight', 'data',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'loots';
+    /**
      * Validation rules for creation.
      *
      * @var array
@@ -29,22 +45,6 @@ class Loot extends Model
         'quantity'        => 'required|integer|min:1',
         'weight'          => 'required|integer|min:1',
     ];
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'loot_table_id', 'rewardable_type', 'rewardable_id',
-        'quantity', 'weight', 'data',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'loots';
 
     /**********************************************************************************************
 

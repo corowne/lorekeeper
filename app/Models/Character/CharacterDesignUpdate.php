@@ -13,6 +13,28 @@ class CharacterDesignUpdate extends Model
     use SoftDeletes;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'character_id', 'status', 'user_id', 'staff_id',
+        'comments', 'staff_comments', 'data', 'extension',
+        'use_cropper', 'x0', 'x1', 'y0', 'y1',
+        'hash', 'species_id', 'subtype_id', 'rarity_id',
+        'has_comments', 'has_image', 'has_addons', 'has_features',
+        'submitted_at', 'update_type', 'fullsize_hash',
+        'approval_votes', 'rejection_votes',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'design_updates';
+
+    /**
      * Whether the model contains timestamps to be saved and updated.
      *
      * @var string
@@ -37,28 +59,6 @@ class CharacterDesignUpdate extends Model
         'artist_url.*'   => 'nullable|url',
         'designer_url.*' => 'nullable|url',
     ];
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'character_id', 'status', 'user_id', 'staff_id',
-        'comments', 'staff_comments', 'data', 'extension',
-        'use_cropper', 'x0', 'x1', 'y0', 'y1',
-        'hash', 'species_id', 'subtype_id', 'rarity_id',
-        'has_comments', 'has_image', 'has_addons', 'has_features',
-        'submitted_at', 'update_type', 'fullsize_hash',
-        'approval_votes', 'rejection_votes',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'design_updates';
 
     /**********************************************************************************************
 

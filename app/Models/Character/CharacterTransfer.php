@@ -8,12 +8,6 @@ use Settings;
 class CharacterTransfer extends Model
 {
     /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -29,6 +23,12 @@ class CharacterTransfer extends Model
      * @var string
      */
     protected $table = 'character_transfers';
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
 
     /**********************************************************************************************
 

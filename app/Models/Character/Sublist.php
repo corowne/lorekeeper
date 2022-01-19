@@ -7,6 +7,21 @@ use App\Models\Model;
 class Sublist extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'key', 'show_main', 'sort',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'masterlist_sub';
+    /**
      * Validation rules for creation.
      *
      * @var array
@@ -25,21 +40,6 @@ class Sublist extends Model
         'name' => 'required|between:3,25',
         'key'  => 'required|between:3,25|alpha_dash',
     ];
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name', 'key', 'show_main', 'sort',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'masterlist_sub';
 
     /**********************************************************************************************
 

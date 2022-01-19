@@ -7,16 +7,6 @@ use App\Models\Model;
 class RaffleTicket extends Model
 {
     /**
-     * Validation rules for creation.
-     *
-     * @var array
-     */
-    public static $createRules = [
-        'user_id.*'      => 'required_without:alias.*',
-        'alias.*'        => 'required_without:user_id.*',
-        'ticket_count.*' => 'required',
-    ];
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -38,6 +28,16 @@ class RaffleTicket extends Model
      * @var array
      */
     protected $dates = ['created_at'];
+    /**
+     * Validation rules for creation.
+     *
+     * @var array
+     */
+    public static $createRules = [
+        'user_id.*'      => 'required_without:alias.*',
+        'alias.*'        => 'required_without:user_id.*',
+        'ticket_count.*' => 'required',
+    ];
 
     /**********************************************************************************************
 

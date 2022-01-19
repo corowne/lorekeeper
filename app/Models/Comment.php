@@ -12,13 +12,6 @@ class Comment extends Model
     use SoftDeletes;
 
     /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
-
-    /**
      * The relations to eager load on every query.
      *
      * @var array
@@ -55,6 +48,13 @@ class Comment extends Model
         'updated' => CommentUpdated::class,
         'deleted' => CommentDeleted::class,
     ];
+
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
 
     /**
      * The user who posted the comment.

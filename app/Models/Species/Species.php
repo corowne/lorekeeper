@@ -7,6 +7,21 @@ use App\Models\Model;
 class Species extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'sort', 'has_image', 'description', 'parsed_description', 'masterlist_sub_id',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'specieses';
+    /**
      * Validation rules for creation.
      *
      * @var array
@@ -27,21 +42,6 @@ class Species extends Model
         'description' => 'nullable',
         'image'       => 'mimes:png',
     ];
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description', 'masterlist_sub_id',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'specieses';
 
     /**********************************************************************************************
 

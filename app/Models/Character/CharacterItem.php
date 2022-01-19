@@ -10,13 +10,6 @@ class CharacterItem extends Model
     use SoftDeletes;
 
     /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -31,6 +24,13 @@ class CharacterItem extends Model
      * @var string
      */
     protected $table = 'character_items';
+
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
 
     /**********************************************************************************************
 

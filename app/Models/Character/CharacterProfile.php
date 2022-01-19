@@ -7,22 +7,6 @@ use App\Models\Model;
 class CharacterProfile extends Model
 {
     /**
-     * The primary key of the model.
-     *
-     * @var string
-     */
-    public $primaryKey = 'character_id';
-
-    /**
-     * Validation rules for character profile updating.
-     *
-     * @var array
-     */
-    public static $rules = [
-        'link' => 'url|nullable',
-    ];
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -37,6 +21,21 @@ class CharacterProfile extends Model
      * @var string
      */
     protected $table = 'character_profiles';
+    /**
+     * The primary key of the model.
+     *
+     * @var string
+     */
+    public $primaryKey = 'character_id';
+
+    /**
+     * Validation rules for character profile updating.
+     *
+     * @var array
+     */
+    public static $rules = [
+        'link' => 'url|nullable',
+    ];
 
     /**********************************************************************************************
 

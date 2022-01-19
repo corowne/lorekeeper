@@ -5,12 +5,6 @@ namespace App\Models;
 class Invitation extends Model
 {
     /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -25,6 +19,12 @@ class Invitation extends Model
      * @var string
      */
     protected $table = 'invitations';
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
 
     /**********************************************************************************************
 

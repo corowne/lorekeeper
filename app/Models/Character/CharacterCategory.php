@@ -7,6 +7,21 @@ use App\Models\Model;
 class CharacterCategory extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'code', 'name', 'sort', 'has_image', 'description', 'parsed_description', 'masterlist_sub_id',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'character_categories';
+    /**
      * Validation rules for creation.
      *
      * @var array
@@ -29,21 +44,6 @@ class CharacterCategory extends Model
         'description' => 'nullable',
         'image'       => 'mimes:png',
     ];
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'code', 'name', 'sort', 'has_image', 'description', 'parsed_description', 'masterlist_sub_id',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'character_categories';
 
     /**********************************************************************************************
 

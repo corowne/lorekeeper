@@ -9,6 +9,21 @@ use Config;
 class SalesCharacter extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'sales_id', 'character_id', 'description', 'type', 'data', 'link', 'is_open',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'sales_characters';
+    /**
      * Validation rules.
      *
      * @var array
@@ -25,21 +40,6 @@ class SalesCharacter extends Model
         'min_increment' => 'required_if:type,auction',
         'end_point'     => 'exclude_unless:type,auction,xta,ota|max:255',
     ];
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'sales_id', 'character_id', 'description', 'type', 'data', 'link', 'is_open',
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'sales_characters';
 
     /**********************************************************************************************
 
