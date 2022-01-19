@@ -18,9 +18,6 @@ class Kernel extends ConsoleKernel
 
     /**
      * Define the application's command schedule.
-     *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @return void
      */
     protected function schedule(Schedule $schedule)
     {
@@ -32,13 +29,10 @@ class Kernel extends ConsoleKernel
                 ->daily();
         $schedule->command('update-extension-tracker')
                 ->daily();
-
     }
 
     /**
      * Register the commands for the application.
-     *
-     * @return void
      */
     protected function commands()
     {

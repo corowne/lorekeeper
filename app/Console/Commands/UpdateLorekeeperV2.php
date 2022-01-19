@@ -23,8 +23,6 @@ class UpdateLorekeeperV2 extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -44,7 +42,7 @@ class UpdateLorekeeperV2 extends Command
 
         // Check if the user has run composer
         $this->info('This command should be run after updating packages using composer.');
-        if($this->confirm('Have you run the composer update command or equivalent?')) {
+        if ($this->confirm('Have you run the composer update command or equivalent?')) {
             // Migrate
             $this->line('Running migrations...');
             $this->call('migrate');
@@ -63,33 +61,37 @@ class UpdateLorekeeperV2 extends Command
             $this->line("\n".'Updating comments...');
             // Folding in fix-child-comment-types for tidiness
             $childComments = Comment::whereNotNull('child_id')->get();
-            if($childComments->count()) {
+            if ($childComments->count()) {
                 $this->line('Updating '.$childComments->count().' child comments...');
-                foreach($childComments as $comment) {
+                foreach ($childComments as $comment) {
                     $parent = Comment::find($comment->child_id);
-                    if(isset($parent->type) && $comment->type != $parent->type)
+                    if (isset($parent->type) && $comment->type != $parent->type) {
                         $comment->update(['type' => $parent->type]);
+                    }
                 }
                 $this->info('Child comments updated!');
+            } else {
+                $this->line('No child comments to update!');
             }
-            else $this->line('No child comments to update!');
 
             // Folding in update-sales-comments for tidiness
             $salesComments = Comment::where('commentable_type', 'App\Models\Sales')->get();
-            if($salesComments->count()) {
+            if ($salesComments->count()) {
                 $this->line('Updating '.$salesComments->count().' sales comments...');
-                foreach($salesComments as $comment) {
+                foreach ($salesComments as $comment) {
                     $comment->commentable_type = 'App\Models\Sales\Sales';
                     $comment->save();
                 }
                 $this->info('Sales comments updated!');
+            } else {
+                $this->line('No sales comments to update!');
             }
-            else $this->line('No sales comments to update!');
 
             // Migrate aliases
             $this->line("\n".'Updating alias information...');
             $this->call('migrate-aliases');
+        } else {
+            $this->line('Aborting! Please run composer update and then run this command again.');
         }
-        else $this->line('Aborting! Please run composer update and then run this command again.');
     }
 }

@@ -1,26 +1,11 @@
-<?php namespace App\Models\Raffle;
+<?php
+
+namespace App\Models\Raffle;
 
 use App\Models\Model;
-use DB;
 
 class Raffle extends Model
 {
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name', 'is_active', 'winner_count', 'group_id', 'order', 'ticket_cap'
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'raffles';
-
     /**
      * Dates on the model to convert to Carbon instances.
      *
@@ -41,6 +26,21 @@ class Raffle extends Model
      * @var string
      */
     public $timestamps = false;
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'is_active', 'winner_count', 'group_id', 'order', 'ticket_cap',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'raffles';
 
     /**********************************************************************************************
 
@@ -87,7 +87,7 @@ class Raffle extends Model
      */
     public function getNameWithGroupAttribute()
     {
-        return ($this->group_id ? '[' . $this->group->name . '] ' : '') . $this->name;
+        return ($this->group_id ? '['.$this->group->name.'] ' : '').$this->name;
     }
 
     /**
@@ -118,6 +118,8 @@ class Raffle extends Model
 
     /**
      * Displays the raffle's name, linked to the raffle page.
+     *
+     * @param mixed $asReward
      *
      * @return string
      */

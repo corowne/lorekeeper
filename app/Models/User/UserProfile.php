@@ -7,17 +7,7 @@ use App\Traits\Commentable;
 
 class UserProfile extends Model
 {
-
     use Commentable;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'text', 'parsed_text'
-    ];
 
     /**
      * The primary key of the model.
@@ -27,6 +17,15 @@ class UserProfile extends Model
     public $primaryKey = 'user_id';
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'text', 'parsed_text',
+    ];
+
+    /**
      * The table associated with the model.
      *
      * @var string
@@ -34,15 +33,15 @@ class UserProfile extends Model
     protected $table = 'user_profiles';
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the user this profile belongs to.
      */
-    public function user() 
+    public function user()
     {
         return $this->belongsTo('App\Models\User\User');
     }

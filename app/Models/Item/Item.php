@@ -2,18 +2,46 @@
 
 namespace App\Models\Item;
 
-use Config;
-use DB;
 use App\Models\Model;
-use App\Models\Item\ItemCategory;
-
-use App\Models\User\User;
-use App\Models\Shop\Shop;
 use App\Models\Prompt\Prompt;
+use App\Models\Shop\Shop;
+use App\Models\User\User;
 use App\Models\User\UserItem;
 
 class Item extends Model
 {
+    /**
+     * Validation rules for creation.
+     *
+     * @var array
+     */
+    public static $createRules = [
+        'item_category_id'  => 'nullable',
+        'name'              => 'required|unique:items|between:3,100',
+        'description'       => 'nullable',
+        'image'             => 'mimes:png',
+        'rarity'            => 'nullable',
+        'reference_url'     => 'nullable|between:3,200',
+        'uses'              => 'nullable|between:3,250',
+        'release'           => 'nullable|between:3,100',
+        'currency_quantity' => 'nullable|integer|min:1',
+    ];
+
+    /**
+     * Validation rules for updating.
+     *
+     * @var array
+     */
+    public static $updateRules = [
+        'item_category_id'  => 'nullable',
+        'name'              => 'required|between:3,100',
+        'description'       => 'nullable',
+        'image'             => 'mimes:png',
+        'reference_url'     => 'nullable|between:3,200',
+        'uses'              => 'nullable|between:3,250',
+        'release'           => 'nullable|between:3,100',
+        'currency_quantity' => 'nullable|integer|min:1',
+    ];
     /**
      * The attributes that are mass assignable.
      *
@@ -21,7 +49,7 @@ class Item extends Model
      */
     protected $fillable = [
         'item_category_id', 'name', 'has_image', 'description', 'parsed_description', 'allow_transfer',
-        'data', 'reference_url', 'artist_alias', 'artist_url', 'artist_id', 'is_released'
+        'data', 'reference_url', 'artist_alias', 'artist_url', 'artist_id', 'is_released',
     ];
 
     protected $appends = ['image_url'];
@@ -32,39 +60,6 @@ class Item extends Model
      * @var string
      */
     protected $table = 'items';
-
-    /**
-     * Validation rules for creation.
-     *
-     * @var array
-     */
-    public static $createRules = [
-        'item_category_id' => 'nullable',
-        'name' => 'required|unique:items|between:3,100',
-        'description' => 'nullable',
-        'image' => 'mimes:png',
-        'rarity' => 'nullable',
-        'reference_url' => 'nullable|between:3,200',
-        'uses' => 'nullable|between:3,250',
-        'release' => 'nullable|between:3,100',
-        'currency_quantity' => 'nullable|integer|min:1',
-    ];
-
-    /**
-     * Validation rules for updating.
-     *
-     * @var array
-     */
-    public static $updateRules = [
-        'item_category_id' => 'nullable',
-        'name' => 'required|between:3,100',
-        'description' => 'nullable',
-        'image' => 'mimes:png',
-        'reference_url' => 'nullable|between:3,200',
-        'uses' => 'nullable|between:3,250',
-        'release' => 'nullable|between:3,100',
-        'currency_quantity' => 'nullable|integer|min:1',
-    ];
 
     /**********************************************************************************************
 
@@ -105,8 +100,9 @@ class Item extends Model
     /**
      * Scope a query to sort items in alphabetical order.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  bool                                   $reverse
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param bool                                  $reverse
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeSortAlphabetical($query, $reverse = false)
@@ -117,19 +113,24 @@ class Item extends Model
     /**
      * Scope a query to sort items in category order.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeSortCategory($query)
     {
-        if(ItemCategory::all()->count()) return $query->orderBy(ItemCategory::select('sort')->whereColumn('items.item_category_id', 'item_categories.id'), 'DESC');
+        if (ItemCategory::all()->count()) {
+            return $query->orderBy(ItemCategory::select('sort')->whereColumn('items.item_category_id', 'item_categories.id'), 'DESC');
+        }
+
         return $query;
     }
 
     /**
      * Scope a query to sort items by newest first.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeSortNewest($query)
@@ -140,7 +141,8 @@ class Item extends Model
     /**
      * Scope a query to sort features oldest first.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeSortOldest($query)
@@ -151,7 +153,8 @@ class Item extends Model
     /**
      * Scope a query to show only released or "released" (at least one user-owned stack has ever existed) items.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeReleased($query)
@@ -192,7 +195,7 @@ class Item extends Model
      */
     public function getImageFileNameAttribute()
     {
-        return $this->id . '-image.png';
+        return $this->id.'-image.png';
     }
 
     /**
@@ -212,8 +215,11 @@ class Item extends Model
      */
     public function getImageUrlAttribute()
     {
-        if (!$this->has_image) return null;
-        return asset($this->imageDirectory . '/' . $this->imageFileName);
+        if (!$this->has_image) {
+            return null;
+        }
+
+        return asset($this->imageDirectory.'/'.$this->imageFileName);
     }
 
     /**
@@ -253,22 +259,21 @@ class Item extends Model
      */
     public function getItemArtistAttribute()
     {
-        if(!$this->artist_url && !$this->artist_id) return null;
+        if (!$this->artist_url && !$this->artist_id) {
+            return null;
+        }
 
         // Check to see if the artist exists on site
         $artist = checkAlias($this->artist_url, false);
-        if(is_object($artist)) {
+        if (is_object($artist)) {
             $this->artist_id = $artist->id;
             $this->artist_url = null;
             $this->save();
         }
 
-        if($this->artist_id)
-        {
+        if ($this->artist_id) {
             return $this->artist->displayName;
-        }
-        else if ($this->artist_url)
-        {
+        } elseif ($this->artist_url) {
             return prettyProfileLink($this->artist_url);
         }
     }
@@ -280,7 +285,10 @@ class Item extends Model
      */
     public function getReferenceAttribute()
     {
-        if (!$this->reference_url) return null;
+        if (!$this->reference_url) {
+            return null;
+        }
+
         return $this->reference_url;
     }
 
@@ -291,7 +299,10 @@ class Item extends Model
      */
     public function getDataAttribute()
     {
-        if (!$this->id) return null;
+        if (!$this->id) {
+            return null;
+        }
+
         return json_decode($this->attributes['data'], true);
     }
 
@@ -302,7 +313,10 @@ class Item extends Model
      */
     public function getRarityAttribute()
     {
-        if (!isset($this->data) || !isset($this->data['rarity'])) return null;
+        if (!isset($this->data) || !isset($this->data['rarity'])) {
+            return null;
+        }
+
         return $this->data['rarity'];
     }
 
@@ -313,7 +327,10 @@ class Item extends Model
      */
     public function getUsesAttribute()
     {
-        if (!$this->data) return null;
+        if (!$this->data) {
+            return null;
+        }
+
         return $this->data['uses'];
     }
 
@@ -324,7 +341,10 @@ class Item extends Model
      */
     public function getSourceAttribute()
     {
-        if (!$this->data) return null;
+        if (!$this->data) {
+            return null;
+        }
+
         return $this->data['release'];
     }
 
@@ -335,7 +355,10 @@ class Item extends Model
      */
     public function getResellAttribute()
     {
-        if (!$this->data) return null;
+        if (!$this->data) {
+            return null;
+        }
+
         return collect($this->data['resell']);
     }
 
@@ -346,8 +369,11 @@ class Item extends Model
      */
     public function getShopsAttribute()
     {
-        if (!$this->data) return null;
+        if (!$this->data) {
+            return null;
+        }
         $itemShops = $this->data['shops'];
+
         return Shop::whereIn('id', $itemShops)->get();
     }
 
@@ -358,8 +384,11 @@ class Item extends Model
      */
     public function getPromptsAttribute()
     {
-        if (!$this->data) return null;
+        if (!$this->data) {
+            return null;
+        }
         $itemPrompts = $this->data['prompts'];
+
         return Prompt::whereIn('id', $itemPrompts)->get();
     }
 
@@ -372,6 +401,8 @@ class Item extends Model
     /**
      * Checks if the item has a particular tag.
      *
+     * @param mixed $tag
+     *
      * @return bool
      */
     public function hasTag($tag)
@@ -381,6 +412,8 @@ class Item extends Model
 
     /**
      * Gets a particular tag attached to the item.
+     *
+     * @param mixed $tag
      *
      * @return \App\Models\Item\ItemTag
      */

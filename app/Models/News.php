@@ -2,33 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\Commentable;
 use Carbon\Carbon;
-use Config;
-use App\Models\Model;
 use Illuminate\Support\Str;
 use Spatie\Feed\Feedable;
 use Spatie\Feed\FeedItem;
 
-use App\Traits\Commentable;
-
 class News extends Model implements Feedable
 {
     use Commentable;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'user_id', 'text', 'parsed_text', 'title', 'is_visible', 'post_at'
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'news';
 
     /**
      * Whether the model contains timestamps to be saved and updated.
@@ -51,7 +33,7 @@ class News extends Model implements Feedable
      */
     public static $createRules = [
         'title' => 'required|between:3,100',
-        'text' => 'required',
+        'text'  => 'required',
     ];
 
     /**
@@ -61,8 +43,23 @@ class News extends Model implements Feedable
      */
     public static $updateRules = [
         'title' => 'required|between:3,100',
-        'text' => 'required',
+        'text'  => 'required',
     ];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'user_id', 'text', 'parsed_text', 'title', 'is_visible', 'post_at',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'news';
 
     /**********************************************************************************************
 
@@ -87,7 +84,8 @@ class News extends Model implements Feedable
     /**
      * Scope a query to only include visible posts.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeVisible($query)
@@ -98,7 +96,8 @@ class News extends Model implements Feedable
     /**
      * Scope a query to only include posts that are scheduled to be posted and are ready to post.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeShouldBeVisible($query)
@@ -119,7 +118,7 @@ class News extends Model implements Feedable
      */
     public function getSlugAttribute()
     {
-        return $this->id . '.' . Str::slug($this->title);
+        return $this->id.'.'.Str::slug($this->title);
     }
 
     /**
@@ -150,11 +149,10 @@ class News extends Model implements Feedable
 
     /**
      * Returns all feed items.
-     *
      */
     public static function getFeedItems()
     {
-        return News::visible()->get();
+        return self::visible()->get();
     }
 
     /**
@@ -165,12 +163,12 @@ class News extends Model implements Feedable
     public function toFeedItem(): FeedItem
     {
         return FeedItem::create([
-            'id' => '/news/'.$this->id,
-            'title' => $this->title,
+            'id'      => '/news/'.$this->id,
+            'title'   => $this->title,
             'summary' => $this->parsed_text,
             'updated' => $this->updated_at,
-            'link' => $this->url,
-            'author' => $this->user->name
+            'link'    => $this->url,
+            'author'  => $this->user->name,
         ]);
     }
 }

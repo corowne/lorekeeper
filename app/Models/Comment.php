@@ -1,35 +1,15 @@
 <?php
 
 namespace App\Models;
-use App\Models\Model;
 
 use App\Events\CommentCreated;
-use App\Events\CommentUpdated;
 use App\Events\CommentDeleted;
+use App\Events\CommentUpdated;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Config;
 
 class Comment extends Model
 {
-	use SoftDeletes;
-
-    /**
-     * The relations to eager load on every query.
-     *
-     * @var array
-     */
-    protected $with = [
-        'commenter'
-    ];
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'comment', 'approved', 'guest_name', 'guest_email', 'is_featured', 'type'
-    ];
+    use SoftDeletes;
 
     /**
      * Whether the model contains timestamps to be saved and updated.
@@ -38,6 +18,23 @@ class Comment extends Model
      */
     public $timestamps = true;
 
+    /**
+     * The relations to eager load on every query.
+     *
+     * @var array
+     */
+    protected $with = [
+        'commenter',
+    ];
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'comment', 'approved', 'guest_name', 'guest_email', 'is_featured', 'type',
+    ];
 
     /**
      * The attributes that should be cast to native types.
@@ -45,7 +42,7 @@ class Comment extends Model
      * @var array
      */
     protected $casts = [
-        'approved' => 'boolean'
+        'approved' => 'boolean',
     ];
 
     /**
@@ -98,7 +95,7 @@ class Comment extends Model
      */
     public function getUrlAttribute()
     {
-        return url('comment/' . $this->id);
+        return url('comment/'.$this->id);
     }
 
     /**
@@ -108,8 +105,10 @@ class Comment extends Model
      */
     public function getTopCommentAttribute()
     {
-        if(!$this->parent) { return $this; }
-        else {return $this->parent->topComment;}
+        if (!$this->parent) {
+            return $this;
+        } else {
+            return $this->parent->topComment;
+        }
     }
-
 }

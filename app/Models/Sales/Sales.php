@@ -2,10 +2,9 @@
 
 namespace App\Models\Sales;
 
-use Carbon\Carbon;
-use Config;
 use App\Models\Model;
 use App\Traits\Commentable;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Spatie\Feed\Feedable;
 use Spatie\Feed\FeedItem;
@@ -13,22 +12,6 @@ use Spatie\Feed\FeedItem;
 class Sales extends Model implements Feedable
 {
     use Commentable;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'user_id', 'text', 'parsed_text', 'title', 'is_visible', 'post_at',
-        'is_open', 'comments_open_at'
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'sales';
 
     /**
      * Whether the model contains timestamps to be saved and updated.
@@ -51,7 +34,7 @@ class Sales extends Model implements Feedable
      */
     public static $createRules = [
         'title' => 'required|between:3,100',
-        'text' => 'required',
+        'text'  => 'required',
     ];
 
     /**
@@ -61,8 +44,24 @@ class Sales extends Model implements Feedable
      */
     public static $updateRules = [
         'title' => 'required|between:3,100',
-        'text' => 'required',
+        'text'  => 'required',
     ];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'user_id', 'text', 'parsed_text', 'title', 'is_visible', 'post_at',
+        'is_open', 'comments_open_at',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'sales';
 
     /**********************************************************************************************
 
@@ -95,7 +94,8 @@ class Sales extends Model implements Feedable
     /**
      * Scope a query to only include visible posts.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeVisible($query)
@@ -106,7 +106,8 @@ class Sales extends Model implements Feedable
     /**
      * Scope a query to only include posts that are scheduled to be posted and are ready to post.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeShouldBeVisible($query)
@@ -114,12 +115,12 @@ class Sales extends Model implements Feedable
         return $query->whereNotNull('post_at')->where('post_at', '<', Carbon::now())->where('is_visible', 0);
     }
 
-    
     /**
      * Scope a query to sort sales in alphabetical order.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  bool                                   $reverse
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param bool                                  $reverse
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeSortAlphabetical($query, $reverse = false)
@@ -130,7 +131,8 @@ class Sales extends Model implements Feedable
     /**
      * Scope a query to sort sales by newest first.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeSortNewest($query)
@@ -141,7 +143,8 @@ class Sales extends Model implements Feedable
     /**
      * Scope a query to sort sales oldest first.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeSortOldest($query)
@@ -152,8 +155,9 @@ class Sales extends Model implements Feedable
     /**
      * Scope a query to sort sales by bump date.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  bool                                   $reverse
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param bool                                  $reverse
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeSortBump($query, $reverse = false)
@@ -174,7 +178,7 @@ class Sales extends Model implements Feedable
      */
     public function getSlugAttribute()
     {
-        return $this->id . '.' . Str::slug($this->title);
+        return $this->id.'.'.Str::slug($this->title);
     }
 
     /**
@@ -205,11 +209,10 @@ class Sales extends Model implements Feedable
 
     /**
      * Returns all feed items.
-     *
      */
     public static function getFeedItems()
     {
-        return Sales::visible()->get();
+        return self::visible()->get();
     }
 
     /**
@@ -222,12 +225,12 @@ class Sales extends Model implements Feedable
         $summary = ($this->characters->count() ? $this->characters->count().' character'.($this->characters->count() > 1 ? 's are' : ' is').' associated with this sale. Click through to read more.<hr/>' : '').$this->parsed_text;
 
         return FeedItem::create([
-            'id' => '/sales/'.$this->id,
-            'title' => $this->title,
+            'id'      => '/sales/'.$this->id,
+            'title'   => $this->title,
             'summary' => $summary,
             'updated' => $this->updated_at,
-            'link' => $this->url,
-            'author' => $this->user->name
+            'link'    => $this->url,
+            'author'  => $this->user->name,
         ]);
     }
 }

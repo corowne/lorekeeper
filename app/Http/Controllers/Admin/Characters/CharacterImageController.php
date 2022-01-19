@@ -2,22 +2,17 @@
 
 namespace App\Http\Controllers\Admin\Characters;
 
-use Illuminate\Http\Request;
-
-use Auth;
-
+use App\Http\Controllers\Controller;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterImage;
-use App\Models\Character\CharacterCategory;
+use App\Models\Feature\Feature;
 use App\Models\Rarity;
-use App\Models\User\User;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
-use App\Models\Feature\Feature;
-
+use App\Models\User\User;
 use App\Services\CharacterManager;
-
-use App\Http\Controllers\Controller;
+use Auth;
+use Illuminate\Http\Request;
 
 class CharacterImageController extends Controller
 {
@@ -33,46 +28,50 @@ class CharacterImageController extends Controller
     /**
      * Shows the add image page. Existing characters only, not MYO slots.
      *
-     * @param  string  $slug
+     * @param string $slug
+     *
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getNewImage($slug)
     {
         $this->character = Character::where('slug', $slug)->first();
-        if(!$this->character) abort(404);
+        if (!$this->character) {
+            abort(404);
+        }
 
         return view('character.admin.upload_image', [
             'character' => $this->character,
-            'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'rarities'  => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes' => ['0' => 'Select Subtype'] + Subtype::where('species_id','=',$this->character->image->species_id)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'users' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
-            'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
-            'isMyo' => false
+            'subtypes'  => ['0' => 'Select Subtype'] + Subtype::where('species_id', '=', $this->character->image->species_id)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'users'     => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
+            'features'  => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
+            'isMyo'     => false,
         ]);
     }
 
     /**
-     * Shows the edit image subtype portion of the modal
+     * Shows the edit image subtype portion of the modal.
      *
-     * @param  Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getNewImageSubtype(Request $request) {
-      $species = $request->input('species');
-      $id = $request->input('id');
-      return view('character.admin._upload_image_subtype', [
-          'subtypes' => ['0' => 'Select Subtype'] + Subtype::where('species_id','=',$species)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-          'subtype' => $id
+    public function getNewImageSubtype(Request $request)
+    {
+        $species = $request->input('species');
+        $id = $request->input('id');
+
+        return view('character.admin._upload_image_subtype', [
+          'subtypes' => ['0' => 'Select Subtype'] + Subtype::where('species_id', '=', $species)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+          'subtype'  => $id,
       ]);
     }
 
     /**
      * Creates a new image for a character.
      *
-     * @param  \Illuminate\Http\Request       $request
-     * @param  App\Services\CharacterManager  $service
-     * @param  string                         $slug
+     * @param App\Services\CharacterManager $service
+     * @param string                        $slug
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postNewImage(Request $request, CharacterManager $service, $slug)
@@ -80,77 +79,89 @@ class CharacterImageController extends Controller
         $request->validate(CharacterImage::$createRules);
         $data = $request->only(['image', 'thumbnail', 'x0', 'x1', 'y0', 'y1', 'use_cropper', 'artist_url', 'artist_id', 'designer_url', 'designer_id', 'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data', 'is_valid', 'is_visible']);
         $this->character = Character::where('slug', $slug)->first();
-        if(!$this->character) abort(404);
-        if($service->createImage($data, $this->character, Auth::user())) {
-            flash('Image uploaded successfully.')->success();
+        if (!$this->character) {
+            abort(404);
         }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        if ($service->createImage($data, $this->character, Auth::user())) {
+            flash('Image uploaded successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+
             return redirect()->back()->withInput();
         }
+
         return redirect()->to($this->character->url.'/images');
     }
 
     /**
      * Shows the edit image features modal.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getEditImageFeatures($id)
     {
-      $image = CharacterImage::find($id);
+        $image = CharacterImage::find($id);
 
         return view('character.admin._edit_features_modal', [
-            'image' => $image,
-            'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'image'     => $image,
+            'rarities'  => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes' => ['0' => 'Select Subtype'] + Subtype::where('species_id','=',$image->species_id)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray()
+            'subtypes'  => ['0' => 'Select Subtype'] + Subtype::where('species_id', '=', $image->species_id)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'features'  => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
         ]);
     }
 
     /**
      * Edits the features of an image.
      *
-     * @param  \Illuminate\Http\Request       $request
-     * @param  App\Services\CharacterManager  $service
-     * @param  int                            $id
+     * @param App\Services\CharacterManager $service
+     * @param int                           $id
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postEditImageFeatures(Request $request, CharacterManager $service, $id)
     {
         $data = $request->only(['species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data']);
         $image = CharacterImage::find($id);
-        if(!$image) abort(404);
-        if($service->updateImageFeatures($data, $image, Auth::user())) {
+        if (!$image) {
+            abort(404);
+        }
+        if ($service->updateImageFeatures($data, $image, Auth::user())) {
             flash('Character traits edited successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
         }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
+
         return redirect()->back()->withInput();
     }
 
     /**
-     * Shows the edit image subtype portion of the modal
+     * Shows the edit image subtype portion of the modal.
      *
-     * @param  Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getEditImageSubtype(Request $request) {
-      $species = $request->input('species');
-      $id = $request->input('id');
-      return view('character.admin._edit_features_subtype', [
-          'image' => CharacterImage::find($id),
-          'subtypes' => ['0' => 'Select Subtype'] + Subtype::where('species_id','=',$species)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+    public function getEditImageSubtype(Request $request)
+    {
+        $species = $request->input('species');
+        $id = $request->input('id');
+
+        return view('character.admin._edit_features_subtype', [
+          'image'    => CharacterImage::find($id),
+          'subtypes' => ['0' => 'Select Subtype'] + Subtype::where('species_id', '=', $species)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
       ]);
     }
 
     /**
      * Shows the edit image notes modal.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getEditImageNotes($id)
@@ -163,29 +174,34 @@ class CharacterImageController extends Controller
     /**
      * Edits the features of an image.
      *
-     * @param  \Illuminate\Http\Request       $request
-     * @param  App\Services\CharacterManager  $service
-     * @param  int                            $id
+     * @param App\Services\CharacterManager $service
+     * @param int                           $id
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postEditImageNotes(Request $request, CharacterManager $service, $id)
     {
         $data = $request->only(['description']);
         $image = CharacterImage::find($id);
-        if(!$image) abort(404);
-        if($service->updateImageNotes($data, $image, Auth::user())) {
+        if (!$image) {
+            abort(404);
+        }
+        if ($service->updateImageNotes($data, $image, Auth::user())) {
             flash('Image notes edited successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
         }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
+
         return redirect()->back();
     }
 
     /**
      * Shows the edit image credits modal.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getEditImageCredits($id)
@@ -199,29 +215,34 @@ class CharacterImageController extends Controller
     /**
      * Edits the credits of an image.
      *
-     * @param  \Illuminate\Http\Request       $request
-     * @param  App\Services\CharacterManager  $service
-     * @param  int                            $id
+     * @param App\Services\CharacterManager $service
+     * @param int                           $id
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postEditImageCredits(Request $request, CharacterManager $service, $id)
     {
         $data = $request->only(['artist_url', 'artist_id', 'designer_url', 'designer_id']);
         $image = CharacterImage::find($id);
-        if(!$image) abort(404);
-        if($service->updateImageCredits($data, $image, Auth::user())) {
+        if (!$image) {
+            abort(404);
+        }
+        if ($service->updateImageCredits($data, $image, Auth::user())) {
             flash('Image credits edited successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
         }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
+
         return redirect()->back();
     }
 
     /**
      * Shows the reupload image modal.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getImageReupload($id)
@@ -234,51 +255,60 @@ class CharacterImageController extends Controller
     /**
      * Reuploads an image.
      *
-     * @param  \Illuminate\Http\Request       $request
-     * @param  App\Services\CharacterManager  $service
-     * @param  int                            $id
+     * @param App\Services\CharacterManager $service
+     * @param int                           $id
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postImageReupload(Request $request, CharacterManager $service, $id)
     {
         $data = $request->only(['image', 'thumbnail', 'x0', 'x1', 'y0', 'y1', 'use_cropper']);
         $image = CharacterImage::find($id);
-        if(!$image) abort(404);
-        if($service->reuploadImage($data, $image, Auth::user())) {
+        if (!$image) {
+            abort(404);
+        }
+        if ($service->reuploadImage($data, $image, Auth::user())) {
             flash('Image uploaded successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
         }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
+
         return redirect()->back();
     }
 
     /**
      * Edits an image's settings.
      *
-     * @param  \Illuminate\Http\Request       $request
-     * @param  App\Services\CharacterManager  $service
-     * @param  int                            $id
+     * @param App\Services\CharacterManager $service
+     * @param int                           $id
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postImageSettings(Request $request, CharacterManager $service, $id)
     {
         $data = $request->only(['is_valid', 'is_visible']);
         $image = CharacterImage::find($id);
-        if(!$image) abort(404);
-        if($service->updateImageSettings($data, $image, Auth::user())) {
+        if (!$image) {
+            abort(404);
+        }
+        if ($service->updateImageSettings($data, $image, Auth::user())) {
             flash('Image settings edited successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
         }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
+
         return redirect()->back();
     }
 
     /**
      * Shows the set active image modal.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getImageActive($id)
@@ -288,32 +318,36 @@ class CharacterImageController extends Controller
         ]);
     }
 
-
     /**
      * Sets an image to be the character's active image.
      *
-     * @param  \Illuminate\Http\Request       $request
-     * @param  App\Services\CharacterManager  $service
-     * @param  int                            $id
+     * @param App\Services\CharacterManager $service
+     * @param int                           $id
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postImageActive(Request $request, CharacterManager $service, $id)
     {
         $image = CharacterImage::find($id);
-        if(!$image) abort(404);
-        if($service->updateActiveImage($image, Auth::user())) {
+        if (!$image) {
+            abort(404);
+        }
+        if ($service->updateActiveImage($image, Auth::user())) {
             flash('Active character image set successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
         }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
+
         return redirect()->back();
     }
 
     /**
      * Shows the delete image modal.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getImageDelete($id)
@@ -326,44 +360,53 @@ class CharacterImageController extends Controller
     /**
      * Deletes an image.
      *
-     * @param  \Illuminate\Http\Request       $request
-     * @param  App\Services\CharacterManager  $service
-     * @param  int                            $id
+     * @param App\Services\CharacterManager $service
+     * @param int                           $id
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postImageDelete(Request $request, CharacterManager $service, $id)
     {
         $image = CharacterImage::find($id);
-        if(!$image) abort(404);
-        if($service->deleteImage($image, Auth::user())) {
+        if (!$image) {
+            abort(404);
+        }
+        if ($service->deleteImage($image, Auth::user())) {
             flash('Character image deleted successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
         }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
+
         return redirect()->back();
     }
 
     /**
      * Sorts a character's images.
      *
-     * @param  \Illuminate\Http\Request       $request
-     * @param  App\Services\CharacterManager  $service
-     * @param  string                         $slug
+     * @param App\Services\CharacterManager $service
+     * @param string                        $slug
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postSortImages(Request $request, CharacterManager $service, $slug)
     {
         $this->character = Character::where('slug', $slug)->first();
-        if(!$this->character) abort(404);
+        if (!$this->character) {
+            abort(404);
+        }
 
         if ($service->sortImages($request->only(['sort']), $this->character, Auth::user())) {
             flash('Images sorted successfully.')->success();
+
             return redirect()->back();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
         }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
+
         return redirect()->back();
     }
 }

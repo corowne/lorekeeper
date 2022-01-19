@@ -2,31 +2,12 @@
 
 namespace App\Models\Sales;
 
-use Config;
-use DB;
-use Carbon\Carbon;
 use App\Models\Character\CharacterImage;
-
 use App\Models\Model;
+use Config;
 
 class SalesCharacter extends Model
 {
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'sales_id', 'character_id', 'description', 'type', 'data', 'link', 'is_open'
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'sales_characters';
-
     /**
      * Validation rules.
      *
@@ -40,10 +21,25 @@ class SalesCharacter extends Model
         'price' => 'required_if:sale_type,flat',
 
         // Auction/XTA
-        'starting_bid' => 'required_if:type,auction',
+        'starting_bid'  => 'required_if:type,auction',
         'min_increment' => 'required_if:type,auction',
-        'end_point' => 'exclude_unless:type,auction,xta,ota|max:255'
+        'end_point'     => 'exclude_unless:type,auction,xta,ota|max:255',
     ];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'sales_id', 'character_id', 'description', 'type', 'data', 'link', 'is_open',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'sales_characters';
 
     /**********************************************************************************************
 
@@ -90,7 +86,7 @@ class SalesCharacter extends Model
      */
     public function getDisplayTypeAttribute()
     {
-        switch($this->attributes['type']) {
+        switch ($this->attributes['type']) {
             case 'flatsale':
                 return 'Flatsale';
                 break;
@@ -122,7 +118,7 @@ class SalesCharacter extends Model
      */
     public function getTypeLinkAttribute()
     {
-        switch($this->attributes['type']) {
+        switch ($this->attributes['type']) {
             case 'flatsale':
                 return 'Claim Here';
                 break;
@@ -154,24 +150,25 @@ class SalesCharacter extends Model
      */
     public function getPriceAttribute()
     {
-        if($this->type == 'raffle') return null;
+        if ($this->type == 'raffle') {
+            return null;
+        }
         $symbol = Config::get('lorekeeper.settings.currency_symbol');
 
-        switch($this->type) {
+        switch ($this->type) {
             case 'flatsale':
                 return 'Price: '.$symbol.$this->data['price'];
                 break;
             case 'auction':
                 return 'Starting Bid: '.$symbol.$this->data['starting_bid'].'<br/>'.
                 'Minimum Increment: '.$symbol.$this->data['min_increment'].
-                (isset($this->data['autobuy']) ? '<br/>Autobuy: '.$symbol.$this->data['autobuy'] : '')
-                ;
+                (isset($this->data['autobuy']) ? '<br/>Autobuy: '.$symbol.$this->data['autobuy'] : '');
                 break;
             case 'ota':
-                return (isset($this->data['autobuy']) ? '<br/>Autobuy: '.$symbol.$this->data['autobuy'] : '');
+                return isset($this->data['autobuy']) ? '<br/>Autobuy: '.$symbol.$this->data['autobuy'] : '';
                 break;
             case 'xta':
-                return (isset($this->data['autobuy']) ? '<br/>Autobuy: '.$symbol.$this->data['autobuy'] : '');
+                return isset($this->data['autobuy']) ? '<br/>Autobuy: '.$symbol.$this->data['autobuy'] : '';
                 break;
             case 'flaffle':
                 return 'Price: '.$symbol.$this->data['price'];
@@ -191,5 +188,4 @@ class SalesCharacter extends Model
     {
         return CharacterImage::where('is_visible', 1)->where('character_id', $this->character_id)->orderBy('created_at')->first();
     }
-
 }

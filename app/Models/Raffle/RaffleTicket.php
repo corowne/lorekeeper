@@ -1,17 +1,28 @@
-<?php namespace App\Models\Raffle;
+<?php
+
+namespace App\Models\Raffle;
 
 use App\Models\Model;
-use DB;
 
 class RaffleTicket extends Model
 {
+    /**
+     * Validation rules for creation.
+     *
+     * @var array
+     */
+    public static $createRules = [
+        'user_id.*'      => 'required_without:alias.*',
+        'alias.*'        => 'required_without:user_id.*',
+        'ticket_count.*' => 'required',
+    ];
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'user_id', 'raffle_id', 'position', 'created_at', 'alias'
+        'user_id', 'raffle_id', 'position', 'created_at', 'alias',
     ];
 
     /**
@@ -27,17 +38,6 @@ class RaffleTicket extends Model
      * @var array
      */
     protected $dates = ['created_at'];
-
-    /**
-     * Validation rules for creation.
-     *
-     * @var array
-     */
-    public static $createRules = [
-        'user_id.*' => 'required_without:alias.*',
-        'alias.*' => 'required_without:user_id.*',
-        'ticket_count.*' => 'required'
-    ];
 
     /**********************************************************************************************
 
@@ -70,7 +70,8 @@ class RaffleTicket extends Model
     /**
      * Scope a query to only include the winning tickets in order of drawing.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWinners($query)
@@ -92,7 +93,10 @@ class RaffleTicket extends Model
      */
     public function getDisplayHolderNameAttribute()
     {
-        if ($this->user_id) return $this->user->displayName;
+        if ($this->user_id) {
+            return $this->user->displayName;
+        }
+
         return $this->alias.' (Off-site user)';
     }
 }

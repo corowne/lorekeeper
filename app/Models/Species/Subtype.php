@@ -2,18 +2,40 @@
 
 namespace App\Models\Species;
 
-use Config;
 use App\Models\Model;
 
 class Subtype extends Model
 {
+    /**
+     * Validation rules for creation.
+     *
+     * @var array
+     */
+    public static $createRules = [
+        'species_id'  => 'required',
+        'name'        => 'required|between:3,100',
+        'description' => 'nullable',
+        'image'       => 'mimes:png',
+    ];
+
+    /**
+     * Validation rules for updating.
+     *
+     * @var array
+     */
+    public static $updateRules = [
+        'species_id'  => 'required',
+        'name'        => 'required|between:3,100',
+        'description' => 'nullable',
+        'image'       => 'mimes:png',
+    ];
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'species_id', 'name', 'sort', 'has_image', 'description', 'parsed_description'
+        'species_id', 'name', 'sort', 'has_image', 'description', 'parsed_description',
     ];
 
     /**
@@ -22,58 +44,32 @@ class Subtype extends Model
      * @var string
      */
     protected $table = 'subtypes';
-    
-    
-    /**
-     * Validation rules for creation.
-     *
-     * @var array
-     */
-    public static $createRules = [
-        'species_id' => 'required',
-        'name' => 'required|between:3,100',
-        'description' => 'nullable',
-        'image' => 'mimes:png',
-    ];
-    
-    
-    /**
-     * Validation rules for updating.
-     *
-     * @var array
-     */
-    public static $updateRules = [
-        'species_id' => 'required',
-        'name' => 'required|between:3,100',
-        'description' => 'nullable',
-        'image' => 'mimes:png',
-    ];
-    
+
     /**
      * Accessors to append to the model.
      *
      * @var array
      */
     protected $appends = [
-        'name_with_species'
+        'name_with_species',
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the species the subtype belongs to.
      */
-    public function species() 
+    public function species()
     {
         return $this->belongsTo('App\Models\Species\Species', 'species_id');
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -85,9 +81,9 @@ class Subtype extends Model
      */
     public function getNameWithSpeciesAttribute()
     {
-        return $this->name . ' [' . $this->species->name . ' Subtype]';
+        return $this->name.' ['.$this->species->name.' Subtype]';
     }
-    
+
     /**
      * Displays the model's name, linked to its encyclopedia page.
      *
@@ -115,7 +111,7 @@ class Subtype extends Model
      */
     public function getSubtypeImageFileNameAttribute()
     {
-        return $this->id . '-image.png';
+        return $this->id.'-image.png';
     }
 
     /**
@@ -127,7 +123,7 @@ class Subtype extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
@@ -135,8 +131,11 @@ class Subtype extends Model
      */
     public function getSubtypeImageUrlAttribute()
     {
-        if (!$this->has_image) return null;
-        return asset($this->imageDirectory . '/' . $this->subtypeImageFileName);
+        if (!$this->has_image) {
+            return null;
+        }
+
+        return asset($this->imageDirectory.'/'.$this->subtypeImageFileName);
     }
 
     /**

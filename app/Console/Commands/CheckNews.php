@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Services\NewsService;
+use Illuminate\Console\Command;
 
 class CheckNews extends Command
 {
@@ -23,8 +23,6 @@ class CheckNews extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {

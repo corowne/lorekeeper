@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
-use Config;
-use Settings;
-
 use App\Models\Character\Character;
-
-use App\Models\Model;
+use Settings;
 
 class Trade extends Model
 {
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
     /**
      * The attributes that are mass assignable.
      *
@@ -19,7 +21,7 @@ class Trade extends Model
     protected $fillable = [
         'sender_id', 'recipient_id', 'comments',
         'status', 'is_sender_confirmed', 'is_recipient_confirmed', 'is_sender_trade_confirmed', 'is_recipient_trade_confirmed',
-        'is_approved', 'reason', 'data'
+        'is_approved', 'reason', 'data',
     ];
 
     /**
@@ -29,15 +31,8 @@ class Trade extends Model
      */
     protected $table = 'trades';
 
-    /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
-
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -45,7 +40,7 @@ class Trade extends Model
     /**
      * Get the user who initiated the trade.
      */
-    public function sender() 
+    public function sender()
     {
         return $this->belongsTo('App\Models\User\User', 'sender_id');
     }
@@ -53,7 +48,7 @@ class Trade extends Model
     /**
      * Get the user who received the trade.
      */
-    public function recipient() 
+    public function recipient()
     {
         return $this->belongsTo('App\Models\User\User', 'recipient_id');
     }
@@ -61,13 +56,13 @@ class Trade extends Model
     /**
      * Get the staff member who approved the character transfer.
      */
-    public function staff() 
+    public function staff()
     {
         return $this->belongsTo('App\Models\User\User', 'staff_id');
     }
 
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -78,7 +73,7 @@ class Trade extends Model
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -90,10 +85,14 @@ class Trade extends Model
      */
     public function getIsActiveAttribute()
     {
-        if($this->status == 'Pending') return true;
+        if ($this->status == 'Pending') {
+            return true;
+        }
 
-        if(Settings::get('open_transfers_queue')) {
-            if($this->status == 'Accepted' && $this->is_approved == 0) return true;
+        if (Settings::get('open_transfers_queue')) {
+            if ($this->status == 'Accepted' && $this->is_approved == 0) {
+                return true;
+            }
         }
 
         return false;
@@ -106,7 +105,10 @@ class Trade extends Model
      */
     public function getIsConfirmableAttribute()
     {
-        if($this->is_sender_confirmed && $this->is_recipient_confirmed) return true;
+        if ($this->is_sender_confirmed && $this->is_recipient_confirmed) {
+            return true;
+        }
+
         return false;
     }
 
@@ -131,11 +133,11 @@ class Trade extends Model
     }
 
     /**********************************************************************************************
-    
+
         OTHER FUNCTIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Gets all characters involved in the trade.
      *
@@ -149,39 +151,47 @@ class Trade extends Model
     /**
      * Gets the inventory of the given user for selection.
      *
-     * @param  \App\Models\User\User $user
+     * @param \App\Models\User\User $user
+     *
      * @return array
      */
     public function getInventory($user)
     {
         $type = $this->sender_id == $user->id ? 'sender' : 'recipient';
         $inventory = $this->data && isset($this->data[$type]) && isset($this->data[$type]['user_items']) ? $this->data[$type]['user_items'] : [];
+
         return $inventory;
     }
 
     /**
      * Gets the characters of the given user for selection.
      *
-     * @param  \App\Models\User\User $user
+     * @param \App\Models\User\User $user
+     *
      * @return array
      */
     public function getCharacters($user)
     {
         $type = $this->sender_id == $user->id ? 'sender' : 'recipient';
         $characters = $this->data && isset($this->data[$type]) && isset($this->data[$type]['characters']) ? $this->data[$type]['characters'] : [];
-        if($characters) $characters = array_keys($characters);
+        if ($characters) {
+            $characters = array_keys($characters);
+        }
+
         return $characters;
     }
 
     /**
      * Gets the currencies of the given user for selection.
      *
-     * @param  \App\Models\User\User $user
+     * @param \App\Models\User\User $user
+     *
      * @return array
      */
     public function getCurrencies($user)
     {
         $type = $this->sender_id == $user->id ? 'sender' : 'recipient';
+
         return $this->data && isset($this->data[$type]) && isset($this->data[$type]['currencies']) ? $this->data[$type]['currencies'] : [];
     }
 }

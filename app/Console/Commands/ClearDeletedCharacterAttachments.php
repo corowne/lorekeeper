@@ -2,14 +2,12 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-
-use DB;
-
 use App\Models\Character\Character;
 use App\Models\Character\CharacterCurrency;
 use App\Models\Character\CharacterFeature;
 use App\Models\Character\CharacterImage;
+use DB;
+use Illuminate\Console\Command;
 
 class ClearDeletedCharacterAttachments extends Command
 {
@@ -29,8 +27,6 @@ class ClearDeletedCharacterAttachments extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {

@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Services\ExtensionService;
+use Illuminate\Console\Command;
 
 class FixCharItemNotifs extends Command
 {
@@ -23,8 +23,6 @@ class FixCharItemNotifs extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {

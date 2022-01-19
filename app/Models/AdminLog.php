@@ -2,20 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\Model;
-
 class AdminLog extends Model
 {
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'user_id', 'action', 'action_details'
-    ];
-
     /**
      * The primary key of the model.
      *
@@ -31,6 +19,15 @@ class AdminLog extends Model
     public $timestamps = true;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'user_id', 'action', 'action_details',
+    ];
+
+    /**
      * The table associated with the model.
      *
      * @var string
@@ -38,17 +35,16 @@ class AdminLog extends Model
     protected $table = 'admin_log';
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the staff who preformed the action.
      */
-    public function user() 
+    public function user()
     {
         return $this->belongsTo('App\Models\User\User', 'user_id');
     }
-    
 }

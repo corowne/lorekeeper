@@ -2,41 +2,16 @@
 
 namespace App\Models\Gallery;
 
-use Config;
-use DB;
-use Settings;
-use Carbon\Carbon;
 use App\Models\Currency\Currency;
+use App\Models\Model;
 use App\Models\Prompt\Prompt;
 use App\Models\Submission\Submission;
-use App\Models\Model;
-
 use App\Traits\Commentable;
+use Settings;
 
 class GallerySubmission extends Model
 {
     use Commentable;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'user_id', 'gallery_id', 'hash', 'extension',
-        'text', 'parsed_text', 'content_warning',
-        'title', 'description', 'parsed_description',
-        'prompt_id', 'data', 'is_visible', 'status',
-        'vote_data', 'staff_id', 'is_valued',
-        'staff_comments', 'parsed_staff_comments'
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'gallery_submissions';
 
     /**
      * Whether the model contains timestamps to be saved and updated.
@@ -51,9 +26,9 @@ class GallerySubmission extends Model
      * @var array
      */
     public static $createRules = [
-        'title' => 'required|between:3,200',
-        'image' => 'required_without:text|mimes:png,jpeg,jpg,gif|max:3000',
-        'text' => 'required_without:image',
+        'title'       => 'required|between:3,200',
+        'image'       => 'required_without:text|mimes:png,jpeg,jpg,gif|max:3000',
+        'text'        => 'required_without:image',
         'description' => 'nullable',
     ];
 
@@ -63,10 +38,31 @@ class GallerySubmission extends Model
      * @var array
      */
     public static $updateRules = [
-        'title' => 'required|between:3,200',
+        'title'       => 'required|between:3,200',
         'description' => 'nullable',
-        'image' => 'mimes:png,jpeg,jpg,gif|max:3000'
+        'image'       => 'mimes:png,jpeg,jpg,gif|max:3000',
     ];
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'user_id', 'gallery_id', 'hash', 'extension',
+        'text', 'parsed_text', 'content_warning',
+        'title', 'description', 'parsed_description',
+        'prompt_id', 'data', 'is_visible', 'status',
+        'vote_data', 'staff_id', 'is_valued',
+        'staff_comments', 'parsed_staff_comments',
+    ];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'gallery_submissions';
 
     /**********************************************************************************************
 
@@ -147,7 +143,8 @@ class GallerySubmission extends Model
     /**
      * Scope a query to only include pending submissions.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopePending($query)
@@ -158,7 +155,8 @@ class GallerySubmission extends Model
     /**
      * Scope a query to only include submissions where all collaborators have approved.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeCollaboratorApproved($query)
@@ -169,7 +167,8 @@ class GallerySubmission extends Model
     /**
      * Scope a query to only include accepted submissions.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeAccepted($query)
@@ -180,7 +179,8 @@ class GallerySubmission extends Model
     /**
      * Scope a query to only include rejected submissions.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeRejected($query)
@@ -191,20 +191,25 @@ class GallerySubmission extends Model
     /**
      * Scope a query to only include submissions that require currency awards.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeRequiresAward($query)
     {
-        if(!Settings::get('gallery_submissions_reward_currency')) return $query->whereNull('id');
+        if (!Settings::get('gallery_submissions_reward_currency')) {
+            return $query->whereNull('id');
+        }
+
         return $query->where('status', 'Accepted')->whereIn('gallery_id', Gallery::where('currency_enabled', 1)->pluck('id')->toArray());
     }
 
     /**
      * Scope a query to only include submissions the user has either submitted or collaborated on.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param                                         $user
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param                                       $user
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeUserSubmissions($query, $user)
@@ -215,12 +220,17 @@ class GallerySubmission extends Model
     /**
      * Scope a query to only include submissions visible within the gallery.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed|null                            $user
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeVisible($query, $user = null)
     {
-        if($user && $user->hasPower('manage_submissions')) return $query->where('status', 'Accepted');
+        if ($user && $user->hasPower('manage_submissions')) {
+            return $query->where('status', 'Accepted');
+        }
+
         return $query->where('status', 'Accepted')->where('is_visible', 1);
     }
 
@@ -247,7 +257,7 @@ class GallerySubmission extends Model
      */
     public function getImageFileNameAttribute()
     {
-        return $this->id . '_'.$this->hash.'.'.$this->extension;
+        return $this->id.'_'.$this->hash.'.'.$this->extension;
     }
 
     /**
@@ -267,8 +277,11 @@ class GallerySubmission extends Model
      */
     public function getImageUrlAttribute()
     {
-        if(!isset($this->hash)) return null;
-        return asset($this->imageDirectory . '/' . $this->imageFileName);
+        if (!isset($this->hash)) {
+            return null;
+        }
+
+        return asset($this->imageDirectory.'/'.$this->imageFileName);
     }
 
     /**
@@ -278,7 +291,7 @@ class GallerySubmission extends Model
      */
     public function getThumbnailFileNameAttribute()
     {
-        return $this->id . '_'.$this->hash.'_th.'.$this->extension;
+        return $this->id.'_'.$this->hash.'_th.'.$this->extension;
     }
 
     /**
@@ -298,8 +311,11 @@ class GallerySubmission extends Model
      */
     public function getThumbnailUrlAttribute()
     {
-        if(!isset($this->hash)) return null;
-        return asset($this->imageDirectory . '/' . $this->thumbnailFileName);
+        if (!isset($this->hash)) {
+            return null;
+        }
+
+        return asset($this->imageDirectory.'/'.$this->thumbnailFileName);
     }
 
     /**
@@ -362,10 +378,15 @@ class GallerySubmission extends Model
         $currencyName = Currency::find(Settings::get('group_currency'))->abbreviation ? Currency::find(Settings::get('group_currency'))->abbreviation : Currency::find(Settings::get('group_currency'))->name;
 
         $prefixList = [];
-        if($this->promptSubmissions->count()) foreach($this->prompts as $prompt) isset($prompt->prefix) ? ($prefixList[] = $prompt->prefix) : null;
-        elseif(isset($this->prompt_id)) isset($this->prompt->prefix) ? $prefixList[] = $this->prompt->prefix : null;
-        foreach($this->participants as $participant) {
-            switch($participant->type) {
+        if ($this->promptSubmissions->count()) {
+            foreach ($this->prompts as $prompt) {
+                isset($prompt->prefix) ? ($prefixList[] = $prompt->prefix) : null;
+            }
+        } elseif (isset($this->prompt_id)) {
+            isset($this->prompt->prefix) ? $prefixList[] = $this->prompt->prefix : null;
+        }
+        foreach ($this->participants as $participant) {
+            switch ($participant->type) {
                 case 'Collab':
                     $prefixList[] = 'Collab';
                     break;
@@ -383,7 +404,10 @@ class GallerySubmission extends Model
                     break;
             }
         }
-        if($prefixList != null) return '['.implode(' : ', array_unique($prefixList)).'] ';
+        if ($prefixList != null) {
+            return '['.implode(' : ', array_unique($prefixList)).'] ';
+        }
+
         return null;
     }
 
@@ -404,7 +428,9 @@ class GallerySubmission extends Model
      */
     public function getIsVisibleAttribute()
     {
-        if($this->attributes['is_visible'] && $this->status == 'Accepted') return true;
+        if ($this->attributes['is_visible'] && $this->status == 'Accepted') {
+            return true;
+        }
     }
 
     /**
@@ -414,13 +440,15 @@ class GallerySubmission extends Model
      */
     public function getCreditsAttribute()
     {
-        if($this->collaborators->count()) {
-            foreach($this->collaborators as $count=>$collaborator) {
+        if ($this->collaborators->count()) {
+            foreach ($this->collaborators as $count=>$collaborator) {
                 $collaboratorList[] = $collaborator->user->displayName;
             }
+
             return implode(', ', $collaboratorList);
+        } else {
+            return $this->user->displayName;
         }
-        else return $this->user->displayName;
     }
 
     /**
@@ -430,13 +458,15 @@ class GallerySubmission extends Model
      */
     public function getCreditsPlainAttribute()
     {
-        if($this->collaborators->count()) {
-            foreach($this->collaborators as $count=>$collaborator) {
+        if ($this->collaborators->count()) {
+            foreach ($this->collaborators as $count=>$collaborator) {
                 $collaboratorList[] = $collaborator->user->name;
             }
+
             return implode(', ', $collaboratorList);
+        } else {
+            return $this->user->name;
         }
-        else return $this->user->name;
     }
 
     /**
@@ -446,7 +476,10 @@ class GallerySubmission extends Model
      */
     public function getCollaboratorApprovedAttribute()
     {
-        if($this->collaborators->where('has_approved', 0)->count()) return false;
+        if ($this->collaborators->where('has_approved', 0)->count()) {
+            return false;
+        }
+
         return true;
     }
 
@@ -481,8 +514,10 @@ class GallerySubmission extends Model
      */
     public function getExcerptAttribute()
     {
-        if(!isset($this->parsed_text)) return null;
-        else return strip_tags(substr($this->parsed_text, 0, 500)).(strlen($this->parsed_text) > 500 ? '...' : '');
+        if (!isset($this->parsed_text)) {
+            return null;
+        } else {
+            return strip_tags(substr($this->parsed_text, 0, 500)).(strlen($this->parsed_text) > 500 ? '...' : '');
+        }
     }
-
 }

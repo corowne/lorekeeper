@@ -2,18 +2,40 @@
 
 namespace App\Models\Character;
 
-use Config;
 use App\Models\Model;
 
 class CharacterCategory extends Model
 {
+    /**
+     * Validation rules for creation.
+     *
+     * @var array
+     */
+    public static $createRules = [
+        'name'        => 'required|unique:character_categories|between:3,100',
+        'code'        => 'required|unique:character_categories|between:1,25',
+        'description' => 'nullable',
+        'image'       => 'mimes:png',
+    ];
+
+    /**
+     * Validation rules for updating.
+     *
+     * @var array
+     */
+    public static $updateRules = [
+        'name'        => 'required|between:3,100',
+        'code'        => 'required|between:1,25',
+        'description' => 'nullable',
+        'image'       => 'mimes:png',
+    ];
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'code', 'name', 'sort', 'has_image', 'description', 'parsed_description', 'masterlist_sub_id'
+        'code', 'name', 'sort', 'has_image', 'description', 'parsed_description', 'masterlist_sub_id',
     ];
 
     /**
@@ -22,51 +44,27 @@ class CharacterCategory extends Model
      * @var string
      */
     protected $table = 'character_categories';
-    
-    /**
-     * Validation rules for creation.
-     *
-     * @var array
-     */
-    public static $createRules = [
-        'name' => 'required|unique:character_categories|between:3,100',
-        'code' => 'required|unique:character_categories|between:1,25',
-        'description' => 'nullable',
-        'image' => 'mimes:png',
-    ];
-    
-    /**
-     * Validation rules for updating.
-     *
-     * @var array
-     */
-    public static $updateRules = [
-        'name' => 'required|between:3,100',
-        'code' => 'required|between:1,25',
-        'description' => 'nullable',
-        'image' => 'mimes:png',
-    ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the sub masterlist for this species.
      */
-    public function sublist() 
+    public function sublist()
     {
         return $this->belongsTo('App\Models\Character\Sublist', 'masterlist_sub_id');
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
-    
+
     /**
      * Displays the model's name, linked to its encyclopedia page.
      *
@@ -94,7 +92,7 @@ class CharacterCategory extends Model
      */
     public function getCategoryImageFileNameAttribute()
     {
-        return $this->id . '-image.png';
+        return $this->id.'-image.png';
     }
 
     /**
@@ -106,7 +104,7 @@ class CharacterCategory extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
@@ -114,8 +112,11 @@ class CharacterCategory extends Model
      */
     public function getCategoryImageUrlAttribute()
     {
-        if (!$this->has_image) return null;
-        return asset($this->imageDirectory . '/' . $this->categoryImageFileName);
+        if (!$this->has_image) {
+            return null;
+        }
+
+        return asset($this->imageDirectory.'/'.$this->categoryImageFileName);
     }
 
     /**
@@ -135,9 +136,10 @@ class CharacterCategory extends Model
      */
     public function getSearchUrlAttribute()
     {
-        if($this->masterlist_sub_id != 0 && $this->sublist->show_main == 0)
-        return url('sublist/'.$this->sublist->key.'?character_category_id='.$this->id);
-        else
-        return url('masterlist?character_category_id='.$this->id);
+        if ($this->masterlist_sub_id != 0 && $this->sublist->show_main == 0) {
+            return url('sublist/'.$this->sublist->key.'?character_category_id='.$this->id);
+        } else {
+            return url('masterlist?character_category_id='.$this->id);
+        }
     }
 }
