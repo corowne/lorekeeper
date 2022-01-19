@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Services\SalesService;
+use Illuminate\Console\Command;
 
 class CheckSales extends Command
 {
@@ -23,8 +23,6 @@ class CheckSales extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {

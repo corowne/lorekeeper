@@ -1,14 +1,12 @@
-<?php namespace App\Services;
+<?php
 
-use App\Services\Service;
+namespace App\Services;
 
-use DB;
-use Config;
-
-use App\Models\Feature\FeatureCategory;
 use App\Models\Feature\Feature;
+use App\Models\Feature\FeatureCategory;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
+use DB;
 
 class FeatureService extends Service
 {
@@ -22,7 +20,7 @@ class FeatureService extends Service
     */
 
     /**********************************************************************************************
-     
+
         FEATURE CATEGORIES
 
     **********************************************************************************************/
@@ -30,8 +28,9 @@ class FeatureService extends Service
     /**
      * Create a category.
      *
-     * @param  array                 $data
-     * @param  \App\Models\User\User $user
+     * @param array                 $data
+     * @param \App\Models\User\User $user
+     *
      * @return \App\Models\Feature\FeatureCategory|bool
      */
     public function createFeatureCategory($data, $user)
@@ -42,32 +41,39 @@ class FeatureService extends Service
             $data = $this->populateCategoryData($data);
 
             $image = null;
-            if(isset($data['image']) && $data['image']) {
+            if (isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
                 $image = $data['image'];
                 unset($data['image']);
+            } else {
+                $data['has_image'] = 0;
             }
-            else $data['has_image'] = 0;
 
             $category = FeatureCategory::create($data);
 
-            if(!logAdminAction($user, 'Created Feature Category', 'Created '.$category->displayName)) throw new \Exception("Failed to log admin action.");
+            if (!logAdminAction($user, 'Created Feature Category', 'Created '.$category->displayName)) {
+                throw new \Exception('Failed to log admin action.');
+            }
 
-            if ($image) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
+            if ($image) {
+                $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
+            }
 
             return $this->commitReturn($category);
-        } catch(\Exception $e) { 
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
+
         return $this->rollbackReturn(false);
     }
 
     /**
      * Update a category.
      *
-     * @param  \App\Models\Feature\FeatureCategory  $category
-     * @param  array                                $data
-     * @param  \App\Models\User\User                $user
+     * @param \App\Models\Feature\FeatureCategory $category
+     * @param array                               $data
+     * @param \App\Models\User\User               $user
+     *
      * @return \App\Models\Feature\FeatureCategory|bool
      */
     public function updateFeatureCategory($category, $data, $user)
@@ -76,58 +82,43 @@ class FeatureService extends Service
 
         try {
             // More specific validation
-            if(FeatureCategory::where('name', $data['name'])->where('id', '!=', $category->id)->exists()) throw new \Exception("The name has already been taken.");
+            if (FeatureCategory::where('name', $data['name'])->where('id', '!=', $category->id)->exists()) {
+                throw new \Exception('The name has already been taken.');
+            }
 
             $data = $this->populateCategoryData($data, $category);
 
-            $image = null;            
-            if(isset($data['image']) && $data['image']) {
+            $image = null;
+            if (isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
                 $image = $data['image'];
                 unset($data['image']);
             }
 
             $category->update($data);
-            
-            if(!logAdminAction($user, 'Updated Feature Category', 'Updated '.$category->displayName)) throw new \Exception("Failed to log admin action.");
 
-            if ($category) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
+            if (!logAdminAction($user, 'Updated Feature Category', 'Updated '.$category->displayName)) {
+                throw new \Exception('Failed to log admin action.');
+            }
+
+            if ($category) {
+                $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
+            }
 
             return $this->commitReturn($category);
-        } catch(\Exception $e) { 
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
+
         return $this->rollbackReturn(false);
-    }
-
-    /**
-     * Handle category data.
-     *
-     * @param  array                                     $data
-     * @param  \App\Models\Feature\FeatureCategory|null  $category
-     * @return array
-     */
-    private function populateCategoryData($data, $category = null)
-    {
-        if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
-        
-        if(isset($data['remove_image']))
-        {
-            if($category && $category->has_image && $data['remove_image']) 
-            { 
-                $data['has_image'] = 0; 
-                $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
-            }
-            unset($data['remove_image']);
-        }
-
-        return $data;
     }
 
     /**
      * Delete a category.
      *
-     * @param  \App\Models\Feature\FeatureCategory  $category
+     * @param \App\Models\Feature\FeatureCategory $category
+     * @param mixed                               $user
+     *
      * @return bool
      */
     public function deleteFeatureCategory($category, $user)
@@ -136,24 +127,32 @@ class FeatureService extends Service
 
         try {
             // Check first if the category is currently in use
-            if(Feature::where('feature_category_id', $category->id)->exists()) throw new \Exception("A trait with this category exists. Please change its category first.");
-            
-            if(!logAdminAction($user, 'Deleted Feature Category', 'Deleted '.$category->name)) throw new \Exception("Failed to log admin action.");
-            
-            if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
+            if (Feature::where('feature_category_id', $category->id)->exists()) {
+                throw new \Exception('A trait with this category exists. Please change its category first.');
+            }
+
+            if (!logAdminAction($user, 'Deleted Feature Category', 'Deleted '.$category->name)) {
+                throw new \Exception('Failed to log admin action.');
+            }
+
+            if ($category->has_image) {
+                $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName);
+            }
             $category->delete();
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
+
         return $this->rollbackReturn(false);
     }
 
     /**
      * Sorts category order.
      *
-     * @param  array  $data
+     * @param array $data
+     *
      * @return bool
      */
     public function sortFeatureCategory($data)
@@ -164,20 +163,20 @@ class FeatureService extends Service
             // explode the sort array and reverse it since the order is inverted
             $sort = array_reverse(explode(',', $data));
 
-            foreach($sort as $key => $s) {
+            foreach ($sort as $key => $s) {
                 FeatureCategory::where('id', $s)->update(['sort' => $key]);
             }
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
+
         return $this->rollbackReturn(false);
     }
 
-    
     /**********************************************************************************************
-     
+
         FEATURES
 
     **********************************************************************************************/
@@ -185,130 +184,148 @@ class FeatureService extends Service
     /**
      * Creates a new feature.
      *
-     * @param  array                  $data 
-     * @param  \App\Models\User\User  $user
-     * @return bool|\App\Models\Feature\Feature
+     * @param array                 $data
+     * @param \App\Models\User\User $user
+     *
+     * @return \App\Models\Feature\Feature|bool
      */
     public function createFeature($data, $user)
     {
         DB::beginTransaction();
 
         try {
-            if(isset($data['feature_category_id']) && $data['feature_category_id'] == 'none') $data['feature_category_id'] = null;
-            if(isset($data['species_id']) && $data['species_id'] == 'none') $data['species_id'] = null;
-            if(isset($data['subtype_id']) && $data['subtype_id'] == 'none') $data['subtype_id'] = null;
+            if (isset($data['feature_category_id']) && $data['feature_category_id'] == 'none') {
+                $data['feature_category_id'] = null;
+            }
+            if (isset($data['species_id']) && $data['species_id'] == 'none') {
+                $data['species_id'] = null;
+            }
+            if (isset($data['subtype_id']) && $data['subtype_id'] == 'none') {
+                $data['subtype_id'] = null;
+            }
 
-            if((isset($data['feature_category_id']) && $data['feature_category_id']) && !FeatureCategory::where('id', $data['feature_category_id'])->exists()) throw new \Exception("The selected trait category is invalid.");
-            if((isset($data['species_id']) && $data['species_id']) && !Species::where('id', $data['species_id'])->exists()) throw new \Exception("The selected species is invalid.");
-            if(isset($data['subtype_id']) && $data['subtype_id'])
-            {
+            if ((isset($data['feature_category_id']) && $data['feature_category_id']) && !FeatureCategory::where('id', $data['feature_category_id'])->exists()) {
+                throw new \Exception('The selected trait category is invalid.');
+            }
+            if ((isset($data['species_id']) && $data['species_id']) && !Species::where('id', $data['species_id'])->exists()) {
+                throw new \Exception('The selected species is invalid.');
+            }
+            if (isset($data['subtype_id']) && $data['subtype_id']) {
                 $subtype = Subtype::find($data['subtype_id']);
-                if(!(isset($data['species_id']) && $data['species_id'])) throw new \Exception('Species must be selected to select a subtype.');
-                if(!$subtype || $subtype->species_id != $data['species_id']) throw new \Exception('Selected subtype invalid or does not match species.');
+                if (!(isset($data['species_id']) && $data['species_id'])) {
+                    throw new \Exception('Species must be selected to select a subtype.');
+                }
+                if (!$subtype || $subtype->species_id != $data['species_id']) {
+                    throw new \Exception('Selected subtype invalid or does not match species.');
+                }
             }
 
             $data = $this->populateData($data);
 
             $image = null;
-            if(isset($data['image']) && $data['image']) {
+            if (isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
                 $image = $data['image'];
                 unset($data['image']);
+            } else {
+                $data['has_image'] = 0;
             }
-            else $data['has_image'] = 0;
 
             $feature = Feature::create($data);
-            
-            if(!logAdminAction($user, 'Created Feature', 'Created '.$feature->displayName)) throw new \Exception("Failed to log admin action.");
 
-            if ($image) $this->handleImage($image, $feature->imagePath, $feature->imageFileName);
+            if (!logAdminAction($user, 'Created Feature', 'Created '.$feature->displayName)) {
+                throw new \Exception('Failed to log admin action.');
+            }
+
+            if ($image) {
+                $this->handleImage($image, $feature->imagePath, $feature->imageFileName);
+            }
 
             return $this->commitReturn($feature);
-        } catch(\Exception $e) { 
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
+
         return $this->rollbackReturn(false);
     }
 
     /**
      * Updates a feature.
      *
-     * @param  \App\Models\Feature\Feature  $feature
-     * @param  array                        $data 
-     * @param  \App\Models\User\User        $user
-     * @return bool|\App\Models\Feature\Feature
+     * @param \App\Models\Feature\Feature $feature
+     * @param array                       $data
+     * @param \App\Models\User\User       $user
+     *
+     * @return \App\Models\Feature\Feature|bool
      */
     public function updateFeature($feature, $data, $user)
     {
         DB::beginTransaction();
 
         try {
-            if(isset($data['feature_category_id']) && $data['feature_category_id'] == 'none') $data['feature_category_id'] = null;
-            if(isset($data['species_id']) && $data['species_id'] == 'none') $data['species_id'] = null;
-            if(isset($data['subtype_id']) && $data['subtype_id'] == 'none') $data['subtype_id'] = null;
+            if (isset($data['feature_category_id']) && $data['feature_category_id'] == 'none') {
+                $data['feature_category_id'] = null;
+            }
+            if (isset($data['species_id']) && $data['species_id'] == 'none') {
+                $data['species_id'] = null;
+            }
+            if (isset($data['subtype_id']) && $data['subtype_id'] == 'none') {
+                $data['subtype_id'] = null;
+            }
 
             // More specific validation
-            if(Feature::where('name', $data['name'])->where('id', '!=', $feature->id)->exists()) throw new \Exception("The name has already been taken.");
-            if((isset($data['feature_category_id']) && $data['feature_category_id']) && !FeatureCategory::where('id', $data['feature_category_id'])->exists()) throw new \Exception("The selected trait category is invalid.");
-            if((isset($data['species_id']) && $data['species_id']) && !Species::where('id', $data['species_id'])->exists()) throw new \Exception("The selected species is invalid.");
-            if(isset($data['subtype_id']) && $data['subtype_id'])
-            {
+            if (Feature::where('name', $data['name'])->where('id', '!=', $feature->id)->exists()) {
+                throw new \Exception('The name has already been taken.');
+            }
+            if ((isset($data['feature_category_id']) && $data['feature_category_id']) && !FeatureCategory::where('id', $data['feature_category_id'])->exists()) {
+                throw new \Exception('The selected trait category is invalid.');
+            }
+            if ((isset($data['species_id']) && $data['species_id']) && !Species::where('id', $data['species_id'])->exists()) {
+                throw new \Exception('The selected species is invalid.');
+            }
+            if (isset($data['subtype_id']) && $data['subtype_id']) {
                 $subtype = Subtype::find($data['subtype_id']);
-                if(!(isset($data['species_id']) && $data['species_id'])) throw new \Exception('Species must be selected to select a subtype.');
-                if(!$subtype || $subtype->species_id != $data['species_id']) throw new \Exception('Selected subtype invalid or does not match species.');
+                if (!(isset($data['species_id']) && $data['species_id'])) {
+                    throw new \Exception('Species must be selected to select a subtype.');
+                }
+                if (!$subtype || $subtype->species_id != $data['species_id']) {
+                    throw new \Exception('Selected subtype invalid or does not match species.');
+                }
             }
 
             $data = $this->populateData($data);
 
-            $image = null;            
-            if(isset($data['image']) && $data['image']) {
+            $image = null;
+            if (isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
                 $image = $data['image'];
                 unset($data['image']);
             }
 
             $feature->update($data);
-            
-            if(!logAdminAction($user, 'Updated Feature', 'Updated '.$feature->displayName)) throw new \Exception("Failed to log admin action.");
 
-            if ($feature) $this->handleImage($image, $feature->imagePath, $feature->imageFileName);
+            if (!logAdminAction($user, 'Updated Feature', 'Updated '.$feature->displayName)) {
+                throw new \Exception('Failed to log admin action.');
+            }
+
+            if ($feature) {
+                $this->handleImage($image, $feature->imagePath, $feature->imageFileName);
+            }
 
             return $this->commitReturn($feature);
-        } catch(\Exception $e) { 
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
+
         return $this->rollbackReturn(false);
     }
 
     /**
-     * Processes user input for creating/updating a feature.
-     *
-     * @param  array                        $data 
-     * @param  \App\Models\Feature\Feature  $feature
-     * @return array
-     */
-    private function populateData($data, $feature = null)
-    {
-        if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
-        if(isset($data['species_id']) && $data['species_id'] == 'none') $data['species_id'] = null;
-        if(isset($data['feature_category_id']) && $data['feature_category_id'] == 'none') $data['feature_category_id'] = null;
-        if(isset($data['remove_image']))
-        {
-            if($feature && $feature->has_image && $data['remove_image']) 
-            { 
-                $data['has_image'] = 0; 
-                $this->deleteImage($feature->imagePath, $feature->imageFileName); 
-            }
-            unset($data['remove_image']);
-        }
-
-        return $data;
-    }
-    
-    /**
      * Deletes a feature.
      *
-     * @param  \App\Models\Feature\Feature  $feature
+     * @param \App\Models\Feature\Feature $feature
+     * @param mixed                       $user
+     *
      * @return bool
      */
     public function deleteFeature($feature, $user)
@@ -317,17 +334,79 @@ class FeatureService extends Service
 
         try {
             // Check first if the feature is currently in use
-            if(DB::table('character_features')->where('feature_id', $feature->id)->exists()) throw new \Exception("A character with this trait exists. Please remove the trait first.");
-            
-            if(!logAdminAction($user, 'Deleted Feature', 'Deleted '.$feature->name)) throw new \Exception("Failed to log admin action.");
+            if (DB::table('character_features')->where('feature_id', $feature->id)->exists()) {
+                throw new \Exception('A character with this trait exists. Please remove the trait first.');
+            }
 
-            if($feature->has_image) $this->deleteImage($feature->imagePath, $feature->imageFileName); 
+            if (!logAdminAction($user, 'Deleted Feature', 'Deleted '.$feature->name)) {
+                throw new \Exception('Failed to log admin action.');
+            }
+
+            if ($feature->has_image) {
+                $this->deleteImage($feature->imagePath, $feature->imageFileName);
+            }
             $feature->delete();
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
+
         return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Handle category data.
+     *
+     * @param array                                    $data
+     * @param \App\Models\Feature\FeatureCategory|null $category
+     *
+     * @return array
+     */
+    private function populateCategoryData($data, $category = null)
+    {
+        if (isset($data['description']) && $data['description']) {
+            $data['parsed_description'] = parse($data['description']);
+        }
+
+        if (isset($data['remove_image'])) {
+            if ($category && $category->has_image && $data['remove_image']) {
+                $data['has_image'] = 0;
+                $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName);
+            }
+            unset($data['remove_image']);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Processes user input for creating/updating a feature.
+     *
+     * @param array                       $data
+     * @param \App\Models\Feature\Feature $feature
+     *
+     * @return array
+     */
+    private function populateData($data, $feature = null)
+    {
+        if (isset($data['description']) && $data['description']) {
+            $data['parsed_description'] = parse($data['description']);
+        }
+        if (isset($data['species_id']) && $data['species_id'] == 'none') {
+            $data['species_id'] = null;
+        }
+        if (isset($data['feature_category_id']) && $data['feature_category_id'] == 'none') {
+            $data['feature_category_id'] = null;
+        }
+        if (isset($data['remove_image'])) {
+            if ($feature && $feature->has_image && $data['remove_image']) {
+                $data['has_image'] = 0;
+                $this->deleteImage($feature->imagePath, $feature->imageFileName);
+            }
+            unset($data['remove_image']);
+        }
+
+        return $data;
     }
 }

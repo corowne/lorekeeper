@@ -2,11 +2,11 @@
 
 namespace App\Helpers;
 
-use DB;
 use App\Models\Notification;
+use DB;
 
-class Notifications {
-
+class Notifications
+{
     /*
     |--------------------------------------------------------------------------
     | Notifications
@@ -19,9 +19,10 @@ class Notifications {
     /**
      * Creates a new notification.
      *
-     * @param  string                 $type
-     * @param  \App\Models\User\User  $user
-     * @param  array                  $data
+     * @param string                $type
+     * @param \App\Models\User\User $user
+     * @param array                 $data
+     *
      * @return bool
      */
     public function create($type, $user, $data)
@@ -33,18 +34,20 @@ class Notifications {
                 'user_id'               => $user->id,
                 'notification_type_id'  => Notification::getNotificationId($type),
                 'data'                  => json_encode($data),
-                'is_unread'             => 1
+                'is_unread'             => 1,
             ]);
 
             $user->notifications_unread++;
             $user->save();
-            
+
             DB::commit();
+
             return true;
-        } catch(\Exception $e) { 
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         DB::rollback();
+
         return false;
     }
 }

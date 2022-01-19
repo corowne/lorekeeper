@@ -8,34 +8,30 @@ class AddUserBirthday extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
         //
-        Schema::table('users', function(Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->timestamp('birthday')->nullable()->default(null);
         });
 
-        Schema::table('user_settings', function(Blueprint $table) {
+        Schema::table('user_settings', function (Blueprint $table) {
             $table->tinyInteger('birthday_setting')->default(0);
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {
         //
-        Schema::table('users', function(Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('birthday');
         });
 
-        Schema::table('user_settings', function(Blueprint $table) {
+        Schema::table('user_settings', function (Blueprint $table) {
             $table->dropcolumn('birthday_setting');
         });
     }

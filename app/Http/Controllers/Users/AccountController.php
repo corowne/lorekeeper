@@ -2,21 +2,14 @@
 
 namespace App\Http\Controllers\Users;
 
-use Auth;
-use File;
-use Image;
-
+use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use App\Models\User\User;
 use App\Models\User\UserAlias;
-
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use App\Models\Notification;
-
-use App\Services\UserService;
 use App\Services\LinkService;
-
-use App\Http\Controllers\Controller;
+use App\Services\UserService;
+use Auth;
+use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
@@ -36,10 +29,11 @@ class AccountController extends Controller
      */
     public function getBanned()
     {
-        if(Auth::user()->is_banned)
+        if (Auth::user()->is_banned) {
             return view('account.banned');
-        else
+        } else {
             return redirect()->to('/');
+        }
     }
 
     /**
@@ -55,94 +49,101 @@ class AccountController extends Controller
     /**
      * Edits the user's profile.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postProfile(Request $request)
     {
         Auth::user()->profile->update([
-            'text' => $request->get('text'),
-            'parsed_text' => parse($request->get('text'))
+            'text'        => $request->get('text'),
+            'parsed_text' => parse($request->get('text')),
         ]);
         flash('Profile updated successfully.')->success();
+
         return redirect()->back();
     }
 
     /**
      * Edits the user's avatar.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postAvatar(Request $request, UserService $service)
     {
-        if($service->updateAvatar($request->file('avatar'), Auth::user())) {
+        if ($service->updateAvatar($request->file('avatar'), Auth::user())) {
             flash('Avatar updated successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
         }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
+
         return redirect()->back();
     }
 
     /**
      * Changes the user's password.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  App\Services\UserService  $service
+     * @param App\Services\UserService $service
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postPassword(Request $request, UserService $service)
     {
-        $request->validate( [
+        $request->validate([
             'old_password' => 'required|string',
-            'new_password' => 'required|string|min:8|confirmed'
+            'new_password' => 'required|string|min:8|confirmed',
         ]);
-        if($service->updatePassword($request->only(['old_password', 'new_password', 'new_password_confirmation']), Auth::user())) {
+        if ($service->updatePassword($request->only(['old_password', 'new_password', 'new_password_confirmation']), Auth::user())) {
             flash('Password updated successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
         }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
+
         return redirect()->back();
     }
 
     /**
      * Changes the user's email address and sends a verification email.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  App\Services\UserService  $service
+     * @param App\Services\UserService $service
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postEmail(Request $request, UserService $service)
     {
-        $request->validate( [
-            'email' => 'required|string|email|max:255|unique:users'
+        $request->validate([
+            'email' => 'required|string|email|max:255|unique:users',
         ]);
-        if($service->updateEmail($request->only(['email']), Auth::user())) {
+        if ($service->updateEmail($request->only(['email']), Auth::user())) {
             flash('Email updated successfully. A verification email has been sent to your new email address.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
         }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
+
         return redirect()->back();
     }
 
     /**
-     * Changes user birthday setting
+     * Changes user birthday setting.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  App\Services\UserService  $service
+     * @param App\Services\UserService $service
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postBirthday(Request $request, UserService $service)
     {
-        if($service->updateDOB($request->input('birthday_setting'), Auth::user())) {
+        if ($service->updateDOB($request->input('birthday_setting'), Auth::user())) {
             flash('Setting updated successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
         }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
+
         return redirect()->back();
     }
 
@@ -159,33 +160,43 @@ class AccountController extends Controller
         Auth::user()->save();
 
         return view('account.notifications', [
-            'notifications' => $notifications
+            'notifications' => $notifications,
         ]);
     }
 
     /**
      * Deletes a notification and returns a response.
      *
+     * @param mixed $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function getDeleteNotification($id)
     {
         $notification = Notification::where('id', $id)->where('user_id', Auth::user()->id)->first();
-        if($notification) $notification->delete();
+        if ($notification) {
+            $notification->delete();
+        }
+
         return response(200);
     }
 
     /**
      * Deletes all of the user's notifications.
      *
+     * @param mixed|null $type
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postClearNotifications($type = null)
     {
-        if(isset($type))
+        if (isset($type)) {
             Auth::user()->notifications()->where('notification_type_id', $type)->delete();
-        else Auth::user()->notifications()->delete();
+        } else {
+            Auth::user()->notifications()->delete();
+        }
         flash('Notifications cleared successfully.')->success();
+
         return redirect()->back();
     }
 
@@ -202,6 +213,8 @@ class AccountController extends Controller
     /**
      * Shows the make primary alias modal.
      *
+     * @param mixed $id
+     *
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getMakePrimary($id)
@@ -212,21 +225,27 @@ class AccountController extends Controller
     /**
      * Makes an alias the user's primary alias.
      *
+     * @param mixed $id
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postMakePrimary(LinkService $service, $id)
     {
-        if($service->makePrimary($id, Auth::user())) {
+        if ($service->makePrimary($id, Auth::user())) {
             flash('Your primary alias has been changed successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
         }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
+
         return redirect()->back();
     }
 
     /**
      * Shows the hide alias modal.
+     *
+     * @param mixed $id
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -238,21 +257,27 @@ class AccountController extends Controller
     /**
      * Hides or unhides the selected alias from public view.
      *
+     * @param mixed $id
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postHideAlias(LinkService $service, $id)
     {
-        if($service->hideAlias($id, Auth::user())) {
+        if ($service->hideAlias($id, Auth::user())) {
             flash('Your alias\'s visibility setting has been changed successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
         }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
+
         return redirect()->back();
     }
 
     /**
      * Shows the remove alias modal.
+     *
+     * @param mixed $id
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -264,16 +289,20 @@ class AccountController extends Controller
     /**
      * Removes the selected alias from the user's account.
      *
+     * @param mixed $id
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postRemoveAlias(LinkService $service, $id)
     {
-        if($service->removeAlias($id, Auth::user())) {
+        if ($service->removeAlias($id, Auth::user())) {
             flash('Your alias has been removed successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
         }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
+
         return redirect()->back();
     }
 }
