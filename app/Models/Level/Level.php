@@ -55,7 +55,7 @@ class Level extends Model
         if($this->level_type == 'User')
             return $this->hasMany('App\Models\Level\UserLevelReward', 'level_id');
         else
-        return $this->hasMany('App\Models\Level\UserLevelReward', 'level_id');
+        return $this->hasMany('App\Models\Level\CharacterLevelReward', 'level_id');
     }
     
     public function limits()
