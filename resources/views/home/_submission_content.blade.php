@@ -54,7 +54,7 @@
         @foreach(parseAssetData( isset($submission->data['rewards']) ? $submission->data['rewards'] : $submission->data ) as $type)
             @foreach($type as $asset)
                 <tr>
-                    <td>{!! $asset['asset']->displayName !!}</td>
+                    <td>{!! $asset['asset'] ? $asset['asset']->displayName : 'Deleted Asset' !!}</td>
                     <td>{{ $asset['quantity'] }}</td>
                 </tr>
             @endforeach
