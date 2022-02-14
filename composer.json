@@ -21,7 +21,7 @@
         "illuminate/routing": "^5.6|^6.0|^7.0|^8.0",
         "illuminate/support": "^5.6|^6.0|^7.0|^8.0",
         "intervention/image": "^2.4",
-        "josiasmontag/laravel-recaptchav3": "^0.6.0",
+        "josiasmontag/laravel-recaptchav3": "^1.0.0",
         "laracasts/flash": "^3.0",
         "laravel/framework": "8.82.0",
         "laravel/helpers": "^1.4",
