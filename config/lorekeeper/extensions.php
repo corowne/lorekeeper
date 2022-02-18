@@ -54,4 +54,7 @@ return [
         'default_recipient' => 0, // 0 to default to the character's owner (if a user), 1 to default to the submission user.
     ],
 
+    // Auto-populate New Image Features - Mercury
+    'autopopulate_image_features' => 0,
+
 ];
