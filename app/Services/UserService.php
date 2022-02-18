@@ -224,7 +224,7 @@ class UserService extends Service
                 $submissionManager = new SubmissionManager;
                 $submissions = Submission::where('user_id', $user->id)->where('status', 'Pending')->get();
                 foreach($submissions as $submission)
-                    $submissionManager->rejectSubmission(['submission' => $submission, 'staff_comments' => 'User has been banned from site activity.']);
+                    $submissionManager->rejectSubmission(['submission' => $submission, 'staff_comments' => 'User has been banned from site activity.'], $staff);
 
                 // 3. Gallery Submissions
                 $galleryManager = new GalleryManager;
@@ -242,7 +242,7 @@ class UserService extends Service
                     $query->where('status', 'Pending')->orWhere('status', 'Draft');
                 })->get();
                 foreach($requests as $request)
-                    $characterManager->rejectRequest(['staff_comments' => 'User has been banned from site activity.'], $request, $staff, true);
+                    (new DesignUpdateManager)->rejectRequest(['staff_comments' => 'User has been banned from site activity.'], $request, $staff, true);
 
                 // 5. Trades
                 $tradeManager = new TradeManager;
