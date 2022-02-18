@@ -809,6 +809,8 @@ class DesignUpdateManager extends Service
 
             $request->save();
 
+            if(!$this->logAdminAction($user, 'Voted on Design Update', 'Voted on design update <a href="'. $request->url .'">#'.$request->id.'</a>')) throw new \Exception("Failed to log admin action.");
+
             return $this->commitReturn(true);
         } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
