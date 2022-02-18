@@ -420,7 +420,7 @@ class DesignUpdateManager extends Service
             if(!isset($data['slug']) || Character::where('slug', $data['slug'])->where('id', '!=', $request->character_id)->exists()) throw new \Exception("Please enter a unique character code.");
 
 
-            if(!logAdminAction($user, 'Approved Design Update', 'Approved design update <a href="'. $request->url .'">#'.$request->id.'</a>')) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Approved Design Update', 'Approved design update <a href="'. $request->url .'">#'.$request->id.'</a>')) throw new \Exception("Failed to log admin action.");
 
             // Remove any added items/currency
             // Currency has already been removed, so no action required
@@ -614,7 +614,7 @@ class DesignUpdateManager extends Service
         try {
             if(!$forceReject && $request->status != 'Pending') throw new \Exception("This request cannot be processed.");
 
-            if(!logAdminAction($user, 'Rejected Design Update', 'Rejected design update <a href="'. $request->url .'">#'.$request->id.'</a>')) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Rejected Design Update', 'Rejected design update <a href="'. $request->url .'">#'.$request->id.'</a>')) throw new \Exception("Failed to log admin action.");
 
             // This hard rejects the request - items/currency are returned to user
             // and the user will need to open a new request to resubmit.
@@ -688,7 +688,7 @@ class DesignUpdateManager extends Service
         try {
             if($request->status != 'Pending') throw new \Exception("This request cannot be processed.");
 
-            if(!logAdminAction($user, 'Cancelled Design Update', 'Cancelled design update <a href="'. $request->url .'">#'.$request->id.'</a>')) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Cancelled Design Update', 'Cancelled design update <a href="'. $request->url .'">#'.$request->id.'</a>')) throw new \Exception("Failed to log admin action.");
 
             // Soft removes the request from the queue -
             // it preserves all the data entered, but allows the staff member

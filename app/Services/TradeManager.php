@@ -61,7 +61,7 @@ class TradeManager extends Service
             ]);
 
             if($assetData = $this->handleTradeAssets($trade, $data, $user)) {
-                
+
                 $trade->data = json_encode(['sender' => getDataReadyAssets($assetData['sender'])]);
                 $trade->save();
 
@@ -75,7 +75,7 @@ class TradeManager extends Service
                 return $this->commitReturn($trade);
             }
 
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -92,7 +92,7 @@ class TradeManager extends Service
     {
         DB::beginTransaction();
         try {
-            if(!isset($data['trade'])) 
+            if(!isset($data['trade']))
                 $trade = Trade::where('status', 'Open')->where('id', $data['id'])->where(function($query) use ($user) {
                 $query->where('sender_id', $user->id)->orWhere('recipient_id', $user->id);
                 })->first();
@@ -112,8 +112,8 @@ class TradeManager extends Service
                 $trade->save();
                 return $this->commitReturn($trade);
             }
-            
-        } catch(\Exception $e) { 
+
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -122,7 +122,7 @@ class TradeManager extends Service
     /**
      * Handles modification of assets on the user's side of a trade.
      *
-     * @param  \App\Models\Trade      $trade 
+     * @param  \App\Models\Trade      $trade
      * @param  array                  $data
      * @param  \App\Models\User\User  $user
      * @return bool|array
@@ -136,7 +136,7 @@ class TradeManager extends Service
             $type = ($isSender ? 'sender' : (($trade->recipient_id == $user->id) ? 'recipient' : null));
             if(!$type) throw new \Exception("User not found.");
             // First return any item stacks attached to the trade
-            
+
             if(isset($tradeData[$type]['user_items'])) {
                 foreach($tradeData[$type]['user_items'] as $userItemId=>$quantity) {
                     $userItemRow = UserItem::find($userItemId);
@@ -162,7 +162,7 @@ class TradeManager extends Service
             $userAssets = createAssetsArray();
             $assetCount = 0;
             $assetLimit = Config::get('lorekeeper.settings.trade_asset_limit');
-            
+
             // Attach items. Technically, the user doesn't lose ownership of the item - we're just adding an additional holding field.
             // Unlike for design updates, we're keeping track of attached items here.
             if(isset($data['stack_id'])) {
@@ -217,9 +217,9 @@ class TradeManager extends Service
 
             }
             if($assetCount > $assetLimit) throw new \Exception("You may only include a maximum of {$assetLimit} things in a trade.");
-            
+
             return $this->commitReturn([($isSender ? 'sender' : 'recipient') => $userAssets]);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -256,7 +256,7 @@ class TradeManager extends Service
                 return $this->commitReturn($trade);
             }
             else throw new \Exception("Failed to cancel trade.");
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -318,7 +318,7 @@ class TradeManager extends Service
             $trade->save();
 
             return $this->commitReturn($trade);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -351,7 +351,7 @@ class TradeManager extends Service
                 if(!(Settings::get('open_transfers_queue') && (isset($trade->data['sender']['characters']) || isset($trade->data['recipient']['characters'])))) {
                     // Distribute the trade attachments
                     $this->creditAttachments($trade);
-    
+
                     $trade->status = 'Completed';
 
                     // Notify both users
@@ -365,7 +365,7 @@ class TradeManager extends Service
                 else {
                     // Put the trade into the queue
                     $trade->status = 'Pending';
-                    
+
                     // Notify both users
                     Notifications::create('TRADE_CONFIRMED', $trade->sender, [
                         'trade_id' => $trade->id
@@ -376,7 +376,7 @@ class TradeManager extends Service
                 }
             }
             else {
-                    
+
                 // Notify the other user
                 Notifications::create('TRADE_UPDATE', $user->id == $trade->sender_id ? $trade->recipient : $trade->sender, [
                     'sender_url' => $user->url,
@@ -388,7 +388,7 @@ class TradeManager extends Service
             $trade->save();
 
             return $this->commitReturn($trade);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -411,7 +411,7 @@ class TradeManager extends Service
             if(!isset($data['trade'])) $trade = Trade::where('status', 'Pending')->where('id', $data['id'])->first();
             else $trade = $data['trade'];
             if(!$trade) throw new \Exception("Invalid trade.");
-            
+
             if($this->creditAttachments($trade, $data)) {
                 Notifications::create('TRADE_COMPLETED', $trade->sender, [
                     'trade_id' => $trade->id
@@ -420,7 +420,7 @@ class TradeManager extends Service
                     'trade_id' => $trade->id
                 ]);
 
-                if(!logAdminAction($user, 'Approved Trade', 'Approved trade <a href="'.$trade->url.'">#'.$trade->id.'</a>')) throw new \Exception("Failed to log admin action.");
+                if(!$this->logAdminAction($user, 'Approved Trade', 'Approved trade <a href="'.$trade->url.'">#'.$trade->id.'</a>')) throw new \Exception("Failed to log admin action.");
 
                 $trade->status = 'Completed';
                 $trade->staff_id = $user->id;
@@ -429,7 +429,7 @@ class TradeManager extends Service
                 return $this->commitReturn($trade);
             }
             else throw new \Exception("Failed to credit trade attachments.");
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -451,7 +451,7 @@ class TradeManager extends Service
             if(!isset($data['trade'])) $trade = Trade::where('status', 'Pending')->where('id', $data['id'])->first();
             else $trade = $data['trade'];
             if(!$trade) throw new \Exception("Invalid trade.");
-            
+
             if($this->returnAttachments($trade)) {
                 Notifications::create('TRADE_REJECTED', $trade->sender, [
                     'trade_id' => $trade->id
@@ -460,7 +460,7 @@ class TradeManager extends Service
                     'trade_id' => $trade->id
                 ]);
 
-                if(!logAdminAction($user, 'Rejected Trade', 'Rejected trade <a href="'.$trade->url.'">#'.$trade->id.'</a>')) throw new \Exception("Failed to log admin action.");
+                if(!$this->logAdminAction($user, 'Rejected Trade', 'Rejected trade <a href="'.$trade->url.'">#'.$trade->id.'</a>')) throw new \Exception("Failed to log admin action.");
 
                 $trade->reason = isset($data['reason']) ? $data['reason'] : '';
                 $trade->status = 'Rejected';
@@ -470,7 +470,7 @@ class TradeManager extends Service
                 return $this->commitReturn($trade);
             }
             else throw new \Exception("Failed to return trade attachments.");
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -500,7 +500,7 @@ class TradeManager extends Service
                     }
                 }
             }
-            
+
             Character::where('trade_id', $trade->id)->update(['trade_id' => null]);
             $currencyManager = new CurrencyManager;
             foreach(['sender', 'recipient'] as $type) {
@@ -508,12 +508,12 @@ class TradeManager extends Service
                     foreach($tradeData[$type]['currencies'] as $currencyId => $quantity) {
                         $currency = Currency::find($currencyId);
                         if(!$currency) throw new \Exception("Cannot return an invalid currency. (".$currencyId.")");
-                        if(!$currencyManager->creditCurrency(null, $trade->{$type}, null, null, $currency, $quantity)) throw new \Exception("Could not return currency to user. (".$currencyId.")");                    
+                        if(!$currencyManager->creditCurrency(null, $trade->{$type}, null, null, $currency, $quantity)) throw new \Exception("Could not return currency to user. (".$currencyId.")");
                     }
                 }
             }
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -577,7 +577,7 @@ class TradeManager extends Service
             $recipientCharacters = Character::where('user_id', $trade->recipient_id)->where('trade_id', $trade->id)->get();
 
             foreach($senderCharacters as $character) $characterManager->moveCharacter($character, $trade->recipient, 'Trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]', isset($cooldowns[$character->id]) ? $cooldowns[$character->id] : $defaultCooldown, 'Transferred in trade');
-            
+
             foreach($recipientCharacters as $character) $characterManager->moveCharacter($character, $trade->sender, 'Trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]', isset($cooldowns[$character->id]) ? $cooldowns[$character->id] : $defaultCooldown, 'Transferred in trade');
 
             Character::where('trade_id', $trade->id)->update(['trade_id' => null]);
@@ -591,13 +591,13 @@ class TradeManager extends Service
                     foreach($tradeData[$type]['currencies'] as $currencyId => $quantity) {
                         $currency = Currency::find($currencyId);
                         if(!$currency) throw new \Exception("Cannot credit an invalid currency. (".$currencyId.")");
-                        if(!$currencyManager->creditCurrency($trade->{$type}, $trade->{$recipientType}, 'Trade', 'Received in trade [<a href="'.$trade->url.'">#'.$trade->id.']', $currency, $quantity)) throw new \Exception("Could not credit currency. (".$currencyId.")");                    
+                        if(!$currencyManager->creditCurrency($trade->{$type}, $trade->{$recipientType}, 'Trade', 'Received in trade [<a href="'.$trade->url.'">#'.$trade->id.']', $currency, $quantity)) throw new \Exception("Could not credit currency. (".$currencyId.")");
                     }
                 }
             }
-            
+
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);

@@ -55,7 +55,7 @@ class CurrencyService extends Service
 
             $currency = Currency::create($data);
 
-            if(!logAdminAction($user, 'Created Currency', 'Created '.$currency->displayName)) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Created Currency', 'Created '.$currency->displayName)) throw new \Exception("Failed to log admin action.");
 
             if ($icon) $this->handleImage($icon, $currency->currencyIconPath, $currency->currencyIconFileName);
             if ($image) $this->handleImage($image, $currency->currencyImagePath, $currency->currencyImageFileName);
@@ -102,7 +102,7 @@ class CurrencyService extends Service
 
             $currency->update($data);
 
-            if(!logAdminAction($user, 'Updated Currency', 'Updated '.$currency->displayName)) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Updated Currency', 'Updated '.$currency->displayName)) throw new \Exception("Failed to log admin action.");
 
             if ($icon) $this->handleImage($icon, $currency->currencyIconPath, $currency->currencyIconFileName);
             if ($image) $this->handleImage($image, $currency->currencyImagePath, $currency->currencyImageFileName);
@@ -191,7 +191,7 @@ class CurrencyService extends Service
             // are created for temporary use, it would be inconvenient to have to manually
             // remove them from user accounts before deleting the base currency.
 
-            if(!logAdminAction($user, 'Deleted Currency', 'Deleted '.$currency->name)) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Deleted Currency', 'Deleted '.$currency->name)) throw new \Exception("Failed to log admin action.");
 
             UserCurrency::where('currency_id', $currency->id)->delete();
             CharacterCurrency::where('currency_id', $currency->id)->delete();

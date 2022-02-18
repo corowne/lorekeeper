@@ -51,7 +51,7 @@ class ItemService extends Service
 
             $category = ItemCategory::create($data);
 
-            if(!logAdminAction($user, 'Created Item Category', 'Created '.$category->displayName)) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Created Item Category', 'Created '.$category->displayName)) throw new \Exception("Failed to log admin action.");
 
             if ($image) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
 
@@ -89,7 +89,7 @@ class ItemService extends Service
 
             $category->update($data);
 
-            if(!logAdminAction($user, 'Updated Item Category', 'Updated '.$category->displayName)) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Updated Item Category', 'Updated '.$category->displayName)) throw new \Exception("Failed to log admin action.");
 
             if ($category) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
 
@@ -141,7 +141,7 @@ class ItemService extends Service
         try {
             // Check first if the category is currently in use
             if(Item::where('item_category_id', $category->id)->exists()) throw new \Exception("An item with this category exists. Please change its category first.");
-            if(!logAdminAction($user, 'Deleted Item Category', 'Deleted '.$category->name)) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Deleted Item Category', 'Deleted '.$category->name)) throw new \Exception("Failed to log admin action.");
 
             if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName);
             $category->delete();
@@ -212,7 +212,7 @@ class ItemService extends Service
 
             $item = Item::create($data);
 
-            if(!logAdminAction($user, 'Created Item', 'Created '.$item->displayName)) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Created Item', 'Created '.$item->displayName)) throw new \Exception("Failed to log admin action.");
 
             $item->update([
                 'data' => json_encode([
@@ -263,7 +263,7 @@ class ItemService extends Service
 
             $item->update($data);
 
-            if(!logAdminAction($user, 'Updated Item', 'Updated '.$item->displayName)) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Updated Item', 'Updated '.$item->displayName)) throw new \Exception("Failed to log admin action.");
 
             $item->update([
                 'data' => json_encode([
@@ -331,7 +331,7 @@ class ItemService extends Service
             if(DB::table('prompt_rewards')->where('rewardable_type', 'Item')->where('rewardable_id', $item->id)->exists()) throw new \Exception("A prompt currently distributes this item as a reward. Please remove the item before deleting it.");
             if(DB::table('shop_stock')->where('item_id', $item->id)->exists()) throw new \Exception("A shop currently stocks this item. Please remove the item before deleting it.");
 
-            if(!logAdminAction($user, 'Deleted Item', 'Deleted '.$item->name)) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Deleted Item', 'Deleted '.$item->name)) throw new \Exception("Failed to log admin action.");
 
             DB::table('items_log')->where('item_id', $item->id)->delete();
             DB::table('user_items')->where('item_id', $item->id)->delete();
@@ -384,7 +384,7 @@ class ItemService extends Service
             if($item->tags()->where('tag', $tag)->exists()) throw new \Exception("This item already has this tag attached to it.");
             if(!$tag) throw new \Exception("No tag selected.");
 
-            if(!logAdminAction($user, 'Added Item Tag', 'Added '.$tag.' tag to '.$item->displayName)) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Added Item Tag', 'Added '.$tag.' tag to '.$item->displayName)) throw new \Exception("Failed to log admin action.");
 
             $tag = ItemTag::create([
                 'item_id' => $item->id,
@@ -414,7 +414,7 @@ class ItemService extends Service
             if(!$item) throw new \Exception("Invalid item selected.");
             if(!$item->tags()->where('tag', $tag)->exists()) throw new \Exception("This item does not have this tag attached to it.");
 
-            if(!logAdminAction($user, 'Edited Item Tag', 'Edited '.$tag.' tag on '.$item->displayName)) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Edited Item Tag', 'Edited '.$tag.' tag on '.$item->displayName)) throw new \Exception("Failed to log admin action.");
 
             $tag = $item->tags()->where('tag', $tag)->first();
 
@@ -450,7 +450,7 @@ class ItemService extends Service
             if(!$item) throw new \Exception("Invalid item selected.");
             if(!$item->tags()->where('tag', $tag)->exists()) throw new \Exception("This item does not have this tag attached to it.");
 
-            if(!logAdminAction($user, 'Deleted Item Tag', 'Deleted '.$tag.' tag on '.$item->displayName)) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Deleted Item Tag', 'Deleted '.$tag.' tag on '.$item->displayName)) throw new \Exception("Failed to log admin action.");
 
             $item->tags()->where('tag', $tag)->delete();
 

@@ -42,12 +42,12 @@ class CharacterCategoryService extends Service
 
             $category = CharacterCategory::create($data);
 
-            if(!logAdminAction($user, 'Created Character Category', 'Created '.$category->displayName)) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Created Character Category', 'Created '.$category->displayName)) throw new \Exception("Failed to log admin action.");
 
             if ($image) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
 
             return $this->commitReturn($category);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -70,7 +70,7 @@ class CharacterCategoryService extends Service
 
             $data = $this->populateCategoryData($data, $category);
 
-            $image = null;            
+            $image = null;
             if(isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
                 $image = $data['image'];
@@ -79,12 +79,12 @@ class CharacterCategoryService extends Service
 
             $category->update($data);
 
-            if(!logAdminAction($user, 'Edited Character Category', 'Edited '.$category->displayName)) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Edited Character Category', 'Edited '.$category->displayName)) throw new \Exception("Failed to log admin action.");
 
             if ($category) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
 
             return $this->commitReturn($category);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -100,13 +100,13 @@ class CharacterCategoryService extends Service
     private function populateCategoryData($data, $category = null)
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
-        
+
         if(isset($data['remove_image']))
         {
-            if($category && $category->has_image && $data['remove_image']) 
-            { 
-                $data['has_image'] = 0; 
-                $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
+            if($category && $category->has_image && $data['remove_image'])
+            {
+                $data['has_image'] = 0;
+                $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName);
             }
             unset($data['remove_image']);
         }
@@ -127,14 +127,14 @@ class CharacterCategoryService extends Service
         try {
             // Check first if the category is currently in use
             if(Character::where('character_category_id', $category->id)->exists()) throw new \Exception("An character with this category exists. Please change its category first.");
-            
-            if(!logAdminAction($user, 'Deleted Character Category', 'Deleted '.$category->name)) throw new \Exception("Failed to log admin action.");
 
-            if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName); 
+            if(!$this->logAdminAction($user, 'Deleted Character Category', 'Deleted '.$category->name)) throw new \Exception("Failed to log admin action.");
+
+            if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName);
             $category->delete();
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -159,7 +159,7 @@ class CharacterCategoryService extends Service
             }
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);

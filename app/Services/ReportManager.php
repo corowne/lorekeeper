@@ -57,9 +57,9 @@ class ReportManager extends Service
                 'error_type' => $data['error'],
                 'is_br' => $data['is_br'],
                 ]);
-            
+
             return $this->commitReturn($report);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -92,10 +92,10 @@ class ReportManager extends Service
                 'report_id' => $report->id,
             ]);
 
-            if(!logAdminAction($user, 'Report Assigned', 'Assigned themselves to report <a href="'.$report->viewurl.'">#'.$report->id.'</a>')) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Report Assigned', 'Assigned themselves to report <a href="'.$report->viewurl.'">#'.$report->id.'</a>')) throw new \Exception("Failed to log admin action.");
 
             return $this->commitReturn($report);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -117,7 +117,7 @@ class ReportManager extends Service
             elseif($data['report']->status == 'Assigned') $report = $data['report'];
             else $report = null;
             if(!$report) throw new \Exception("Invalid report.");
-			
+
 			if(isset($data['staff_comments']) && $data['staff_comments']) $data['parsed_staff_comments'] = parse($data['staff_comments']);
 			else $data['parsed_staff_comments'] = null;
 
@@ -134,13 +134,13 @@ class ReportManager extends Service
                 'report_id' => $report->id,
             ]);
 
-            if(!logAdminAction($user, 'Report Closed', 'Closed report <a href="'.$report->viewurl.'">#'.$report->id.'</a>')) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Report Closed', 'Closed report <a href="'.$report->viewurl.'">#'.$report->id.'</a>')) throw new \Exception("Failed to log admin action.");
 
             return $this->commitReturn($report);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
-    
+
 }

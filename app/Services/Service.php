@@ -1,6 +1,7 @@
 <?php namespace App\Services;
 
 use App;
+use App\Models\AdminLog;
 use Auth;
 use DB;
 use File;
@@ -47,7 +48,7 @@ abstract class Service {
     }
 
     /**
-     * Return if an error exists. 
+     * Return if an error exists.
      * @return bool
      */
     public function hasErrors()
@@ -56,7 +57,7 @@ abstract class Service {
     }
 
     /**
-     * Return if an error exists. 
+     * Return if an error exists.
      * @return bool
      */
     public function hasError($key)
@@ -65,7 +66,7 @@ abstract class Service {
     }
 
     /**
-     * Return errors. 
+     * Return errors.
      * @return Illuminate\Support\MessageBag
      */
     public function errors()
@@ -73,7 +74,7 @@ abstract class Service {
         return $this->errors;
     }
     /**
-     * Return errors. 
+     * Return errors.
      * @return array
      */
     public function getAllErrors()
@@ -82,7 +83,7 @@ abstract class Service {
     }
 
     /**
-     * Return error by key. 
+     * Return error by key.
      * @return Illuminate\Support\MessageBag
      */
     public function getError($key)
@@ -115,7 +116,7 @@ abstract class Service {
      * @param Illuminate\Support\MessageBag $errors
      * @return void
      */
-    protected function setErrors($errors) 
+    protected function setErrors($errors)
     {
         $this->errors->merge($errors);
     }
@@ -146,7 +147,7 @@ abstract class Service {
      * Returns the current field if it is numeric, otherwise searches for a field if it is an array or object.
      * @param mixed $data
      * @param string $field
-     * @return mixed 
+     * @return mixed
      */
     protected function getNumeric($data, $field = 'id')
     {
@@ -196,7 +197,7 @@ abstract class Service {
             // Don't want to leave a lot of random images lying around,
             // so move the old image first if it exists.
             if($oldName) { $this->moveImage($dir, $name, $oldName, $copy); }
-            
+
             // Then overwrite the old image.
             return $this->saveImage($image, $dir, $name, $copy);
         }
@@ -214,7 +215,7 @@ abstract class Service {
 
     // Moves an uploaded image into a directory, checking if it exists.
     private function saveImage($image, $dir, $name, $copy = false)
-    { 
+    {
         if(!file_exists($dir))
         {
             // Create the directory.
@@ -227,12 +228,31 @@ abstract class Service {
         if($copy) File::copy($image, $dir . '/' . $name);
         else File::move($image, $dir . '/' . $name);
         chmod($dir . '/' . $name, 0755);
-        
+
         return true;
     }
 
     public function deleteImage($dir, $name)
     {
         unlink($dir . '/' . $name);
+    }
+
+    /**
+     * Creates an admin log entry after an action is performed.
+     *
+     * @param  string  $action
+     * @param  object  $user
+     * @param  string  $action
+     */
+    public function logAdminAction($user, $action, $action_details)
+    {
+        $log = AdminLog::create([
+            'user_id' => $user->id,
+            'action' => $action,
+            'action_details' => $action_details,
+        ]);
+
+        if($log) return true;
+        else return false;
     }
 }

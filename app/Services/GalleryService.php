@@ -39,7 +39,7 @@ class GalleryService extends Service
 
             $gallery = Gallery::create($data);
 
-            if(!logAdminAction($user, 'Created Gallery', 'Created '.$gallery->displayName)) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Created Gallery', 'Created '.$gallery->displayName)) throw new \Exception("Failed to log admin action.");
 
             return $this->commitReturn($gallery);
         } catch(\Exception $e) {
@@ -70,7 +70,7 @@ class GalleryService extends Service
             if(!isset($data['hide_before_start'])) $data['hide_before_start'] = 0;
             if(!isset($data['prompt_selection'])) $data['prompt_selection'] = 0;
 
-            if(!logAdminAction($user, 'Updated Gallery', 'Updated '.$gallery->displayName)) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Updated Gallery', 'Updated '.$gallery->displayName)) throw new \Exception("Failed to log admin action.");
 
             $gallery->update($data);
 
@@ -94,7 +94,7 @@ class GalleryService extends Service
         try {
             // Check first if submissions exist in this gallery, or the gallery has children
             if(GallerySubmission::where('gallery_id', $gallery->id)->exists() || Gallery::where('parent_id', $gallery->id)->exists()) throw new \Exception("A gallery or submissions in this gallery exist. Consider setting the gallery's submissions to closed instead.");
-            if(!logAdminAction($user, 'Deleted Gallery', 'Deleted '.$gallery->name)) throw new \Exception("Failed to log admin action.");
+            if(!$this->logAdminAction($user, 'Deleted Gallery', 'Deleted '.$gallery->name)) throw new \Exception("Failed to log admin action.");
 
             $gallery->delete();
 
