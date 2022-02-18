@@ -95,7 +95,24 @@ $rules = [
             'const'
         ],
     ],
-    'ordered_class_elements' => true,
+    'ordered_class_elements' => [
+        'order' => [
+            'use_trait',
+            'property_protected',
+            'property_private',
+            'property_public',
+            'construct',
+            'destruct',
+            'magic',
+            'phpunit',
+            'method_public',
+            'method_protected',
+            'method_private',
+            'constant_public',
+            'constant_protected',
+            'constant_private',
+        ],
+    ],
     'ordered_traits' => true,
     'no_superfluous_phpdoc_tags' => [
         'allow_mixed' => true

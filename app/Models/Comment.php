@@ -1,17 +1,15 @@
 <?php
 
 namespace App\Models;
-use App\Models\Model;
 
 use App\Events\CommentCreated;
-use App\Events\CommentUpdated;
 use App\Events\CommentDeleted;
+use App\Events\CommentUpdated;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Config;
 
 class Comment extends Model
 {
-	use SoftDeletes;
+    use SoftDeletes;
 
     /**
      * The relations to eager load on every query.
@@ -19,7 +17,7 @@ class Comment extends Model
      * @var array
      */
     protected $with = [
-        'commenter'
+        'commenter',
     ];
 
     /**
@@ -28,16 +26,8 @@ class Comment extends Model
      * @var array
      */
     protected $fillable = [
-        'comment', 'approved', 'guest_name', 'guest_email', 'is_featured', 'type'
+        'comment', 'approved', 'guest_name', 'guest_email', 'is_featured', 'type',
     ];
-
-    /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
-
 
     /**
      * The attributes that should be cast to native types.
@@ -45,7 +35,7 @@ class Comment extends Model
      * @var array
      */
     protected $casts = [
-        'approved' => 'boolean'
+        'approved' => 'boolean',
     ];
 
     /**
@@ -58,6 +48,13 @@ class Comment extends Model
         'updated' => CommentUpdated::class,
         'deleted' => CommentDeleted::class,
     ];
+
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
 
     /**
      * The user who posted the comment.
@@ -98,7 +95,7 @@ class Comment extends Model
      */
     public function getUrlAttribute()
     {
-        return url('comment/' . $this->id);
+        return url('comment/'.$this->id);
     }
 
     /**
@@ -108,8 +105,10 @@ class Comment extends Model
      */
     public function getTopCommentAttribute()
     {
-        if(!$this->parent) { return $this; }
-        else {return $this->parent->topComment;}
+        if (!$this->parent) {
+            return $this;
+        } else {
+            return $this->parent->topComment;
+        }
     }
-
 }

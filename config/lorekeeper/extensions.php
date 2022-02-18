@@ -36,12 +36,12 @@ return [
 
     // Item Entry Expansion - Mercury
     'item_entry_expansion' => [
-        'extra_fields' => 0,
+        'extra_fields'    => 0,
         'resale_function' => 0,
-        'loot_tables' => [
+        'loot_tables'     => [
             // Adds the ability to use either rarity criteria for items or item categories with rarity criteria in loot tables. Note that disabling this does not apply retroactively.
-            'enable' => 0,
-            'alternate_filtering' => 0 // By default this uses more broadly compatible methods to filter by rarity. If you are on Dreamhost/know your DB software can handle searching in JSON, it's recommended to set this to 1 instead.
+            'enable'              => 0,
+            'alternate_filtering' => 0, // By default this uses more broadly compatible methods to filter by rarity. If you are on Dreamhost/know your DB software can handle searching in JSON, it's recommended to set this to 1 instead.
         ],
     ],
 
@@ -53,7 +53,7 @@ return [
 
     // Character Reward Expansion - Uri
     'character_reward_expansion' => [
-        'expanded' => 1,
+        'expanded'          => 1,
         'default_recipient' => 0, // 0 to default to the character's owner (if a user), 1 to default to the submission user.
     ],
 
