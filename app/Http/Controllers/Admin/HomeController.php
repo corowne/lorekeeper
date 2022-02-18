@@ -2,27 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
-
-use Settings;
-use Auth;
-use DB;
-use Config;
-
-use App\Models\Submission\Submission;
-use App\Models\Gallery\GallerySubmission;
 use App\Http\Controllers\Controller;
 use App\Models\AdminLog;
 use App\Models\Character\CharacterDesignUpdate;
 use App\Models\Character\CharacterTransfer;
+use App\Models\Currency\Currency;
 use App\Models\Gallery\GallerySubmission;
 use App\Models\Report\Report;
-
-use App\Http\Controllers\Controller;
-use App\Models\Currency\Currency;
 use App\Models\Submission\Submission;
 use App\Models\Trade;
 use Auth;
+use Config;
+use DB;
+use Illuminate\Http\Request;
 use Settings;
 
 class HomeController extends Controller
@@ -76,25 +68,25 @@ class HomeController extends Controller
     {
         return view('admin.staff_reward_settings', [
             'currency' => Currency::find(Config::get('lorekeeper.extensions.staff_rewards.currency_id')),
-            'settings' => DB::table('staff_actions')->orderBy('key')->paginate(20)
+            'settings' => DB::table('staff_actions')->orderBy('key')->paginate(20),
         ]);
     }
 
     /**
      * Edits a staff reward setting.
      *
-     * @param  \Illuminate\Http\Request       $request
-     * @param  string                         $key
+     * @param string $key
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postEditStaffRewardSetting(Request $request, $key)
     {
-        if(DB::table('staff_actions')->where('key', $key)->update(['value' => $request->get('value')])) {
+        if (DB::table('staff_actions')->where('key', $key)->update(['value' => $request->get('value')])) {
             flash('Setting updated successfully.')->success();
-        }
-        else {
+        } else {
             flash('Invalid setting selected.')->success();
         }
+
         return redirect()->back();
     }
 }

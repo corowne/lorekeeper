@@ -2,9 +2,9 @@
 
 return [
     // Name and description shown in the admin panel
-    'name' => 'Trade Processing',
+    'name'        => 'Trade Processing',
     'description' => 'Approving or rejecting trades.',
-    'actions' => [
+    'actions'     => [
         // Actions, as reported to admin action logging,
         // that should use this key's reward value
         'Approved Trade',

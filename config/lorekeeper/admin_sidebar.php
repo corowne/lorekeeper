@@ -23,13 +23,13 @@ return [
             ],
             [
                 'name' => 'Admin Logs',
-                'url' => 'admin/logs'
+                'url'  => 'admin/logs',
             ],
             [
                 'name' => 'Staff Reward Settings',
-                'url' => 'admin/users/staff-reward-settings'
+                'url'  => 'admin/users/staff-reward-settings',
             ],
-        ]
+        ],
     ],
     'Reports' => [
         'power' => 'manage_reports',

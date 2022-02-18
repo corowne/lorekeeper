@@ -97,7 +97,9 @@ class FeatureService extends Service
 
             $category->update($data);
 
-            if(!$this->logAdminAction($user, 'Updated Feature Category', 'Updated '.$category->displayName)) throw new \Exception("Failed to log admin action.");
+            if (!$this->logAdminAction($user, 'Updated Feature Category', 'Updated '.$category->displayName)) {
+                throw new \Exception('Failed to log admin action.');
+            }
 
             if (!$this->logAdminAction($user, 'Updated Feature Category', 'Updated '.$category->displayName)) {
                 throw new \Exception('Failed to log admin action.');

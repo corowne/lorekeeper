@@ -154,7 +154,11 @@ class UserController extends Controller
                     }
                 }
             }
-            if(!(new UserService)->logAdminAction(Auth::user(), 'Edited User', 'Cleared '.$user->displayname.'\' alias')) { flash('Failed to log admin action.')->error(); return redirect()->back(); }
+            if (!(new UserService)->logAdminAction(Auth::user(), 'Edited User', 'Cleared '.$user->displayname.'\' alias')) {
+                flash('Failed to log admin action.')->error();
+
+                return redirect()->back();
+            }
 
             UserUpdateLog::create(['staff_id' => Auth::user()->id, 'user_id' => $user->id, 'data' => json_encode($logData), 'type' => 'Clear Alias']);
             flash('Cleared user\'s alias successfully.')->success();
