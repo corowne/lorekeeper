@@ -11,25 +11,25 @@ class CheckAlias
      * Redirects users without an alias to the dA account linking page,
      * and banned users to the ban page.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)
     {
-        if(Settings::get('is_maintenance_mode') == 1 && !$request->user()->hasPower('maintenance_access')) {
+        if (Settings::get('is_maintenance_mode') == 1 && !$request->user()->hasPower('maintenance_access')) {
             return redirect('/');
         }
-        if(!$request->user()->has_alias) {
+        if (!$request->user()->has_alias) {
             return redirect('/link');
         }
-        if(!$request->user()->birthday) {
+        if (!$request->user()->birthday) {
             return redirect('/birthday');
         }
-        if(!$request->user()->checkBirthday) {
+        if (!$request->user()->checkBirthday) {
             return redirect('/blocked');
         }
-        if($request->user()->is_banned) {
+        if ($request->user()->is_banned) {
             return redirect('/banned');
         }
 

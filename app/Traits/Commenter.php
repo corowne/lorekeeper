@@ -2,10 +2,6 @@
 
 namespace App\Traits;
 
-use App\Models\Comment;
-
-use Illuminate\Support\Facades\Config;
-
 /**
  * Add this trait to your User model so
  * that you can retrieve the comments for a user.

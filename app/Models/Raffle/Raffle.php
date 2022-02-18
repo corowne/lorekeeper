@@ -1,7 +1,8 @@
-<?php namespace App\Models\Raffle;
+<?php
+
+namespace App\Models\Raffle;
 
 use App\Models\Model;
-use DB;
 
 class Raffle extends Model
 {
@@ -11,7 +12,7 @@ class Raffle extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'is_active', 'winner_count', 'group_id', 'order', 'ticket_cap'
+        'name', 'is_active', 'winner_count', 'group_id', 'order', 'ticket_cap',
     ];
 
     /**
@@ -20,7 +21,6 @@ class Raffle extends Model
      * @var string
      */
     protected $table = 'raffles';
-
     /**
      * Dates on the model to convert to Carbon instances.
      *
@@ -87,7 +87,7 @@ class Raffle extends Model
      */
     public function getNameWithGroupAttribute()
     {
-        return ($this->group_id ? '[' . $this->group->name . '] ' : '') . $this->name;
+        return ($this->group_id ? '['.$this->group->name.'] ' : '').$this->name;
     }
 
     /**
@@ -118,6 +118,8 @@ class Raffle extends Model
 
     /**
      * Displays the raffle's name, linked to the raffle page.
+     *
+     * @param mixed $asReward
      *
      * @return string
      */

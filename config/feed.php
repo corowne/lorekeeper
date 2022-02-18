@@ -18,9 +18,9 @@ return [
              */
             'url' => '/news',
 
-            'title' => env('APP_NAME', 'Laravel').' ・ News',
+            'title'       => env('APP_NAME', 'Laravel').' ・ News',
             'description' => 'Site news.',
-            'language' => 'en-US',
+            'language'    => 'en-US',
 
             /*
              * The view that will render the feed.
@@ -49,9 +49,9 @@ return [
              */
             'url' => '/sales',
 
-            'title' => env('APP_NAME', 'Laravel').' ・ Sales',
+            'title'       => env('APP_NAME', 'Laravel').' ・ Sales',
             'description' => 'Site news.',
-            'language' => 'en-US',
+            'language'    => 'en-US',
 
             /*
              * The view that will render the feed.
