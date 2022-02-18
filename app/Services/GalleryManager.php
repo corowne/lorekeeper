@@ -870,7 +870,7 @@ class GalleryManager extends Service
      *
      * @return \App\Models\Gallery\GallerySubmission|bool
      */
-    private function rejectSubmission($submission, $user)
+    public function rejectSubmission($submission, $user)
     {
         DB::beginTransaction();
 
