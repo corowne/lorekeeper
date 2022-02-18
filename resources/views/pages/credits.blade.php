@@ -81,6 +81,9 @@
     <p class="mb-0 col-md-4">
         <strong>Character Rewards</strong> by <a href="https://github.com/preimpression">Preimpression</a> ({{ Config::get('lorekeeper.extensions.character_reward_expansion.expanded') ? 'Enabled' : 'Disabled' }}/{{ Config::get('lorekeeper.extensions.character_reward_expansion.default_recipient') ? 'Submitter' : 'Character Owner' }})
     </p>
+    <p class="mb-0 col-md-4">
+        <strong>Staff Rewards</strong> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('lorekeeper.extensions.admin_rewards') ? 'Enabled' : 'Disabled' }})
+    </p>
 </div>
 
 <hr/>

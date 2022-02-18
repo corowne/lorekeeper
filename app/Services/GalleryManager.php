@@ -552,7 +552,7 @@ class GalleryManager extends Service
      * @param  \App\Models\Gallery\GallerySubmission  $submission
      * @return bool|\App\Models\Gallery\GallerySubmission
      */
-    private function rejectSubmission($submission, $user)
+    public function rejectSubmission($submission, $user)
     {
         DB::beginTransaction();
 

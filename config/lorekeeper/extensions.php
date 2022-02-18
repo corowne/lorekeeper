@@ -57,4 +57,10 @@ return [
         'default_recipient' => 0, // 0 to default to the character's owner (if a user), 1 to default to the submission user.
     ],
 
+    // Staff Rewards - Mercury
+    'staff_rewards' => [
+        'enabled' => 0,
+        'currency_id' => 1,
+    ],
+
 ];

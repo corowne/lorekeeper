@@ -2,8 +2,10 @@
 
 use App;
 use App\Models\AdminLog;
+use App\Models\Currency\Currency;
 use Auth;
 use DB;
+use Config;
 use File;
 use Request;
 use Illuminate\Support\MessageBag;
@@ -239,6 +241,8 @@ abstract class Service {
 
     /**
      * Creates an admin log entry after an action is performed.
+     * If staff rewards are enabled, also checks for and grants any
+     * applicable rewards.
      *
      * @param  string  $action
      * @param  object  $user
@@ -246,6 +250,49 @@ abstract class Service {
      */
     public function logAdminAction($user, $action, $action_details)
     {
+        // If staff rewards are enabled, check if the action
+        // is eligible for a reward, and if so, grant it
+        if(Config::get('lorekeeper.extensions.staff_rewards.enabled')) {
+            // Ensure that the user only receives rewards for the action once
+            if(!AdminLog::where('user_id', $user->id)->where('action', $action)->where('action_details', $action_details)->exists()) {
+                // Fetch all configured actions
+                $actions = [];
+                foreach (glob('../config/lorekeeper/staff-reward-actions/*.php') as $a) {
+                    $actions[basename($a, '.php')] = include $a;
+                }
+
+                // Cycle through and locate any keyed actions which
+                // correspond to the action currently being logged
+                $keyedActions = [];
+                foreach($actions as $key=>$a) {
+                    foreach($a['actions'] as $act) {
+                        if($act == $action) $keyedActions[] = $key;
+                    }
+                }
+
+                // Collect the configured reward(s) for performing
+                // this action
+                $reward = 0;
+                foreach($keyedActions as $a) {
+                    if(DB::table('staff_actions')->where('key', $a)->exists()) {
+                        $reward += DB::table('staff_actions')->where('key', $a)->first()->value;
+                    } else {
+                        // If not configured, just supply 1
+                        $reward += 1;
+                    }
+                }
+
+                // Grant the calculated reward to the user
+                if($reward) {
+                    // Check that the currency exists, first
+                    $currency = Currency::find(Config::get('lorekeeper.extensions.staff_rewards.currency_id'));
+                    if($currency) {
+                        if(!(new CurrencyManager)->creditCurrency(null, $user, 'Staff Reward', $action_details, $currency, $reward)) return false;
+                    }
+                }
+            }
+        }
+
         $log = AdminLog::create([
             'user_id' => $user->id,
             'action' => $action,
