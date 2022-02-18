@@ -33,7 +33,7 @@ class CharacterCategoryController extends Controller
             'categories' => CharacterCategory::orderBy('sort', 'DESC')->get()
         ]);
     }
-    
+
     /**
      * Shows the create character category page.
      *
@@ -46,7 +46,7 @@ class CharacterCategoryController extends Controller
             'sublists' => [0 => 'No Sublist'] + Sublist::orderBy('name', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
-    
+
     /**
      * Shows the edit character category page.
      *
@@ -77,10 +77,10 @@ class CharacterCategoryController extends Controller
         $data = $request->only([
             'code', 'name', 'description', 'image', 'remove_image', 'masterlist_sub_id'
         ]);
-        if($id && $service->updateCharacterCategory(CharacterCategory::find($id), $data)) {
+        if($id && $service->updateCharacterCategory(CharacterCategory::find($id), $data, Auth::user())) {
             flash('Category updated successfully.')->success();
         }
-        else if (!$id && $category = $service->createCharacterCategory($data)) {
+        else if (!$id && $category = $service->createCharacterCategory($data, Auth::user())) {
             flash('Category created successfully.')->success();
             return redirect()->to('admin/data/character-categories/edit/'.$category->id);
         }
@@ -89,7 +89,7 @@ class CharacterCategoryController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Gets the character category deletion modal.
      *
@@ -114,7 +114,7 @@ class CharacterCategoryController extends Controller
      */
     public function postDeleteCharacterCategory(Request $request, CharacterCategoryService $service, $id)
     {
-        if($id && $service->deleteCharacterCategory(CharacterCategory::find($id))) {
+        if($id && $service->deleteCharacterCategory(CharacterCategory::find($id), Auth::user())) {
             flash('Category deleted successfully.')->success();
         }
         else {
