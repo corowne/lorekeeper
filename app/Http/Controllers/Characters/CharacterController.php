@@ -140,14 +140,15 @@ class CharacterController extends Controller
     /**
      * Shows a character's gallery.
      *
-     * @param  string  $slug
+     * @param  \Illuminate\Http\Request       $request
+     * @param  string                         $slug
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCharacterGallery($slug)
+    public function getCharacterGallery(Request $request, $slug)
     {
         return view('character.gallery', [
             'character' => $this->character,
-            'submissions' => GallerySubmission::whereIn('id', $this->character->gallerySubmissions->pluck('gallery_submission_id')->toArray())->visible()->accepted()->orderBy('created_at', 'DESC')->paginate(20),
+            'submissions' => GallerySubmission::whereIn('id', $this->character->gallerySubmissions->pluck('gallery_submission_id')->toArray())->visible()->accepted()->orderBy('created_at', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -268,7 +269,7 @@ class CharacterController extends Controller
                 $sender = Auth::user();
                 $recipient = $this->character;
 
-                if($service->transferCharacterStack($sender, $recipient, UserItem::find($request->get('stack_id')), $request->get('stack_quantity'))) {
+                if($service->transferCharacterStack($sender, $recipient, UserItem::find($request->get('stack_id')), $request->get('stack_quantity'), Auth::user())) {
                     flash('Item transferred successfully.')->success();
                 }
                 else {
@@ -298,7 +299,7 @@ class CharacterController extends Controller
      */
     private function postItemTransfer(Request $request, InventoryManager $service)
     {
-        if($service->transferCharacterStack($this->character, $this->character->user, CharacterItem::find($request->get('ids')), $request->get('quantities'))) {
+        if($service->transferCharacterStack($this->character, $this->character->user, CharacterItem::find($request->get('ids')), $request->get('quantities'), Auth::user())) {
             flash('Item transferred successfully.')->success();
         }
         else {
@@ -316,7 +317,7 @@ class CharacterController extends Controller
      */
     private function postName(Request $request, InventoryManager $service)
     {
-        if($service->nameStack($this->character, CharacterItem::find($request->get('ids')), $request->get('stack_name'))) {
+        if($service->nameStack($this->character, CharacterItem::find($request->get('ids')), $request->get('stack_name'), Auth::user())) {
             flash('Item named successfully.')->success();
         }
         else {
@@ -334,7 +335,7 @@ class CharacterController extends Controller
      */
     private function postDelete(Request $request, InventoryManager $service)
     {
-        if($service->deleteStack($this->character, CharacterItem::find($request->get('ids')), $request->get('quantities'))) {
+        if($service->deleteStack($this->character, CharacterItem::find($request->get('ids')), $request->get('quantities'), Auth::user())) {
             flash('Item deleted successfully.')->success();
         }
         else {

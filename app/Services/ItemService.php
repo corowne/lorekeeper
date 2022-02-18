@@ -109,7 +109,9 @@ class ItemService extends Service
      */
     private function populateCategoryData($data, $category = null)
     {
-        if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
+        if(isset($data['description']) && $data['description'])
+            $data['parsed_description'] = parse($data['description']);
+        else $data['parsed_description'] = null;
 
         isset($data['is_character_owned']) && $data['is_character_owned'] ? $data['is_character_owned'] : $data['is_character_owned'] = 0;
         isset($data['character_limit']) && $data['character_limit'] ? $data['character_limit'] : $data['character_limit'] = 0;

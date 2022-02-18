@@ -14,7 +14,7 @@
         {!! Form::label('Number') !!} {!! add_help('This number helps to identify the character and should preferably be unique either within the category, or among all characters.') !!}
         <div class="d-flex">
             {!! Form::text('number', $request->character->number, ['class' => 'form-control mr-2', 'id' => 'number']) !!}
-            <a href="#" id="pull-number" class="btn btn-primary" data-toggle="tooltip" title="This will find the highest number assigned to a character currently and add 1 to it. It can be adjusted to pull the highest number in the category or the highest overall number - this setting is in the code.">Pull Next Number</a> 
+            <a href="#" id="pull-number" class="btn btn-primary" data-toggle="tooltip" title="This will find the highest number assigned to a character currently and add 1 to it. It can be adjusted to pull the highest number in the category or the highest overall number - this setting is in the code.">Pull Next Number</a>
         </div>
     </div>
 
@@ -32,7 +32,7 @@
     <h3>Transfer Information</h3>
 
     <div class="alert alert-info">
-        These are displayed on the character's profile, but don't have any effect on site functionality except for the following: 
+        These are displayed on the character's profile, but don't have any effect on site functionality except for the following:
         <ul>
             <li>If all switches are off, the character cannot be transferred by the user (directly or through trades).</li>
             <li>If a transfer cooldown is set, the character also cannot be transferred by the user (directly or through trades) until the cooldown is up.</li>
@@ -57,10 +57,10 @@
         </div>
     </div>
     <div class="form-group">
-        {!! Form::label('On Transfer Cooldown Until (Optional)') !!} 
+        {!! Form::label('On Transfer Cooldown Until (Optional)') !!}
         {!! Form::text('transferrable_at', $request->character->transferrable_at, ['class' => 'form-control', 'id' => 'datepicker']) !!}
     </div>
-    
+
     <h3>Image Settings</h3>
 
     <div class="form-group">
@@ -71,6 +71,12 @@
         {!! Form::checkbox('invalidate_old', 1, true, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
         {!! Form::label('invalidate_old', 'Invalidate Old Image', ['class' => 'form-check-label ml-3']) !!}  {!! add_help('This will mark the last image attached to the character as an invalid reference.') !!}
     </div>
+    @if(Config::get('lorekeeper.extensions.remove_myo_image') && $request->character->is_myo_slot)
+        <div class="form-group">
+            {!! Form::label('Remove MYO Image') !!}  {!! add_help('This will either hide or delete the MYO slot placeholder image if set.') !!}
+            {!! Form::select('remove_myo_image', [0 => 'Leave MYO Image', 1 => 'Hide MYO Image', 2 => 'Delete MYO Image'], null, ['class' => 'form-control']) !!}
+        </div>
+    @endif
 
     <div class="text-right">
         {!! Form::submit('Approve Request', ['class' => 'btn btn-success']) !!}

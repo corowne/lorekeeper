@@ -34,6 +34,16 @@ class SubmissionManager extends Service
     */
 
     /**
+     * Helper function to remove all empty/zero/falsey values.
+     *
+     * @param  array $value
+     * @return array
+     */
+    private function innerNull($value){
+        return array_values(array_filter($value));
+    }
+
+    /**
      * Creates a new submission.
      *
      * @param  array                  $data
@@ -116,7 +126,7 @@ class SubmissionManager extends Service
                     addAsset($promptRewards, $reward->reward, $reward->quantity);
                 }
             }
-            $promptRewards = mergeAssetsArrays($promptRewards, $this->processRewards($data, false));
+            $promptRewards = mergeAssetsArrays($promptRewards, $this->processRewards($data, false, null, $isClaim));
             $submission = Submission::create([
                 'user_id' => $user->id,
                 'url' => isset($data['url']) ? $data['url'] : null,
@@ -180,19 +190,16 @@ class SubmissionManager extends Service
         return $this->rollbackReturn(false);
     }
 
-    private function innerNull($value){
-        return array_values(array_filter($value));
-    }
-
     /**
      * Processes reward data into a format that can be used for distribution.
      *
      * @param  array $data
      * @param  bool  $isCharacter
      * @param  bool  $isStaff
+     * @param  bool  $isClaim
      * @return array
      */
-    private function processRewards($data, $isCharacter, $isStaff = false)
+    private function processRewards($data, $isCharacter, $isStaff = false, $isClaim = false)
     {
         if($isCharacter)
         {
@@ -245,7 +252,7 @@ class SubmissionManager extends Service
                             $reward = LootTable::find($data['rewardable_id'][$key]);
                             break;
                         case 'Raffle':
-                            if (!$isStaff) break;
+                            if (!$isStaff && !$isClaim) break;
                             $reward = Raffle::find($data['rewardable_id'][$key]);
                             break;
                     }

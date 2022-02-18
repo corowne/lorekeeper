@@ -92,7 +92,7 @@ class Comment extends Model
     }
 
     /**
-     * Gets / Creates permalink for comments - allows user to go directly to comment
+     * Gets / Creates permalink for comments - allows user to go directly to comment.
      *
      * @return string
      */
@@ -102,7 +102,7 @@ class Comment extends Model
     }
 
     /**
-     * Gets top comment
+     * Gets top comment.
      *
      * @return string
      */

@@ -38,7 +38,7 @@ class AccountController extends Controller
     {
         if(Auth::user()->is_banned)
             return view('account.banned');
-        else 
+        else
             return redirect()->to('/');
     }
 
@@ -51,7 +51,7 @@ class AccountController extends Controller
     {
         return view('account.settings');
     }
-    
+
     /**
      * Edits the user's profile.
      *
@@ -84,7 +84,7 @@ class AccountController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Changes the user's password.
      *
@@ -106,7 +106,7 @@ class AccountController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Changes the user's email address and sends a verification email.
      *
@@ -162,7 +162,7 @@ class AccountController extends Controller
             'notifications' => $notifications
         ]);
     }
-    
+
     /**
      * Deletes a notification and returns a response.
      *
@@ -182,7 +182,8 @@ class AccountController extends Controller
      */
     public function postClearNotifications($type = null)
     {
-        if(isset($type) && $type) Auth::user()->notifications()->where('notification_type_id', $type)->delete();
+        if(isset($type))
+            Auth::user()->notifications()->where('notification_type_id', $type)->delete();
         else Auth::user()->notifications()->delete();
         flash('Notifications cleared successfully.')->success();
         return redirect()->back();

@@ -547,6 +547,16 @@ class DesignUpdateManager extends Service
                 $request->character->image->save();
             }
 
+            // Note old image to delete it
+            if(Config::get('lorekeeper.extensions.remove_myo_image') && $request->character->is_myo_slot && $data['remove_myo_image'] == 2)
+                $oldImage = $request->character->image;
+
+            // Hide the MYO placeholder image if desired
+            if(Config::get('lorekeeper.extensions.remove_myo_image') && $request->character->is_myo_slot && $data['remove_myo_image'] == 1) {
+                $request->character->image->is_visible = 0;
+                $request->character->image->save();
+            }
+
             // Set new image if desired
             if(isset($data['set_active']))
             {
@@ -571,6 +581,15 @@ class DesignUpdateManager extends Service
                 $request->character->is_myo_slot = 0;
                 $request->user->settings->is_fto = 0;
                 $request->user->settings->save();
+
+                // Delete the MYO placeholder image if desired
+                if(Config::get('lorekeeper.extensions.remove_myo_image') && $data['remove_myo_image'] == 2) {
+                    $characterManager = new CharacterManager;
+                    if(!$characterManager->deleteImage($oldImage, $user, true)) {
+                        foreach($characterManager->errors()->getMessages()['error'] as $error) flash($error)->error();
+                        throw new \Exception('Failed to delete MYO image.');
+                    }
+                }
             }
             $request->character->save();
 

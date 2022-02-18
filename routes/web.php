@@ -41,7 +41,7 @@ Route::group(['middleware' => ['auth', 'verified']], function() {
     Route::get('banned', 'Users\AccountController@getBanned');
 
     /**********************************************************************************************
-        Routes that require having a linked dA account (also includes blocked routes when banned)
+        Routes that require having a linked account (also includes blocked routes when banned)
     **********************************************************************************************/
     Route::group(['middleware' => ['alias']], function() {
 

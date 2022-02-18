@@ -968,10 +968,10 @@ autoprefixer@^9.4.2:
     postcss "^7.0.14"
     postcss-value-parser "^3.3.1"
 
-axios@^0.23.0:
-  version "0.23.0"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.23.0.tgz#b0fa5d0948a8d1d75e3d5635238b6c4625b05149"
-  integrity sha512-NmvAE4i0YAv5cKq8zlDoPd1VLKAqX5oLuZKs8xkJa4qi6RGn0uhCYFjWtHHC9EM/MwOwYWOs53W+V0aqEXq1sg==
+axios@^0.24.0:
+  version "0.24.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.24.0.tgz#804e6fa1e4b9c5288501dd9dff56a7a0940d20d6"
+  integrity sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==
   dependencies:
     follow-redirects "^1.14.4"
 
@@ -1081,10 +1081,10 @@ boolbase@^1.0.0, boolbase@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
 
-bootstrap@^4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.6.0.tgz#97b9f29ac98f98dfa43bf7468262d84392552fd7"
-  integrity sha512-Io55IuQY3kydzHtbGvQya3H+KorS/M9rSNyfCGCg9WZ4pyT/lCxIlpJgG1GXW/PswzC84Tr2fBYi+7+jFVQQBw==
+bootstrap@^4.6.1:
+  version "4.6.1"
+  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.6.1.tgz#bc25380c2c14192374e8dec07cf01b2742d222a2"
+  integrity sha512-0dj+VgI9Ecom+rvvpNZ4MUZJz8dcX7WCX+eTID9+/8HgOkv3dsRzi8BGeZJCQU6flWQVYxwTQnEZFrmJSEO7og==
 
 brace-expansion@^1.1.7:
   version "1.1.11"
@@ -2484,9 +2484,9 @@ flush-write-stream@^1.0.0:
     readable-stream "^2.3.6"
 
 follow-redirects@^1.0.0, follow-redirects@^1.14.4:
-  version "1.14.4"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.4.tgz#838fdf48a8bbdd79e52ee51fb1c94e3ed98b9379"
-  integrity sha512-zwGkiSXC1MUJG/qmeIFH2HBJx9u0V46QGUe3YR1fXG8bXQxq7fLj0RjLZQ5nubr9qNJUZrH+xUcwXEoXNpfS+g==
+  version "1.14.7"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.7.tgz#2004c02eb9436eee9a21446a6477debf17e81685"
+  integrity sha512-+hbxoLbFMbRKDwohX8GkTataGqO6Jb7jGwpAlwgy2bIz25XtRm7KEzJM76R1WiNT5SwZkX4Y75SwBolkpmE7iQ==
 
 for-in@^1.0.2:
   version "1.0.2"
@@ -2930,6 +2930,11 @@ img-loader@^3.0.0:
   resolved "https://registry.yarnpkg.com/img-loader/-/img-loader-3.0.1.tgz#c279691c0a9e6b94fa7d8318d2a6596d98bcee78"
   dependencies:
     loader-utils "^1.1.0"
+
+immutable@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.0.0.tgz#b86f78de6adef3608395efb269a91462797e2c23"
+  integrity sha512-zIE9hX70qew5qTUjSS7wi1iwj/l7+m54KWU247nhM3v806UdGj1yDndXj+IOYxxtW9zyLI+xqFNZjTuDaLUqFw==
 
 import-cwd@^2.0.0:
   version "2.1.0"
@@ -5003,20 +5008,22 @@ safe-regex@^1.1.0:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
 
-sass-loader@^12.2.0:
-  version "12.2.0"
-  resolved "https://registry.yarnpkg.com/sass-loader/-/sass-loader-12.2.0.tgz#b370010fb0ababae2ef9c6c89e05d6c6debc6042"
-  integrity sha512-qducnp5vSV+8A8MZxuH6zV0MUg4MOVISScl2wDTCAn/2WJX+9Auxh92O/rnkdR2bvi5QxZBafnzkzRrWGZvm7w==
+sass-loader@^12.4.0:
+  version "12.4.0"
+  resolved "https://registry.yarnpkg.com/sass-loader/-/sass-loader-12.4.0.tgz#260b0d51a8a373bb8e88efc11f6ba5583fea0bcf"
+  integrity sha512-7xN+8khDIzym1oL9XyS6zP6Ges+Bo2B2xbPrjdMHEYyV3AQYhd/wXeru++3ODHF0zMjYmVadblSKrPrjEkL8mg==
   dependencies:
     klona "^2.0.4"
     neo-async "^2.6.2"
 
-sass@^1.43.2:
-  version "1.43.2"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.43.2.tgz#c02501520c624ad6622529a8b3724eb08da82d65"
-  integrity sha512-DncYhjl3wBaPMMJR0kIUaH3sF536rVrOcqqVGmTZHQRRzj7LQlyGV7Mb8aCKFyILMr5VsPHwRYtyKpnKYlmQSQ==
+sass@^1.48.0:
+  version "1.48.0"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.48.0.tgz#b53cfccc1b8ab4be375cc54f306fda9d4711162c"
+  integrity sha512-hQi5g4DcfjcipotoHZ80l7GNJHGqQS5LwMBjVYB/TaT0vcSSpbgM8Ad7cgfsB2M0MinbkEQQPO9+sjjSiwxqmw==
   dependencies:
     chokidar ">=3.0.0 <4.0.0"
+    immutable "^4.0.0"
+    source-map-js ">=0.6.2 <2.0.0"
 
 sax@^1.2.4, sax@~1.2.4:
   version "1.2.4"
@@ -5237,6 +5244,11 @@ sockjs@0.3.19:
 source-list-map@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/source-list-map/-/source-list-map-2.0.1.tgz#3993bd873bfc48479cca9ea3a547835c7c154b34"
+
+"source-map-js@>=0.6.2 <2.0.0":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/source-map-js/-/source-map-js-1.0.1.tgz#a1741c131e3c77d048252adfa24e23b908670caf"
+  integrity sha512-4+TN2b3tqOCd/kaGRJ/sTYA0tR0mdXx26ipdolxcwtJVqEnqNYvlCAt1q3ypy4QMlYus+Zh34RNtYLoq2oQ4IA==
 
 source-map-resolve@^0.5.0:
   version "0.5.2"

@@ -57,6 +57,10 @@ return [
         'default_recipient' => 0, // 0 to default to the character's owner (if a user), 1 to default to the submission user.
     ],
 
+    // MYO Image Hide/Remove - Mercury
+    // Adds an option when approving MYO submissions to hide or delete the MYO placeholder image
+    'remove_myo_image' => 0,
+
     // Staff Rewards - Mercury
     'staff_rewards' => [
         'enabled' => 0,
