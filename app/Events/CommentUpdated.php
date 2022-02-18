@@ -2,8 +2,8 @@
 
 namespace App\Events;
 
-use Illuminate\Queue\SerializesModels;
 use App\Models\Comment;
+use Illuminate\Queue\SerializesModels;
 
 class CommentUpdated
 {
@@ -13,8 +13,6 @@ class CommentUpdated
 
     /**
      * Create a new event instance.
-     *
-     * @return void
      */
     public function __construct(Comment $comment)
     {

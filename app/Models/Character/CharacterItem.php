@@ -15,15 +15,8 @@ class CharacterItem extends Model
      * @var array
      */
     protected $fillable = [
-        'data', 'item_id', 'character_id', 'stack_name'
+        'data', 'item_id', 'character_id', 'stack_name',
     ];
-
-    /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
 
     /**
      * The table associated with the model.
@@ -32,8 +25,15 @@ class CharacterItem extends Model
      */
     protected $table = 'character_items';
 
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
+
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -41,7 +41,7 @@ class CharacterItem extends Model
     /**
      * Get the character who owns the stack.
      */
-    public function character() 
+    public function character()
     {
         return $this->belongsTo('App\Models\Character\Character');
     }
@@ -49,13 +49,13 @@ class CharacterItem extends Model
     /**
      * Get the item associated with this item stack.
      */
-    public function item() 
+    public function item()
     {
         return $this->belongsTo('App\Models\Item\Item');
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -65,11 +65,11 @@ class CharacterItem extends Model
      *
      * @return array
      */
-    public function getDataAttribute() 
+    public function getDataAttribute()
     {
         return json_decode($this->attributes['data'], true);
     }
-    
+
     /**
      * Checks if the stack is transferrable.
      *
@@ -77,7 +77,10 @@ class CharacterItem extends Model
      */
     public function getIsTransferrableAttribute()
     {
-        if(!isset($this->data['disallow_transfer']) && $this->item->allow_transfer) return true;
+        if (!isset($this->data['disallow_transfer']) && $this->item->allow_transfer) {
+            return true;
+        }
+
         return false;
     }
 
@@ -88,7 +91,7 @@ class CharacterItem extends Model
      */
     public function getAvailableQuantityAttribute()
     {
-        return ($this->count);
+        return $this->count;
     }
 
     /**

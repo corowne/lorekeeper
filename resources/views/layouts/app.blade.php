@@ -10,6 +10,8 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!-- ReCaptcha v3 -->
+    {!! RecaptchaV3::initJs() !!}
 
     <title>{{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} -@yield('title')</title>
 
@@ -72,6 +74,7 @@
         <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
     @endif
 
+    @include('feed::links')
 </head>
 <body>
     <div id="app">
@@ -89,6 +92,14 @@
                 </div>
                 <div class="main-content col-lg-8 p-4">
                     <div>
+                        @if(Settings::get('is_maintenance_mode'))
+                            <div class="alert alert-secondary">
+                                The site is currently in maintenance mode! 
+                                @if(!Auth::user()->hasPower('maintenance_access'))
+                                    You can browse public content, but cannot make any submissions.
+                                @endif
+                            </div>
+                        @endif
                         @if(Auth::check() && !Config::get('lorekeeper.extensions.navbar_news_notif'))
                             @if(Auth::user()->is_news_unread)
                                 <div class="alert alert-info"><a href="{{ url('news') }}">There is a new news post!</a></div>
