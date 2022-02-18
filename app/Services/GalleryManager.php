@@ -433,6 +433,8 @@ class GalleryManager extends Service
             $this->rejectSubmission($submission, $user);
             if($action == 'accept' && $approveSum >= $submission->gallery->votes_required) $this->acceptSubmission($submission);
 
+            if(!$this->logAdminAction($user, 'Voted on Gallery Submission', 'Voted on gallery submission '.$submission->displayName)) throw new \Exception("Failed to log admin action.");
+
             return $this->commitReturn(true);
         } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
