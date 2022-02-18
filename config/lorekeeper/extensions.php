@@ -54,7 +54,8 @@ return [
         'default_recipient' => 0, // 0 to default to the character's owner (if a user), 1 to default to the submission user.
     ],
 
-    // Auto-populate New Image Features - Mercury
+    // Auto-populate New Image Traits - Mercury
+    // Automatically adds the traits present on a character's active image to the list when uploading a new image for an extant character.
     'autopopulate_image_features' => 0,
 
 ];

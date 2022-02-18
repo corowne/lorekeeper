@@ -79,7 +79,7 @@
         <strong>Character Rewards</strong> by <a href="https://github.com/preimpression">Preimpression</a> ({{ Config::get('lorekeeper.extensions.character_reward_expansion.expanded') ? 'Enabled' : 'Disabled' }}/{{ Config::get('lorekeeper.extensions.character_reward_expansion.default_recipient') ? 'Submitter' : 'Character Owner' }})
     </p>
     <p class="mb-0 col-md-4">
-        <strong>Auto-populate New Image Features</strong> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('lorekeeper.extensions.autopopulate_image_features') ? 'Enabled' : 'Disabled' }})
+        <strong>Auto-populate New Image Traits</strong> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('lorekeeper.extensions.autopopulate_image_features') ? 'Enabled' : 'Disabled' }})
     </p>
 </div>
 
