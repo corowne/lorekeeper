@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Prompt\Prompt;
 use App\Models\Prompt\PromptCategory;
+use Auth;
 use Illuminate\Http\Request;
 
 class PromptsController extends Controller
@@ -53,7 +54,7 @@ class PromptsController extends Controller
      */
     public function getPrompts(Request $request)
     {
-        $query = Prompt::active()->with('category');
+        $query = Prompt::active()->staffOnly(Auth::check() ? Auth::user() : null)->with('category');
         $data = $request->only(['prompt_category_id', 'name', 'sort']);
         if (isset($data['prompt_category_id']) && $data['prompt_category_id'] != 'none') {
             $query->where('prompt_category_id', $data['prompt_category_id']);
