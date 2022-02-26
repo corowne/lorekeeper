@@ -30,37 +30,54 @@
     <p>No prompts found.</p>
 @else
     {!! $prompts->render() !!}
-
-    <div class="row ml-md-2">
-      <div class="d-flex row flex-wrap col-12 pb-1 px-0 ubt-bottom">
-        <div class="col-4 col-md-1 font-weight-bold">Active</div>
-        <div class="col-4 col-md-3 font-weight-bold">Name</div>
-        <div class="col-4 col-md-3 font-weight-bold">Category</div>
-        <div class="col-4 col-md-2 font-weight-bold">Starts</div>
-        <div class="col-4 col-md-2 font-weight-bold">Ends</div>
-      </div>
-      @foreach($prompts as $prompt)
-      <div class="d-flex row flex-wrap col-12 mt-1 pt-2 px-0 ubt-top">
-        <div class="col-2 col-md-1">
-          {!! $prompt->is_active ? '<i class="text-success fas fa-check"></i>' : '' !!}
+    <div class="mb-4 logs-table">
+        <div class="logs-table-header">
+            <div class="row">
+                <div class="col-4 col-md-1"><div class="logs-table-cell">Active</div></div>
+                <div class="col-4 col-md-3"><div class="logs-table-cell">Name</div></div>
+                <div class="col-4 col-md-3"><div class="logs-table-cell">Category</div></div>
+                <div class="col-4 col-md-2"><div class="logs-table-cell">Starts</div></div>
+                <div class="col-4 col-md-2"><div class="logs-table-cell">Ends</div></div>
+            </div>
         </div>
-        <div class="col-5 col-md-3 text-truncate">
-          {{ $prompt->name }}
-        </div>
-        <div class="col-5 col-md-3">
-          {{ $prompt->category ? $prompt->category->name : '-' }}
-        </div>
-        <div class="col-4 col-md-2">
-          {!! $prompt->start_at ? pretty_date($prompt->start_at) : '-' !!}
-        </div>
-        <div class="col-4 col-md-2">
-          {!! $prompt->end_at ? pretty_date($prompt->end_at) : '-' !!}
-        </div>
-        <div class="col-3 col-md-1 text-right">
-          <a href="{{ url('admin/data/prompts/edit/'.$prompt->id) }}"  class="btn btn-primary py-0 px-2">Edit</a>
-        </div>
-      </div>
-      @endforeach
+        <div class="logs-table-body">
+            @foreach($prompts as $prompt)
+                <div class="logs-table-row">
+                    <div class="row flex-wrap">
+                        <div class="col-2 col-md-1">
+                            <div class="logs-table-cell">
+                                {!! $prompt->is_active ? '<i class="text-success fas fa-check"></i>' : '' !!}
+                            </div>
+                        </div>
+                        <div class="col-5 col-md-3 text-truncate">
+                            <div class="logs-table-cell">
+                                {{ $prompt->name }}
+                            </div>
+                        </div>
+                        <div class="col-5 col-md-3">
+                            <div class="logs-table-cell">
+                                {{ $prompt->category ? $prompt->category->name : '-' }}
+                            </div>
+                        </div>
+                        <div class="col-4 col-md-2">
+                            <div class="logs-table-cell">
+                                {!! $prompt->start_at ? pretty_date($prompt->start_at) : '-' !!}
+                            </div>
+                        </div>
+                        <div class="col-4 col-md-2">
+                            <div class="logs-table-cell">
+                                {!! $prompt->end_at ? pretty_date($prompt->end_at) : '-' !!}
+                            </div>
+                        </div>
+                        <div class="col-3 col-md-1 text-right">
+                            <div class="logs-table-cell">
+                                <a href="{{ url('admin/data/prompts/edit/'.$prompt->id) }}"  class="btn btn-primary py-0 px-2">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
     </div>
 
     {!! $prompts->render() !!}

@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
+use Carbon\Carbon;
 use Config;
 use DB;
-use Carbon\Carbon;
+use Illuminate\Console\Command;
 
 class AddTextPages extends Command
 {
@@ -25,8 +25,6 @@ class AddTextPages extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -43,29 +41,29 @@ class AddTextPages extends Command
         //
         $pages = Config::get('lorekeeper.text_pages');
 
-        
         $this->info('******************');
         $this->info('* ADD SITE PAGES *');
         $this->info('******************'."\n");
 
         $this->line("Adding site pages...existing entries will be skipped.\n");
 
-        foreach($pages as $key => $page) {
-            if(!DB::table('site_pages')->where('key', $key)->exists()) {
+        foreach ($pages as $key => $page) {
+            if (!DB::table('site_pages')->where('key', $key)->exists()) {
                 DB::table('site_pages')->insert([
                     [
-                        'key' => $key,
-                        'title' => $page['title'],
-                        'text' => $page['text'],
+                        'key'         => $key,
+                        'title'       => $page['title'],
+                        'text'        => $page['text'],
                         'parsed_text' => $page['text'],
-                        'created_at' => Carbon::now(),
-                        'updated_at' => Carbon::now(),
-                    ]
+                        'created_at'  => Carbon::now(),
+                        'updated_at'  => Carbon::now(),
+                    ],
 
                 ]);
-                $this->info("Added:   ".$page['title']);
+                $this->info('Added:   '.$page['title']);
+            } else {
+                $this->line('Skipped: '.$page['title']);
             }
-            else $this->line("Skipped: ".$page['title']);
         }
     }
 }

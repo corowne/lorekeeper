@@ -1,15 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class MakeGalleryTables extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -17,7 +15,7 @@ class MakeGalleryTables extends Migration
         Schema::create('galleries', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            
+
             // Parent gallery ID
             $table->integer('parent_id')->unsigned()->nullable();
 
@@ -38,7 +36,7 @@ class MakeGalleryTables extends Migration
         });
 
         // Gallery submission table
-        Schema::create('gallery_submissions', function(Blueprint $table) {
+        Schema::create('gallery_submissions', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
 
@@ -75,14 +73,11 @@ class MakeGalleryTables extends Migration
 
             $table->timestamps();
             $table->softDeletes();
-
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

@@ -25,11 +25,11 @@
         </div>
     @endif
     <div class="form-group">
-        {!! Form::label('url', $isClaim ? 'URL' : 'Submission URL') !!} 
-        @if($isClaim) 
-            {!! add_help('Enter a URL relevant to your claim (for example, a comment proving you may make this claim). This field cannot be left blank.') !!} 
-        @else 
-            {!! add_help('Enter the URL of your submission (whether uploaded to dA or some other hosting service). This field cannot be left blank.') !!} 
+        {!! Form::label('url', $isClaim ? 'URL' : 'Submission URL') !!}
+        @if($isClaim)
+            {!! add_help('Enter a URL relevant to your claim (for example, a comment proving you may make this claim). This field cannot be left blank.') !!}
+        @else
+            {!! add_help('Enter the URL of your submission (whether uploaded to dA or some other hosting service). This field cannot be left blank.') !!}
         @endif
         {!! Form::text('url', null, ['class' => 'form-control', 'required']) !!}
     </div>
@@ -41,7 +41,7 @@
     <h2>Rewards</h2>
     @if($isClaim)
         <p>Select the rewards you would like to claim.</p>
-    @else 
+    @else
         <p>Note that any rewards added here are <u>in addition</u> to the default prompt rewards. If you do not require any additional rewards, you can leave this blank.</p>
     @endif
     @include('widgets._loot_select', ['loots' => null, 'showLootTables' => false])
@@ -64,8 +64,8 @@
     </div>
 {!! Form::close() !!}
 
-@include('widgets._character_select', ['characterCurrencies' => $characterCurrencies])
-@include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'showLootTables' => false])
+@include('widgets._character_select', ['characterCurrencies' => \App\Models\Currency\Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id')])
+@include('widgets._loot_select_row', ['showLootTables' => false])
 
 
 <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog">

@@ -1,0 +1,27 @@
+name: Format (PHP)
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+    php-cs-fixer:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+              with:
+                php-version: '7.4'
+            - uses: actions/checkout@v2
+              with:
+                  ref: ${{ github.head_ref }}
+
+            - name: Install
+              run: composer install
+
+            - name: Run php-cs-fixer
+              run: ./vendor/bin/php-cs-fixer fix
+
+            - uses: stefanzweifel/git-auto-commit-action@v4
+              with:
+                  commit_message: 'refactor: fix PHP styling'
