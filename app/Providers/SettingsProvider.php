@@ -2,15 +2,13 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\ServiceProvider;
 
 class SettingsProvider extends ServiceProvider
 {
     /**
      * Register services.
-     *
-     * @return void
      */
     public function register()
     {
@@ -19,14 +17,11 @@ class SettingsProvider extends ServiceProvider
 
     /**
      * Bootstrap services.
-     *
-     * @return void
      */
     public function boot()
     {
         //
-        App::bind('settings', function()
-        {
+        App::bind('settings', function () {
             return new \App\Helpers\Settings;
         });
     }

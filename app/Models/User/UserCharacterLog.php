@@ -2,7 +2,6 @@
 
 namespace App\Models\User;
 
-use Config;
 use App\Models\Model;
 
 class UserCharacterLog extends Model
@@ -14,7 +13,7 @@ class UserCharacterLog extends Model
      */
     protected $fillable = [
         'character_id', 'sender_id', 'sender_alias', 'recipient_id', 'recipient_alias',
-        'log', 'log_type', 'data', 'sender_url', 'recipient_url'
+        'log', 'log_type', 'data', 'sender_url', 'recipient_url',
     ];
 
     /**
@@ -23,7 +22,6 @@ class UserCharacterLog extends Model
      * @var string
      */
     protected $table = 'user_character_log';
-
     /**
      * Whether the model contains timestamps to be saved and updated.
      *
@@ -32,15 +30,15 @@ class UserCharacterLog extends Model
     public $timestamps = true;
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the user who initiated the logged action.
      */
-    public function sender() 
+    public function sender()
     {
         return $this->belongsTo('App\Models\User\User', 'sender_id');
     }
@@ -48,7 +46,7 @@ class UserCharacterLog extends Model
     /**
      * Get the user who received the logged action.
      */
-    public function recipient() 
+    public function recipient()
     {
         return $this->belongsTo('App\Models\User\User', 'recipient_id');
     }
@@ -56,13 +54,13 @@ class UserCharacterLog extends Model
     /**
      * Get the character that is the target of the action.
      */
-    public function character() 
+    public function character()
     {
         return $this->belongsTo('App\Models\Character\Character');
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -76,7 +74,7 @@ class UserCharacterLog extends Model
     {
         return prettyProfileLink($this->sender_url);
     }
-    
+
     /**
      * Displays the recipient's alias, linked to their profile.
      *
@@ -86,5 +84,4 @@ class UserCharacterLog extends Model
     {
         return prettyProfileLink($this->recipient_url);
     }
-
 }

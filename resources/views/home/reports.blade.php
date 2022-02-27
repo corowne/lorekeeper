@@ -3,13 +3,13 @@
 @section('home-title') Reports @endsection
 
 @section('home-content')
-    {!! breadcrumbs(['Reports' => 'reports']) !!}
+{!! breadcrumbs(['Reports' => 'reports']) !!}
 <h1>
-My Reports
+    My Reports
 </h1>
 
 <div class="text-right">
-        <a href="{{ url('reports/new') }}" class="btn btn-success">New Report</a>
+    <a href="{{ url('reports/new') }}" class="btn btn-success">New Report</a>
 </div>
 
 <ul class="nav nav-tabs mb-3">
@@ -26,16 +26,22 @@ My Reports
 
 @if(count($reports))
     {!! $reports->render() !!}
-    <div class="row ml-md-2">
-      <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-bottom">
-        <div class="col-6 col-md-4 font-weight-bold">Link/Title</div>
-        <div class="col-6 col-md-5 font-weight-bold">Submitted</div>
-        <div class="col-12 col-md-1 font-weight-bold">Status</div>
-      </div>
+    <div class="mb-4 logs-table">
+        <div class="logs-table-header">
+            <div class="row">
+                <div class="col-6 col-md-4"><div class="logs-table-cell">Link/Title</div></div>
+                <div class="col-6 col-md-5"><div class="logs-table-cell">Submitted</div></div>
+                <div class="col-12 col-md-1"><div class="logs-table-cell">Status</div></div>
+            </div>
+        </div>
+        <div class="logs-table-body">
             @foreach($reports as $report)
-                @include('home._report', ['report' => $report])
+                <div class="logs-table-row">
+                    @include('home._report', ['report' => $report])
+                </div>
             @endforeach
-      </div>
+        </div>
+    </div>
     {!! $reports->render() !!}
     <div class="text-center mt-4 small text-muted">{{ $reports->total() }} result{{ $reports->total() == 1 ? '' : 's' }} found.</div>
 @else 

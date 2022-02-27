@@ -61,6 +61,8 @@ body {
     display: none !important;
 }
 
+.grecaptcha-badge { visibility: hidden !important; }
+
 .parsed-text img {
     max-width: 100% !important;
     height: auto !important;
@@ -459,6 +461,37 @@ tr.outflow {
     background-color: #fffafa;
 }
 
+/* These are not truly tables, but divs styled to look like tables */
+.logs-table .logs-table-header {
+    border-top: 1px solid #dee2e6;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    padding: 0px;
+    flex-wrap: wrap;
+}
+.logs-table .logs-table-header .logs-table-cell,
+.logs-table .logs-table-body .logs-table-cell {
+    padding: .3rem;
+}
+.logs-table .logs-table-body > .logs-table-row:first-of-type {
+    border-top-width: 0;
+}
+.logs-table .logs-table-body > .logs-table-row,
+.logs-table-row .logs-table-row {
+    border-top: 1px solid #dee2e6;
+}
+.logs-table .logs-table-body .logs-table-cell .inflow,
+.logs-table .logs-table-body .logs-table-cell .outflow {
+    width: 33px;
+    line-height: 33px;
+    text-align: center;
+    position: relative;
+    top: -.3rem;
+    margin-bottom: -.6rem;
+    vertical-align: middle;
+    color: #fff;
+}
+
 
 /* PROFILE ***************************************************************************************/
 
@@ -630,6 +663,11 @@ tr.accountbound {
         border-left-width: 2px!important;
     }
     
+.comment>p>img {
+        max-width: 100%;
+        height: auto;
+    }
+
 @media only screen and (max-width: 600px) {
     .comment_replies { padding-left:1rem;}
 }
