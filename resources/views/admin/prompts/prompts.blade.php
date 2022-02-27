@@ -76,8 +76,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        @endforeach
+            @endforeach
+        </div>
     </div>
 
     {!! $prompts->render() !!}
