@@ -50,6 +50,10 @@ class SubmissionManager extends Service
                 if (!$prompt) {
                     throw new \Exception('Invalid prompt selected.');
                 }
+
+                if ($prompt->staff_only && !$user->isStaff) {
+                    throw new \Exception('This prompt may only be submitted to by staff members.');
+                }
             } else {
                 $prompt = null;
             }
