@@ -48,7 +48,7 @@
     </div>
 
     <div class="br-form-group mb-1" style="display: none">
-        @include('widgets._recipe_limit_select', ['limits' => $recipe->limits])
+        @include('widgets._recipe_limit_select', ['limits' => $recipe->limits, 'showRecipes' => true])
     </div>
 
 <h3>Recipe Ingredients</h3>
