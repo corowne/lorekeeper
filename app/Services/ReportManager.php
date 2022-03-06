@@ -90,7 +90,7 @@ class ReportManager extends Service
                 'report_id'  => $report->id,
             ]);
 
-            if (!logAdminAction($user, 'Report Assigned', 'Assigned themselves to report <a href="'.$report->viewurl.'">#'.$report->id.'</a>')) {
+            if (!$this->logAdminAction($user, 'Report Assigned', 'Assigned themselves to report <a href="'.$report->viewurl.'">#'.$report->id.'</a>')) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -145,7 +145,7 @@ class ReportManager extends Service
                 'report_id'  => $report->id,
             ]);
 
-            if (!logAdminAction($user, 'Report Closed', 'Closed report <a href="'.$report->viewurl.'">#'.$report->id.'</a>')) {
+            if (!$this->logAdminAction($user, 'Report Closed', 'Closed report <a href="'.$report->viewurl.'">#'.$report->id.'</a>')) {
                 throw new \Exception('Failed to log admin action.');
             }
 

@@ -170,7 +170,7 @@ class CharacterManager extends Service
                 ));
             }
 
-            if (!logAdminAction($user, 'Created Character', 'Created '.$character->displayName)) {
+            if (!$this->logAdminAction($user, 'Created Character', 'Created '.$character->displayName)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -494,7 +494,7 @@ class CharacterManager extends Service
             $character->character_image_id = $image->id;
             $character->save();
 
-            if (!logAdminAction($user, 'Created Image', 'Created character image <a href="'.$character->url.'">#'.$image->id.'</a>')) {
+            if (!$this->logAdminAction($user, 'Created Image', 'Created character image <a href="'.$character->url.'">#'.$image->id.'</a>')) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -549,7 +549,7 @@ class CharacterManager extends Service
                 }
             }
 
-            if (!logAdminAction($user, 'Updated Image', 'Updated character image features on <a href="'.$image->character->url.'">#'.$image->id.'</a>')) {
+            if (!$this->logAdminAction($user, 'Updated Image', 'Updated character image features on <a href="'.$image->character->url.'">#'.$image->id.'</a>')) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -619,7 +619,7 @@ class CharacterManager extends Service
             $image->parsed_description = parse($data['description']);
             $image->save();
 
-            if (!logAdminAction($user, 'Updated Image Notes', 'Updated image <a href="'.$image->character->url.'">#'.$image->id.'</a>')) {
+            if (!$this->logAdminAction($user, 'Updated Image Notes', 'Updated image <a href="'.$image->character->url.'">#'.$image->id.'</a>')) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -649,7 +649,7 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
-            if (!logAdminAction($user, 'Updated Image Credits', 'Updated character image credits on <a href="'.$image->character->url.'">#'.$image->id.'</a>')) {
+            if (!$this->logAdminAction($user, 'Updated Image Credits', 'Updated character image credits on <a href="'.$image->character->url.'">#'.$image->id.'</a>')) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -742,7 +742,7 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
-            if (!logAdminAction($user, 'Reuploaded Image', 'Reuploaded character image <a href="'.$image->character->url.'">#'.$image->id.'</a>')) {
+            if (!$this->logAdminAction($user, 'Reuploaded Image', 'Reuploaded character image <a href="'.$image->character->url.'">#'.$image->id.'</a>')) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -805,7 +805,7 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
-            if (!logAdminAction($user, 'Deleted Image', 'Deleted character image <a href="'.$image->character->url.'">#'.$image->id.'</a>')) {
+            if (!$this->logAdminAction($user, 'Deleted Image', 'Deleted character image <a href="'.$image->character->url.'">#'.$image->id.'</a>')) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -850,7 +850,7 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
-            if (!logAdminAction($user, 'Updated Image', 'Updated character image settings on <a href="'.$image->character->url.'">#'.$image->id.'</a>')) {
+            if (!$this->logAdminAction($user, 'Updated Image', 'Updated character image settings on <a href="'.$image->character->url.'">#'.$image->id.'</a>')) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -887,7 +887,7 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
-            if (!logAdminAction($user, 'Updated Image', 'Set image <a href="'.$image->character->url.'">#'.$image->id.'</a> to active image')) {
+            if (!$this->logAdminAction($user, 'Updated Image', 'Set image <a href="'.$image->character->url.'">#'.$image->id.'</a> to active image')) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -1011,7 +1011,7 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
-            if (!logAdminAction($user, 'Updated Stats', 'Updated character stats on '.$character->displayname)) {
+            if (!$this->logAdminAction($user, 'Updated Stats', 'Updated character stats on '.$character->displayname)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -1115,7 +1115,7 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
-            if (!logAdminAction($user, 'Updated Character Description', 'Updated character description on '.$character->displayname)) {
+            if (!$this->logAdminAction($user, 'Updated Character Description', 'Updated character description on '.$character->displayname)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -1152,7 +1152,7 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         try {
-            if (!logAdminAction($user, 'Updated Character Settings', 'Updated character settings on '.$character->displayname)) {
+            if (!$this->logAdminAction($user, 'Updated Character Settings', 'Updated character settings on '.$character->displayname)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -1214,7 +1214,7 @@ class CharacterManager extends Service
                 $character->is_trading = isset($data['is_trading']);
                 $character->save();
             } else {
-                if (!logAdminAction($user, 'Updated Character Profile', 'Updated character profile on '.$character->displayname)) {
+                if (!$this->logAdminAction($user, 'Updated Character Profile', 'Updated character profile on '.$character->displayname)) {
                     throw new \Exception('Failed to log admin action.');
                 }
             }
@@ -1278,7 +1278,7 @@ class CharacterManager extends Service
                 $character->user->settings->save();
             }
 
-            if (!logAdminAction($user, 'Deleted Character', 'Deleted character '.$character->slug)) {
+            if (!$this->logAdminAction($user, 'Deleted Character', 'Deleted character '.$character->slug)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -1410,13 +1410,13 @@ class CharacterManager extends Service
                 if ($character->user_id == $recipient->id) {
                     throw new \Exception('Cannot transfer a character to the same user.');
                 }
-                if (!logAdminAction($user, 'Admin Transfer', 'Admin transferred '.$character->displayname.' to '.$recipient->displayName)) {
+                if (!$this->logAdminAction($user, 'Admin Transfer', 'Admin transferred '.$character->displayname.' to '.$recipient->displayName)) {
                     throw new \Exception('Failed to log admin action.');
                 }
             } elseif (isset($data['recipient_url']) && $data['recipient_url']) {
                 // Transferring to an off-site user
                 $recipient = checkAlias($data['recipient_url']);
-                if (!logAdminAction($user, 'Admin Transfer', 'Admin transferred '.$character->displayname.' to '.$recipient)) {
+                if (!$this->logAdminAction($user, 'Admin Transfer', 'Admin transferred '.$character->displayname.' to '.$recipient)) {
                     throw new \Exception('Failed to log admin action.');
                 }
             } else {
@@ -1608,7 +1608,7 @@ class CharacterManager extends Service
 
                 // Process the character move if the recipient has already accepted the transfer
                 if ($transfer->status == 'Accepted') {
-                    if (!logAdminAction($user, 'Approved Transfer', 'Approved transfer of '.$transfer->character->displayname.' to '.$transfer->recipient->displayname)) {
+                    if (!$this->logAdminAction($user, 'Approved Transfer', 'Approved transfer of '.$transfer->character->displayname.' to '.$transfer->recipient->displayname)) {
                         throw new \Exception('Failed to log admin action.');
                     }
                     $this->moveCharacter($transfer->character, $transfer->recipient, 'User Transfer', isset($data['cooldown']) ? $data['cooldown'] : -1);
@@ -1627,7 +1627,7 @@ class CharacterManager extends Service
                         'sender_url'     => $user->url,
                     ]);
                 } else {
-                    if (!logAdminAction($user, 'Approved Transfer', 'Approved transfer of '.$transfer->character->displayname.' to '.$transfer->recipient->displayname)) {
+                    if (!$this->logAdminAction($user, 'Approved Transfer', 'Approved transfer of '.$transfer->character->displayname.' to '.$transfer->recipient->displayname)) {
                         throw new \Exception('Failed to log admin action.');
                     }
 
@@ -1640,7 +1640,7 @@ class CharacterManager extends Service
                     ]);
                 }
             } else {
-                if (!logAdminAction($user, 'Rejected Transfer', 'Rejected transfer of '.$transfer->character->displayname.' to '.$transfer->recipient->displayname)) {
+                if (!$this->logAdminAction($user, 'Rejected Transfer', 'Rejected transfer of '.$transfer->character->displayname.' to '.$transfer->recipient->displayname)) {
                     throw new \Exception('Failed to log admin action.');
                 }
 

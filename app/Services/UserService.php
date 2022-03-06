@@ -233,7 +233,7 @@ class UserService extends Service
         try {
             if (!$user->is_banned) {
                 // New ban (not just editing the reason), clear all their engagements
-                if (!logAdminAction($staff, 'Banned User', 'Banned '.$user->displayname)) {
+                if (!$this->logAdminAction($staff, 'Banned User', 'Banned '.$user->displayname)) {
                     throw new \Exception('Failed to log admin action.');
                 }
 
@@ -250,7 +250,7 @@ class UserService extends Service
                 $submissionManager = new SubmissionManager;
                 $submissions = Submission::where('user_id', $user->id)->where('status', 'Pending')->get();
                 foreach ($submissions as $submission) {
-                    $submissionManager->rejectSubmission(['submission' => $submission, 'staff_comments' => 'User has been banned from site activity.']);
+                    $submissionManager->rejectSubmission(['submission' => $submission, 'staff_comments' => 'User has been banned from site activity.'], $staff);
                 }
 
                 // 3. Gallery Submissions
@@ -270,7 +270,7 @@ class UserService extends Service
                     $query->where('status', 'Pending')->orWhere('status', 'Draft');
                 })->get();
                 foreach ($requests as $request) {
-                    $characterManager->rejectRequest(['staff_comments' => 'User has been banned from site activity.'], $request, $staff, true);
+                    (new DesignUpdateManager)->rejectRequest(['staff_comments' => 'User has been banned from site activity.'], $request, $staff, true);
                 }
 
                 // 5. Trades
@@ -319,7 +319,7 @@ class UserService extends Service
         DB::beginTransaction();
 
         try {
-            if (!logAdminAction($staff, 'Unbanned User', 'Unbanned '.$user->displayname)) {
+            if (!$this->logAdminAction($staff, 'Unbanned User', 'Unbanned '.$user->displayname)) {
                 throw new \Exception('Failed to log admin action.');
             }
 

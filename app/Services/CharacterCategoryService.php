@@ -21,10 +21,11 @@ class CharacterCategoryService extends Service
      * Create a category.
      *
      * @param array $data
+     * @param mixed $user
      *
      * @return \App\Models\Character\CharacterCategory|bool
      */
-    public function createCharacterCategory($data)
+    public function createCharacterCategory($data, $user)
     {
         DB::beginTransaction();
 
@@ -42,7 +43,7 @@ class CharacterCategoryService extends Service
 
             $category = CharacterCategory::create($data);
 
-            if (!logAdminAction($user, 'Created Character Category', 'Created '.$category->displayName)) {
+            if (!$this->logAdminAction($user, 'Created Character Category', 'Created '.$category->displayName)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -63,10 +64,11 @@ class CharacterCategoryService extends Service
      *
      * @param \App\Models\Character\CharacterCategory $category
      * @param array                                   $data
+     * @param mixed                                   $user
      *
      * @return \App\Models\Character\CharacterCategory|bool
      */
-    public function updateCharacterCategory($category, $data)
+    public function updateCharacterCategory($category, $data, $user)
     {
         DB::beginTransaction();
 
@@ -89,7 +91,7 @@ class CharacterCategoryService extends Service
 
             $category->update($data);
 
-            if (!logAdminAction($user, 'Edited Character Category', 'Edited '.$category->displayName)) {
+            if (!$this->logAdminAction($user, 'Edited Character Category', 'Edited '.$category->displayName)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -109,10 +111,11 @@ class CharacterCategoryService extends Service
      * Delete a category.
      *
      * @param \App\Models\Character\CharacterCategory $category
+     * @param mixed                                   $user
      *
      * @return bool
      */
-    public function deleteCharacterCategory($category)
+    public function deleteCharacterCategory($category, $user)
     {
         DB::beginTransaction();
 
@@ -122,7 +125,7 @@ class CharacterCategoryService extends Service
                 throw new \Exception('An character with this category exists. Please change its category first.');
             }
 
-            if (!logAdminAction($user, 'Deleted Character Category', 'Deleted '.$category->name)) {
+            if (!$this->logAdminAction($user, 'Deleted Character Category', 'Deleted '.$category->name)) {
                 throw new \Exception('Failed to log admin action.');
             }
 

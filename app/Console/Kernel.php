@@ -29,6 +29,8 @@ class Kernel extends ConsoleKernel
                 ->daily();
         $schedule->command('update-extension-tracker')
                 ->daily();
+        $schedule->command('update-staff-reward-actions')
+                ->daily();
     }
 
     /**

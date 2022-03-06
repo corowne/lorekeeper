@@ -490,7 +490,7 @@ class DesignUpdateManager extends Service
                 throw new \Exception('Please enter a unique character code.');
             }
 
-            if (!logAdminAction($user, 'Approved Design Update', 'Approved design update <a href="'.$request->url.'">#'.$request->id.'</a>')) {
+            if (!$this->logAdminAction($user, 'Approved Design Update', 'Approved design update <a href="'.$request->url.'">#'.$request->id.'</a>')) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -732,7 +732,7 @@ class DesignUpdateManager extends Service
                 throw new \Exception('This request cannot be processed.');
             }
 
-            if (!logAdminAction($user, 'Rejected Design Update', 'Rejected design update <a href="'.$request->url.'">#'.$request->id.'</a>')) {
+            if (!$this->logAdminAction($user, 'Rejected Design Update', 'Rejected design update <a href="'.$request->url.'">#'.$request->id.'</a>')) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -821,7 +821,7 @@ class DesignUpdateManager extends Service
                 throw new \Exception('This request cannot be processed.');
             }
 
-            if (!logAdminAction($user, 'Cancelled Design Update', 'Cancelled design update <a href="'.$request->url.'">#'.$request->id.'</a>')) {
+            if (!$this->logAdminAction($user, 'Cancelled Design Update', 'Cancelled design update <a href="'.$request->url.'">#'.$request->id.'</a>')) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -965,6 +965,10 @@ class DesignUpdateManager extends Service
             $request->vote_data = $voteData->toJson();
 
             $request->save();
+
+            if (!$this->logAdminAction($user, 'Voted on Design Update', 'Voted on design update <a href="'.$request->url.'">#'.$request->id.'</a>')) {
+                throw new \Exception('Failed to log admin action.');
+            }
 
             return $this->commitReturn(true);
         } catch (\Exception $e) {

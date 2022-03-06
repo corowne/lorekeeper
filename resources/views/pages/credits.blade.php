@@ -87,6 +87,9 @@
     <p class="mb-0 col-md-4">
         <strong>Auto-populate New Image Traits</strong> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('lorekeeper.extensions.autopopulate_image_features') ? 'Enabled' : 'Disabled' }})
     </p>
+    <p class="mb-0 col-md-4">
+        <strong>Staff Rewards</strong> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('lorekeeper.extensions.admin_rewards') ? 'Enabled' : 'Disabled' }})
+    </p>
 </div>
 
 <hr/>

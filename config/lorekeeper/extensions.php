@@ -65,4 +65,10 @@ return [
     // Automatically adds the traits present on a character's active image to the list when uploading a new image for an extant character.
     'autopopulate_image_features' => 0,
 
+    // Staff Rewards - Mercury
+    'staff_rewards' => [
+        'enabled'     => 0,
+        'currency_id' => 1,
+    ],
+
 ];

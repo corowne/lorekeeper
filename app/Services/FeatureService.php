@@ -51,7 +51,7 @@ class FeatureService extends Service
 
             $category = FeatureCategory::create($data);
 
-            if (!logAdminAction($user, 'Created Feature Category', 'Created '.$category->displayName)) {
+            if (!$this->logAdminAction($user, 'Created Feature Category', 'Created '.$category->displayName)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -97,7 +97,11 @@ class FeatureService extends Service
 
             $category->update($data);
 
-            if (!logAdminAction($user, 'Updated Feature Category', 'Updated '.$category->displayName)) {
+            if (!$this->logAdminAction($user, 'Updated Feature Category', 'Updated '.$category->displayName)) {
+                throw new \Exception('Failed to log admin action.');
+            }
+
+            if (!$this->logAdminAction($user, 'Updated Feature Category', 'Updated '.$category->displayName)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -131,7 +135,7 @@ class FeatureService extends Service
                 throw new \Exception('A trait with this category exists. Please change its category first.');
             }
 
-            if (!logAdminAction($user, 'Deleted Feature Category', 'Deleted '.$category->name)) {
+            if (!$this->logAdminAction($user, 'Deleted Feature Category', 'Deleted '.$category->name)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -233,7 +237,7 @@ class FeatureService extends Service
 
             $feature = Feature::create($data);
 
-            if (!logAdminAction($user, 'Created Feature', 'Created '.$feature->displayName)) {
+            if (!$this->logAdminAction($user, 'Created Feature', 'Created '.$feature->displayName)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -304,7 +308,7 @@ class FeatureService extends Service
 
             $feature->update($data);
 
-            if (!logAdminAction($user, 'Updated Feature', 'Updated '.$feature->displayName)) {
+            if (!$this->logAdminAction($user, 'Updated Feature', 'Updated '.$feature->displayName)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -338,7 +342,7 @@ class FeatureService extends Service
                 throw new \Exception('A character with this trait exists. Please remove the trait first.');
             }
 
-            if (!logAdminAction($user, 'Deleted Feature', 'Deleted '.$feature->name)) {
+            if (!$this->logAdminAction($user, 'Deleted Feature', 'Deleted '.$feature->name)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
