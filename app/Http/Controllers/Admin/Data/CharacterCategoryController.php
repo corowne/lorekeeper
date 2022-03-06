@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Admin\Data;
 
-use Auth;
-
 use App\Http\Controllers\Controller;
 use App\Models\Character\CharacterCategory;
 use App\Models\Character\Sublist;
 use App\Services\CharacterCategoryService;
+use Auth;
 use Illuminate\Http\Request;
 
 class CharacterCategoryController extends Controller

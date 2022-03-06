@@ -21,6 +21,7 @@ class CharacterCategoryService extends Service
      * Create a category.
      *
      * @param array $data
+     * @param mixed $user
      *
      * @return \App\Models\Character\CharacterCategory|bool
      */
@@ -63,6 +64,7 @@ class CharacterCategoryService extends Service
      *
      * @param \App\Models\Character\CharacterCategory $category
      * @param array                                   $data
+     * @param mixed                                   $user
      *
      * @return \App\Models\Character\CharacterCategory|bool
      */
