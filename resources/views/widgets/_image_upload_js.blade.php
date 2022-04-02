@@ -67,11 +67,15 @@ $( document ).ready(function() {
 
     // Traits /////////////////////////////////////////////////////////////////////////////////////
     
-    $('.initial.feature-select').selectize({
-        render: {
-            item: featureSelectedRender
-        }
-    });
+    @if(Config::get('lorekeeper.extensions.organised_traits_dropdown'))
+        $('.initial.feature-select').selectize({
+            render: {
+                item: featureSelectedRender
+            }
+        });
+    @else
+        $('.initial.feature-select').selectize();
+    @endif
     $('#add-feature').on('click', function(e) {
         e.preventDefault();
         addFeatureRow();
@@ -89,11 +93,15 @@ $( document ).ready(function() {
             e.preventDefault();
             removeFeatureRow($(this));
         })
-        $clone.find('.feature-select').selectize({
-            render: {
-                item: featureSelectedRender
-            }
-        });
+        @if(Config::get('lorekeeper.extensions.organised_traits_dropdown'))
+            $clone.find('.feature-select').selectize({
+                render: {
+                    item: featureSelectedRender
+                }
+            });
+        @else
+            $clone.find('.feature-select').selectize();
+        @endif
     }
     function removeFeatureRow($trigger) {
         $trigger.parent().remove();
