@@ -90,6 +90,9 @@
     <p class="mb-0 col-md-4">
         <strong>Staff Rewards</strong> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('lorekeeper.extensions.admin_rewards') ? 'Enabled' : 'Disabled' }})
     </p>
+    <p class="mb-0 col-md-4">
+        <strong>Organised Traits Dropdown</strong> by <a href="https://github.com/draginraptor">Draginraptor</a> ({{ Config::get('lorekeeper.extensions.organised_traits_dropdown') ? 'Enabled' : 'Disabled' }})
+    </p>
 </div>
 
 <hr/>
