@@ -18,25 +18,23 @@ class Kernel extends ConsoleKernel
 
     /**
      * Define the application's command schedule.
-     *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @return void
      */
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('check-news')
                 ->everyMinute();
-        $schedule->exec('rm public/images/avatars/*.tmp')
-                ->daily();
         $schedule->command('check-sales')
                 ->everyMinute();
-
+        $schedule->exec('rm public/images/avatars/*.tmp')
+                ->daily();
+        $schedule->command('update-extension-tracker')
+                ->daily();
+        $schedule->command('update-staff-reward-actions')
+                ->daily();
     }
 
     /**
      * Register the commands for the application.
-     *
-     * @return void
      */
     protected function commands()
     {

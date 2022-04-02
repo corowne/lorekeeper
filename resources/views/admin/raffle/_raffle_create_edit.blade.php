@@ -21,6 +21,10 @@
         {!! Form::text('order', $raffle->order ? : 0, ['class' => 'form-control']) !!}
     </div>
     <div class="form-group">
+        {!! Form::label('ticket_cap', 'Ticket Cap (Optional)') !!} {!! add_help('A number of tickets per individual to cap at. Leave empty or unset to have no cap.') !!}
+        {!! Form::text('ticket_cap', $raffle->ticket_cap ? : null, ['class' => 'form-control']) !!}
+    </div>
+    <div class="form-group">
         <label class="control-label">
             {!! Form::checkbox('is_active', 1, $raffle->is_active, ['class' => 'form-check-input mr-2', 'data-toggle' => 'toggle']) !!}
             {!! Form::label('is_displayed', 'Active (visible to users)', ['class' => 'form-check-label ml-3']) !!}

@@ -2,7 +2,6 @@
 
 namespace App\Models\Prompt;
 
-use Config;
 use App\Models\Model;
 
 class PromptCategory extends Model
@@ -13,7 +12,7 @@ class PromptCategory extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description'
+        'name', 'sort', 'has_image', 'description', 'parsed_description',
     ];
 
     /**
@@ -22,35 +21,34 @@ class PromptCategory extends Model
      * @var string
      */
     protected $table = 'prompt_categories';
-    
     /**
      * Validation rules for creation.
      *
      * @var array
      */
     public static $createRules = [
-        'name' => 'required|unique:prompt_categories|between:3,100',
+        'name'        => 'required|unique:prompt_categories|between:3,100',
         'description' => 'nullable',
-        'image' => 'mimes:png',
+        'image'       => 'mimes:png',
     ];
-    
+
     /**
      * Validation rules for updating.
      *
      * @var array
      */
     public static $updateRules = [
-        'name' => 'required|between:3,100',
+        'name'        => 'required|between:3,100',
         'description' => 'nullable',
-        'image' => 'mimes:png',
+        'image'       => 'mimes:png',
     ];
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
-    
+
     /**
      * Displays the model's name, linked to its encyclopedia page.
      *
@@ -78,7 +76,7 @@ class PromptCategory extends Model
      */
     public function getCategoryImageFileNameAttribute()
     {
-        return $this->id . '-image.png';
+        return $this->id.'-image.png';
     }
 
     /**
@@ -90,7 +88,7 @@ class PromptCategory extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
@@ -98,8 +96,11 @@ class PromptCategory extends Model
      */
     public function getCategoryImageUrlAttribute()
     {
-        if (!$this->has_image) return null;
-        return asset($this->imageDirectory . '/' . $this->categoryImageFileName);
+        if (!$this->has_image) {
+            return null;
+        }
+
+        return asset($this->imageDirectory.'/'.$this->categoryImageFileName);
     }
 
     /**

@@ -8,12 +8,22 @@
 <h1>Raffle Tickets: {{ $raffle->name }}</h1>
 
 @if($raffle->is_active == 0)
-    <p>This raffle is currently hidden. (Number of winners to be drawn: {{ $raffle->winner_count }})</p>
+    <p>
+        This raffle is currently hidden. (Number of winners to be drawn: {{ $raffle->winner_count }})<br/>
+        @if($raffle->ticket_cap)
+            This raffle has a cap of {{ $raffle->ticket_cap }} tickets per individual.
+        @endif
+    </p>
     <div class="text-right form-group">
         <a class="btn btn-success edit-tickets" href="#" data-id="">Add Tickets</a>
     </div>
 @elseif($raffle->is_active == 1)
-    <p>This raffle is currently open. (Number of winners to be drawn: {{ $raffle->winner_count }})</p>
+    <p>
+        This raffle is currently open. (Number of winners to be drawn: {{ $raffle->winner_count }})<br/>
+        @if($raffle->ticket_cap)
+            This raffle has a cap of {{ $raffle->ticket_cap }} tickets per individual.
+        @endif
+    </p>
     <div class="text-right form-group">
         <a class="btn btn-success edit-tickets" href="#" data-id="">Add Tickets</a>
     </div>
@@ -66,15 +76,21 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
+                <p>Select an on-site user or enter an off-site username, as well as the number of tickets to create for them. Any created tickets are in addition to any pre-existing tickets for the user(s).</p>
                 {!! Form::open(['url' => 'admin/raffles/view/ticket/'.$raffle->id]) !!}
-                    <div class="form-group">
-                    {!! Form::label('names', 'Names (comma-separated, one name per ticket)') !!} {!! add_help('Names will be matched to usernames on the site. If a matching username is not found, it will add a ticket as a deviantART username instead.') !!}
-                        {!! Form::textarea('names', '', ['class' => 'form-control']) !!}
+                    <div id="ticketList">
                     </div>
+                    <div><a href="#" class="btn btn-primary" id="add-ticket">Add Ticket</a></div>
                     <div class="text-right">
                         {!! Form::submit('Add', ['class' => 'btn btn-primary']) !!}
                     </div>
                 {!! Form::close() !!}
+                <div class="ticket-row hide mb-2">
+                    {!! Form::select('user_id[]', $users, null, ['class' => 'form-control mr-2 user-select', 'placeholder' => 'Select User']) !!}
+                    {!! Form::text('alias[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'OR Enter Alias']) !!}
+                    {!! Form::number('ticket_count[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Ticket Count']) !!}
+                    <a href="#" class="remove-ticket btn btn-danger mb-2">×</a>
+                </div>
             </div>
         </div>
     </div>
@@ -86,6 +102,31 @@
     $('.edit-tickets').on('click', function(e) {
         e.preventDefault();
         $('#raffle-modal').modal('show');
+    });
+
+    $(document).ready(function() {
+        $('#add-ticket').on('click', function(e) {
+            e.preventDefault();
+            addTicketRow();
+        });
+        $('.remove-ticket').on('click', function(e) {
+            e.preventDefault();
+            removeTicketRow($(this));
+        })
+        function addTicketRow() {
+            var $clone = $('.ticket-row').clone();
+            $('#ticketList').append($clone);
+            $clone.removeClass('hide ticket-row');
+            $clone.addClass('d-flex');
+            $clone.find('.remove-ticket').on('click', function(e) {
+                e.preventDefault();
+                removeTicketRow($(this));
+            })
+            $clone.find('.user-select').selectize();
+        }
+        function removeTicketRow($trigger) {
+            $trigger.parent().remove();
+        }
     });
 </script>
 @endsection

@@ -15,15 +15,8 @@ class UserItem extends Model
      * @var array
      */
     protected $fillable = [
-        'data', 'item_id', 'user_id'
+        'data', 'item_id', 'user_id',
     ];
-
-    /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
 
     /**
      * The table associated with the model.
@@ -32,8 +25,15 @@ class UserItem extends Model
      */
     protected $table = 'user_items';
 
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
+
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -41,7 +41,7 @@ class UserItem extends Model
     /**
      * Get the user who owns the stack.
      */
-    public function user() 
+    public function user()
     {
         return $this->belongsTo('App\Models\User\User');
     }
@@ -49,13 +49,13 @@ class UserItem extends Model
     /**
      * Get the item associated with this item stack.
      */
-    public function item() 
+    public function item()
     {
         return $this->belongsTo('App\Models\Item\Item');
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -65,11 +65,11 @@ class UserItem extends Model
      *
      * @return array
      */
-    public function getDataAttribute() 
+    public function getDataAttribute()
     {
         return json_decode($this->attributes['data'], true);
     }
-    
+
     /**
      * Checks if the stack is transferrable.
      *
@@ -77,7 +77,10 @@ class UserItem extends Model
      */
     public function getIsTransferrableAttribute()
     {
-        if(!isset($this->data['disallow_transfer']) && $this->item->allow_transfer) return true;
+        if (!isset($this->data['disallow_transfer']) && $this->item->allow_transfer) {
+            return true;
+        }
+
         return false;
     }
 
@@ -88,7 +91,7 @@ class UserItem extends Model
      */
     public function getAvailableQuantityAttribute()
     {
-        return ($this->count - $this->trade_count - $this->update_count- $this->submission_count);
+        return $this->count - $this->trade_count - $this->update_count - $this->submission_count;
     }
 
     /**
@@ -102,7 +105,11 @@ class UserItem extends Model
     }
 
     /**
-     * Returns string stating amount held elsewhere
+     * Returns string stating amount held elsewhere.
+     *
+     * @param mixed $tradeCount
+     * @param mixed $updateCount
+     * @param mixed $submissionCount
      *
      * @return string
      */
@@ -112,27 +119,42 @@ class UserItem extends Model
     }
 
     /**
-     * Gets the available quantity based on input context (either trade count or update count)
+     * Gets the available quantity based on input context (either trade count or update count).
+     *
+     * @param mixed $count
      *
      * @return int
      */
     public function getAvailableContextQuantity($count)
     {
-        return ($this->getAvailableQuantityAttribute() + $count);
+        return $this->getAvailableQuantityAttribute() + $count;
     }
 
     /**
-     * Construct string stating held items
-     * 
+     * Construct string stating held items.
+     *
+     * @param mixed $tradeCount
+     * @param mixed $updateCount
+     * @param mixed $submissionCount
+     *
      * @return string
      */
     private function getHeldString($tradeCount, $updateCount, $submissionCount)
     {
-        if(!$tradeCount && !$updateCount && !$submissionCount) return null;
+        if (!$tradeCount && !$updateCount && !$submissionCount) {
+            return null;
+        }
         $held = [];
-        if($tradeCount) array_push($held, $tradeCount.' held in Trades');
-        if($updateCount) array_push($held, $updateCount.' held in Design Updates');
-        if($submissionCount) array_push($held, $submissionCount.' held in Submissions');
-        return ('('.implode(', ',$held).')');
+        if ($tradeCount) {
+            array_push($held, $tradeCount.' held in Trades');
+        }
+        if ($updateCount) {
+            array_push($held, $updateCount.' held in Design Updates');
+        }
+        if ($submissionCount) {
+            array_push($held, $submissionCount.' held in Submissions');
+        }
+
+        return '('.implode(', ', $held).')';
     }
 }

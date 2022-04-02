@@ -20,12 +20,12 @@ return [
     | Version
     |--------------------------------------------------------------------------
     |
-    | This is the current version of Lorekeeper that your site is on. 
+    | This is the current version of Lorekeeper that your site is on.
     | Do not change this value!
     |
     */
     'version' => '2.0.0',
-    
+
     /*
     |--------------------------------------------------------------------------
     | Site Name
@@ -106,13 +106,13 @@ return [
     |       Default: 0/Disabled, 1 to enable.
     |
     */
-    'character_codes' => '{category}-{number}',
+    'character_codes'         => '{category}-{number}',
     'character_number_digits' => 3,
-    'character_pull_number' => 'all',
+    'character_pull_number'   => 'all',
 
-    'reset_character_status_on_transfer' => 0,
+    'reset_character_status_on_transfer'  => 0,
     'reset_character_profile_on_transfer' => 0,
-    'clear_myo_slot_name_on_approval' => 0,
+    'clear_myo_slot_name_on_approval'     => 0,
 
     /*
     |--------------------------------------------------------------------------
@@ -137,8 +137,8 @@ return [
     |
     */
     'watermark_masterlist_images' => 0,
-    'masterlist_image_dimension' => 0,
-    'masterlist_image_format' => null,
+    'masterlist_image_dimension'  => 0,
+    'masterlist_image_format'     => null,
     'masterlist_image_background' => '#ffffff',
 
     /*
@@ -154,7 +154,7 @@ return [
     |
     */
     'store_masterlist_fullsizes' => 0,
-    'masterlist_fullsizes_cap' => 0,
+    'masterlist_fullsizes_cap'   => 0,
 
     /*
     |--------------------------------------------------------------------------
@@ -170,8 +170,8 @@ return [
     |
     */
     'masterlist_thumbnails' => [
-        'width' => 200,
-        'height' => 200
+        'width'  => 200,
+        'height' => 200,
     ],
     'watermark_masterlist_thumbnails' => 0,
 
@@ -222,6 +222,6 @@ return [
     | Symbol for the (real world) currency used for sales posts.
     |
     */
-    'currency_symbol' => '$'
+    'currency_symbol' => '$',
 
 ];
