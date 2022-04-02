@@ -45,7 +45,8 @@ class CharacterImageController extends Controller
             'character' => $this->character,
             'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes' => ['0' => 'Pick a Species First'],
+            'subtypes' => ['0' => 'Select Subtype'] + Subtype::where('species_id','=',$this->character->image->species_id)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'users' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
             'features' => Feature::getFeaturesByCategory(),
             'isMyo' => false
         ]);
@@ -77,7 +78,7 @@ class CharacterImageController extends Controller
     public function postNewImage(Request $request, CharacterManager $service, $slug)
     {
         $request->validate(CharacterImage::$createRules);
-        $data = $request->only(['image', 'thumbnail', 'x0', 'x1', 'y0', 'y1', 'use_cropper', 'artist_url', 'artist_alias', 'designer_url', 'designer_alias', 'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data', 'is_valid', 'is_visible']);
+        $data = $request->only(['image', 'thumbnail', 'x0', 'x1', 'y0', 'y1', 'use_cropper', 'artist_url', 'artist_id', 'designer_url', 'designer_id', 'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data', 'is_valid', 'is_visible']);
         $this->character = Character::where('slug', $slug)->first();
         if(!$this->character) abort(404);
         if($service->createImage($data, $this->character, Auth::user())) {
@@ -191,6 +192,7 @@ class CharacterImageController extends Controller
     {
         return view('character.admin._edit_credits_modal', [
             'image' => CharacterImage::find($id),
+            'users' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
         ]);
     }
 
@@ -204,7 +206,7 @@ class CharacterImageController extends Controller
      */
     public function postEditImageCredits(Request $request, CharacterManager $service, $id)
     {
-        $data = $request->only(['artist_url', 'artist_alias', 'designer_url', 'designer_alias']);
+        $data = $request->only(['artist_url', 'artist_id', 'designer_url', 'designer_id']);
         $image = CharacterImage::find($id);
         if(!$image) abort(404);
         if($service->updateImageCredits($data, $image, Auth::user())) {

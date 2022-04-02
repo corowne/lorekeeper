@@ -5,7 +5,11 @@
 @section('meta-img') {{ $character->image->thumbnailUrl }} @endsection
 
 @section('profile-content')
-{!! breadcrumbs([($character->is_myo_slot ? 'MYO Slot Masterlist' : 'Character Masterlist') => ($character->is_myo_slot ? 'myos' : 'masterlist'), $character->fullName => $character->url, 'Transfer' => $character->url . '/transfer']) !!}
+@if($character->is_myo_slot)
+{!! breadcrumbs(['MYO Slot Masterlist' => 'myos', $character->fullName => $character->url, 'Transfer' => $character->url . '/transfer']) !!}
+@else
+{!! breadcrumbs([($character->category->masterlist_sub_id ? $character->category->sublist->name.' Masterlist' : 'Character masterlist') => ($character->category->masterlist_sub_id ? 'sublist/'.$character->category->sublist->key : 'masterlist' ), $character->fullName => $character->url, 'Transfer' => $character->url . '/transfer']) !!}
+@endif
 
 @include('character._header', ['character' => $character])
 
@@ -32,7 +36,7 @@
         <p>This character is currently attached to a trade. (<a href="{{ $character->trade->url }}">View Trade</a>)</p>
     @else
         <p>
-            Transfers require the recipient to confirm that they want to receive the character. Before the recipient makes the confirmation, you may cancel the transfer, but cannot retrieve the character after it has been transferred. 
+            Transfers require the recipient to confirm that they want to receive the character. Before the recipient makes the confirmation, you may cancel the transfer, but cannot retrieve the character after it has been transferred.
             @if($transfersQueue)
                 Additionally, a mod will need to approve of the transfer. There may be a wait until the recipient receives the character, even after they have confirmed the transfer.
             @endif
@@ -47,12 +51,15 @@
             {!! Form::label('recipient_id', 'Recipient') !!}
             {!! Form::select('recipient_id', $userOptions, old('recipient_id'), ['class' => 'form-control selectize', 'placeholder' => 'Select User']) !!}
         </div>
-
+        <div class="form-group">
+            {!! Form::label('user_reason', 'Reason for Transfer (Required)') !!}
+            {!! Form::text('user_reason', '', ['class' => 'form-control']) !!}
+        </div>
         <div class="text-right">
             {!! Form::submit('Send Transfer', ['class' => 'btn btn-primary']) !!}
         </div>
         {!! Form::close() !!}
-    @endif 
+    @endif
 @endif
 
 @if(Auth::user()->hasPower('manage_characters'))
@@ -68,8 +75,8 @@
         {!! Form::select('recipient_id', $userOptions, old('recipient_id'), ['class' => 'form-control selectize', 'placeholder' => 'Select User']) !!}
     </div>
     <div class="form-group">
-        {!! Form::label('recipient_alias', 'Recipient Alias') !!}
-        {!! Form::text('recipient_alias', old('recipient_alias'), ['class' => 'form-control']) !!}
+        {!! Form::label('recipient_url', 'Recipient Url') !!} {!! add_help('Characters can only be transferred to offsite user URLs from site(s) used for authentication.') !!}
+        {!! Form::text('recipient_url', old('recipient_url'), ['class' => 'form-control']) !!}
     </div>
     <div class="form-group">
         {!! Form::label('cooldown', 'Transfer Cooldown (days)') !!}

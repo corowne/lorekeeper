@@ -7,6 +7,11 @@ use DB;
 use App\Models\Model;
 use App\Models\Item\ItemCategory;
 
+use App\Models\User\User;
+use App\Models\Shop\Shop;
+use App\Models\Prompt\Prompt;
+use App\Models\User\UserItem;
+
 class Item extends Model
 {
     /**
@@ -15,8 +20,11 @@ class Item extends Model
      * @var array
      */
     protected $fillable = [
-        'item_category_id', 'name', 'has_image', 'description', 'parsed_description', 'allow_transfer'
+        'item_category_id', 'name', 'has_image', 'description', 'parsed_description', 'allow_transfer',
+        'data', 'reference_url', 'artist_alias', 'artist_url', 'artist_id', 'is_released'
     ];
+
+    protected $appends = ['image_url'];
 
     /**
      * The table associated with the model.
@@ -24,7 +32,7 @@ class Item extends Model
      * @var string
      */
     protected $table = 'items';
-    
+
     /**
      * Validation rules for creation.
      *
@@ -32,11 +40,16 @@ class Item extends Model
      */
     public static $createRules = [
         'item_category_id' => 'nullable',
-        'name' => 'required|unique:items|between:3,25',
+        'name' => 'required|unique:items|between:3,100',
         'description' => 'nullable',
         'image' => 'mimes:png',
+        'rarity' => 'nullable',
+        'reference_url' => 'nullable|between:3,200',
+        'uses' => 'nullable|between:3,250',
+        'release' => 'nullable|between:3,100',
+        'currency_quantity' => 'nullable|integer|min:1',
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -44,13 +57,17 @@ class Item extends Model
      */
     public static $updateRules = [
         'item_category_id' => 'nullable',
-        'name' => 'required|between:3,25',
+        'name' => 'required|between:3,100',
         'description' => 'nullable',
         'image' => 'mimes:png',
+        'reference_url' => 'nullable|between:3,200',
+        'uses' => 'nullable|between:3,250',
+        'release' => 'nullable|between:3,100',
+        'currency_quantity' => 'nullable|integer|min:1',
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -58,7 +75,7 @@ class Item extends Model
     /**
      * Get the category the item belongs to.
      */
-    public function category() 
+    public function category()
     {
         return $this->belongsTo('App\Models\Item\ItemCategory', 'item_category_id');
     }
@@ -66,13 +83,21 @@ class Item extends Model
     /**
      * Get the item's tags.
      */
-    public function tags() 
+    public function tags()
     {
         return $this->hasMany('App\Models\Item\ItemTag', 'item_id');
     }
 
+    /**
+     * Get the user that drew the item art.
+     */
+    public function artist()
+    {
+        return $this->belongsTo('App\Models\User\User', 'artist_id');
+    }
+
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -123,12 +148,23 @@ class Item extends Model
         return $query->orderBy('id');
     }
 
+    /**
+     * Scope a query to show only released or "released" (at least one user-owned stack has ever existed) items.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeReleased($query)
+    {
+        return $query->whereIn('id', UserItem::pluck('item_id')->toArray())->orWhere('is_released', 1);
+    }
+
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
-    
+
     /**
      * Displays the model's name, linked to its encyclopedia page.
      *
@@ -168,7 +204,7 @@ class Item extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
@@ -191,6 +227,16 @@ class Item extends Model
     }
 
     /**
+     * Gets the URL of the individual item's page, by ID.
+     *
+     * @return string
+     */
+    public function getIdUrlAttribute()
+    {
+        return url('world/items/'.$this->id);
+    }
+
+    /**
      * Gets the currency's asset type for asset management.
      *
      * @return string
@@ -200,8 +246,125 @@ class Item extends Model
         return 'items';
     }
 
+    /**
+     * Get the artist of the item's image.
+     *
+     * @return string
+     */
+    public function getItemArtistAttribute()
+    {
+        if(!$this->artist_url && !$this->artist_id) return null;
+
+        // Check to see if the artist exists on site
+        $artist = checkAlias($this->artist_url, false);
+        if(is_object($artist)) {
+            $this->artist_id = $artist->id;
+            $this->artist_url = null;
+            $this->save();
+        }
+
+        if($this->artist_id)
+        {
+            return $this->artist->displayName;
+        }
+        else if ($this->artist_url)
+        {
+            return prettyProfileLink($this->artist_url);
+        }
+    }
+
+    /**
+     * Get the reference url attribute.
+     *
+     * @return string
+     */
+    public function getReferenceAttribute()
+    {
+        if (!$this->reference_url) return null;
+        return $this->reference_url;
+    }
+
+    /**
+     * Get the data attribute as an associative array.
+     *
+     * @return array
+     */
+    public function getDataAttribute()
+    {
+        if (!$this->id) return null;
+        return json_decode($this->attributes['data'], true);
+    }
+
+    /**
+     * Get the rarity attribute.
+     *
+     * @return string
+     */
+    public function getRarityAttribute()
+    {
+        if (!isset($this->data) || !isset($this->data['rarity'])) return null;
+        return $this->data['rarity'];
+    }
+
+    /**
+     * Get the uses attribute.
+     *
+     * @return string
+     */
+    public function getUsesAttribute()
+    {
+        if (!$this->data) return null;
+        return $this->data['uses'];
+    }
+
+    /**
+     * Get the source attribute.
+     *
+     * @return string
+     */
+    public function getSourceAttribute()
+    {
+        if (!$this->data) return null;
+        return $this->data['release'];
+    }
+
+    /**
+     * Get the resale attribute.
+     *
+     * @return string
+     */
+    public function getResellAttribute()
+    {
+        if (!$this->data) return null;
+        return collect($this->data['resell']);
+    }
+
+    /**
+     * Get the shops attribute as an associative array.
+     *
+     * @return array
+     */
+    public function getShopsAttribute()
+    {
+        if (!$this->data) return null;
+        $itemShops = $this->data['shops'];
+        return Shop::whereIn('id', $itemShops)->get();
+    }
+
+    /**
+     * Get the prompts attribute as an associative array.
+     *
+     * @return array
+     */
+    public function getPromptsAttribute()
+    {
+        if (!$this->data) return null;
+        $itemPrompts = $this->data['prompts'];
+        return Prompt::whereIn('id', $itemPrompts)->get();
+    }
+
     /**********************************************************************************************
-    
+
         OTHER FUNCTIONS
 
     **********************************************************************************************/

@@ -15,6 +15,10 @@
             {!! Form::label('notifyGiftArt', 'Gift Art Allowed status changes', ['class' => 'form-check-label']) !!}
         </div>
         <div class="form-check">
+            {!! Form::checkbox('notify_on_gift_writing_status', 1, $bookmark->notify_on_gift_writing_status, ['class' => 'form-check-input', 'id' => 'notifyGiftArt']) !!}
+            {!! Form::label('notifyGiftWriting', 'Gift Writing Allowed status changes', ['class' => 'form-check-label']) !!}
+        </div>
+        <div class="form-check">
             {!! Form::checkbox('notify_on_transfer', 1, $bookmark->notify_on_transfer, ['class' => 'form-check-input', 'id' => 'notifyTransfer']) !!}
             {!! Form::label('notifyTransfer', 'Character\'s owner changes', ['class' => 'form-check-label']) !!}
         </div>

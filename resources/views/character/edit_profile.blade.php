@@ -5,7 +5,11 @@
 @section('meta-img') {{ $character->image->thumbnailUrl }} @endsection
 
 @section('profile-content')
-{!! breadcrumbs([($character->is_myo_slot ? 'MYO Slot Masterlist' : 'Character Masterlist') => ($character->is_myo_slot ? 'myos' : 'masterlist'), $character->fullName => $character->url, 'Editing Profile' => $character->url . '/profile/edit']) !!}
+@if($character->is_myo_slot)
+{!! breadcrumbs(['MYO Slot Masterlist' => 'myos', $character->fullName => $character->url, 'Editing Profile' => $character->url . '/profile/edit']) !!}
+@else
+{!! breadcrumbs([($character->category->masterlist_sub_id ? $character->category->sublist->name.' Masterlist' : 'Character masterlist') => ($character->category->masterlist_sub_id ? 'sublist/'.$character->category->sublist->key : 'masterlist' ), $character->fullName => $character->url, 'Editing Profile' => $character->url . '/profile/edit']) !!}
+@endif
 
 @include('character._header', ['character' => $character])
 
@@ -21,6 +25,12 @@
         {!! Form::label('name', 'Name') !!}
         {!! Form::text('name', $character->name, ['class' => 'form-control']) !!}
     </div>
+    @if(Config::get('lorekeeper.extensions.character_TH_profile_link'))
+        <div class="form-group">
+            {!! Form::label('link', 'Profile Link') !!}
+            {!! Form::text('link', $character->profile->link, ['class' => 'form-control']) !!}
+        </div>
+    @endif
 @endif
 <div class="form-group">
     {!! Form::label('text', 'Profile Content') !!}
@@ -29,9 +39,15 @@
 
 @if($character->user_id == Auth::user()->id)
     @if(!$character->is_myo_slot)
-        <div class="form-group">
-            {!! Form::label('is_gift_art_allowed', 'Allow Gift Art', ['class' => 'form-check-label mb-3']) !!} {!! add_help('This will place the character on the list of characters that can be drawn for gift art. This does not have any other functionality, but allow users looking for characters to draw to find your character easily.') !!}
-            {!! Form::select('is_gift_art_allowed', [0 => 'No', 1 => 'Yes', 2 => 'Ask First'], $character->is_gift_art_allowed, ['class' => 'form-control user-select']) !!}
+        <div class="row">
+            <div class="col-md form-group">
+                {!! Form::label('is_gift_art_allowed', 'Allow Gift Art', ['class' => 'form-check-label mb-3']) !!} {!! add_help('This will place the character on the list of characters that can be drawn for gift art. This does not have any other functionality, but allow users looking for characters to draw to find your character easily.') !!}
+                {!! Form::select('is_gift_art_allowed', [0 => 'No', 1 => 'Yes', 2 => 'Ask First'], $character->is_gift_art_allowed, ['class' => 'form-control user-select']) !!}
+            </div>
+            <div class="col-md form-group">
+                {!! Form::label('is_gift_writing_allowed', 'Allow Gift Writing', ['class' => 'form-check-label mb-3']) !!} {!! add_help('This will place the character on the list of characters that can be written about for gift writing. This does not have any other functionality, but allow users looking for characters to write about to find your character easily.') !!}
+                {!! Form::select('is_gift_writing_allowed', [0 => 'No', 1 => 'Yes', 2 => 'Ask First'], $character->is_gift_writing_allowed, ['class' => 'form-control user-select']) !!}
+            </div>
         </div>
     @endif
     @if($character->is_tradeable ||  $character->is_sellable)
