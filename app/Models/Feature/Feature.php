@@ -5,6 +5,7 @@ namespace App\Models\Feature;
 use App\Models\Model;
 use App\Models\Rarity;
 use App\Models\Species\Species;
+use Config;
 use DB;
 
 class Feature extends Model
@@ -258,5 +259,43 @@ class Feature extends Model
     public function getSearchUrlAttribute()
     {
         return url('masterlist?feature_id[]='.$this->id);
+    }
+
+    /**********************************************************************************************
+
+        Other Functions
+
+    **********************************************************************************************/
+
+    public static function getDropdownItems()
+    {
+        if (Config::get('lorekeeper.extensions.organised_traits_dropdown')) {
+            $sorted_feature_categories = collect(FeatureCategory::all()->sortBy('sort')->pluck('name')->toArray());
+
+            $grouped = self::select('name', 'id', 'feature_category_id')->with('category')->orderBy('name')->get()->keyBy('id')->groupBy('category.name', $preserveKeys = true)->toArray();
+            if (isset($grouped[''])) {
+                if (!$sorted_feature_categories->contains('Miscellaneous')) {
+                    $sorted_feature_categories->push('Miscellaneous');
+                }
+                $grouped['Miscellaneous'] = $grouped['Miscellaneous'] ?? [] + $grouped[''];
+            }
+
+            $sorted_feature_categories = $sorted_feature_categories->filter(function ($value, $key) use ($grouped) {
+                return in_array($value, array_keys($grouped), true);
+            });
+
+            foreach ($grouped as $category => $features) {
+                foreach ($features as $id => $feature) {
+                    $grouped[$category][$id] = $feature['name'];
+                }
+            }
+            $features_by_category = $sorted_feature_categories->map(function ($category) use ($grouped) {
+                return [$category => $grouped[$category]];
+            });
+
+            return $features_by_category;
+        } else {
+            return self::orderBy('name')->pluck('name', 'id')->toArray();
+        }
     }
 }

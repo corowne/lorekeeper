@@ -40,7 +40,15 @@
 
 <script>
     $(document).ready(function() {
-        $('.original.feature-select').selectize();
+        @if(Config::get('lorekeeper.extensions.organised_traits_dropdown'))
+            $('.original.feature-select').selectize({
+                render: {
+                    item: featureSelectedRender
+                }
+            });
+        @else
+            $('.original.feature-select').selectize();
+        @endif
         $('#add-feature').on('click', function(e) {
             e.preventDefault();
             addFeatureRow();
@@ -58,10 +66,22 @@
                 e.preventDefault();
                 removeFeatureRow($(this));
             })
-            $clone.find('.feature-select').selectize();
+            
+            @if(Config::get('lorekeeper.extensions.organised_traits_dropdown'))
+                $clone.find('.feature-select').selectize({
+                    render: {
+                        item: featureSelectedRender
+                    }
+                });
+            @else
+                $clone.find('.feature-select').selectize();
+            @endif
         }
         function removeFeatureRow($trigger) {
             $trigger.parent().remove();
+        }
+        function featureSelectedRender(item, escape) {
+            return '<div><span>' + escape(item["text"].trim()) + ' (' + escape(item["optgroup"].trim()) + ')' + '</span></div>';
         }
 		refreshSubtype();
     });

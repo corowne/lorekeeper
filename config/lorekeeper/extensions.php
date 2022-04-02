@@ -71,4 +71,6 @@ return [
         'currency_id' => 1,
     ],
 
+    // Organised Traits Dropdown - Draginraptor
+    'organised_traits_dropdown' => 0,
 ];
