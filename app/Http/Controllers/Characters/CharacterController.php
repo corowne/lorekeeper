@@ -16,6 +16,7 @@ use App\Models\User\User;
 use App\Models\User\UserCurrency;
 use App\Models\User\UserItem;
 use App\Services\CharacterManager;
+use App\Services\DesignUpdateManager;
 use App\Services\CurrencyManager;
 use App\Services\InventoryManager;
 use Auth;
