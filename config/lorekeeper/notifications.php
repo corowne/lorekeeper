@@ -24,7 +24,7 @@ return [
         'message' => 'You have received a staff grant of {item_name} (×{item_quantity}) from <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Inventory</a>)',
         'url' => 'inventory'
     ],
-    
+
     // CURRENCY_REMOVAL
     2 => [
         'name' => 'Currency Removal',
@@ -73,21 +73,21 @@ return [
         'message' => '{character_name} has received a staff grant of {currency_quantity} {currency_name} from <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Bank</a>)',
         'url' => 'character/{character_slug}/bank'
     ],
-    
+
     // CHARACTER_CURRENCY_REMOVAL
     9 => [
         'name' => 'Character Currency Removal',
         'message' => '{currency_quantity} {currency_name} was removed from {character_name} by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Bank</a>)',
         'url' => 'character/{character_slug}/bank'
     ],
-    
+
     // CHARACTER_PROFILE_EDIT
     10 => [
         'name' => 'Character Profile Edited',
         'message' => '{character_name}\'s profile was edited by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Character</a>)',
         'url' => 'character/{character_slug}/profile'
     ],
-    
+
     // IMAGE_UPLOAD
     11 => [
         'name' => 'Image Upload',
@@ -289,6 +289,22 @@ return [
         'message' => 'A character you have bookmarked (<a href="{character_url}">{character_name}</a>) has had its Gift Writing Allowed status changed. (<a href="{url}">View Bookmarks</a>)',
         'url' => 'account/bookmarks'
     ],
+
+
+    // USER_REACTIVATED
+    103 => [
+        'name'      => 'User Reactivated',
+        'message'   => '<a href="{user_url}">{user_name}\'s</a> account has been reactivated by <a href="{staff_url}">{staff_name}</a>.',
+        'url'       => ''
+    ],
+
+    // USER_DEACTIVATED
+    104 => [
+        'name'      => 'User Deactivated',
+        'message'   => '<a href="{user_url}">{user_name}\'s</a> account has been deactivated by <a href="{staff_url}">{staff_name}</a>.',
+        'url'       => ''
+    ],
+
     // REPORT_ASSIGNED
     220 => [
         'name' => 'Report Assigned',

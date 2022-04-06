@@ -25,7 +25,7 @@ Route::group(['middleware' => ['auth', 'verified']], function() {
 
     # LINK DA ACCOUNT
     Route::get('/link', 'HomeController@getLink')->name('link');
-    
+
     Route::get('/auth/redirect/{driver}', 'HomeController@getAuthRedirect');
     Route::get('/auth/callback/{driver}', 'HomeController@getAuthCallback');
 
@@ -37,6 +37,11 @@ Route::group(['middleware' => ['auth', 'verified']], function() {
 
     # BANNED
     Route::get('banned', 'Users\AccountController@getBanned');
+
+    # DEACTIVATED
+    Route::get('deactivated', 'Users\AccountController@getDeactivated');
+    Route::get('reactivate', 'Users\AccountController@getReactivateConfirmation');
+    Route::post('reactivate', 'Users\AccountController@postReactivate');
 
     /**********************************************************************************************
         Routes that require having a linked dA account (also includes blocked routes when banned)
