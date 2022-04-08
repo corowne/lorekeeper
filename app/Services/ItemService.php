@@ -51,7 +51,7 @@ class ItemService extends Service
 
             $category = ItemCategory::create($data);
 
-            if (!logAdminAction($user, 'Created Item Category', 'Created '.$category->displayName)) {
+            if (!$this->logAdminAction($user, 'Created Item Category', 'Created '.$category->displayName)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -97,7 +97,7 @@ class ItemService extends Service
 
             $category->update($data);
 
-            if (!logAdminAction($user, 'Updated Item Category', 'Updated '.$category->displayName)) {
+            if (!$this->logAdminAction($user, 'Updated Item Category', 'Updated '.$category->displayName)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -130,7 +130,7 @@ class ItemService extends Service
             if (Item::where('item_category_id', $category->id)->exists()) {
                 throw new \Exception('An item with this category exists. Please change its category first.');
             }
-            if (!logAdminAction($user, 'Deleted Item Category', 'Deleted '.$category->name)) {
+            if (!$this->logAdminAction($user, 'Deleted Item Category', 'Deleted '.$category->name)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -214,7 +214,7 @@ class ItemService extends Service
 
             $item = Item::create($data);
 
-            if (!logAdminAction($user, 'Created Item', 'Created '.$item->displayName)) {
+            if (!$this->logAdminAction($user, 'Created Item', 'Created '.$item->displayName)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -277,7 +277,7 @@ class ItemService extends Service
 
             $item->update($data);
 
-            if (!logAdminAction($user, 'Updated Item', 'Updated '.$item->displayName)) {
+            if (!$this->logAdminAction($user, 'Updated Item', 'Updated '.$item->displayName)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -333,7 +333,7 @@ class ItemService extends Service
                 throw new \Exception('A shop currently stocks this item. Please remove the item before deleting it.');
             }
 
-            if (!logAdminAction($user, 'Deleted Item', 'Deleted '.$item->name)) {
+            if (!$this->logAdminAction($user, 'Deleted Item', 'Deleted '.$item->name)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -400,7 +400,7 @@ class ItemService extends Service
                 throw new \Exception('No tag selected.');
             }
 
-            if (!logAdminAction($user, 'Added Item Tag', 'Added '.$tag.' tag to '.$item->displayName)) {
+            if (!$this->logAdminAction($user, 'Added Item Tag', 'Added '.$tag.' tag to '.$item->displayName)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -439,7 +439,7 @@ class ItemService extends Service
                 throw new \Exception('This item does not have this tag attached to it.');
             }
 
-            if (!logAdminAction($user, 'Edited Item Tag', 'Edited '.$tag.' tag on '.$item->displayName)) {
+            if (!$this->logAdminAction($user, 'Edited Item Tag', 'Edited '.$tag.' tag on '.$item->displayName)) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -484,7 +484,7 @@ class ItemService extends Service
                 throw new \Exception('This item does not have this tag attached to it.');
             }
 
-            if (!logAdminAction($user, 'Deleted Item Tag', 'Deleted '.$tag.' tag on '.$item->displayName)) {
+            if (!$this->logAdminAction($user, 'Deleted Item Tag', 'Deleted '.$tag.' tag on '.$item->displayName)) {
                 throw new \Exception('Failed to log admin action.');
             }
 

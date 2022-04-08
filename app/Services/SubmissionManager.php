@@ -50,6 +50,10 @@ class SubmissionManager extends Service
                 if (!$prompt) {
                     throw new \Exception('Invalid prompt selected.');
                 }
+
+                if ($prompt->staff_only && !$user->isStaff) {
+                    throw new \Exception('This prompt may only be submitted to by staff members.');
+                }
             } else {
                 $prompt = null;
             }
@@ -263,7 +267,7 @@ class SubmissionManager extends Service
                 'submission_id' => $submission->id,
             ]);
 
-            if (!logAdminAction($user, 'Submission Rejected', 'Rejected submission <a href="'.$submission->viewurl.'">#'.$submission->id.'</a>')) {
+            if (!$this->logAdminAction($user, 'Submission Rejected', 'Rejected submission <a href="'.$submission->viewurl.'">#'.$submission->id.'</a>')) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -457,7 +461,7 @@ class SubmissionManager extends Service
                 'submission_id' => $submission->id,
             ]);
 
-            if (!logAdminAction($user, 'Submission Approved', 'Approved submission <a href="'.$submission->viewurl.'">#'.$submission->id.'</a>')) {
+            if (!$this->logAdminAction($user, 'Submission Approved', 'Approved submission <a href="'.$submission->viewurl.'">#'.$submission->id.'</a>')) {
                 throw new \Exception('Failed to log admin action.');
             }
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Character\CharacterCategory;
 use App\Models\Character\Sublist;
 use App\Services\CharacterCategoryService;
+use Auth;
 use Illuminate\Http\Request;
 
 class CharacterCategoryController extends Controller
@@ -78,9 +79,9 @@ class CharacterCategoryController extends Controller
         $data = $request->only([
             'code', 'name', 'description', 'image', 'remove_image', 'masterlist_sub_id',
         ]);
-        if ($id && $service->updateCharacterCategory(CharacterCategory::find($id), $data)) {
+        if ($id && $service->updateCharacterCategory(CharacterCategory::find($id), $data, Auth::user())) {
             flash('Category updated successfully.')->success();
-        } elseif (!$id && $category = $service->createCharacterCategory($data)) {
+        } elseif (!$id && $category = $service->createCharacterCategory($data, Auth::user())) {
             flash('Category created successfully.')->success();
 
             return redirect()->to('admin/data/character-categories/edit/'.$category->id);
@@ -119,7 +120,7 @@ class CharacterCategoryController extends Controller
      */
     public function postDeleteCharacterCategory(Request $request, CharacterCategoryService $service, $id)
     {
-        if ($id && $service->deleteCharacterCategory(CharacterCategory::find($id))) {
+        if ($id && $service->deleteCharacterCategory(CharacterCategory::find($id), Auth::user())) {
             flash('Category deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {

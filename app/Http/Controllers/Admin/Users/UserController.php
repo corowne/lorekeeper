@@ -97,7 +97,7 @@ class UserController extends Controller
         } elseif (!Auth::user()->canEditRank($user->rank)) {
             flash('You cannot edit the information of a user that has a higher rank than yourself.')->error();
         } else {
-            if (!logAdminAction($staff, 'Edited User', 'Edited '.$user->displayname)) {
+            if (!(new UserService)->logAdminAction(Auth::user(), 'Edited User', 'Edited '.$user->displayname)) {
                 flash('Failed to log admin action.')->error();
 
                 return redirect()->back();
@@ -154,7 +154,7 @@ class UserController extends Controller
                     }
                 }
             }
-            if (!logAdminAction($staff, 'Edited User', 'Cleared '.$user->displayname.'\' alias')) {
+            if (!(new UserService)->logAdminAction(Auth::user(), 'Edited User', 'Cleared '.$user->displayname.'\' alias')) {
                 flash('Failed to log admin action.')->error();
 
                 return redirect()->back();
@@ -178,7 +178,7 @@ class UserController extends Controller
         } elseif (!Auth::user()->canEditRank($user->rank)) {
             flash('You cannot edit the information of a user that has a higher rank than yourself.')->error();
         } elseif ($user->settings->update(['is_fto' => $request->get('is_fto') ?: 0])) {
-            if (!logAdminAction($staff, 'Edited User', 'Edited '.$user->displayname)) {
+            if (!(new UserService)->logAdminAction(Auth::user(), 'Edited User', 'Edited '.$user->displayname)) {
                 flash('Failed to log admin action.')->error();
 
                 return redirect()->back();
@@ -207,7 +207,7 @@ class UserController extends Controller
 
         $formatDate = Carbon::parse($date);
         $logData = ['old_date' => $user->birthday ? $user->birthday->isoFormat('DD-MM-YYYY') : Carbon::now()->isoFormat('DD-MM-YYYY')] + ['new_date' => $date];
-        if (!logAdminAction($staff, 'Edited User', 'Edited '.$user->displayname.' birthday')) {
+        if (!(new UserService)->logAdminAction(Auth::user(), 'Edited User', 'Edited '.$user->displayname.' birthday')) {
             flash('Failed to log admin action.')->error();
 
             return redirect()->back();

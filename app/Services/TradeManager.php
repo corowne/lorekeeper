@@ -347,7 +347,7 @@ class TradeManager extends Service
                     'trade_id' => $trade->id,
                 ]);
 
-                if (!logAdminAction($user, 'Approved Trade', 'Approved trade <a href="'.$trade->url.'">#'.$trade->id.'</a>')) {
+                if (!$this->logAdminAction($user, 'Approved Trade', 'Approved trade <a href="'.$trade->url.'">#'.$trade->id.'</a>')) {
                     throw new \Exception('Failed to log admin action.');
                 }
 
@@ -396,7 +396,7 @@ class TradeManager extends Service
                     'trade_id' => $trade->id,
                 ]);
 
-                if (!logAdminAction($user, 'Rejected Trade', 'Rejected trade <a href="'.$trade->url.'">#'.$trade->id.'</a>')) {
+                if (!$this->logAdminAction($user, 'Rejected Trade', 'Rejected trade <a href="'.$trade->url.'">#'.$trade->id.'</a>')) {
                     throw new \Exception('Failed to log admin action.');
                 }
 
@@ -644,10 +644,10 @@ class TradeManager extends Service
                     $inventoryManager->moveStack($trade->sender, $trade->recipient, 'Trade', ['data' => 'Received in trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]'], $stack, $quantity);
                     $userItemRow = UserItem::find($stack->id);
                     if (!$userItemRow) {
-                        throw new \Exception('Cannot return an invalid item. ('.$userItemId.')');
+                        throw new \Exception('Cannot return an invalid item. ('.$userItemRow->id.')');
                     }
                     if ($userItemRow->trade_count < $quantity) {
-                        throw new \Exception('Cannot return more items than was held. ('.$userItemId.')');
+                        throw new \Exception('Cannot return more items than was held. ('.$userItemRow->id.')');
                     }
                     $userItemRow->trade_count -= $quantity;
                     $userItemRow->save();
@@ -659,10 +659,10 @@ class TradeManager extends Service
                     $inventoryManager->moveStack($trade->recipient, $trade->sender, 'Trade', ['data' => 'Received in trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]'], $stack, $quantity);
                     $userItemRow = UserItem::find($stack->id);
                     if (!$userItemRow) {
-                        throw new \Exception('Cannot return an invalid item. ('.$userItemId.')');
+                        throw new \Exception('Cannot return an invalid item. ('.$userItemRow->id.')');
                     }
                     if ($userItemRow->trade_count < $quantity) {
-                        throw new \Exception('Cannot return more items than was held. ('.$userItemId.')');
+                        throw new \Exception('Cannot return more items than was held. ('.$userItemRow->id.')');
                     }
                     $userItemRow->trade_count -= $quantity;
                     $userItemRow->save();

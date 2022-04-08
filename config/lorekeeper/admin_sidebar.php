@@ -25,6 +25,10 @@ return [
                 'name' => 'Admin Logs',
                 'url'  => 'admin/logs',
             ],
+            [
+                'name' => 'Staff Reward Settings',
+                'url'  => 'admin/staff-reward-settings',
+            ],
         ],
     ],
     'Reports' => [

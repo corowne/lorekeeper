@@ -350,26 +350,3 @@ function prettyProfileName($url)
         return $url;
     }
 }
-
-/**
- * Creates an admin log entry after an action is performed.
- *
- * @param string $action
- * @param object $user
- * @param string $action
- * @param mixed  $action_details
- */
-function logAdminAction($user, $action, $action_details)
-{
-    $log = \App\Models\AdminLog::create([
-        'user_id'        => $user->id,
-        'action'         => $action,
-        'action_details' => $action_details,
-    ]);
-
-    if ($log) {
-        return true;
-    } else {
-        return false;
-    }
-}

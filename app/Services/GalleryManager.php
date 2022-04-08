@@ -198,7 +198,7 @@ class GalleryManager extends Service
             }
 
             if ($user->isStaff) {
-                if (!logAdminAction($user, 'Edited Gallery Submission', 'Edited gallery submission '.$submission->displayName)) {
+                if (!$this->logAdminAction($user, 'Edited Gallery Submission', 'Edited gallery submission '.$submission->displayName)) {
                     throw new \Exception('Failed to log admin action.');
                 }
             }
@@ -456,6 +456,10 @@ class GalleryManager extends Service
                 $this->acceptSubmission($submission);
             }
 
+            if (!$this->logAdminAction($user, 'Voted on Gallery Submission', 'Voted on gallery submission '.$submission->displayName)) {
+                throw new \Exception('Failed to log admin action.');
+            }
+
             return $this->commitReturn(true);
         } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
@@ -536,7 +540,7 @@ class GalleryManager extends Service
             }
 
             if ($user->isStaff) {
-                if (!logAdminAction($user, 'Archived Gallery Submission', 'Archived gallery submission '.$submission->displayName)) {
+                if (!$this->logAdminAction($user, 'Archived Gallery Submission', 'Archived gallery submission '.$submission->displayName)) {
                     throw new \Exception('Failed to log admin action.');
                 }
             }
@@ -649,7 +653,7 @@ class GalleryManager extends Service
                     'is_valued' => 1,
                 ]);
 
-                if (!logAdminAction($user, 'Awarded Gallery Submission', 'Awarded gallery submission '.$submission->displayName)) {
+                if (!$this->logAdminAction($user, 'Awarded Gallery Submission', 'Awarded gallery submission '.$submission->displayName)) {
                     throw new \Exception('Failed to log admin action.');
                 }
 
@@ -730,6 +734,46 @@ class GalleryManager extends Service
                     ]);
                 }
             }
+
+            return $this->commitReturn(true);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Processes rejection for a submission.
+     *
+     * @param \App\Models\Gallery\GallerySubmission $submission
+     * @param mixed                                 $user
+     *
+     * @return \App\Models\Gallery\GallerySubmission|bool
+     */
+    public function rejectSubmission($submission, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            // Check that the submission exists and is pending
+            if (!$submission) {
+                throw new \Exception('Invalid submission selected.');
+            }
+            if ($submission->status != 'Pending') {
+                throw new \Exception("This submission isn't pending.");
+            }
+
+            if (!$this->logAdminAction($user, 'Rejected Gallery Submission', 'Rejected gallery submission '.$submission->displayName)) {
+                throw new \Exception('Failed to log admin action.');
+            }
+
+            $submission->update(['status' => 'Rejected']);
+
+            Notifications::create('GALLERY_SUBMISSION_REJECTED', $submission->user, [
+                'submission_title' => $submission->title,
+                'submission_id'    => $submission->id,
+            ]);
 
             return $this->commitReturn(true);
         } catch (\Exception $e) {
@@ -852,46 +896,6 @@ class GalleryManager extends Service
                     }
                 }
             }
-
-            return $this->commitReturn(true);
-        } catch (\Exception $e) {
-            $this->setError('error', $e->getMessage());
-        }
-
-        return $this->rollbackReturn(false);
-    }
-
-    /**
-     * Processes rejection for a submission.
-     *
-     * @param \App\Models\Gallery\GallerySubmission $submission
-     * @param mixed                                 $user
-     *
-     * @return \App\Models\Gallery\GallerySubmission|bool
-     */
-    private function rejectSubmission($submission, $user)
-    {
-        DB::beginTransaction();
-
-        try {
-            // Check that the submission exists and is pending
-            if (!$submission) {
-                throw new \Exception('Invalid submission selected.');
-            }
-            if ($submission->status != 'Pending') {
-                throw new \Exception("This submission isn't pending.");
-            }
-
-            if (!logAdminAction($user, 'Rejected Gallery Submission', 'Rejected gallery submission '.$submission->displayName)) {
-                throw new \Exception('Failed to log admin action.');
-            }
-
-            $submission->update(['status' => 'Rejected']);
-
-            Notifications::create('GALLERY_SUBMISSION_REJECTED', $submission->user, [
-                'submission_title' => $submission->title,
-                'submission_id'    => $submission->id,
-            ]);
 
             return $this->commitReturn(true);
         } catch (\Exception $e) {
