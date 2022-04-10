@@ -133,8 +133,14 @@
                     @endif
                 @else
                     @if(Auth::user()->isStaff)
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url('admin') }}"><i class="fas fa-crown"></i></a>
+                        <li class="nav-item d-flex">
+                            <a class="nav-link position-relative display-inline-block" href="{{ url('admin') }}"><i class="fas fa-crown"></i>
+                              @if (Auth::user()->hasAdminNotification(Auth::user()))
+                                <span class="position-absolute rounded-circle bg-danger text-light" style="top: -2px; right: -5px; padding: 1px 6px 1px 6px; font-weight:bold; font-size: 0.8em; box-shadow: 1px 1px 1px rgba(0,0,0,.25);">
+                                  {{ Auth::user()->hasAdminNotification(Auth::user()) }}
+                                </span>
+                              @endif
+                            </a>
                         </li>
                     @endif
                     @if(Auth::user()->notifications_unread)
@@ -142,7 +148,7 @@
                             <a class="nav-link btn btn-secondary btn-sm" href="{{ url('notifications') }}"><span class="fas fa-envelope"></span> {{ Auth::user()->notifications_unread }}</a>
                         </li>
                     @endif
-                    
+
                     <li class="nav-item dropdown">
                         <a id="browseDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                             Submit
@@ -160,7 +166,7 @@
                             </a>
                         </div>
                     </li>
-                    
+
                     <li class="nav-item dropdown">
                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="{{ Auth::user()->url }}" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                             {{ Auth::user()->name }} <span class="caret"></span>
