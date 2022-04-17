@@ -18,6 +18,7 @@ class ToyhouseProvider extends AbstractProvider implements ProviderInterface
      */
     protected function getAuthUrl($state)
     {
+        dd($state);
         return $this->buildAuthUrlFromBase('https://toyhou.se/~oauth/authorize', $state);
     }
 
@@ -40,7 +41,7 @@ class ToyhouseProvider extends AbstractProvider implements ProviderInterface
     protected function getUserByToken($token)
     {
         $response = $this->getHttpClient()->get(
-            'https://toyhou.se/~api/v1/me', 
+            'https://toyhou.se/~api/v1/me'.$token, 
             [
                 RequestOptions::HEADERS => [
                     'Authorization' => 'Bearer '.$token,
