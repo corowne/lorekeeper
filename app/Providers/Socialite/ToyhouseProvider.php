@@ -5,6 +5,7 @@ namespace App\Providers\Socialite;
 use Laravel\Socialite\Two\AbstractProvider;
 use Laravel\Socialite\Two\ProviderInterface;
 use Laravel\Socialite\Two\User;
+use GuzzleHttp\RequestOptions;
 
 class ToyhouseProvider extends AbstractProvider implements ProviderInterface
 {
