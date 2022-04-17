@@ -44,6 +44,12 @@ return [
         ],
     ],
 
+    'toyhouse' => [
+        'client_id'     => env('TOYHOUSE_CLIENT_ID'),
+        'client_secret' => env('TOYHOUSE_CLIENT_SECRET'),
+        'redirect'      => env('TOYHOUSE_REDIRECT_URI', '/auth/callback/toyhouse'),
+    ],
+
     'deviantart' => [
         'client_id'     => env('DEVIANTART_CLIENT_ID'),
         'client_secret' => env('DEVIANTART_CLIENT_SECRET'),
@@ -84,5 +90,5 @@ return [
         'client_id'     => env('DISCORD_CLIENT_ID'),
         'client_secret' => env('DISCORD_CLIENT_SECRET'),
         'redirect'      => env('DISCORD_REDIRECT_URI', '/auth/callback/discord'),
-      ],
+    ],
 ];
