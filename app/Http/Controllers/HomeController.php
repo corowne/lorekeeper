@@ -81,7 +81,9 @@ class HomeController extends Controller
             return redirect()->to(Auth::user()->has_alias ? 'account/aliases' : 'link');
         }
 
-        $result = Socialite::driver($provider)->stateless()->user();
+        // Toyhouse runs on Laravel Passport for OAuth2 and this has some issues with state exceptions,
+        // admin suggested the easy fix (to use stateless)
+        $result = $provider == 'toyhouse' ? Socialite::driver($provider)->stateless()->user() : Socialite::driver($provider)->user();
         if ($service->saveProvider($provider, $result, Auth::user())) {
             flash('Account has been linked successfully.')->success();
             Auth::user()->updateCharacters();
