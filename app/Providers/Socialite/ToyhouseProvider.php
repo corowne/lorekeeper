@@ -41,7 +41,7 @@ class ToyhouseProvider extends AbstractProvider implements ProviderInterface
     protected function getUserByToken($token)
     {
         $response = $this->getHttpClient()->get(
-            'https://toyhou.se/~api/v1/me'.$token, 
+            'https://toyhou.se/~api/v1/me?access_token='.$token, 
             [
                 RequestOptions::HEADERS => [
                     'Authorization' => 'Bearer '.$token,
