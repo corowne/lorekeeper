@@ -2,10 +2,10 @@
 
 namespace App\Providers\Socialite;
 
+use GuzzleHttp\RequestOptions;
 use Laravel\Socialite\Two\AbstractProvider;
 use Laravel\Socialite\Two\ProviderInterface;
 use Laravel\Socialite\Two\User;
-use GuzzleHttp\RequestOptions;
 
 class ToyhouseProvider extends AbstractProvider implements ProviderInterface
 {
@@ -14,7 +14,8 @@ class ToyhouseProvider extends AbstractProvider implements ProviderInterface
     /**
      * Get the authentication URL for the provider.
      *
-     * @param  string  $state
+     * @param string $state
+     *
      * @return string
      */
     protected function getAuthUrl($state)
@@ -35,13 +36,14 @@ class ToyhouseProvider extends AbstractProvider implements ProviderInterface
     /**
      * Get the raw user for the given access token.
      *
-     * @param  string  $token
+     * @param string $token
+     *
      * @return array
      */
     protected function getUserByToken($token)
     {
         $response = $this->getHttpClient()->get(
-            'https://toyhou.se/~api/v1/me', 
+            'https://toyhou.se/~api/v1/me',
             [
                 RequestOptions::HEADERS => [
                     'Authorization' => 'Bearer '.$token,
@@ -55,14 +57,13 @@ class ToyhouseProvider extends AbstractProvider implements ProviderInterface
     /**
      * Map the raw user array to a Socialite User instance.
      *
-     * @param  array  $user
      * @return \Laravel\Socialite\Two\User
      */
     protected function mapUserToObject(array $user)
     {
         return (new User)->setRaw($user)->map([
-            'id' => $user['id'], 'nickname' => $user['username'], 
-            'name' => null, 'email' => null, 'avatar' => $user['avatar']
+            'id'   => $user['id'], 'nickname' => $user['username'],
+            'name' => null, 'email' => null, 'avatar' => $user['avatar'],
         ]);
     }
 }

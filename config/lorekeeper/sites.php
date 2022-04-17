@@ -38,11 +38,11 @@ return [
     ],
 
     'toyhouse' => [
-        'full_name'    => 'Toyhou.se',
-        'display_name' => 'TH',
-        'regex'        => '/toyhou\.se\/([A-Za-z0-9_-]+)/',
-        'link'         => 'toyhou.se',
-        'icon'         => 'fas fa-home',
+        'full_name'     => 'Toyhou.se',
+        'display_name'  => 'TH',
+        'regex'         => '/toyhou\.se\/([A-Za-z0-9_-]+)/',
+        'link'          => 'toyhou.se',
+        'icon'          => 'fas fa-home',
         'auth'          => 1,
         'primary_alias' => 1,
     ],
