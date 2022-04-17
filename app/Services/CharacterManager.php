@@ -342,7 +342,7 @@ class CharacterManager extends Service
      *
      * @param  \App\Models\Character\CharacterImage  $characterImage
      */
-    private function processImage($characterImage)
+    public function processImage($characterImage)
     {
         // Trim transparent parts of image.
         $image = Image::make($characterImage->imagePath . '/' . $characterImage->imageFileName)->trim('transparent');

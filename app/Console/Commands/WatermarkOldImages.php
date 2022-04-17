@@ -61,13 +61,11 @@ class WatermarkOldImages extends Command
             $this->info('Found '.$images->count().' images to watermark.');
             $this->line('Beginning watermarking...');
 
+            $service = new \App\Services\CharacterManager;
+
             foreach($images as $image) {
                 // get the image
-                $img = Image::make('public/' . $image->imageDirectory . '/' . $image->imageFileName);
-                $watermark = Image::make('public/images/watermark.png');
-                $img->insert($watermark, 'center');
-
-                $img->save('public/' . $image->imageDirectory . '/' . $image->imageFileName, 100, Config::get('lorekeeper.settings.masterlist_image_format'));
+                $service->processImage($image);
             }
 
             $this->info('Watermarking complete.');
