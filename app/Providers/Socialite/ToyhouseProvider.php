@@ -76,7 +76,7 @@ class ToyhouseProvider extends AbstractProvider implements ProviderInterface
     
     public function user()
     {
-        dd($this);
+        dd([$this->request->session()->pull('state'), $this->request->input('state')]);
         if ($this->user) {
             return $this->user;
         }
