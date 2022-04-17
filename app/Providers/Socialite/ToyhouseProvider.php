@@ -65,35 +65,4 @@ class ToyhouseProvider extends AbstractProvider implements ProviderInterface
             'name' => null, 'email' => null, 'avatar' => $user['avatar_url']
         ]);
     }
-
-
-
-
-
-
-
-
-    
-    public function user()
-    {
-        dd([$this->request->session()->pull('state'), $this->request->input('state')]);
-        if ($this->user) {
-            return $this->user;
-        }
-
-        if ($this->hasInvalidState()) {
-            throw new InvalidStateException;
-        }
-
-        $response = $this->getAccessTokenResponse($this->getCode());
-
-        $this->user = $this->mapUserToObject($this->getUserByToken(
-            $token = Arr::get($response, 'access_token')
-        ));
-
-        return $this->user->setToken($token)
-                    ->setRefreshToken(Arr::get($response, 'refresh_token'))
-                    ->setExpiresIn(Arr::get($response, 'expires_in'))
-                    ->setApprovedScopes(explode($this->scopeSeparator, Arr::get($response, 'scope', '')));
-    }
 }
