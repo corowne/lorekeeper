@@ -64,6 +64,8 @@ class WatermarkOldImages extends Command
             $service = new \App\Services\CharacterManager;
 
             foreach($images as $image) {
+                // consider thumbnail
+                $service->cropThumbnail(['x0' => $image->x0, 'x1' => $image->x1, 'y0' => $image->y0, 'y1' => $image->y1], $image);
                 // get the image
                 $service->processImage($image);
             }

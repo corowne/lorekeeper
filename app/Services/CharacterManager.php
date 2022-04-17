@@ -442,7 +442,7 @@ class CharacterManager extends Service
      * @param  array                                 $points
      * @param  \App\Models\Character\CharacterImage  $characterImage
      */
-    private function cropThumbnail($points, $characterImage, $isMyo = false)
+    public function cropThumbnail($points, $characterImage, $isMyo = false)
     {
         $image = Image::make($characterImage->imagePath . '/' . $characterImage->imageFileName);
 
