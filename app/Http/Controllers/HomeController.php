@@ -81,7 +81,7 @@ class HomeController extends Controller
             return redirect()->to(Auth::user()->has_alias ? 'account/aliases' : 'link');
         }
 
-        $result = Socialite::driver($provider)->user();
+        $result = Socialite::driver($provider)->stateless()->user();
         if ($service->saveProvider($provider, $result, Auth::user())) {
             flash('Account has been linked successfully.')->success();
             Auth::user()->updateCharacters();
