@@ -18,7 +18,7 @@
         "lodash": "^4.17.21",
         "popper.js": "^1.16",
         "resolve-url-loader": "^5.0.0",
-        "sass": "^1.50.0",
+        "sass": "^1.50.1",
         "sass-loader": "^12.6.0",
         "vue": "^3.2.33"
     }
