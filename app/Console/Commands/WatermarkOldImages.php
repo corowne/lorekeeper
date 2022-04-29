@@ -2,12 +2,10 @@
 
 namespace App\Console\Commands;
 
-use Image;
-use Config;
-
 use App\Models\Character\Character;
 use App\Models\Character\CharacterImage;
 use Illuminate\Console\Command;
+use Image;
 
 class WatermarkOldImages extends Command
 {
@@ -27,8 +25,6 @@ class WatermarkOldImages extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -47,10 +43,10 @@ class WatermarkOldImages extends Command
         $this->info('************************'."\n");
 
         $this->info('This command can take a while to run. It will also overlay the watermark on *every* image, regardless if the watermark has previously been applied.');
-        if($this->confirm('Are you sure you want to continue?')) {
+        if ($this->confirm('Are you sure you want to continue?')) {
             // check if user wants to run it on all images or just active images
             $this->info('This command will only run on currently visible characters.');
-            if($this->confirm('Do you want to watermark all images or just active ones? Yes = All images.')) {
+            if ($this->confirm('Do you want to watermark all images or just active ones? Yes = All images.')) {
                 $this->info('Watermarking all images...');
                 $images = CharacterImage::all();
             } else {
@@ -63,7 +59,7 @@ class WatermarkOldImages extends Command
 
             $service = new \App\Services\CharacterManager;
 
-            foreach($images as $image) {
+            foreach ($images as $image) {
                 // consider thumbnail
                 $service->cropThumbnail(['x0' => $image->x0, 'x1' => $image->x1, 'y0' => $image->y0, 'y1' => $image->y1], $image);
                 // get the image
@@ -71,7 +67,8 @@ class WatermarkOldImages extends Command
             }
 
             $this->info('Watermarking complete.');
+        } else {
+            $this->line('Bye.');
         }
-        else $this->line('Bye.');
     }
 }
