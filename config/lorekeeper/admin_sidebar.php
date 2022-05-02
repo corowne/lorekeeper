@@ -19,189 +19,197 @@ return [
         'links' => [
             [
                 'name' => 'User Ranks',
-                'url' => 'admin/users/ranks'
-            ]
-        ]
+                'url'  => 'admin/users/ranks',
+            ],
+            [
+                'name' => 'Admin Logs',
+                'url'  => 'admin/logs',
+            ],
+            [
+                'name' => 'Staff Reward Settings',
+                'url'  => 'admin/staff-reward-settings',
+            ],
+        ],
     ],
     'Reports' => [
         'power' => 'manage_reports',
         'links' => [
             [
                 'name' => 'Report Queue',
-                'url' => 'admin/reports/pending'
-            ]
-        ]
+                'url'  => 'admin/reports/pending',
+            ],
+        ],
     ],
     'Site' => [
         'power' => 'edit_pages',
         'links' => [
             [
                 'name' => 'News',
-                'url' => 'admin/news'
+                'url'  => 'admin/news',
             ],
             [
                 'name' => 'Sales',
-                'url' => 'admin/sales'
+                'url'  => 'admin/sales',
             ],
             [
                 'name' => 'Pages',
-                'url' => 'admin/pages'
-            ]
-        ]
+                'url'  => 'admin/pages',
+            ],
+        ],
     ],
     'Users' => [
         'power' => 'edit_user_info',
         'links' => [
             [
                 'name' => 'User Index',
-                'url' => 'admin/users'
+                'url'  => 'admin/users',
             ],
             [
                 'name' => 'Invitation Keys',
-                'url' => 'admin/invitations'
+                'url'  => 'admin/invitations',
             ],
-        ]
+        ],
     ],
     'Queues' => [
         'power' => 'manage_submissions',
         'links' => [
             [
                 'name' => 'Gallery Submissions',
-                'url' => 'admin/gallery/submissions'
+                'url'  => 'admin/gallery/submissions',
             ],
             [
                 'name' => 'Gallery Currency Awards',
-                'url' => 'admin/gallery/currency'
+                'url'  => 'admin/gallery/currency',
             ],
             [
                 'name' => 'Prompt Submissions',
-                'url' => 'admin/submissions'
+                'url'  => 'admin/submissions',
             ],
             [
                 'name' => 'Claim Submissions',
-                'url' => 'admin/claims'
+                'url'  => 'admin/claims',
             ],
-        ]
+        ],
     ],
     'Grants' => [
         'power' => 'edit_inventories',
         'links' => [
             [
                 'name' => 'Currency Grants',
-                'url' => 'admin/grants/user-currency'
+                'url'  => 'admin/grants/user-currency',
             ],
             [
                 'name' => 'Item Grants',
-                'url' => 'admin/grants/items'
+                'url'  => 'admin/grants/items',
             ],
-        ]
+        ],
     ],
     'Masterlist' => [
         'power' => 'manage_characters',
         'links' => [
             [
                 'name' => 'Create Character',
-                'url' => 'admin/masterlist/create-character'
+                'url'  => 'admin/masterlist/create-character',
             ],
             [
                 'name' => 'Create MYO Slot',
-                'url' => 'admin/masterlist/create-myo'
+                'url'  => 'admin/masterlist/create-myo',
             ],
             [
                 'name' => 'Character Transfers',
-                'url' => 'admin/masterlist/transfers/incoming'
+                'url'  => 'admin/masterlist/transfers/incoming',
             ],
             [
                 'name' => 'Character Trades',
-                'url' => 'admin/masterlist/trades/incoming'
+                'url'  => 'admin/masterlist/trades/incoming',
             ],
             [
                 'name' => 'Design Updates',
-                'url' => 'admin/design-approvals/pending'
+                'url'  => 'admin/design-approvals/pending',
             ],
             [
                 'name' => 'MYO Approvals',
-                'url' => 'admin/myo-approvals/pending'
+                'url'  => 'admin/myo-approvals/pending',
             ],
-        ]
+        ],
     ],
     'Data' => [
         'power' => 'edit_data',
         'links' => [
             [
                 'name' => 'Galleries',
-                'url' => 'admin/data/galleries'
+                'url'  => 'admin/data/galleries',
             ],
             [
                 'name' => 'Character Categories',
-                'url' => 'admin/data/character-categories'
+                'url'  => 'admin/data/character-categories',
             ],
             [
                 'name' => 'Sub Masterlists',
-                'url' => 'admin/data/sublists'
+                'url'  => 'admin/data/sublists',
             ],
             [
                 'name' => 'Rarities',
-                'url' => 'admin/data/rarities'
+                'url'  => 'admin/data/rarities',
             ],
             [
                 'name' => 'Species',
-                'url' => 'admin/data/species'
+                'url'  => 'admin/data/species',
             ],
             [
                 'name' => 'Subtypes',
-                'url' => 'admin/data/subtypes'
+                'url'  => 'admin/data/subtypes',
             ],
             [
                 'name' => 'Traits',
-                'url' => 'admin/data/traits'
+                'url'  => 'admin/data/traits',
             ],
             [
                 'name' => 'Shops',
-                'url' => 'admin/data/shops'
+                'url'  => 'admin/data/shops',
             ],
             [
                 'name' => 'Currencies',
-                'url' => 'admin/data/currencies'
+                'url'  => 'admin/data/currencies',
             ],
             [
                 'name' => 'Prompts',
-                'url' => 'admin/data/prompts'
+                'url'  => 'admin/data/prompts',
             ],
             [
                 'name' => 'Loot Tables',
-                'url' => 'admin/data/loot-tables'
+                'url'  => 'admin/data/loot-tables',
             ],
             [
                 'name' => 'Items',
-                'url' => 'admin/data/items'
+                'url'  => 'admin/data/items',
             ],
-        ]
+        ],
     ],
     'Raffles' => [
         'power' => 'manage_raffles',
         'links' => [
             [
                 'name' => 'Raffles',
-                'url' => 'admin/raffles'
+                'url'  => 'admin/raffles',
             ],
-        ]
+        ],
     ],
     'Settings' => [
         'power' => 'edit_site_settings',
         'links' => [
             [
                 'name' => 'Site Settings',
-                'url' => 'admin/settings'
+                'url'  => 'admin/settings',
             ],
             [
                 'name' => 'Site Images',
-                'url' => 'admin/images'
+                'url'  => 'admin/images',
             ],
             [
                 'name' => 'File Manager',
-                'url' => 'admin/files'
+                'url'  => 'admin/files',
             ],
-        ]
+        ],
     ],
 ];

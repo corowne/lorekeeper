@@ -36,22 +36,41 @@ return [
 
     // Item Entry Expansion - Mercury
     'item_entry_expansion' => [
-        'extra_fields' => 0,
+        'extra_fields'    => 0,
         'resale_function' => 0,
-        'loot_tables' => [
+        'loot_tables'     => [
             // Adds the ability to use either rarity criteria for items or item categories with rarity criteria in loot tables. Note that disabling this does not apply retroactively.
-            'enable' => 0,
-            'alternate_filtering' => 0 // By default this uses more broadly compatible methods to filter by rarity. If you are on Dreamhost/know your DB software can handle searching in JSON, it's recommended to set this to 1 instead.
+            'enable'              => 0,
+            'alternate_filtering' => 0, // By default this uses more broadly compatible methods to filter by rarity. If you are on Dreamhost/know your DB software can handle searching in JSON, it's recommended to set this to 1 instead.
         ],
     ],
 
     // Group Traits By Category - Uri
     'traits_by_category' => 0,
 
+    // Scroll To Top - Uri
+    'scroll_to_top' => 0, // 1 - On, 0 - off
+
     // Character Reward Expansion - Uri
     'character_reward_expansion' => [
-        'expanded' => 1,
+        'expanded'          => 1,
         'default_recipient' => 0, // 0 to default to the character's owner (if a user), 1 to default to the submission user.
     ],
 
+    // MYO Image Hide/Remove - Mercury
+    // Adds an option when approving MYO submissions to hide or delete the MYO placeholder image
+    'remove_myo_image' => 0,
+
+    // Auto-populate New Image Traits - Mercury
+    // Automatically adds the traits present on a character's active image to the list when uploading a new image for an extant character.
+    'autopopulate_image_features' => 0,
+
+    // Staff Rewards - Mercury
+    'staff_rewards' => [
+        'enabled'     => 0,
+        'currency_id' => 1,
+    ],
+
+    // Organised Traits Dropdown - Draginraptor
+    'organised_traits_dropdown' => 0,
 ];

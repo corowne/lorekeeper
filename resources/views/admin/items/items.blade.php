@@ -35,28 +35,29 @@
     <p>No items found.</p>
 @else
     {!! $items->render() !!}
-
-        <div class="row ml-md-2 mb-4">
-          <div class="d-flex row flex-wrap col-12 pb-1 px-0 ubt-bottom">
-            <div class="col-5 col-md-6 font-weight-bold">Name</div>
-            <div class="col-5 col-md-5 font-weight-bold">Category</div>
-          </div>
-          @foreach($items as $item)
-          <div class="d-flex row flex-wrap col-12 mt-1 pt-2 px-0 ubt-top">
-            <div class="col-5 col-md-6"> {{ $item->name }} </div>
-            <div class="col-4 col-md-5"> {{ $item->category ? $item->category->name : '' }} </div>
-            <div class="col-3 col-md-1 text-right">
-              <a href="{{ url('admin/data/items/edit/'.$item->id) }}"  class="btn btn-primary py-0 px-2">Edit</a>
+    <div class="mb-4 logs-table">
+        <div class="logs-table-header">
+            <div class="row">
+                <div class="col-5 col-md-6"><div class="logs-table-cell">Name</div></div>
+                <div class="col-5 col-md-5"><div class="logs-table-cell">Category</div></div>
             </div>
-          </div>
-          @endforeach
         </div>
-
+        <div class="logs-table-body">
+            @foreach($items as $item)
+                <div class="logs-table-row">
+                    <div class="row flex-wrap">
+                        <div class="col-5 col-md-6"><div class="logs-table-cell">{{ $item->name }}</div></div>
+                        <div class="col-4 col-md-5"><div class="logs-table-cell">{{ $item->category ? $item->category->name : '' }}</div></div>
+                        <div class="col-3 col-md-1 text-right">
+                            <div class="logs-table-cell">
+                                <a href="{{ url('admin/data/items/edit/'.$item->id) }}"  class="btn btn-primary py-0 px-2">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
     {!! $items->render() !!}
 @endif
-
-@endsection
-
-@section('scripts')
-@parent
 @endsection

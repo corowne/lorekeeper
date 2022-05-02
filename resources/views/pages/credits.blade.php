@@ -55,6 +55,9 @@
         <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Galleries"><strong>Galleries</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
     </p>
     <p class="mb-0 col-md-4">
+        <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Captcha"><strong>Captcha</strong> (v3)</a> by <a href="https://github.com/itinerare">itinerare</a>
+    </p>
+    <p class="mb-0 col-md-4">
         <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Navbar_News_Notif"><strong>Navbar News Notif</strong></a> by <a href="https://github.com/junijwi">Junijwi</a> ({{ Config::get('lorekeeper.extensions.navbar_news_notif') ? 'Enabled' : 'Disabled' }})
     </p>
     <p class="mb-0 col-md-4">
@@ -77,6 +80,18 @@
     </p>
     <p class="mb-0 col-md-4">
         <strong>Character Rewards</strong> by <a href="https://github.com/preimpression">Preimpression</a> ({{ Config::get('lorekeeper.extensions.character_reward_expansion.expanded') ? 'Enabled' : 'Disabled' }}/{{ Config::get('lorekeeper.extensions.character_reward_expansion.default_recipient') ? 'Submitter' : 'Character Owner' }})
+    </p>
+    <p class="mb-0 col-md-4">
+        <strong>MYO Image Removal</strong> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('lorekeeper.extensions.remove_myo_image') ? 'Enabled' : 'Disabled' }})
+    </p>
+    <p class="mb-0 col-md-4">
+        <strong>Auto-populate New Image Traits</strong> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('lorekeeper.extensions.autopopulate_image_features') ? 'Enabled' : 'Disabled' }})
+    </p>
+    <p class="mb-0 col-md-4">
+        <strong>Staff Rewards</strong> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('lorekeeper.extensions.admin_rewards') ? 'Enabled' : 'Disabled' }})
+    </p>
+    <p class="mb-0 col-md-4">
+        <strong>Organised Traits Dropdown</strong> by <a href="https://github.com/draginraptor">Draginraptor</a> ({{ Config::get('lorekeeper.extensions.organised_traits_dropdown') ? 'Enabled' : 'Disabled' }})
     </p>
 </div>
 

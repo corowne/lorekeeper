@@ -2,21 +2,13 @@
 
 namespace App\Http\Controllers\Users;
 
-use Illuminate\Http\Request;
-
-use DB;
-use Auth;
-use Settings;
-use App\Models\User\User;
-use App\Models\Character\Character;
-use App\Models\Item\Item;
-use App\Models\Currency\Currency;
-use App\Models\Report\Report;
-use App\Models\Prompt\Prompt;
-
-use App\Services\ReportManager;
-
 use App\Http\Controllers\Controller;
+use App\Models\Report\Report;
+use App\Models\User\User;
+use App\Services\ReportManager;
+use Auth;
+use Illuminate\Http\Request;
+use Settings;
 
 class ReportController extends Controller
 {
@@ -29,14 +21,15 @@ class ReportController extends Controller
     /**
      * Shows the user's report log.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getReportsIndex(Request $request)
     {
         $reports = Report::where('user_id', Auth::user()->id);
         $type = $request->get('type');
-        if(!$type) $type = 'Pending';
+        if (!$type) {
+            $type = 'Pending';
+        }
 
         $reports = $reports->where('status', ucfirst($type));
 
@@ -48,7 +41,6 @@ class ReportController extends Controller
     /**
      * Shows the bug report log.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getBugIndex(Request $request)
@@ -57,8 +49,9 @@ class ReportController extends Controller
 
         $data = $request->only(['url']);
 
-        if(isset($data['url']))
+        if (isset($data['url'])) {
             $reports->where('url', 'LIKE', '%'.$data['url'].'%');
+        }
 
         return view('home.bug_report_index', [
             'reports' => $reports->orderBy('id', 'DESC')->paginate(20)->appends($request->query()),
@@ -68,28 +61,32 @@ class ReportController extends Controller
     /**
      * Shows the report page.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getReport($id)
     {
         $report = Report::viewable(Auth::check() ? Auth::user() : null)->where('id', $id)->first();
-        if(!$report) abort(404);
+        if (!$report) {
+            abort(404);
+        }
+
         return view('home.report', [
             'report' => $report,
-            'user' => $report->user
+            'user'   => $report->user,
         ]);
     }
 
     /**
      * Shows the submit report page.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getNewReport(Request $request)
     {
         $closed = !Settings::get('is_reports_open');
+
         return view('home.create_report', [
             'closed' => $closed,
         ]);
@@ -98,8 +95,8 @@ class ReportController extends Controller
     /**
      * Creates a new report.
      *
-     * @param  \Illuminate\Http\Request        $request
-     * @param  App\Services\ReportManager  $service
+     * @param App\Services\ReportManager $service
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postNewReport(Request $request, ReportManager $service)
@@ -107,12 +104,14 @@ class ReportController extends Controller
         $request->validate(Report::$createRules);
         $request['url'] = strip_tags($request['url']);
 
-        if($service->createReport($request->only(['url', 'comments', 'is_br', 'error']), Auth::user(), true)) {
+        if ($service->createReport($request->only(['url', 'comments', 'is_br', 'error']), Auth::user(), true)) {
             flash('Report submitted successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
         }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
+
         return redirect()->to('reports');
     }
 }

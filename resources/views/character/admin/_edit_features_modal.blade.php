@@ -40,7 +40,15 @@
 
 <script>
     $(document).ready(function() {
-        $('.original.feature-select').selectize();
+        @if(Config::get('lorekeeper.extensions.organised_traits_dropdown'))
+            $('.original.feature-select').selectize({
+                render: {
+                    item: featureSelectedRender
+                }
+            });
+        @else
+            $('.original.feature-select').selectize();
+        @endif
         $('#add-feature').on('click', function(e) {
             e.preventDefault();
             addFeatureRow();
@@ -58,20 +66,37 @@
                 e.preventDefault();
                 removeFeatureRow($(this));
             })
-            $clone.find('.feature-select').selectize();
+            
+            @if(Config::get('lorekeeper.extensions.organised_traits_dropdown'))
+                $clone.find('.feature-select').selectize({
+                    render: {
+                        item: featureSelectedRender
+                    }
+                });
+            @else
+                $clone.find('.feature-select').selectize();
+            @endif
         }
         function removeFeatureRow($trigger) {
             $trigger.parent().remove();
         }
+        function featureSelectedRender(item, escape) {
+            return '<div><span>' + escape(item["text"].trim()) + ' (' + escape(item["optgroup"].trim()) + ')' + '</span></div>';
+        }
+		refreshSubtype();
     });
 
     $( "#species" ).change(function() {
+		refreshSubtype();
+    });
+	
+    function refreshSubtype() {
       var species = $('#species').val();
       var id = '<?php echo($image->id); ?>';
       $.ajax({
         type: "GET", url: "{{ url('admin/character/image/traits/subtype') }}?species="+species+"&id="+id, dataType: "text"
       }).done(function (res) { $("#subtypes").html(res); }).fail(function (jqXHR, textStatus, errorThrown) { alert("AJAX call failed: " + textStatus + ", " + errorThrown); });
 
-    });
+    };
 
 </script>

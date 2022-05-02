@@ -10,24 +10,43 @@
 </h1>
 
 {!! $logs->render() !!}
-<div class="row ml-md-2">
-  <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-bottom">
-    <div class="col-12 col-md-2 font-weight-bold">Prompt</div>
-    <div class="col-6 col-md-4 font-weight-bold">Link</div>
-    <div class="col-6 col-md-5 font-weight-bold">Date</div>
-  </div>
-
-  @foreach($logs as $log)
-    <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-top">
-      <div class="col-12 col-md-2">{!! $log->prompt_id ? $log->prompt->displayName : '---' !!}</div>
-      <div class="col-6 col-md-4">
-        <span class="ubt-texthide"><a href="{{ $log->url }}">{{ $log->url }}</a></span>
-      </div>
-      <div class="col-6 col-md-5">{!! pretty_date($log->created_at) !!}</div>
-      <div class="col-6 col-md-1"><a href="{{ $log->viewUrl }}" class="btn btn-primary btn-sm py-0 px-1">Details</a></div>
+<div class="mb-4 logs-table">
+    <div class="logs-table-header">
+        <div class="row">
+            <div class="col-12 col-md-2"><div class="logs-table-cell">Prompt</div></div>
+            <div class="col-6 col-md-4"><div class="logs-table-cell">Link</div></div>
+            <div class="col-6 col-md-5"><div class="logs-table-cell">Date</div></div>
+        </div>
     </div>
-  @endforeach
-  </div>
+    <div class="logs-table-body">
+        @foreach($logs as $log)
+            <div class="logs-table-row">
+                <div class="row flex-wrap">
+                    <div class="col-12 col-md-2">
+                        <div class="logs-table-cell">
+                            {!! $log->prompt_id ? $log->prompt->displayName : '---' !!}
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="logs-table-cell">
+                            <span class="ubt-texthide"><a href="{{ $log->url }}">{{ $log->url }}</a></span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-5">
+                        <div class="logs-table-cell">
+                            {!! pretty_date($log->created_at) !!}
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-1">
+                        <div class="logs-table-cell">
+                            <a href="{{ $log->viewUrl }}" class="btn btn-primary btn-sm py-0 px-1">Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+</div>
 {!! $logs->render() !!}
 
 @endsection

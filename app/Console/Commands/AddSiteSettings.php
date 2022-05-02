@@ -2,9 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-
 use DB;
+use Illuminate\Console\Command;
 
 class AddSiteSettings extends Command
 {
@@ -24,36 +23,10 @@ class AddSiteSettings extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {
         parent::__construct();
-    }
-
-    /**
-     * Add a site setting.
-     * 
-     * Example usage:
-     * $this->addSiteSetting("site_setting_key", 1, "0: does nothing. 1: does something.");
-     * 
-     * @param  string  $key
-     * @param  int     $value
-     * @param  string  $description
-     */
-    private function addSiteSetting($key, $value, $description) {
-        if(!DB::table('site_settings')->where('key', $key)->exists()) {
-            DB::table('site_settings')->insert([
-                [
-                    'key'         => $key,
-                    'value'       => $value,
-                    'description' => $description,
-                ],
-            ]);
-            $this->info( "Added:   ".$key." / Default: ".$value);
-        }
-        else $this->line("Skipped: ".$key);
     }
 
     /**
@@ -103,7 +76,34 @@ class AddSiteSettings extends Command
 
         $this->addSiteSetting('group_currency', 1, 'ID of the group currency to award from gallery submissions (if enabled).');
 
-        $this->line("\nSite settings up to date!");
+        $this->addSiteSetting('is_maintenance_mode', 0, '0: Site is normal, 1: Users without the Has Maintenance Access power will be redirected to the home page.');
 
+        $this->line("\nSite settings up to date!");
+    }
+
+    /**
+     * Add a site setting.
+     *
+     * Example usage:
+     * $this->addSiteSetting("site_setting_key", 1, "0: does nothing. 1: does something.");
+     *
+     * @param string $key
+     * @param int    $value
+     * @param string $description
+     */
+    private function addSiteSetting($key, $value, $description)
+    {
+        if (!DB::table('site_settings')->where('key', $key)->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key'         => $key,
+                    'value'       => $value,
+                    'description' => $description,
+                ],
+            ]);
+            $this->info('Added:   '.$key.' / Default: '.$value);
+        } else {
+            $this->line('Skipped: '.$key);
+        }
     }
 }

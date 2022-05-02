@@ -2,9 +2,6 @@
 
 namespace App\Models\Submission;
 
-use Config;
-use DB;
-use Carbon\Carbon;
 use App\Models\Model;
 
 class SubmissionCharacter extends Model
@@ -15,7 +12,7 @@ class SubmissionCharacter extends Model
      * @var array
      */
     protected $fillable = [
-        'submission_id', 'character_id', 'data'
+        'submission_id', 'character_id', 'data',
     ];
 
     /**
@@ -72,18 +69,17 @@ class SubmissionCharacter extends Model
     {
         $assets = parseAssetData($this->data);
         $rewards = [];
-        foreach($assets as $type => $a)
-        {
+        foreach ($assets as $type => $a) {
             $class = getAssetModelString($type, false);
-            foreach($a as $id => $asset)
-            {
-                $rewards[] = (object)[
+            foreach ($a as $id => $asset) {
+                $rewards[] = (object) [
                     'rewardable_type' => $class,
-                    'rewardable_id' => $id,
-                    'quantity' => $asset['quantity']
+                    'rewardable_id'   => $id,
+                    'quantity'        => $asset['quantity'],
                 ];
             }
         }
+
         return $rewards;
     }
 }
