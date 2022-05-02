@@ -25,7 +25,6 @@ return [
     |
     */
     'version' => '2.0.0',
-
     /*
     |--------------------------------------------------------------------------
     | Site Name
@@ -107,7 +106,7 @@ return [
     |       Default: 0/Disabled, 1 to enable.
     |
     */
-    'character_codes'         => '{category}-{number}',
+    'character_codes' => '{category}-{number}',
     'character_number_digits' => 3,
     'character_pull_number' => 'all',
 
