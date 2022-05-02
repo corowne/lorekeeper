@@ -20,12 +20,12 @@ return [
     | Version
     |--------------------------------------------------------------------------
     |
-    | This is the current version of Lorekeeper that your site is on. 
+    | This is the current version of Lorekeeper that your site is on.
     | Do not change this value!
     |
     */
     'version' => '2.0.0',
-    
+
     /*
     |--------------------------------------------------------------------------
     | Site Name
@@ -59,6 +59,7 @@ return [
     |       This is used in the automatic generation of character codes.
     |       {category}: This is replaced by the character category code.
     |       {number}: This is replaced by the character number.
+    /       {year}: This is replaced by the current year.
     |
     |       e.g. Under the default setting ({category}-{number}),
     |       a character in a category called "MYO" (code "MYO") with number 001
@@ -106,7 +107,7 @@ return [
     |       Default: 0/Disabled, 1 to enable.
     |
     */
-    'character_codes' => '{category}-{number}',
+    'character_codes'         => '{category}-{number}',
     'character_number_digits' => 3,
     'character_pull_number' => 'all',
 
