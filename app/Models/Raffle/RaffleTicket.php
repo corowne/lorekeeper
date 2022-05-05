@@ -1,7 +1,8 @@
-<?php namespace App\Models\Raffle;
+<?php
+
+namespace App\Models\Raffle;
 
 use App\Models\Model;
-use DB;
 
 class RaffleTicket extends Model
 {
@@ -11,7 +12,7 @@ class RaffleTicket extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'raffle_id', 'position', 'created_at', 'alias'
+        'user_id', 'raffle_id', 'position', 'created_at', 'alias',
     ];
 
     /**
@@ -27,10 +28,19 @@ class RaffleTicket extends Model
      * @var array
      */
     protected $dates = ['created_at'];
-
+    /**
+     * Validation rules for creation.
+     *
+     * @var array
+     */
+    public static $createRules = [
+        'user_id.*'      => 'required_without:alias.*',
+        'alias.*'        => 'required_without:user_id.*',
+        'ticket_count.*' => 'required',
+    ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -52,15 +62,16 @@ class RaffleTicket extends Model
     }
 
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
-    
+
     /**
      * Scope a query to only include the winning tickets in order of drawing.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWinners($query)
@@ -69,20 +80,23 @@ class RaffleTicket extends Model
     }
 
     /**********************************************************************************************
-    
+
         OTHER FUNCTIONS
 
     **********************************************************************************************/
-    
+
     /**
-     * Display the ticket holder's name. 
+     * Display the ticket holder's name.
      * If the owner is not a registered user on the site, this displays the ticket holder's dA name.
      *
      * @return string
      */
     public function getDisplayHolderNameAttribute()
     {
-        if ($this->user_id) return $this->user->displayName;
-        return '<a href="http://'.$this->alias.'.deviantart.com">'.$this->alias.'@dA</a>';
+        if ($this->user_id) {
+            return $this->user->displayName;
+        }
+
+        return $this->alias.' (Off-site user)';
     }
 }

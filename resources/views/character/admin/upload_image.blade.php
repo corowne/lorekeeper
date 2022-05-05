@@ -123,6 +123,15 @@ Traits
 <div class="form-group">
     {!! Form::label('Traits') !!}
     <div id="featureList">
+        @if(Config::get('lorekeeper.extensions.autopopulate_image_features'))
+            @foreach($character->image->features as $feature)
+                <div class="d-flex mb-2">
+                    {!! Form::select('feature_id[]', $features, $feature->feature_id, ['class' => 'form-control mr-2 feature-select original', 'placeholder' => 'Select Trait']) !!}
+                    {!! Form::text('feature_data[]', $feature->data, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}
+                    <a href="#" class="remove-feature btn btn-danger mb-2">×</a>
+                </div>
+            @endforeach
+        @endif
     </div>
     <div><a href="#" class="btn btn-primary" id="add-feature">Add Trait</a></div>
     <div class="feature-row hide mb-2">
@@ -227,10 +236,21 @@ $( document ).ready(function() {
             e.preventDefault();
             removeFeatureRow($(this));
         })
-        $clone.find('.feature-select').selectize();
+        @if(Config::get('lorekeeper.extensions.organised_traits_dropdown'))
+            $clone.find('.feature-select').selectize({
+                render: {
+                    item: featureSelectedRender
+                }
+            });
+        @else
+            $clone.find('.feature-select').selectize();
+        @endif
     }
     function removeFeatureRow($trigger) {
         $trigger.parent().remove();
+    }
+    function featureSelectedRender(item, escape) {
+        return '<div><span>' + escape(item["text"].trim()) + ' (' + escape(item["optgroup"].trim()) + ')' + '</span></div>';
     }
 
     // Croppie ////////////////////////////////////////////////////////////////////////////////////

@@ -1,15 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddSubMasterlist extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -40,8 +38,6 @@ class AddSubMasterlist extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {
@@ -49,7 +45,7 @@ class AddSubMasterlist extends Migration
             //
             $table->dropColumn('masterlist_sub_id');
         });
-        
+
         Schema::table('specieses', function (Blueprint $table) {
             //
             $table->dropColumn('masterlist_sub_id');

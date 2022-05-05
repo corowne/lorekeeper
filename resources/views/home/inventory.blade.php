@@ -8,6 +8,7 @@
 <h1>
     Inventory
     <div class="float-right mb-3">
+        <a class="btn btn-secondary consolidate-inventory" href="#">Consolidate</a>
         <a class="btn btn-primary" href="{{ url('inventory/account-search') }}"><i class="fas fa-search"></i> Account Search</a>
     </div>
 </h1>
@@ -53,6 +54,10 @@ $( document ).ready(function() {
         e.preventDefault();
         var $parent = $(this).parent().parent();
         loadModal("{{ url('items') }}/" + $parent.data('id'), $parent.data('name'));
+    });
+    $('.consolidate-inventory').on('click', function(e) {
+        e.preventDefault();
+        loadModal("{{ url('inventory/consolidate-inventory') }}", 'Consolidate Inventory');
     });
 });
 
