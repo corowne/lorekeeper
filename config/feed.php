@@ -23,6 +23,11 @@ return [
             'language'    => 'en-US',
 
             /*
+             * The format of the feed.  Acceptable values are 'rss', 'atom', or 'json'.
+             */
+            'format' => 'atom',
+
+            /*
              * The view that will render the feed.
              */
             'view' => 'feed::atom',
@@ -30,7 +35,13 @@ return [
             /*
              * The type to be used in the <link> tag
              */
-            'type' => 'application/atom+xml',
+            'type' => '',
+
+            /*
+             * The content type for the feed response.  Set to an empty string to automatically
+             * determine the correct value.
+             */
+            'contentType' => '',
         ],
 
         'sales' => [
@@ -54,6 +65,11 @@ return [
             'language'    => 'en-US',
 
             /*
+             * The format of the feed.  Acceptable values are 'rss', 'atom', or 'json'.
+             */
+            'format' => 'atom',
+
+            /*
              * The view that will render the feed.
              */
             'view' => 'feed::atom',
@@ -61,7 +77,13 @@ return [
             /*
              * The type to be used in the <link> tag
              */
-            'type' => 'application/atom+xml',
+            'type' => '',
+
+            /*
+             * The content type for the feed response.  Set to an empty string to automatically
+             * determine the correct value.
+             */
+            'contentType' => '',
         ],
     ],
 ];
