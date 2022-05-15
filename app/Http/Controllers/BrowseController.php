@@ -46,7 +46,7 @@ class BrowseController extends Controller
             $query->where('rank_id', $request->get('rank_id'));
         }
 
-        switch (isset($sort['sort']) ? $sort['sort'] : null) {
+        switch ($sort['sort'] ?? null) {
             default:
                 $query->orderBy('ranks.sort', 'DESC')->orderBy('name');
                 break;

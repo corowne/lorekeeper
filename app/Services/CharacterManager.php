@@ -388,7 +388,7 @@ class CharacterManager extends Service
                 }
 
                 // Crop according to the selected area
-                $image->crop($cropWidth, $cropHeight, isset($xOffsetNew) ? $xOffsetNew : $xOffset, isset($yOffsetNew) ? $yOffsetNew : $yOffset);
+                $image->crop($cropWidth, $cropHeight, $xOffsetNew ?? $xOffset, $yOffsetNew ?? $yOffset);
             }
         } else {
             $cropWidth = $points['x1'] - $points['x0'];
@@ -1026,8 +1026,8 @@ class CharacterManager extends Service
             $characterData['is_sellable'] = isset($data['is_sellable']);
             $characterData['is_tradeable'] = isset($data['is_tradeable']);
             $characterData['is_giftable'] = isset($data['is_giftable']);
-            $characterData['sale_value'] = isset($data['sale_value']) ? $data['sale_value'] : 0;
-            $characterData['transferrable_at'] = isset($data['transferrable_at']) ? $data['transferrable_at'] : null;
+            $characterData['sale_value'] = $data['sale_value'] ?? 0;
+            $characterData['transferrable_at'] = $data['transferrable_at'] ?? null;
             if ($character->is_myo_slot) {
                 $characterData['name'] = (isset($data['name']) && $data['name']) ? $data['name'] : null;
             }
@@ -1441,7 +1441,7 @@ class CharacterManager extends Service
 
             $sender = $character->user;
 
-            $this->moveCharacter($character, $recipient, 'Transferred by '.$user->displayName.(isset($data['reason']) ? ': '.$data['reason'] : ''), isset($data['cooldown']) ? $data['cooldown'] : -1);
+            $this->moveCharacter($character, $recipient, 'Transferred by '.$user->displayName.(isset($data['reason']) ? ': '.$data['reason'] : ''), $data['cooldown'] ?? -1);
 
             // Add notifications for the old and new owners
             if ($sender) {
@@ -1603,7 +1603,7 @@ class CharacterManager extends Service
                 $transfer->is_approved = 1;
                 $transfer->data = json_encode([
                     'staff_id' => $user->id,
-                    'cooldown' => isset($data['cooldown']) ? $data['cooldown'] : Settings::get('transfer_cooldown'),
+                    'cooldown' => $data['cooldown'] ?? Settings::get('transfer_cooldown'),
                 ]);
 
                 // Process the character move if the recipient has already accepted the transfer
@@ -1611,7 +1611,7 @@ class CharacterManager extends Service
                     if (!$this->logAdminAction($user, 'Approved Transfer', 'Approved transfer of '.$transfer->character->displayname.' to '.$transfer->recipient->displayname)) {
                         throw new \Exception('Failed to log admin action.');
                     }
-                    $this->moveCharacter($transfer->character, $transfer->recipient, 'User Transfer', isset($data['cooldown']) ? $data['cooldown'] : -1);
+                    $this->moveCharacter($transfer->character, $transfer->recipient, 'User Transfer', $data['cooldown'] ?? -1);
 
                     // Notify both parties of the successful transfer
                     Notifications::create('CHARACTER_TRANSFER_APPROVED', $transfer->sender, [
@@ -1645,7 +1645,7 @@ class CharacterManager extends Service
                 }
 
                 $transfer->status = 'Rejected';
-                $transfer->reason = isset($data['reason']) ? $data['reason'] : null;
+                $transfer->reason = $data['reason'] ?? null;
                 $transfer->data = json_encode([
                     'staff_id' => $user->id,
                 ]);
@@ -1792,7 +1792,7 @@ class CharacterManager extends Service
             $characterData['is_tradeable'] = isset($data['is_tradeable']);
             $characterData['is_giftable'] = isset($data['is_giftable']);
             $characterData['is_visible'] = isset($data['is_visible']);
-            $characterData['sale_value'] = isset($data['sale_value']) ? $data['sale_value'] : 0;
+            $characterData['sale_value'] = $data['sale_value'] ?? 0;
             $characterData['is_gift_art_allowed'] = 0;
             $characterData['is_gift_writing_allowed'] = 0;
             $characterData['is_trading'] = 0;
@@ -1846,14 +1846,14 @@ class CharacterManager extends Service
                 'x0', 'x1', 'y0', 'y1',
             ]);
             $imageData['use_cropper'] = isset($data['use_cropper']);
-            $imageData['description'] = isset($data['image_description']) ? $data['image_description'] : null;
+            $imageData['description'] = $data['image_description'] ?? null;
             $imageData['parsed_description'] = parse($imageData['description']);
             $imageData['hash'] = randomString(10);
             $imageData['fullsize_hash'] = randomString(15);
             $imageData['sort'] = 0;
             $imageData['is_valid'] = isset($data['is_valid']);
             $imageData['is_visible'] = isset($data['is_visible']);
-            $imageData['extension'] = (Config::get('lorekeeper.settings.masterlist_image_format') ? Config::get('lorekeeper.settings.masterlist_image_format') : (isset($data['extension']) ? $data['extension'] : $data['image']->getClientOriginalExtension()));
+            $imageData['extension'] = (Config::get('lorekeeper.settings.masterlist_image_format') ? Config::get('lorekeeper.settings.masterlist_image_format') : ($data['extension'] ?? $data['image']->getClientOriginalExtension()));
             $imageData['character_id'] = $character->id;
 
             $image = CharacterImage::create($imageData);

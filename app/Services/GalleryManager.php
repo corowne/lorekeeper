@@ -227,7 +227,7 @@ class GalleryManager extends Service
                             'user_id'               => $collaborator,
                             'gallery_submission_id' => $submission->id,
                             'data'                  => $data['collaborator_data'][$key],
-                            'has_approved'          => isset($collaboratorApproval[$collaborator]) ? $collaboratorApproval[$collaborator] : ($collaborator == $user->id ? 1 : 0),
+                            'has_approved'          => $collaboratorApproval[$collaborator] ?? ($collaborator == $user->id ? 1 : 0),
                         ]);
                     }
                 }

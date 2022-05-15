@@ -426,7 +426,7 @@ class Character extends Model
         $currencies = $currencies->orderBy('sort_character', 'DESC')->get();
 
         foreach ($currencies as $currency) {
-            $currency->quantity = isset($owned[$currency->id]) ? $owned[$currency->id] : 0;
+            $currency->quantity = $owned[$currency->id] ?? 0;
         }
 
         return $currencies;
