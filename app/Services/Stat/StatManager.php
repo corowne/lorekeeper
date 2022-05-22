@@ -215,10 +215,10 @@ class StatManager extends Service
             }
             // for character
             else {
-                $recipient_stack = CharaLevels::where('character_id', $recipient->id)->first();
+                $recipient_stack = CharacterLevel::where('character_id', $recipient->id)->first();
                 
                 if(!$recipient_stack)
-                    $recipient_stack = CharaLevels::create(['character_id' => $recipient->id]);
+                    $recipient_stack = CharacterLevel::create(['character_id' => $recipient->id]);
                 $recipient_stack->current_points += $quantity;
                 $recipient_stack->save();
             }
