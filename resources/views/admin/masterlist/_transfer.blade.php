@@ -1,9 +1,13 @@
 <div class="transfer-row mb-2">
-    <div class="transfer-thumbnail"><a href="{{ $transfer->character->url }}"><img src="{{ $transfer->character->image->thumbnailUrl }}" class="img-thumbnail" alt="Thumbnail for {{ $transfer->character->fullName }}" /></a></div>
+@if($transfer->character) <div class="transfer-thumbnail"><a href="{{ $transfer->character->url }}"><img src="{{ $transfer->character->image->thumbnailUrl }}" class="img-thumbnail" alt="Thumbnail for {{ $transfer->character->fullName }}" /></a></div> @endif
     <div class="transfer-info card ml-2">
         <div class="card-body">
             <div class="transfer-info-content">
-                <h3 class="mb-0 transfer-info-header"><a href="{{ $transfer->character->url }}">{{ $transfer->character->fullName }}</a></h3>
+                @if($transfer->character)
+                    <h3 class="mb-0 transfer-info-header"><a href="{{ $transfer->character->url }}">{{ $transfer->character->fullName }}</a></h3>
+                @else
+                    <h3 class="mb-0 transfer-info-header">Character Deleted</h3>
+                @endif
                 <div class="transfer-info-body mb-3">
                     <p>Transfer from {!! $transfer->sender->displayName !!} to {!! $transfer->recipient->displayName !!}, {!! format_date($transfer->created_at) !!}</p>
                     <p>Reason stated: {!! $transfer->user_reason !!}</p>

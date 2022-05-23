@@ -1,9 +1,9 @@
 <div class="transfer-row mb-2">
-    @if(isset($transfer->character)) <div class="transfer-thumbnail"><a href="{{ $transfer->character->url }}"><img src="{{ $transfer->character->image->thumbnailUrl }}" class="img-thumbnail" alt="Thumbnail for {{ $transfer->character->fullName }}" /></a></div> @endif
+    @if($transfer->character) <div class="transfer-thumbnail"><a href="{{ $transfer->character->url }}"><img src="{{ $transfer->character->image->thumbnailUrl }}" class="img-thumbnail" alt="Thumbnail for {{ $transfer->character->fullName }}" /></a></div> @endif
     <div class="transfer-info card ml-2">
         <div class="card-body">
             <div class="transfer-info-content">
-                @if(isset($transfer->character))
+                @if($transfer->character)
                     <h3 class="mb-0 transfer-info-header"><a href="{{ $transfer->character->url }}">{{ $transfer->character->fullName }}</a></h3>
                 @else
                     <h3 class="mb-0 transfer-info-header">Character Deleted</h3>
