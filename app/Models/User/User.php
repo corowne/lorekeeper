@@ -185,7 +185,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Gets all of a user's liked / disliked comments
+     * Gets all of a user's liked / disliked comments.
      */
     public function commentLikes()
     {

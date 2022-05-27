@@ -235,26 +235,31 @@ class CommentController extends Controller implements CommentControllerInterface
     }
 
     /**
-     * Likes / Unlikes a comment
+     * Likes / Unlikes a comment.
+     *
+     * @param mixed $id
+     * @param mixed $action
      */
-    public function like(Request $request, $id, $action='like')
+    public function like(Request $request, $id, $action = 'like')
     {
         $user = Auth::user();
-        if(!$user) {
+        if (!$user) {
             return Redirect::back();
         }
         $comment = Comment::findOrFail($id);
-        
-        if($comment->likes()->where('user_id', $user->id)->exists()) {
-            if($action == 'like' && $comment->likes()->where('user_id', $user->id)->first()->is_like)
-                $comment->likes()->where('user_id', $user->id)->delete();
-            else if($action == 'dislike' && $comment->likes()->where('user_id', $user->id)->first()->is_like == 0)
-                $comment->likes()->where('user_id', $user->id)->delete();
-            // else invert the bool
-            else
-                $comment->likes()->where('user_id', $user->id)->update(['is_like' => !$comment->likes()->where('user_id', $user->id)->first()->is_like]);
 
-            return Redirect::to(URL::previous().'#comment-'.$comment->getKey());            
+        if ($comment->likes()->where('user_id', $user->id)->exists()) {
+            if ($action == 'like' && $comment->likes()->where('user_id', $user->id)->first()->is_like) {
+                $comment->likes()->where('user_id', $user->id)->delete();
+            } elseif ($action == 'dislike' && $comment->likes()->where('user_id', $user->id)->first()->is_like == 0) {
+                $comment->likes()->where('user_id', $user->id)->delete();
+            }
+            // else invert the bool
+            else {
+                $comment->likes()->where('user_id', $user->id)->update(['is_like' => !$comment->likes()->where('user_id', $user->id)->first()->is_like]);
+            }
+
+            return Redirect::to(URL::previous().'#comment-'.$comment->getKey());
         }
         if ($action == 'like' || $action == 'dislike') {
             $comment->likes()->create([
@@ -266,11 +271,8 @@ class CommentController extends Controller implements CommentControllerInterface
         return Redirect::to(URL::previous().'#comment-'.$comment->getKey());
     }
 
-    
     /**
      * Shows a user's liked comments.
-     *
-     * @param string $name
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */

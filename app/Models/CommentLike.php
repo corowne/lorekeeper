@@ -2,18 +2,15 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
-
 class CommentLike extends Model
 {
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'user_id', 'comment_id', 'is_like'
+        'user_id', 'comment_id', 'is_like',
     ];
 
     /**
@@ -44,5 +41,4 @@ class CommentLike extends Model
     {
         return $this->belongsTo('App\Models\User\User');
     }
-
 }
