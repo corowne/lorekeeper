@@ -5,9 +5,9 @@
 
 @if($comment->deleted_at == null)
 @if(isset($reply) && $reply === true)
-  <div id="comment-{{ $comment->getKey() }}" class="comment_replies border-left col-12 column mw-100 pr-0 pt-4" style="flex-basis: 100%;">
+  <div id="comment-{{ $comment->getKey() }}" class="comment_replies border-left col-12 column mw-100 pr-0 pt-4" style="flex-basis: 100%; opacity: {{ $comment->likes()->where('is_like', 1)->count() - $comment->likes()->where('is_like', 0)->count() < 0 ? '.6' : '1' }};">
 @else
-  <div id="comment-{{ $comment->getKey() }}"  class="pt-4" style="flex-basis: 100%;">
+  <div id="comment-{{ $comment->getKey() }}" class="pt-4" style="flex-basis: 100%; opacity: {{ $comment->likes()->where('is_like', 1)->count() - $comment->likes()->where('is_like', 0)->count() < 0 ? '.6' : '1' }};">
 @endif
 <div class="media-body row mw-100 mx-0" style="flex:1;flex-wrap:wrap;">
     <div class="d-none d-md-block">
@@ -45,6 +45,24 @@
             @can('delete-comment', $comment)
                 <button data-toggle="modal" data-target="#delete-modal-{{ $comment->getKey() }}" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1 btn-outline-danger text-uppercase"><i class="fas fa-minus-circle"></i><span class="ml-2 d-none d-sm-inline-block">Delete</span></button>
             @endcan
+            {{-- Likes Section --}}
+            <span class="mx-2 d-none d-sm-inline-block">|</span>
+            <a href="#" data-toggle="modal" data-target="#show-likes">
+                <button href="#" data-toggle="tooltip" title="Click to View" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1 btn-faded">
+                    {{ $comment->likes()->where('is_like', 1)->count() - $comment->likes()->where('is_like', 0)->count() }} 
+                    Like
+                    @if($comment->likes()->where('is_like', 1)->count() - $comment->likes()->where('is_like', 0)->count() > 1)
+                        s
+                    @endif
+                </button>
+            </a>
+            <span class="mx-2 d-none d-sm-inline-block">|</span>
+            {!! Form::open(['url' => 'comments/'.$comment->id.'/like/like','class' => 'd-inline-block']) !!}
+                {!! Form::button('<i class="fas fa-thumbs-up"></i>', ['type' => 'submit', 'class' => 'btn btn-sm px-3 py-2 px-sm-2 py-sm-1 '. ($comment->likes()->where('user_id', Auth::user()->id)->where('is_like', 1)->exists() ? 'btn-success' : 'btn-outline-success').' text-uppercase']) !!}
+            {!! Form::close() !!}
+            {!! Form::open(['url' => 'comments/'.$comment->id.'/like/dislike','class' => 'd-inline-block']) !!}
+                {!! Form::button('<i class="fas fa-thumbs-down"></i>', ['type' => 'submit', 'class' => 'btn btn-sm px-3 py-2 px-sm-2 py-sm-1 '. ($comment->likes()->where('user_id', Auth::user()->id)->where('is_like', 0)->exists() ? 'btn-danger' : 'btn-outline-danger') .' text-uppercase']) !!}
+            {!! Form::close() !!}
         </div>
     @endif
     

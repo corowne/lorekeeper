@@ -233,4 +233,51 @@ class CommentController extends Controller implements CommentControllerInterface
 
         return Redirect::to(URL::previous().'#comment-'.$comment->getKey());
     }
+
+    /**
+     * Likes / Unlikes a comment
+     */
+    public function like(Request $request, $id, $action='like')
+    {
+        $user = Auth::user();
+        if(!$user) {
+            return Redirect::back();
+        }
+        $comment = Comment::findOrFail($id);
+        
+        if($comment->likes()->where('user_id', $user->id)->exists()) {
+            if($action == 'like' && $comment->likes()->where('user_id', $user->id)->first()->is_like)
+                $comment->likes()->where('user_id', $user->id)->delete();
+            else if($action == 'dislike' && $comment->likes()->where('user_id', $user->id)->first()->is_like == 0)
+                $comment->likes()->where('user_id', $user->id)->delete();
+            // else invert the bool
+            else
+                $comment->likes()->where('user_id', $user->id)->update(['is_like' => !$comment->likes()->where('user_id', $user->id)->first()->is_like]);
+
+            return Redirect::to(URL::previous().'#comment-'.$comment->getKey());            
+        }
+        if ($action == 'like' || $action == 'dislike') {
+            $comment->likes()->create([
+                'user_id' => $user->id,
+                'is_like' => $action == 'like' ? 1 : 0,
+            ]);
+        }
+
+        return Redirect::to(URL::previous().'#comment-'.$comment->getKey());
+    }
+
+    
+    /**
+     * Shows a user's liked comments.
+     *
+     * @param string $name
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getLikedComments(Request $request)
+    {
+        return view('home.liked_comments', [
+            'user' => Auth::user(),
+        ]);
+    }
 }
