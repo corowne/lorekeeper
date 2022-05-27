@@ -4,7 +4,7 @@
 @endphp
 
 @if($comment->deleted_at == null)
-    <div id="comment-{{ $comment->getKey() }}" class="{{ isset($reply) && $reply === true ? 'comment_replies border-left col-12 column mw-100 pr-0' : '' }} pt-4" style="flex-basis: 100%; opacity: {{ $comment->likes()->where('is_like', 1)->count() - $comment->likes()->where('is_like', 0)->count() < 0 ? '.6' : '1' }};">
+    <div id="comment-{{ $comment->getKey() }}" class="{{ isset($reply) && $reply === true ? 'comment_replies border-left col-12 column mw-100 pr-0' : '' }} pt-4" style="flex-basis: 100%;">
         <div class="media-body row mw-100 mx-0" style="flex:1;flex-wrap:wrap;">
             {{-- Show avatar if not compact --}}
             @if(isset($compact) && !$compact)
@@ -27,7 +27,7 @@
                 </div>
 
                 {{-- Comment --}}
-                <div class="comment border p-3 rounded {{ $comment->is_featured ? 'border-success bg-light' : '' }} ">
+                <div class="comment border p-3 rounded {{ $comment->is_featured ? 'border-success bg-light' : '' }} {{ $comment->likes()->where('is_like', 1)->count() - $comment->likes()->where('is_like', 0)->count() < 0 ? 'bg-light bg-gradient' : '' }}">
                     <p>{!! nl2br($markdown->line($comment->comment)) !!} </p>
                     <p class="border-top pt-1 text-right mb-0">
                         <small class="text-muted">{!! $comment->created_at !!}
@@ -59,7 +59,7 @@
                         @endcan
                         {{-- Likes Section --}}
                         <span class="mx-2 d-none d-sm-inline-block">|</span>
-                        <a href="#" data-toggle="modal" data-target="#show-likes">
+                        <a href="#" data-toggle="modal" data-target="#show-likes-{{$comment->id}}">
                             <button href="#" data-toggle="tooltip" title="Click to View" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1 btn-faded">
                                 {{ $comment->likes()->where('is_like', 1)->count() - $comment->likes()->where('is_like', 0)->count() }} 
                                 Like
@@ -189,7 +189,7 @@
                     </div>
                 </div>
 
-                <div class="modal fade" id="show-likes" tabindex="-1" role="dialog">
+                <div class="modal fade" id="show-likes-{{$comment->id}}" tabindex="-1" role="dialog">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
