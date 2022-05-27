@@ -31,7 +31,7 @@ class AddLikesToComments extends Migration
         Schema::table('site_pages', function (Blueprint $table) {
             $table->dropColumn('allow_dislikes');
         });
-        
+
         Schema::dropIfExists('comment_likes');
     }
 }
