@@ -51,7 +51,7 @@
                 <button href="#" data-toggle="tooltip" title="Click to View" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1 btn-faded">
                     {{ $comment->likes()->where('is_like', 1)->count() - $comment->likes()->where('is_like', 0)->count() }} 
                     Like
-                    @if($comment->likes()->where('is_like', 1)->count() - $comment->likes()->where('is_like', 0)->count() > 1)
+                    @if($comment->likes()->where('is_like', 1)->count() - $comment->likes()->where('is_like', 0)->count() != 1)
                         s
                     @endif
                 </button>
