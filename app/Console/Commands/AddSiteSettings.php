@@ -78,6 +78,8 @@ class AddSiteSettings extends Command
 
         $this->addSiteSetting('is_maintenance_mode', 0, '0: Site is normal, 1: Users without the Has Maintenance Access power will be redirected to the home page.');
 
+        $this->addSiteSetting('comment_dislikes_enabled', 0, '0: Dislikes disabled, 1: Dislikes enabled.');
+
         $this->line("\nSite settings up to date!");
     }
 

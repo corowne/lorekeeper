@@ -11,6 +11,10 @@ class AddLikesToComments extends Migration
      */
     public function up()
     {
+        Schema::table('site_pages', function (Blueprint $table) {
+            $table->integer('allow_dislikes')->default(0);
+        });
+
         Schema::create('comment_likes', function (Blueprint $table) {
             //
             $table->integer('user_id')->unsigned();
@@ -24,6 +28,10 @@ class AddLikesToComments extends Migration
      */
     public function down()
     {
+        Schema::table('site_pages', function (Blueprint $table) {
+            $table->dropColumn('allow_dislikes');
+        });
+        
         Schema::dropIfExists('comment_likes');
     }
 }
