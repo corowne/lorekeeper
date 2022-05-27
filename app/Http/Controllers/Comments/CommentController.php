@@ -261,12 +261,11 @@ class CommentController extends Controller implements CommentControllerInterface
 
             return Redirect::to(URL::previous().'#comment-'.$comment->getKey());
         }
-        if ($action == 'like' || $action == 'dislike') {
-            $comment->likes()->create([
-                'user_id' => $user->id,
-                'is_like' => $action == 'like' ? 1 : 0,
-            ]);
-        }
+        
+        $comment->likes()->create([
+            'user_id' => $user->id,
+            'is_like' => $action == 'like' ? 1 : 0,
+        ]);
 
         return Redirect::to(URL::previous().'#comment-'.$comment->getKey());
     }
