@@ -102,4 +102,18 @@ class PromptsController extends Controller
             'categories' => ['none' => 'Any Category'] + PromptCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
+
+    /**
+     * Shows an individual prompt.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getPrompt(Request $request, $id)
+    {
+        $prompt = Prompt::where('id', $id)->get()->first();
+        return view('prompts.prompt', [
+            'prompt' => $prompt,
+        ]);
+    }
 }
