@@ -193,6 +193,14 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany('App\Models\Character\CharacterBookmark')->where('user_id', $this->id);
     }
 
+    /**
+     * Gets all of a user's liked / disliked comments.
+     */
+    public function commentLikes()
+    {
+        return $this->hasMany('App\Models\CommentLike');
+    }
+
     /**********************************************************************************************
 
         SCOPES

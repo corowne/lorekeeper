@@ -27,7 +27,7 @@
                 </div>
 
                 {{-- Comment --}}
-                <div class="comment border p-3 rounded {{ $comment->is_featured ? 'border-success bg-light' : '' }} ">
+                <div class="comment border p-3 rounded {{ $comment->is_featured ? 'border-success bg-light' : '' }} {{ $comment->likes()->where('is_like', 1)->count() - $comment->likes()->where('is_like', 0)->count() < 0 ? 'bg-light bg-gradient' : '' }}">
                     <p>{!! nl2br($markdown->line($comment->comment)) !!} </p>
                     <p class="border-top pt-1 text-right mb-0">
                         <small class="text-muted">{!! $comment->created_at !!}
@@ -46,17 +46,37 @@
                 @if(Auth::check())
                     <div class="my-1">
                         @can('reply-to-comment', $comment)
-                            <button data-toggle="modal" data-target="#reply-modal-{{ $comment->getKey() }}" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1  btn-faded text-uppercase"><i class="fas fa-comment"></i><span class="ml-2 d-none d-sm-inline-block">Reply</span></button>
+                            <button data-toggle="modal" data-target="#reply-modal-{{ $comment->getKey() }}" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1 btn-faded text-uppercase"><i class="fas fa-comment"></i><span class="ml-2 d-none d-sm-inline-block">Reply</span></button>
                         @endcan
                         @can('edit-comment', $comment)
-                            <button data-toggle="modal" data-target="#comment-modal-{{ $comment->getKey() }}" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1  btn-faded text-uppercase"><i class="fas fa-edit"></i><span class="ml-2 d-none d-sm-inline-block">Edit</span></button>
+                            <button data-toggle="modal" data-target="#comment-modal-{{ $comment->getKey() }}" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1 btn-faded text-uppercase"><i class="fas fa-edit"></i><span class="ml-2 d-none d-sm-inline-block">Edit</span></button>
                         @endcan
                         @if(((Auth::user()->id == $comment->commentable_id) || Auth::user()->isStaff) && (isset($compact) && !$compact))
-                            <button data-toggle="modal" data-target="#feature-modal-{{ $comment->getKey() }}" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1  btn-faded text-success text-uppercase"><i class="fas fa-star"></i><span class="ml-2 d-none d-sm-inline-block">{{$comment->is_featured ? 'Unf' : 'F' }}eature Comment</span></button>
+                            <button data-toggle="modal" data-target="#feature-modal-{{ $comment->getKey() }}" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1 btn-faded text-success text-uppercase"><i class="fas fa-star"></i><span class="ml-2 d-none d-sm-inline-block">{{$comment->is_featured ? 'Unf' : 'F' }}eature Comment</span></button>
                         @endif
                         @can('delete-comment', $comment)
                             <button data-toggle="modal" data-target="#delete-modal-{{ $comment->getKey() }}" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1 btn-outline-danger text-uppercase"><i class="fas fa-minus-circle"></i><span class="ml-2 d-none d-sm-inline-block">Delete</span></button>
                         @endcan
+                        {{-- Likes Section --}}
+                        <span class="mx-2 d-none d-sm-inline-block">|</span>
+                        <a href="#" data-toggle="modal" data-target="#show-likes-{{$comment->id}}">
+                            <button href="#" data-toggle="tooltip" title="Click to View" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1 btn-faded">
+                                {{ $comment->likes()->where('is_like', 1)->count() - $comment->likes()->where('is_like', 0)->count() }} 
+                                Like
+                                @if($comment->likes()->where('is_like', 1)->count() - $comment->likes()->where('is_like', 0)->count() != 1)
+                                    s
+                                @endif
+                            </button>
+                        </a>
+                        <span class="mx-2 d-none d-sm-inline-block">|</span>
+                        {!! Form::open(['url' => 'comments/'.$comment->id.'/like/1','class' => 'd-inline-block']) !!}
+                            {!! Form::button('<i class="fas fa-thumbs-up"></i>', ['type' => 'submit', 'class' => 'btn btn-sm px-3 py-2 px-sm-2 py-sm-1 '. ($comment->likes()->where('user_id', Auth::user()->id)->where('is_like', 1)->exists() ? 'btn-success' : 'btn-outline-success').' text-uppercase']) !!}
+                        {!! Form::close() !!}
+                        @if(Settings::get('comment_dislikes_enabled') || (isset($allow_dislikes) && $allow_dislikes))
+                            {!! Form::open(['url' => 'comments/'.$comment->id.'/like/0','class' => 'd-inline-block']) !!}
+                                {!! Form::button('<i class="fas fa-thumbs-down"></i>', ['type' => 'submit', 'class' => 'btn btn-sm px-3 py-2 px-sm-2 py-sm-1 '. ($comment->likes()->where('user_id', Auth::user()->id)->where('is_like', 0)->exists() ? 'btn-danger' : 'btn-outline-danger') .' text-uppercase']) !!}
+                            {!! Form::close() !!}
+                        @endif
                     </div>
                 @endif
                 
@@ -167,6 +187,45 @@
                                 @else {!! Form::submit('Unfeature', ['class' => 'btn btn-primary w-100 mb-0 mx-0']) !!}
                                 @endif
                             {!! Form::close() !!}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="show-likes-{{$comment->id}}" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Likes</h5>
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span>&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                @if(count($comment->likes) > 0)
+                                    <div class="mb-4 logs-table">
+                                        <div class="logs-table-header">
+                                            <div class="row">
+                                                <div class="col-4 col-md-3"><div class="logs-table-cell">User</div></div>
+                                                <div class="col-12 col-md-4"><div class="logs-table-cell"></div></div>
+                                                <div class="col-4 col-md-3"><div class="logs-table-cell"></div></div>
+                                            </div>
+                                        </div>
+                                        <div class="logs-table-body">
+                                            @foreach($comment->likes as $like)
+                                                <div class="logs-table-row">
+                                                    <div class="row flex-wrap">
+                                                        <div class="col-4 col-md-3"><div class="logs-table-cell"><img style="max-height: 2em;" src="/images/avatars/{{ $like->user->avatar }}" /></div></div>
+                                                        <div class="col-12 col-md-4"><div class="logs-table-cell">{!! $like->user->displayName !!}</div></div>
+                                                        <div class="col-4 col-md-4 text-right"><div class="logs-table-cell">{!! $like->is_like ? '<i class="fas fa-thumbs-up"></i>' : '<i class="fas fa-thumbs-down"></i>' !!}</div></div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="alert alert-info">No likes yet.</div>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
