@@ -69,11 +69,11 @@
                             </button>
                         </a>
                         <span class="mx-2 d-none d-sm-inline-block">|</span>
-                        {!! Form::open(['url' => 'comments/'.$comment->id.'/like/like','class' => 'd-inline-block']) !!}
+                        {!! Form::open(['url' => 'comments/'.$comment->id.'/like/1','class' => 'd-inline-block']) !!}
                             {!! Form::button('<i class="fas fa-thumbs-up"></i>', ['type' => 'submit', 'class' => 'btn btn-sm px-3 py-2 px-sm-2 py-sm-1 '. ($comment->likes()->where('user_id', Auth::user()->id)->where('is_like', 1)->exists() ? 'btn-success' : 'btn-outline-success').' text-uppercase']) !!}
                         {!! Form::close() !!}
                         @if(Settings::get('comment_dislikes_enabled') || (isset($allow_dislikes) && $allow_dislikes))
-                            {!! Form::open(['url' => 'comments/'.$comment->id.'/like/dislike','class' => 'd-inline-block']) !!}
+                            {!! Form::open(['url' => 'comments/'.$comment->id.'/like/0','class' => 'd-inline-block']) !!}
                                 {!! Form::button('<i class="fas fa-thumbs-down"></i>', ['type' => 'submit', 'class' => 'btn btn-sm px-3 py-2 px-sm-2 py-sm-1 '. ($comment->likes()->where('user_id', Auth::user()->id)->where('is_like', 0)->exists() ? 'btn-danger' : 'btn-outline-danger') .' text-uppercase']) !!}
                             {!! Form::close() !!}
                         @endif

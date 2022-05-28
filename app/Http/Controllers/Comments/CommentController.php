@@ -240,7 +240,7 @@ class CommentController extends Controller implements CommentControllerInterface
      * @param mixed $id
      * @param mixed $action
      */
-    public function like(Request $request, $id, $action = 'like')
+    public function like(Request $request, $id, $action = 1)
     {
         $user = Auth::user();
         if (!$user) {
@@ -249,9 +249,7 @@ class CommentController extends Controller implements CommentControllerInterface
         $comment = Comment::findOrFail($id);
 
         if ($comment->likes()->where('user_id', $user->id)->exists()) {
-            if ($action == 'like' && $comment->likes()->where('user_id', $user->id)->first()->is_like) {
-                $comment->likes()->where('user_id', $user->id)->delete();
-            } elseif ($action == 'dislike' && $comment->likes()->where('user_id', $user->id)->first()->is_like == 0) {
+            if ($action == $comment->likes()->where('user_id', $user->id)->first()->is_like) {
                 $comment->likes()->where('user_id', $user->id)->delete();
             }
             // else invert the bool
@@ -264,7 +262,7 @@ class CommentController extends Controller implements CommentControllerInterface
 
         $comment->likes()->create([
             'user_id' => $user->id,
-            'is_like' => $action == 'like' ? 1 : 0,
+            'is_like' => $action,
         ]);
 
         return Redirect::to(URL::previous().'#comment-'.$comment->getKey());
