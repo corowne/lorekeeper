@@ -163,12 +163,13 @@ class News extends Model implements Feedable
     public function toFeedItem(): FeedItem
     {
         return FeedItem::create([
-            'id'      => '/news/'.$this->id,
-            'title'   => $this->title,
-            'summary' => $this->parsed_text,
-            'updated' => $this->updated_at,
-            'link'    => $this->url,
-            'author'  => $this->user->name,
+            'id'         => '/news/'.$this->id,
+            'title'      => $this->title,
+            'summary'    => $this->parsed_text,
+            'updated'    => $this->updated_at,
+            'link'       => $this->url,
+            'author'     => $this->user->name,
+            'authorName' => $this->user->name,
         ]);
     }
 }

@@ -128,7 +128,7 @@ class SubmissionManager extends Service
             $promptRewards = mergeAssetsArrays($promptRewards, $this->processRewards($data, false, null, $isClaim));
             $submission = Submission::create([
                 'user_id'  => $user->id,
-                'url'      => isset($data['url']) ? $data['url'] : null,
+                'url'      => $data['url'] ?? null,
                 'status'   => 'Pending',
                 'comments' => $data['comments'],
                 'data'     => json_encode([

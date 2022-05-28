@@ -59,7 +59,7 @@ class RankService extends Service
                 $data['parsed_description'] = parse($data['description']);
             }
 
-            $data['icon'] = isset($data['icon']) ? $data['icon'] : 'fas fa-user';
+            $data['icon'] ??= 'fas fa-user';
 
             $rank = Rank::create($data);
             if ($powers) {
@@ -112,7 +112,7 @@ class RankService extends Service
                 $data['parsed_description'] = parse($data['description']);
             }
 
-            $data['icon'] = isset($data['icon']) ? $data['icon'] : 'fas fa-user';
+            $data['icon'] ??= 'fas fa-user';
 
             $rank->update($data);
             if ($powers) {

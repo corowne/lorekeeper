@@ -225,12 +225,13 @@ class Sales extends Model implements Feedable
         $summary = ($this->characters->count() ? $this->characters->count().' character'.($this->characters->count() > 1 ? 's are' : ' is').' associated with this sale. Click through to read more.<hr/>' : '').$this->parsed_text;
 
         return FeedItem::create([
-            'id'      => '/sales/'.$this->id,
-            'title'   => $this->title,
-            'summary' => $summary,
-            'updated' => $this->updated_at,
-            'link'    => $this->url,
-            'author'  => $this->user->name,
+            'id'         => '/sales/'.$this->id,
+            'title'      => $this->title,
+            'summary'    => $summary,
+            'updated'    => $this->updated_at,
+            'link'       => $this->url,
+            'author'     => $this->user->name,
+            'authorName' => $this->user->name,
         ]);
     }
 }

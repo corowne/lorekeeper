@@ -53,7 +53,7 @@ class TradeManager extends Service
                 'sender_id'              => $user->id,
                 'recipient_id'           => $data['recipient_id'],
                 'status'                 => 'Open',
-                'comments'               => isset($data['comments']) ? $data['comments'] : null,
+                'comments'               => $data['comments'] ?? null,
                 'is_sender_confirmed'    => 0,
                 'is_recipient_confirmed' => 0,
                 'data'                   => null,
@@ -400,7 +400,7 @@ class TradeManager extends Service
                     throw new \Exception('Failed to log admin action.');
                 }
 
-                $trade->reason = isset($data['reason']) ? $data['reason'] : '';
+                $trade->reason = $data['reason'] ?? '';
                 $trade->status = 'Rejected';
                 $trade->staff_id = $user->id;
                 $trade->save();
@@ -671,18 +671,18 @@ class TradeManager extends Service
             $characterManager = new CharacterManager;
 
             // Transfer characters
-            $cooldowns = isset($data['cooldowns']) ? $data['cooldowns'] : [];
+            $cooldowns = $data['cooldowns'] ?? [];
             $defaultCooldown = Settings::get('transfer_cooldown');
 
             $senderCharacters = Character::where('user_id', $trade->sender_id)->where('trade_id', $trade->id)->get();
             $recipientCharacters = Character::where('user_id', $trade->recipient_id)->where('trade_id', $trade->id)->get();
 
             foreach ($senderCharacters as $character) {
-                $characterManager->moveCharacter($character, $trade->recipient, 'Trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]', isset($cooldowns[$character->id]) ? $cooldowns[$character->id] : $defaultCooldown, 'Transferred in trade');
+                $characterManager->moveCharacter($character, $trade->recipient, 'Trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]', $cooldowns[$character->id] ?? $defaultCooldown, 'Transferred in trade');
             }
 
             foreach ($recipientCharacters as $character) {
-                $characterManager->moveCharacter($character, $trade->sender, 'Trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]', isset($cooldowns[$character->id]) ? $cooldowns[$character->id] : $defaultCooldown, 'Transferred in trade');
+                $characterManager->moveCharacter($character, $trade->sender, 'Trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]', $cooldowns[$character->id] ?? $defaultCooldown, 'Transferred in trade');
             }
 
             Character::where('trade_id', $trade->id)->update(['trade_id' => null]);

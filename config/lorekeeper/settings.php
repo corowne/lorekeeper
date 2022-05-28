@@ -59,6 +59,7 @@ return [
     |       This is used in the automatic generation of character codes.
     |       {category}: This is replaced by the character category code.
     |       {number}: This is replaced by the character number.
+    /       {year}: This is replaced by the current year.
     |
     |       e.g. Under the default setting ({category}-{number}),
     |       a character in a category called "MYO" (code "MYO") with number 001
