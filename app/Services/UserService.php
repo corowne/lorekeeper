@@ -87,12 +87,9 @@ class UserService extends Service
 
     /**
      * Updates the user's password.
-<<<<<<< HEAD
-=======
      *
      * @param array                 $data
      * @param \App\Models\User\User $user
->>>>>>> develop
      *
      * @return bool
      */

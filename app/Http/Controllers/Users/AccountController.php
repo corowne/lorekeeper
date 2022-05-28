@@ -364,7 +364,7 @@ class AccountController extends Controller
     public function postReactivate(Request $request, UserService $service)
     {
         if($service->reactivate(Auth::user(), null)) {
-            flash('You have successfully successfully.')->success();
+            flash('You have reactivated successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

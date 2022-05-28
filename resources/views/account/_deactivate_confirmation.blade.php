@@ -1,4 +1,4 @@
-@if(Auth::user()->is_deactivated)
+@if(!Auth::user()->is_deactivated)
     <p>
         Are you sure you want to deactivate your account? All trades and submissions will be canceled and you will not be able to access the website when logged in.
     </p>

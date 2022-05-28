@@ -7,7 +7,7 @@
 
 <h1>Deactivated</h1>
 
-<p>Your account has been deactivate as of {!! format_date(Auth::user()->settings->deactivated_at) !!}. {{ Auth::user()->settings->deactivate_reason ? 'The following reason was given:' : '' }}</p>
+<p>Your account has been deactivated as of {!! format_date(Auth::user()->settings->deactivated_at) !!}. {{ Auth::user()->settings->deactivate_reason ? 'The following reason was given:' : '' }}</p>
 
 @if(Auth::user()->settings->deactivate_reason)
     <div class="alert alert-danger">
