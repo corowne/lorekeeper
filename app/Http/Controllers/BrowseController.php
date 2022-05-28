@@ -78,7 +78,6 @@ class BrowseController extends Controller
     /**
      * Shows the user deactivated.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getDeactivated(Request $request)
@@ -88,22 +87,23 @@ class BrowseController extends Controller
 
         // First, check the display settings for the deactivated...
         $privacy = Settings::get('deactivated_privacy');
-        if ( $privacy == 3 ||
+        if ($privacy == 3 ||
             (Auth::check() &&
             ($privacy == 2 ||
             ($privacy == 1 && Auth::user()->isStaff) ||
-            ($privacy == 0 && Auth::user()->isAdmin))))
-        {
+            ($privacy == 0 && Auth::user()->isAdmin)))) {
             // Next, check if the deactivated requires a key
             $canView = true;
-            if($key != '0' && ($request->get('key') != $key)) $canView = false;
-
+            if ($key != '0' && ($request->get('key') != $key)) {
+                $canView = false;
+            }
         }
+
         return view('browse.deactivated', [
             'canView' => $canView,
             'privacy' => $privacy,
-            'key' => $key,
-            'users' => $canView ? User::where('is_deactivated', 1)->orderBy('users.name')->paginate(30)->appends($request->query()) : null,
+            'key'     => $key,
+            'users'   => $canView ? User::where('is_deactivated', 1)->orderBy('users.name')->paginate(30)->appends($request->query()) : null,
         ]);
     }
 

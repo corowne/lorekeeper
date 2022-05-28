@@ -43,10 +43,12 @@ class AccountController extends Controller
      */
     public function getDeactivated()
     {
-        if(!Auth::user()->is_deactivated) return redirect()->to('/');
-        else return view('account.deactivated');
+        if (!Auth::user()->is_deactivated) {
+            return redirect()->to('/');
+        } else {
+            return view('account.deactivated');
+        }
     }
-
 
     /**
      * Shows the user settings page.
@@ -318,7 +320,6 @@ class AccountController extends Controller
         return redirect()->back();
     }
 
-
     /**
      * Show a user's deactivate confirmation page.
      *
@@ -342,12 +343,14 @@ class AccountController extends Controller
     public function postDeactivate(Request $request, UserService $service)
     {
         $wasDeactivated = Auth::user()->is_deactivated;
-        if($service->deactivate(['deactivate_reason' => $request->get('deactivate_reason')], Auth::user(), null)) {
+        if ($service->deactivate(['deactivate_reason' => $request->get('deactivate_reason')], Auth::user(), null)) {
             flash($wasDeactivated ? 'Deactivation reason edited successfully.' : 'Your account has successfully been deactivated. We hope to see you again and wish you the best!')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
         }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
+
         return redirect()->back();
     }
 
@@ -363,20 +366,14 @@ class AccountController extends Controller
 
     public function postReactivate(Request $request, UserService $service)
     {
-        if($service->reactivate(Auth::user(), null)) {
+        if ($service->reactivate(Auth::user(), null)) {
             flash('You have reactivated successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
         }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
+
         return redirect()->back();
     }
-
-
-
-
-
-
-
-
 }

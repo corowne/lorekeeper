@@ -214,7 +214,8 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Scope a query to only show deactivated accounts.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeDisabled($query)

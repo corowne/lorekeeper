@@ -32,7 +32,7 @@ class CheckAlias
         if ($request->user()->is_banned) {
             return redirect('/banned');
         }
-        if($request->user()->is_deactivated) {
+        if ($request->user()->is_deactivated) {
             return redirect('/deactivated');
         }
 

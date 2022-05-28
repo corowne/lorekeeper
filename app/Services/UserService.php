@@ -11,13 +11,12 @@ use App\Models\Trade;
 use App\Models\User\User;
 use App\Models\User\UserUpdateLog;
 use Carbon\Carbon;
-use Auth;
 use DB;
 use File;
 use Illuminate\Support\Facades\Hash;
 use Image;
-use Settings;
 use Notifications;
+use Settings;
 
 class UserService extends Service
 {
@@ -344,16 +343,13 @@ class UserService extends Service
         return $this->rollbackReturn(false);
     }
 
-
-
-
-
     /**
      * Deactivates a user.
      *
-     * @param  array                  $data
-     * @param  \App\Models\User\User  $user
-     * @param  \App\Models\User\User  $staff
+     * @param array                 $data
+     * @param \App\Models\User\User $user
+     * @param \App\Models\User\User $staff
+     *
      * @return bool
      */
     public function deactivate($data, $user, $staff = null)
@@ -361,53 +357,60 @@ class UserService extends Service
         DB::beginTransaction();
 
         try {
-            if(!$staff) $staff = $user;
-            if(!$user->is_deactivated) {
+            if (!$staff) {
+                $staff = $user;
+            }
+            if (!$user->is_deactivated) {
                 // New deactivation (not just editing the reason), clear all their engagements
 
                 // 1. Character transfers
                 $characterManager = new CharacterManager;
-                $transfers = CharacterTransfer::where(function($query) use ($user) {
+                $transfers = CharacterTransfer::where(function ($query) use ($user) {
                     $query->where('sender_id', $user->id)->orWhere('recipient_id', $user->id);
                 })->where('status', 'Pending')->get();
-                foreach($transfers as $transfer)
-                    $characterManager->processTransferQueue(['transfer' => $transfer, 'action' => 'Reject', 'reason' => ($transfer->sender_id == $user->id ? 'Sender' : 'Recipient') . '\'s account was deactivated.'], ($staff ? $staff : $user));
+                foreach ($transfers as $transfer) {
+                    $characterManager->processTransferQueue(['transfer' => $transfer, 'action' => 'Reject', 'reason' => ($transfer->sender_id == $user->id ? 'Sender' : 'Recipient').'\'s account was deactivated.'], ($staff ? $staff : $user));
+                }
 
                 // 2. Submissions and claims
                 $submissionManager = new SubmissionManager;
                 $submissions = Submission::where('user_id', $user->id)->where('status', 'Pending')->get();
-                foreach($submissions as $submission)
+                foreach ($submissions as $submission) {
                     $submissionManager->rejectSubmission(['submission' => $submission, 'staff_comments' => 'User\'s account was deactivated.']);
+                }
 
                 // 3. Gallery Submissions
                 $galleryManager = new GalleryManager;
                 $gallerySubmissions = GallerySubmission::where('user_id', $user->id)->where('status', 'Pending')->get();
-                foreach($gallerySubmissions as $submission) {
+                foreach ($gallerySubmissions as $submission) {
                     $galleryManager->rejectSubmission($submission);
                     $galleryManager->postStaffComments($submission->id, ['staff_comments' => 'User\'s account was deactivated.'], ($staff ? $staff : $user));
                 }
                 $gallerySubmissions = GallerySubmission::where('user_id', $user->id)->where('status', 'Accepted')->get();
-                foreach($gallerySubmissions as $submission)
+                foreach ($gallerySubmissions as $submission) {
                     $submission->update(['is_visible' => 0]);
+                }
 
                 // 4. Design approvals
-                $requests = CharacterDesignUpdate::where('user_id', $user->id)->where(function($query) {
+                $requests = CharacterDesignUpdate::where('user_id', $user->id)->where(function ($query) {
                     $query->where('status', 'Pending')->orWhere('status', 'Draft');
                 })->get();
-                foreach($requests as $request)
+                foreach ($requests as $request) {
                     $characterManager->rejectRequest(['staff_comments' => 'User\'s account was deactivated.'], $request, ($staff ? $staff : $user), true);
+                }
 
                 // 5. Trades
                 $tradeManager = new TradeManager;
-                $trades = Trade::where(function($query) {
+                $trades = Trade::where(function ($query) {
                     $query->where('status', 'Open')->orWhere('status', 'Pending');
-                })->where(function($query) use ($user) {
+                })->where(function ($query) use ($user) {
                     $query->where('sender_id', $user->id)->where('recipient_id', $user->id);
                 })->get();
-                foreach($trades as $trade)
+                foreach ($trades as $trade) {
                     $tradeManager->rejectTrade(['trade' => $trade, 'reason' => 'User\'s account was deactivated.'], ($staff ? $staff : $user));
+                }
 
-                UserUpdateLog::create(['staff_id' => $staff ? $staff->id : $user->id, 'user_id' => $user->id, 'data' => json_encode(['is_deactivated' => 'Yes', 'deactivate_reason' => isset($data['deactivate_reason']) ? $data['deactivate_reason'] : null]), 'type' => 'Deactivation']);
+                UserUpdateLog::create(['staff_id' => $staff ? $staff->id : $user->id, 'user_id' => $user->id, 'data' => json_encode(['is_deactivated' => 'Yes', 'deactivate_reason' => $data['deactivate_reason'] ?? null]), 'type' => 'Deactivation']);
 
                 $user->settings->deactivated_at = Carbon::now();
 
@@ -416,34 +419,33 @@ class UserService extends Service
                 $user->rank_id = Rank::orderBy('sort')->first()->id;
                 $user->save();
 
-
                 Notifications::create('USER_DEACTIVATED', User::find(Settings::get('admin_user')), [
-                    'user_url' => $user->url,
-                    'user_name' => $user->name,
-                    'staff_url' => $staff->url,
+                    'user_url'   => $user->url,
+                    'user_name'  => $user->name,
+                    'staff_url'  => $staff->url,
                     'staff_name' => $staff->name,
                 ]);
-
-            }
-            else {
-                UserUpdateLog::create(['staff_id' => $staff ? $staff->id : $user->id, 'user_id' => $user->id, 'data' => json_encode(['deactivate_reason' => isset($data['deactivate_reason']) ? $data['deactivate_reason'] : null]), 'type' => 'Deactivation Update']);
+            } else {
+                UserUpdateLog::create(['staff_id' => $staff ? $staff->id : $user->id, 'user_id' => $user->id, 'data' => json_encode(['deactivate_reason' => $data['deactivate_reason'] ?? null]), 'type' => 'Deactivation Update']);
             }
 
             $user->settings->deactivate_reason = isset($data['deactivate_reason']) && $data['deactivate_reason'] ? $data['deactivate_reason'] : null;
             $user->settings->save();
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
+
         return $this->rollbackReturn(false);
     }
 
     /**
      * Reactivates a user account.
      *
-     * @param  \App\Models\User\User  $user
-     * @param  \App\Models\User\User  $staff
+     * @param \App\Models\User\User $user
+     * @param \App\Models\User\User $staff
+     *
      * @return bool
      */
     public function reactivate($user, $staff = null)
@@ -451,8 +453,10 @@ class UserService extends Service
         DB::beginTransaction();
 
         try {
-            if(!$staff) $staff = $user;
-            if($user->is_deactivated) {
+            if (!$staff) {
+                $staff = $user;
+            }
+            if ($user->is_deactivated) {
                 $user->is_deactivated = 0;
                 $user->deactivater_id = null;
                 $user->save();
@@ -464,18 +468,17 @@ class UserService extends Service
             }
 
             Notifications::create('USER_REACTIVATED', User::find(Settings::get('admin_user')), [
-                'user_url' => $user->url,
-                'user_name' => uc_first($user->name),
-                'staff_url' => $staff->url,
+                'user_url'   => $user->url,
+                'user_name'  => uc_first($user->name),
+                'staff_url'  => $staff->url,
                 'staff_name' => $staff->name,
             ]);
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
 
         return $this->rollbackReturn(false);
     }
-
 }

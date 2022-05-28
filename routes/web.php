@@ -40,7 +40,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     // BANNED
     Route::get('banned', 'Users\AccountController@getBanned');
 
-    # DEACTIVATED
+    // DEACTIVATED
     Route::get('deactivated', 'Users\AccountController@getDeactivated');
     Route::get('reactivate', 'Users\AccountController@getReactivateConfirmation');
     Route::post('reactivate', 'Users\AccountController@postReactivate');
