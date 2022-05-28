@@ -16,8 +16,10 @@
 
 @if($page->can_comment)
     <div class="container">
-        @comments(['model' => $page,
-                'perPage' => 5
+        @comments([
+                'model' => $page,
+                'perPage' => 5,
+                'allow_dislikes' => $page->allow_dislikes,
             ])
     </div>
 @endif
