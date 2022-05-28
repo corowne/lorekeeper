@@ -241,9 +241,9 @@ class SalesService extends Service
                 'sales_id'     => $sales->id,
                 'type'         => $charData[$key]['type'],
                 'data'         => json_encode($charData[$key]),
-                'description'  => isset($data['description'][$key]) ? $data['description'][$key] : null,
-                'link'         => isset($data['link'][$key]) ? $data['link'][$key] : null,
-                'is_open'      => isset($data['character_is_open'][$character->slug]) ? $data['character_is_open'][$character->slug] : ($data['new_entry'][$key] ? 1 : 0),
+                'description'  => $data['description'][$key] ?? null,
+                'link'         => $data['link'][$key] ?? null,
+                'is_open'      => $data['character_is_open'][$character->slug] ?? ($data['new_entry'][$key] ? 1 : 0),
             ]);
         }
     }

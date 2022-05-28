@@ -162,7 +162,7 @@ class DesignUpdateManager extends Service
                     $imageData['use_cropper'] = isset($data['use_cropper']);
                 }
                 if (!$isAdmin && isset($data['image'])) {
-                    $imageData['extension'] = (Config::get('lorekeeper.settings.masterlist_image_format') ? Config::get('lorekeeper.settings.masterlist_image_format') : (isset($data['extension']) ? $data['extension'] : $data['image']->getClientOriginalExtension()));
+                    $imageData['extension'] = (Config::get('lorekeeper.settings.masterlist_image_format') ? Config::get('lorekeeper.settings.masterlist_image_format') : ($data['extension'] ?? $data['image']->getClientOriginalExtension()));
                     $imageData['has_image'] = true;
                 }
                 $request->update($imageData);
@@ -628,7 +628,7 @@ class DesignUpdateManager extends Service
             $request->character->is_sellable = isset($data['is_sellable']);
             $request->character->is_tradeable = isset($data['is_tradeable']);
             $request->character->is_giftable = isset($data['is_giftable']);
-            $request->character->sale_value = isset($data['sale_value']) ? $data['sale_value'] : 0;
+            $request->character->sale_value = $data['sale_value'] ?? 0;
 
             // Invalidate old image if desired
             if (isset($data['invalidate_old'])) {
@@ -782,7 +782,7 @@ class DesignUpdateManager extends Service
 
             // Set staff comment and status
             $request->staff_id = $user->id;
-            $request->staff_comments = isset($data['staff_comments']) ? $data['staff_comments'] : null;
+            $request->staff_comments = $data['staff_comments'] ?? null;
             $request->status = 'Rejected';
             $request->save();
 
@@ -832,7 +832,7 @@ class DesignUpdateManager extends Service
 
             // Set staff comment and status
             $request->staff_id = $user->id;
-            $request->staff_comments = isset($data['staff_comments']) ? $data['staff_comments'] : null;
+            $request->staff_comments = $data['staff_comments'] ?? null;
             $request->status = 'Draft';
             if (!isset($data['preserve_queue'])) {
                 $request->submitted_at = null;

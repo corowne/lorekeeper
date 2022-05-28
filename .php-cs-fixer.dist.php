@@ -5,6 +5,7 @@ use PhpCsFixer\Finder;
 
 $rules = [
     // '@PSR12' => true,
+    '@PHP80Migration' => true,
     'align_multiline_comment' => true,
     'array_syntax' => ['syntax' => 'short'],
     'binary_operator_spaces' => [
