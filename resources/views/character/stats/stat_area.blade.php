@@ -23,12 +23,12 @@
                 <p><strong>Current {{$stat->stat->name}} Count:</strong></p>
                 <p>{{$stat->current_count}}/{{$stat->count}}</p>
                 @endif
-                @if($character->level->current_points > 0)
-                {{ Form::open(['url' => $character->url . '/stats-area/' . $stat->id]) }}
-                
-                {!! Form::submit('Level Stat!', ['class' => 'btn btn-success mb-2']) !!}
+                @if($character->level->current_points > 0 && Auth::check() && Auth::user()->id == $character->user_id)
+                    {{ Form::open(['url' => $character->url . '/stats-area/' . $stat->id]) }}
+                    
+                    {!! Form::submit('Level Stat!', ['class' => 'btn btn-success mb-2']) !!}
 
-                {!! Form::close() !!}
+                    {!! Form::close() !!}
                 @endif
                 @if(Auth::check() && Auth::user()->isStaff)
                 <div class="container text-center">

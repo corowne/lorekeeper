@@ -85,6 +85,7 @@ class LevelController extends Controller
     {
         $user = Auth::user();
         $character = Character::find($request->get('id'));
+        if($user->id != $character->user_id) abort(404);
 
         if($service->userToCharacter($user, $character, $request->get('quantity'))) 
         {

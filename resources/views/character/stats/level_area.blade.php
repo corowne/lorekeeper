@@ -21,7 +21,7 @@
         {{ $character->level->current_exp}}/{{ $next->exp_required }}
         </div>
     </div>
-        @if($character->level->current_exp >= $next->exp_required)
+        @if($character->level->current_exp >= $next->exp_required && Auth::check() && Auth::user()->id == $character->user_id)
         <div class="text-center m-1">
             <b><p>You have enough EXP to advance to the nex level!</p></b>
         </div>

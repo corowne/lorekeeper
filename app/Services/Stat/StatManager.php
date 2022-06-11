@@ -55,6 +55,7 @@ class StatManager extends Service
         DB::beginTransaction();
 
         try {
+            if($user->id != $character->user_id) throw new \Exception("You must own the character to transfer to it.");
             if($user->level->current_points < $quantity) throw new \Exception('Not enough points to transfer this amount.');
 
             $recipient_stack = $character->level;
