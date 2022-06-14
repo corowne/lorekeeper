@@ -289,6 +289,21 @@ return [
         'message' => 'A character you have bookmarked (<a href="{character_url}">{character_name}</a>) has had its Gift Writing Allowed status changed. (<a href="{url}">View Bookmarks</a>)',
         'url'     => 'account/bookmarks',
     ],
+
+    // USER_REACTIVATED
+    103 => [
+        'name'      => 'User Reactivated',
+        'message'   => '<a href="{user_url}">{user_name}\'s</a> account has been reactivated by <a href="{staff_url}">{staff_name}</a>.',
+        'url'       => '',
+    ],
+
+    // USER_DEACTIVATED
+    104 => [
+        'name'      => 'User Deactivated',
+        'message'   => '<a href="{user_url}">{user_name}\'s</a> account has been deactivated by <a href="{staff_url}">{staff_name}</a>.',
+        'url'       => '',
+    ],
+
     // REPORT_ASSIGNED
     220 => [
         'name'    => 'Report Assigned',

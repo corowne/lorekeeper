@@ -7,7 +7,10 @@
 <h1>
     User Index
     @if($blacklistLink)
-        <a href="{{ url('blacklist') }}" class="btn btn-dark float-right">Blacklist</a>
+        <a href="{{ url('blacklist') }}" class="btn btn-dark float-right ml-2">Blacklist</a>
+    @endif
+    @if($deactivatedLink || (Auth::check() && Auth::user()->isStaff))
+        <a href="{{ url('deactivated-list') }}" class="btn btn-dark float-right">Deactivated Accounts</a>
     @endif
 </h1>
 
@@ -27,7 +30,7 @@
                 'alias-reverse'  => 'Sort by Alias (Z-A)',
                 'rank'           => 'Sort by Rank (Default)',
                 'newest'         => 'Newest First',
-                'oldest'         => 'Oldest First'    
+                'oldest'         => 'Oldest First'
             ], Request::get('sort') ? : 'category', ['class' => 'form-control']) !!}
         </div>
         <div class="form-group mb-3">

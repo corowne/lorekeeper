@@ -343,4 +343,102 @@ class UserController extends Controller
 
         return redirect()->back();
     }
+
+    /**
+     * Show a user's deactivate page.
+     *
+     * @param mixed $name
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getDeactivate($name)
+    {
+        $user = User::where('name', $name)->first();
+
+        if (!$user) {
+            abort(404);
+        }
+
+        return view('admin.users.user_deactivate', [
+            'user' => $user,
+        ]);
+    }
+
+    /**
+     * Show a user's deactivate confirmation page.
+     *
+     * @param mixed $name
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getDeactivateConfirmation($name)
+    {
+        $user = User::where('name', $name)->first();
+
+        if (!$user) {
+            abort(404);
+        }
+
+        return view('admin.users._user_deactivate_confirmation', [
+            'user' => $user,
+        ]);
+    }
+
+    public function postDeactivate(Request $request, UserService $service, $name)
+    {
+        $user = User::where('name', $name)->with('settings')->first();
+        $wasDeactivated = $user->is_deactivated;
+        if (!$user) {
+            flash('Invalid user.')->error();
+        } elseif (!Auth::user()->canEditRank($user->rank)) {
+            flash('You cannot edit the information of a user that has a higher rank than yourself.')->error();
+        } elseif ($service->deactivate(['deactivate_reason' => $request->get('deactivate_reason')], $user, Auth::user())) {
+            flash($wasDeactivated ? 'User deactivation reason edited successfully.' : 'User deactivated successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+
+        return redirect()->back();
+    }
+
+    /**
+     * Show a user's reactivate confirmation page.
+     *
+     * @param mixed $name
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getReactivateConfirmation($name)
+    {
+        $user = User::where('name', $name)->with('settings')->first();
+
+        if (!$user) {
+            abort(404);
+        }
+
+        return view('admin.users._user_reactivate_confirmation', [
+            'user' => $user,
+        ]);
+    }
+
+    public function postReactivate(Request $request, UserService $service, $name)
+    {
+        $user = User::where('name', $name)->first();
+
+        if (!$user) {
+            flash('Invalid user.')->error();
+        } elseif (!Auth::user()->canEditRank($user->rank)) {
+            flash('You cannot edit the information of a user that has a higher rank than yourself.')->error();
+        } elseif ($service->reactivate($user, Auth::user())) {
+            flash('User reactivated successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+
+        return redirect()->back();
+    }
 }

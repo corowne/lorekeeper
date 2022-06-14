@@ -7,15 +7,18 @@
 
 <h1>User: {!! $user->displayName !!}</h1>
 <ul class="nav nav-tabs mb-3">
-  <li class="nav-item">
-    <a class="nav-link active" href="{{ $user->adminUrl }}">Account</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ url('admin/users/'.$user->name.'/updates') }}">Account Updates</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ url('admin/users/'.$user->name.'/ban') }}">Ban</a>
-  </li>
+    <li class="nav-item">
+        <a class="nav-link active" href="{{ $user->adminUrl }}">Account</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('admin/users/'.$user->name.'/updates') }}">Account Updates</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('admin/users/'.$user->name.'/ban') }}">Ban</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('admin/users/'.$user->name.'/deactivate') }}">Deactivate</a>
+    </li>
 </ul>
 
 <div class="card p-3 mb-2">
