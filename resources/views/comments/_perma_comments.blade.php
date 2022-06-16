@@ -1,5 +1,5 @@
 @inject('markdown', 'Parsedown')
-@php 
+@php
     $markdown->setSafeMode(true);
 @endphp
 
@@ -23,7 +23,7 @@
         <div class="comment border p-3 rounded {{ $limit == 0 ? 'shadow-sm border-info' : '' }} {{ ($comment->is_featured && ($limit != 0)) ? 'border-success' : '' }} {{ $comment->likes()->where('is_like', 1)->count() - $comment->likes()->where('is_like', 0)->count() < 0 ? 'bg-light bg-gradient' : '' }}"><p>{!! nl2br($markdown->line($comment->comment)) !!} </p>
         <p class="border-top pt-1 text-right mb-0">
             <small class="text-muted">{!! $comment->created_at !!}
-            @if($comment->created_at != $comment->updated_at) 
+            @if($comment->created_at != $comment->updated_at)
                 <span class="text-muted border-left mx-1 px-1">(Edited {!! ($comment->updated_at) !!})</span>
             @endif
             </small>
@@ -32,39 +32,41 @@
         </p>
     </div>
     @if(Auth::check())
-        <div class="my-1">
-            @can('reply-to-comment', $comment)
-                <button data-toggle="modal" data-target="#reply-modal-{{ $comment->getKey() }}" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1  btn-faded text-uppercase"><i class="fas fa-comment"></i><span class="ml-2 d-none d-sm-inline-block">Reply</span></button>
-            @endcan
-            @can('edit-comment', $comment)
-                <button data-toggle="modal" data-target="#comment-modal-{{ $comment->getKey() }}" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1  btn-faded text-uppercase"><i class="fas fa-edit"></i><span class="ml-2 d-none d-sm-inline-block">Edit</span></button>
-            @endcan
-            @if((Auth::user()->id == $comment->commentable_id) || Auth::user()->isStaff)
-                <button data-toggle="modal" data-target="#feature-modal-{{ $comment->getKey() }}" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1  btn-faded text-success text-uppercase"><i class="fas fa-star"></i><span class="ml-2 d-none d-sm-inline-block">{{$comment->is_featured ? 'Unf' : 'F' }}eature Comment</span></button>
-            @endif
-            @can('delete-comment', $comment)
-                <button data-toggle="modal" data-target="#delete-modal-{{ $comment->getKey() }}" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1 btn-outline-danger text-uppercase"><i class="fas fa-minus-circle"></i><span class="ml-2 d-none d-sm-inline-block">Delete</span></button>
-            @endcan
-            {{-- Likes Section --}}
-            <span class="mx-2 d-none d-sm-inline-block">|</span>
-            <a href="#" data-toggle="modal" data-target="#show-likes-{{$comment->id}}">
-                <button href="#" data-toggle="tooltip" title="Click to View" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1 btn-faded">
-                    {{ $comment->likes()->where('is_like', 1)->count() - $comment->likes()->where('is_like', 0)->count() }} 
-                    Like
-                    @if($comment->likes()->where('is_like', 1)->count() - $comment->likes()->where('is_like', 0)->count() != 1)
-                        s
-                    @endif
-                </button>
-            </a>
-            <span class="mx-2 d-none d-sm-inline-block">|</span>
-            {!! Form::open(['url' => 'comments/'.$comment->id.'/like/1','class' => 'd-inline-block']) !!}
-                {!! Form::button('<i class="fas fa-thumbs-up"></i>', ['type' => 'submit', 'class' => 'btn btn-sm px-3 py-2 px-sm-2 py-sm-1 '. ($comment->likes()->where('user_id', Auth::user()->id)->where('is_like', 1)->exists() ? 'btn-success' : 'btn-outline-success').' text-uppercase']) !!}
-            {!! Form::close() !!}
-            @if(Settings::get('comment_dislikes_enabled') || (isset($allow_dislikes) && $allow_dislikes))
-                {!! Form::open(['url' => 'comments/'.$comment->id.'/like/0','class' => 'd-inline-block']) !!}
-                    {!! Form::button('<i class="fas fa-thumbs-down"></i>', ['type' => 'submit', 'class' => 'btn btn-sm px-3 py-2 px-sm-2 py-sm-1 '. ($comment->likes()->where('user_id', Auth::user()->id)->where('is_like', 0)->exists() ? 'btn-danger' : 'btn-outline-danger') .' text-uppercase']) !!}
+        <div class="my-1 row justify-content-between no-gutters">
+            <div class="col-auto">
+                @can('reply-to-comment', $comment)
+                    <button data-toggle="modal" data-target="#reply-modal-{{ $comment->getKey() }}" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1  btn-faded text-uppercase"><i class="fas fa-comment"></i><span class="ml-2 d-none d-sm-inline-block">Reply</span></button>
+                @endcan
+                @can('edit-comment', $comment)
+                    <button data-toggle="modal" data-target="#comment-modal-{{ $comment->getKey() }}" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1  btn-faded text-uppercase"><i class="fas fa-edit"></i><span class="ml-2 d-none d-sm-inline-block">Edit</span></button>
+                @endcan
+                @if((Auth::user()->id == $comment->commentable_id) || Auth::user()->isStaff)
+                    <button data-toggle="modal" data-target="#feature-modal-{{ $comment->getKey() }}" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1  btn-faded text-success text-uppercase"><i class="fas fa-star"></i><span class="ml-2 d-none d-sm-inline-block">{{$comment->is_featured ? 'Unf' : 'F' }}eature Comment</span></button>
+                @endif
+                @can('delete-comment', $comment)
+                    <button data-toggle="modal" data-target="#delete-modal-{{ $comment->getKey() }}" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1 btn-outline-danger text-uppercase"><i class="fas fa-minus-circle"></i><span class="ml-2 d-none d-sm-inline-block">Delete</span></button>
+                @endcan
+            </div>
+            <div class="col-auto text-right">
+                {{-- Likes Section --}}
+                <a href="#" data-toggle="modal" data-target="#show-likes-{{$comment->id}}">
+                    <button href="#" data-toggle="tooltip" title="Click to View" class="btn btn-sm px-3 py-2 px-sm-2 py-sm-1 btn-faded">
+                        {{ $comment->likes()->where('is_like', 1)->count() - $comment->likes()->where('is_like', 0)->count() }}
+                        Like
+                        @if($comment->likes()->where('is_like', 1)->count() - $comment->likes()->where('is_like', 0)->count() != 1)
+                            s
+                        @endif
+                    </button>
+                </a>
+                {!! Form::open(['url' => 'comments/'.$comment->id.'/like/1','class' => 'd-inline-block']) !!}
+                    {!! Form::button('<i class="fas fa-thumbs-up"></i>', ['type' => 'submit', 'class' => 'btn btn-sm px-3 py-2 px-sm-2 py-sm-1 '. ($comment->likes()->where('user_id', Auth::user()->id)->where('is_like', 1)->exists() ? 'btn-success' : 'btn-outline-success').' text-uppercase']) !!}
                 {!! Form::close() !!}
-            @endif
+                @if(Settings::get('comment_dislikes_enabled') || (isset($allow_dislikes) && $allow_dislikes))
+                    {!! Form::open(['url' => 'comments/'.$comment->id.'/like/0','class' => 'd-inline-block']) !!}
+                        {!! Form::button('<i class="fas fa-thumbs-down"></i>', ['type' => 'submit', 'class' => 'btn btn-sm px-3 py-2 px-sm-2 py-sm-1 '. ($comment->likes()->where('user_id', Auth::user()->id)->where('is_like', 0)->exists() ? 'btn-danger' : 'btn-outline-danger') .' text-uppercase']) !!}
+                    {!! Form::close() !!}
+                @endif
+            </div>
         </div>
     @endif
 
@@ -106,7 +108,7 @@
                 </div>
             </div>
         </div>
-    
+
         @can('edit-comment', $comment)
             <div class="modal fade" id="comment-modal-{{ $comment->getKey() }}" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
@@ -123,7 +125,7 @@
                                     {!! Form::label('message', 'Update your message here:') !!}
                                     {!! Form::textarea('message', $comment->comment, ['class' => 'form-control', 'rows' => 3, 'required']) !!}
                                     <small class="form-text text-muted"><a target="_blank" href="https://help.github.com/articles/basic-writing-and-formatting-syntax">Markdown</a> cheatsheet.</small>
-                                </div> 
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-sm btn-outline-secondary text-uppercase" data-dismiss="modal">Cancel</button>
@@ -151,7 +153,7 @@
                                     {!! Form::label('message', 'Enter your message here:') !!}
                                     {!! Form::textarea('message', null, ['class' => 'form-control', 'rows' => 3, 'required']) !!}
                                     <small class="form-text text-muted"><a target="_blank" href="https://help.github.com/articles/basic-writing-and-formatting-syntax">Markdown</a> cheatsheet.</small>
-                                </div> 
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-sm btn-outline-secondary text-uppercase" data-dismiss="modal">Cancel</button>
@@ -161,7 +163,7 @@
                     </div>
                 </div>
             </div>
-        @endcan 
+        @endcan
 
         @can('delete-comment', $comment)
             <div class="modal fade" id="delete-modal-{{ $comment->getKey() }}" tabindex="-1" role="dialog">
@@ -184,7 +186,7 @@
                     </div>
                 </div>
             </div>
-        @endcan 
+        @endcan
 
     <div class="modal fade" id="feature-modal-{{ $comment->getKey() }}" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -209,7 +211,7 @@
     </div>
 </div>
 
-        
+
 {{-- add a limit check so if limit is reached but replies are still presnt to display a button with current amount of replies
 use child function
 url should be equal to the last replies permalink (e.g reply 5)--}}
@@ -221,7 +223,7 @@ url should be equal to the last replies permalink (e.g reply 5)--}}
             @foreach($children as $reply)
                 @php $limit++; @endphp
 
-                @if($limit >= 5 && $depth >= 1) 
+                @if($limit >= 5 && $depth >= 1)
                     <a href="{{ url('comment/').'/'.$comment->id }}"><span class="btn btn-secondary w-100">See More Replies</span></a>
                     @break
                 @endif
@@ -251,7 +253,7 @@ url should be equal to the last replies permalink (e.g reply 5)--}}
                 <div class="border p-3 rounded {{ $limit == 0 ? 'shadow-sm border-info' : '' }}"><p>Comment deleted </p>
                 <p class="border-top pt-1 text-right mb-0">
                     <small class="text-muted">{!! $comment->created_at !!}
-                    @if($comment->created_at != $comment->deleted_at) 
+                    @if($comment->created_at != $comment->deleted_at)
                         <span class="text-muted border-left mx-1 px-1">(Deleted {!! ($comment->deleted_at) !!})</span>
                     @endif
                     </small>
@@ -259,14 +261,14 @@ url should be equal to the last replies permalink (e.g reply 5)--}}
                 </p>
             </div>
         </div>
-       
+
         {{-- Recursion for children --}}
         <div class="w-100 mw-100">
             @php $children = $depth == 0 ? $comment->children->sortByDesc('created_at')->paginate(5) : $comment->children->sortByDesc('created_at') @endphp
             @foreach($children as $reply)
                 @php $limit++; @endphp
 
-                @if($limit >= 5 && $depth >= 1) 
+                @if($limit >= 5 && $depth >= 1)
                     <a href="{{ url('comment/').'/'.$comment->id }}"><span class="btn btn-secondary w-100">See More Replies</span></a>
                     @break
                 @endif
