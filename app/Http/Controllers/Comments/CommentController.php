@@ -37,6 +37,9 @@ class CommentController extends Controller
 
     /**
      * Creates a new comment for given model.
+     *
+     * @param mixed $model
+     * @param mixed $id
      */
     public function store(Request $request, $model, $id)
     {
@@ -51,7 +54,7 @@ class CommentController extends Controller
             'App\Models\SitePage',
         ];
 
-        if(!in_array($model, $accepted_models)) {
+        if (!in_array($model, $accepted_models)) {
             abort(404);
         }
 
@@ -70,11 +73,15 @@ class CommentController extends Controller
 
         // Merge guest rules, if any, with normal validation rules.
         Validator::make($request->all(), array_merge($guest_rules ?? [], [
-            'message' => 'required|string'
+            'message' => 'required|string',
         ]))->validate();
 
         $base = $model::findOrFail($id);
-        if(isset($base->is_visible) && !$base->is_visible) { flash('Invalid Model')->error(); return redirect()->back(); }
+        if (isset($base->is_visible) && !$base->is_visible) {
+            flash('Invalid Model')->error();
+
+            return redirect()->back();
+        }
 
         $commentClass = Config::get('comments.model');
         $comment = new $commentClass;
@@ -98,7 +105,7 @@ class CommentController extends Controller
         $sender = User::find($comment->commenter_id);
         $type = $comment->type;
 
-        switch($model) {
+        switch ($model) {
             case 'App\Models\User\UserProfile':
                 $recipient = User::find($comment->commentable_id);
                 $post = 'your profile';

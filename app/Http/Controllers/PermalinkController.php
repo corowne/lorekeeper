@@ -21,9 +21,15 @@ class PermalinkController extends Controller
         //$comments = $comments->sortByDesc('created_at');
         $comment = $comments->find($id);
 
-        if(!$comment) abort(404);
-        if(!$comment->commentable) abort(404);
-        if(isset($comment->commentable->is_visible) && !$comment->commentable->is_visible) abort(404);
+        if (!$comment) {
+            abort(404);
+        }
+        if (!$comment->commentable) {
+            abort(404);
+        }
+        if (isset($comment->commentable->is_visible) && !$comment->commentable->is_visible) {
+            abort(404);
+        }
 
         // Check if the comment can be viewed
         switch ($comment->type) {
