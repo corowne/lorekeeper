@@ -2,13 +2,14 @@
 
 namespace App\Models\Sales;
 
-use Carbon\Carbon;
-use Config;
 use App\Models\Model;
 use App\Traits\Commentable;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Spatie\Feed\Feedable;
+use Spatie\Feed\FeedItem;
 
-class Sales extends Model
+class Sales extends Model implements Feedable
 {
     use Commentable;
     /**
@@ -18,7 +19,7 @@ class Sales extends Model
      */
     protected $fillable = [
         'user_id', 'text', 'parsed_text', 'title', 'is_visible', 'post_at',
-        'is_open', 'comments_open_at'
+        'is_open', 'comments_open_at',
     ];
 
     /**
@@ -49,7 +50,7 @@ class Sales extends Model
      */
     public static $createRules = [
         'title' => 'required|between:3,100',
-        'text' => 'required',
+        'text'  => 'required',
     ];
 
     /**
@@ -59,7 +60,7 @@ class Sales extends Model
      */
     public static $updateRules = [
         'title' => 'required|between:3,100',
-        'text' => 'required',
+        'text'  => 'required',
     ];
 
     /**********************************************************************************************
@@ -93,23 +94,75 @@ class Sales extends Model
     /**
      * Scope a query to only include visible posts.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeVisible($query)
     {
-        return $query->orderBy('updated_at', 'DESC')->where('is_visible', 1);
+        return $query->where('is_visible', 1);
     }
 
     /**
      * Scope a query to only include posts that are scheduled to be posted and are ready to post.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeShouldBeVisible($query)
     {
         return $query->whereNotNull('post_at')->where('post_at', '<', Carbon::now())->where('is_visible', 0);
+    }
+
+    /**
+     * Scope a query to sort sales in alphabetical order.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param bool                                  $reverse
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSortAlphabetical($query, $reverse = false)
+    {
+        return $query->orderBy('title', $reverse ? 'DESC' : 'ASC');
+    }
+
+    /**
+     * Scope a query to sort sales by newest first.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSortNewest($query)
+    {
+        return $query->orderBy('id', 'DESC');
+    }
+
+    /**
+     * Scope a query to sort sales oldest first.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSortOldest($query)
+    {
+        return $query->orderBy('id');
+    }
+
+    /**
+     * Scope a query to sort sales by bump date.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param bool                                  $reverse
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSortBump($query, $reverse = false)
+    {
+        return $query->orderBy('updated_at', $reverse ? 'DESC' : 'ASC');
     }
 
     /**********************************************************************************************
@@ -125,7 +178,7 @@ class Sales extends Model
      */
     public function getSlugAttribute()
     {
-        return $this->id . '.' . Str::slug($this->title);
+        return $this->id.'.'.Str::slug($this->title);
     }
 
     /**
@@ -146,5 +199,39 @@ class Sales extends Model
     public function getUrlAttribute()
     {
         return url('sales/'.$this->slug);
+    }
+
+    /**********************************************************************************************
+
+        OTHER FUNCTIONS
+
+    **********************************************************************************************/
+
+    /**
+     * Returns all feed items.
+     */
+    public static function getFeedItems()
+    {
+        return self::visible()->get();
+    }
+
+    /**
+     * Generates feed item information.
+     *
+     * @return /Spatie/Feed/FeedItem;
+     */
+    public function toFeedItem(): FeedItem
+    {
+        $summary = ($this->characters->count() ? $this->characters->count().' character'.($this->characters->count() > 1 ? 's are' : ' is').' associated with this sale. Click through to read more.<hr/>' : '').$this->parsed_text;
+
+        return FeedItem::create([
+            'id'         => '/sales/'.$this->id,
+            'title'      => $this->title,
+            'summary'    => $summary,
+            'updated'    => $this->updated_at,
+            'link'       => $this->url,
+            'author'     => $this->user->name,
+            'authorName' => $this->user->name,
+        ]);
     }
 }

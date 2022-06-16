@@ -7,15 +7,18 @@
 
 <h1>User: {!! $user->displayName !!}</h1>
 <ul class="nav nav-tabs mb-3">
-  <li class="nav-item">
-    <a class="nav-link" href="{{ $user->adminUrl }}">Account</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ url('admin/users/'.$user->name.'/updates') }}">Account Updates</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link active" href="{{ url('admin/users/'.$user->name.'/ban') }}">Ban</a>
-  </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ $user->adminUrl }}">Account</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('admin/users/'.$user->name.'/updates') }}">Account Updates</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" href="{{ url('admin/users/'.$user->name.'/ban') }}">Ban</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('admin/users/'.$user->name.'/deactivate') }}">Deactivate</a>
+    </li>
 </ul>
 
 <h3>{{ $user->is_banned ? 'Edit ' : '' }}Ban</h3>
@@ -49,7 +52,7 @@
                 e.preventDefault();
                 loadModal("{{ url('admin/users/'.$user->name.'/ban-confirm') }}", 'Ban User');
             });
-        @else 
+        @else
             $('.unban-button').on('click', function(e) {
                 e.preventDefault();
                 loadModal("{{ url('admin/users/'.$user->name.'/unban-confirm') }}", 'Unban User');

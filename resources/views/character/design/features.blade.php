@@ -61,7 +61,7 @@
                 @if($request->features)
                     @foreach($request->features as $feature)
                         <div class="mb-2 d-flex">
-                            {!! Form::select('feature_id[]', $features, $feature->feature_id, ['class' => 'form-control mr-2 feature-select', 'placeholder' => 'Select Trait']) !!}
+                            {!! Form::select('feature_id[]', $features, $feature->feature_id, ['class' => 'form-control mr-2 initial feature-select', 'placeholder' => 'Select Trait']) !!}
                             {!! Form::text('feature_data[]', $feature->data, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}
                             <a href="#" class="remove-feature btn btn-danger mb-2">×</a>
                         </div>

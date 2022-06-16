@@ -2,11 +2,8 @@
 
 namespace App\Models\Prompt;
 
-use Config;
-use DB;
-use Carbon\Carbon;
 use App\Models\Model;
-use App\Models\Prompt\PromptCategory;
+use Carbon\Carbon;
 
 class Prompt extends Model
 {
@@ -18,7 +15,7 @@ class Prompt extends Model
     protected $fillable = [
         'prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active',
         'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image', 'prefix',
-        'hide_submissions'
+        'hide_submissions', 'staff_only',
     ];
 
     /**
@@ -27,7 +24,6 @@ class Prompt extends Model
      * @var string
      */
     protected $table = 'prompts';
-
     /**
      * Dates on the model to convert to Carbon instances.
      *
@@ -42,11 +38,11 @@ class Prompt extends Model
      */
     public static $createRules = [
         'prompt_category_id' => 'nullable',
-        'name' => 'required|unique:prompts|between:3,100',
-        'prefix' => 'nullable|unique:prompts|between:2,10',
-        'summary' => 'nullable',
-        'description' => 'nullable',
-        'image' => 'mimes:png',
+        'name'               => 'required|unique:prompts|between:3,100',
+        'prefix'             => 'nullable|unique:prompts|between:2,10',
+        'summary'            => 'nullable',
+        'description'        => 'nullable',
+        'image'              => 'mimes:png',
     ];
 
     /**
@@ -56,11 +52,11 @@ class Prompt extends Model
      */
     public static $updateRules = [
         'prompt_category_id' => 'nullable',
-        'name' => 'required|between:3,100',
-        'prefix' => 'nullable|between:2,10',
-        'summary' => 'nullable',
-        'description' => 'nullable',
-        'image' => 'mimes:png',
+        'name'               => 'required|between:3,100',
+        'prefix'             => 'nullable|between:2,10',
+        'summary'            => 'nullable',
+        'description'        => 'nullable',
+        'image'              => 'mimes:png',
     ];
 
     /**********************************************************************************************
@@ -94,29 +90,47 @@ class Prompt extends Model
     /**
      * Scope a query to only include active prompts.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeActive($query)
     {
         return $query->where('is_active', 1)
-            ->where(function($query) {
-                $query->whereNull('start_at')->orWhere('start_at', '<', Carbon::now())->orWhere(function($query) {
+            ->where(function ($query) {
+                $query->whereNull('start_at')->orWhere('start_at', '<', Carbon::now())->orWhere(function ($query) {
                     $query->where('start_at', '>=', Carbon::now())->where('hide_before_start', 0);
                 });
-        })->where(function($query) {
-                $query->whereNull('end_at')->orWhere('end_at', '>', Carbon::now())->orWhere(function($query) {
+            })->where(function ($query) {
+                $query->whereNull('end_at')->orWhere('end_at', '>', Carbon::now())->orWhere(function ($query) {
                     $query->where('end_at', '<=', Carbon::now())->where('hide_after_end', 0);
                 });
-        });
+            });
+    }
 
+    /**
+     * Scope a query to include or exclude staff-only prompts.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \App\Models\User\User                 $user
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeStaffOnly($query, $user)
+    {
+        if ($user && $user->isStaff) {
+            return $query;
+        }
+
+        return $query->where('staff_only', 0);
     }
 
     /**
      * Scope a query to sort prompts in alphabetical order.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  bool                                   $reverse
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param bool                                  $reverse
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeSortAlphabetical($query, $reverse = false)
@@ -127,19 +141,24 @@ class Prompt extends Model
     /**
      * Scope a query to sort prompts in category order.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeSortCategory($query)
     {
-        $ids = PromptCategory::orderBy('sort', 'DESC')->pluck('id')->toArray();
-        return count($ids) ? $query->orderByRaw(DB::raw('FIELD(prompt_category_id, '.implode(',', $ids).')')) : $query;
+        if (PromptCategory::all()->count()) {
+            return $query->orderBy(PromptCategory::select('sort')->whereColumn('prompts.prompt_category_id', 'prompt_categories.id'), 'DESC');
+        }
+
+        return $query;
     }
 
     /**
      * Scope a query to sort features by newest first.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeSortNewest($query)
@@ -150,7 +169,8 @@ class Prompt extends Model
     /**
      * Scope a query to sort features oldest first.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeSortOldest($query)
@@ -161,8 +181,9 @@ class Prompt extends Model
     /**
      * Scope a query to sort prompts by start date.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  bool                                   $reverse
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param bool                                  $reverse
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeSortStart($query, $reverse = false)
@@ -173,8 +194,9 @@ class Prompt extends Model
     /**
      * Scope a query to sort prompts by end date.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  bool                                   $reverse
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param bool                                  $reverse
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeSortEnd($query, $reverse = false)
@@ -215,7 +237,7 @@ class Prompt extends Model
      */
     public function getImageFileNameAttribute()
     {
-        return $this->id . '-image.png';
+        return $this->id.'-image.png';
     }
 
     /**
@@ -235,8 +257,11 @@ class Prompt extends Model
      */
     public function getImageUrlAttribute()
     {
-        if (!$this->has_image) return null;
-        return asset($this->imageDirectory . '/' . $this->imageFileName);
+        if (!$this->has_image) {
+            return null;
+        }
+
+        return asset($this->imageDirectory.'/'.$this->imageFileName);
     }
 
     /**

@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-use Config;
-use App\Models\Model;
-
 use App\Traits\Commentable;
 
 class SitePage extends Model
@@ -17,7 +14,7 @@ class SitePage extends Model
      * @var array
      */
     protected $fillable = [
-        'key', 'title', 'text', 'parsed_text', 'is_visible', 'can_comment'
+        'key', 'title', 'text', 'parsed_text', 'is_visible', 'can_comment', 'allow_dislikes',
     ];
 
     /**
@@ -33,27 +30,27 @@ class SitePage extends Model
      * @var string
      */
     public $timestamps = true;
-    
+
     /**
      * Validation rules for creation.
      *
      * @var array
      */
     public static $createRules = [
-        'key' => 'required|unique:site_pages|between:3,25|alpha_dash',
+        'key'   => 'required|unique:site_pages|between:3,25|alpha_dash',
         'title' => 'required|between:3,100',
-        'text' => 'nullable',
+        'text'  => 'nullable',
     ];
-    
+
     /**
      * Validation rules for updating.
      *
      * @var array
      */
     public static $updateRules = [
-        'key' => 'required|between:3,25|alpha_dash',
+        'key'   => 'required|between:3,25|alpha_dash',
         'title' => 'required|between:3,100',
-        'text' => 'nullable',
+        'text'  => 'nullable',
     ];
 
     /**

@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
-use Config;
-use App\Models\Model;
-use Illuminate\Support\Str;
-
 use App\Traits\Commentable;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
+use Spatie\Feed\Feedable;
+use Spatie\Feed\FeedItem;
 
-class News extends Model
+class News extends Model implements Feedable
 {
     use Commentable;
     /**
@@ -18,7 +17,7 @@ class News extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'text', 'parsed_text', 'title', 'is_visible', 'post_at'
+        'user_id', 'text', 'parsed_text', 'title', 'is_visible', 'post_at',
     ];
 
     /**
@@ -49,9 +48,9 @@ class News extends Model
      */
     public static $createRules = [
         'title' => 'required|between:3,100',
-        'text' => 'required',
+        'text'  => 'required',
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -59,25 +58,25 @@ class News extends Model
      */
     public static $updateRules = [
         'title' => 'required|between:3,100',
-        'text' => 'required',
+        'text'  => 'required',
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the user who created the news post.
      */
-    public function user() 
+    public function user()
     {
         return $this->belongsTo('App\Models\User\User');
     }
 
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -85,7 +84,8 @@ class News extends Model
     /**
      * Scope a query to only include visible posts.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeVisible($query)
@@ -96,7 +96,8 @@ class News extends Model
     /**
      * Scope a query to only include posts that are scheduled to be posted and are ready to post.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeShouldBeVisible($query)
@@ -105,7 +106,7 @@ class News extends Model
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -117,7 +118,7 @@ class News extends Model
      */
     public function getSlugAttribute()
     {
-        return $this->id . '.' . Str::slug($this->title);
+        return $this->id.'.'.Str::slug($this->title);
     }
 
     /**
@@ -138,5 +139,37 @@ class News extends Model
     public function getUrlAttribute()
     {
         return url('news/'.$this->slug);
+    }
+
+    /**********************************************************************************************
+
+        OTHER FUNCTIONS
+
+    **********************************************************************************************/
+
+    /**
+     * Returns all feed items.
+     */
+    public static function getFeedItems()
+    {
+        return self::visible()->get();
+    }
+
+    /**
+     * Generates feed item information.
+     *
+     * @return /Spatie/Feed/FeedItem;
+     */
+    public function toFeedItem(): FeedItem
+    {
+        return FeedItem::create([
+            'id'         => '/news/'.$this->id,
+            'title'      => $this->title,
+            'summary'    => $this->parsed_text,
+            'updated'    => $this->updated_at,
+            'link'       => $this->url,
+            'author'     => $this->user->name,
+            'authorName' => $this->user->name,
+        ]);
     }
 }

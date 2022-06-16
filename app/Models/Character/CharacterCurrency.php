@@ -6,16 +6,15 @@ use App\Models\Model;
 
 class CharacterCurrency extends Model
 {
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'quantity', 'character_id', 'currency_id'
+        'quantity', 'character_id', 'currency_id',
     ];
-    
+
     /**
      * The table associated with the model.
      *
@@ -24,7 +23,7 @@ class CharacterCurrency extends Model
     protected $table = 'character_currencies';
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -32,32 +31,32 @@ class CharacterCurrency extends Model
     /**
      * Get the character the record belongs to.
      */
-    public function character() 
+    public function character()
     {
         return $this->belongsTo('App\Models\Character\Character');
     }
-    
+
     /**
      * Get the currency associated with this record.
      */
-    public function currency() 
+    public function currency()
     {
         return $this->belongsTo('App\Models\Currency\Currency');
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
 
     /**
      * Get the name of the currency formatted with the quantity owned.
-     * 
+     *
      * @return string
      */
     public function getNameWithQuantityAttribute()
     {
-        return $this->currency->name . ' [Owned: ' . $this->quantity . ']';
+        return $this->currency->name.' [Owned: '.$this->quantity.']';
     }
 }

@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card mt-3">
     <div class="card-body">
         {!! Form::open(['url' => 'comments/make/'.base64_encode(urlencode(get_class($model))).'/'.$model->getKey()]) !!}
         <div class="form-group">

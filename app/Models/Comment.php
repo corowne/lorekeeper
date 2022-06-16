@@ -1,17 +1,15 @@
 <?php
 
 namespace App\Models;
-use App\Models\Model;
 
 use App\Events\CommentCreated;
-use App\Events\CommentUpdated;
 use App\Events\CommentDeleted;
+use App\Events\CommentUpdated;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Config;
 
 class Comment extends Model
 {
-	use SoftDeletes;
+    use SoftDeletes;
 
     /**
      * The relations to eager load on every query.
@@ -19,7 +17,7 @@ class Comment extends Model
      * @var array
      */
     protected $with = [
-        'commenter'
+        'commenter',
     ];
 
     /**
@@ -28,16 +26,8 @@ class Comment extends Model
      * @var array
      */
     protected $fillable = [
-        'comment', 'approved', 'guest_name', 'guest_email', 'is_featured', 'type'
+        'comment', 'approved', 'guest_name', 'guest_email', 'is_featured', 'type',
     ];
-
-    /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
-
 
     /**
      * The attributes that should be cast to native types.
@@ -45,7 +35,7 @@ class Comment extends Model
      * @var array
      */
     protected $casts = [
-        'approved' => 'boolean'
+        'approved' => 'boolean',
     ];
 
     /**
@@ -60,6 +50,13 @@ class Comment extends Model
     ];
 
     /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
+
+    /**
      * The user who posted the comment.
      */
     public function commenter()
@@ -72,7 +69,7 @@ class Comment extends Model
      */
     public function commentable()
     {
-        return $this->morphTo();
+        return $this->morphTo()->withTrashed();
     }
 
     /**
@@ -80,7 +77,7 @@ class Comment extends Model
      */
     public function children()
     {
-        return $this->hasMany('App\Models\Comment', 'child_id');
+        return $this->hasMany('App\Models\Comment', 'child_id')->withTrashed();
     }
 
     /**
@@ -88,28 +85,38 @@ class Comment extends Model
      */
     public function parent()
     {
-        return $this->belongsTo('App\Models\Comment', 'child_id');
+        return $this->belongsTo('App\Models\Comment', 'child_id')->withTrashed();
     }
 
     /**
-     * Gets / Creates permalink for comments - allows user to go directly to comment
+     * Gets the likes for this comment.
+     */
+    public function likes()
+    {
+        return $this->hasMany('App\Models\CommentLike');
+    }
+
+    /**
+     * Gets / Creates permalink for comments - allows user to go directly to comment.
      *
      * @return string
      */
     public function getUrlAttribute()
     {
-        return url('comment/' . $this->id);
+        return url('comment/'.$this->id);
     }
 
     /**
-     * Gets top comment
+     * Gets top comment.
      *
      * @return string
      */
     public function getTopCommentAttribute()
     {
-        if(!$this->parent) { return $this; }
-        else {return $this->parent->topComment;}
+        if (!$this->parent) {
+            return $this;
+        } else {
+            return $this->parent->topComment;
+        }
     }
-
 }

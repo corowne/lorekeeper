@@ -7,15 +7,18 @@
 
 <h1>User: {!! $user->displayName !!}</h1>
 <ul class="nav nav-tabs mb-3">
-  <li class="nav-item">
-    <a class="nav-link active" href="{{ $user->adminUrl }}">Account</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ url('admin/users/'.$user->name.'/updates') }}">Account Updates</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ url('admin/users/'.$user->name.'/ban') }}">Ban</a>
-  </li>
+    <li class="nav-item">
+        <a class="nav-link active" href="{{ $user->adminUrl }}">Account</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('admin/users/'.$user->name.'/updates') }}">Account Updates</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('admin/users/'.$user->name.'/ban') }}">Ban</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('admin/users/'.$user->name.'/deactivate') }}">Deactivate</a>
+    </li>
 </ul>
 
 <div class="card p-3 mb-2">
@@ -80,7 +83,11 @@
 
 <div class="card p-3 mb-2">
     <h3>Birthdate</h3>
-    @if(!$user->checkBirthday)<p class="text-danger">This user is currently set to an underage DOB</p>@endif
+    @if($user->birthday)
+        @if(!$user->checkBirthday)<p class="text-danger">This user is currently set to an underage DOB.</p>@endif
+    @else 
+        <p class="text-danger">This user has not set their DOB.</p>
+    @endif
     {!! Form::open(['url' => 'admin/users/'.$user->name.'/birthday']) !!}
         <div class="form-group row">
             <label class="col-md-2 col-form-label">Birthday</label>
