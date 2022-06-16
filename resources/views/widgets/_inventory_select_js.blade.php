@@ -53,15 +53,14 @@
         }
         function selectVisible() {
             var $target = $('.user-item:not(.hide)');
-            $target.addClass('category-selected');
             $target.find('.inventory-checkbox').prop('checked', true);
+            $target.find('.inventory-checkbox').trigger('change');
             $('#toggle-checks').prop('checked', true);
-            $target.find('.quantity-select').prop('name', 'stack_quantity[]');
         }
         function deselectVisible() {
             var $target = $('.user-item:not(.hide)');
-            $target.removeClass('category-selected');
             $target.find('.inventory-checkbox').prop('checked', false);
+            $target.find('.inventory-checkbox').trigger('change');
             $('#toggle-checks').prop('checked', false);
             $target.find('.quantity-select').prop('name', '');
         }
