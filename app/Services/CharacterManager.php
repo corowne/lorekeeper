@@ -170,9 +170,7 @@ class CharacterManager extends Service
                 ));
             }
 
-            if (!$this->logAdminAction($user, 'Created Character', 'Created '.$character->displayName)) {
-                throw new \Exception('Failed to log admin action.');
-            }
+            $this->logAdminAction($user, 'Created Character', 'Created '.$character->displayName);
 
             return $this->commitReturn($character);
         } catch (\Exception $e) {
