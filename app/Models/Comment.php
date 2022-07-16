@@ -89,6 +89,14 @@ class Comment extends Model
     }
 
     /**
+     * Gets the likes for this comment.
+     */
+    public function likes()
+    {
+        return $this->hasMany('App\Models\CommentLike');
+    }
+
+    /**
      * Gets / Creates permalink for comments - allows user to go directly to comment.
      *
      * @return string

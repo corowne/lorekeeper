@@ -50,6 +50,7 @@
                     'grouped_comments' => $grouped_comments,
                     'limit' => 0,
                     'compact' => ($comment->type == "Staff-Staff") ? true : false,
+                    'allow_dislikes' => isset($allow_dislikes) ? $allow_dislikes : false,
                 ])
             @endforeach
         @endif

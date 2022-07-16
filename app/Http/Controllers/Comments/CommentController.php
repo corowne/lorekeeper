@@ -233,4 +233,50 @@ class CommentController extends Controller implements CommentControllerInterface
 
         return Redirect::to(URL::previous().'#comment-'.$comment->getKey());
     }
+
+    /**
+     * Likes / Unlikes a comment.
+     *
+     * @param mixed $id
+     * @param mixed $action
+     */
+    public function like(Request $request, $id, $action = 1)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return Redirect::back();
+        }
+        $comment = Comment::findOrFail($id);
+
+        if ($comment->likes()->where('user_id', $user->id)->exists()) {
+            if ($action == $comment->likes()->where('user_id', $user->id)->first()->is_like) {
+                $comment->likes()->where('user_id', $user->id)->delete();
+            }
+            // else invert the bool
+            else {
+                $comment->likes()->where('user_id', $user->id)->update(['is_like' => !$comment->likes()->where('user_id', $user->id)->first()->is_like]);
+            }
+
+            return Redirect::to(URL::previous().'#comment-'.$comment->getKey());
+        }
+
+        $comment->likes()->create([
+            'user_id' => $user->id,
+            'is_like' => $action,
+        ]);
+
+        return Redirect::to(URL::previous().'#comment-'.$comment->getKey());
+    }
+
+    /**
+     * Shows a user's liked comments.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getLikedComments(Request $request)
+    {
+        return view('home.liked_comments', [
+            'user' => Auth::user(),
+        ]);
+    }
 }

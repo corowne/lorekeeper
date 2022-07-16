@@ -31,6 +31,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned', 'has_alias', 'avatar', 'is_sales_unread', 'birthday',
+        'is_deactivated', 'deactivater_id',
     ];
 
     /**
@@ -94,6 +95,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public function profile()
     {
         return $this->hasOne('App\Models\User\UserProfile');
+    }
+
+    /**
+     * Gets the account that deactivated this account.
+     */
+    public function deactivater()
+    {
+        return $this->belongsTo('App\Models\User\User', 'deactivater_id');
     }
 
     /**
@@ -184,6 +193,14 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany('App\Models\Character\CharacterBookmark')->where('user_id', $this->id);
     }
 
+    /**
+     * Gets all of a user's liked / disliked comments.
+     */
+    public function commentLikes()
+    {
+        return $this->hasMany('App\Models\CommentLike');
+    }
+
     /**********************************************************************************************
 
         SCOPES
@@ -199,7 +216,19 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function scopeVisible($query)
     {
-        return $query->where('is_banned', 0);
+        return $query->where('is_banned', 0)->where('is_deactivated', 0);
+    }
+
+    /**
+     * Scope a query to only show deactivated accounts.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeDisabled($query)
+    {
+        return $query->where('is_deactivated', 1);
     }
 
     /**********************************************************************************************
@@ -297,7 +326,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getDisplayNameAttribute()
     {
-        return ($this->is_banned ? '<strike>' : '').'<a href="'.$this->url.'" class="display-user" '.($this->rank->color ? 'style="color: #'.$this->rank->color.';"' : '').'>'.$this->name.'</a>'.($this->is_banned ? '</strike>' : '');
+        return ($this->is_banned ? '<strike>' : '').'<a href="'.$this->url.'" class="display-user" style="'.($this->rank->color ? 'color: #'.$this->rank->color.';' : '').($this->is_deactivated ? 'opacity: 0.5;' : '').'">'.$this->name.'</a>'.($this->is_banned ? '</strike>' : '');
     }
 
     /**
@@ -435,7 +464,7 @@ class User extends Authenticatable implements MustVerifyEmail
         $currencies = $currencies->orderBy('sort_user', 'DESC')->get();
 
         foreach ($currencies as $currency) {
-            $currency->quantity = isset($owned[$currency->id]) ? $owned[$currency->id] : 0;
+            $currency->quantity = $owned[$currency->id] ?? 0;
         }
 
         return $currencies;

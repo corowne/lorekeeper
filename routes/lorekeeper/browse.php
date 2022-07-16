@@ -42,6 +42,7 @@ Route::group(['prefix' => 'sales'], function () {
 **************************************************************************************************/
 Route::get('/users', 'BrowseController@getUsers');
 Route::get('/blacklist', 'BrowseController@getBlacklist');
+Route::get('/deactivated-list', 'BrowseController@getDeactivated');
 
 // PROFILES
 Route::group(['prefix' => 'user', 'namespace' => 'Users'], function () {

@@ -277,7 +277,7 @@ class Feature extends Model
                 if (!$sorted_feature_categories->contains('Miscellaneous')) {
                     $sorted_feature_categories->push('Miscellaneous');
                 }
-                $grouped['Miscellaneous'] = $grouped['Miscellaneous'] ?? [] + $grouped[''];
+                $grouped['Miscellaneous'] ??= [] + $grouped[''];
             }
 
             $sorted_feature_categories = $sorted_feature_categories->filter(function ($value, $key) use ($grouped) {

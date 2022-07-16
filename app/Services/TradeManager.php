@@ -53,7 +53,7 @@ class TradeManager extends Service
                 'sender_id'              => $user->id,
                 'recipient_id'           => $data['recipient_id'],
                 'status'                 => 'Open',
-                'comments'               => isset($data['comments']) ? $data['comments'] : null,
+                'comments'               => $data['comments'] ?? null,
                 'is_sender_confirmed'    => 0,
                 'is_recipient_confirmed' => 0,
                 'data'                   => null,
@@ -400,7 +400,7 @@ class TradeManager extends Service
                     throw new \Exception('Failed to log admin action.');
                 }
 
-                $trade->reason = isset($data['reason']) ? $data['reason'] : '';
+                $trade->reason = $data['reason'] ?? '';
                 $trade->status = 'Rejected';
                 $trade->staff_id = $user->id;
                 $trade->save();
@@ -439,6 +439,7 @@ class TradeManager extends Service
 
             if (isset($tradeData[$type]['user_items'])) {
                 foreach ($tradeData[$type]['user_items'] as $userItemId=>$quantity) {
+                    $quantity = (int) $quantity;
                     $userItemRow = UserItem::find($userItemId);
                     if (!$userItemRow) {
                         throw new \Exception('Cannot return an invalid item. ('.$userItemId.')');
@@ -456,6 +457,7 @@ class TradeManager extends Service
             $currencyManager = new CurrencyManager;
             if (isset($tradeData[$type]['currencies'])) {
                 foreach ($tradeData[$type]['currencies'] as $currencyId=>$quantity) {
+                    $quantity = (int) $quantity;
                     $currencyManager->creditCurrency(null, $user, null, null, $currencyId, $quantity);
                 }
             }
@@ -481,10 +483,10 @@ class TradeManager extends Service
                     if (!$stack->item->allow_transfer || isset($stack->data['disallow_transfer'])) {
                         throw new \Exception('One or more of the selected items cannot be transferred.');
                     }
-                    $stack->trade_count += $data['stack_quantity'][$stackId];
+                    $stack->trade_count += intval($data['stack_quantity'][$stackId]);
                     $stack->save();
 
-                    addAsset($userAssets, $stack, $data['stack_quantity'][$stackId]);
+                    addAsset($userAssets, $stack, intval($data['stack_quantity'][$stackId]));
                     $assetCount++;
                 }
             }
@@ -505,11 +507,11 @@ class TradeManager extends Service
                     if (!$currency) {
                         throw new \Exception('Invalid currency selected.');
                     }
-                    if (!$currencyManager->debitCurrency($user, null, null, null, $currency, $data['currency_quantity'][$key])) {
+                    if (!$currencyManager->debitCurrency($user, null, null, null, $currency, intval($data['currency_quantity'][$key]))) {
                         throw new \Exception('Invalid currency/quantity selected.');
                     }
 
-                    addAsset($userAssets, $currency, $data['currency_quantity'][$key]);
+                    addAsset($userAssets, $currency, intval($data['currency_quantity'][$key]));
                     $assetCount++;
                 }
             }
@@ -576,6 +578,7 @@ class TradeManager extends Service
             foreach (['sender', 'recipient'] as $type) {
                 if (isset($tradeData[$type]['user_items'])) {
                     foreach ($tradeData[$type]['user_items'] as $userItemId => $quantity) {
+                        $quantity = (int) $quantity;
                         $userItemRow = UserItem::find($userItemId);
                         if (!$userItemRow) {
                             throw new \Exception('Cannot return an invalid item. ('.$userItemId.')');
@@ -594,6 +597,7 @@ class TradeManager extends Service
             foreach (['sender', 'recipient'] as $type) {
                 if (isset($tradeData[$type]['currencies'])) {
                     foreach ($tradeData[$type]['currencies'] as $currencyId => $quantity) {
+                        $quantity = (int) $quantity;
                         $currency = Currency::find($currencyId);
                         if (!$currency) {
                             throw new \Exception('Cannot return an invalid currency. ('.$currencyId.')');
@@ -641,6 +645,7 @@ class TradeManager extends Service
             if ($senderStacks) {
                 foreach ($senderStacks as $stack) {
                     $quantity = $trade->data['sender']['user_items'][$stack->id];
+                    $quantity = (int) $quantity;
                     $inventoryManager->moveStack($trade->sender, $trade->recipient, 'Trade', ['data' => 'Received in trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]'], $stack, $quantity);
                     $userItemRow = UserItem::find($stack->id);
                     if (!$userItemRow) {
@@ -656,6 +661,7 @@ class TradeManager extends Service
             if ($recipientStacks) {
                 foreach ($recipientStacks as $stack) {
                     $quantity = $trade->data['recipient']['user_items'][$stack->id];
+                    $quantity = (int) $quantity;
                     $inventoryManager->moveStack($trade->recipient, $trade->sender, 'Trade', ['data' => 'Received in trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]'], $stack, $quantity);
                     $userItemRow = UserItem::find($stack->id);
                     if (!$userItemRow) {
@@ -671,18 +677,18 @@ class TradeManager extends Service
             $characterManager = new CharacterManager;
 
             // Transfer characters
-            $cooldowns = isset($data['cooldowns']) ? $data['cooldowns'] : [];
+            $cooldowns = $data['cooldowns'] ?? [];
             $defaultCooldown = Settings::get('transfer_cooldown');
 
             $senderCharacters = Character::where('user_id', $trade->sender_id)->where('trade_id', $trade->id)->get();
             $recipientCharacters = Character::where('user_id', $trade->recipient_id)->where('trade_id', $trade->id)->get();
 
             foreach ($senderCharacters as $character) {
-                $characterManager->moveCharacter($character, $trade->recipient, 'Trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]', isset($cooldowns[$character->id]) ? $cooldowns[$character->id] : $defaultCooldown, 'Transferred in trade');
+                $characterManager->moveCharacter($character, $trade->recipient, 'Trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]', $cooldowns[$character->id] ?? $defaultCooldown, 'Transferred in trade');
             }
 
             foreach ($recipientCharacters as $character) {
-                $characterManager->moveCharacter($character, $trade->sender, 'Trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]', isset($cooldowns[$character->id]) ? $cooldowns[$character->id] : $defaultCooldown, 'Transferred in trade');
+                $characterManager->moveCharacter($character, $trade->sender, 'Trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]', $cooldowns[$character->id] ?? $defaultCooldown, 'Transferred in trade');
             }
 
             Character::where('trade_id', $trade->id)->update(['trade_id' => null]);
@@ -694,6 +700,7 @@ class TradeManager extends Service
                 $recipientType = ($type == 'sender') ? 'recipient' : 'sender';
                 if (isset($tradeData[$type]['currencies'])) {
                     foreach ($tradeData[$type]['currencies'] as $currencyId => $quantity) {
+                        $quantity = (int) $quantity;
                         $currency = Currency::find($currencyId);
                         if (!$currency) {
                             throw new \Exception('Cannot credit an invalid currency. ('.$currencyId.')');

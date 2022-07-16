@@ -18,6 +18,7 @@
             var str = codeFormat;
             str = str.replace('{category}', $category.find(':selected').data('code'));
             str = str.replace('{number}', $number.val());
+            str = str.replace('{year}', (new Date()).getFullYear());
             $code.val(str);
         }
 

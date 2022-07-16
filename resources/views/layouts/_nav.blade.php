@@ -43,6 +43,10 @@
                             <a class="dropdown-item" href="{{ url('bank') }}">
                                 Bank
                             </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ url('comments/liked') }}">
+                                Liked Comments
+                            </a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
