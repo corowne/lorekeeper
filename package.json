@@ -7,10 +7,12 @@
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
         "prod": "npm run production",
-        "production": "mix --production"
+        "production": "mix --production",
+        "format": "./node_modules/.bin/blade-formatter --progress --write '**/*.blade.php'"
     },
     "devDependencies": {
         "axios": "^0.27",
+        "blade-formatter": "^1.26.13",
         "bootstrap": "5.1.3",
         "buffer": "^6.0.3",
         "jquery": "^3.2",
