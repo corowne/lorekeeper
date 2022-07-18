@@ -68,13 +68,13 @@ class RegisterController extends Controller
             'password'  => ['required', 'string', 'min:8', 'confirmed'],
             'dob'       => ['required', function ($attribute, $value, $fail) {
                 {
-                        $date = $value['day'].'-'.$value['month'].'-'.$value['year'];
-                        $formatDate = carbon::parse($date);
-                        $now = Carbon::now();
-                        if ($formatDate->diffInYears($now) < 13) {
-                            $fail('You must be 13 or older to access this site.');
-                        }
+                    $date = $value['day'].'-'.$value['month'].'-'.$value['year'];
+                    $formatDate = carbon::parse($date);
+                    $now = Carbon::now();
+                    if ($formatDate->diffInYears($now) < 13) {
+                        $fail('You must be 13 or older to access this site.');
                     }
+                }
             },
             ],
             'code' => ['string', function ($attribute, $value, $fail) {

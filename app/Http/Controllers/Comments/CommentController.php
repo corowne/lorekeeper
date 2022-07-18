@@ -131,7 +131,7 @@ class CommentController extends Controller implements CommentControllerInterface
                 $post = (($type != 'User-User') ? 'your gallery submission\'s staff comments' : 'your gallery submission');
                 $link = (($type != 'User-User') ? $submission->queueUrl.'/#comment-'.$comment->getKey() : $submission->url.'/#comment-'.$comment->getKey());
                 break;
-            }
+        }
 
         if ($recipient != $sender) {
             Notifications::create('COMMENT_MADE', $recipient, [
