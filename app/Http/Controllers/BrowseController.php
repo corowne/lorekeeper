@@ -256,29 +256,29 @@ class BrowseController extends Controller
 
         if ($request->get('is_gift_art_allowed')) {
             switch ($request->get('is_gift_art_allowed')) {
-            case 1:
-                $query->where('is_gift_art_allowed', 1);
-            break;
-            case 2:
-                $query->where('is_gift_art_allowed', 2);
-            break;
-            case 3:
-                $query->where('is_gift_art_allowed', '>=', 1);
-            break;
-        }
+                case 1:
+                    $query->where('is_gift_art_allowed', 1);
+                    break;
+                case 2:
+                    $query->where('is_gift_art_allowed', 2);
+                    break;
+                case 3:
+                    $query->where('is_gift_art_allowed', '>=', 1);
+                    break;
+            }
         }
         if ($request->get('is_gift_writing_allowed')) {
             switch ($request->get('is_gift_writing_allowed')) {
-            case 1:
-                $query->where('is_gift_writing_allowed', 1);
-            break;
-            case 2:
-                $query->where('is_gift_writing_allowed', 2);
-            break;
-            case 3:
-                $query->where('is_gift_writing_allowed', '>=', 1);
-            break;
-        }
+                case 1:
+                    $query->where('is_gift_writing_allowed', 1);
+                    break;
+                case 2:
+                    $query->where('is_gift_writing_allowed', 2);
+                    break;
+                case 3:
+                    $query->where('is_gift_writing_allowed', '>=', 1);
+                    break;
+            }
         }
 
         switch ($request->get('sort')) {
@@ -498,29 +498,29 @@ class BrowseController extends Controller
         }
         if ($request->get('is_gift_art_allowed')) {
             switch ($request->get('is_gift_art_allowed')) {
-            case 1:
-                $query->where('is_gift_art_allowed', 1);
-            break;
-            case 2:
-                $query->where('is_gift_art_allowed', 2);
-            break;
-            case 3:
-                $query->where('is_gift_art_allowed', '>=', 1);
-            break;
-        }
+                case 1:
+                    $query->where('is_gift_art_allowed', 1);
+                    break;
+                case 2:
+                    $query->where('is_gift_art_allowed', 2);
+                    break;
+                case 3:
+                    $query->where('is_gift_art_allowed', '>=', 1);
+                    break;
+            }
         }
         if ($request->get('is_gift_writing_allowed')) {
             switch ($request->get('is_gift_writing_allowed')) {
-            case 1:
-                $query->where('is_gift_writing_allowed', 1);
-            break;
-            case 2:
-                $query->where('is_gift_writing_allowed', 2);
-            break;
-            case 3:
-                $query->where('is_gift_writing_allowed', '>=', 1);
-            break;
-        }
+                case 1:
+                    $query->where('is_gift_writing_allowed', 1);
+                    break;
+                case 2:
+                    $query->where('is_gift_writing_allowed', 2);
+                    break;
+                case 3:
+                    $query->where('is_gift_writing_allowed', '>=', 1);
+                    break;
+            }
         }
         if ($request->get('is_sellable')) {
             $query->where('is_sellable', 1);
