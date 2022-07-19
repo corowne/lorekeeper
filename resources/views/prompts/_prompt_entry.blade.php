@@ -4,7 +4,8 @@
     @endif
     <div class="{{ $prompt->has_image ? 'col-md-9' : 'col-12' }}">
         <div class="mb-3">
-            <h3 class="mb-0">{!! $prompt->name !!}</h3>
+            @if(isset($isPage)) <h1 class="mb-0">{!! $prompt->name !!}</h1>
+            @else <h2 class="mb-0"><a href="{{ url('prompts/' . $prompt->id) }}">{!! $prompt->name !!}</a></h2> @endif
             @if($prompt->prompt_category_id)
                 <div><strong>Category: </strong>{!! $prompt->category->displayName !!}</div>
             @endif
@@ -17,9 +18,8 @@
         </div>
         <div class="world-entry-text">
             <p>{{ $prompt->summary }}</p>
-            <div class="text-right"><a data-toggle="collapse" href="#prompt-{{ $prompt->id }}" class="text-primary"><strong>Show details...</strong></a></div>
-            <div class="collapse" id="prompt-{{ $prompt->id }}">
-                <h4>Details</h4>
+            <h3 class="mb-3"><a data-toggle="collapse" href="#prompt-{{ $prompt->id }}" @if(isset($isPage)) aria-expanded="true" @endif)>Details <i class="fas fa-angle-down"></i></a></h3>
+            <div class="collapse @if(isset($isPage)) show @endif mb-5" id="prompt-{{ $prompt->id }}">
                 @if($prompt->parsed_description)
                     {!! $prompt->parsed_description !!}
                 @else
@@ -31,7 +31,7 @@
                     <p class="text-info">Submissions to this prompt are hidden.</p>
                 @endif
             </div>
-            <h4>Rewards</h4>
+            <h3>Rewards</h3>
             @if(!count($prompt->rewards))
                 No rewards.
             @else

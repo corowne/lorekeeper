@@ -116,6 +116,7 @@ Route::group(['prefix' => 'prompts'], function () {
     Route::get('/', 'PromptsController@getIndex');
     Route::get('prompt-categories', 'PromptsController@getPromptCategories');
     Route::get('prompts', 'PromptsController@getPrompts');
+    Route::get('{id}', 'PromptsController@getPrompt');
 });
 
 Route::group(['prefix' => 'shops'], function () {
