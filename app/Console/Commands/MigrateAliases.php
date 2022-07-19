@@ -9,7 +9,7 @@ use App\Models\Item\Item;
 use App\Models\User\User;
 use App\Models\User\UserAlias;
 use App\Models\User\UserCharacterLog;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Console\Command;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -117,6 +117,22 @@ class MigrateAliases extends Command
                 }
 
                 $this->info('Migrated: Character owner aliases');
+
+                $nullCharacters = Character::where('owner_url', 'https://deviantart.com/null')->get();
+                if ($nullCharacters->count()) {
+                    $this->info('Fixing character owner URLs...');
+
+                    foreach ($nullCharacters as $character) {
+                        $logs = UserCharacterLog::where('character_id', $character->id)->where('recipient_url', '!=', null)->orderBy('id', 'DESC')->first();
+                        if ($logs) {
+                            $character->owner_url = $logs->recipient_url;
+                            $character->save();
+                        }
+                    }
+                    $this->info('Fixed: Character owner URLs');
+                } else {
+                    $this->line('Skipped: Character owner URL fixes (nothing to fix)');
+                }
             } else {
                 $this->line('Skipped: Character owner aliases (nothing to migrate)');
             }
