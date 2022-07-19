@@ -12,8 +12,7 @@ use App\Services\FeatureService;
 use Auth;
 use Illuminate\Http\Request;
 
-class FeatureController extends Controller
-{
+class FeatureController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | Admin / Feature Controller
@@ -35,8 +34,7 @@ class FeatureController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex()
-    {
+    public function getIndex() {
         return view('admin.features.feature_categories', [
             'categories' => FeatureCategory::orderBy('sort', 'DESC')->get(),
         ]);
@@ -47,8 +45,7 @@ class FeatureController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCreateFeatureCategory()
-    {
+    public function getCreateFeatureCategory() {
         return view('admin.features.create_edit_feature_category', [
             'category' => new FeatureCategory,
         ]);
@@ -61,8 +58,7 @@ class FeatureController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getEditFeatureCategory($id)
-    {
+    public function getEditFeatureCategory($id) {
         $category = FeatureCategory::find($id);
         if (!$category) {
             abort(404);
@@ -81,8 +77,7 @@ class FeatureController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCreateEditFeatureCategory(Request $request, FeatureService $service, $id = null)
-    {
+    public function postCreateEditFeatureCategory(Request $request, FeatureService $service, $id = null) {
         $id ? $request->validate(FeatureCategory::$updateRules) : $request->validate(FeatureCategory::$createRules);
         $data = $request->only([
             'name', 'description', 'image', 'remove_image',
@@ -109,8 +104,7 @@ class FeatureController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getDeleteFeatureCategory($id)
-    {
+    public function getDeleteFeatureCategory($id) {
         $category = FeatureCategory::find($id);
 
         return view('admin.features._delete_feature_category', [
@@ -126,8 +120,7 @@ class FeatureController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postDeleteFeatureCategory(Request $request, FeatureService $service, $id)
-    {
+    public function postDeleteFeatureCategory(Request $request, FeatureService $service, $id) {
         if ($id && $service->deleteFeatureCategory(FeatureCategory::find($id), Auth::user())) {
             flash('Category deleted successfully.')->success();
         } else {
@@ -146,8 +139,7 @@ class FeatureController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postSortFeatureCategory(Request $request, FeatureService $service)
-    {
+    public function postSortFeatureCategory(Request $request, FeatureService $service) {
         if ($service->sortFeatureCategory($request->get('sort'))) {
             flash('Category order updated successfully.')->success();
         } else {
@@ -170,8 +162,7 @@ class FeatureController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getFeatureIndex(Request $request)
-    {
+    public function getFeatureIndex(Request $request) {
         $query = Feature::query();
         $data = $request->only(['rarity_id', 'feature_category_id', 'species_id', 'name']);
         if (isset($data['rarity_id']) && $data['rarity_id'] != 'none') {
@@ -204,8 +195,7 @@ class FeatureController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCreateFeature()
-    {
+    public function getCreateFeature() {
         return view('admin.features.create_edit_feature', [
             'feature'    => new Feature,
             'rarities'   => ['none' => 'Select a Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
@@ -222,8 +212,7 @@ class FeatureController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getEditFeature($id)
-    {
+    public function getEditFeature($id) {
         $feature = Feature::find($id);
         if (!$feature) {
             abort(404);
@@ -246,8 +235,7 @@ class FeatureController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCreateEditFeature(Request $request, FeatureService $service, $id = null)
-    {
+    public function postCreateEditFeature(Request $request, FeatureService $service, $id = null) {
         $id ? $request->validate(Feature::$updateRules) : $request->validate(Feature::$createRules);
         $data = $request->only([
             'name', 'species_id', 'subtype_id', 'rarity_id', 'feature_category_id', 'description', 'image', 'remove_image',
@@ -274,8 +262,7 @@ class FeatureController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getDeleteFeature($id)
-    {
+    public function getDeleteFeature($id) {
         $feature = Feature::find($id);
 
         return view('admin.features._delete_feature', [
@@ -291,8 +278,7 @@ class FeatureController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postDeleteFeature(Request $request, FeatureService $service, $id)
-    {
+    public function postDeleteFeature(Request $request, FeatureService $service, $id) {
         if ($id && $service->deleteFeature(Feature::find($id), Auth::user())) {
             flash('Trait deleted successfully.')->success();
         } else {

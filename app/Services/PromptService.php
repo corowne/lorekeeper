@@ -9,8 +9,7 @@ use App\Models\Submission\Submission;
 use DB;
 use Illuminate\Support\Arr;
 
-class PromptService extends Service
-{
+class PromptService extends Service {
     /*
     |--------------------------------------------------------------------------
     | Prompt Service
@@ -34,8 +33,7 @@ class PromptService extends Service
      *
      * @return \App\Models\Prompt\PromptCategory|bool
      */
-    public function createPromptCategory($data, $user)
-    {
+    public function createPromptCategory($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -73,8 +71,7 @@ class PromptService extends Service
      *
      * @return \App\Models\Prompt\PromptCategory|bool
      */
-    public function updatePromptCategory($category, $data, $user)
-    {
+    public function updatePromptCategory($category, $data, $user) {
         DB::beginTransaction();
 
         try {
@@ -113,8 +110,7 @@ class PromptService extends Service
      *
      * @return bool
      */
-    public function deletePromptCategory($category)
-    {
+    public function deletePromptCategory($category) {
         DB::beginTransaction();
 
         try {
@@ -143,8 +139,7 @@ class PromptService extends Service
      *
      * @return bool
      */
-    public function sortPromptCategory($data)
-    {
+    public function sortPromptCategory($data) {
         DB::beginTransaction();
 
         try {
@@ -177,8 +172,7 @@ class PromptService extends Service
      *
      * @return \App\Models\Prompt\Prompt|bool
      */
-    public function createPrompt($data, $user)
-    {
+    public function createPrompt($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -230,8 +224,7 @@ class PromptService extends Service
      *
      * @return \App\Models\Prompt\Prompt|bool
      */
-    public function updatePrompt($prompt, $data, $user)
-    {
+    public function updatePrompt($prompt, $data, $user) {
         DB::beginTransaction();
 
         try {
@@ -286,8 +279,7 @@ class PromptService extends Service
      *
      * @return bool
      */
-    public function deletePrompt($prompt)
-    {
+    public function deletePrompt($prompt) {
         DB::beginTransaction();
 
         try {
@@ -318,8 +310,7 @@ class PromptService extends Service
      *
      * @return array
      */
-    private function populateCategoryData($data, $category = null)
-    {
+    private function populateCategoryData($data, $category = null) {
         if (isset($data['description']) && $data['description']) {
             $data['parsed_description'] = parse($data['description']);
         } elseif (!isset($data['description']) && !$data['description']) {
@@ -345,8 +336,7 @@ class PromptService extends Service
      *
      * @return array
      */
-    private function populateData($data, $prompt = null)
-    {
+    private function populateData($data, $prompt = null) {
         if (isset($data['description']) && $data['description']) {
             $data['parsed_description'] = parse($data['description']);
         }
@@ -381,8 +371,7 @@ class PromptService extends Service
      * @param array                     $data
      * @param \App\Models\Prompt\Prompt $prompt
      */
-    private function populateRewards($data, $prompt)
-    {
+    private function populateRewards($data, $prompt) {
         // Clear the old rewards...
         $prompt->rewards()->delete();
 

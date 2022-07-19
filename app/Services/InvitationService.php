@@ -5,8 +5,7 @@ namespace App\Services;
 use App\Models\Invitation;
 use DB;
 
-class InvitationService extends Service
-{
+class InvitationService extends Service {
     /*
     |--------------------------------------------------------------------------
     | Invitation Service
@@ -23,8 +22,7 @@ class InvitationService extends Service
      *
      * @return \App\Models\Invitation|bool
      */
-    public function generateInvitation($user)
-    {
+    public function generateInvitation($user) {
         DB::beginTransaction();
 
         try {
@@ -49,8 +47,7 @@ class InvitationService extends Service
      *
      * @return \App\Models\Invitation|bool
      */
-    public function useInvitation($invitation, $user)
-    {
+    public function useInvitation($invitation, $user) {
         DB::beginTransaction();
 
         try {
@@ -77,8 +74,7 @@ class InvitationService extends Service
      *
      * @return bool
      */
-    public function deleteInvitation($invitation)
-    {
+    public function deleteInvitation($invitation) {
         DB::beginTransaction();
 
         try {
@@ -101,8 +97,7 @@ class InvitationService extends Service
      *
      * @return string
      */
-    private function generateCode()
-    {
+    private function generateCode() {
         return randomString(10);
     }
 }

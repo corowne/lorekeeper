@@ -6,8 +6,7 @@ use App\Models\Currency\Currency;
 use App\Models\Model;
 use Settings;
 
-class GalleryCollaborator extends Model
-{
+class GalleryCollaborator extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -34,16 +33,14 @@ class GalleryCollaborator extends Model
     /**
      * Get the submission this is attached to.
      */
-    public function submission()
-    {
+    public function submission() {
         return $this->belongsTo('App\Models\Gallery\GallerySubmission', 'gallery_submission_id');
     }
 
     /**
      * Get the user being attached to the submission.
      */
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo('App\Models\User\User', 'user_id');
     }
 
@@ -58,8 +55,7 @@ class GalleryCollaborator extends Model
      *
      * @return string
      */
-    public function getDisplayTypeAttribute()
-    {
+    public function getDisplayTypeAttribute() {
         switch ($this->type) {
             default:
                 flash('Invalid type selected.')->error();

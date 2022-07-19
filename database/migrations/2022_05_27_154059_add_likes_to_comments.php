@@ -4,13 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddLikesToComments extends Migration
-{
+class AddLikesToComments extends Migration {
     /**
      * Run the migrations.
      */
-    public function up()
-    {
+    public function up() {
         Schema::table('site_pages', function (Blueprint $table) {
             $table->integer('allow_dislikes')->default(0);
         });
@@ -26,8 +24,7 @@ class AddLikesToComments extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
-    {
+    public function down() {
         Schema::table('site_pages', function (Blueprint $table) {
             $table->dropColumn('allow_dislikes');
         });

@@ -6,8 +6,7 @@ use App\Models\Model;
 use Carbon\Carbon;
 use Settings;
 
-class Gallery extends Model
-{
+class Gallery extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -61,24 +60,21 @@ class Gallery extends Model
     /**
      * Get the parent gallery.
      */
-    public function parent()
-    {
+    public function parent() {
         return $this->belongsTo('App\Models\Gallery\Gallery', 'parent_id');
     }
 
     /**
      * Get the child galleries of this gallery.
      */
-    public function children()
-    {
+    public function children() {
         return $this->hasMany('App\Models\Gallery\Gallery', 'parent_id')->sort();
     }
 
     /**
      * Get the submissions made to this gallery.
      */
-    public function submissions()
-    {
+    public function submissions() {
         return $this->hasMany('App\Models\Gallery\GallerySubmission', 'gallery_id')->visible()->orderBy('created_at', 'DESC');
     }
 
@@ -95,8 +91,7 @@ class Gallery extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSort($query)
-    {
+    public function scopeSort($query) {
         return $query->orderByRaw('ISNULL(sort), sort ASC')->orderBy('name', 'ASC');
     }
 
@@ -107,8 +102,7 @@ class Gallery extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeActive($query)
-    {
+    public function scopeActive($query) {
         return $query
             ->where(function ($query) {
                 $query->whereNull('start_at')->orWhere('start_at', '<', Carbon::now())->orWhere(function ($query) {
@@ -128,8 +122,7 @@ class Gallery extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeVisible($query)
-    {
+    public function scopeVisible($query) {
         return $query
             ->where(function ($query) {
                 $query->whereNull('start_at')->orWhere('start_at', '<', Carbon::now())->orWhere(function ($query) {
@@ -149,8 +142,7 @@ class Gallery extends Model
      *
      * @return string
      */
-    public function getDisplayNameAttribute()
-    {
+    public function getDisplayNameAttribute() {
         return '<a href="'.$this->url.'" class="display-prompt">'.$this->name.'</a>';
     }
 
@@ -159,8 +151,7 @@ class Gallery extends Model
      *
      * @return string
      */
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return url('gallery/'.$this->id);
     }
 
@@ -171,8 +162,7 @@ class Gallery extends Model
      *
      * @return string
      */
-    public function canSubmit($user = null)
-    {
+    public function canSubmit($user = null) {
         if (Settings::get('gallery_submissions_open')) {
             if ((isset($this->start_at) && $this->start_at->isFuture()) || (isset($this->end_at) && $this->end_at->isPast())) {
                 return false;

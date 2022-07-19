@@ -4,13 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSalesCharacters extends Migration
-{
+class CreateSalesCharacters extends Migration {
     /**
      * Run the migrations.
      */
-    public function up()
-    {
+    public function up() {
         Schema::create('sales_characters', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
@@ -32,8 +30,7 @@ class CreateSalesCharacters extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists('sales_characters');
     }
 }

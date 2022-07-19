@@ -7,8 +7,7 @@ use App\Models\Prompt\PromptCategory;
 use Auth;
 use Illuminate\Http\Request;
 
-class PromptsController extends Controller
-{
+class PromptsController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | Prompts Controller
@@ -24,8 +23,7 @@ class PromptsController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex()
-    {
+    public function getIndex() {
         return view('prompts.index');
     }
 
@@ -34,8 +32,7 @@ class PromptsController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getPromptCategories(Request $request)
-    {
+    public function getPromptCategories(Request $request) {
         $query = PromptCategory::query();
         $name = $request->get('name');
         if ($name) {
@@ -52,8 +49,7 @@ class PromptsController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getPrompts(Request $request)
-    {
+    public function getPrompts(Request $request) {
         $query = Prompt::active()->staffOnly(Auth::check() ? Auth::user() : null)->with('category');
         $data = $request->only(['prompt_category_id', 'name', 'sort']);
         if (isset($data['prompt_category_id']) && $data['prompt_category_id'] != 'none') {
@@ -110,8 +106,7 @@ class PromptsController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getPrompt(Request $request, $id)
-    {
+    public function getPrompt(Request $request, $id) {
         $prompt = Prompt::where('id', $id)->get()->first();
 
         if (!$prompt) {

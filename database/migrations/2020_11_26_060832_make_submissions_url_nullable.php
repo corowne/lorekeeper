@@ -2,13 +2,11 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class MakeSubmissionsUrlNullable extends Migration
-{
+class MakeSubmissionsUrlNullable extends Migration {
     /**
      * Run the migrations.
      */
-    public function up()
-    {
+    public function up() {
         //
         DB::statement('ALTER TABLE submissions CHANGE url url VARCHAR(200) NULL');
     }
@@ -16,8 +14,7 @@ class MakeSubmissionsUrlNullable extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
-    {
+    public function down() {
         //
         DB::statement('ALTER TABLE submissions CHANGE url url VARCHAR(200)');
     }

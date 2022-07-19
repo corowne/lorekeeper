@@ -8,10 +8,8 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
-class CommentProvider extends ServiceProvider
-{
-    public function boot()
-    {
+class CommentProvider extends ServiceProvider {
+    public function boot() {
         $this->loadViewsFrom(base_path('resources/views/comments'), 'comments');
 
         $this->includeBladeComponent();
@@ -21,8 +19,7 @@ class CommentProvider extends ServiceProvider
         Route::model('comment', 'App\Models\Comment');
     }
 
-    public function register()
-    {
+    public function register() {
         $this->mergeConfigFrom(
             base_path('config/lorekeeper/comments.php'),
             'comments'
@@ -32,16 +29,14 @@ class CommentProvider extends ServiceProvider
     /**
      * If for some reason you want to override the component.
      */
-    protected function includeBladeComponent()
-    {
+    protected function includeBladeComponent() {
         Blade::include('comments::comments', 'comments');
     }
 
     /**
      * Define permission defined in the config.
      */
-    protected function definePermissions()
-    {
+    protected function definePermissions() {
         foreach (Config::get('lorekeeper.comments.permissions', []) as $permission => $policy) {
             Gate::define($permission, $policy);
         }

@@ -9,8 +9,7 @@ use Illuminate\Support\Str;
 use Spatie\Feed\Feedable;
 use Spatie\Feed\FeedItem;
 
-class Sales extends Model implements Feedable
-{
+class Sales extends Model implements Feedable {
     use Commentable;
     /**
      * The attributes that are mass assignable.
@@ -72,16 +71,14 @@ class Sales extends Model implements Feedable
     /**
      * Get the user who created the Sales post.
      */
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo('App\Models\User\User');
     }
 
     /**
      * Get the characters associated with the sales post.
      */
-    public function characters()
-    {
+    public function characters() {
         return $this->hasMany('App\Models\Sales\SalesCharacter', 'sales_id');
     }
 
@@ -98,8 +95,7 @@ class Sales extends Model implements Feedable
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeVisible($query)
-    {
+    public function scopeVisible($query) {
         return $query->where('is_visible', 1);
     }
 
@@ -110,8 +106,7 @@ class Sales extends Model implements Feedable
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeShouldBeVisible($query)
-    {
+    public function scopeShouldBeVisible($query) {
         return $query->whereNotNull('post_at')->where('post_at', '<', Carbon::now())->where('is_visible', 0);
     }
 
@@ -123,8 +118,7 @@ class Sales extends Model implements Feedable
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSortAlphabetical($query, $reverse = false)
-    {
+    public function scopeSortAlphabetical($query, $reverse = false) {
         return $query->orderBy('title', $reverse ? 'DESC' : 'ASC');
     }
 
@@ -135,8 +129,7 @@ class Sales extends Model implements Feedable
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSortNewest($query)
-    {
+    public function scopeSortNewest($query) {
         return $query->orderBy('id', 'DESC');
     }
 
@@ -147,8 +140,7 @@ class Sales extends Model implements Feedable
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSortOldest($query)
-    {
+    public function scopeSortOldest($query) {
         return $query->orderBy('id');
     }
 
@@ -160,8 +152,7 @@ class Sales extends Model implements Feedable
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSortBump($query, $reverse = false)
-    {
+    public function scopeSortBump($query, $reverse = false) {
         return $query->orderBy('updated_at', $reverse ? 'DESC' : 'ASC');
     }
 
@@ -176,8 +167,7 @@ class Sales extends Model implements Feedable
      *
      * @return bool
      */
-    public function getSlugAttribute()
-    {
+    public function getSlugAttribute() {
         return $this->id.'.'.Str::slug($this->title);
     }
 
@@ -186,8 +176,7 @@ class Sales extends Model implements Feedable
      *
      * @return string
      */
-    public function getDisplayNameAttribute()
-    {
+    public function getDisplayNameAttribute() {
         return '<a href="'.$this->url.'"> ['.($this->is_open ? (isset($this->comments_open_at) && $this->comments_open_at > Carbon::now() ? 'Preview' : 'Open') : 'Closed').'] '.$this->title.'</a>';
     }
 
@@ -196,8 +185,7 @@ class Sales extends Model implements Feedable
      *
      * @return string
      */
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return url('sales/'.$this->slug);
     }
 
@@ -210,8 +198,7 @@ class Sales extends Model implements Feedable
     /**
      * Returns all feed items.
      */
-    public static function getFeedItems()
-    {
+    public static function getFeedItems() {
         return self::visible()->get();
     }
 
@@ -220,8 +207,7 @@ class Sales extends Model implements Feedable
      *
      * @return /Spatie/Feed/FeedItem;
      */
-    public function toFeedItem(): FeedItem
-    {
+    public function toFeedItem(): FeedItem {
         $summary = ($this->characters->count() ? $this->characters->count().' character'.($this->characters->count() > 1 ? 's are' : ' is').' associated with this sale. Click through to read more.<hr/>' : '').$this->parsed_text;
 
         return FeedItem::create([

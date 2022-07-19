@@ -5,8 +5,7 @@ namespace App\Services;
 use App\Models\Shop\Shop;
 use DB;
 
-class ShopService extends Service
-{
+class ShopService extends Service {
     /*
     |--------------------------------------------------------------------------
     | Shop Service
@@ -30,8 +29,7 @@ class ShopService extends Service
      *
      * @return \App\Models\Shop\Shop|bool
      */
-    public function createShop($data, $user)
-    {
+    public function createShop($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -69,8 +67,7 @@ class ShopService extends Service
      *
      * @return \App\Models\Shop\Shop|bool
      */
-    public function updateShop($shop, $data, $user)
-    {
+    public function updateShop($shop, $data, $user) {
         DB::beginTransaction();
 
         try {
@@ -111,8 +108,7 @@ class ShopService extends Service
      *
      * @return \App\Models\Shop\Shop|bool
      */
-    public function updateShopStock($shop, $data, $user)
-    {
+    public function updateShopStock($shop, $data, $user) {
         DB::beginTransaction();
 
         try {
@@ -162,8 +158,7 @@ class ShopService extends Service
      *
      * @return bool
      */
-    public function deleteShop($shop)
-    {
+    public function deleteShop($shop) {
         DB::beginTransaction();
 
         try {
@@ -190,8 +185,7 @@ class ShopService extends Service
      *
      * @return bool
      */
-    public function sortShop($data)
-    {
+    public function sortShop($data) {
         DB::beginTransaction();
 
         try {
@@ -218,8 +212,7 @@ class ShopService extends Service
      *
      * @return array
      */
-    private function populateShopData($data, $shop = null)
-    {
+    private function populateShopData($data, $shop = null) {
         if (isset($data['description']) && $data['description']) {
             $data['parsed_description'] = parse($data['description']);
         } else {

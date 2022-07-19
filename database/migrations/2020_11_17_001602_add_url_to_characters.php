@@ -4,13 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddUrlToCharacters extends Migration
-{
+class AddUrlToCharacters extends Migration {
     /**
      * Run the migrations.
      */
-    public function up()
-    {
+    public function up() {
         Schema::table('characters', function (Blueprint $table) {
             // Create a column to house owner URL
             $table->string('owner_url')->nullable()->default(null)->index();
@@ -25,8 +23,7 @@ class AddUrlToCharacters extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
-    {
+    public function down() {
         Schema::table('characters', function (Blueprint $table) {
             //
             $table->dropColumn('owner_url');

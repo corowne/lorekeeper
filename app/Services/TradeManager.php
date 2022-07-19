@@ -14,8 +14,7 @@ use DB;
 use Notifications;
 use Settings;
 
-class TradeManager extends Service
-{
+class TradeManager extends Service {
     /*
     |--------------------------------------------------------------------------
     | Trade Manager
@@ -33,8 +32,7 @@ class TradeManager extends Service
      *
      * @return \App\Models\Trade|bool
      */
-    public function createTrade($data, $user)
-    {
+    public function createTrade($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -87,8 +85,7 @@ class TradeManager extends Service
      *
      * @return \App\Models\Trade|bool
      */
-    public function editTrade($data, $user)
-    {
+    public function editTrade($data, $user) {
         DB::beginTransaction();
         try {
             if (!isset($data['trade'])) {
@@ -130,8 +127,7 @@ class TradeManager extends Service
      *
      * @return \App\Models\Trade|bool
      */
-    public function cancelTrade($data, $user)
-    {
+    public function cancelTrade($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -176,8 +172,7 @@ class TradeManager extends Service
      *
      * @return \App\Models\Trade|bool
      */
-    public function confirmOffer($data, $user)
-    {
+    public function confirmOffer($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -243,8 +238,7 @@ class TradeManager extends Service
      *
      * @return \App\Models\Trade|bool
      */
-    public function confirmTrade($data, $user)
-    {
+    public function confirmTrade($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -323,8 +317,7 @@ class TradeManager extends Service
      *
      * @return \App\Models\Trade|bool
      */
-    public function approveTrade($data, $user)
-    {
+    public function approveTrade($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -374,8 +367,7 @@ class TradeManager extends Service
      *
      * @return \App\Models\Trade|bool
      */
-    public function rejectTrade($data, $user)
-    {
+    public function rejectTrade($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -425,8 +417,7 @@ class TradeManager extends Service
      *
      * @return array|bool
      */
-    private function handleTradeAssets($trade, $data, $user)
-    {
+    private function handleTradeAssets($trade, $data, $user) {
         DB::beginTransaction();
         try {
             $tradeData = $trade->data;
@@ -568,8 +559,7 @@ class TradeManager extends Service
      *
      * @return bool
      */
-    private function returnAttachments($trade)
-    {
+    private function returnAttachments($trade) {
         DB::beginTransaction();
 
         try {
@@ -625,8 +615,7 @@ class TradeManager extends Service
      *
      * @return bool
      */
-    private function creditAttachments($trade, $data = [])
-    {
+    private function creditAttachments($trade, $data = []) {
         DB::beginTransaction();
 
         try {

@@ -4,8 +4,7 @@ namespace App\Models\Species;
 
 use App\Models\Model;
 
-class Species extends Model
-{
+class Species extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -52,24 +51,21 @@ class Species extends Model
     /**
      * Get the subtypes for this species.
      */
-    public function subtypes()
-    {
+    public function subtypes() {
         return $this->hasMany('App\Models\Species\Subtype');
     }
 
     /**
      * Get the sub masterlist for this species.
      */
-    public function sublist()
-    {
+    public function sublist() {
         return $this->belongsTo('App\Models\Character\Sublist', 'masterlist_sub_id');
     }
 
     /**
      * Get the features associated with this species.
      */
-    public function features()
-    {
+    public function features() {
         return $this->hasMany('App\Models\Feature\Feature');
     }
 
@@ -84,8 +80,7 @@ class Species extends Model
      *
      * @return string
      */
-    public function getDisplayNameAttribute()
-    {
+    public function getDisplayNameAttribute() {
         return '<a href="'.$this->url.'" class="display-species">'.$this->name.'</a>';
     }
 
@@ -94,8 +89,7 @@ class Species extends Model
      *
      * @return string
      */
-    public function getImageDirectoryAttribute()
-    {
+    public function getImageDirectoryAttribute() {
         return 'images/data/species';
     }
 
@@ -104,8 +98,7 @@ class Species extends Model
      *
      * @return string
      */
-    public function getSpeciesImageFileNameAttribute()
-    {
+    public function getSpeciesImageFileNameAttribute() {
         return $this->id.'-image.png';
     }
 
@@ -114,8 +107,7 @@ class Species extends Model
      *
      * @return string
      */
-    public function getSpeciesImagePathAttribute()
-    {
+    public function getSpeciesImagePathAttribute() {
         return public_path($this->imageDirectory);
     }
 
@@ -124,8 +116,7 @@ class Species extends Model
      *
      * @return string
      */
-    public function getSpeciesImageUrlAttribute()
-    {
+    public function getSpeciesImageUrlAttribute() {
         if (!$this->has_image) {
             return null;
         }
@@ -138,8 +129,7 @@ class Species extends Model
      *
      * @return string
      */
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return url('world/species?name='.$this->name);
     }
 
@@ -148,8 +138,7 @@ class Species extends Model
      *
      * @return string
      */
-    public function getSearchUrlAttribute()
-    {
+    public function getSearchUrlAttribute() {
         if ($this->masterlist_sub_id != 0 && $this->sublist->show_main == 0) {
             return url('sublist/'.$this->sublist->key.'?species_id='.$this->id);
         } else {
@@ -162,8 +151,7 @@ class Species extends Model
      *
      * @return string
      */
-    public function getVisualTraitsUrlAttribute()
-    {
+    public function getVisualTraitsUrlAttribute() {
         return url('/world/species/'.$this->id.'/traits');
     }
 }

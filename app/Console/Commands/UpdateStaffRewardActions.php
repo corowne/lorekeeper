@@ -5,8 +5,7 @@ namespace App\Console\Commands;
 use DB;
 use Illuminate\Console\Command;
 
-class UpdateStaffRewardActions extends Command
-{
+class UpdateStaffRewardActions extends Command {
     /**
      * The name and signature of the console command.
      *
@@ -24,8 +23,7 @@ class UpdateStaffRewardActions extends Command
     /**
      * Create a new command instance.
      */
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
     }
 
@@ -34,8 +32,7 @@ class UpdateStaffRewardActions extends Command
      *
      * @return mixed
      */
-    public function handle()
-    {
+    public function handle() {
         $this->info("\n".'*******************************');
         $this->info('* UPDATE STAFF REWARD ACTIONS *');
         $this->info('*******************************');

@@ -7,8 +7,7 @@ use App\Models\User\UserUpdateLog;
 use DB;
 use Laravel\Socialite\Facades\Socialite;
 
-class LinkService extends Service
-{
+class LinkService extends Service {
     /*
     |--------------------------------------------------------------------------
     | Link Service
@@ -25,8 +24,7 @@ class LinkService extends Service
      *
      * @return string
      */
-    public function getAuthRedirect($provider)
-    {
+    public function getAuthRedirect($provider) {
         if ($provider == 'deviantart') {
             return Socialite::driver($provider)->setScopes(['user'])->redirect();
         } else {
@@ -41,8 +39,7 @@ class LinkService extends Service
      * @param mixed                 $provider
      * @param mixed                 $result
      */
-    public function saveProvider($provider, $result, $user)
-    {
+    public function saveProvider($provider, $result, $user) {
         DB::beginTransaction();
 
         try {
@@ -83,8 +80,7 @@ class LinkService extends Service
      * @param \App\Models\User\User $user
      * @param mixed                 $aliasId
      */
-    public function makePrimary($aliasId, $user)
-    {
+    public function makePrimary($aliasId, $user) {
         DB::beginTransaction();
 
         try {
@@ -121,8 +117,7 @@ class LinkService extends Service
      * @param \App\Models\User\User $user
      * @param mixed                 $aliasId
      */
-    public function hideAlias($aliasId, $user)
-    {
+    public function hideAlias($aliasId, $user) {
         DB::beginTransaction();
 
         try {
@@ -152,8 +147,7 @@ class LinkService extends Service
      * @param \App\Models\User\User $user
      * @param mixed                 $aliasId
      */
-    public function removeAlias($aliasId, $user)
-    {
+    public function removeAlias($aliasId, $user) {
         DB::beginTransaction();
 
         try {

@@ -4,8 +4,7 @@ namespace App\Helpers;
 
 use DB;
 
-class Settings
-{
+class Settings {
     /*
     |--------------------------------------------------------------------------
     | Settings
@@ -22,8 +21,7 @@ class Settings
      *
      * @return mixed|null
      */
-    public function get($key)
-    {
+    public function get($key) {
         $setting = DB::table('site_settings')->where('key', $key)->first();
         if ($setting) {
             return $setting->value;

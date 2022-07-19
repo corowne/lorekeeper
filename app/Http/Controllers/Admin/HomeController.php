@@ -17,15 +17,13 @@ use DB;
 use Illuminate\Http\Request;
 use Settings;
 
-class HomeController extends Controller
-{
+class HomeController extends Controller {
     /**
      * Show the admin dashboard.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex()
-    {
+    public function getIndex() {
         $openTransfersQueue = Settings::get('open_transfers_queue');
         $galleryRequireApproval = Settings::get('gallery_submissions_require_approval');
         $galleryCurrencyAwards = Settings::get('gallery_submissions_reward_currency');
@@ -52,8 +50,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getLogs()
-    {
+    public function getLogs() {
         return view('admin.logs', [
             'logs' => Adminlog::orderBy('created_at', 'DESC')->get()->paginate(20),
         ]);
@@ -64,8 +61,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getStaffRewardSettings()
-    {
+    public function getStaffRewardSettings() {
         return view('admin.staff_reward_settings', [
             'currency' => Currency::find(Config::get('lorekeeper.extensions.staff_rewards.currency_id')),
             'settings' => DB::table('staff_actions')->orderBy('key')->paginate(20),
@@ -79,8 +75,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postEditStaffRewardSetting(Request $request, $key)
-    {
+    public function postEditStaffRewardSetting(Request $request, $key) {
         if (DB::table('staff_actions')->where('key', $key)->update(['value' => $request->get('value')])) {
             flash('Setting updated successfully.')->success();
         } else {

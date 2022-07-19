@@ -6,8 +6,7 @@ use App\Models\News;
 use App\Models\User\User;
 use DB;
 
-class NewsService extends Service
-{
+class NewsService extends Service {
     /*
     |--------------------------------------------------------------------------
     | News Service
@@ -25,8 +24,7 @@ class NewsService extends Service
      *
      * @return \App\Models\News|bool
      */
-    public function createNews($data, $user)
-    {
+    public function createNews($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -59,8 +57,7 @@ class NewsService extends Service
      *
      * @return \App\Models\News|bool
      */
-    public function updateNews($news, $data, $user)
-    {
+    public function updateNews($news, $data, $user) {
         DB::beginTransaction();
 
         try {
@@ -90,8 +87,7 @@ class NewsService extends Service
      *
      * @return bool
      */
-    public function deleteNews($news)
-    {
+    public function deleteNews($news) {
         DB::beginTransaction();
 
         try {
@@ -111,8 +107,7 @@ class NewsService extends Service
      *
      * @return bool
      */
-    public function updateQueue()
-    {
+    public function updateQueue() {
         $count = News::shouldBeVisible()->count();
         if ($count) {
             DB::beginTransaction();
@@ -136,8 +131,7 @@ class NewsService extends Service
      *
      * @return bool
      */
-    private function alertUsers()
-    {
+    private function alertUsers() {
         User::query()->update(['is_news_unread' => 1]);
 
         return true;

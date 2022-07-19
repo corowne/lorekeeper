@@ -4,13 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class SetItemsLogSenderRecipientDefaultNull extends Migration
-{
+class SetItemsLogSenderRecipientDefaultNull extends Migration {
     /**
      * Run the migrations.
      */
-    public function up()
-    {
+    public function up() {
         //Change default to null going forward
         DB::statement("ALTER TABLE items_log CHANGE COLUMN sender_type sender_type ENUM('User', 'Character') DEFAULT NULL");
         DB::statement("ALTER TABLE items_log CHANGE COLUMN recipient_type recipient_type ENUM('User', 'Character') DEFAULT NULL");
@@ -27,8 +25,7 @@ class SetItemsLogSenderRecipientDefaultNull extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
-    {
+    public function down() {
         //
         DB::statement("ALTER TABLE items_log CHANGE COLUMN sender_type sender_type ENUM('User', 'Character') DEFAULT 'User'");
         DB::statement("ALTER TABLE items_log CHANGE COLUMN recipient_type recipient_type ENUM('User', 'Character') DEFAULT 'User'");

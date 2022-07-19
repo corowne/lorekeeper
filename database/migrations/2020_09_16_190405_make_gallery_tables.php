@@ -4,13 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class MakeGalleryTables extends Migration
-{
+class MakeGalleryTables extends Migration {
     /**
      * Run the migrations.
      */
-    public function up()
-    {
+    public function up() {
         // Gallery structure table
         Schema::create('galleries', function (Blueprint $table) {
             $table->engine = 'InnoDB';
@@ -79,8 +77,7 @@ class MakeGalleryTables extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
-    {
+    public function down() {
         //
         Schema::dropIfExists('galleries');
         Schema::dropIfExists('gallery_submissions');

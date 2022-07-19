@@ -8,15 +8,13 @@ use App\Services\PageService;
 use Auth;
 use Illuminate\Http\Request;
 
-class PageController extends Controller
-{
+class PageController extends Controller {
     /**
      * Shows the page index.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex()
-    {
+    public function getIndex() {
         return view('admin.pages.pages', [
             'pages' => SitePage::orderBy('title')->paginate(20),
         ]);
@@ -27,8 +25,7 @@ class PageController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCreatePage()
-    {
+    public function getCreatePage() {
         return view('admin.pages.create_edit_page', [
             'page' => new SitePage,
         ]);
@@ -41,8 +38,7 @@ class PageController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getEditPage($id)
-    {
+    public function getEditPage($id) {
         $page = SitePage::find($id);
         if (!$page) {
             abort(404);
@@ -61,8 +57,7 @@ class PageController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCreateEditPage(Request $request, PageService $service, $id = null)
-    {
+    public function postCreateEditPage(Request $request, PageService $service, $id = null) {
         $id ? $request->validate(SitePage::$updateRules) : $request->validate(SitePage::$createRules);
         $data = $request->only([
             'key', 'title', 'text', 'is_visible', 'can_comment', 'allow_dislikes',
@@ -89,8 +84,7 @@ class PageController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getDeletePage($id)
-    {
+    public function getDeletePage($id) {
         $page = SitePage::find($id);
 
         return view('admin.pages._delete_page', [
@@ -106,8 +100,7 @@ class PageController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postDeletePage(Request $request, PageService $service, $id)
-    {
+    public function postDeletePage(Request $request, PageService $service, $id) {
         if ($id && $service->deletePage(SitePage::find($id))) {
             flash('Page deleted successfully.')->success();
         } else {

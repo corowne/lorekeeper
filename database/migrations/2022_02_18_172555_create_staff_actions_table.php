@@ -4,13 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStaffActionsTable extends Migration
-{
+class CreateStaffActionsTable extends Migration {
     /**
      * Run the migrations.
      */
-    public function up()
-    {
+    public function up() {
         Schema::create('staff_actions', function (Blueprint $table) {
             $table->engine = 'InnoDB';
 
@@ -24,8 +22,7 @@ class CreateStaffActionsTable extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists('staff_actions');
     }
 }

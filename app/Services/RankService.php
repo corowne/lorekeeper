@@ -7,8 +7,7 @@ use App\Models\User\User;
 use Config;
 use DB;
 
-class RankService extends Service
-{
+class RankService extends Service {
     /*
     |--------------------------------------------------------------------------
     | Rank Service
@@ -26,8 +25,7 @@ class RankService extends Service
      *
      * @return bool
      */
-    public function createRank($data, $user)
-    {
+    public function createRank($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -85,8 +83,7 @@ class RankService extends Service
      *
      * @return bool
      */
-    public function updateRank($rank, $data, $user)
-    {
+    public function updateRank($rank, $data, $user) {
         DB::beginTransaction();
 
         try {
@@ -138,8 +135,7 @@ class RankService extends Service
      *
      * @return bool
      */
-    public function deleteRank($rank, $user)
-    {
+    public function deleteRank($rank, $user) {
         DB::beginTransaction();
 
         try {
@@ -167,8 +163,7 @@ class RankService extends Service
      *
      * @return bool
      */
-    public function sortRanks($data, $user)
-    {
+    public function sortRanks($data, $user) {
         DB::beginTransaction();
 
         try {

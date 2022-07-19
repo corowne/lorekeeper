@@ -4,8 +4,7 @@ namespace App\Models;
 
 use App\Traits\Commentable;
 
-class SitePage extends Model
-{
+class SitePage extends Model {
     use Commentable;
 
     /**
@@ -58,8 +57,7 @@ class SitePage extends Model
      *
      * @return string
      */
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return url('info/'.$this->key);
     }
 
@@ -68,8 +66,7 @@ class SitePage extends Model
      *
      * @return string
      */
-    public function getDisplayNameAttribute()
-    {
+    public function getDisplayNameAttribute() {
         return '<a href="'.$this->url.'">'.$this->title.'</a>';
     }
 }

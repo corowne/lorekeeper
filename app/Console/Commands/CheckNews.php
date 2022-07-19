@@ -5,8 +5,7 @@ namespace App\Console\Commands;
 use App\Services\NewsService;
 use Illuminate\Console\Command;
 
-class CheckNews extends Command
-{
+class CheckNews extends Command {
     /**
      * The name and signature of the console command.
      *
@@ -24,8 +23,7 @@ class CheckNews extends Command
     /**
      * Create a new command instance.
      */
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
     }
 
@@ -34,8 +32,7 @@ class CheckNews extends Command
      *
      * @return mixed
      */
-    public function handle()
-    {
+    public function handle() {
         //
         (new NewsService)->updateQueue();
     }

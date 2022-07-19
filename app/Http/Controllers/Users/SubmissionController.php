@@ -18,8 +18,7 @@ use Config;
 use Illuminate\Http\Request;
 use Settings;
 
-class SubmissionController extends Controller
-{
+class SubmissionController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | Submission Controller
@@ -40,8 +39,7 @@ class SubmissionController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex(Request $request)
-    {
+    public function getIndex(Request $request) {
         $submissions = Submission::with('prompt')->where('user_id', Auth::user()->id)->whereNotNull('prompt_id');
         $type = $request->get('type');
         if (!$type) {
@@ -63,8 +61,7 @@ class SubmissionController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getSubmission($id)
-    {
+    public function getSubmission($id) {
         $submission = Submission::viewable(Auth::user())->where('id', $id)->whereNotNull('prompt_id')->first();
         $inventory = isset($submission->data['user']) ? parseAssetData($submission->data['user']) : null;
         if (!$submission) {
@@ -85,8 +82,7 @@ class SubmissionController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getNewSubmission(Request $request)
-    {
+    public function getNewSubmission(Request $request) {
         $closed = !Settings::get('is_prompts_open');
         $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get();
 
@@ -115,8 +111,7 @@ class SubmissionController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCharacterInfo($slug)
-    {
+    public function getCharacterInfo($slug) {
         $character = Character::visible()->where('slug', $slug)->first();
 
         return view('home._character', [
@@ -131,8 +126,7 @@ class SubmissionController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getPromptInfo($id)
-    {
+    public function getPromptInfo($id) {
         $prompt = Prompt::active()->where('id', $id)->first();
         if (!$prompt) {
             return response(404);
@@ -151,8 +145,7 @@ class SubmissionController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postNewSubmission(Request $request, SubmissionManager $service)
-    {
+    public function postNewSubmission(Request $request, SubmissionManager $service) {
         $request->validate(Submission::$createRules);
         if ($service->createSubmission($request->only(['url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity']), Auth::user())) {
             flash('Prompt submitted successfully.')->success();
@@ -178,8 +171,7 @@ class SubmissionController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getClaimsIndex(Request $request)
-    {
+    public function getClaimsIndex(Request $request) {
         $submissions = Submission::where('user_id', Auth::user()->id)->whereNull('prompt_id');
         $type = $request->get('type');
         if (!$type) {
@@ -201,8 +193,7 @@ class SubmissionController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getClaim($id)
-    {
+    public function getClaim($id) {
         $submission = Submission::viewable(Auth::user())->where('id', $id)->whereNull('prompt_id')->first();
         $inventory = isset($submission->data['user']) ? parseAssetData($submission->data['user']) : null;
         if (!$submission) {
@@ -223,8 +214,7 @@ class SubmissionController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getNewClaim(Request $request)
-    {
+    public function getNewClaim(Request $request) {
         $closed = !Settings::get('is_claims_open');
         $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get();
 
@@ -252,8 +242,7 @@ class SubmissionController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postNewClaim(Request $request, SubmissionManager $service)
-    {
+    public function postNewClaim(Request $request, SubmissionManager $service) {
         $request->validate(Submission::$createRules);
         if ($service->createSubmission($request->only(['url', 'comments', 'stack_id', 'stack_quantity', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'currency_id', 'currency_quantity']), Auth::user(), true)) {
             flash('Claim submitted successfully.')->success();
