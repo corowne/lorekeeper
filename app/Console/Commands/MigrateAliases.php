@@ -9,9 +9,9 @@ use App\Models\Item\Item;
 use App\Models\User\User;
 use App\Models\User\UserAlias;
 use App\Models\User\UserCharacterLog;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Console\Command;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class MigrateAliases extends Command
