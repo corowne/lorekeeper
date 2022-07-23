@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Carbon;
+
 use App\Models\Prompt\Prompt;
 use App\Models\Prompt\PromptCategory;
 use Auth;
@@ -55,12 +57,27 @@ class PromptsController extends Controller
     public function getPrompts(Request $request)
     {
         $query = Prompt::active()->staffOnly(Auth::check() ? Auth::user() : null)->with('category');
-        $data = $request->only(['prompt_category_id', 'name', 'sort']);
+        $data = $request->only(['prompt_category_id', 'name', 'sort', 'open_prompts']);
         if (isset($data['prompt_category_id']) && $data['prompt_category_id'] != 'none') {
             $query->where('prompt_category_id', $data['prompt_category_id']);
         }
         if (isset($data['name'])) {
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
+        }
+
+        if(isset($data['open_prompts'])) {
+            switch($data['open_prompts']) {
+                case 'open':
+                    $query->whereNull('end_at')->orWhere('end_at', '>', Carbon::now());
+                    break;
+                case 'closed':
+                    $query->where('end_at', '<', Carbon::now());
+                    break;
+                case 'any':
+                default:
+                    // Don't filter
+                    break;
+            }
         }
 
         if (isset($data['sort'])) {
