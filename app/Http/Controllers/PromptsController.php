@@ -68,10 +68,10 @@ class PromptsController extends Controller
         if(isset($data['open_prompts'])) {
             switch($data['open_prompts']) {
                 case 'open':
-                    $query->whereNull('end_at')->orWhere('end_at', '>', Carbon::now());
+                    $query->open(true);
                     break;
                 case 'closed':
-                    $query->where('end_at', '<', Carbon::now());
+                    $query->open(false);
                     break;
                 case 'any':
                 default:
