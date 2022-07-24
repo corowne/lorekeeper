@@ -392,18 +392,18 @@ class User extends Authenticatable implements MustVerifyEmail
         switch ($this->settings->birthday_setting) {
             case 0:
                 return null;
-            break;
+                break;
             case 1:
                 if (Auth::check()) {
                     return $bday->format('d M').$icon;
                 }
-            break;
+                break;
             case 2:
                 return $bday->format('d M').$icon;
-            break;
+                break;
             case 3:
                 return $bday->format('d M Y').$icon;
-            break;
+                break;
         }
     }
 
