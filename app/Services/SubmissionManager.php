@@ -150,9 +150,12 @@ class SubmissionManager extends Service {
                 foreach ($data['character_rewardable_id'] as $ckey => $c) {
                     foreach ($c as $key => $id) {
                         switch ($data['character_rewardable_type'][$ckey][$key]) {
-                            case 'Currency': $currencyIds[] = $id; break;
-                            case 'Item': $itemIds[] = $id; break;
-                            case 'LootTable': $tableIds[] = $id; break;
+                            case 'Currency': $currencyIds[] = $id;
+                                break;
+                            case 'Item': $itemIds[] = $id;
+                                break;
+                            case 'LootTable': $tableIds[] = $id;
+                                break;
                         }
                     }
                 } // Expanded character rewards
@@ -390,9 +393,12 @@ class SubmissionManager extends Service {
                 foreach ($data['character_rewardable_id'] as $ckey => $c) {
                     foreach ($c as $key => $id) {
                         switch ($data['character_rewardable_type'][$ckey][$key]) {
-                            case 'Currency': $currencyIds[] = $id; break;
-                            case 'Item': $itemIds[] = $id; break;
-                            case 'LootTable': $tableIds[] = $id; break;
+                            case 'Currency': $currencyIds[] = $id;
+                                break;
+                            case 'Item': $itemIds[] = $id;
+                                break;
+                            case 'LootTable': $tableIds[] = $id;
+                                break;
                         }
                     }
                 } // Expanded character rewards
