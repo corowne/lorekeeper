@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title') 
-    Shops :: 
+@section('title')
+    Shops ::
     @yield('shops-title')
 @endsection
 
@@ -14,5 +14,5 @@
 @endsection
 
 @section('scripts')
-@parent
+    @parent
 @endsection
