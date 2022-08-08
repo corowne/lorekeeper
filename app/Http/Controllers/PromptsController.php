@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Carbon;
-
 use App\Models\Prompt\Prompt;
 use App\Models\Prompt\PromptCategory;
 use Auth;
@@ -61,8 +59,8 @@ class PromptsController extends Controller {
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
         }
 
-        if(isset($data['open_prompts'])) {
-            switch($data['open_prompts']) {
+        if (isset($data['open_prompts'])) {
+            switch ($data['open_prompts']) {
                 case 'open':
                     $query->open(true);
                     break;

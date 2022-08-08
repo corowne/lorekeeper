@@ -108,14 +108,13 @@ class Prompt extends Model {
      * Scope a query to open or closed prompts.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param boolean $isOpen
+     * @param bool                                  $isOpen
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOpen($query, $isOpen)
-    {
-        if($isOpen) {
-            $query->where(function($query) {
+    public function scopeOpen($query, $isOpen) {
+        if ($isOpen) {
+            $query->where(function ($query) {
                 $query->whereNull('end_at')->where('start_at', '<', Carbon::now());
             })->orWhere(function ($query) {
                 $query->whereNull('start_at')->where('end_at', '>', Carbon::now());
@@ -125,14 +124,13 @@ class Prompt extends Model {
                 $query->whereNull('end_at')->whereNull('start_at');
             });
         } else {
-            $query->where(function($query) {
+            $query->where(function ($query) {
                 $query->whereNull('end_at')->where('start_at', '>', Carbon::now());
             })->orWhere(function ($query) {
                 $query->whereNull('start_at')->where('end_at', '<', Carbon::now());
             })->orWhere('start_at', '>', Carbon::now())->orWhere('end_at', '<', Carbon::now());
         }
     }
-
 
     /**
      * Scope a query to include or exclude staff-only prompts.
