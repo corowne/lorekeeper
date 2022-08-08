@@ -5,7 +5,7 @@
             refreshCharacterCategory();
         });
         $('.character-stack').on('click', function(e) {
-            if(!$(this).parent().parent().hasClass('disabled')) {
+            if (!$(this).parent().parent().hasClass('disabled')) {
                 var $parent = $(this).parent().parent().parent();
                 $parent.toggleClass('category-selected');
                 $parent.find('.character-checkbox').prop('checked', $parent.hasClass('category-selected'));

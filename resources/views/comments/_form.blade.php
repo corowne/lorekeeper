@@ -1,11 +1,11 @@
 <div class="card mt-3">
     <div class="card-body">
-        @if($errors->has('commentable_type'))
+        @if ($errors->has('commentable_type'))
             <div class="alert alert-danger" role="alert">
                 {{ $errors->first('commentable_type') }}
             </div>
         @endif
-        @if($errors->has('commentable_id'))
+        @if ($errors->has('commentable_id'))
             <div class="alert alert-danger" role="alert">
                 {{ $errors->first('commentable_id') }}
             </div>
@@ -19,7 +19,7 @@
 
             <div class="form-group">
                 <label for="message">Enter your message here:</label>
-                <textarea class="form-control @if($errors->has('message')) is-invalid @endif" name="message" rows="3"></textarea>
+                <textarea class="form-control @if ($errors->has('message')) is-invalid @endif" name="message" rows="3"></textarea>
                 <div class="invalid-feedback">
                     Your message is required.
                 </div>

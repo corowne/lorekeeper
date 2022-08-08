@@ -1,0 +1,32 @@
+name: Format (Blade)
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+    blade-formatter:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                ref: ${{ github.head_ref }}
+
+            - name: Use Node.js 16.x
+              uses: actions/setup-node@v3
+              with:
+                node-version: 16.x
+                cache: 'npm'
+
+            - name: Install packages
+              run: npm install
+
+            - name: Run blade-formatter
+              run: npm run format
+
+            - uses: EndBug/add-and-commit@v9
+              with:
+                  message: 'refactor: fix blade formatting'
+                  committer_name: github-actions[bot]
+                  committer_email: github-actions[bot]@users.noreply.github.com

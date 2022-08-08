@@ -1,5 +1,5 @@
-@if($currency)
-    {!! Form::open(['url' => 'admin/data/currencies/delete/'.$currency->id]) !!}
+@if ($currency)
+    {!! Form::open(['url' => 'admin/data/currencies/delete/' . $currency->id]) !!}
 
     <p>You are about to delete the currency <strong>{{ $currency->name }}</strong>. This is not reversible. If users who possess this currency exist, their owned currency will also be deleted.</p>
     <p>Are you sure you want to delete <strong>{{ $currency->name }}</strong>?</p>
@@ -9,6 +9,6 @@
     </div>
 
     {!! Form::close() !!}
-@else 
+@else
     Invalid currency selected.
 @endif

@@ -8,7 +8,9 @@
         <div class="col-6 col-md-2">
             <div class="logs-table-cell">
                 <h6>
-                    @if(isset($gallery->parent_id) && $gallery->parent) <i class="fas fa-caret-right"></i> @endif
+                    @if (isset($gallery->parent_id) && $gallery->parent)
+                        <i class="fas fa-caret-right"></i>
+                    @endif
                     {!! $gallery->displayName !!}
                 </h6>
             </div>
@@ -35,13 +37,13 @@
         </div>
         <div class="col-6 col-md-2 text-right">
             <div class="logs-table-cell">
-                <a href="{{ url('admin/data/galleries/edit/'.$gallery->id) }}" class="btn btn-primary">Edit</a>
+                <a href="{{ url('admin/data/galleries/edit/' . $gallery->id) }}" class="btn btn-primary">Edit</a>
             </div>
         </div>
     </div>
 
-    @if($gallery->children->count() > 0)
-        @foreach($gallery->children as $child)
+    @if ($gallery->children->count() > 0)
+        @foreach ($gallery->children as $child)
             <div class="logs-table-row">
                 @include('admin.galleries._galleries', ['gallery' => $child])
             </div>
