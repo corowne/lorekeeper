@@ -6,8 +6,7 @@ use App\Models\Character\Character;
 use App\Models\Character\CharacterBookmark;
 use DB;
 
-class BookmarkManager extends Service
-{
+class BookmarkManager extends Service {
     /*
     |--------------------------------------------------------------------------
     | Bookmark Manager
@@ -25,8 +24,7 @@ class BookmarkManager extends Service
      *
      * @return \App\Models\Character\CharacterBookmark|bool
      */
-    public function createBookmark($data, $user)
-    {
+    public function createBookmark($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -71,8 +69,7 @@ class BookmarkManager extends Service
      *
      * @return \App\Models\Character\CharacterBookmark|bool
      */
-    public function updateBookmark($data, $user)
-    {
+    public function updateBookmark($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -109,8 +106,7 @@ class BookmarkManager extends Service
      *
      * @return bool
      */
-    public function deleteBookmark($data, $user)
-    {
+    public function deleteBookmark($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -140,8 +136,7 @@ class BookmarkManager extends Service
      *
      * @return bool
      */
-    public function deleteBookmarks($character)
-    {
+    public function deleteBookmarks($character) {
         DB::beginTransaction();
 
         try {

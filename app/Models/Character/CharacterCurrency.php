@@ -4,8 +4,7 @@ namespace App\Models\Character;
 
 use App\Models\Model;
 
-class CharacterCurrency extends Model
-{
+class CharacterCurrency extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -31,16 +30,14 @@ class CharacterCurrency extends Model
     /**
      * Get the character the record belongs to.
      */
-    public function character()
-    {
+    public function character() {
         return $this->belongsTo('App\Models\Character\Character');
     }
 
     /**
      * Get the currency associated with this record.
      */
-    public function currency()
-    {
+    public function currency() {
         return $this->belongsTo('App\Models\Currency\Currency');
     }
 
@@ -55,8 +52,7 @@ class CharacterCurrency extends Model
      *
      * @return string
      */
-    public function getNameWithQuantityAttribute()
-    {
+    public function getNameWithQuantityAttribute() {
         return $this->currency->name.' [Owned: '.$this->quantity.']';
     }
 }

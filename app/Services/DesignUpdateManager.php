@@ -21,8 +21,7 @@ use Illuminate\Support\Arr;
 use Image;
 use Notifications;
 
-class DesignUpdateManager extends Service
-{
+class DesignUpdateManager extends Service {
     /*
     |--------------------------------------------------------------------------
     | Design Update Manager
@@ -40,8 +39,7 @@ class DesignUpdateManager extends Service
      *
      * @return \App\Models\Character\CharacterDesignUpdate|bool
      */
-    public function createDesignUpdateRequest($character, $user)
-    {
+    public function createDesignUpdateRequest($character, $user) {
         DB::beginTransaction();
 
         try {
@@ -102,8 +100,7 @@ class DesignUpdateManager extends Service
      *
      * @return bool
      */
-    public function saveRequestComment($data, $request)
-    {
+    public function saveRequestComment($data, $request) {
         DB::beginTransaction();
 
         try {
@@ -129,8 +126,7 @@ class DesignUpdateManager extends Service
      *
      * @return bool
      */
-    public function saveRequestImage($data, $request, $isAdmin = false)
-    {
+    public function saveRequestImage($data, $request, $isAdmin = false) {
         DB::beginTransaction();
 
         try {
@@ -243,8 +239,7 @@ class DesignUpdateManager extends Service
      *
      * @return bool
      */
-    public function saveRequestAddons($data, $request)
-    {
+    public function saveRequestAddons($data, $request) {
         DB::beginTransaction();
 
         try {
@@ -356,8 +351,7 @@ class DesignUpdateManager extends Service
      *
      * @return bool
      */
-    public function saveRequestFeatures($data, $request)
-    {
+    public function saveRequestFeatures($data, $request) {
         DB::beginTransaction();
 
         try {
@@ -432,8 +426,7 @@ class DesignUpdateManager extends Service
      *
      * @return bool
      */
-    public function submitRequest($request)
-    {
+    public function submitRequest($request) {
         DB::beginTransaction();
 
         try {
@@ -472,8 +465,7 @@ class DesignUpdateManager extends Service
      *
      * @return bool
      */
-    public function approveRequest($data, $request, $user)
-    {
+    public function approveRequest($data, $request, $user) {
         DB::beginTransaction();
 
         try {
@@ -723,8 +715,7 @@ class DesignUpdateManager extends Service
      *
      * @return bool
      */
-    public function rejectRequest($data, $request, $user, $forceReject = false, $notification = true)
-    {
+    public function rejectRequest($data, $request, $user, $forceReject = false, $notification = true) {
         DB::beginTransaction();
 
         try {
@@ -812,8 +803,7 @@ class DesignUpdateManager extends Service
      *
      * @return bool
      */
-    public function cancelRequest($data, $request, $user)
-    {
+    public function cancelRequest($data, $request, $user) {
         DB::beginTransaction();
 
         try {
@@ -861,8 +851,7 @@ class DesignUpdateManager extends Service
      *
      * @return bool
      */
-    public function deleteRequest($request)
-    {
+    public function deleteRequest($request) {
         DB::beginTransaction();
 
         try {
@@ -935,8 +924,7 @@ class DesignUpdateManager extends Service
      *
      * @return bool
      */
-    public function voteRequest($action, $request, $user)
-    {
+    public function voteRequest($action, $request, $user) {
         DB::beginTransaction();
 
         try {

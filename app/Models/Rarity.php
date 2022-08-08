@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-class Rarity extends Model
-{
+class Rarity extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -54,8 +53,7 @@ class Rarity extends Model
      *
      * @return string
      */
-    public function getDisplayNameAttribute()
-    {
+    public function getDisplayNameAttribute() {
         return '<a href="'.$this->url.'" class="display-rarity" '.($this->color ? 'style="color: #'.$this->color.';"' : '').'>'.$this->name.'</a>';
     }
 
@@ -64,8 +62,7 @@ class Rarity extends Model
      *
      * @return string
      */
-    public function getImageDirectoryAttribute()
-    {
+    public function getImageDirectoryAttribute() {
         return 'images/data/rarities';
     }
 
@@ -74,8 +71,7 @@ class Rarity extends Model
      *
      * @return string
      */
-    public function getRarityImageFileNameAttribute()
-    {
+    public function getRarityImageFileNameAttribute() {
         return $this->id.'-image.png';
     }
 
@@ -84,8 +80,7 @@ class Rarity extends Model
      *
      * @return string
      */
-    public function getRarityImagePathAttribute()
-    {
+    public function getRarityImagePathAttribute() {
         return public_path($this->imageDirectory);
     }
 
@@ -94,8 +89,7 @@ class Rarity extends Model
      *
      * @return string
      */
-    public function getRarityImageUrlAttribute()
-    {
+    public function getRarityImageUrlAttribute() {
         if (!$this->has_image) {
             return null;
         }
@@ -108,8 +102,7 @@ class Rarity extends Model
      *
      * @return string
      */
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return url('world/rarities?name='.$this->name);
     }
 
@@ -118,8 +111,7 @@ class Rarity extends Model
      *
      * @return string
      */
-    public function getSearchFeaturesUrlAttribute()
-    {
+    public function getSearchFeaturesUrlAttribute() {
         return url('world/traits?rarity_id='.$this->id);
     }
 
@@ -128,8 +120,7 @@ class Rarity extends Model
      *
      * @return string
      */
-    public function getSearchCharactersUrlAttribute()
-    {
+    public function getSearchCharactersUrlAttribute() {
         return url('masterlist?rarity_id='.$this->id);
     }
 }

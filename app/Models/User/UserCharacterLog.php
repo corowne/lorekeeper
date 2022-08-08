@@ -4,8 +4,7 @@ namespace App\Models\User;
 
 use App\Models\Model;
 
-class UserCharacterLog extends Model
-{
+class UserCharacterLog extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -38,24 +37,21 @@ class UserCharacterLog extends Model
     /**
      * Get the user who initiated the logged action.
      */
-    public function sender()
-    {
+    public function sender() {
         return $this->belongsTo('App\Models\User\User', 'sender_id');
     }
 
     /**
      * Get the user who received the logged action.
      */
-    public function recipient()
-    {
+    public function recipient() {
         return $this->belongsTo('App\Models\User\User', 'recipient_id');
     }
 
     /**
      * Get the character that is the target of the action.
      */
-    public function character()
-    {
+    public function character() {
         return $this->belongsTo('App\Models\Character\Character');
     }
 
@@ -70,8 +66,7 @@ class UserCharacterLog extends Model
      *
      * @return string
      */
-    public function getDisplaySenderAliasAttribute()
-    {
+    public function getDisplaySenderAliasAttribute() {
         return prettyProfileLink($this->sender_url);
     }
 
@@ -80,8 +75,7 @@ class UserCharacterLog extends Model
      *
      * @return string
      */
-    public function getDisplayRecipientAliasAttribute()
-    {
+    public function getDisplayRecipientAliasAttribute() {
         return prettyProfileLink($this->recipient_url);
     }
 }

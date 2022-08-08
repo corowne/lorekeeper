@@ -7,8 +7,7 @@ use App\Events\CommentDeleted;
 use App\Events\CommentUpdated;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Comment extends Model
-{
+class Comment extends Model {
     use SoftDeletes;
 
     /**
@@ -59,40 +58,35 @@ class Comment extends Model
     /**
      * The user who posted the comment.
      */
-    public function commenter()
-    {
+    public function commenter() {
         return $this->morphTo();
     }
 
     /**
      * The model that was commented upon.
      */
-    public function commentable()
-    {
+    public function commentable() {
         return $this->morphTo()->withTrashed();
     }
 
     /**
      * Returns all comments that this comment is the parent of.
      */
-    public function children()
-    {
+    public function children() {
         return $this->hasMany('App\Models\Comment', 'child_id')->withTrashed();
     }
 
     /**
      * Returns the comment to which this comment belongs to.
      */
-    public function parent()
-    {
+    public function parent() {
         return $this->belongsTo('App\Models\Comment', 'child_id')->withTrashed();
     }
 
     /**
      * Gets the likes for this comment.
      */
-    public function likes()
-    {
+    public function likes() {
         return $this->hasMany('App\Models\CommentLike');
     }
 
@@ -101,8 +95,7 @@ class Comment extends Model
      *
      * @return string
      */
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return url('comment/'.$this->id);
     }
 
@@ -111,8 +104,7 @@ class Comment extends Model
      *
      * @return string
      */
-    public function getTopCommentAttribute()
-    {
+    public function getTopCommentAttribute() {
         if (!$this->parent) {
             return $this;
         } else {

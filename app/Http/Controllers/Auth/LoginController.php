@@ -6,8 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
-class LoginController extends Controller
-{
+class LoginController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | Login Controller
@@ -31,8 +30,7 @@ class LoginController extends Controller
     /**
      * Create a new controller instance.
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this->middleware('guest')->except('logout');
     }
 
@@ -41,8 +39,7 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showLoginForm()
-    {
+    public function showLoginForm() {
         return view('auth.login', ['userCount' => User::count()]);
     }
 }

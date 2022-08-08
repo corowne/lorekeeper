@@ -7,8 +7,7 @@ use App\Models\Character\CharacterImage;
 use Illuminate\Console\Command;
 use Image;
 
-class WatermarkOldImages extends Command
-{
+class WatermarkOldImages extends Command {
     /**
      * The name and signature of the console command.
      *
@@ -26,8 +25,7 @@ class WatermarkOldImages extends Command
     /**
      * Create a new command instance.
      */
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
     }
 
@@ -36,8 +34,7 @@ class WatermarkOldImages extends Command
      *
      * @return int
      */
-    public function handle()
-    {
+    public function handle() {
         $this->info('************************');
         $this->info('* WATERMARK OLD IMAGES *');
         $this->info('************************'."\n");

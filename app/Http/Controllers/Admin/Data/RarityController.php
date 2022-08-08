@@ -8,8 +8,7 @@ use App\Services\RarityService;
 use Auth;
 use Illuminate\Http\Request;
 
-class RarityController extends Controller
-{
+class RarityController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | Admin / Rarity Controller
@@ -24,8 +23,7 @@ class RarityController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex()
-    {
+    public function getIndex() {
         return view('admin.rarities.rarities', [
             'rarities' => Rarity::orderBy('sort', 'DESC')->get(),
         ]);
@@ -36,8 +34,7 @@ class RarityController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCreateRarity()
-    {
+    public function getCreateRarity() {
         return view('admin.rarities.create_edit_rarity', [
             'rarity' => new Rarity,
         ]);
@@ -50,8 +47,7 @@ class RarityController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getEditRarity($id)
-    {
+    public function getEditRarity($id) {
         $rarity = Rarity::find($id);
         if (!$rarity) {
             abort(404);
@@ -70,8 +66,7 @@ class RarityController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCreateEditRarity(Request $request, RarityService $service, $id = null)
-    {
+    public function postCreateEditRarity(Request $request, RarityService $service, $id = null) {
         $id ? $request->validate(Rarity::$updateRules) : $request->validate(Rarity::$createRules);
         $data = $request->only([
             'name', 'color', 'description', 'image', 'remove_image',
@@ -98,8 +93,7 @@ class RarityController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getDeleteRarity($id)
-    {
+    public function getDeleteRarity($id) {
         $rarity = Rarity::find($id);
 
         return view('admin.rarities._delete_rarity', [
@@ -115,8 +109,7 @@ class RarityController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postDeleteRarity(Request $request, RarityService $service, $id)
-    {
+    public function postDeleteRarity(Request $request, RarityService $service, $id) {
         if ($id && $service->deleteRarity(Rarity::find($id))) {
             flash('Rarity deleted successfully.')->success();
         } else {
@@ -135,8 +128,7 @@ class RarityController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postSortRarity(Request $request, RarityService $service)
-    {
+    public function postSortRarity(Request $request, RarityService $service) {
         if ($service->sortRarity($request->get('sort'))) {
             flash('Rarity order updated successfully.')->success();
         } else {

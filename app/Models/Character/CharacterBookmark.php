@@ -4,8 +4,7 @@ namespace App\Models\Character;
 
 use App\Models\Model;
 
-class CharacterBookmark extends Model
-{
+class CharacterBookmark extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -53,8 +52,7 @@ class CharacterBookmark extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeVisible($query)
-    {
+    public function scopeVisible($query) {
         return $query->whereHas('character', function ($query) {
             $query->where('is_visible', 1);
         });
@@ -69,16 +67,14 @@ class CharacterBookmark extends Model
     /**
      * Get the character the record belongs to.
      */
-    public function character()
-    {
+    public function character() {
         return $this->belongsTo('App\Models\Character\Character');
     }
 
     /**
      * Get the user the record belongs to.
      */
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo('App\Models\User\User');
     }
 }

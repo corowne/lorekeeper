@@ -4,8 +4,7 @@ namespace App\Models\Character;
 
 use App\Models\Model;
 
-class Sublist extends Model
-{
+class Sublist extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -50,16 +49,14 @@ class Sublist extends Model
     /**
      * Get all character categories associated with the sub list.
      */
-    public function categories()
-    {
+    public function categories() {
         return $this->hasMany('App\Models\Character\CharacterCategory', 'masterlist_sub_id');
     }
 
     /**
      * Get all character categories associated with the sub list.
      */
-    public function species()
-    {
+    public function species() {
         return $this->hasMany('App\Models\Species\Species', 'masterlist_sub_id');
     }
 
@@ -74,8 +71,7 @@ class Sublist extends Model
      *
      * @return string
      */
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return url('sublist/'.$this->key);
     }
 }

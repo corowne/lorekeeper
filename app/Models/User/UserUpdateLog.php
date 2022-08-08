@@ -4,8 +4,7 @@ namespace App\Models\User;
 
 use App\Models\Model;
 
-class UserUpdateLog extends Model
-{
+class UserUpdateLog extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -44,16 +43,14 @@ class UserUpdateLog extends Model
     /**
      * Get the staff who updated the user.
      */
-    public function staff()
-    {
+    public function staff() {
         return $this->belongsTo('App\Models\User\User', 'staff_id');
     }
 
     /**
      * Get the user that was updated.
      */
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo('App\Models\User\User', 'user_id');
     }
 
@@ -68,8 +65,7 @@ class UserUpdateLog extends Model
      *
      * @return array
      */
-    public function getDataAttribute()
-    {
+    public function getDataAttribute() {
         return json_decode($this->attributes['data'], true);
     }
 }

@@ -6,21 +6,18 @@ namespace App\Traits;
  * Add this trait to your User model so
  * that you can retrieve the comments for a user.
  */
-trait Commenter
-{
+trait Commenter {
     /**
      * Returns all comments that this user has made.
      */
-    public function comments()
-    {
+    public function comments() {
         return $this->morphMany('App\Models\Comment', 'commenter');
     }
 
     /**
      * Returns only approved comments that this user has made.
      */
-    public function approvedComments()
-    {
+    public function approvedComments() {
         return $this->morphMany('App\Models\Comment', 'commenter')->where('approved', true);
     }
 }

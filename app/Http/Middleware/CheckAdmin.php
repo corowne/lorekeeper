@@ -4,8 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class CheckAdmin
-{
+class CheckAdmin {
     /**
      * Redirect non-admins to the home page.
      *
@@ -13,8 +12,7 @@ class CheckAdmin
      *
      * @return mixed
      */
-    public function handle($request, Closure $next)
-    {
+    public function handle($request, Closure $next) {
         if (!$request->user()->isAdmin) {
             flash('You do not have the permission to access this page.')->error();
 

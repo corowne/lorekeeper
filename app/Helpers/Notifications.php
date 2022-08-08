@@ -5,8 +5,7 @@ namespace App\Helpers;
 use App\Models\Notification;
 use DB;
 
-class Notifications
-{
+class Notifications {
     /*
     |--------------------------------------------------------------------------
     | Notifications
@@ -25,8 +24,7 @@ class Notifications
      *
      * @return bool
      */
-    public function create($type, $user, $data)
-    {
+    public function create($type, $user, $data) {
         DB::beginTransaction();
 
         try {

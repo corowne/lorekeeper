@@ -4,8 +4,7 @@ namespace App\Models\Raffle;
 
 use App\Models\Model;
 
-class RaffleTicket extends Model
-{
+class RaffleTicket extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -48,16 +47,14 @@ class RaffleTicket extends Model
     /**
      * Get the raffle this ticket is for.
      */
-    public function raffle()
-    {
+    public function raffle() {
         return $this->belongsTo('App\Models\Raffle\Raffle');
     }
 
     /**
      * Get the user who owns the raffle ticket.
      */
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo('App\Models\User\User');
     }
 
@@ -74,8 +71,7 @@ class RaffleTicket extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeWinners($query)
-    {
+    public function scopeWinners($query) {
         $query->whereNotNull('position')->orderBy('position');
     }
 
@@ -91,8 +87,7 @@ class RaffleTicket extends Model
      *
      * @return string
      */
-    public function getDisplayHolderNameAttribute()
-    {
+    public function getDisplayHolderNameAttribute() {
         if ($this->user_id) {
             return $this->user->displayName;
         }

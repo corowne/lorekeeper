@@ -4,8 +4,7 @@ namespace App\Services;
 
 use File;
 
-class FileManager extends Service
-{
+class FileManager extends Service {
     /*
     |--------------------------------------------------------------------------
     | File Manager
@@ -22,8 +21,7 @@ class FileManager extends Service
      *
      * @return bool
      */
-    public function createDirectory($dir)
-    {
+    public function createDirectory($dir) {
         if (file_exists($dir)) {
             $this->setError('Folder already exists.');
         } else {
@@ -46,8 +44,7 @@ class FileManager extends Service
      *
      * @return bool
      */
-    public function deleteDirectory($dir)
-    {
+    public function deleteDirectory($dir) {
         if (!file_exists($dir)) {
             $this->setError('error', 'Directory does not exist.');
 
@@ -73,8 +70,7 @@ class FileManager extends Service
      *
      * @return bool
      */
-    public function renameDirectory($dir, $oldName, $newName)
-    {
+    public function renameDirectory($dir, $oldName, $newName) {
         if (!file_exists($dir.'/'.$oldName)) {
             $this->setError('error', 'Directory does not exist.');
 
@@ -101,8 +97,7 @@ class FileManager extends Service
      *
      * @return bool
      */
-    public function uploadFile($file, $dir, $name, $isFileManager = true)
-    {
+    public function uploadFile($file, $dir, $name, $isFileManager = true) {
         $directory = public_path().($isFileManager ? '/files'.($dir ? '/'.$dir : '') : '/images');
         if (!file_exists($directory)) {
             $this->setError('error', 'Folder does not exist.');
@@ -120,8 +115,7 @@ class FileManager extends Service
      *
      * @return bool
      */
-    public function uploadCss($file)
-    {
+    public function uploadCss($file) {
         File::move($file, public_path().'/css/custom.css');
         chmod(public_path().'/css/custom.css', 0755);
 
@@ -135,8 +129,7 @@ class FileManager extends Service
      *
      * @return bool
      */
-    public function deleteFile($path)
-    {
+    public function deleteFile($path) {
         if (!file_exists($path)) {
             $this->setError('error', 'File does not exist.');
 
@@ -156,8 +149,7 @@ class FileManager extends Service
      *
      * @return bool
      */
-    public function moveFile($oldDir, $newDir, $name)
-    {
+    public function moveFile($oldDir, $newDir, $name) {
         if (!file_exists($oldDir.'/'.$name)) {
             $this->setError('error', 'File does not exist.');
 
@@ -181,8 +173,7 @@ class FileManager extends Service
      *
      * @return bool
      */
-    public function renameFile($dir, $oldName, $newName)
-    {
+    public function renameFile($dir, $oldName, $newName) {
         if (!file_exists($dir.'/'.$oldName)) {
             $this->setError('error', 'File does not exist.');
 

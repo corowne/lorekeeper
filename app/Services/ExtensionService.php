@@ -5,8 +5,7 @@ namespace App\Services;
 use App\Models\Notification;
 use DB;
 
-class ExtensionService extends Service
-{
+class ExtensionService extends Service {
     /*
     |--------------------------------------------------------------------------
     | Extension Service
@@ -28,8 +27,7 @@ class ExtensionService extends Service
      *
      * @return bool
      */
-    public function updateNotifications($source, $destination)
-    {
+    public function updateNotifications($source, $destination) {
         $count = Notification::where('notification_type_id', $source)->count();
         if ($count && isset($destination)) {
             DB::beginTransaction();

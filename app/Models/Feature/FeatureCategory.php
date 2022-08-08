@@ -4,8 +4,7 @@ namespace App\Models\Feature;
 
 use App\Models\Model;
 
-class FeatureCategory extends Model
-{
+class FeatureCategory extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -54,8 +53,7 @@ class FeatureCategory extends Model
      *
      * @return string
      */
-    public function getDisplayNameAttribute()
-    {
+    public function getDisplayNameAttribute() {
         return '<a href="'.$this->url.'" class="display-category">'.$this->name.'</a>';
     }
 
@@ -64,8 +62,7 @@ class FeatureCategory extends Model
      *
      * @return string
      */
-    public function getImageDirectoryAttribute()
-    {
+    public function getImageDirectoryAttribute() {
         return 'images/data/trait-categories';
     }
 
@@ -74,8 +71,7 @@ class FeatureCategory extends Model
      *
      * @return string
      */
-    public function getCategoryImageFileNameAttribute()
-    {
+    public function getCategoryImageFileNameAttribute() {
         return $this->id.'-image.png';
     }
 
@@ -84,8 +80,7 @@ class FeatureCategory extends Model
      *
      * @return string
      */
-    public function getCategoryImagePathAttribute()
-    {
+    public function getCategoryImagePathAttribute() {
         return public_path($this->imageDirectory);
     }
 
@@ -94,8 +89,7 @@ class FeatureCategory extends Model
      *
      * @return string
      */
-    public function getCategoryImageUrlAttribute()
-    {
+    public function getCategoryImageUrlAttribute() {
         if (!$this->has_image) {
             return null;
         }
@@ -108,8 +102,7 @@ class FeatureCategory extends Model
      *
      * @return string
      */
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return url('world/trait-categories?name='.$this->name);
     }
 
@@ -118,8 +111,7 @@ class FeatureCategory extends Model
      *
      * @return string
      */
-    public function getSearchUrlAttribute()
-    {
+    public function getSearchUrlAttribute() {
         return url('world/traits?feature_category_id='.$this->id);
     }
 }

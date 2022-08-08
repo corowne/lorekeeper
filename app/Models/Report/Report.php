@@ -5,8 +5,7 @@ namespace App\Models\Report;
 use App\Models\Model;
 use App\Traits\Commentable;
 
-class Report extends Model
-{
+class Report extends Model {
     use Commentable;
 
     /**
@@ -60,16 +59,14 @@ class Report extends Model
     /**
      * Get the user who made the report.
      */
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo('App\Models\User\User', 'user_id');
     }
 
     /**
      * Get the staff who processed the report.
      */
-    public function staff()
-    {
+    public function staff() {
         return $this->belongsTo('App\Models\User\User', 'staff_id');
     }
 
@@ -86,8 +83,7 @@ class Report extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeActive($query)
-    {
+    public function scopeActive($query) {
         return $query->where('status', 'Pending');
     }
 
@@ -99,8 +95,7 @@ class Report extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeAssignedToMe($query, $user)
-    {
+    public function scopeAssignedToMe($query, $user) {
         return $query->where('status', 'Assigned')->where('staff_id', $user->id);
     }
 
@@ -112,8 +107,7 @@ class Report extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeViewable($query, $user)
-    {
+    public function scopeViewable($query, $user) {
         if ($user && $user->hasPower('manage_reports')) {
             return $query;
         }
@@ -134,8 +128,7 @@ class Report extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSortOldest($query)
-    {
+    public function scopeSortOldest($query) {
         return $query->orderBy('id');
     }
 
@@ -150,8 +143,7 @@ class Report extends Model
      *
      * @return array
      */
-    public function getDataAttribute()
-    {
+    public function getDataAttribute() {
         return json_decode($this->attributes['data'], true);
     }
 
@@ -160,8 +152,7 @@ class Report extends Model
      *
      * @return string
      */
-    public function getViewUrlAttribute()
-    {
+    public function getViewUrlAttribute() {
         return url('reports/view/'.$this->id);
     }
 
@@ -170,8 +161,7 @@ class Report extends Model
      *
      * @return string
      */
-    public function getAdminUrlAttribute()
-    {
+    public function getAdminUrlAttribute() {
         return url('admin/reports/edit/'.$this->id);
     }
 
@@ -180,8 +170,7 @@ class Report extends Model
      *
      * @return string
      */
-    public function getDisplayNameAttribute()
-    {
+    public function getDisplayNameAttribute() {
         return '<a href="'.$this->viewurl.'">'.'Report #-'.$this->id.'</a>';
     }
 }

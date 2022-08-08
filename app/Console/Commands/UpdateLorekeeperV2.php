@@ -5,8 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Comment;
 use Illuminate\Console\Command;
 
-class UpdateLorekeeperV2 extends Command
-{
+class UpdateLorekeeperV2 extends Command {
     /**
      * The name and signature of the console command.
      *
@@ -24,8 +23,7 @@ class UpdateLorekeeperV2 extends Command
     /**
      * Create a new command instance.
      */
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
     }
 
@@ -34,8 +32,7 @@ class UpdateLorekeeperV2 extends Command
      *
      * @return int
      */
-    public function handle()
-    {
+    public function handle() {
         $this->info('**************************');
         $this->info('* UPDATE LOREKEEPER (V2) *');
         $this->info('**************************'."\n");

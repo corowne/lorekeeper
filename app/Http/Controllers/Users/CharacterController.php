@@ -11,8 +11,7 @@ use Auth;
 use Illuminate\Http\Request;
 use Settings;
 
-class CharacterController extends Controller
-{
+class CharacterController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | Character Controller
@@ -27,8 +26,7 @@ class CharacterController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex()
-    {
+    public function getIndex() {
         $characters = Auth::user()->characters()->with('image')->visible()->whereNull('trade_id')->get();
 
         return view('home.characters', [
@@ -41,8 +39,7 @@ class CharacterController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getMyos()
-    {
+    public function getMyos() {
         $slots = Auth::user()->myoSlots()->with('image')->get();
 
         return view('home.myos', [
@@ -57,8 +54,7 @@ class CharacterController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postSortCharacters(Request $request, CharacterManager $service)
-    {
+    public function postSortCharacters(Request $request, CharacterManager $service) {
         if ($service->sortCharacters($request->only(['sort']), Auth::user())) {
             flash('Characters sorted successfully.')->success();
 
@@ -79,8 +75,7 @@ class CharacterController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getTransfers($type = 'incoming')
-    {
+    public function getTransfers($type = 'incoming') {
         $transfers = CharacterTransfer::with('sender.rank')->with('recipient.rank')->with('character.image');
         $user = Auth::user();
 
@@ -112,8 +107,7 @@ class CharacterController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postHandleTransfer(Request $request, CharacterManager $service, $id)
-    {
+    public function postHandleTransfer(Request $request, CharacterManager $service, $id) {
         if (!Auth::check()) {
             abort(404);
         }
