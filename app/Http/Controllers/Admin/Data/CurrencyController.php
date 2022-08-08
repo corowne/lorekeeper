@@ -8,8 +8,7 @@ use App\Services\CurrencyService;
 use Auth;
 use Illuminate\Http\Request;
 
-class CurrencyController extends Controller
-{
+class CurrencyController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | Admin / Currency Controller
@@ -24,8 +23,7 @@ class CurrencyController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex()
-    {
+    public function getIndex() {
         return view('admin.currencies.currencies', [
             'currencies' => Currency::paginate(30),
         ]);
@@ -36,8 +34,7 @@ class CurrencyController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCreateCurrency()
-    {
+    public function getCreateCurrency() {
         return view('admin.currencies.create_edit_currency', [
             'currency' => new Currency,
         ]);
@@ -50,8 +47,7 @@ class CurrencyController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getEditCurrency($id)
-    {
+    public function getEditCurrency($id) {
         $currency = Currency::find($id);
         if (!$currency) {
             abort(404);
@@ -70,8 +66,7 @@ class CurrencyController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCreateEditCurrency(Request $request, CurrencyService $service, $id = null)
-    {
+    public function postCreateEditCurrency(Request $request, CurrencyService $service, $id = null) {
         $id ? $request->validate(Currency::$updateRules) : $request->validate(Currency::$createRules);
         $data = $request->only([
             'is_user_owned', 'is_character_owned',
@@ -101,8 +96,7 @@ class CurrencyController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getDeleteCurrency($id)
-    {
+    public function getDeleteCurrency($id) {
         $currency = Currency::find($id);
 
         return view('admin.currencies._delete_currency', [
@@ -118,8 +112,7 @@ class CurrencyController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postDeleteCurrency(Request $request, CurrencyService $service, $id)
-    {
+    public function postDeleteCurrency(Request $request, CurrencyService $service, $id) {
         if ($id && $service->deleteCurrency(Currency::find($id), Auth::user())) {
             flash('Currency deleted successfully.')->success();
         } else {
@@ -136,8 +129,7 @@ class CurrencyController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getSort()
-    {
+    public function getSort() {
         return view('admin.currencies.sort', [
             'userCurrencies'      => Currency::where('is_user_owned', 1)->orderBy('sort_user', 'DESC')->get(),
             'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->get(),
@@ -152,8 +144,7 @@ class CurrencyController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postSortCurrency(Request $request, CurrencyService $service, $type)
-    {
+    public function postSortCurrency(Request $request, CurrencyService $service, $type) {
         if ($service->sortCurrency($request->get('sort'), $type)) {
             flash('Currency order updated successfully.')->success();
         } else {

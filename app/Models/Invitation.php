@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-class Invitation extends Model
-{
+class Invitation extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -35,16 +34,14 @@ class Invitation extends Model
     /**
      * Get the user who generated the invitation code.
      */
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo('App\Models\User\User');
     }
 
     /**
      * Get the user who created their account using the invitation code.
      */
-    public function recipient()
-    {
+    public function recipient() {
         return $this->belongsTo('App\Models\User\User', 'recipient_id');
     }
 }

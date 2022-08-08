@@ -16,8 +16,7 @@ use Auth;
 use Illuminate\Http\Request;
 use Settings;
 
-class BrowseController extends Controller
-{
+class BrowseController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | Browse Controller
@@ -32,8 +31,7 @@ class BrowseController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUsers(Request $request)
-    {
+    public function getUsers(Request $request) {
         $query = User::visible()->join('ranks', 'users.rank_id', '=', 'ranks.id')->select('ranks.name AS rank_name', 'users.*');
         $sort = $request->only(['sort']);
 
@@ -80,8 +78,7 @@ class BrowseController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getDeactivated(Request $request)
-    {
+    public function getDeactivated(Request $request) {
         $canView = false;
         $key = Settings::get('deactivated_key');
 
@@ -112,8 +109,7 @@ class BrowseController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getBlacklist(Request $request)
-    {
+    public function getBlacklist(Request $request) {
         $canView = false;
         $key = Settings::get('blacklist_key');
 
@@ -144,8 +140,7 @@ class BrowseController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCharacters(Request $request)
-    {
+    public function getCharacters(Request $request) {
         $query = Character::with('user.rank')->with('image.features')->with('rarity')->with('image.species')->myo(0);
         $imageQuery = CharacterImage::images(Auth::check() ? Auth::user() : null)->with('features')->with('rarity')->with('species')->with('features');
 
@@ -153,10 +148,9 @@ class BrowseController extends Controller
             $subCategories = [];
         }
         $subSpecies = [];
-        {   foreach ($sublists as $sublist) {
+        foreach ($sublists as $sublist) {
             $subCategories = array_merge($subCategories, $sublist->categories->pluck('id')->toArray());
             $subSpecies = array_merge($subSpecies, $sublist->species->pluck('id')->toArray());
-        }
         }
 
         $query->whereNotIn('character_category_id', $subCategories);
@@ -256,29 +250,29 @@ class BrowseController extends Controller
 
         if ($request->get('is_gift_art_allowed')) {
             switch ($request->get('is_gift_art_allowed')) {
-            case 1:
-                $query->where('is_gift_art_allowed', 1);
-            break;
-            case 2:
-                $query->where('is_gift_art_allowed', 2);
-            break;
-            case 3:
-                $query->where('is_gift_art_allowed', '>=', 1);
-            break;
-        }
+                case 1:
+                    $query->where('is_gift_art_allowed', 1);
+                    break;
+                case 2:
+                    $query->where('is_gift_art_allowed', 2);
+                    break;
+                case 3:
+                    $query->where('is_gift_art_allowed', '>=', 1);
+                    break;
+            }
         }
         if ($request->get('is_gift_writing_allowed')) {
             switch ($request->get('is_gift_writing_allowed')) {
-            case 1:
-                $query->where('is_gift_writing_allowed', 1);
-            break;
-            case 2:
-                $query->where('is_gift_writing_allowed', 2);
-            break;
-            case 3:
-                $query->where('is_gift_writing_allowed', '>=', 1);
-            break;
-        }
+                case 1:
+                    $query->where('is_gift_writing_allowed', 1);
+                    break;
+                case 2:
+                    $query->where('is_gift_writing_allowed', 2);
+                    break;
+                case 3:
+                    $query->where('is_gift_writing_allowed', '>=', 1);
+                    break;
+            }
         }
 
         switch ($request->get('sort')) {
@@ -326,8 +320,7 @@ class BrowseController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getMyos(Request $request)
-    {
+    public function getMyos(Request $request) {
         $query = Character::with('user.rank')->with('image.features')->with('rarity')->with('image.species')->myo(1);
 
         $imageQuery = CharacterImage::images(Auth::check() ? Auth::user() : null)->with('features')->with('rarity')->with('species')->with('features');
@@ -455,8 +448,7 @@ class BrowseController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getSublist(Request $request, $key)
-    {
+    public function getSublist(Request $request, $key) {
         $query = Character::with('user.rank')->with('image.features')->with('rarity')->with('image.species')->myo(0);
         $imageQuery = CharacterImage::with('features')->with('rarity')->with('species')->with('features');
 
@@ -498,29 +490,29 @@ class BrowseController extends Controller
         }
         if ($request->get('is_gift_art_allowed')) {
             switch ($request->get('is_gift_art_allowed')) {
-            case 1:
-                $query->where('is_gift_art_allowed', 1);
-            break;
-            case 2:
-                $query->where('is_gift_art_allowed', 2);
-            break;
-            case 3:
-                $query->where('is_gift_art_allowed', '>=', 1);
-            break;
-        }
+                case 1:
+                    $query->where('is_gift_art_allowed', 1);
+                    break;
+                case 2:
+                    $query->where('is_gift_art_allowed', 2);
+                    break;
+                case 3:
+                    $query->where('is_gift_art_allowed', '>=', 1);
+                    break;
+            }
         }
         if ($request->get('is_gift_writing_allowed')) {
             switch ($request->get('is_gift_writing_allowed')) {
-            case 1:
-                $query->where('is_gift_writing_allowed', 1);
-            break;
-            case 2:
-                $query->where('is_gift_writing_allowed', 2);
-            break;
-            case 3:
-                $query->where('is_gift_writing_allowed', '>=', 1);
-            break;
-        }
+                case 1:
+                    $query->where('is_gift_writing_allowed', 1);
+                    break;
+                case 2:
+                    $query->where('is_gift_writing_allowed', 2);
+                    break;
+                case 3:
+                    $query->where('is_gift_writing_allowed', '>=', 1);
+                    break;
+            }
         }
         if ($request->get('is_sellable')) {
             $query->where('is_sellable', 1);

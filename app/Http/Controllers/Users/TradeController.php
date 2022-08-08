@@ -13,8 +13,7 @@ use App\Services\TradeManager;
 use Auth;
 use Illuminate\Http\Request;
 
-class TradeController extends Controller
-{
+class TradeController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | Trade Controller
@@ -31,8 +30,7 @@ class TradeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex($status = 'open')
-    {
+    public function getIndex($status = 'open') {
         $user = Auth::user();
         $trades = Trade::with('recipient')->with('sender')->with('staff')->where(function ($query) {
             $query->where('recipient_id', Auth::user()->id)->orWhere('sender_id', Auth::user()->id);
@@ -68,8 +66,7 @@ class TradeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getTrade($id)
-    {
+    public function getTrade($id) {
         $trade = Trade::find($id);
 
         if ($trade->status != 'Completed' && !Auth::user()->hasPower('manage_characters') && !($trade->sender_id == Auth::user()->id || $trade->recipient_id == Auth::user()->id)) {
@@ -94,8 +91,7 @@ class TradeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCreateTrade()
-    {
+    public function getCreateTrade() {
         $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)
         ->get()
         ->filter(function ($userItem) {
@@ -121,8 +117,7 @@ class TradeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getEditTrade($id)
-    {
+    public function getEditTrade($id) {
         $trade = Trade::where('id', $id)->where(function ($query) {
             $query->where('recipient_id', Auth::user()->id)->orWhere('sender_id', Auth::user()->id);
         })->where('status', 'Open')->first();
@@ -158,8 +153,7 @@ class TradeController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCreateTrade(Request $request, TradeManager $service)
-    {
+    public function postCreateTrade(Request $request, TradeManager $service) {
         if ($trade = $service->createTrade($request->only(['recipient_id', 'comments', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity', 'character_id']), Auth::user())) {
             flash('Trade created successfully.')->success();
 
@@ -181,8 +175,7 @@ class TradeController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postEditTrade(Request $request, TradeManager $service, $id)
-    {
+    public function postEditTrade(Request $request, TradeManager $service, $id) {
         if ($trade = $service->editTrade($request->only(['comments', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity', 'character_id']) + ['id' => $id], Auth::user())) {
             flash('Trade offer edited successfully.')->success();
         } else {
@@ -201,8 +194,7 @@ class TradeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getConfirmOffer($id)
-    {
+    public function getConfirmOffer($id) {
         $trade = Trade::where('id', $id)->where(function ($query) {
             $query->where('recipient_id', Auth::user()->id)->orWhere('sender_id', Auth::user()->id);
         })->where('status', 'Open')->first();
@@ -220,8 +212,7 @@ class TradeController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postConfirmOffer(Request $request, TradeManager $service, $id)
-    {
+    public function postConfirmOffer(Request $request, TradeManager $service, $id) {
         if ($trade = $service->confirmOffer(['id' => $id], Auth::user())) {
             flash('Trade offer confirmation edited successfully.')->success();
 
@@ -242,8 +233,7 @@ class TradeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getConfirmTrade($id)
-    {
+    public function getConfirmTrade($id) {
         $trade = Trade::where('id', $id)->where(function ($query) {
             $query->where('recipient_id', Auth::user()->id)->orWhere('sender_id', Auth::user()->id);
         })->where('status', 'Open')->first();
@@ -261,8 +251,7 @@ class TradeController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postConfirmTrade(Request $request, TradeManager $service, $id)
-    {
+    public function postConfirmTrade(Request $request, TradeManager $service, $id) {
         if ($trade = $service->confirmTrade(['id' => $id], Auth::user())) {
             flash('Trade confirmed successfully.')->success();
 
@@ -283,8 +272,7 @@ class TradeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCancelTrade($id)
-    {
+    public function getCancelTrade($id) {
         $trade = Trade::where('id', $id)->where(function ($query) {
             $query->where('recipient_id', Auth::user()->id)->orWhere('sender_id', Auth::user()->id);
         })->where('status', 'Open')->first();
@@ -302,8 +290,7 @@ class TradeController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCancelTrade(Request $request, TradeManager $service, $id)
-    {
+    public function postCancelTrade(Request $request, TradeManager $service, $id) {
         if ($trade = $service->cancelTrade(['id' => $id], Auth::user())) {
             flash('Trade canceled successfully.')->success();
 

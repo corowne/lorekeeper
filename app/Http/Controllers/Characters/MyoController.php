@@ -13,8 +13,7 @@ use Illuminate\Http\Request;
 use Route;
 use Settings;
 
-class MyoController extends Controller
-{
+class MyoController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | MYO Slot Controller
@@ -27,8 +26,7 @@ class MyoController extends Controller
     /**
      * Create a new controller instance.
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this->middleware(function ($request, $next) {
             $id = Route::current()->parameter('id');
             $check = Character::where('id', $id)->first();
@@ -61,8 +59,7 @@ class MyoController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCharacter($id)
-    {
+    public function getCharacter($id) {
         return view('character.myo.character', [
             'character' => $this->character,
         ]);
@@ -75,8 +72,7 @@ class MyoController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCharacterProfile($id)
-    {
+    public function getCharacterProfile($id) {
         return view('character.profile', [
             'character' => $this->character,
         ]);
@@ -89,8 +85,7 @@ class MyoController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getEditCharacterProfile($id)
-    {
+    public function getEditCharacterProfile($id) {
         if (!Auth::check()) {
             abort(404);
         }
@@ -114,8 +109,7 @@ class MyoController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postEditCharacterProfile(Request $request, CharacterManager $service, $id)
-    {
+    public function postEditCharacterProfile(Request $request, CharacterManager $service, $id) {
         if (!Auth::check()) {
             abort(404);
         }
@@ -144,8 +138,7 @@ class MyoController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCharacterOwnershipLogs($id)
-    {
+    public function getCharacterOwnershipLogs($id) {
         return view('character.ownership_logs', [
             'character' => $this->character,
             'logs'      => $this->character->getOwnershipLogs(0),
@@ -159,8 +152,7 @@ class MyoController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCharacterLogs($id)
-    {
+    public function getCharacterLogs($id) {
         return view('character.character_logs', [
             'character' => $this->character,
             'logs'      => $this->character->getCharacterLogs(),
@@ -174,8 +166,7 @@ class MyoController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCharacterSubmissions($id)
-    {
+    public function getCharacterSubmissions($id) {
         return view('character.submission_logs', [
             'character' => $this->character,
             'logs'      => $this->character->getSubmissions(),
@@ -189,8 +180,7 @@ class MyoController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getTransfer($id)
-    {
+    public function getTransfer($id) {
         if (!Auth::check()) {
             abort(404);
         }
@@ -218,8 +208,7 @@ class MyoController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postTransfer(Request $request, CharacterManager $service, $id)
-    {
+    public function postTransfer(Request $request, CharacterManager $service, $id) {
         if (!Auth::check()) {
             abort(404);
         }
@@ -244,8 +233,7 @@ class MyoController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCancelTransfer(Request $request, CharacterManager $service, $id, $id2)
-    {
+    public function postCancelTransfer(Request $request, CharacterManager $service, $id, $id2) {
         if (!Auth::check()) {
             abort(404);
         }
@@ -268,8 +256,7 @@ class MyoController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCharacterApproval($id)
-    {
+    public function getCharacterApproval($id) {
         if (!Auth::check() || $this->character->user_id != Auth::user()->id) {
             abort(404);
         }
@@ -289,8 +276,7 @@ class MyoController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCharacterApproval(DesignUpdateManager $service, $id)
-    {
+    public function postCharacterApproval(DesignUpdateManager $service, $id) {
         if (!Auth::check() || $this->character->user_id != Auth::user()->id) {
             abort(404);
         }

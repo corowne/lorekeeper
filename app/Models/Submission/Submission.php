@@ -5,8 +5,7 @@ namespace App\Models\Submission;
 use App\Models\Model;
 use Carbon\Carbon;
 
-class Submission extends Model
-{
+class Submission extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -58,32 +57,28 @@ class Submission extends Model
     /**
      * Get the prompt this submission is for.
      */
-    public function prompt()
-    {
+    public function prompt() {
         return $this->belongsTo('App\Models\Prompt\Prompt', 'prompt_id');
     }
 
     /**
      * Get the user who made the submission.
      */
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo('App\Models\User\User', 'user_id');
     }
 
     /**
      * Get the staff who processed the submission.
      */
-    public function staff()
-    {
+    public function staff() {
         return $this->belongsTo('App\Models\User\User', 'staff_id');
     }
 
     /**
      * Get the characters attached to the submission.
      */
-    public function characters()
-    {
+    public function characters() {
         return $this->hasMany('App\Models\Submission\SubmissionCharacter', 'submission_id');
     }
 
@@ -100,8 +95,7 @@ class Submission extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeActive($query)
-    {
+    public function scopeActive($query) {
         return $query->where('status', 'Pending');
     }
 
@@ -113,8 +107,7 @@ class Submission extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeViewable($query, $user = null)
-    {
+    public function scopeViewable($query, $user = null) {
         $forbiddenSubmissions = $this
         ->whereHas('prompt', function ($q) {
             $q->where('hide_submissions', 1)->whereNotNull('end_at')->where('end_at', '>', Carbon::now());
@@ -144,8 +137,7 @@ class Submission extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSortOldest($query)
-    {
+    public function scopeSortOldest($query) {
         return $query->orderBy('id');
     }
 
@@ -156,8 +148,7 @@ class Submission extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSortNewest($query)
-    {
+    public function scopeSortNewest($query) {
         return $query->orderBy('id', 'DESC');
     }
 
@@ -172,8 +163,7 @@ class Submission extends Model
      *
      * @return array
      */
-    public function getDataAttribute()
-    {
+    public function getDataAttribute() {
         return json_decode($this->attributes['data'], true);
     }
 
@@ -184,8 +174,7 @@ class Submission extends Model
      *
      * @return array
      */
-    public function getInventory($user)
-    {
+    public function getInventory($user) {
         return $this->data && isset($this->data['user']['user_items']) ? $this->data['user']['user_items'] : [];
 
         return $inventory;
@@ -198,8 +187,7 @@ class Submission extends Model
      *
      * @return array
      */
-    public function getCurrencies($user)
-    {
+    public function getCurrencies($user) {
         return $this->data && isset($this->data['user']) && isset($this->data['user']['currencies']) ? $this->data['user']['currencies'] : [];
     }
 
@@ -208,8 +196,7 @@ class Submission extends Model
      *
      * @return string
      */
-    public function getViewUrlAttribute()
-    {
+    public function getViewUrlAttribute() {
         return url(($this->prompt_id ? 'submissions' : 'claims').'/view/'.$this->id);
     }
 
@@ -218,8 +205,7 @@ class Submission extends Model
      *
      * @return string
      */
-    public function getAdminUrlAttribute()
-    {
+    public function getAdminUrlAttribute() {
         return url('admin/'.($this->prompt_id ? 'submissions' : 'claims').'/edit/'.$this->id);
     }
 
@@ -228,8 +214,7 @@ class Submission extends Model
      *
      * @return array
      */
-    public function getRewardsAttribute()
-    {
+    public function getRewardsAttribute() {
         if (isset($this->data['rewards'])) {
             $assets = parseAssetData($this->data['rewards']);
         } else {

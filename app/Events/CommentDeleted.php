@@ -5,8 +5,7 @@ namespace App\Events;
 use App\Models\Comment;
 use Illuminate\Queue\SerializesModels;
 
-class CommentDeleted
-{
+class CommentDeleted {
     use SerializesModels;
 
     public $comment;
@@ -14,8 +13,7 @@ class CommentDeleted
     /**
      * Create a new event instance.
      */
-    public function __construct(Comment $comment)
-    {
+    public function __construct(Comment $comment) {
         $this->comment = $comment;
     }
 }

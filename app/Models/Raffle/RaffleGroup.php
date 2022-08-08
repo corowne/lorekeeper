@@ -4,8 +4,7 @@ namespace App\Models\Raffle;
 
 use App\Models\Model;
 
-class RaffleGroup extends Model
-{
+class RaffleGroup extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -37,8 +36,7 @@ class RaffleGroup extends Model
     /**
      * Get the raffles in this group.
      */
-    public function raffles()
-    {
+    public function raffles() {
         return $this->hasMany('App\Models\Raffle\Raffle', 'group_id')->orderBy('order');
     }
 }

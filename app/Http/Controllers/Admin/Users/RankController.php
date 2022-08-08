@@ -9,15 +9,13 @@ use Auth;
 use Config;
 use Illuminate\Http\Request;
 
-class RankController extends Controller
-{
+class RankController extends Controller {
     /**
      * Show the rank index.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex()
-    {
+    public function getIndex() {
         return view('admin.users.ranks', [
             'ranks' => Rank::orderBy('sort', 'DESC')->get(),
         ]);
@@ -28,8 +26,7 @@ class RankController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCreateRank()
-    {
+    public function getCreateRank() {
         return view('admin.users._create_edit_rank', [
             'rank'       => new Rank,
             'rankPowers' => null,
@@ -45,8 +42,7 @@ class RankController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getEditRank($id)
-    {
+    public function getEditRank($id) {
         $rank = Rank::find($id);
         $editable = Auth::user()->canEditRank($rank);
         if (!$editable) {
@@ -61,8 +57,7 @@ class RankController extends Controller
         ]);
     }
 
-    public function postCreateEditRank(Request $request, RankService $service, $id = null)
-    {
+    public function postCreateEditRank(Request $request, RankService $service, $id = null) {
         $request->validate(Rank::$rules);
         $data = $request->only(['name', 'description', 'color', 'powers', 'icon']);
         if ($id && $service->updateRank(Rank::find($id), $data, Auth::user())) {
@@ -85,8 +80,7 @@ class RankController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getDeleteRank($id)
-    {
+    public function getDeleteRank($id) {
         $rank = Rank::find($id);
         $editable = Auth::user()->canEditRank($rank);
         if (!$editable) {
@@ -99,8 +93,7 @@ class RankController extends Controller
         ]);
     }
 
-    public function postDeleteRank(Request $request, RankService $service, $id)
-    {
+    public function postDeleteRank(Request $request, RankService $service, $id) {
         if ($id && $service->deleteRank(Rank::find($id), Auth::user())) {
             flash('Rank deleted successfully.')->success();
         } else {
@@ -112,8 +105,7 @@ class RankController extends Controller
         return redirect()->back();
     }
 
-    public function postSortRanks(Request $request, RankService $service)
-    {
+    public function postSortRanks(Request $request, RankService $service) {
         if ($service->sortRanks($request->get('sort'), Auth::user())) {
             flash('Ranks sorted successfully.')->success();
         } else {

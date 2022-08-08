@@ -7,8 +7,7 @@ use App\Models\Raffle\RaffleGroup;
 use DB;
 use Illuminate\Support\Arr;
 
-class RaffleService extends Service
-{
+class RaffleService extends Service {
     /*
     |--------------------------------------------------------------------------
     | Raffle Service
@@ -25,8 +24,7 @@ class RaffleService extends Service
      *
      * @return \App\Models\Raffle\Raffle
      */
-    public function createRaffle($data)
-    {
+    public function createRaffle($data) {
         DB::beginTransaction();
         if (!isset($data['is_active'])) {
             $data['is_active'] = 0;
@@ -45,8 +43,7 @@ class RaffleService extends Service
      *
      * @return \App\Models\Raffle\Raffle
      */
-    public function updateRaffle($data, $raffle)
-    {
+    public function updateRaffle($data, $raffle) {
         DB::beginTransaction();
         if (!isset($data['is_active'])) {
             $data['is_active'] = 0;
@@ -64,8 +61,7 @@ class RaffleService extends Service
      *
      * @return bool
      */
-    public function deleteRaffle($raffle)
-    {
+    public function deleteRaffle($raffle) {
         DB::beginTransaction();
         foreach ($raffle->tickets as $ticket) {
             $ticket->delete();
@@ -83,8 +79,7 @@ class RaffleService extends Service
      *
      * @return \App\Models\Raffle\RaffleGroup
      */
-    public function createRaffleGroup($data)
-    {
+    public function createRaffleGroup($data) {
         DB::beginTransaction();
         if (!isset($data['is_active'])) {
             $data['is_active'] = 0;
@@ -103,8 +98,7 @@ class RaffleService extends Service
      *
      * @return \App\Models\Raffle\Raffle
      */
-    public function updateRaffleGroup($data, $group)
-    {
+    public function updateRaffleGroup($data, $group) {
         DB::beginTransaction();
         if (!isset($data['is_active'])) {
             $data['is_active'] = 0;
@@ -125,8 +119,7 @@ class RaffleService extends Service
      *
      * @return bool
      */
-    public function deleteRaffleGroup($group)
-    {
+    public function deleteRaffleGroup($group) {
         DB::beginTransaction();
         foreach ($group->raffles as $raffle) {
             $raffle->update(['group_id' => null]);

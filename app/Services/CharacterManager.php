@@ -20,8 +20,7 @@ use Image;
 use Notifications;
 use Settings;
 
-class CharacterManager extends Service
-{
+class CharacterManager extends Service {
     /*
     |--------------------------------------------------------------------------
     | Character Manager
@@ -38,8 +37,7 @@ class CharacterManager extends Service
      *
      * @return string
      */
-    public function pullNumber($categoryId)
-    {
+    public function pullNumber($categoryId) {
         $digits = Config::get('lorekeeper.settings.character_number_digits');
         $result = str_pad('', $digits, '0'); // A default value, in case
         $number = 0;
@@ -78,8 +76,7 @@ class CharacterManager extends Service
      *
      * @return \App\Models\Character\Character|bool
      */
-    public function createCharacter($data, $user, $isMyo = false)
-    {
+    public function createCharacter($data, $user, $isMyo = false) {
         DB::beginTransaction();
 
         try {
@@ -187,8 +184,7 @@ class CharacterManager extends Service
      *
      * @param \App\Models\Character\CharacterImage $characterImage
      */
-    public function processImage($characterImage)
-    {
+    public function processImage($characterImage) {
         // Trim transparent parts of image.
         $image = Image::make($characterImage->imagePath.'/'.$characterImage->imageFileName)->trim('transparent');
 
@@ -285,8 +281,7 @@ class CharacterManager extends Service
      * @param \App\Models\Character\CharacterImage $characterImage
      * @param mixed                                $isMyo
      */
-    public function cropThumbnail($points, $characterImage, $isMyo = false)
-    {
+    public function cropThumbnail($points, $characterImage, $isMyo = false) {
         $image = Image::make($characterImage->imagePath.'/'.$characterImage->imageFileName);
 
         if (Config::get('lorekeeper.settings.masterlist_image_format') != 'png' && Config::get('lorekeeper.settings.masterlist_image_format') != null && Config::get('lorekeeper.settings.masterlist_image_background') != null) {
@@ -349,24 +344,24 @@ class CharacterManager extends Service
                 $image->insert($watermark, 'center');
             }
             // Now shrink the image
-            {
-                $imageWidth = $image->width();
-                $imageHeight = $image->height();
 
-                if ($imageWidth > $imageHeight) {
-                    // Landscape
-                    $image->resize(null, $cropWidth, function ($constraint) {
-                        $constraint->aspectRatio();
-                        $constraint->upsize();
-                    });
-                } else {
-                    // Portrait
-                    $image->resize($cropHeight, null, function ($constraint) {
-                        $constraint->aspectRatio();
-                        $constraint->upsize();
-                    });
-                }
+            $imageWidth = $image->width();
+            $imageHeight = $image->height();
+
+            if ($imageWidth > $imageHeight) {
+                // Landscape
+                $image->resize(null, $cropWidth, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+            } else {
+                // Portrait
+                $image->resize($cropHeight, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
             }
+
             if (Config::get('lorekeeper.settings.masterlist_image_automation') == 0) {
                 $xOffset = 0 + (($points['x0'] - $trimOffsetX) > 0 ? ($points['x0'] - $trimOffsetX) : 0);
                 if (($xOffset + $cropWidth) > $image->width()) {
@@ -424,8 +419,7 @@ class CharacterManager extends Service
      *
      * @return bool
      */
-    public function createLog($senderId, $senderUrl, $recipientId, $recipientUrl, $characterId, $type, $data, $logType, $isUpdate = false, $oldData = null, $newData = null)
-    {
+    public function createLog($senderId, $senderUrl, $recipientId, $recipientUrl, $characterId, $type, $data, $logType, $isUpdate = false, $oldData = null, $newData = null) {
         return DB::table($logType == 'character' ? 'character_log' : 'user_character_log')->insert(
             [
                 'sender_id'     => $senderId,
@@ -457,8 +451,7 @@ class CharacterManager extends Service
      *
      * @return \App\Models\Character\Character|bool
      */
-    public function createImage($data, $character, $user)
-    {
+    public function createImage($data, $character, $user) {
         DB::beginTransaction();
 
         try {
@@ -533,8 +526,7 @@ class CharacterManager extends Service
      *
      * @return bool
      */
-    public function updateImageFeatures($data, $image, $user)
-    {
+    public function updateImageFeatures($data, $image, $user) {
         DB::beginTransaction();
 
         try {
@@ -607,8 +599,7 @@ class CharacterManager extends Service
      *
      * @return bool
      */
-    public function updateImageNotes($data, $image, $user)
-    {
+    public function updateImageNotes($data, $image, $user) {
         DB::beginTransaction();
 
         try {
@@ -644,8 +635,7 @@ class CharacterManager extends Service
      *
      * @return bool
      */
-    public function updateImageCredits($data, $image, $user)
-    {
+    public function updateImageCredits($data, $image, $user) {
         DB::beginTransaction();
 
         try {
@@ -737,8 +727,7 @@ class CharacterManager extends Service
      *
      * @return bool
      */
-    public function reuploadImage($data, $image, $user)
-    {
+    public function reuploadImage($data, $image, $user) {
         DB::beginTransaction();
 
         try {
@@ -800,8 +789,7 @@ class CharacterManager extends Service
      *
      * @return bool
      */
-    public function deleteImage($image, $user, $forceDelete = false)
-    {
+    public function deleteImage($image, $user, $forceDelete = false) {
         DB::beginTransaction();
 
         try {
@@ -845,8 +833,7 @@ class CharacterManager extends Service
      *
      * @return bool
      */
-    public function updateImageSettings($data, $image, $user)
-    {
+    public function updateImageSettings($data, $image, $user) {
         DB::beginTransaction();
 
         try {
@@ -882,8 +869,7 @@ class CharacterManager extends Service
      *
      * @return bool
      */
-    public function updateActiveImage($image, $user)
-    {
+    public function updateActiveImage($image, $user) {
         DB::beginTransaction();
 
         try {
@@ -922,8 +908,7 @@ class CharacterManager extends Service
      *
      * @return bool
      */
-    public function sortImages($data, $character, $user)
-    {
+    public function sortImages($data, $character, $user) {
         DB::beginTransaction();
 
         try {
@@ -970,8 +955,7 @@ class CharacterManager extends Service
      *
      * @return bool
      */
-    public function sortCharacters($data, $user)
-    {
+    public function sortCharacters($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -1006,8 +990,7 @@ class CharacterManager extends Service
      *
      * @return bool
      */
-    public function updateCharacterStats($data, $character, $user)
-    {
+    public function updateCharacterStats($data, $character, $user) {
         DB::beginTransaction();
 
         try {
@@ -1110,8 +1093,7 @@ class CharacterManager extends Service
      *
      * @return bool
      */
-    public function updateCharacterDescription($data, $character, $user)
-    {
+    public function updateCharacterDescription($data, $character, $user) {
         DB::beginTransaction();
 
         try {
@@ -1147,8 +1129,7 @@ class CharacterManager extends Service
      *
      * @return bool
      */
-    public function updateCharacterSettings($data, $character, $user)
-    {
+    public function updateCharacterSettings($data, $character, $user) {
         DB::beginTransaction();
 
         try {
@@ -1183,8 +1164,7 @@ class CharacterManager extends Service
      *
      * @return bool
      */
-    public function updateCharacterProfile($data, $character, $user, $isAdmin = false)
-    {
+    public function updateCharacterProfile($data, $character, $user, $isAdmin = false) {
         DB::beginTransaction();
 
         try {
@@ -1269,8 +1249,7 @@ class CharacterManager extends Service
      *
      * @return bool
      */
-    public function deleteCharacter($character, $user)
-    {
+    public function deleteCharacter($character, $user) {
         DB::beginTransaction();
 
         try {
@@ -1320,8 +1299,7 @@ class CharacterManager extends Service
      *
      * @return bool
      */
-    public function createTransfer($data, $character, $user)
-    {
+    public function createTransfer($data, $character, $user) {
         DB::beginTransaction();
 
         try {
@@ -1397,8 +1375,7 @@ class CharacterManager extends Service
      *
      * @return bool
      */
-    public function adminTransfer($data, $character, $user)
-    {
+    public function adminTransfer($data, $character, $user) {
         DB::beginTransaction();
 
         try {
@@ -1479,8 +1456,7 @@ class CharacterManager extends Service
      *
      * @return bool
      */
-    public function processTransfer($data, $user)
-    {
+    public function processTransfer($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -1548,8 +1524,7 @@ class CharacterManager extends Service
      *
      * @return bool
      */
-    public function cancelTransfer($data, $user)
-    {
+    public function cancelTransfer($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -1585,8 +1560,7 @@ class CharacterManager extends Service
      *
      * @return bool
      */
-    public function processTransferQueue($data, $user)
-    {
+    public function processTransferQueue($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -1683,8 +1657,7 @@ class CharacterManager extends Service
      * @param int                             $cooldown
      * @param string                          $logType
      */
-    public function moveCharacter($character, $recipient, $data, $cooldown = -1, $logType = null)
-    {
+    public function moveCharacter($character, $recipient, $data, $cooldown = -1, $logType = null) {
         $sender = $character->user;
         if (!$sender) {
             $sender = $character->owner_url;
@@ -1768,8 +1741,7 @@ class CharacterManager extends Service
      *
      * @return \App\Models\Character\Character|bool
      */
-    private function handleCharacter($data, $isMyo = false)
-    {
+    private function handleCharacter($data, $isMyo = false) {
         try {
             if ($isMyo) {
                 $data['character_category_id'] = null;
@@ -1824,8 +1796,7 @@ class CharacterManager extends Service
      * @return \App\Models\Character\Character           $character
      * @return \App\Models\Character\CharacterImage|bool
      */
-    private function handleCharacterImage($data, $character, $isMyo = false)
-    {
+    private function handleCharacterImage($data, $character, $isMyo = false) {
         try {
             if ($isMyo) {
                 $data['species_id'] = (isset($data['species_id']) && $data['species_id']) ? $data['species_id'] : null;
@@ -1952,8 +1923,7 @@ class CharacterManager extends Service
      *
      * @return string
      */
-    private function generateFeatureList($image)
-    {
+    private function generateFeatureList($image) {
         $result = '';
         foreach ($image->features as $feature) {
             $result .= '<div>'.($feature->feature->category ? '<strong>'.$feature->feature->category->displayName.':</strong> ' : '').$feature->feature->displayName.'</div>';
@@ -1969,8 +1939,7 @@ class CharacterManager extends Service
      *
      * @return string
      */
-    private function generateCredits($image)
-    {
+    private function generateCredits($image) {
         $result = ['designers' => '', 'artists' => ''];
         foreach ($image->designers as $designer) {
             $result['designers'] .= '<div>'.$designer->displayLink().'</div>';

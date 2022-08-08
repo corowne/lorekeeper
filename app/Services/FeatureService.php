@@ -8,8 +8,7 @@ use App\Models\Species\Species;
 use App\Models\Species\Subtype;
 use DB;
 
-class FeatureService extends Service
-{
+class FeatureService extends Service {
     /*
     |--------------------------------------------------------------------------
     | Feature Service
@@ -33,8 +32,7 @@ class FeatureService extends Service
      *
      * @return \App\Models\Feature\FeatureCategory|bool
      */
-    public function createFeatureCategory($data, $user)
-    {
+    public function createFeatureCategory($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -76,8 +74,7 @@ class FeatureService extends Service
      *
      * @return \App\Models\Feature\FeatureCategory|bool
      */
-    public function updateFeatureCategory($category, $data, $user)
-    {
+    public function updateFeatureCategory($category, $data, $user) {
         DB::beginTransaction();
 
         try {
@@ -125,8 +122,7 @@ class FeatureService extends Service
      *
      * @return bool
      */
-    public function deleteFeatureCategory($category, $user)
-    {
+    public function deleteFeatureCategory($category, $user) {
         DB::beginTransaction();
 
         try {
@@ -159,8 +155,7 @@ class FeatureService extends Service
      *
      * @return bool
      */
-    public function sortFeatureCategory($data)
-    {
+    public function sortFeatureCategory($data) {
         DB::beginTransaction();
 
         try {
@@ -193,8 +188,7 @@ class FeatureService extends Service
      *
      * @return \App\Models\Feature\Feature|bool
      */
-    public function createFeature($data, $user)
-    {
+    public function createFeature($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -262,8 +256,7 @@ class FeatureService extends Service
      *
      * @return \App\Models\Feature\Feature|bool
      */
-    public function updateFeature($feature, $data, $user)
-    {
+    public function updateFeature($feature, $data, $user) {
         DB::beginTransaction();
 
         try {
@@ -332,8 +325,7 @@ class FeatureService extends Service
      *
      * @return bool
      */
-    public function deleteFeature($feature, $user)
-    {
+    public function deleteFeature($feature, $user) {
         DB::beginTransaction();
 
         try {
@@ -367,8 +359,7 @@ class FeatureService extends Service
      *
      * @return array
      */
-    private function populateCategoryData($data, $category = null)
-    {
+    private function populateCategoryData($data, $category = null) {
         if (isset($data['description']) && $data['description']) {
             $data['parsed_description'] = parse($data['description']);
         }
@@ -392,8 +383,7 @@ class FeatureService extends Service
      *
      * @return array
      */
-    private function populateData($data, $feature = null)
-    {
+    private function populateData($data, $feature = null) {
         if (isset($data['description']) && $data['description']) {
             $data['parsed_description'] = parse($data['description']);
         }

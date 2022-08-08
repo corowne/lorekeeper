@@ -4,8 +4,7 @@ namespace App\Models\Currency;
 
 use App\Models\Model;
 
-class CurrencyLog extends Model
-{
+class CurrencyLog extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -40,8 +39,7 @@ class CurrencyLog extends Model
     /**
      * Get the user who initiated the logged action.
      */
-    public function sender()
-    {
+    public function sender() {
         if ($this->sender_type == 'User') {
             return $this->belongsTo('App\Models\User\User', 'sender_id');
         }
@@ -52,8 +50,7 @@ class CurrencyLog extends Model
     /**
      * Get the user who received the logged action.
      */
-    public function recipient()
-    {
+    public function recipient() {
         if ($this->recipient_type == 'User') {
             return $this->belongsTo('App\Models\User\User', 'recipient_id');
         }
@@ -64,8 +61,7 @@ class CurrencyLog extends Model
     /**
      * Get the currency that is the target of the action.
      */
-    public function currency()
-    {
+    public function currency() {
         return $this->belongsTo('App\Models\Currency\Currency');
     }
 }

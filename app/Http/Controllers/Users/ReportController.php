@@ -10,8 +10,7 @@ use Auth;
 use Illuminate\Http\Request;
 use Settings;
 
-class ReportController extends Controller
-{
+class ReportController extends Controller {
     /**********************************************************************************************
 
         REPORTS
@@ -23,8 +22,7 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getReportsIndex(Request $request)
-    {
+    public function getReportsIndex(Request $request) {
         $reports = Report::where('user_id', Auth::user()->id);
         $type = $request->get('type');
         if (!$type) {
@@ -43,8 +41,7 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getBugIndex(Request $request)
-    {
+    public function getBugIndex(Request $request) {
         $reports = Report::where('is_br', 1);
 
         $data = $request->only(['url']);
@@ -65,8 +62,7 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getReport($id)
-    {
+    public function getReport($id) {
         $report = Report::viewable(Auth::check() ? Auth::user() : null)->where('id', $id)->first();
         if (!$report) {
             abort(404);
@@ -83,8 +79,7 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getNewReport(Request $request)
-    {
+    public function getNewReport(Request $request) {
         $closed = !Settings::get('is_reports_open');
 
         return view('home.create_report', [
@@ -99,8 +94,7 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postNewReport(Request $request, ReportManager $service)
-    {
+    public function postNewReport(Request $request, ReportManager $service) {
         $request->validate(Report::$createRules);
         $request['url'] = strip_tags($request['url']);
 

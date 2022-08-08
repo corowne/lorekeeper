@@ -7,8 +7,7 @@ use App\Models\Currency\Currency;
 use App\Models\User\UserCurrency;
 use DB;
 
-class CurrencyService extends Service
-{
+class CurrencyService extends Service {
     /*
     |--------------------------------------------------------------------------
     | Currency Service
@@ -26,8 +25,7 @@ class CurrencyService extends Service
      *
      * @return \App\Models\Currency\Currency|bool
      */
-    public function createCurrency($data, $user)
-    {
+    public function createCurrency($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -85,8 +83,7 @@ class CurrencyService extends Service
      *
      * @return \App\Models\Currency\Currency|bool
      */
-    public function updateCurrency($currency, $data, $user)
-    {
+    public function updateCurrency($currency, $data, $user) {
         DB::beginTransaction();
 
         try {
@@ -145,8 +142,7 @@ class CurrencyService extends Service
      *
      * @return bool
      */
-    public function deleteCurrency($currency, $user)
-    {
+    public function deleteCurrency($currency, $user) {
         DB::beginTransaction();
 
         try {
@@ -197,8 +193,7 @@ class CurrencyService extends Service
      *
      * @return bool
      */
-    public function sortCurrency($data, $type)
-    {
+    public function sortCurrency($data, $type) {
         DB::beginTransaction();
 
         try {
@@ -225,8 +220,7 @@ class CurrencyService extends Service
      *
      * @return array
      */
-    private function populateData($data, $currency = null)
-    {
+    private function populateData($data, $currency = null) {
         if (isset($data['description']) && $data['description']) {
             $data['parsed_description'] = parse($data['description']);
         }

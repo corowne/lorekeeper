@@ -17,8 +17,7 @@
  *
  * @return string
  */
-function set_active($path, $class = 'active')
-{
+function set_active($path, $class = 'active') {
     return call_user_func_array('Request::is', (array) $path) ? $class : '';
 }
 
@@ -29,8 +28,7 @@ function set_active($path, $class = 'active')
  *
  * @return string
  */
-function add_help($text)
-{
+function add_help($text) {
     return '<i class="fas fa-question-circle help-icon" data-toggle="tooltip" title="'.$text.'"></i>';
 }
 
@@ -41,8 +39,7 @@ function add_help($text)
  *
  * @return string
  */
-function breadcrumbs($links)
-{
+function breadcrumbs($links) {
     $ret = '<nav><ol class="breadcrumb">';
     $count = 0;
     $ret .= '<li class="breadcrumb-item"><a href="'.url('/').'">'.config('lorekeeper.settings.site_name', 'Lorekeeper').'</a></li>';
@@ -80,13 +77,11 @@ function breadcrumbs($links)
  *
  * @return string
  */
-function format_date($timestamp, $showTime = true)
-{
+function format_date($timestamp, $showTime = true) {
     return $timestamp->format('j F Y'.($showTime ? ', H:i:s' : '')).($showTime ? ' <abbr data-toggle="tooltip" title="UTC'.$timestamp->timezone->toOffsetName().'">'.strtoupper($timestamp->timezone->getAbbreviatedName($timestamp->isDST())).'</abbr>' : '');
 }
 
-function pretty_date($timestamp, $showTime = true)
-{
+function pretty_date($timestamp, $showTime = true) {
     return '<abbr data-toggle="tooltip" title="'.$timestamp->format('F j Y'.($showTime ? ', H:i:s' : '')).' '.strtoupper($timestamp->timezone->getAbbreviatedName($timestamp->isDST())).'">'.$timestamp->diffForHumans().'</abbr>';
 }
 
@@ -99,8 +94,7 @@ function pretty_date($timestamp, $showTime = true)
  *
  * @return string
  */
-function format_masterlist_number($number, $digits)
-{
+function format_masterlist_number($number, $digits) {
     return sprintf('%0'.$digits.'d', $number);
 }
 
@@ -112,8 +106,7 @@ function format_masterlist_number($number, $digits)
  *
  * @return string
  */
-function parse($text, &$pings = null)
-{
+function parse($text, &$pings = null) {
     if (!$text) {
         return null;
     }
@@ -156,8 +149,7 @@ function parse($text, &$pings = null)
  *
  * @return string
  */
-function parseUsers($text, &$users)
-{
+function parseUsers($text, &$users) {
     $matches = null;
     $users = [];
     $count = preg_match_all('/\B@([A-Za-z0-9_-]+)/', $text, $matches);
@@ -184,8 +176,7 @@ function parseUsers($text, &$users)
  *
  * @return string
  */
-function parseCharacters($text, &$characters)
-{
+function parseCharacters($text, &$characters) {
     $matches = null;
     $characters = [];
     $count = preg_match_all('/\[character=([^\[\]&<>?"\']+)\]/', $text, $matches);
@@ -212,8 +203,7 @@ function parseCharacters($text, &$characters)
  *
  * @return string
  */
-function parseGalleryThumbs($text, &$submissions)
-{
+function parseGalleryThumbs($text, &$submissions) {
     $matches = null;
     $submissions = [];
     $count = preg_match_all('/\[thumb=([^\[\]&<>?"\']+)\]/', $text, $matches);
@@ -238,8 +228,7 @@ function parseGalleryThumbs($text, &$submissions)
  *
  * @return string
  */
-function randomString($characters)
-{
+function randomString($characters) {
     $src = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     $code = '';
     for ($i = 0; $i < $characters; $i++) {
@@ -258,8 +247,7 @@ function randomString($characters)
  *
  * @return \App\Models\User\User|string
  */
-function checkAlias($url, $failOnError = true)
-{
+function checkAlias($url, $failOnError = true) {
     if ($url) {
         $recipient = null;
         $matches = [];
@@ -273,13 +261,13 @@ function checkAlias($url, $failOnError = true)
                 }
             }
         }
-        if ($matches[0] == [] && $failOnError) {
+        if ((!isset($matches[0]) || $matches[0] == []) && $failOnError) {
             throw new \Exception('This URL is from an invalid site. Please provide a URL for a user profile from a site used for authentication.');
         }
 
         // and 2. if it contains an alias associated with a user on-site.
 
-        if ($matches[0] != [] && isset($matches[0][1])) {
+        if (isset($matches[0]) && $matches[0] != [] && isset($matches[0][1])) {
             if ($urlSite != 'discord') {
                 $alias = App\Models\User\UserAlias::where('site', $urlSite)->where('alias', $matches[0][1])->first();
             } else {
@@ -303,8 +291,7 @@ function checkAlias($url, $failOnError = true)
  *
  * @return string
  */
-function prettyProfileLink($url)
-{
+function prettyProfileLink($url) {
     $matches = [];
     // Check different sites and return site if a match is made, plus username (retreived from the URL)
     foreach (Config::get('lorekeeper.sites') as $siteName=>$siteInfo) {
@@ -331,8 +318,7 @@ function prettyProfileLink($url)
  *
  * @return string
  */
-function prettyProfileName($url)
-{
+function prettyProfileName($url) {
     $matches = [];
     // Check different sites and return site if a match is made, plus username (retreived from the URL)
     foreach (Config::get('lorekeeper.sites') as $siteName=>$siteInfo) {

@@ -4,8 +4,7 @@ namespace App\Models\Raffle;
 
 use App\Models\Model;
 
-class Raffle extends Model
-{
+class Raffle extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -51,16 +50,14 @@ class Raffle extends Model
     /**
      * Get the raffle tickets attached to this raffle.
      */
-    public function tickets()
-    {
+    public function tickets() {
         return $this->hasMany('App\Models\Raffle\RaffleTicket');
     }
 
     /**
      * Get the group that this raffle belongs to.
      */
-    public function group()
-    {
+    public function group() {
         return $this->belongsTo('App\Models\Raffle\RaffleGroup', 'group_id');
     }
 
@@ -75,8 +72,7 @@ class Raffle extends Model
      *
      * @return string
      */
-    public function getDisplayNameAttribute()
-    {
+    public function getDisplayNameAttribute() {
         return $this->displayName();
     }
 
@@ -85,8 +81,7 @@ class Raffle extends Model
      *
      * @return string
      */
-    public function getNameWithGroupAttribute()
-    {
+    public function getNameWithGroupAttribute() {
         return ($this->group_id ? '['.$this->group->name.'] ' : '').$this->name;
     }
 
@@ -95,8 +90,7 @@ class Raffle extends Model
      *
      * @return string
      */
-    public function getAssetTypeAttribute()
-    {
+    public function getAssetTypeAttribute() {
         return 'raffle_tickets';
     }
 
@@ -105,8 +99,7 @@ class Raffle extends Model
      *
      * @return string
      */
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return url('raffles/view/'.$this->id);
     }
 
@@ -123,8 +116,7 @@ class Raffle extends Model
      *
      * @return string
      */
-    public function displayName($asReward = true)
-    {
+    public function displayName($asReward = true) {
         return '<a href="'.$this->url.'" class="display-raffle">'.$this->name.($asReward ? ' (Raffle Ticket)' : '').'</a>';
     }
 }

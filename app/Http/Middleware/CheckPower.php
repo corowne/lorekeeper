@@ -4,8 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class CheckPower
-{
+class CheckPower {
     /**
      * Check if the user has the power to access the current page.
      *
@@ -14,8 +13,7 @@ class CheckPower
      *
      * @return mixed
      */
-    public function handle($request, Closure $next, $power)
-    {
+    public function handle($request, Closure $next, $power) {
         if (!$request->user()->hasPower($power)) {
             flash('You do not have the permission to access this page.')->error();
 

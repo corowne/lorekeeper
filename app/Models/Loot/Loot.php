@@ -4,8 +4,7 @@ namespace App\Models\Loot;
 
 use App\Models\Model;
 
-class Loot extends Model
-{
+class Loot extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -55,8 +54,7 @@ class Loot extends Model
     /**
      * Get the reward attached to the loot entry.
      */
-    public function reward()
-    {
+    public function reward() {
         switch ($this->rewardable_type) {
             case 'Item':
                 return $this->belongsTo('App\Models\Item\Item', 'rewardable_id');
@@ -89,8 +87,7 @@ class Loot extends Model
      *
      * @return array
      */
-    public function getDataAttribute()
-    {
+    public function getDataAttribute() {
         if (!$this->attributes['data']) {
             return null;
         }

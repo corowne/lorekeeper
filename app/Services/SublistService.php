@@ -7,8 +7,7 @@ use App\Models\Character\Sublist;
 use App\Models\Species\Species;
 use DB;
 
-class SublistService extends Service
-{
+class SublistService extends Service {
     /*
     |--------------------------------------------------------------------------
     | Sub Masterlist Service
@@ -32,8 +31,7 @@ class SublistService extends Service
      *
      * @return \App\Models\Character\Sublist|bool
      */
-    public function createSublist($data, $contents)
-    {
+    public function createSublist($data, $contents) {
         DB::beginTransaction();
 
         try {
@@ -64,8 +62,7 @@ class SublistService extends Service
      *
      * @return \App\Models\Character\Sublist|bool
      */
-    public function updateSublist($sublist, $data, $contents)
-    {
+    public function updateSublist($sublist, $data, $contents) {
         DB::beginTransaction();
 
         try {
@@ -102,8 +99,7 @@ class SublistService extends Service
      *
      * @return bool
      */
-    public function deleteSublist($sublist)
-    {
+    public function deleteSublist($sublist) {
         DB::beginTransaction();
 
         try {
@@ -128,8 +124,7 @@ class SublistService extends Service
      *
      * @return bool
      */
-    public function sortSublist($data)
-    {
+    public function sortSublist($data) {
         DB::beginTransaction();
 
         try {

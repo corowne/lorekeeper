@@ -8,8 +8,7 @@ use App\Services\GalleryService;
 use Auth;
 use Illuminate\Http\Request;
 
-class GalleryController extends Controller
-{
+class GalleryController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | Admin / Gallery Controller
@@ -24,8 +23,7 @@ class GalleryController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex()
-    {
+    public function getIndex() {
         return view('admin.galleries.galleries', [
             'galleries' => Gallery::sort()->whereNull('parent_id')->paginate(10),
         ]);
@@ -36,8 +34,7 @@ class GalleryController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCreateGallery()
-    {
+    public function getCreateGallery() {
         return view('admin.galleries.create_edit_gallery', [
             'gallery'   => new Gallery,
             'galleries' => Gallery::sort()->pluck('name', 'id'),
@@ -51,8 +48,7 @@ class GalleryController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getEditGallery($id)
-    {
+    public function getEditGallery($id) {
         $gallery = Gallery::find($id);
         if (!$gallery) {
             abort(404);
@@ -72,8 +68,7 @@ class GalleryController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCreateEditGallery(Request $request, GalleryService $service, $id = null)
-    {
+    public function postCreateEditGallery(Request $request, GalleryService $service, $id = null) {
         $id ? $request->validate(Gallery::$updateRules) : $request->validate(Gallery::$createRules);
         $data = $request->only([
             'name', 'sort', 'parent_id', 'description', 'submissions_open', 'currency_enabled', 'votes_required', 'start_at', 'end_at', 'hide_before_start', 'prompt_selection',
@@ -100,8 +95,7 @@ class GalleryController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getDeleteGallery($id)
-    {
+    public function getDeleteGallery($id) {
         $gallery = Gallery::find($id);
 
         return view('admin.galleries._delete_gallery', [
@@ -117,8 +111,7 @@ class GalleryController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postDeleteGallery(Request $request, GalleryService $service, $id)
-    {
+    public function postDeleteGallery(Request $request, GalleryService $service, $id) {
         if ($id && $service->deleteGallery(Gallery::find($id), Auth::user())) {
             flash('Gallery deleted successfully.')->success();
         } else {

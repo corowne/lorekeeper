@@ -12,8 +12,7 @@ use App\Services\InventoryManager;
 use App\Services\Service;
 use DB;
 
-class SlotService extends Service
-{
+class SlotService extends Service {
     /*
     |--------------------------------------------------------------------------
     | Slot Service
@@ -28,8 +27,7 @@ class SlotService extends Service
      *
      * @return array
      */
-    public function getEditData()
-    {
+    public function getEditData() {
         return [
             'rarities'  => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
@@ -45,8 +43,7 @@ class SlotService extends Service
      *
      * @return mixed
      */
-    public function getTagData($tag)
-    {
+    public function getTagData($tag) {
         //fetch data from DB, if there is no data then set to NULL instead
         $characterData['name'] = $tag->data['name'] ?? null;
         $characterData['species_id'] = isset($tag->data['species_id']) && $tag->data['species_id'] ? $tag->data['species_id'] : null;
@@ -88,8 +85,7 @@ class SlotService extends Service
      *
      * @return bool
      */
-    public function updateData($tag, $data)
-    {
+    public function updateData($tag, $data) {
         //put inputs into an array to transfer to the DB
         $characterData['name'] = $data['name'] ?? null;
         $characterData['species_id'] = isset($data['species_id']) && $data['species_id'] ? $data['species_id'] : null;
@@ -127,8 +123,7 @@ class SlotService extends Service
      *
      * @return bool
      */
-    public function act($stacks, $user, $data)
-    {
+    public function act($stacks, $user, $data) {
         DB::beginTransaction();
 
         try {

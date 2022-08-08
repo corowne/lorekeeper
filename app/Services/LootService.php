@@ -8,8 +8,7 @@ use App\Models\Prompt\PromptReward;
 use DB;
 use Illuminate\Support\Arr;
 
-class LootService extends Service
-{
+class LootService extends Service {
     /*
     |--------------------------------------------------------------------------
     | Loot Service
@@ -26,8 +25,7 @@ class LootService extends Service
      *
      * @return \App\Models\Loot\LootTable|bool
      */
-    public function createLootTable($data)
-    {
+    public function createLootTable($data) {
         DB::beginTransaction();
 
         try {
@@ -76,8 +74,7 @@ class LootService extends Service
      *
      * @return \App\Models\Loot\LootTable|bool
      */
-    public function updateLootTable($table, $data)
-    {
+    public function updateLootTable($table, $data) {
         DB::beginTransaction();
 
         try {
@@ -125,8 +122,7 @@ class LootService extends Service
      *
      * @return bool
      */
-    public function deleteLootTable($table)
-    {
+    public function deleteLootTable($table) {
         DB::beginTransaction();
 
         try {
@@ -154,8 +150,7 @@ class LootService extends Service
      * @param \App\Models\Loot\LootTable $table
      * @param array                      $data
      */
-    private function populateLootTable($table, $data)
-    {
+    private function populateLootTable($table, $data) {
         // Clear the old loot...
         $table->loot()->delete();
 

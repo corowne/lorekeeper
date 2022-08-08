@@ -6,8 +6,7 @@ use App\Models\Character\CharacterImage;
 use App\Models\Model;
 use Config;
 
-class SalesCharacter extends Model
-{
+class SalesCharacter extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -50,16 +49,14 @@ class SalesCharacter extends Model
     /**
      * Get the sale this is attached to.
      */
-    public function sales()
-    {
+    public function sales() {
         return $this->belongsTo('App\Models\Sales\Sales', 'sales_id');
     }
 
     /**
      * Get the character being attached to the sale.
      */
-    public function character()
-    {
+    public function character() {
         return $this->belongsTo('App\Models\Character\Character', 'character_id');
     }
 
@@ -74,8 +71,7 @@ class SalesCharacter extends Model
      *
      * @return array
      */
-    public function getDataAttribute()
-    {
+    public function getDataAttribute() {
         return json_decode($this->attributes['data'], true);
     }
 
@@ -84,8 +80,7 @@ class SalesCharacter extends Model
      *
      * @return string
      */
-    public function getDisplayTypeAttribute()
-    {
+    public function getDisplayTypeAttribute() {
         switch ($this->attributes['type']) {
             case 'flatsale':
                 return 'Flatsale';
@@ -116,8 +111,7 @@ class SalesCharacter extends Model
      *
      * @return string
      */
-    public function getTypeLinkAttribute()
-    {
+    public function getTypeLinkAttribute() {
         switch ($this->attributes['type']) {
             case 'flatsale':
                 return 'Claim Here';
@@ -148,8 +142,7 @@ class SalesCharacter extends Model
      *
      * @return string
      */
-    public function getPriceAttribute()
-    {
+    public function getPriceAttribute() {
         if ($this->type == 'raffle') {
             return null;
         }
@@ -184,8 +177,7 @@ class SalesCharacter extends Model
      *
      * @return App\Models\Character\CharacterImage
      */
-    public function getImageAttribute()
-    {
+    public function getImageAttribute() {
         return CharacterImage::where('is_visible', 1)->where('character_id', $this->character_id)->orderBy('created_at')->first();
     }
 }

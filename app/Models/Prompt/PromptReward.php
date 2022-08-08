@@ -4,8 +4,7 @@ namespace App\Models\Prompt;
 
 use App\Models\Model;
 
-class PromptReward extends Model
-{
+class PromptReward extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -52,8 +51,7 @@ class PromptReward extends Model
     /**
      * Get the reward attached to the prompt reward.
      */
-    public function reward()
-    {
+    public function reward() {
         switch ($this->rewardable_type) {
             case 'Item':
                 return $this->belongsTo('App\Models\Item\Item', 'rewardable_id');

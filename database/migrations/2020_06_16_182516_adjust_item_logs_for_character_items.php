@@ -4,13 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AdjustItemLogsForCharacterItems extends Migration
-{
+class AdjustItemLogsForCharacterItems extends Migration {
     /**
      * Run the migrations.
      */
-    public function up()
-    {
+    public function up() {
         //Drop character item logs table in favor of adjusting existing logs table to suit
         Schema::dropIfExists('character_items_log');
 
@@ -26,8 +24,7 @@ class AdjustItemLogsForCharacterItems extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
-    {
+    public function down() {
         //
         Schema::create('character_items_log', function (Blueprint $table) {
             $table->engine = 'InnoDB';

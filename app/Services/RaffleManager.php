@@ -8,8 +8,7 @@ use App\Models\User\User;
 use Carbon\Carbon;
 use DB;
 
-class RaffleManager extends Service
-{
+class RaffleManager extends Service {
     /*
     |--------------------------------------------------------------------------
     | Raffle Manager
@@ -27,8 +26,7 @@ class RaffleManager extends Service
      *
      * @return int
      */
-    public function addTickets($raffle, $data)
-    {
+    public function addTickets($raffle, $data) {
         $count = 0;
         foreach ($data['user_id'] as $key=>$id) {
             if ($user = User::where('id', $id)->first()) {
@@ -54,8 +52,7 @@ class RaffleManager extends Service
      *
      * @return int
      */
-    public function addTicket($user, $raffle, $count = 1)
-    {
+    public function addTicket($user, $raffle, $count = 1) {
         if (!$user) {
             return 0;
         } elseif (!$raffle) {
@@ -87,8 +84,7 @@ class RaffleManager extends Service
      *
      * @return bool
      */
-    public function removeTicket($ticket)
-    {
+    public function removeTicket($ticket) {
         if (!$ticket) {
             return null;
         } else {
@@ -110,8 +106,7 @@ class RaffleManager extends Service
      *
      * @return bool
      */
-    public function rollRaffleGroup($raffleGroup, $updateGroup = true)
-    {
+    public function rollRaffleGroup($raffleGroup, $updateGroup = true) {
         if (!$raffleGroup) {
             return null;
         }
@@ -140,8 +135,7 @@ class RaffleManager extends Service
      *
      * @return bool
      */
-    public function rollRaffle($raffle, $updateGroup = false)
-    {
+    public function rollRaffle($raffle, $updateGroup = false) {
         if (!$raffle) {
             return null;
         }
@@ -175,8 +169,7 @@ class RaffleManager extends Service
      *
      * @return array
      */
-    private function rollWinners($raffle)
-    {
+    private function rollWinners($raffle) {
         $ticketPool = $raffle->tickets;
         $ticketCount = $ticketPool->count();
         $winners = ['ids' => [], 'aliases' => []];
@@ -226,8 +219,7 @@ class RaffleManager extends Service
      *
      * @return bool
      */
-    private function afterRoll($winners, $raffleGroup, $raffle)
-    {
+    private function afterRoll($winners, $raffleGroup, $raffle) {
         // remove any tickets from winners in raffles in the group that aren't completed
         $raffles = $raffleGroup->raffles()->where('is_active', '!=', 2)->where('id', '!=', $raffle->id)->get();
         foreach ($raffles as $r) {

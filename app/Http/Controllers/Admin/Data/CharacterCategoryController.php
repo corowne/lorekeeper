@@ -9,8 +9,7 @@ use App\Services\CharacterCategoryService;
 use Auth;
 use Illuminate\Http\Request;
 
-class CharacterCategoryController extends Controller
-{
+class CharacterCategoryController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | Admin / Character Category Controller
@@ -25,8 +24,7 @@ class CharacterCategoryController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex()
-    {
+    public function getIndex() {
         return view('admin.characters.character_categories', [
             'categories' => CharacterCategory::orderBy('sort', 'DESC')->get(),
         ]);
@@ -37,8 +35,7 @@ class CharacterCategoryController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCreateCharacterCategory()
-    {
+    public function getCreateCharacterCategory() {
         return view('admin.characters.create_edit_character_category', [
             'category' => new CharacterCategory,
             'sublists' => [0 => 'No Sublist'] + Sublist::orderBy('name', 'DESC')->pluck('name', 'id')->toArray(),
@@ -52,8 +49,7 @@ class CharacterCategoryController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getEditCharacterCategory($id)
-    {
+    public function getEditCharacterCategory($id) {
         $category = CharacterCategory::find($id);
         if (!$category) {
             abort(404);
@@ -73,8 +69,7 @@ class CharacterCategoryController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCreateEditCharacterCategory(Request $request, CharacterCategoryService $service, $id = null)
-    {
+    public function postCreateEditCharacterCategory(Request $request, CharacterCategoryService $service, $id = null) {
         $id ? $request->validate(CharacterCategory::$updateRules) : $request->validate(CharacterCategory::$createRules);
         $data = $request->only([
             'code', 'name', 'description', 'image', 'remove_image', 'masterlist_sub_id',
@@ -101,8 +96,7 @@ class CharacterCategoryController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getDeleteCharacterCategory($id)
-    {
+    public function getDeleteCharacterCategory($id) {
         $category = CharacterCategory::find($id);
 
         return view('admin.characters._delete_character_category', [
@@ -118,8 +112,7 @@ class CharacterCategoryController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postDeleteCharacterCategory(Request $request, CharacterCategoryService $service, $id)
-    {
+    public function postDeleteCharacterCategory(Request $request, CharacterCategoryService $service, $id) {
         if ($id && $service->deleteCharacterCategory(CharacterCategory::find($id), Auth::user())) {
             flash('Category deleted successfully.')->success();
         } else {
@@ -138,8 +131,7 @@ class CharacterCategoryController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postSortCharacterCategory(Request $request, CharacterCategoryService $service)
-    {
+    public function postSortCharacterCategory(Request $request, CharacterCategoryService $service) {
         if ($service->sortCharacterCategory($request->get('sort'))) {
             flash('Category order updated successfully.')->success();
         } else {

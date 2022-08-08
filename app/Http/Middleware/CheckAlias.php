@@ -5,8 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Settings;
 
-class CheckAlias
-{
+class CheckAlias {
     /**
      * Redirects users without an alias to the dA account linking page,
      * and banned users to the ban page.
@@ -15,8 +14,7 @@ class CheckAlias
      *
      * @return mixed
      */
-    public function handle($request, Closure $next)
-    {
+    public function handle($request, Closure $next) {
         if (Settings::get('is_maintenance_mode') == 1 && !$request->user()->hasPower('maintenance_access')) {
             return redirect('/');
         }

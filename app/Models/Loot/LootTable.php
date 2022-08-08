@@ -6,8 +6,7 @@ use App\Models\Item\Item;
 use App\Models\Model;
 use Config;
 
-class LootTable extends Model
-{
+class LootTable extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -52,8 +51,7 @@ class LootTable extends Model
     /**
      * Get the loot data for this loot table.
      */
-    public function loot()
-    {
+    public function loot() {
         return $this->hasMany('App\Models\Loot\Loot', 'loot_table_id');
     }
 
@@ -68,8 +66,7 @@ class LootTable extends Model
      *
      * @return string
      */
-    public function getDisplayNameAttribute()
-    {
+    public function getDisplayNameAttribute() {
         return '<span class="display-loot">'.$this->attributes['display_name'].'</span> '.add_help('This reward is random.');
     }
 
@@ -78,8 +75,7 @@ class LootTable extends Model
      *
      * @return string
      */
-    public function getAssetTypeAttribute()
-    {
+    public function getAssetTypeAttribute() {
         return 'loot_tables';
     }
 
@@ -96,8 +92,7 @@ class LootTable extends Model
      *
      * @return \Illuminate\Support\Collection
      */
-    public function roll($quantity = 1)
-    {
+    public function roll($quantity = 1) {
         $rewards = createAssetsArray();
 
         $loot = $this->loot;
@@ -151,8 +146,7 @@ class LootTable extends Model
      *
      * @return \Illuminate\Support\Collection
      */
-    public function rollCategory($id, $quantity = 1, $criteria = null, $rarity = null)
-    {
+    public function rollCategory($id, $quantity = 1, $criteria = null, $rarity = null) {
         $rewards = createAssetsArray();
 
         if (isset($criteria) && $criteria && isset($rarity) && $rarity) {
@@ -192,8 +186,7 @@ class LootTable extends Model
      *
      * @return \Illuminate\Support\Collection
      */
-    public function rollRarityItem($quantity, $criteria, $rarity)
-    {
+    public function rollRarityItem($quantity, $criteria, $rarity) {
         $rewards = createAssetsArray();
 
         if (Config::get('lorekeeper.extensions.item_entry_expansion.loot_tables.alternate_filtering')) {

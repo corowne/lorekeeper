@@ -6,8 +6,7 @@ use App\Models\Gallery\Gallery;
 use App\Models\Gallery\GallerySubmission;
 use DB;
 
-class GalleryService extends Service
-{
+class GalleryService extends Service {
     /*
     |--------------------------------------------------------------------------
     | Gallery Service
@@ -25,8 +24,7 @@ class GalleryService extends Service
      *
      * @return \App\Models\Gallery|bool
      */
-    public function createGallery($data, $user)
-    {
+    public function createGallery($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -69,8 +67,7 @@ class GalleryService extends Service
      *
      * @return \App\Models\Gallery|bool
      */
-    public function updateGallery($gallery, $data, $user)
-    {
+    public function updateGallery($gallery, $data, $user) {
         DB::beginTransaction();
 
         try {
@@ -117,8 +114,7 @@ class GalleryService extends Service
      *
      * @return bool
      */
-    public function deleteGallery($gallery, $user)
-    {
+    public function deleteGallery($gallery, $user) {
         DB::beginTransaction();
 
         try {

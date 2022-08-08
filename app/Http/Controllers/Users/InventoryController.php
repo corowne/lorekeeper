@@ -16,8 +16,7 @@ use App\Services\InventoryManager;
 use Auth;
 use Illuminate\Http\Request;
 
-class InventoryController extends Controller
-{
+class InventoryController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | Inventory Controller
@@ -32,8 +31,7 @@ class InventoryController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex()
-    {
+    public function getIndex() {
         $categories = ItemCategory::orderBy('sort', 'DESC')->get();
         $items = count($categories) ?
             Auth::user()->items()
@@ -65,8 +63,7 @@ class InventoryController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getStack(Request $request, $id)
-    {
+    public function getStack(Request $request, $id) {
         $first_instance = UserItem::withTrashed()->where('id', $id)->first();
         $readOnly = $request->get('read_only') ?: ((Auth::check() && $first_instance && ($first_instance->user_id == Auth::user()->id || Auth::user()->hasPower('edit_inventories'))) ? 0 : 1);
         $stack = UserItem::where([['user_id', $first_instance->user_id], ['item_id', $first_instance->item_id], ['count', '>', 0]])->get();
@@ -89,8 +86,7 @@ class InventoryController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCharacterStack(Request $request, $id)
-    {
+    public function getCharacterStack(Request $request, $id) {
         $first_instance = CharacterItem::withTrashed()->where('id', $id)->first();
         $stack = CharacterItem::where([['character_id', $first_instance->character_id], ['item_id', $first_instance->item_id], ['count', '>', 0]])->get();
         $item = Item::where('id', $first_instance->item_id)->first();
@@ -120,8 +116,7 @@ class InventoryController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postEdit(Request $request, InventoryManager $service)
-    {
+    public function postEdit(Request $request, InventoryManager $service) {
         if (!$request->ids) {
             flash('No items selected.')->error();
         }
@@ -162,8 +157,7 @@ class InventoryController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getSelector($id)
-    {
+    public function getSelector($id) {
         return view('widgets._inventory_select', [
             'user' => Auth::user(),
         ]);
@@ -174,8 +168,7 @@ class InventoryController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getAccountSearch(Request $request)
-    {
+    public function getAccountSearch(Request $request) {
         $item = Item::released()->find($request->only(['item_id']))->first();
         $user = Auth::user();
 
@@ -210,8 +203,7 @@ class InventoryController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getConsolidateInventory(Request $request)
-    {
+    public function getConsolidateInventory(Request $request) {
         return view('home._inventory_consolidate');
     }
 
@@ -222,8 +214,7 @@ class InventoryController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postConsolidateInventory(Request $request, InventoryManager $service)
-    {
+    public function postConsolidateInventory(Request $request, InventoryManager $service) {
         if ($service->consolidateInventory(Auth::user())) {
             flash('Inventory consolidated.')->success();
         } else {
@@ -242,8 +233,7 @@ class InventoryController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    private function postTransfer(Request $request, InventoryManager $service)
-    {
+    private function postTransfer(Request $request, InventoryManager $service) {
         if ($service->transferStack(Auth::user(), User::visible()->where('id', $request->get('user_id'))->first(), UserItem::find($request->get('ids')), $request->get('quantities'))) {
             flash('Item transferred successfully.')->success();
         } else {
@@ -262,8 +252,7 @@ class InventoryController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    private function postTransferToCharacter(Request $request, InventoryManager $service)
-    {
+    private function postTransferToCharacter(Request $request, InventoryManager $service) {
         if ($service->transferCharacterStack(Auth::user(), Character::visible()->where('id', $request->get('character_id'))->first(), UserItem::find($request->get('ids')), $request->get('quantities'), Auth::user())) {
             flash('Item transferred successfully.')->success();
         } else {
@@ -282,8 +271,7 @@ class InventoryController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    private function postDelete(Request $request, InventoryManager $service)
-    {
+    private function postDelete(Request $request, InventoryManager $service) {
         if ($service->deleteStack(Auth::user(), UserItem::find($request->get('ids')), $request->get('quantities'), Auth::user())) {
             flash('Item deleted successfully.')->success();
         } else {
@@ -302,8 +290,7 @@ class InventoryController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    private function postResell(Request $request, InventoryManager $service)
-    {
+    private function postResell(Request $request, InventoryManager $service) {
         if ($service->resellStack(Auth::user(), UserItem::find($request->get('ids')), $request->get('quantities'))) {
             flash('Item sold successfully.')->success();
         } else {
@@ -320,8 +307,7 @@ class InventoryController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    private function postAct(Request $request)
-    {
+    private function postAct(Request $request) {
         $stacks = UserItem::with('item')->find($request->get('ids'));
         $tag = $request->get('tag');
         $service = $stacks->first()->item->hasTag($tag) ? $stacks->first()->item->tag($tag)->service : null;

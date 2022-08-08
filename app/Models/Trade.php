@@ -5,8 +5,7 @@ namespace App\Models;
 use App\Models\Character\Character;
 use Settings;
 
-class Trade extends Model
-{
+class Trade extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -40,24 +39,21 @@ class Trade extends Model
     /**
      * Get the user who initiated the trade.
      */
-    public function sender()
-    {
+    public function sender() {
         return $this->belongsTo('App\Models\User\User', 'sender_id');
     }
 
     /**
      * Get the user who received the trade.
      */
-    public function recipient()
-    {
+    public function recipient() {
         return $this->belongsTo('App\Models\User\User', 'recipient_id');
     }
 
     /**
      * Get the staff member who approved the character transfer.
      */
-    public function staff()
-    {
+    public function staff() {
         return $this->belongsTo('App\Models\User\User', 'staff_id');
     }
 
@@ -67,8 +63,7 @@ class Trade extends Model
 
     **********************************************************************************************/
 
-    public function scopeCompleted($query)
-    {
+    public function scopeCompleted($query) {
         return $query->where('status', 'Completed')->orWhere('status', 'Rejected');
     }
 
@@ -83,8 +78,7 @@ class Trade extends Model
      *
      * @return bool
      */
-    public function getIsActiveAttribute()
-    {
+    public function getIsActiveAttribute() {
         if ($this->status == 'Pending') {
             return true;
         }
@@ -103,8 +97,7 @@ class Trade extends Model
      *
      * @return bool
      */
-    public function getIsConfirmableAttribute()
-    {
+    public function getIsConfirmableAttribute() {
         if ($this->is_sender_confirmed && $this->is_recipient_confirmed) {
             return true;
         }
@@ -117,8 +110,7 @@ class Trade extends Model
      *
      * @return array
      */
-    public function getDataAttribute()
-    {
+    public function getDataAttribute() {
         return json_decode($this->attributes['data'], true);
     }
 
@@ -127,8 +119,7 @@ class Trade extends Model
      *
      * @return string
      */
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return url('trades/'.$this->id);
     }
 
@@ -143,8 +134,7 @@ class Trade extends Model
      *
      * @return \Illuminate\Support\Collection
      */
-    public function getCharacterData()
-    {
+    public function getCharacterData() {
         return Character::with('user')->whereIn('id', array_merge($this->getCharacters($this->sender), $this->getCharacters($this->recipient)))->get();
     }
 
@@ -155,8 +145,7 @@ class Trade extends Model
      *
      * @return array
      */
-    public function getInventory($user)
-    {
+    public function getInventory($user) {
         $type = $this->sender_id == $user->id ? 'sender' : 'recipient';
         $inventory = $this->data && isset($this->data[$type]) && isset($this->data[$type]['user_items']) ? $this->data[$type]['user_items'] : [];
 
@@ -170,8 +159,7 @@ class Trade extends Model
      *
      * @return array
      */
-    public function getCharacters($user)
-    {
+    public function getCharacters($user) {
         $type = $this->sender_id == $user->id ? 'sender' : 'recipient';
         $characters = $this->data && isset($this->data[$type]) && isset($this->data[$type]['characters']) ? $this->data[$type]['characters'] : [];
         if ($characters) {
@@ -188,8 +176,7 @@ class Trade extends Model
      *
      * @return array
      */
-    public function getCurrencies($user)
-    {
+    public function getCurrencies($user) {
         $type = $this->sender_id == $user->id ? 'sender' : 'recipient';
 
         return $this->data && isset($this->data[$type]) && isset($this->data[$type]['currencies']) ? $this->data[$type]['currencies'] : [];

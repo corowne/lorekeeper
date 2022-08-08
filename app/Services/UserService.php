@@ -18,8 +18,7 @@ use Image;
 use Notifications;
 use Settings;
 
-class UserService extends Service
-{
+class UserService extends Service {
     /*
     |--------------------------------------------------------------------------
     | User Service
@@ -36,8 +35,7 @@ class UserService extends Service
      *
      * @return \App\Models\User\User
      */
-    public function createUser($data)
-    {
+    public function createUser($data) {
         // If the rank is not given, create a user with the lowest existing rank.
         if (!isset($data['rank_id'])) {
             $data['rank_id'] = Rank::orderBy('sort')->first()->id;
@@ -71,8 +69,7 @@ class UserService extends Service
      *
      * @return \App\Models\User\User
      */
-    public function updateUser($data)
-    {
+    public function updateUser($data) {
         $user = User::find($data['id']);
         if (isset($data['password'])) {
             $data['password'] = Hash::make($data['password']);
@@ -92,8 +89,7 @@ class UserService extends Service
      *
      * @return bool
      */
-    public function updatePassword($data, $user)
-    {
+    public function updatePassword($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -123,8 +119,7 @@ class UserService extends Service
      *
      * @return bool
      */
-    public function updateEmail($data, $user)
-    {
+    public function updateEmail($data, $user) {
         $user->email = $data['email'];
         $user->email_verified_at = null;
         $user->save();
@@ -140,8 +135,7 @@ class UserService extends Service
      * @param mixed $data
      * @param mixed $user
      */
-    public function updateBirthday($data, $user)
-    {
+    public function updateBirthday($data, $user) {
         $user->birthday = $data;
         $user->save();
 
@@ -154,8 +148,7 @@ class UserService extends Service
      * @param mixed $data
      * @param mixed $user
      */
-    public function updateDOB($data, $user)
-    {
+    public function updateDOB($data, $user) {
         $user->settings->birthday_setting = $data;
         $user->settings->save();
 
@@ -170,8 +163,7 @@ class UserService extends Service
      *
      * @return bool
      */
-    public function updateAvatar($avatar, $user)
-    {
+    public function updateAvatar($avatar, $user) {
         DB::beginTransaction();
 
         try {
@@ -228,8 +220,7 @@ class UserService extends Service
      *
      * @return bool
      */
-    public function ban($data, $user, $staff)
-    {
+    public function ban($data, $user, $staff) {
         DB::beginTransaction();
 
         try {
@@ -316,8 +307,7 @@ class UserService extends Service
      *
      * @return bool
      */
-    public function unban($user, $staff)
-    {
+    public function unban($user, $staff) {
         DB::beginTransaction();
 
         try {
@@ -352,8 +342,7 @@ class UserService extends Service
      *
      * @return bool
      */
-    public function deactivate($data, $user, $staff = null)
-    {
+    public function deactivate($data, $user, $staff = null) {
         DB::beginTransaction();
 
         try {
@@ -448,8 +437,7 @@ class UserService extends Service
      *
      * @return bool
      */
-    public function reactivate($user, $staff = null)
-    {
+    public function reactivate($user, $staff = null) {
         DB::beginTransaction();
 
         try {

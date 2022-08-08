@@ -21,10 +21,8 @@ use Notifications;
 use Settings;
 use Spatie\Honeypot\ProtectAgainstSpam;
 
-class CommentController extends Controller implements CommentControllerInterface
-{
-    public function __construct()
-    {
+class CommentController extends Controller implements CommentControllerInterface {
+    public function __construct() {
         $this->middleware('web');
 
         if (Config::get('comments.guest_commenting') == true) {
@@ -38,8 +36,7 @@ class CommentController extends Controller implements CommentControllerInterface
     /**
      * Creates a new comment for given model.
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
 
         // If guest commenting is turned off, authorize this action.
         if (Config::get('comments.guest_commenting') == false) {
@@ -131,7 +128,7 @@ class CommentController extends Controller implements CommentControllerInterface
                 $post = (($type != 'User-User') ? 'your gallery submission\'s staff comments' : 'your gallery submission');
                 $link = (($type != 'User-User') ? $submission->queueUrl.'/#comment-'.$comment->getKey() : $submission->url.'/#comment-'.$comment->getKey());
                 break;
-            }
+        }
 
         if ($recipient != $sender) {
             Notifications::create('COMMENT_MADE', $recipient, [
@@ -148,8 +145,7 @@ class CommentController extends Controller implements CommentControllerInterface
     /**
      * Updates the message of the comment.
      */
-    public function update(Request $request, Comment $comment)
-    {
+    public function update(Request $request, Comment $comment) {
         Gate::authorize('edit-comment', $comment);
 
         Validator::make($request->all(), [
@@ -166,8 +162,7 @@ class CommentController extends Controller implements CommentControllerInterface
     /**
      * Deletes a comment.
      */
-    public function destroy(Comment $comment)
-    {
+    public function destroy(Comment $comment) {
         Gate::authorize('delete-comment', $comment);
 
         if (Config::get('comments.soft_deletes') == true) {
@@ -182,8 +177,7 @@ class CommentController extends Controller implements CommentControllerInterface
     /**
      * Creates a reply "comment" to a comment.
      */
-    public function reply(Request $request, Comment $comment)
-    {
+    public function reply(Request $request, Comment $comment) {
         Gate::authorize('reply-to-comment', $comment);
 
         Validator::make($request->all(), [
@@ -208,9 +202,9 @@ class CommentController extends Controller implements CommentControllerInterface
         // if($sender == $recipient)
         if ($recipient != $sender) {
             Notifications::create('COMMENT_REPLY', $recipient, [
-            'sender_url'  => $sender->url,
-            'sender'      => $sender->name,
-            'comment_url' => $comment->id,
+                'sender_url'  => $sender->url,
+                'sender'      => $sender->name,
+                'comment_url' => $comment->id,
             ]);
         }
 
@@ -222,8 +216,7 @@ class CommentController extends Controller implements CommentControllerInterface
      *
      * @param mixed $id
      */
-    public function feature($id)
-    {
+    public function feature($id) {
         $comment = Comment::find($id);
         if ($comment->is_featured == 0) {
             $comment->update(['is_featured' => 1]);
@@ -240,8 +233,7 @@ class CommentController extends Controller implements CommentControllerInterface
      * @param mixed $id
      * @param mixed $action
      */
-    public function like(Request $request, $id, $action = 1)
-    {
+    public function like(Request $request, $id, $action = 1) {
         $user = Auth::user();
         if (!$user) {
             return Redirect::back();
@@ -273,8 +265,7 @@ class CommentController extends Controller implements CommentControllerInterface
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getLikedComments(Request $request)
-    {
+    public function getLikedComments(Request $request) {
         return view('home.liked_comments', [
             'user' => Auth::user(),
         ]);
