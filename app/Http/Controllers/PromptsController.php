@@ -121,8 +121,7 @@ class PromptsController extends Controller {
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getPrompt(Request $request, $id)
-    {
+    public function getPrompt(Request $request, $id) {
         $prompt = Prompt::active()->where('id', $id)->first();
 
         if (!$prompt) {
