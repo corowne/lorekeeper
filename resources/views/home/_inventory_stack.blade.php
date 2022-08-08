@@ -73,7 +73,7 @@
                 <ul class="list-group list-group-flush">
                     @if(count($item->tags))
                         @foreach($item->tags as $tag)
-                            @if(View::exists('inventory._'.$tag->tag))
+                            @if($tag->is_active && View::exists('inventory._'.$tag->tag))
                                 @include('inventory._'.$tag->tag, ['stack' => $stack, 'tag' => $tag])
                             @endif
                         @endforeach
