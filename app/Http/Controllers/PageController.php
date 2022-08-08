@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SitePage;
 use DB;
 
-class PageController extends Controller
-{
+class PageController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | Page Controller
@@ -23,8 +22,7 @@ class PageController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getPage($key)
-    {
+    public function getPage($key) {
         $page = SitePage::where('key', $key)->where('is_visible', 1)->first();
         if (!$page) {
             abort(404);
@@ -38,8 +36,7 @@ class PageController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCreditsPage()
-    {
+    public function getCreditsPage() {
         return view('pages.credits', [
             'credits'    => SitePage::where('key', 'credits')->first(),
             'extensions' => DB::table('site_extensions')->get(),

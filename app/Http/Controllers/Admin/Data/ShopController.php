@@ -10,8 +10,7 @@ use App\Services\ShopService;
 use Auth;
 use Illuminate\Http\Request;
 
-class ShopController extends Controller
-{
+class ShopController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | Admin / Shop Controller
@@ -26,8 +25,7 @@ class ShopController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex()
-    {
+    public function getIndex() {
         return view('admin.shops.shops', [
             'shops' => Shop::orderBy('sort', 'DESC')->get(),
         ]);
@@ -38,8 +36,7 @@ class ShopController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCreateShop()
-    {
+    public function getCreateShop() {
         return view('admin.shops.create_edit_shop', [
             'shop' => new Shop,
         ]);
@@ -52,8 +49,7 @@ class ShopController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getEditShop($id)
-    {
+    public function getEditShop($id) {
         $shop = Shop::find($id);
         if (!$shop) {
             abort(404);
@@ -74,8 +70,7 @@ class ShopController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCreateEditShop(Request $request, ShopService $service, $id = null)
-    {
+    public function postCreateEditShop(Request $request, ShopService $service, $id = null) {
         $id ? $request->validate(Shop::$updateRules) : $request->validate(Shop::$createRules);
         $data = $request->only([
             'name', 'description', 'image', 'remove_image', 'is_active',
@@ -103,8 +98,7 @@ class ShopController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postEditShopStock(Request $request, ShopService $service, $id)
-    {
+    public function postEditShopStock(Request $request, ShopService $service, $id) {
         $data = $request->only([
             'shop_id', 'item_id', 'currency_id', 'cost', 'use_user_bank', 'use_character_bank', 'is_limited_stock', 'quantity', 'purchase_limit',
         ]);
@@ -128,8 +122,7 @@ class ShopController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getDeleteShop($id)
-    {
+    public function getDeleteShop($id) {
         $shop = Shop::find($id);
 
         return view('admin.shops._delete_shop', [
@@ -145,8 +138,7 @@ class ShopController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postDeleteShop(Request $request, ShopService $service, $id)
-    {
+    public function postDeleteShop(Request $request, ShopService $service, $id) {
         if ($id && $service->deleteShop(Shop::find($id))) {
             flash('Shop deleted successfully.')->success();
         } else {
@@ -165,8 +157,7 @@ class ShopController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postSortShop(Request $request, ShopService $service)
-    {
+    public function postSortShop(Request $request, ShopService $service) {
         if ($service->sortShop($request->get('sort'))) {
             flash('Shop order updated successfully.')->success();
         } else {

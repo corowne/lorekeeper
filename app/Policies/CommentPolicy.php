@@ -5,15 +5,13 @@ namespace App\Policies;
 use App\Models\Comment;
 use Auth;
 
-class CommentPolicy
-{
+class CommentPolicy {
     /**
      * Can user create the comment.
      *
      * @param $user
      */
-    public function create($user) : bool
-    {
+    public function create($user): bool {
         return true;
     }
 
@@ -22,8 +20,7 @@ class CommentPolicy
      *
      * @param $user
      */
-    public function delete($user, Comment $comment) : bool
-    {
+    public function delete($user, Comment $comment): bool {
         if (auth::user()->isStaff) {
             return true;
         } else {
@@ -36,8 +33,7 @@ class CommentPolicy
      *
      * @param $user
      */
-    public function update($user, Comment $comment) : bool
-    {
+    public function update($user, Comment $comment): bool {
         return $user->getKey() == $comment->commenter_id;
     }
 
@@ -46,8 +42,7 @@ class CommentPolicy
      *
      * @param $user
      */
-    public function reply($user, Comment $comment) : bool
-    {
+    public function reply($user, Comment $comment): bool {
         return $user->getKey();
     }
 }

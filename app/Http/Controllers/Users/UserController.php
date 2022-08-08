@@ -19,8 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Route;
 
-class UserController extends Controller
-{
+class UserController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | User Controller
@@ -36,7 +35,6 @@ class UserController extends Controller
     public function __construct()
     {
         parent::__construct();
-
         $name = Route::current()->parameter('name');
         $this->user = User::where('name', $name)->first();
         if (!$this->user) {
@@ -56,8 +54,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUser($name)
-    {
+    public function getUser($name) {
         $characters = $this->user->characters();
         if (!Auth::check() || !(Auth::check() && Auth::user()->hasPower('manage_characters'))) {
             $characters->visible();
@@ -77,8 +74,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUserAliases($name)
-    {
+    public function getUserAliases($name) {
         $aliases = $this->user->aliases();
         if (!Auth::check() || !(Auth::check() && Auth::user()->hasPower('edit_user_info'))) {
             $aliases->visible();
@@ -97,8 +93,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUserCharacters($name)
-    {
+    public function getUserCharacters($name) {
         $query = Character::myo(0)->where('user_id', $this->user->id);
         $imageQuery = CharacterImage::images(Auth::check() ? Auth::user() : null)->with('features')->with('rarity')->with('species')->with('features');
 
@@ -106,10 +101,9 @@ class UserController extends Controller
             $subCategories = [];
         }
         $subSpecies = [];
-        {   foreach ($sublists as $sublist) {
+        foreach ($sublists as $sublist) {
             $subCategories = array_merge($subCategories, $sublist->categories->pluck('id')->toArray());
             $subSpecies = array_merge($subSpecies, $sublist->species->pluck('id')->toArray());
-        }
         }
 
         $query->whereNotIn('character_category_id', $subCategories);
@@ -135,8 +129,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUserSublist($name, $key)
-    {
+    public function getUserSublist($name, $key) {
         $query = Character::myo(0)->where('user_id', $this->user->id);
         $imageQuery = CharacterImage::images(Auth::check() ? Auth::user() : null)->with('features')->with('rarity')->with('species')->with('features');
 
@@ -174,8 +167,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUserMyoSlots($name)
-    {
+    public function getUserMyoSlots($name) {
         $myo = $this->user->myoSlots();
         if (!Auth::check() || !(Auth::check() && Auth::user()->hasPower('manage_characters'))) {
             $myo->visible();
@@ -194,8 +186,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUserInventory($name)
-    {
+    public function getUserInventory($name) {
         $categories = ItemCategory::orderBy('sort', 'DESC')->get();
         $items = count($categories) ?
             $this->user->items()
@@ -230,8 +221,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUserBank($name)
-    {
+    public function getUserBank($name) {
         $user = $this->user;
 
         return view('user.bank', [
@@ -250,8 +240,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUserCurrencyLogs($name)
-    {
+    public function getUserCurrencyLogs($name) {
         $user = $this->user;
 
         return view('user.currency_logs', [
@@ -267,8 +256,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUserItemLogs($name)
-    {
+    public function getUserItemLogs($name) {
         $user = $this->user;
 
         return view('user.item_logs', [
@@ -284,8 +272,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUserOwnershipLogs($name)
-    {
+    public function getUserOwnershipLogs($name) {
         return view('user.ownership_logs', [
             'user' => $this->user,
             'logs' => $this->user->getOwnershipLogs(),
@@ -299,8 +286,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUserSubmissions($name)
-    {
+    public function getUserSubmissions($name) {
         return view('user.submission_logs', [
             'user' => $this->user,
             'logs' => $this->user->getSubmissions(Auth::check() ? Auth::user() : null),
@@ -314,8 +300,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUserGallery(Request $request, $name)
-    {
+    public function getUserGallery(Request $request, $name) {
         return view('user.gallery', [
             'user'        => $this->user,
             'submissions' => $this->user->gallerySubmissions()->paginate(20)->appends($request->query()),
@@ -329,8 +314,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUserFavorites(Request $request, $name)
-    {
+    public function getUserFavorites(Request $request, $name) {
         return view('user.favorites', [
             'user'       => $this->user,
             'characters' => false,
@@ -345,8 +329,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUserOwnCharacterFavorites(Request $request, $name)
-    {
+    public function getUserOwnCharacterFavorites(Request $request, $name) {
         $user = $this->user;
         $userCharacters = $user->characters()->pluck('id')->toArray();
         $userFavorites = $user->galleryFavorites()->pluck('gallery_submission_id')->toArray();

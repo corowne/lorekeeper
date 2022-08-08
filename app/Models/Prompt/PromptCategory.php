@@ -4,8 +4,7 @@ namespace App\Models\Prompt;
 
 use App\Models\Model;
 
-class PromptCategory extends Model
-{
+class PromptCategory extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -54,8 +53,7 @@ class PromptCategory extends Model
      *
      * @return string
      */
-    public function getDisplayNameAttribute()
-    {
+    public function getDisplayNameAttribute() {
         return '<a href="'.$this->url.'" class="display-category">'.$this->name.'</a>';
     }
 
@@ -64,8 +62,7 @@ class PromptCategory extends Model
      *
      * @return string
      */
-    public function getImageDirectoryAttribute()
-    {
+    public function getImageDirectoryAttribute() {
         return 'images/data/prompt-categories';
     }
 
@@ -74,8 +71,7 @@ class PromptCategory extends Model
      *
      * @return string
      */
-    public function getCategoryImageFileNameAttribute()
-    {
+    public function getCategoryImageFileNameAttribute() {
         return $this->id.'-image.png';
     }
 
@@ -84,8 +80,7 @@ class PromptCategory extends Model
      *
      * @return string
      */
-    public function getCategoryImagePathAttribute()
-    {
+    public function getCategoryImagePathAttribute() {
         return public_path($this->imageDirectory);
     }
 
@@ -94,8 +89,7 @@ class PromptCategory extends Model
      *
      * @return string
      */
-    public function getCategoryImageUrlAttribute()
-    {
+    public function getCategoryImageUrlAttribute() {
         if (!$this->has_image) {
             return null;
         }
@@ -108,8 +102,7 @@ class PromptCategory extends Model
      *
      * @return string
      */
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return url('prompts/prompt-categories?name='.$this->name);
     }
 
@@ -118,8 +111,7 @@ class PromptCategory extends Model
      *
      * @return string
      */
-    public function getSearchUrlAttribute()
-    {
+    public function getSearchUrlAttribute() {
         return url('prompts/prompts?prompt_category_id='.$this->id);
     }
 }

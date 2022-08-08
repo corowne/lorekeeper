@@ -8,8 +8,7 @@ use App\Services\ReportManager;
 use Auth;
 use Illuminate\Http\Request;
 
-class ReportController extends Controller
-{
+class ReportController extends Controller {
     /**
      * Shows the report index page.
      *
@@ -17,8 +16,7 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getReportIndex(Request $request, $status = null)
-    {
+    public function getReportIndex(Request $request, $status = null) {
         if ($status == 'assigned-to-me') {
             $reports = Report::assignedToMe(Auth::user());
         } else {
@@ -37,8 +35,7 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getReport($id)
-    {
+    public function getReport($id) {
         $report = Report::where('id', $id)->first();
         if (!$report) {
             abort(404);
@@ -58,8 +55,7 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postReport(Request $request, ReportManager $service, $id, $action)
-    {
+    public function postReport(Request $request, ReportManager $service, $id, $action) {
         $data = $request->only(['staff_comments']);
         if ($action == 'assign' && $service->assignReport($request->only(['staff_comments']) + ['id' => $id], Auth::user())) {
             flash('Report assigned successfully.')->success();

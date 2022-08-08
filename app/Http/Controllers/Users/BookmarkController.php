@@ -8,8 +8,7 @@ use App\Services\BookmarkManager;
 use Auth;
 use Illuminate\Http\Request;
 
-class BookmarkController extends Controller
-{
+class BookmarkController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | Bookmark Controller
@@ -24,8 +23,7 @@ class BookmarkController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getBookmarks(Request $request)
-    {
+    public function getBookmarks(Request $request) {
         $query = CharacterBookmark::join('characters', 'character_bookmarks.character_id', '=', 'characters.id')
         ->join('character_images', 'characters.character_image_id', '=', 'character_images.id')
         ->with('character.image')->with('character.user')->visible()
@@ -88,8 +86,7 @@ class BookmarkController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCreateBookmark()
-    {
+    public function getCreateBookmark() {
         return view('account.bookmarks._create_edit_bookmark', [
             'bookmark' => new CharacterBookmark,
         ]);
@@ -102,8 +99,7 @@ class BookmarkController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getEditBookmark($id)
-    {
+    public function getEditBookmark($id) {
         $bookmark = CharacterBookmark::with('character')->where('id', $id)->where('user_id', Auth::user()->id)->first();
         if (!$bookmark) {
             abort(404);
@@ -122,8 +118,7 @@ class BookmarkController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCreateEditBookmark(Request $request, BookmarkManager $service, $id = null)
-    {
+    public function postCreateEditBookmark(Request $request, BookmarkManager $service, $id = null) {
         $id ? $request->validate(CharacterBookmark::$updateRules) : $request->validate(CharacterBookmark::$createRules);
         $data = $request->only([
             'character_id', 'notify_on_trade_status', 'notify_on_gift_art_status', 'notify_on_gift_writing_status', 'notify_on_transfer', 'notify_on_image', 'comment',
@@ -150,8 +145,7 @@ class BookmarkController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getDeleteBookmark($id)
-    {
+    public function getDeleteBookmark($id) {
         $bookmark = CharacterBookmark::with('character')->where('id', $id)->where('user_id', Auth::user()->id)->first();
         if (!$bookmark) {
             abort(404);
@@ -170,8 +164,7 @@ class BookmarkController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postDeleteBookmark(Request $request, BookmarkManager $service, $id)
-    {
+    public function postDeleteBookmark(Request $request, BookmarkManager $service, $id) {
         if ($id && $service->deleteBookmark(['bookmark_id' => $id], Auth::user())) {
             flash('Bookmark deleted successfully.')->success();
         } else {

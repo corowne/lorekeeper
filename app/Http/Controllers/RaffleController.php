@@ -7,8 +7,7 @@ use App\Models\Raffle\RaffleGroup;
 use Auth;
 use Request;
 
-class RaffleController extends Controller
-{
+class RaffleController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | Raffle Controller
@@ -23,8 +22,7 @@ class RaffleController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getRaffleIndex()
-    {
+    public function getRaffleIndex() {
         $raffles = Raffle::query();
         if (Request::get('view') == 'completed') {
             $raffles->where('is_active', 2);
@@ -46,8 +44,7 @@ class RaffleController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getRaffleTickets($id)
-    {
+    public function getRaffleTickets($id) {
         $raffle = Raffle::find($id);
         if (!$raffle || !$raffle->is_active) {
             abort(404);

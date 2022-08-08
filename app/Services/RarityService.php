@@ -7,8 +7,7 @@ use App\Models\Character\CharacterImage;
 use App\Models\Rarity;
 use DB;
 
-class RarityService extends Service
-{
+class RarityService extends Service {
     /*
     |--------------------------------------------------------------------------
     | Rarity Service
@@ -26,8 +25,7 @@ class RarityService extends Service
      *
      * @return \App\Models\Rarity|bool
      */
-    public function createRarity($data, $user)
-    {
+    public function createRarity($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -65,8 +63,7 @@ class RarityService extends Service
      *
      * @return \App\Models\Rarity|bool
      */
-    public function updateRarity($rarity, $data, $user)
-    {
+    public function updateRarity($rarity, $data, $user) {
         DB::beginTransaction();
 
         try {
@@ -105,8 +102,7 @@ class RarityService extends Service
      *
      * @return bool
      */
-    public function deleteRarity($rarity)
-    {
+    public function deleteRarity($rarity) {
         DB::beginTransaction();
 
         try {
@@ -135,8 +131,7 @@ class RarityService extends Service
      *
      * @return bool
      */
-    public function sortRarity($data)
-    {
+    public function sortRarity($data) {
         DB::beginTransaction();
 
         try {
@@ -163,8 +158,7 @@ class RarityService extends Service
      *
      * @return array
      */
-    private function populateData($data, $rarity = null)
-    {
+    private function populateData($data, $rarity = null) {
         if (isset($data['description']) && $data['description']) {
             $data['parsed_description'] = parse($data['description']);
         }

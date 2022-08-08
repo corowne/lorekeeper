@@ -11,8 +11,7 @@ use Auth;
 use Illuminate\Http\Request;
 use Settings;
 
-class GalleryController extends Controller
-{
+class GalleryController extends Controller {
     /**
      * Shows the submission index page.
      *
@@ -20,8 +19,7 @@ class GalleryController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getSubmissionIndex(Request $request, $status = null)
-    {
+    public function getSubmissionIndex(Request $request, $status = null) {
         $submissions = GallerySubmission::collaboratorApproved()->where('status', $status ? ucfirst($status) : 'Pending');
         if ($request->get('gallery_id')) {
             $submissions->where(function ($query) use ($request) {
@@ -47,8 +45,7 @@ class GalleryController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCurrencyIndex(Request $request, $status = null)
-    {
+    public function getCurrencyIndex(Request $request, $status = null) {
         $submissions = GallerySubmission::requiresAward()->where('is_valued', !$status || $status == 'pending' ? 0 : 1);
         if ($request->get('gallery_id')) {
             $submissions->where(function ($query) use ($request) {
@@ -77,8 +74,7 @@ class GalleryController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postEditSubmission(Request $request, GalleryManager $service, $id, $action)
-    {
+    public function postEditSubmission(Request $request, GalleryManager $service, $id, $action) {
         if (!$id) {
             flash('Invalid submission selected.')->error();
         }
@@ -115,8 +111,7 @@ class GalleryController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    private function postVote($id, GalleryManager $service, $action)
-    {
+    private function postVote($id, GalleryManager $service, $action) {
         $submission = GallerySubmission::where('id', $id)->where('status', 'Pending')->first();
         if (!$submission) {
             throw new \Exception('Invalid submission.');
@@ -144,8 +139,7 @@ class GalleryController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    private function postStaffComments($id, $data, GalleryManager $service)
-    {
+    private function postStaffComments($id, $data, GalleryManager $service) {
         if ($service->postStaffComments($id, $data, Auth::user())) {
             flash('Comments updated succesfully.')->success();
         } else {
@@ -166,8 +160,7 @@ class GalleryController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    private function postValue($id, $data, GalleryManager $service)
-    {
+    private function postValue($id, $data, GalleryManager $service) {
         if ($service->postValueSubmission($id, $data, Auth::user())) {
             flash('Submission evaluated succesfully.')->success();
         } else {

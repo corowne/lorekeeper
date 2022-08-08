@@ -9,8 +9,7 @@ use App\Models\Character\CharacterImage;
 use DB;
 use Illuminate\Console\Command;
 
-class ClearDeletedCharacterAttachments extends Command
-{
+class ClearDeletedCharacterAttachments extends Command {
     /**
      * The name and signature of the console command.
      *
@@ -28,8 +27,7 @@ class ClearDeletedCharacterAttachments extends Command
     /**
      * Create a new command instance.
      */
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
     }
 
@@ -38,8 +36,7 @@ class ClearDeletedCharacterAttachments extends Command
      *
      * @return mixed
      */
-    public function handle()
-    {
+    public function handle() {
         // Get deleted character IDs
         $deletedCharacterIds = DB::table('characters')->whereNotNull('deleted_at')->pluck('id');
 

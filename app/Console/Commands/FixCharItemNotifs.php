@@ -5,8 +5,7 @@ namespace App\Console\Commands;
 use App\Services\ExtensionService;
 use Illuminate\Console\Command;
 
-class FixCharItemNotifs extends Command
-{
+class FixCharItemNotifs extends Command {
     /**
      * The name and signature of the console command.
      *
@@ -24,8 +23,7 @@ class FixCharItemNotifs extends Command
     /**
      * Create a new command instance.
      */
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
     }
 
@@ -34,8 +32,7 @@ class FixCharItemNotifs extends Command
      *
      * @return mixed
      */
-    public function handle()
-    {
+    public function handle() {
         //
         (new ExtensionService)->updateNotifications(39, 501);
         (new ExtensionService)->updateNotifications(40, 502);

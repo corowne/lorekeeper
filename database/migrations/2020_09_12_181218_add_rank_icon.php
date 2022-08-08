@@ -4,13 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddRankIcon extends Migration
-{
+class AddRankIcon extends Migration {
     /**
      * Run the migrations.
      */
-    public function up()
-    {
+    public function up() {
         Schema::table('ranks', function (Blueprint $table) {
             $table->string('icon', 100)->after('color')->default('fas fa-user')->nullable();
         });
@@ -19,8 +17,7 @@ class AddRankIcon extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
-    {
+    public function down() {
         Schema::table('ranks', function (Blueprint $table) {
             $table->dropColumn('icon');
         });

@@ -8,8 +8,7 @@ use Illuminate\Support\Str;
 use Spatie\Feed\Feedable;
 use Spatie\Feed\FeedItem;
 
-class News extends Model implements Feedable
-{
+class News extends Model implements Feedable {
     use Commentable;
     /**
      * The attributes that are mass assignable.
@@ -70,8 +69,7 @@ class News extends Model implements Feedable
     /**
      * Get the user who created the news post.
      */
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo('App\Models\User\User');
     }
 
@@ -88,8 +86,7 @@ class News extends Model implements Feedable
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeVisible($query)
-    {
+    public function scopeVisible($query) {
         return $query->where('is_visible', 1);
     }
 
@@ -100,8 +97,7 @@ class News extends Model implements Feedable
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeShouldBeVisible($query)
-    {
+    public function scopeShouldBeVisible($query) {
         return $query->whereNotNull('post_at')->where('post_at', '<', Carbon::now())->where('is_visible', 0);
     }
 
@@ -116,8 +112,7 @@ class News extends Model implements Feedable
      *
      * @return bool
      */
-    public function getSlugAttribute()
-    {
+    public function getSlugAttribute() {
         return $this->id.'.'.Str::slug($this->title);
     }
 
@@ -126,8 +121,7 @@ class News extends Model implements Feedable
      *
      * @return string
      */
-    public function getDisplayNameAttribute()
-    {
+    public function getDisplayNameAttribute() {
         return '<a href="'.$this->url.'">'.$this->title.'</a>';
     }
 
@@ -136,8 +130,7 @@ class News extends Model implements Feedable
      *
      * @return string
      */
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return url('news/'.$this->slug);
     }
 
@@ -150,8 +143,7 @@ class News extends Model implements Feedable
     /**
      * Returns all feed items.
      */
-    public static function getFeedItems()
-    {
+    public static function getFeedItems() {
         return self::visible()->get();
     }
 
@@ -160,8 +152,7 @@ class News extends Model implements Feedable
      *
      * @return /Spatie/Feed/FeedItem;
      */
-    public function toFeedItem(): FeedItem
-    {
+    public function toFeedItem(): FeedItem {
         return FeedItem::create([
             'id'         => '/news/'.$this->id,
             'title'      => $this->title,

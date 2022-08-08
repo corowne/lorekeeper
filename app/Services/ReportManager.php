@@ -8,8 +8,7 @@ use DB;
 use Notifications;
 use Settings;
 
-class ReportManager extends Service
-{
+class ReportManager extends Service {
     /*
     |--------------------------------------------------------------------------
     | Report Manager
@@ -28,8 +27,7 @@ class ReportManager extends Service
      *
      * @return mixed
      */
-    public function createReport($data, $user, $isClaim = false)
-    {
+    public function createReport($data, $user, $isClaim = false) {
         DB::beginTransaction();
 
         try {
@@ -51,7 +49,7 @@ class ReportManager extends Service
                 'comments'   => $data['comments'],
                 'error_type' => $data['error'],
                 'is_br'      => $data['is_br'],
-                ]);
+            ]);
 
             return $this->commitReturn($report);
         } catch (\Exception $e) {
@@ -69,8 +67,7 @@ class ReportManager extends Service
      *
      * @return mixed
      */
-    public function assignReport($data, $user)
-    {
+    public function assignReport($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -110,8 +107,7 @@ class ReportManager extends Service
      *
      * @return mixed
      */
-    public function closeReport($data, $user)
-    {
+    public function closeReport($data, $user) {
         DB::beginTransaction();
 
         try {

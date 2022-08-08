@@ -5,8 +5,7 @@ namespace App\Models\Item;
 use App\Models\Model;
 use Config;
 
-class ItemTag extends Model
-{
+class ItemTag extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -32,8 +31,7 @@ class ItemTag extends Model
     /**
      * Get the item that this tag is attached to.
      */
-    public function item()
-    {
+    public function item() {
         return $this->belongsTo('App\Models\Item\Item');
     }
 
@@ -50,8 +48,7 @@ class ItemTag extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeActive($query)
-    {
+    public function scopeActive($query) {
         return $query->where('is_active', 1);
     }
 
@@ -63,8 +60,7 @@ class ItemTag extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeType($query, $tag)
-    {
+    public function scopeType($query, $tag) {
         return $query->where('tag', $tag);
     }
 
@@ -79,8 +75,7 @@ class ItemTag extends Model
      *
      * @return string
      */
-    public function getDisplayTagAttribute()
-    {
+    public function getDisplayTagAttribute() {
         $tag = Config::get('lorekeeper.item_tags.'.$this->tag);
         if ($tag) {
             return '<span class="badge" style="color: '.$tag['text_color'].';background-color: '.$tag['background_color'].';">'.$tag['name'].'</span>';
@@ -94,8 +89,7 @@ class ItemTag extends Model
      *
      * @return mixed
      */
-    public function getName()
-    {
+    public function getName() {
         return Config::get('lorekeeper.item_tags.'.$this->tag.'.name');
     }
 
@@ -104,8 +98,7 @@ class ItemTag extends Model
      *
      * @return string
      */
-    public function getAdminUrlAttribute()
-    {
+    public function getAdminUrlAttribute() {
         return url('admin/data/items/tag/'.$this->item_id.'/'.$this->tag);
     }
 
@@ -114,8 +107,7 @@ class ItemTag extends Model
      *
      * @return array
      */
-    public function getDataAttribute()
-    {
+    public function getDataAttribute() {
         return json_decode($this->attributes['data'], true);
     }
 
@@ -124,8 +116,7 @@ class ItemTag extends Model
      *
      * @return mixed
      */
-    public function getServiceAttribute()
-    {
+    public function getServiceAttribute() {
         $class = 'App\Services\Item\\'.str_replace(' ', '', ucwords(str_replace('_', ' ', $this->tag))).'Service';
 
         return new $class();
@@ -142,8 +133,7 @@ class ItemTag extends Model
      *
      * @return mixed
      */
-    public function getEditData()
-    {
+    public function getEditData() {
         return $this->service->getEditData();
     }
 
@@ -152,8 +142,7 @@ class ItemTag extends Model
      *
      * @return mixed
      */
-    public function getData()
-    {
+    public function getData() {
         return $this->service->getTagData($this);
     }
 }

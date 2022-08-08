@@ -8,8 +8,7 @@ use App\Models\Species\Species;
 use Config;
 use DB;
 
-class Feature extends Model
-{
+class Feature extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -64,32 +63,28 @@ class Feature extends Model
     /**
      * Get the rarity of this feature.
      */
-    public function rarity()
-    {
+    public function rarity() {
         return $this->belongsTo('App\Models\Rarity');
     }
 
     /**
      * Get the species the feature belongs to.
      */
-    public function species()
-    {
+    public function species() {
         return $this->belongsTo('App\Models\Species\Species');
     }
 
     /**
      * Get the subtype the feature belongs to.
      */
-    public function subtype()
-    {
+    public function subtype() {
         return $this->belongsTo('App\Models\Species\Subtype');
     }
 
     /**
      * Get the category the feature belongs to.
      */
-    public function category()
-    {
+    public function category() {
         return $this->belongsTo('App\Models\Feature\FeatureCategory', 'feature_category_id');
     }
 
@@ -107,8 +102,7 @@ class Feature extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSortAlphabetical($query, $reverse = false)
-    {
+    public function scopeSortAlphabetical($query, $reverse = false) {
         return $query->orderBy('name', $reverse ? 'DESC' : 'ASC');
     }
 
@@ -119,8 +113,7 @@ class Feature extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSortCategory($query)
-    {
+    public function scopeSortCategory($query) {
         if (FeatureCategory::all()->count()) {
             return $query->orderBy(FeatureCategory::select('sort')->whereColumn('features.feature_category_id', 'feature_categories.id'), 'DESC');
         }
@@ -135,8 +128,7 @@ class Feature extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSortSpecies($query)
-    {
+    public function scopeSortSpecies($query) {
         $ids = Species::orderBy('sort', 'DESC')->pluck('id')->toArray();
 
         return count($ids) ? $query->orderByRaw(DB::raw('FIELD(species_id, '.implode(',', $ids).')')) : $query;
@@ -150,8 +142,7 @@ class Feature extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSortRarity($query, $reverse = false)
-    {
+    public function scopeSortRarity($query, $reverse = false) {
         $ids = Rarity::orderBy('sort', $reverse ? 'ASC' : 'DESC')->pluck('id')->toArray();
 
         return count($ids) ? $query->orderByRaw(DB::raw('FIELD(rarity_id, '.implode(',', $ids).')')) : $query;
@@ -164,8 +155,7 @@ class Feature extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSortNewest($query)
-    {
+    public function scopeSortNewest($query) {
         return $query->orderBy('id', 'DESC');
     }
 
@@ -176,8 +166,7 @@ class Feature extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSortOldest($query)
-    {
+    public function scopeSortOldest($query) {
         return $query->orderBy('id');
     }
 
@@ -192,8 +181,7 @@ class Feature extends Model
      *
      * @return string
      */
-    public function getDisplayNameAttribute()
-    {
+    public function getDisplayNameAttribute() {
         return '<a href="'.$this->url.'" class="display-trait">'.$this->name.'</a>'.($this->rarity ? ' ('.$this->rarity->displayName.')' : '');
     }
 
@@ -202,8 +190,7 @@ class Feature extends Model
      *
      * @return string
      */
-    public function getImageDirectoryAttribute()
-    {
+    public function getImageDirectoryAttribute() {
         return 'images/data/traits';
     }
 
@@ -212,8 +199,7 @@ class Feature extends Model
      *
      * @return string
      */
-    public function getImageFileNameAttribute()
-    {
+    public function getImageFileNameAttribute() {
         return $this->id.'-image.png';
     }
 
@@ -222,8 +208,7 @@ class Feature extends Model
      *
      * @return string
      */
-    public function getImagePathAttribute()
-    {
+    public function getImagePathAttribute() {
         return public_path($this->imageDirectory);
     }
 
@@ -232,8 +217,7 @@ class Feature extends Model
      *
      * @return string
      */
-    public function getImageUrlAttribute()
-    {
+    public function getImageUrlAttribute() {
         if (!$this->has_image) {
             return null;
         }
@@ -246,8 +230,7 @@ class Feature extends Model
      *
      * @return string
      */
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return url('world/traits?name='.$this->name);
     }
 
@@ -256,8 +239,7 @@ class Feature extends Model
      *
      * @return string
      */
-    public function getSearchUrlAttribute()
-    {
+    public function getSearchUrlAttribute() {
         return url('masterlist?feature_id[]='.$this->id);
     }
 
@@ -267,8 +249,7 @@ class Feature extends Model
 
     **********************************************************************************************/
 
-    public static function getDropdownItems()
-    {
+    public static function getDropdownItems() {
         if (Config::get('lorekeeper.extensions.organised_traits_dropdown')) {
             $sorted_feature_categories = collect(FeatureCategory::all()->sortBy('sort')->pluck('name')->toArray());
 

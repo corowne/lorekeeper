@@ -4,8 +4,7 @@ namespace App\Models\Currency;
 
 use App\Models\Model;
 
-class Currency extends Model
-{
+class Currency extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -61,8 +60,7 @@ class Currency extends Model
      *
      * @return string
      */
-    public function getDisplayIconAttribute()
-    {
+    public function getDisplayIconAttribute() {
         return '<img src="'.$this->currencyIconUrl.'" title="'.$this->name.($this->abbreviation ? ' ('.$this->abbreviation.')' : '').'" data-toggle="tooltip" alt="'.$this->name.'"/>';
     }
 
@@ -71,8 +69,7 @@ class Currency extends Model
      *
      * @return string
      */
-    public function getImageDirectoryAttribute()
-    {
+    public function getImageDirectoryAttribute() {
         return 'images/data/currencies';
     }
 
@@ -81,8 +78,7 @@ class Currency extends Model
      *
      * @return string
      */
-    public function getCurrencyImageFileNameAttribute()
-    {
+    public function getCurrencyImageFileNameAttribute() {
         return $this->id.'-image.png';
     }
 
@@ -91,8 +87,7 @@ class Currency extends Model
      *
      * @return string
      */
-    public function getCurrencyIconFileNameAttribute()
-    {
+    public function getCurrencyIconFileNameAttribute() {
         return $this->id.'-icon.png';
     }
 
@@ -101,8 +96,7 @@ class Currency extends Model
      *
      * @return string
      */
-    public function getCurrencyImagePathAttribute()
-    {
+    public function getCurrencyImagePathAttribute() {
         return public_path($this->imageDirectory);
     }
 
@@ -111,8 +105,7 @@ class Currency extends Model
      *
      * @return string
      */
-    public function getCurrencyIconPathAttribute()
-    {
+    public function getCurrencyIconPathAttribute() {
         return public_path($this->imageDirectory);
     }
 
@@ -121,8 +114,7 @@ class Currency extends Model
      *
      * @return string
      */
-    public function getCurrencyImageUrlAttribute()
-    {
+    public function getCurrencyImageUrlAttribute() {
         if (!$this->has_image) {
             return null;
         }
@@ -135,8 +127,7 @@ class Currency extends Model
      *
      * @return string
      */
-    public function getCurrencyIconUrlAttribute()
-    {
+    public function getCurrencyIconUrlAttribute() {
         if (!$this->has_icon) {
             return null;
         }
@@ -155,8 +146,7 @@ class Currency extends Model
      *
      * @return string
      */
-    public function getDisplayNameAttribute()
-    {
+    public function getDisplayNameAttribute() {
         return '<a href="'.$this->url.'" class="display-currency">'.$this->name.'</a>';
     }
 
@@ -165,8 +155,7 @@ class Currency extends Model
      *
      * @return string
      */
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return url('world/currencies?name='.$this->name);
     }
 
@@ -175,8 +164,7 @@ class Currency extends Model
      *
      * @return string
      */
-    public function getAssetTypeAttribute()
-    {
+    public function getAssetTypeAttribute() {
         return 'currencies';
     }
 
@@ -193,8 +181,7 @@ class Currency extends Model
      *
      * @return string
      */
-    public function display($value)
-    {
+    public function display($value) {
         $ret = '<span class="display-currency">'.$value.' ';
         if ($this->has_icon) {
             $ret .= $this->displayIcon;

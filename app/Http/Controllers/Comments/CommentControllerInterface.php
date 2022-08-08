@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Comments;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 
-interface CommentControllerInterface
-{
+interface CommentControllerInterface {
     /**
      * Creates a new comment for given model.
      */

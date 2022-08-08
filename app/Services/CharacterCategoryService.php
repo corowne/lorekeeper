@@ -6,8 +6,7 @@ use App\Models\Character\Character;
 use App\Models\Character\CharacterCategory;
 use DB;
 
-class CharacterCategoryService extends Service
-{
+class CharacterCategoryService extends Service {
     /*
     |--------------------------------------------------------------------------
     | Character Category Service
@@ -25,8 +24,7 @@ class CharacterCategoryService extends Service
      *
      * @return \App\Models\Character\CharacterCategory|bool
      */
-    public function createCharacterCategory($data, $user)
-    {
+    public function createCharacterCategory($data, $user) {
         DB::beginTransaction();
 
         try {
@@ -68,8 +66,7 @@ class CharacterCategoryService extends Service
      *
      * @return \App\Models\Character\CharacterCategory|bool
      */
-    public function updateCharacterCategory($category, $data, $user)
-    {
+    public function updateCharacterCategory($category, $data, $user) {
         DB::beginTransaction();
 
         try {
@@ -115,8 +112,7 @@ class CharacterCategoryService extends Service
      *
      * @return bool
      */
-    public function deleteCharacterCategory($category, $user)
-    {
+    public function deleteCharacterCategory($category, $user) {
         DB::beginTransaction();
 
         try {
@@ -149,8 +145,7 @@ class CharacterCategoryService extends Service
      *
      * @return bool
      */
-    public function sortCharacterCategory($data)
-    {
+    public function sortCharacterCategory($data) {
         DB::beginTransaction();
 
         try {
@@ -177,8 +172,7 @@ class CharacterCategoryService extends Service
      *
      * @return array
      */
-    private function populateCategoryData($data, $category = null)
-    {
+    private function populateCategoryData($data, $category = null) {
         if (isset($data['description']) && $data['description']) {
             $data['parsed_description'] = parse($data['description']);
         }

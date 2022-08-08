@@ -4,13 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddBugReportOption extends Migration
-{
+class AddBugReportOption extends Migration {
     /**
      * Run the migrations.
      */
-    public function up()
-    {
+    public function up() {
         //
         Schema::table('reports', function (Blueprint $table) {
             $table->boolean('is_br')->default(0);
@@ -21,8 +19,7 @@ class AddBugReportOption extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
-    {
+    public function down() {
         //
         Schema::table('reports', function (Blueprint $table) {
             $table->dropColumn('is_br');

@@ -4,8 +4,7 @@ namespace App\Models\User;
 
 use App\Models\Model;
 
-class UserSettings extends Model
-{
+class UserSettings extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -46,8 +45,7 @@ class UserSettings extends Model
     /**
      * Get the user this set of settings belongs to.
      */
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo('App\Models\User\User');
     }
 }

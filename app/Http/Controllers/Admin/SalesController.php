@@ -9,15 +9,13 @@ use App\Services\SalesService;
 use Auth;
 use Illuminate\Http\Request;
 
-class SalesController extends Controller
-{
+class SalesController extends Controller {
     /**
      * Shows the Sales index.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex()
-    {
+    public function getIndex() {
         return view('admin.sales.sales', [
             'saleses' => Sales::orderBy('post_at', 'DESC')->paginate(20),
         ]);
@@ -28,8 +26,7 @@ class SalesController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCreateSales()
-    {
+    public function getCreateSales() {
         return view('admin.sales.create_edit_sales', [
             'sales' => new Sales,
         ]);
@@ -42,8 +39,7 @@ class SalesController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getEditSales($id)
-    {
+    public function getEditSales($id) {
         $sales = Sales::find($id);
         if (!$sales) {
             abort(404);
@@ -61,8 +57,7 @@ class SalesController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCharacterInfo($slug)
-    {
+    public function getCharacterInfo($slug) {
         $character = Character::visible()->where('slug', $slug)->first();
 
         return view('home._character', [
@@ -78,8 +73,7 @@ class SalesController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCreateEditSales(Request $request, SalesService $service, $id = null)
-    {
+    public function postCreateEditSales(Request $request, SalesService $service, $id = null) {
         $id ? $request->validate(Sales::$updateRules) : $request->validate(Sales::$createRules);
         $data = $request->only([
             'title', 'text', 'post_at', 'is_visible', 'bump', 'is_open', 'comments_open_at',
@@ -108,8 +102,7 @@ class SalesController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getDeleteSales($id)
-    {
+    public function getDeleteSales($id) {
         $sales = Sales::find($id);
 
         return view('admin.sales._delete_sales', [
@@ -125,8 +118,7 @@ class SalesController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postDeleteSales(Request $request, SalesService $service, $id)
-    {
+    public function postDeleteSales(Request $request, SalesService $service, $id) {
         if ($id && $service->deleteSales(Sales::find($id))) {
             flash('Sales deleted successfully.')->success();
         } else {

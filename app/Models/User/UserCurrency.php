@@ -4,8 +4,7 @@ namespace App\Models\User;
 
 use App\Models\Model;
 
-class UserCurrency extends Model
-{
+class UserCurrency extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -40,16 +39,14 @@ class UserCurrency extends Model
     /**
      * Get the user who owns the currency.
      */
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo('App\Models\User\User');
     }
 
     /**
      * Get the currency associated with this record.
      */
-    public function currency()
-    {
+    public function currency() {
         return $this->belongsTo('App\Models\Currency\Currency');
     }
 
@@ -64,8 +61,7 @@ class UserCurrency extends Model
      *
      * @return string
      */
-    public function getNameWithQuantityAttribute()
-    {
+    public function getNameWithQuantityAttribute() {
         return $this->currency->name.' [Owned: '.$this->quantity.']';
     }
 }

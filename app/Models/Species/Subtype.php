@@ -4,8 +4,7 @@ namespace App\Models\Species;
 
 use App\Models\Model;
 
-class Subtype extends Model
-{
+class Subtype extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -63,8 +62,7 @@ class Subtype extends Model
     /**
      * Get the species the subtype belongs to.
      */
-    public function species()
-    {
+    public function species() {
         return $this->belongsTo('App\Models\Species\Species', 'species_id');
     }
 
@@ -79,8 +77,7 @@ class Subtype extends Model
      *
      * @return string
      */
-    public function getNameWithSpeciesAttribute()
-    {
+    public function getNameWithSpeciesAttribute() {
         return $this->name.' ['.$this->species->name.' Subtype]';
     }
 
@@ -89,8 +86,7 @@ class Subtype extends Model
      *
      * @return string
      */
-    public function getDisplayNameAttribute()
-    {
+    public function getDisplayNameAttribute() {
         return '<a href="'.$this->url.'" class="display-subtype">'.$this->name.'</a>';
     }
 
@@ -99,8 +95,7 @@ class Subtype extends Model
      *
      * @return string
      */
-    public function getImageDirectoryAttribute()
-    {
+    public function getImageDirectoryAttribute() {
         return 'images/data/subtypes';
     }
 
@@ -109,8 +104,7 @@ class Subtype extends Model
      *
      * @return string
      */
-    public function getSubtypeImageFileNameAttribute()
-    {
+    public function getSubtypeImageFileNameAttribute() {
         return $this->id.'-image.png';
     }
 
@@ -119,8 +113,7 @@ class Subtype extends Model
      *
      * @return string
      */
-    public function getSubtypeImagePathAttribute()
-    {
+    public function getSubtypeImagePathAttribute() {
         return public_path($this->imageDirectory);
     }
 
@@ -129,8 +122,7 @@ class Subtype extends Model
      *
      * @return string
      */
-    public function getSubtypeImageUrlAttribute()
-    {
+    public function getSubtypeImageUrlAttribute() {
         if (!$this->has_image) {
             return null;
         }
@@ -143,8 +135,7 @@ class Subtype extends Model
      *
      * @return string
      */
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return url('world/subtypes?name='.$this->name);
     }
 
@@ -153,8 +144,7 @@ class Subtype extends Model
      *
      * @return string
      */
-    public function getSearchUrlAttribute()
-    {
+    public function getSearchUrlAttribute() {
         return url('masterlist?subtype_id='.$this->id);
     }
 }

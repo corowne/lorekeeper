@@ -5,8 +5,7 @@ namespace App\Models\User;
 use App\Models\Model;
 use App\Traits\Commentable;
 
-class UserProfile extends Model
-{
+class UserProfile extends Model {
     use Commentable;
 
     /**
@@ -41,8 +40,7 @@ class UserProfile extends Model
     /**
      * Get the user this profile belongs to.
      */
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo('App\Models\User\User');
     }
 }

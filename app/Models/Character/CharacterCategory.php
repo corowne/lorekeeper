@@ -4,8 +4,7 @@ namespace App\Models\Character;
 
 use App\Models\Model;
 
-class CharacterCategory extends Model
-{
+class CharacterCategory extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -54,8 +53,7 @@ class CharacterCategory extends Model
     /**
      * Get the sub masterlist for this species.
      */
-    public function sublist()
-    {
+    public function sublist() {
         return $this->belongsTo('App\Models\Character\Sublist', 'masterlist_sub_id');
     }
 
@@ -70,8 +68,7 @@ class CharacterCategory extends Model
      *
      * @return string
      */
-    public function getDisplayNameAttribute()
-    {
+    public function getDisplayNameAttribute() {
         return '<a href="'.$this->url.'" class="display-category">'.$this->name.' ('.$this->code.')</a>';
     }
 
@@ -80,8 +77,7 @@ class CharacterCategory extends Model
      *
      * @return string
      */
-    public function getImageDirectoryAttribute()
-    {
+    public function getImageDirectoryAttribute() {
         return 'images/data/character-categories';
     }
 
@@ -90,8 +86,7 @@ class CharacterCategory extends Model
      *
      * @return string
      */
-    public function getCategoryImageFileNameAttribute()
-    {
+    public function getCategoryImageFileNameAttribute() {
         return $this->id.'-image.png';
     }
 
@@ -100,8 +95,7 @@ class CharacterCategory extends Model
      *
      * @return string
      */
-    public function getCategoryImagePathAttribute()
-    {
+    public function getCategoryImagePathAttribute() {
         return public_path($this->imageDirectory);
     }
 
@@ -110,8 +104,7 @@ class CharacterCategory extends Model
      *
      * @return string
      */
-    public function getCategoryImageUrlAttribute()
-    {
+    public function getCategoryImageUrlAttribute() {
         if (!$this->has_image) {
             return null;
         }
@@ -124,8 +117,7 @@ class CharacterCategory extends Model
      *
      * @return string
      */
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return url('world/character-categories?name='.$this->name);
     }
 
@@ -134,8 +126,7 @@ class CharacterCategory extends Model
      *
      * @return string
      */
-    public function getSearchUrlAttribute()
-    {
+    public function getSearchUrlAttribute() {
         if ($this->masterlist_sub_id != 0 && $this->sublist->show_main == 0) {
             return url('sublist/'.$this->sublist->key.'?character_category_id='.$this->id);
         } else {

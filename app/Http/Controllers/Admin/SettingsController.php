@@ -6,15 +6,13 @@ use App\Http\Controllers\Controller;
 use DB;
 use Illuminate\Http\Request;
 
-class SettingsController extends Controller
-{
+class SettingsController extends Controller {
     /**
      * Shows the settings index.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex()
-    {
+    public function getIndex() {
         return view('admin.settings.settings', [
             'settings' => DB::table('site_settings')->orderBy('key')->paginate(20),
         ]);
@@ -27,8 +25,7 @@ class SettingsController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postEditSetting(Request $request, $key)
-    {
+    public function postEditSetting(Request $request, $key) {
         if (DB::table('site_settings')->where('key', $key)->update(['value' => $request->get('value')])) {
             flash('Setting updated successfully.')->success();
         } else {

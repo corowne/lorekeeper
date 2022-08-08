@@ -4,8 +4,7 @@ namespace App\Models\Submission;
 
 use App\Models\Model;
 
-class SubmissionCharacter extends Model
-{
+class SubmissionCharacter extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -31,16 +30,14 @@ class SubmissionCharacter extends Model
     /**
      * Get the submission this is attached to.
      */
-    public function submission()
-    {
+    public function submission() {
         return $this->belongsTo('App\Models\Submission\Submission', 'submission_id');
     }
 
     /**
      * Get the character being attached to the submission.
      */
-    public function character()
-    {
+    public function character() {
         return $this->belongsTo('App\Models\Character\Character', 'character_id');
     }
 
@@ -55,8 +52,7 @@ class SubmissionCharacter extends Model
      *
      * @return array
      */
-    public function getDataAttribute()
-    {
+    public function getDataAttribute() {
         return json_decode($this->attributes['data'], true);
     }
 
@@ -65,8 +61,7 @@ class SubmissionCharacter extends Model
      *
      * @return array
      */
-    public function getRewardsAttribute()
-    {
+    public function getRewardsAttribute() {
         $assets = parseAssetData($this->data);
         $rewards = [];
         foreach ($assets as $type => $a) {
