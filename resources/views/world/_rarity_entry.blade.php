@@ -12,6 +12,9 @@
                 @if (isset($searchCharactersUrl) && $searchCharactersUrl)
                     <a href="{{ $searchCharactersUrl }}" class="world-entry-search text-muted small ml-4"><i class="fas fa-search"></i> Characters</a>
                 @endif
+                @if(isset($edit))
+                    <x-admin-edit title="{{$edit['title']}}" :object="$edit['object']"/>
+                @endif
             </div>
 
         </h3>

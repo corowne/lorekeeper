@@ -4,6 +4,7 @@
         </div>
     @endif
     <div class="{{ $subtype->subtypeImageUrl ? 'col-md-9' : 'col-12' }}">
+        <x-admin-edit title="Subtype" :object="$subtype"/>
         <h3>{!! $subtype->displayName !!} ({!! $subtype->species->displayName !!} Subtype) <a href="{{ $subtype->searchUrl }}" class="world-entry-search text-muted"><i class="fas fa-search"></i></a></h3>
         <div class="world-entry-text">
             {!! $subtype->parsed_description !!}

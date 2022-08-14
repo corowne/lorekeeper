@@ -125,4 +125,24 @@ class Shop extends Model {
     public function getUrlAttribute() {
         return url('shops/'.$this->id);
     }
+
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/data/shops/edit/'.$this->id);
+    }
+
+    /**
+     * Gets the power required to edit this model.
+     *
+     * @return string
+     */
+    public function getAdminPowerAttribute()
+    {
+        return url('edit_data');
+    }
 }

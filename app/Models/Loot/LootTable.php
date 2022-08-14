@@ -79,6 +79,26 @@ class LootTable extends Model {
         return 'loot_tables';
     }
 
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/data/loot-tables/edit/'.$this->id);
+    }
+
+    /**
+     * Gets the power required to edit this model.
+     *
+     * @return string
+     */
+    public function getAdminPowerAttribute()
+    {
+        return url('edit_data');
+    }
+
     /**********************************************************************************************
 
         OTHER FUNCTIONS

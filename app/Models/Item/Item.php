@@ -366,6 +366,26 @@ class Item extends Model {
         return Prompt::whereIn('id', $itemPrompts)->get();
     }
 
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/data/items/edit/'.$this->id);
+    }
+
+    /**
+     * Gets the power required to edit this model.
+     *
+     * @return string
+     */
+    public function getAdminPowerAttribute()
+    {
+        return url('edit_data');
+    }
+
     /**********************************************************************************************
 
         OTHER FUNCTIONS

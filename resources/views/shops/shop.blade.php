@@ -5,6 +5,7 @@
 @endsection
 
 @section('shops-content')
+    <x-admin-edit title="Shop" :object="$shop"/>
     {!! breadcrumbs(['Shops' => 'shops', $shop->name => $shop->url]) !!}
 
     <h1>

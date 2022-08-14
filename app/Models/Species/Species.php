@@ -154,4 +154,24 @@ class Species extends Model {
     public function getVisualTraitsUrlAttribute() {
         return url('/world/species/'.$this->id.'/traits');
     }
+
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/data/species/edit/'.$this->id);
+    }
+
+    /**
+     * Gets the power required to edit this model.
+     *
+     * @return string
+     */
+    public function getAdminPowerAttribute()
+    {
+        return url('edit_data');
+    }
 }

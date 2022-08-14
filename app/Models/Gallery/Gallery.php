@@ -156,6 +156,26 @@ class Gallery extends Model {
     }
 
     /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/data/galleries/edit/'.$this->id);
+    }
+
+    /**
+     * Gets the power required to edit this model.
+     *
+     * @return string
+     */
+    public function getAdminPowerAttribute()
+    {
+        return url('edit_data');
+    }
+
+    /**
      * Gets whether or not the user can submit to the gallery.
      *
      * @param mixed|null $user
@@ -175,4 +195,5 @@ class Gallery extends Model {
             return false;
         }
     }
+
 }

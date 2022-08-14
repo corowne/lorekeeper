@@ -147,4 +147,24 @@ class Subtype extends Model {
     public function getSearchUrlAttribute() {
         return url('masterlist?subtype_id='.$this->id);
     }
+
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/data/subtypes/edit/'.$this->id);
+    }
+
+    /**
+     * Gets the power required to edit this model.
+     *
+     * @return string
+     */
+    public function getAdminPowerAttribute()
+    {
+        return url('edit_data');
+    }
 }

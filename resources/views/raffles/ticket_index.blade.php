@@ -5,6 +5,7 @@
 @endsection
 
 @section('content')
+    <x-admin-edit title="Raffle" :object="$raffle"/>
     {!! breadcrumbs(['Raffles' => 'raffles', 'Raffle: ' . $raffle->name => 'raffles/view/' . $raffle->id]) !!}
     <h1>Raffle: {{ $raffle->name }}</h1>
     @if ($raffle->is_active == 1)
@@ -26,8 +27,7 @@
                         <th>User</th>
                     </thead>
                     <tbody>
-                        @foreach ($raffle->tickets()->winners()->get()
-        as $winner)
+                        @foreach ($raffle->tickets()->winners()->get() as $winner)
                             <tr>
                                 <td class="text-center">{{ $winner->position }}</td>
                                 <td class="text-left">{!! $winner->displayHolderName !!}</td>

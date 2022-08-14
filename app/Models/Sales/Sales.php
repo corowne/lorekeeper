@@ -189,6 +189,26 @@ class Sales extends Model implements Feedable {
         return url('sales/'.$this->slug);
     }
 
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/sales/edit/'.$this->id);
+    }
+
+    /**
+     * Gets the power required to edit this model.
+     *
+     * @return string
+     */
+    public function getAdminPowerAttribute()
+    {
+        return url('edit_pages');
+    }
+
     /**********************************************************************************************
 
         OTHER FUNCTIONS
