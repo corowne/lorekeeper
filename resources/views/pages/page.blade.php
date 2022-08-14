@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <x-admin-edit title="Page" :object="$page"/>
+    <x-admin-edit title="Page" :object="$page" />
     {!! breadcrumbs([$page->title => $page->url]) !!}
     <h1>{{ $page->title }}</h1>
     <div class="mb-4">

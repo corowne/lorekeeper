@@ -5,10 +5,10 @@
             </a></div>
     @endif
     <div class="{{ $imageUrl ? 'col-md-9' : 'col-12' }}">
-            @if(isset($edit))
-                <x-admin-edit title="{{$edit['title']}}" :object="$edit['object']"/>
-            @endif
-            <h3>{!! $name !!} @if (isset($searchUrl) && $searchUrl)
+        @if (isset($edit))
+            <x-admin-edit title="{{ $edit['title'] }}" :object="$edit['object']" />
+        @endif
+        <h3>{!! $name !!} @if (isset($searchUrl) && $searchUrl)
                 <a href="{{ $searchUrl }}" class="world-entry-search text-muted"><i class="fas fa-search"></i></a>
             @endif
         </h3>
