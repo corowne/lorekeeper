@@ -51,7 +51,7 @@ class News extends Model
         'title' => 'required|between:3,100',
         'text' => 'required',
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -63,21 +63,21 @@ class News extends Model
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the user who created the news post.
      */
-    public function user() 
+    public function user()
     {
         return $this->belongsTo('App\Models\User\User');
     }
 
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -105,7 +105,7 @@ class News extends Model
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -139,4 +139,15 @@ class News extends Model
     {
         return url('news/'.$this->slug);
     }
+
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/news/edit/'.$this->id);
+    }
+
 }

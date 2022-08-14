@@ -22,7 +22,7 @@ class Shop extends Model
      * @var string
      */
     protected $table = 'shops';
-    
+
     /**
      * Validation rules for creation.
      *
@@ -33,7 +33,7 @@ class Shop extends Model
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -46,7 +46,7 @@ class Shop extends Model
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -54,11 +54,11 @@ class Shop extends Model
     /**
      * Get the shop stock.
      */
-    public function stock() 
+    public function stock()
     {
         return $this->hasMany('App\Models\Shop\ShopStock');
     }
-    
+
     /**
      * Get the shop stock as items for display purposes.
      */
@@ -68,11 +68,11 @@ class Shop extends Model
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
-    
+
     /**
      * Displays the shop's name, linked to its purchase page.
      *
@@ -112,7 +112,7 @@ class Shop extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
@@ -132,5 +132,15 @@ class Shop extends Model
     public function getUrlAttribute()
     {
         return url('shops/'.$this->id);
+    }
+
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/data/shops/edit/'.$this->id);
     }
 }

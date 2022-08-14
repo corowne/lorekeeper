@@ -22,8 +22,8 @@ class Subtype extends Model
      * @var string
      */
     protected $table = 'subtypes';
-    
-    
+
+
     /**
      * Validation rules for creation.
      *
@@ -35,8 +35,8 @@ class Subtype extends Model
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
-    
-    
+
+
     /**
      * Validation rules for updating.
      *
@@ -48,7 +48,7 @@ class Subtype extends Model
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
-    
+
     /**
      * Accessors to append to the model.
      *
@@ -59,21 +59,21 @@ class Subtype extends Model
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the species the subtype belongs to.
      */
-    public function species() 
+    public function species()
     {
         return $this->belongsTo('App\Models\Species\Species', 'species_id');
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -87,7 +87,7 @@ class Subtype extends Model
     {
         return $this->name . ' [' . $this->species->name . ' Subtype]';
     }
-    
+
     /**
      * Displays the model's name, linked to its encyclopedia page.
      *
@@ -127,7 +127,7 @@ class Subtype extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
@@ -157,5 +157,15 @@ class Subtype extends Model
     public function getSearchUrlAttribute()
     {
         return url('masterlist?subtype_id='.$this->id);
+    }
+
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/data/subtypes/edit/'.$this->id);
     }
 }

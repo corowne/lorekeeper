@@ -176,6 +176,16 @@ class Currency extends Model
         return 'currencies';
     }
 
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/data/currencies/edit/'.$this->id);
+    }
+
     /**********************************************************************************************
 
         OTHER FUNCTIONS

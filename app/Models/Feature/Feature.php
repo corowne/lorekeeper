@@ -250,4 +250,14 @@ class Feature extends Model
     {
         return url('masterlist?feature_id[]='.$this->id);
     }
+
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/data/traits/edit/'.$this->id);
+    }
 }

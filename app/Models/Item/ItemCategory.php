@@ -22,7 +22,7 @@ class ItemCategory extends Model
      * @var string
      */
     protected $table = 'item_categories';
-    
+
     /**
      * Validation rules for creation.
      *
@@ -33,7 +33,7 @@ class ItemCategory extends Model
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -46,7 +46,7 @@ class ItemCategory extends Model
     ];
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -90,7 +90,7 @@ class ItemCategory extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
@@ -120,5 +120,15 @@ class ItemCategory extends Model
     public function getSearchUrlAttribute()
     {
         return url('world/items?item_category_id='.$this->id);
+    }
+
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/data/item-categories/edit/'.$this->id);
     }
 }

@@ -22,7 +22,7 @@ class Rarity extends Model
      * @var string
      */
     protected $table = 'rarities';
-    
+
     /**
      * Validation rules for creation.
      *
@@ -34,7 +34,7 @@ class Rarity extends Model
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -48,11 +48,11 @@ class Rarity extends Model
     ];
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
-    
+
     /**
      * Displays the model's name, linked to its encyclopedia page.
      *
@@ -92,7 +92,7 @@ class Rarity extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
@@ -113,7 +113,7 @@ class Rarity extends Model
     {
         return url('world/rarities?name='.$this->name);
     }
-    
+
     /**
      * Gets the URL for an encyclopedia search of features (character traits) in this category.
      *
@@ -123,7 +123,7 @@ class Rarity extends Model
     {
         return url('world/traits?rarity_id='.$this->id);
     }
-    
+
     /**
      * Gets the URL for a masterlist search of characters of this rarity.
      *
@@ -132,5 +132,15 @@ class Rarity extends Model
     public function getSearchCharactersUrlAttribute()
     {
         return url('masterlist?rarity_id='.$this->id);
+    }
+
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/data/rarities/edit/'.$this->id);
     }
 }

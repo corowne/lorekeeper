@@ -22,7 +22,7 @@ class PromptCategory extends Model
      * @var string
      */
     protected $table = 'prompt_categories';
-    
+
     /**
      * Validation rules for creation.
      *
@@ -33,7 +33,7 @@ class PromptCategory extends Model
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -46,11 +46,11 @@ class PromptCategory extends Model
     ];
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
-    
+
     /**
      * Displays the model's name, linked to its encyclopedia page.
      *
@@ -90,7 +90,7 @@ class PromptCategory extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
@@ -120,5 +120,15 @@ class PromptCategory extends Model
     public function getSearchUrlAttribute()
     {
         return url('prompts/prompts?prompt_category_id='.$this->id);
+    }
+
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/data/prompt-categories/edit/'.$this->id);
     }
 }

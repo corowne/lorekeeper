@@ -22,7 +22,7 @@ class CharacterCategory extends Model
      * @var string
      */
     protected $table = 'character_categories';
-    
+
     /**
      * Validation rules for creation.
      *
@@ -34,7 +34,7 @@ class CharacterCategory extends Model
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -48,25 +48,25 @@ class CharacterCategory extends Model
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the sub masterlist for this species.
      */
-    public function sublist() 
+    public function sublist()
     {
         return $this->belongsTo('App\Models\Character\Sublist', 'masterlist_sub_id');
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
-    
+
     /**
      * Displays the model's name, linked to its encyclopedia page.
      *
@@ -106,7 +106,7 @@ class CharacterCategory extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
@@ -139,5 +139,15 @@ class CharacterCategory extends Model
         return url('sublist/'.$this->sublist->key.'?character_category_id='.$this->id);
         else
         return url('masterlist?character_category_id='.$this->id);
+    }
+
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/data/character-categories/edit/'.$this->id);
     }
 }

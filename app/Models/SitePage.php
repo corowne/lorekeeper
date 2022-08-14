@@ -33,7 +33,7 @@ class SitePage extends Model
      * @var string
      */
     public $timestamps = true;
-    
+
     /**
      * Validation rules for creation.
      *
@@ -44,7 +44,7 @@ class SitePage extends Model
         'title' => 'required|between:3,100',
         'text' => 'nullable',
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -74,5 +74,15 @@ class SitePage extends Model
     public function getDisplayNameAttribute()
     {
         return '<a href="'.$this->url.'">'.$this->title.'</a>';
+    }
+
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/pages/edit/'.$this->id);
     }
 }

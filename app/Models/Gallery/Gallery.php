@@ -181,4 +181,14 @@ class Gallery extends Model
         else return false;
     }
 
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/data/galleries/edit/'.$this->id);
+    }
+
 }
