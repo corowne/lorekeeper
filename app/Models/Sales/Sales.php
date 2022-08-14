@@ -206,7 +206,7 @@ class Sales extends Model implements Feedable {
      */
     public function getAdminPowerAttribute()
     {
-        return url('edit_pages');
+        return 'edit_pages';
     }
 
     /**********************************************************************************************

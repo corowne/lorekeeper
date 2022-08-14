@@ -120,7 +120,7 @@ class Raffle extends Model {
      */
     public function getAdminPowerAttribute()
     {
-        return url('manage_raffles');
+        return 'manage_raffles');
     }
 
     /**********************************************************************************************

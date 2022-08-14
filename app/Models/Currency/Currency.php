@@ -185,7 +185,7 @@ class Currency extends Model {
      */
     public function getAdminPowerAttribute()
     {
-        return url('edit_data');
+        return 'edit_data';
     }
 
     /**********************************************************************************************
