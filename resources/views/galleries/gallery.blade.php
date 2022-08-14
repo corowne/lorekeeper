@@ -3,6 +3,7 @@
 @section('gallery-title') {{ $gallery->name }} @endsection
 
 @section('gallery-content')
+<x-admin-edit title="Gallery" :object="$gallery"/>
 {!! breadcrumbs(['Gallery' => 'gallery', $gallery->name => 'gallery/'.$gallery->id]) !!}
 
 <h1>

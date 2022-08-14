@@ -12,6 +12,8 @@
 @endsection
 
 @section('content')
+
+<x-admin-edit title="Item" :object="$item"/>
 {!! breadcrumbs(['World' => 'world', 'Items' => 'world/items', $item->name => $item->idUrl]) !!}
 
 <div class="row">

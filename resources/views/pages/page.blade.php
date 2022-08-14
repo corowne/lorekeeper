@@ -3,12 +3,13 @@
 @section('title') {{ $page->title }} @endsection
 
 @section('content')
+<x-admin-edit title="Page" :object="$page"/>
 {!! breadcrumbs([$page->title => $page->url]) !!}
 <h1>{{ $page->title }}</h1>
 <div class="mb-4">
     <div><strong>Created:</strong> {!! format_date($page->created_at) !!}</div>
     <div><strong>Last updated:</strong> {!! format_date($page->updated_at) !!}</div>
-</div>  
+</div>
 
 <div class="site-page-content parsed-text">
     {!! $page->parsed_text !!}

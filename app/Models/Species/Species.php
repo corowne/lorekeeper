@@ -176,4 +176,14 @@ class Species extends Model
     {
         return url('admin/data/species/edit/'.$this->id);
     }
+
+    /**
+     * Gets the power required to edit this model.
+     *
+     * @return string
+     */
+    public function getAdminPowerAttribute()
+    {
+        return url('edit_data');
+    }
 }

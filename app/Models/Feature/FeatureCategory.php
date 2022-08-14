@@ -22,7 +22,7 @@ class FeatureCategory extends Model
      * @var string
      */
     protected $table = 'feature_categories';
-    
+
     /**
      * Validation rules for creation.
      *
@@ -33,7 +33,7 @@ class FeatureCategory extends Model
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -46,11 +46,11 @@ class FeatureCategory extends Model
     ];
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
-    
+
     /**
      * Displays the model's name, linked to its encyclopedia page.
      *
@@ -90,7 +90,7 @@ class FeatureCategory extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
@@ -120,5 +120,25 @@ class FeatureCategory extends Model
     public function getSearchUrlAttribute()
     {
         return url('world/traits?feature_category_id='.$this->id);
+    }
+
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute()
+    {
+        return url('admin/data/trait-categories/edit/'.$this->id);
+    }
+
+    /**
+     * Gets the power required to edit this model.
+     *
+     * @return string
+     */
+    public function getAdminPowerAttribute()
+    {
+        return url('edit_data');
     }
 }

@@ -3,6 +3,7 @@
         <div class="col-md-3 world-entry-image"><a href="{{ $prompt->imageUrl }}" data-lightbox="entry" data-title="{{ $prompt->name }}"><img src="{{ $prompt->imageUrl }}" class="world-entry-image" alt="{{ $prompt->name }}" /></a></div>
     @endif
     <div class="{{ $prompt->has_image ? 'col-md-9' : 'col-12' }}">
+        <x-admin-edit title="Prompt" :object="$prompt"/>
         <div class="mb-3">
             <h3 class="mb-0">{!! $prompt->name !!}</h3>
             @if($prompt->prompt_category_id)

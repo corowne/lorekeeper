@@ -27,11 +27,12 @@
         @endif
 
         <li class="list-group-item">
+            <x-admin-edit title="Raffle" :object="$raffle"/>
             <a href="{{ url('raffles/view/'.$raffle->id) }}">{{ $raffle->name }}</a>
         </li>
         <?php $prevGroup = $raffle->group_id; ?>
     @endforeach
-@else 
+@else
     <p>No raffles found.</p>
 @endif
 @endsection

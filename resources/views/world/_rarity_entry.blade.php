@@ -5,9 +5,12 @@
     <div class="{{ $imageUrl ? 'col-md-9' : 'col-12' }}">
         <h3>{!! $name !!}
 
-        <div class="float-right small">
+        <div class="float-right small ">
             @if(isset($searchFeaturesUrl) && $searchFeaturesUrl) <a href="{{ $searchFeaturesUrl }}" class="world-entry-search text-muted small"><i class="fas fa-search"></i> Traits</a>  @endif
-            @if(isset($searchCharactersUrl) && $searchCharactersUrl) <a href="{{ $searchCharactersUrl }}" class="world-entry-search text-muted small ml-4"><i class="fas fa-search"></i> Characters</a>  @endif
+            @if(isset($searchCharactersUrl) && $searchCharactersUrl) <a href="{{ $searchCharactersUrl }}" class="world-entry-search text-muted small ml-4 @if(Auth::check() && Auth::user()->isStaff) mr-4 @endif"><i class="fas fa-search"></i> Characters</a>  @endif
+            @if(isset($edit))
+                <x-admin-edit title="{{$edit['title']}}" :object="$edit['object']"/>
+            @endif
         </div>
 
         </h3>
