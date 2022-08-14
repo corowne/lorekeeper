@@ -139,8 +139,7 @@ class News extends Model implements Feedable {
      *
      * @return string
      */
-    public function getAdminUrlAttribute()
-    {
+    public function getAdminUrlAttribute() {
         return url('admin/news/edit/'.$this->id);
     }
 
@@ -149,8 +148,7 @@ class News extends Model implements Feedable {
      *
      * @return string
      */
-    public function getAdminPowerAttribute()
-    {
+    public function getAdminPowerAttribute() {
         return 'edit_pages';
     }
 

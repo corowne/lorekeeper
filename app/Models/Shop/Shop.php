@@ -131,8 +131,7 @@ class Shop extends Model {
      *
      * @return string
      */
-    public function getAdminUrlAttribute()
-    {
+    public function getAdminUrlAttribute() {
         return url('admin/data/shops/edit/'.$this->id);
     }
 
@@ -141,8 +140,7 @@ class Shop extends Model {
      *
      * @return string
      */
-    public function getAdminPowerAttribute()
-    {
+    public function getAdminPowerAttribute() {
         return 'edit_data';
     }
 }

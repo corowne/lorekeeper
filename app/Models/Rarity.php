@@ -129,8 +129,7 @@ class Rarity extends Model {
      *
      * @return string
      */
-    public function getAdminUrlAttribute()
-    {
+    public function getAdminUrlAttribute() {
         return url('admin/data/rarities/edit/'.$this->id);
     }
 
@@ -139,8 +138,7 @@ class Rarity extends Model {
      *
      * @return string
      */
-    public function getAdminPowerAttribute()
-    {
+    public function getAdminPowerAttribute() {
         return 'edit_data';
     }
 }

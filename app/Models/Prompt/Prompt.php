@@ -299,8 +299,7 @@ class Prompt extends Model {
      *
      * @return string
      */
-    public function getAdminUrlAttribute()
-    {
+    public function getAdminUrlAttribute() {
         return url('admin/data/prompts/edit/'.$this->id);
     }
 
@@ -309,8 +308,7 @@ class Prompt extends Model {
      *
      * @return string
      */
-    public function getAdminPowerAttribute()
-    {
+    public function getAdminPowerAttribute() {
         return 'edit_data';
     }
 }

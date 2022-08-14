@@ -108,8 +108,7 @@ class Raffle extends Model {
      *
      * @return string
      */
-    public function getAdminUrlAttribute()
-    {
+    public function getAdminUrlAttribute() {
         return url('admin/raffles'); // Raffles are edited via a modal so don't have a unique raffle edit page
     }
 
@@ -118,8 +117,7 @@ class Raffle extends Model {
      *
      * @return string
      */
-    public function getAdminPowerAttribute()
-    {
+    public function getAdminPowerAttribute() {
         return 'manage_raffles';
     }
 

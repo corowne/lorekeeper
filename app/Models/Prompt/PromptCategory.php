@@ -120,8 +120,7 @@ class PromptCategory extends Model {
      *
      * @return string
      */
-    public function getAdminUrlAttribute()
-    {
+    public function getAdminUrlAttribute() {
         return url('admin/data/prompt-categories/edit/'.$this->id);
     }
 
@@ -130,8 +129,7 @@ class PromptCategory extends Model {
      *
      * @return string
      */
-    public function getAdminPowerAttribute()
-    {
+    public function getAdminPowerAttribute() {
         return 'edit_data';
     }
 }

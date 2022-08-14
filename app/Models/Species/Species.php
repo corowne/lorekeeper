@@ -160,8 +160,7 @@ class Species extends Model {
      *
      * @return string
      */
-    public function getAdminUrlAttribute()
-    {
+    public function getAdminUrlAttribute() {
         return url('admin/data/species/edit/'.$this->id);
     }
 
@@ -170,8 +169,7 @@ class Species extends Model {
      *
      * @return string
      */
-    public function getAdminPowerAttribute()
-    {
+    public function getAdminPowerAttribute() {
         return 'edit_data';
     }
 }

@@ -121,8 +121,7 @@ class ItemCategory extends Model {
      *
      * @return string
      */
-    public function getAdminUrlAttribute()
-    {
+    public function getAdminUrlAttribute() {
         return url('admin/data/item-categories/edit/'.$this->id);
     }
 
@@ -131,8 +130,7 @@ class ItemCategory extends Model {
      *
      * @return string
      */
-    public function getAdminPowerAttribute()
-    {
+    public function getAdminPowerAttribute() {
         return 'edit_data';
     }
 }

@@ -194,8 +194,7 @@ class Sales extends Model implements Feedable {
      *
      * @return string
      */
-    public function getAdminUrlAttribute()
-    {
+    public function getAdminUrlAttribute() {
         return url('admin/sales/edit/'.$this->id);
     }
 
@@ -204,8 +203,7 @@ class Sales extends Model implements Feedable {
      *
      * @return string
      */
-    public function getAdminPowerAttribute()
-    {
+    public function getAdminPowerAttribute() {
         return 'edit_pages';
     }
 
