@@ -95,8 +95,7 @@
     @endif
 </h2>
 
-@foreach ($characters->take(4)->get()->chunk(4)
-    as $chunk)
+@foreach ($characters->take(4)->get()->chunk(4) as $chunk)
     <div class="row mb-4">
         @foreach ($chunk as $character)
             <div class="col-md-3 col-6 text-center">

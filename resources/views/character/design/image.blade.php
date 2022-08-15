@@ -24,8 +24,7 @@
                     <div class="col-md-6">
                         <h3 class="text-center">Thumbnail Image</h3>
                         <div class="text-center">
-                            <a href="{{ $request->thumbnailUrl }}" data-lightbox="entry" data-title="Request #{{ $request->id }} thumbnail"><img src="{{ $request->thumbnailUrl }}" class="mw-100"
-                                    alt="Thumbnail for request {{ $request->id }}" /></a>
+                            <a href="{{ $request->thumbnailUrl }}" data-lightbox="entry" data-title="Request #{{ $request->id }} thumbnail"><img src="{{ $request->thumbnailUrl }}" class="mw-100" alt="Thumbnail for request {{ $request->id }}" /></a>
                         </div>
                     </div>
                 </div>

@@ -34,8 +34,7 @@
                             {{ $gallery->children->count() && (isset($gallery->start_at) || isset($gallery->end_at)) ? ' ・ ' : '' }}
                             @if ($gallery->children->count())
                                 Sub-galleries:
-                                @foreach ($gallery->children()->visible()->get()
-        as $count => $child)
+                                @foreach ($gallery->children()->visible()->get() as $count => $child)
                                     {!! $child->displayName !!}{{ !$loop->last ? ', ' : '' }}
                                 @endforeach
                             @endif
@@ -45,8 +44,7 @@
                 <div class="card-body">
                     @if ($gallery->submissions->where('status', 'Accepted')->count())
                         <div class="row">
-                            @foreach ($gallery->submissions->where('is_visible', 1)->where('status', 'Accepted')->take(4)
-        as $submission)
+                            @foreach ($gallery->submissions->where('is_visible', 1)->where('status', 'Accepted')->take(4) as $submission)
                                 <div class="col-md-3 text-center align-self-center">
                                     @include('galleries._thumb', ['submission' => $submission, 'gallery' => true])
                                 </div>
@@ -58,8 +56,7 @@
                     @elseif($gallery->children->count() &&
                         App\Models\Gallery\GallerySubmission::whereIn('gallery_id', $gallery->children->pluck('id')->toArray())->where('is_visible', 1)->where('status', 'Accepted')->count())
                         <div class="row">
-                            @foreach (App\Models\Gallery\GallerySubmission::whereIn('gallery_id', $gallery->children->pluck('id')->toArray())->where('is_visible', 1)->where('status', 'Accepted')->orderBy('created_at', 'DESC')->get()->take(4)
-        as $submission)
+                            @foreach (App\Models\Gallery\GallerySubmission::whereIn('gallery_id', $gallery->children->pluck('id')->toArray())->where('is_visible', 1)->where('status', 'Accepted')->orderBy('created_at', 'DESC')->get()->take(4) as $submission)
                                 <div class="col-md-3 text-center align-self-center">
                                     @include('galleries._thumb', ['submission' => $submission, 'gallery' => false])
                                 </div>

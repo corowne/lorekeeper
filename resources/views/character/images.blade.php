@@ -18,8 +18,7 @@
     @include('character._header', ['character' => $character])
 
     <div class="tab-content">
-        @foreach ($character->images($user)->with('features.feature')->with('species')->with('rarity')->get()
-        as $image)
+        @foreach ($character->images($user)->with('features.feature')->with('species')->with('rarity')->get() as $image)
             <div class="tab-pane fade {{ $image->id == $character->character_image_id ? 'show active' : '' }}" id="image-{{ $image->id }}">
                 <div class="row mb-3">
                     <div class="col-md-7">

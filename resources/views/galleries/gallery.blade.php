@@ -70,8 +70,7 @@
         {!! $submissions->render() !!}
     @elseif($childSubmissions->count())
         <div class="d-flex align-content-around flex-wrap mb-2">
-            @foreach ($childSubmissions->orderBy('created_at', 'DESC')->get()->take(20)
-        as $submission)
+            @foreach ($childSubmissions->orderBy('created_at', 'DESC')->get()->take(20) as $submission)
                 @include('galleries._thumb', ['submission' => $submission, 'gallery' => false])
             @endforeach
         </div>
