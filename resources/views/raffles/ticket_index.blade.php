@@ -26,8 +26,7 @@
                         <th>User</th>
                     </thead>
                     <tbody>
-                        @foreach ($raffle->tickets()->winners()->get()
-        as $winner)
+                        @foreach ($raffle->tickets()->winners()->get() as $winner)
                             <tr>
                                 <td class="text-center">{{ $winner->position }}</td>
                                 <td class="text-left">{!! $winner->displayHolderName !!}</td>

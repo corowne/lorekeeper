@@ -32,8 +32,7 @@
             </div>
         </div>
         <div class="logs-table-body">
-            @foreach (Auth::user()->aliases()->orderBy('is_primary_alias', 'DESC')->orderBy('site')->get()
-        as $alias)
+            @foreach (Auth::user()->aliases()->orderBy('is_primary_alias', 'DESC')->orderBy('site')->get() as $alias)
                 <div class="logs-table-row">
                     <div class="row flex-wrap">
                         <div class="col-3">
