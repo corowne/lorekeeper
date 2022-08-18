@@ -4,6 +4,7 @@
         </div>
     @endif
     <div class="{{ $currency->has_image ? 'col-md-9' : 'col-12' }}">
+        <x-admin-edit title="Currency" :object="$currency" />
         <h3>{{ $currency->name }} @if ($currency->abbreviation)
                 ({{ $currency->abbreviation }})
             @endif

@@ -134,6 +134,24 @@ class News extends Model implements Feedable {
         return url('news/'.$this->slug);
     }
 
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute() {
+        return url('admin/news/edit/'.$this->id);
+    }
+
+    /**
+     * Gets the power required to edit this model.
+     *
+     * @return string
+     */
+    public function getAdminPowerAttribute() {
+        return 'edit_pages';
+    }
+
     /**********************************************************************************************
 
         OTHER FUNCTIONS

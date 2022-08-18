@@ -24,6 +24,10 @@
         <div class="card mb-3">
             <div class="card-body">
                 @include('world._rarity_entry', [
+                    'edit' => [
+                        'object' => $rarity,
+                        'title' => 'Rarity',
+                    ],
                     'imageUrl' => $rarity->rarityImageUrl,
                     'name' => $rarity->displayName,
                     'description' => $rarity->parsed_description,

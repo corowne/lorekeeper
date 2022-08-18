@@ -5,6 +5,7 @@
 @endsection
 
 @section('content')
+    <x-admin-edit title="Raffle" :object="$raffle" />
     {!! breadcrumbs(['Raffles' => 'raffles', 'Raffle: ' . $raffle->name => 'raffles/view/' . $raffle->id]) !!}
     <h1>Raffle: {{ $raffle->name }}</h1>
     @if ($raffle->is_active == 1)
