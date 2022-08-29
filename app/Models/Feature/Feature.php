@@ -178,10 +178,12 @@ class Feature extends Model
      * Scope a query to show only visible features.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  bool $withHidden
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeVisible($query)
+    public function scopeVisible($query, $withHidden = 0)
     {
+        if($withHidden) return $query;
         return $query->where('is_visible', 1);
     }
 
@@ -263,16 +265,16 @@ class Feature extends Model
     }
 
     /**********************************************************************************************
-    
+
         Other Functions
 
     **********************************************************************************************/
-    
-    public static function getFeaturesByCategory()
+
+    public static function getFeaturesByCategory($withHidden = 0)
     {
         $sorted_feature_categories = collect(FeatureCategory::all()->sortBy('sort')->pluck('name')->toArray());
 
-        $grouped = Feature::select('name', 'id', 'feature_category_id')->with('category')->orderBy('name')->get()->keyBy('id')->groupBy('category.name', $preserveKeys = true)->toArray();
+        $grouped = Feature::visible($withHidden)->select('name', 'id', 'feature_category_id')->with('category')->orderBy('name')->get()->keyBy('id')->groupBy('category.name', $preserveKeys = true)->toArray();
         if(isset($grouped[""])) {
             if(!$sorted_feature_categories->contains('Miscellaneous')) $sorted_feature_categories->push('Miscellaneous');
             $grouped['Miscellaneous'] = $grouped['Miscellaneous'] ?? [] + $grouped[""];
@@ -286,7 +288,7 @@ class Feature extends Model
         $features_by_category = $sorted_feature_categories->map(function($category) use($grouped) {
             return [$category => $grouped[$category]];
         });
-        
+
         return $features_by_category;
     }
 }
