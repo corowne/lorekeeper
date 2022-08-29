@@ -316,14 +316,19 @@ class BrowseController extends Controller {
     }
 
     /**
-     * Shows the MYO slot masterlist.
+     * Shows the Sub masterlists.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getMyos(Request $request) {
         $query = Character::with('user.rank')->with('image.features')->with('rarity')->with('image.species')->myo(1);
 
-        $imageQuery = CharacterImage::images(Auth::check() ? Auth::user() : null)->with('features')->with('rarity')->with('species')->with('features');
+        if ($subCategories) {
+            $query->whereIn('character_category_id', $subCategories);
+        }
+        if ($subSpecies) {
+            $imageQuery->whereIn('species_id', $subSpecies);
+        }
 
         if ($request->get('name')) {
             $query->where(function ($query) use ($request) {
@@ -424,6 +429,21 @@ class BrowseController extends Controller {
             case 'sale_value_asc':
                 $query->orderBy('characters.sale_value', 'ASC');
                 break;
+            default:
+                $query->orderBy('characters.number', 'DESC');
+        }
+
+        if (!Auth::check() || !Auth::user()->hasPower('manage_characters')) {
+            $query->visible();
+        }
+
+        $subCategory = CharacterCategory::where('masterlist_sub_id', $sublist->id)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray();
+        if (!$subCategory) {
+            $subCategory = CharacterCategory::orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray();
+        }
+        $subSpecies = Species::where('masterlist_sub_id', $sublist->id)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray();
+        if (!$subSpecies) {
+            $subSpecies = Species::orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray();
         }
 
         if (!Auth::check() || !Auth::user()->hasPower('manage_characters')) {

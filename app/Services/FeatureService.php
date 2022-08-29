@@ -393,6 +393,9 @@ class FeatureService extends Service {
         if (isset($data['feature_category_id']) && $data['feature_category_id'] == 'none') {
             $data['feature_category_id'] = null;
         }
+        if (!isset($data['is_visible'])) {
+            $data['is_visible'] = 0;
+        }
         if (isset($data['remove_image'])) {
             if ($feature && $feature->has_image && $data['remove_image']) {
                 $data['has_image'] = 0;
