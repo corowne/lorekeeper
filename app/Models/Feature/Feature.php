@@ -310,7 +310,7 @@ class Feature extends Model {
 
             return $features_by_category;
         } else {
-            return self::orderBy('name')->pluck('name', 'id')->toArray();
+            return self::visible($withHidden)->orderBy('name')->pluck('name', 'id')->toArray();
         }
     }
 }
