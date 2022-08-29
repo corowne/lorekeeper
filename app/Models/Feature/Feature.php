@@ -17,7 +17,7 @@ class Feature extends Model
      * @var array
      */
     protected $fillable = [
-        'feature_category_id', 'species_id', 'subtype_id', 'rarity_id', 'name', 'has_image', 'description', 'parsed_description'
+        'feature_category_id', 'species_id', 'subtype_id', 'rarity_id', 'name', 'has_image', 'description', 'parsed_description', 'is_visible'
     ];
 
     /**
@@ -172,6 +172,17 @@ class Feature extends Model
     public function scopeSortOldest($query)
     {
         return $query->orderBy('id');
+    }
+
+    /**
+     * Scope a query to show only visible features.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeVisible($query)
+    {
+        return $query->where('is_visible', 1);
     }
 
     /**********************************************************************************************
