@@ -28,8 +28,8 @@
         $pullNumber.on('click', function(e) {
             e.preventDefault();
             $pullNumber.prop('disabled', true);
-            $.get( "{{ url('admin/masterlist/get-number') }}?category=" + $category.val(), function( data ) {
-                $number.val( data );
+            $.get("{{ url('admin/masterlist/get-number') }}?category=" + $category.val(), function(data) {
+                $number.val(data);
                 $pullNumber.prop('disabled', false);
                 updateCode();
             });

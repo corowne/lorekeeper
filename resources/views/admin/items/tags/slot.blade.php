@@ -1,14 +1,14 @@
 <h1>MYO Slot Settings</h1>
 
 <h3>Basic Information</h3>
-    <div class="form-group">
-        {!! Form::label('Name') !!} {!! add_help('Enter a descriptive name for the type of character this slot can create, e.g. Rare MYO Slot. This will be listed on the MYO slot masterlist.') !!}
-        {!! Form::text('name', $tag->getData()['name'], ['class' => 'form-control']) !!}
-    </div>
+<div class="form-group">
+    {!! Form::label('Name') !!} {!! add_help('Enter a descriptive name for the type of character this slot can create, e.g. Rare MYO Slot. This will be listed on the MYO slot masterlist.') !!}
+    {!! Form::text('name', $tag->getData()['name'], ['class' => 'form-control']) !!}
+</div>
 
 <div class="form-group">
-    {!! Form::label('Description (Optional)') !!} 
-    @if($isMyo)
+    {!! Form::label('Description (Optional)') !!}
+    @if ($isMyo)
         {!! add_help('This section is for making additional notes about the MYO slot. If there are restrictions for the character that can be created by this slot that cannot be expressed with the options below, use this section to describe them.') !!}
     @else
         {!! add_help('This section is for making additional notes about the character and is separate from the character\'s profile (this is not editable by the user).') !!}
@@ -18,13 +18,15 @@
 
 <div class="form-group">
     {!! Form::checkbox('is_visible', 1, $tag->getData()['is_visible'], ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-    {!! Form::label('is_visible', 'Is Visible', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Turn this off to hide the '.($isMyo ? 'MYO slot' : 'character').'. Only mods with the Manage Masterlist power (that\'s you!) can view it - the owner will also not be able to see the '.($isMyo ? 'MYO slot' : 'character').'\'s page.') !!}
+    {!! Form::label('is_visible', 'Is Visible', ['class' => 'form-check-label ml-3']) !!} {!! add_help(
+        'Turn this off to hide the ' . ($isMyo ? 'MYO slot' : 'character') . '. Only mods with the Manage Masterlist power (that\'s you!) can view it - the owner will also not be able to see the ' . ($isMyo ? 'MYO slot' : 'character') . '\'s page.',
+    ) !!}
 </div>
 
 <h3>Transfer Information</h3>
 
 <div class="alert alert-info">
-    These are displayed on the MYO slot's profile, but don't have any effect on site functionality except for the following: 
+    These are displayed on the MYO slot's profile, but don't have any effect on site functionality except for the following:
     <ul>
         <li>If all switches are off, the MYO slot cannot be transferred by the user (directly or through trades).</li>
         <li>If a transfer cooldown is set, the MYO slot also cannot be transferred by the user (directly or through trades) until the cooldown is up.</li>
@@ -57,7 +59,9 @@
 </div>
 
 <div class="form-group">
-    {!! Form::label('Subtype (Optional)') !!} {!! add_help('This will lock the slot into a particular subtype. Leave it blank if you would like to give the user a choice, or not select a subtype. The subtype must match the species selected above, and if no species is specified, the subtype will not be applied.') !!}
+    {!! Form::label('Subtype (Optional)') !!} {!! add_help(
+        'This will lock the slot into a particular subtype. Leave it blank if you would like to give the user a choice, or not select a subtype. The subtype must match the species selected above, and if no species is specified, the subtype will not be applied.',
+    ) !!}
     {!! Form::select('subtype_id', $subtypes, $tag->getData()['subtype_id'], ['class' => 'form-control', 'id' => 'subtype']) !!}
 </div>
 
@@ -67,6 +71,6 @@
 </div>
 
 @section('scripts')
-@parent
-@include('widgets._character_create_options_js')
+    @parent
+    @include('widgets._character_create_options_js')
 @endsection

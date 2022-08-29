@@ -1,5 +1,5 @@
-@if($prompt)
-    {!! Form::open(['url' => 'admin/data/prompts/delete/'.$prompt->id]) !!}
+@if ($prompt)
+    {!! Form::open(['url' => 'admin/data/prompts/delete/' . $prompt->id]) !!}
 
     <p>You are about to delete the prompt <strong>{{ $prompt->name }}</strong>. This is not reversible. If submissions exist under this prompt, you will not be able to delete it.</p>
     <p>Are you sure you want to delete <strong>{{ $prompt->name }}</strong>?</p>
@@ -9,6 +9,6 @@
     </div>
 
     {!! Form::close() !!}
-@else 
+@else
     Invalid prompt selected.
 @endif

@@ -103,6 +103,24 @@ class Raffle extends Model {
         return url('raffles/view/'.$this->id);
     }
 
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute() {
+        return url('admin/raffles'); // Raffles are edited via a modal so don't have a unique raffle edit page
+    }
+
+    /**
+     * Gets the power required to edit this model.
+     *
+     * @return string
+     */
+    public function getAdminPowerAttribute() {
+        return 'manage_raffles';
+    }
+
     /**********************************************************************************************
 
         OTHER FUNCTIONS

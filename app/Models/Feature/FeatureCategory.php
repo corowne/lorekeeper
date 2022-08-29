@@ -114,4 +114,22 @@ class FeatureCategory extends Model {
     public function getSearchUrlAttribute() {
         return url('world/traits?feature_category_id='.$this->id);
     }
+
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute() {
+        return url('admin/data/trait-categories/edit/'.$this->id);
+    }
+
+    /**
+     * Gets the power required to edit this model.
+     *
+     * @return string
+     */
+    public function getAdminPowerAttribute() {
+        return 'edit_data';
+    }
 }

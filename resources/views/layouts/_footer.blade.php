@@ -14,6 +14,6 @@
 </nav>
 <div class="copyright">&copy; {{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} v{{ config('lorekeeper.settings.version') }} {{ Carbon\Carbon::now()->year }}</div>
 
-@if(Config::get('lorekeeper.extensions.scroll_to_top'))
+@if (Config::get('lorekeeper.extensions.scroll_to_top'))
     @include('widgets/_scroll_to_top')
 @endif
