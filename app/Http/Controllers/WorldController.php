@@ -148,7 +148,7 @@ class WorldController extends Controller
      */
     public function getFeatures(Request $request)
     {
-        $query = Feature::with('category')->with('rarity')->with('species');
+        $query = Feature::visible()->with('category')->with('rarity')->with('species');
         $data = $request->only(['rarity_id', 'feature_category_id', 'species_id', 'name', 'sort']);
         if(isset($data['rarity_id']) && $data['rarity_id'] != 'none')
             $query->where('rarity_id', $data['rarity_id']);
