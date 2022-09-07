@@ -1886,10 +1886,10 @@
   "resolved" "https://registry.npmjs.org/binary-extensions/-/binary-extensions-2.2.0.tgz"
   "version" "2.2.0"
 
-"blade-formatter@^1.27.6":
-  "integrity" "sha512-UyEarcaHQ5JQPm85aIi0OuiT/8r+Y4SkH3Ul9PIa4WwZXQVpclLFOTw8pLWoMqn3wqFUU6JyyEK1cuHk9AEVaQ=="
-  "resolved" "https://registry.npmjs.org/blade-formatter/-/blade-formatter-1.27.6.tgz"
-  "version" "1.27.6"
+"blade-formatter@^1.27.7":
+  "integrity" "sha512-/RYDgfU+JW0SRBrF0jn/dFleeNDy33g4+VS2bOWqXZolEgph314vYeudvoP/ruEKAo0bpnbDk/b0UdpIgpQJXg=="
+  "resolved" "https://registry.npmjs.org/blade-formatter/-/blade-formatter-1.27.7.tgz"
+  "version" "1.27.7"
   dependencies:
     "@prettier/plugin-php" "^0.18.0"
     "@shufo/tailwindcss-class-sorter" "^1.0.3"
