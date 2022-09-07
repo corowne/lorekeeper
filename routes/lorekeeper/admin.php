@@ -18,7 +18,6 @@ Route::group(['middleware' => 'admin'], function () {
 });
 
 Route::group(['prefix' => 'users', 'namespace' => 'Users'], function () {
-
     // USER LIST
     Route::group(['middleware' => 'power:edit_user_info'], function () {
         Route::get('/', 'UserController@getIndex');
@@ -88,7 +87,6 @@ Route::group(['prefix' => 'images', 'middleware' => 'power:edit_site_settings'],
 
 // DATA
 Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:edit_data'], function () {
-
     // GALLERIES
     Route::get('galleries', 'GalleryController@getIndex');
     Route::get('galleries/create', 'GalleryController@getCreateGallery');
@@ -320,7 +318,6 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware'
     Route::post('{slug}/grant-items', 'GrantController@postCharacterItems');
 });
 Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware' => 'power:manage_characters'], function () {
-
     // IMAGES
     Route::get('{slug}/image', 'CharacterImageController@getNewImage');
     Route::post('{slug}/image', 'CharacterImageController@postNewImage');

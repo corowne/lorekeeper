@@ -31,7 +31,6 @@ class SubmissionManager extends Service {
         DB::beginTransaction();
 
         try {
-
             // 1. check that the prompt can be submitted at this time
             // 2. check that the characters selected exist (are visible too)
             // 3. check that the currencies selected can be attached to characters
@@ -91,7 +90,7 @@ class SubmissionManager extends Service {
 
             // Attach currencies.
             if (isset($data['currency_id'])) {
-                foreach ($data['currency_id'] as $holderKey=>$currencyIds) {
+                foreach ($data['currency_id'] as $holderKey=> $currencyIds) {
                     $holder = explode('-', $holderKey);
                     $holderType = $holder[0];
                     $holderId = $holder[1];
@@ -99,7 +98,7 @@ class SubmissionManager extends Service {
                     $holder = User::find($holderId);
 
                     $currencyManager = new CurrencyManager;
-                    foreach ($currencyIds as $key=>$currencyId) {
+                    foreach ($currencyIds as $key=> $currencyId) {
                         $currency = Currency::find($currencyId);
                         if (!$currency) {
                             throw new \Exception('Invalid currency selected.');
@@ -148,7 +147,7 @@ class SubmissionManager extends Service {
             } elseif (isset($data['character_rewardable_id'])) {
                 $data['character_rewardable_id'] = array_map([$this, 'innerNull'], $data['character_rewardable_id']);
                 foreach ($data['character_rewardable_id'] as $ckey => $c) {
-                    foreach ($c as $key => $id) {
+                    foreach ($c as $key                            => $id) {
                         switch ($data['character_rewardable_type'][$ckey][$key]) {
                             case 'Currency': $currencyIds[] = $id;
                                 break;
@@ -233,7 +232,7 @@ class SubmissionManager extends Service {
             // And currencies
             $currencyManager = new CurrencyManager;
             if (isset($addonData['currencies']) && $addonData['currencies']) {
-                foreach ($addonData['currencies'] as $currencyId=>$quantity) {
+                foreach ($addonData['currencies'] as $currencyId=> $quantity) {
                     $currency = Currency::find($currencyId);
                     if (!$currency) {
                         throw new \Exception('Cannot return an invalid currency. ('.$currencyId.')');
@@ -291,7 +290,6 @@ class SubmissionManager extends Service {
         DB::beginTransaction();
 
         try {
-
             // 1. check that the submission exists
             // 2. check that the submission is pending
             $submission = Submission::where('status', 'Pending')->where('id', $data['id'])->first();
@@ -319,7 +317,7 @@ class SubmissionManager extends Service {
                 // Workaround for user not being unset after inventory shuffling, preventing proper staff ID assignment
                 $staff = $user;
 
-                foreach ($stacks as $stackId=>$quantity) {
+                foreach ($stacks as $stackId=> $quantity) {
                     $stack = UserItem::find($stackId);
                     $user = User::find($submission->user_id);
                     if (!$inventoryManager->debitStack($user, $submission->prompt_id ? 'Prompt Approved' : 'Claim Approved', ['data' => 'Item used in submission (<a href="'.$submission->viewUrl.'">#'.$submission->id.'</a>)'], $stack, $quantity)) {
@@ -334,7 +332,7 @@ class SubmissionManager extends Service {
             // Log currency removal, etc.
             $currencyManager = new CurrencyManager;
             if (isset($addonData['currencies']) && $addonData['currencies']) {
-                foreach ($addonData['currencies'] as $currencyId=>$quantity) {
+                foreach ($addonData['currencies'] as $currencyId=> $quantity) {
                     $currency = Currency::find($currencyId);
                     if (!$currencyManager->createLog(
                         $submission->user_id,
@@ -391,7 +389,7 @@ class SubmissionManager extends Service {
             } elseif (isset($data['character_rewardable_id'])) {
                 $data['character_rewardable_id'] = array_map([$this, 'innerNull'], $data['character_rewardable_id']);
                 foreach ($data['character_rewardable_id'] as $ckey => $c) {
-                    foreach ($c as $key => $id) {
+                    foreach ($c as $key                            => $id) {
                         switch ($data['character_rewardable_type'][$ckey][$key]) {
                             case 'Currency': $currencyIds[] = $id;
                                 break;

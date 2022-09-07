@@ -111,7 +111,7 @@ class ShopManager extends Service {
 
             // Give the user the item, noting down 1. whose currency was used (user or character) 2. who purchased it 3. which shop it was purchased from
             if (!(new InventoryManager)->creditItem(null, $user, 'Shop Purchase', [
-                'data' => $shopLog->itemData,
+                'data'  => $shopLog->itemData,
                 'notes' => 'Purchased '.format_date($shopLog->created_at),
             ], $shopStock->item, $quantity)) {
                 throw new \Exception('Failed to purchase item.');

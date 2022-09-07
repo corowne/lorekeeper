@@ -409,7 +409,7 @@ class GallerySubmission extends Model {
      */
     public function getCreditsAttribute() {
         if ($this->collaborators->count()) {
-            foreach ($this->collaborators as $count=>$collaborator) {
+            foreach ($this->collaborators as $count=> $collaborator) {
                 $collaboratorList[] = $collaborator->user->displayName;
             }
 
@@ -426,7 +426,7 @@ class GallerySubmission extends Model {
      */
     public function getCreditsPlainAttribute() {
         if ($this->collaborators->count()) {
-            foreach ($this->collaborators as $count=>$collaborator) {
+            foreach ($this->collaborators as $count=> $collaborator) {
                 $collaboratorList[] = $collaborator->user->name;
             }
 

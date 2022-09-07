@@ -540,11 +540,11 @@ class User extends Authenticatable implements MustVerifyEmail {
         $count = 0;
         foreach ($this->aliases as $alias) {
             // Find all urls from the same site as this alias
-            foreach ($urlCharacters as $key=>$character) {
+            foreach ($urlCharacters as $key=> $character) {
                 preg_match_all(Config::get('lorekeeper.sites.'.$alias->site.'.regex'), $character, $matches[$key]);
             }
             // Find all alias matches within those, and update the character's owner
-            foreach ($matches as $key=>$match) {
+            foreach ($matches as $key=> $match) {
                 if ($match[1] != [] && strtolower($match[1][0]) == strtolower($alias->alias)) {
                     Character::find($key)->update(['owner_url' => null, 'user_id' => $this->id]);
                     $count += 1;
@@ -572,11 +572,11 @@ class User extends Authenticatable implements MustVerifyEmail {
         $matches = [];
         foreach ($this->aliases as $alias) {
             // Find all urls from the same site as this alias
-            foreach ($urlCreators as $key=>$creator) {
+            foreach ($urlCreators as $key=> $creator) {
                 preg_match_all(Config::get('lorekeeper.sites.'.$alias->site.'.regex'), $creator, $matches[$key]);
             }
             // Find all alias matches within those, and update the relevant CharacterImageCreator
-            foreach ($matches as $key=>$match) {
+            foreach ($matches as $key=> $match) {
                 if ($match[1] != [] && strtolower($match[1][0]) == strtolower($alias->alias)) {
                     CharacterImageCreator::find($key)->update(['url' => null, 'user_id' => $this->id]);
                 }

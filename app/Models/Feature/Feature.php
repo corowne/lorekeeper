@@ -284,7 +284,7 @@ class Feature extends Model {
             });
 
             foreach ($grouped as $category => $features) {
-                foreach ($features as $id => $feature) {
+                foreach ($features as $id  => $feature) {
                     $grouped[$category][$id] = $feature['name'];
                 }
             }

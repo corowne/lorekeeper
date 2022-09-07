@@ -176,7 +176,7 @@ abstract class Service {
                     // Cycle through and locate any keyed actions which
                     // correspond to the action currently being logged
                     $keyedActions = [];
-                    foreach ($actions as $key=>$a) {
+                    foreach ($actions as $key=> $a) {
                         foreach ($a['actions'] as $act) {
                             if ($act == $action) {
                                 $keyedActions[] = $key;
