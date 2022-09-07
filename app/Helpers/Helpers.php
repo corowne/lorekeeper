@@ -252,7 +252,7 @@ function checkAlias($url, $failOnError = true) {
         $recipient = null;
         $matches = [];
         // Check to see if url is 1. from a site used for auth
-        foreach (Config::get('lorekeeper.sites') as $key=>$site) {
+        foreach (Config::get('lorekeeper.sites') as $key=> $site) {
             if (isset($site['auth']) && $site['auth']) {
                 preg_match_all($site['regex'], $url, $matches, PREG_SET_ORDER, 0);
                 if ($matches != []) {
@@ -294,7 +294,7 @@ function checkAlias($url, $failOnError = true) {
 function prettyProfileLink($url) {
     $matches = [];
     // Check different sites and return site if a match is made, plus username (retreived from the URL)
-    foreach (Config::get('lorekeeper.sites') as $siteName=>$siteInfo) {
+    foreach (Config::get('lorekeeper.sites') as $siteName=> $siteInfo) {
         if (preg_match_all($siteInfo['regex'], $url, $matches)) {
             $site = $siteName;
             $name = $matches[1][0];
@@ -321,7 +321,7 @@ function prettyProfileLink($url) {
 function prettyProfileName($url) {
     $matches = [];
     // Check different sites and return site if a match is made, plus username (retreived from the URL)
-    foreach (Config::get('lorekeeper.sites') as $siteName=>$siteInfo) {
+    foreach (Config::get('lorekeeper.sites') as $siteName=> $siteInfo) {
         if (preg_match_all($siteInfo['regex'], $url, $matches)) {
             $site = $siteName;
             $name = $matches[1][0];

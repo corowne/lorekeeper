@@ -166,7 +166,7 @@ class InventoryManager extends Service {
         DB::beginTransaction();
 
         try {
-            foreach ($stacks as $key=>$stack) {
+            foreach ($stacks as $key=> $stack) {
                 $quantity = $quantities[$key];
 
                 if (!$stack) {
@@ -251,7 +251,7 @@ class InventoryManager extends Service {
         DB::beginTransaction();
 
         try {
-            foreach ($stacks as $key=>$stack) {
+            foreach ($stacks as $key=> $stack) {
                 $quantity = $quantities[$key];
                 if (!$sender->hasAlias) {
                     throw new \Exception('You need to have a linked social media account before you can perform this action.');
@@ -323,7 +323,7 @@ class InventoryManager extends Service {
 
         try {
             if ($owner->logType == 'User') {
-                foreach ($stacks as $key=>$stack) {
+                foreach ($stacks as $key=> $stack) {
                     $quantity = $quantities[$key];
                     if (!$owner->hasAlias) {
                         throw new \Exception('You need to have a linked social media account before you can perform this action.');
@@ -352,7 +352,7 @@ class InventoryManager extends Service {
                     }
                 }
             } else {
-                foreach ($stacks as $key=>$stack) {
+                foreach ($stacks as $key=> $stack) {
                     $quantity = $quantities[$key];
                     if (!$user->hasAlias) {
                         throw new \Exception('You need to have a linked social media account before you can perform this action.');
@@ -403,7 +403,7 @@ class InventoryManager extends Service {
         DB::beginTransaction();
 
         try {
-            foreach ($stacks as $key=>$stack) {
+            foreach ($stacks as $key=> $stack) {
                 $quantity = $quantities[$key];
                 if (!$user->hasAlias) {
                     throw new \Exception('You need to have a linked social media account before you can perform this action.');
@@ -598,7 +598,7 @@ class InventoryManager extends Service {
         DB::beginTransaction();
 
         try {
-            foreach ($stacks as $key=>$stack) {
+            foreach ($stacks as $key=> $stack) {
                 if (!$user->hasAlias) {
                     throw new \Exception('You need to have a linked social media account before you can perform this action.');
                 }

@@ -650,7 +650,7 @@ class CharacterManager extends Service {
 
             // Check if entered url(s) have aliases associated with any on-site users
             $designers = array_filter($data['designer_url']); // filter null values
-            foreach ($designers as $key=>$url) {
+            foreach ($designers as $key=> $url) {
                 $recipient = checkAlias($url, false);
                 if (is_object($recipient)) {
                     $data['designer_id'][$key] = $recipient->id;
@@ -658,7 +658,7 @@ class CharacterManager extends Service {
                 }
             }
             $artists = array_filter($data['artist_url']);  // filter null values
-            foreach ($artists as $key=>$url) {
+            foreach ($artists as $key=> $url) {
                 $recipient = checkAlias($url, false);
                 if (is_object($recipient)) {
                     $data['artist_id'][$key] = $recipient->id;
@@ -1831,7 +1831,7 @@ class CharacterManager extends Service {
 
             // Check if entered url(s) have aliases associated with any on-site users
             $designers = array_filter($data['designer_url']); // filter null values
-            foreach ($designers as $key=>$url) {
+            foreach ($designers as $key=> $url) {
                 $recipient = checkAlias($url, false);
                 if (is_object($recipient)) {
                     $data['designer_id'][$key] = $recipient->id;
@@ -1839,7 +1839,7 @@ class CharacterManager extends Service {
                 }
             }
             $artists = array_filter($data['artist_url']);  // filter null values
-            foreach ($artists as $key=>$url) {
+            foreach ($artists as $key=> $url) {
                 $recipient = checkAlias($url, false);
                 if (is_object($recipient)) {
                     $data['artist_id'][$key] = $recipient->id;
