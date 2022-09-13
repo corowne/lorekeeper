@@ -12,6 +12,11 @@
                 <li class="nav-item">
                     <a class="nav-link" id="creditsTab-{{ $image->id }}" data-toggle="tab" href="#credits-{{ $image->id }}" role="tab">Credits</a>
                 </li>
+                @if (isset($showMention) && $showMention)
+                    <li class="nav-item">
+                        <a class="nav-link" id="mentionTab-{{ $image->id }}" data-toggle="tab" href="#mention-{{ $image->id }}" role="tab">Mention</a>
+                    </li>
+                @endif
                 @if (Auth::check() && Auth::user()->hasPower('manage_characters'))
                     <li class="nav-item">
                         <a class="nav-link" id="settingsTab-{{ $image->id }}" data-toggle="tab" href="#settings-{{ $image->id }}" role="tab"><i class="fas fa-cog"></i></a>
@@ -164,6 +169,34 @@
                     </div>
                 @endif
             </div>
+
+            @if (isset($showMention) && $showMention)
+                {{-- Mention This tab --}}
+                <div class="tab-pane fade" id="mention-{{ $image->id }}">
+                    <div class="imagenoteseditingparse">
+                        In the rich text editor:
+                        <div class="alert alert-secondary">
+                            [character={{ $character->slug }}]
+                        </div>
+                        In a comment:
+                        <div class="alert alert-secondary">
+                            [{{ $character->fullName }}]({{ $character->url }})
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="my-2"><strong>For Thumbnails:</strong></div>
+                    <div class="imagenoteseditingparse">
+                        In the rich text editor:
+                        <div class="alert alert-secondary">
+                            [charthumb={{ $character->slug }}]
+                        </div>
+                        In a comment:
+                        <div class="alert alert-secondary">
+                            [![Thumbnail of {{ $character->fullName }}]({{ $character->image->thumbnailUrl }})]({{ $character->url }})
+                        </div>
+                    </div>
+                </div>
+            @endif
 
             @if (Auth::check() && Auth::user()->hasPower('manage_characters'))
                 <div class="tab-pane fade" id="settings-{{ $image->id }}">
