@@ -135,6 +135,7 @@ function parse($text, &$pings = null) {
 	$text = parseUserIDs($text, $users);
 	$text = parseUserIDsForAvatars($text, $users);
     $text = parseCharacters($text, $characters);
+	$text = parseCharacterThumbs($text, $characters);
     $text = parseGalleryThumbs($text, $submissions);
     if ($pings) {
         $pings = ['users' => $users, 'characters' => $characters];
@@ -226,7 +227,7 @@ function parseUserIDs($text, &$users) {
 
 /**
  * Parses a piece of user-entered text to match userid mentions
- * and replace with the user avatar.
+ * and replace with a user avatar.
  *
  * @param string $text
  * @param mixed  $users
@@ -271,6 +272,32 @@ function parseCharacters($text, &$characters) {
             if ($character) {
                 $characters[] = $character;
                 $text = preg_replace('/\[character='.$match.'\]/', $character->displayName, $text);
+            }
+        }
+    }
+
+    return $text;
+}
+
+/**
+ * Parses a piece of user-entered text to match character mentions
+ * and replace with a thumbnail.
+ *
+ * @param  string  $text
+ * @param  mixed   $characters
+ * @return string
+ */
+function parseCharacterThumbs($text, &$characters) {
+    $matches = null;
+    $characters = [];
+    $count = preg_match_all('/\[charthumb=([^\[\]&<>?"\']+)\]/', $text, $matches);
+    if($count) {
+        $matches = array_unique($matches[1]);
+        foreach($matches as $match) {
+            $character = \App\Models\Character\Character::where('slug', $match)->first();
+            if($character) {
+                $characters[] = $character;
+                $text = preg_replace('/\[charthumb='.$match.'\]/', '<a href="'.$character->url.'"><img class="img-thumbnail" data-toggle="tooltip" title="'.$character->fullName.'" src="'.$character->image->thumbnailUrl.'"></a>', $text);
             }
         }
     }
