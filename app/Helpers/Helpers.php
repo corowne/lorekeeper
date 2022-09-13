@@ -297,7 +297,7 @@ function parseCharacterThumbs($text, &$characters) {
             $character = \App\Models\Character\Character::where('slug', $match)->first();
             if($character) {
                 $characters[] = $character;
-                $text = preg_replace('/\[charthumb='.$match.'\]/', '<a href="'.$character->url.'"><img class="img-thumbnail" data-toggle="tooltip" title="'.$character->fullName.'" src="'.$character->image->thumbnailUrl.'"></a>', $text);
+                $text = preg_replace('/\[charthumb='.$match.'\]/', '<a href="'.$character->url.'"><img class="img-thumbnail" alt="Thumbnail of '.$character->fullName.'" data-toggle="tooltip" title="'.$character->fullName.'" src="'.$character->image->thumbnailUrl.'"></a>', $text);
             }
         }
     }

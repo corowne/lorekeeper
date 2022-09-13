@@ -192,7 +192,7 @@
 						</div>
 						In a comment:
 						<div class="alert alert-secondary">
-							[![Image]({{ $character->image->thumbnailUrl }}]({{ $character->url }})
+							[![Thumbnail of {{ $character->fullName }}]({{ $character->image->thumbnailUrl }})]({{ $character->url }})
 						</div>
 					</div>
 				</div>
