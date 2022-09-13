@@ -131,11 +131,11 @@ function parse($text, &$pings = null) {
 
     $users = $characters = null;
     $text = parseUsers($text, $users);
-	$text = parseUsersAndAvatars($text, $users);
-	$text = parseUserIDs($text, $users);
-	$text = parseUserIDsForAvatars($text, $users);
+    $text = parseUsersAndAvatars($text, $users);
+    $text = parseUserIDs($text, $users);
+    $text = parseUserIDsForAvatars($text, $users);
     $text = parseCharacters($text, $characters);
-	$text = parseCharacterThumbs($text, $characters);
+    $text = parseCharacterThumbs($text, $characters);
     $text = parseGalleryThumbs($text, $submissions);
     if ($pings) {
         $pings = ['users' => $users, 'characters' => $characters];
@@ -190,7 +190,7 @@ function parseUsersAndAvatars($text, &$users) {
             $user = \App\Models\User\User::where('name', $match)->first();
             if ($user) {
                 $users[] = $user;
-                $text = preg_replace('/\B%'.$match.'/', '<a href="'.$user->url.'"><img src="/images/avatars/'.$user->avatar.'" style="width:70px; height:70px; border-radius:50%; " alt="'.$user->name.'\'s Avatar"></a>' . $user->displayName, $text);
+                $text = preg_replace('/\B%'.$match.'/', '<a href="'.$user->url.'"><img src="/images/avatars/'.$user->avatar.'" style="width:70px; height:70px; border-radius:50%; " alt="'.$user->name.'\'s Avatar"></a>'.$user->displayName, $text);
             }
         }
     }
@@ -283,19 +283,20 @@ function parseCharacters($text, &$characters) {
  * Parses a piece of user-entered text to match character mentions
  * and replace with a thumbnail.
  *
- * @param  string  $text
- * @param  mixed   $characters
+ * @param string $text
+ * @param mixed  $characters
+ *
  * @return string
  */
 function parseCharacterThumbs($text, &$characters) {
     $matches = null;
     $characters = [];
     $count = preg_match_all('/\[charthumb=([^\[\]&<>?"\']+)\]/', $text, $matches);
-    if($count) {
+    if ($count) {
         $matches = array_unique($matches[1]);
-        foreach($matches as $match) {
+        foreach ($matches as $match) {
             $character = \App\Models\Character\Character::where('slug', $match)->first();
-            if($character) {
+            if ($character) {
                 $characters[] = $character;
                 $text = preg_replace('/\[charthumb='.$match.'\]/', '<a href="'.$character->url.'"><img class="img-thumbnail" alt="Thumbnail of '.$character->fullName.'" data-toggle="tooltip" title="'.$character->fullName.'" src="'.$character->image->thumbnailUrl.'"></a>', $text);
             }
