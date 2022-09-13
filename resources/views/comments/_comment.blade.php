@@ -9,7 +9,7 @@ $markdown->setSafeMode(true);
             {{-- Show avatar if not compact --}}
             @if (isset($compact) && !$compact)
                 <div class="d-none d-md-block">
-                    <img class="mr-3 mt-2" src="/images/avatars/{{ $comment->commenter->avatar }}" style="width:70px; height:70px; border-radius:50%;" alt="{{ $comment->commenter->name }} Avatar">
+                    <img class="mr-3 mt-2" src="/images/avatars/{{ $comment->commenter->avatar }}" style="width:70px; height:70px; border-radius:50%;" alt="{{ $comment->commenter->name }}'s Avatar">
                 </div>
             @endif
 
