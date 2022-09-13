@@ -131,6 +131,9 @@ function parse($text, &$pings = null) {
 
     $users = $characters = null;
     $text = parseUsers($text, $users);
+	$text = parseUsersAndAvatars($text, $users);
+	$text = parseUserIDs($text, $users);
+	$text = parseUserIDsForAvatars($text, $users);
     $text = parseCharacters($text, $characters);
     $text = parseGalleryThumbs($text, $submissions);
     if ($pings) {
@@ -160,6 +163,87 @@ function parseUsers($text, &$users) {
             if ($user) {
                 $users[] = $user;
                 $text = preg_replace('/\B@'.$match.'/', $user->displayName, $text);
+            }
+        }
+    }
+
+    return $text;
+}
+
+/**
+ * Parses a piece of user-entered text to match user mentions
+ * and replace with a link and avatar.
+ *
+ * @param string $text
+ * @param mixed  $users
+ *
+ * @return string
+ */
+function parseUsersAndAvatars($text, &$users) {
+    $matches = null;
+    $users = [];
+    $count = preg_match_all('/\B%([A-Za-z0-9_-]+)/', $text, $matches);
+    if ($count) {
+        $matches = array_unique($matches[1]);
+        foreach ($matches as $match) {
+            $user = \App\Models\User\User::where('name', $match)->first();
+            if ($user) {
+                $users[] = $user;
+                $text = preg_replace('/\B%'.$match.'/', '<a href="'.$user->url.'"><img src="/images/avatars/'.$user->avatar.'" style="width:70px; height:70px; border-radius:50%; " alt="'.$user->name.'\'s Avatar"></a>' . $user->displayName, $text);
+            }
+        }
+    }
+
+    return $text;
+}
+
+/**
+ * Parses a piece of user-entered text to match userid mentions
+ * and replace with a link.
+ *
+ * @param string $text
+ * @param mixed  $users
+ *
+ * @return string
+ */
+function parseUserIDs($text, &$users) {
+    $matches = null;
+    $users = [];
+    $count = preg_match_all('/\[user=([^\[\]&<>?"\']+)\]/', $text, $matches);
+    if ($count) {
+        $matches = array_unique($matches[1]);
+        foreach ($matches as $match) {
+            $user = \App\Models\User\User::where('id', $match)->first();
+            if ($user) {
+                $users[] = $user;
+                $text = preg_replace('/\[user='.$match.'\]/', $user->displayName, $text);
+            }
+        }
+    }
+
+    return $text;
+}
+
+/**
+ * Parses a piece of user-entered text to match userid mentions
+ * and replace with the user avatar.
+ *
+ * @param string $text
+ * @param mixed  $users
+ *
+ * @return string
+ */
+function parseUserIDsForAvatars($text, &$users) {
+    $matches = null;
+    $users = [];
+    $count = preg_match_all('/\[userav=([^\[\]&<>?"\']+)\]/', $text, $matches);
+    if ($count) {
+        $matches = array_unique($matches[1]);
+        foreach ($matches as $match) {
+            $user = \App\Models\User\User::where('id', $match)->first();
+            if ($user) {
+                $users[] = $user;
+                $text = preg_replace('/\[userav='.$match.'\]/', '<a href="'.$user->url.'"><img src="/images/avatars/'.$user->avatar.'" style="width:70px; height:70px; border-radius:50%; " alt="'.$user->name.'\'s Avatar"></a>', $text);
             }
         }
     }
