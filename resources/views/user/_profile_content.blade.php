@@ -117,7 +117,53 @@
 <div class="text-right"><a href="{{ $user->url . '/characters' }}">View all...</a></div>
 <hr class="mb-5" />
 
+<div class="row">
+	<div class="col">
+
 @comments(['model' => $user->profile, 'perPage' => 5])
+
+	</div>
+	<div class="col-4">
+       <div class="card mb-4">
+            <div class="card-header">
+                <h5>Mention This User</h5>
+            </div>
+            <div class="card-body">
+                In the rich text editor:
+                <div class="alert alert-secondary">
+                    {{ "@" . $user->name }}
+                </div>
+				In a comment:
+                <div class="alert alert-secondary">
+                    [{{ $user->name }}]({{ $user->url }})
+                </div>
+				<hr>
+				<div class="my-2"><strong>For Names and Avatars:</strong></div>
+				In the rich text editor:
+                <div class="alert alert-secondary">
+                    {{ "%" . $user->name }}
+                </div>
+                In a comment:
+                <div class="alert alert-secondary">
+                    [![{{ $user->name }}'s Avatar]({{ asset('/images/avatars/'.$user->avatar) }})]({{ $user->url }}) [{{ $user->name }}]({{ $user->url }})
+                </div>
+            </div>
+			@if (Auth::check() && Auth::user()->isStaff)
+				<div class="card-footer">
+					<h5>[ADMIN]</h5>
+					Permalinking to this user, in the rich text editor:
+					<div class="alert alert-secondary">
+						[user={{ $user->id }}]
+					</div>
+					Permalinking to this user's avatar, in the rich text editor:
+					<div class="alert alert-secondary">
+						[userav={{ $user->id }}]
+					</div>
+				</div>
+			@endif
+        </div>
+	</div>
+</div>
 
 @if ($deactivated)
     </div>
