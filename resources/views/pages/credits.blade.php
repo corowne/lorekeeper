@@ -32,6 +32,9 @@
         <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Deactivate_Account"><strong>Deactivate Account</strong></a> by <a href="https://github.com/preimpression">Preimpression</a>
         </p>
+		<p class="mb-0 col-md-4">
+            <strong>Extended Mentions</strong> by <a href="https://github.com/SpeedyD">Speedy</a>
+        </p>
         <p class="mb-0 col-md-4">
             <strong>Extension Tracker</strong> by <a href="https://github.com/preimpression">Preimpression</a> (This page/the section below!)
         </p>
