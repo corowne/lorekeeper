@@ -11,7 +11,7 @@ $markdown->setSafeMode(true);
     @endif
     <div class="media-body row mw-100 mx-0" style="flex:1;flex-wrap:wrap;">
         <div class="d-none d-md-block">
-            <img class="mr-3 mt-2" src="/images/avatars/{{ $comment->commenter->avatar }}" style="width:70px; height:70px; border-radius:50%;" alt="{{ $comment->commenter->name }} Avatar">
+            <img class="mr-3 mt-2" src="/images/avatars/{{ $comment->commenter->avatar }}" style="width:70px; height:70px; border-radius:50%;" alt="{{ $comment->commenter->name }}'s Avatar">
         </div>
         <div class="d-block" style="flex:1">
             <div class="row mx-0 px-0 align-items-md-end">
