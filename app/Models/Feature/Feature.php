@@ -15,7 +15,7 @@ class Feature extends Model {
      * @var array
      */
     protected $fillable = [
-        'feature_category_id', 'species_id', 'subtype_id', 'rarity_id', 'name', 'has_image', 'description', 'parsed_description',
+        'feature_category_id', 'species_id', 'subtype_id', 'rarity_id', 'name', 'has_image', 'description', 'parsed_description', 'is_visible',
     ];
 
     /**
@@ -170,6 +170,22 @@ class Feature extends Model {
         return $query->orderBy('id');
     }
 
+    /**
+     * Scope a query to show only visible features.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param bool                                  $withHidden
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeVisible($query, $withHidden = 0) {
+        if ($withHidden) {
+            return $query;
+        }
+
+        return $query->where('is_visible', 1);
+    }
+
     /**********************************************************************************************
 
         ACCESSORS
@@ -267,11 +283,11 @@ class Feature extends Model {
 
     **********************************************************************************************/
 
-    public static function getDropdownItems() {
+    public static function getDropdownItems($withHidden = 0) {
         if (Config::get('lorekeeper.extensions.organised_traits_dropdown')) {
             $sorted_feature_categories = collect(FeatureCategory::all()->sortBy('sort')->pluck('name')->toArray());
 
-            $grouped = self::select('name', 'id', 'feature_category_id')->with('category')->orderBy('name')->get()->keyBy('id')->groupBy('category.name', $preserveKeys = true)->toArray();
+            $grouped = self::visible($withHidden)->select('name', 'id', 'feature_category_id')->with('category')->orderBy('name')->get()->keyBy('id')->groupBy('category.name', $preserveKeys = true)->toArray();
             if (isset($grouped[''])) {
                 if (!$sorted_feature_categories->contains('Miscellaneous')) {
                     $sorted_feature_categories->push('Miscellaneous');
@@ -294,7 +310,7 @@ class Feature extends Model {
 
             return $features_by_category;
         } else {
-            return self::orderBy('name')->pluck('name', 'id')->toArray();
+            return self::visible($withHidden)->orderBy('name')->pluck('name', 'id')->toArray();
         }
     }
 }
