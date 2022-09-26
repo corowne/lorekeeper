@@ -737,11 +737,17 @@ class CharacterManager extends Service {
 
             if (Config::get('lorekeeper.settings.masterlist_image_format') != null) {
                 // Remove old versions so that images in various filetypes don't pile up
-                if (file_exists($image->imagePath.'/'.$image->imageFileName)) unlink($image->imagePath.'/'.$image->imageFileName);
-                if (isset($image->fullsize_hash) ? file_exists(public_path($image->imageDirectory.'/'.$image->fullsizeFileName)) : false) {
-                    if (file_exists($image->imagePath.'/'.$image->fullsizeFileName)) unlink($image->imagePath.'/'.$image->fullsizeFileName);
+                if (file_exists($image->imagePath.'/'.$image->imageFileName)) {
+                    unlink($image->imagePath.'/'.$image->imageFileName);
                 }
-                if (file_exist($image->imagePath.'/'.$image->thumbnailFileName)) unlink($image->imagePath.'/'.$image->thumbnailFileName);
+                if (isset($image->fullsize_hash) ? file_exists(public_path($image->imageDirectory.'/'.$image->fullsizeFileName)) : false) {
+                    if (file_exists($image->imagePath.'/'.$image->fullsizeFileName)) {
+                        unlink($image->imagePath.'/'.$image->fullsizeFileName);
+                    }
+                }
+                if (file_exist($image->imagePath.'/'.$image->thumbnailFileName)) {
+                    unlink($image->imagePath.'/'.$image->thumbnailFileName);
+                }
 
                 // Set the image's extension in the DB as defined in settings
                 $image->extension = Config::get('lorekeeper.settings.masterlist_image_format');
@@ -806,11 +812,17 @@ class CharacterManager extends Service {
             $image->delete();
 
             // Delete the image files
-            if (file_exists(($image->imagePath.'/'.$image->imageFileName)) unlink($image->imagePath.'/'.$image->imageFileName);
-            if (isset($image->fullsize_hash) ? file_exists(public_path($image->imageDirectory.'/'.$image->fullsizeFileName)) : false) {
-                if (file_exists($image->imagePath.'/'.$image->fullsizeFileName)) unlink($image->imagePath.'/'.$image->fullsizeFileName);
+            if (file_exists($image->imagePath.'/'.$image->imageFileName)) {
+                unlink($image->imagePath.'/'.$image->imageFileName);
             }
-            if (file_exists($image->imagePath.'/'.$image->thumbnailFileName)) unlink($image->imagePath.'/'.$image->thumbnailFileName);
+            if (isset($image->fullsize_hash) ? file_exists(public_path($image->imageDirectory.'/'.$image->fullsizeFileName)) : false) {
+                if (file_exists($image->imagePath.'/'.$image->fullsizeFileName)) {
+                    unlink($image->imagePath.'/'.$image->fullsizeFileName);
+                }
+            }
+            if (file_exists($image->imagePath.'/'.$image->thumbnailFileName)) {
+                unlink($image->imagePath.'/'.$image->thumbnailFileName);
+            }
 
             // Add a log for the character
             // This logs all the updates made to the character
