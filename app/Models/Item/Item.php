@@ -6,7 +6,6 @@ use App\Models\Model;
 use App\Models\Prompt\Prompt;
 use App\Models\Shop\Shop;
 use App\Models\User\User;
-use App\Models\User\UserItem;
 
 class Item extends Model {
     /**
@@ -150,7 +149,7 @@ class Item extends Model {
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeReleased($query) {
-        return $query->whereIn('id', UserItem::pluck('item_id')->toArray())->orWhere('is_released', 1);
+        return $query->where('is_released', 1);
     }
 
     /**********************************************************************************************
