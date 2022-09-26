@@ -78,10 +78,14 @@
             </div>
         @endif
         @if (Config::get('lorekeeper.settings.masterlist_image_automation') === 1)
-            <div class="form-group">
-                {!! Form::checkbox('use_cropper', 1, 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'useCropper']) !!}
-                {!! Form::label('use_cropper', 'Use Thumbnail Automation', ['class' => 'form-check-label ml-3']) !!} {!! add_help('A thumbnail is required for the upload (used for the masterlist). You can use the Thumbnail Automation, or upload a custom thumbnail.') !!}
-            </div>
+            @if (Config::get('lorekeeper.settings.masterlist_image_automation_hide_manual_thumbnail') === 0 || Auth::user()->hasPower('manage_characters'))
+                <div class="form-group">
+                    {!! Form::checkbox('use_cropper', 1, 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'useCropper']) !!}
+                    {!! Form::label('use_cropper', 'Use Thumbnail Automation', ['class' => 'form-check-label ml-3']) !!} {!! add_help('A thumbnail is required for the upload (used for the masterlist). You can use the Thumbnail Automation, or upload a custom thumbnail.') !!}
+                </div>
+            @else
+                {!! Form::hidden('use_cropper', 1) !!}
+            @endif
             <div class="card mb-3" id="thumbnailCrop">
                 <div class="card-body">
                     <div id="cropSelect">By using this function, the thumbnail will be automatically generated from the full image.</div>
