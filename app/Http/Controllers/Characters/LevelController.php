@@ -124,8 +124,8 @@ class LevelController extends Controller
     */
     public function postStat($slug, $id, StatManager $service)
     {
-        if(!Auth::check() || (Auth::user()->id != $character->user_id && !Auth::user()->hasPower('manage_characters'))) abort(404);
         $character = $this->character;
+        if(!Auth::check() || (Auth::user()->id != $character->user_id && !Auth::user()->hasPower('manage_characters'))) abort(404);
         $stat = CharacterStat::find($id);
         if($service->levelCharaStat($stat, $character, false)) 
         {
@@ -160,9 +160,9 @@ class LevelController extends Controller
     */
     public function postEditStat($slug, $id, StatManager $service, Request $request)
     {
+        $character = $this->character;
         if(!Auth::check() || (Auth::user()->id != $character->user_id && !Auth::user()->hasPower('manage_characters'))) abort(404);
         $quantity = $request->get('count');
-        $character = $this->character;
         $stat = CharacterStat::find($id);
         if($service->editCharaStat($stat, $character, $quantity)) 
         {

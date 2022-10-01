@@ -190,7 +190,7 @@ class LevelService extends Service
             if(isset($data['rewardable_type'])) {
                 foreach($data['rewardable_type'] as $key => $type)
                 {
-                    LevelReward::create([
+                    CharacterLevelReward::create([
                         'level_id'       => $level->id,
                         'rewardable_type' => $type,
                         'rewardable_id'   => $data['rewardable_id'][$key],
