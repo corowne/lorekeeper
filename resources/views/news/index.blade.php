@@ -4,7 +4,7 @@
     Site News
 @endsection
 
-@section('content')
+@section('news-content')
     {!! breadcrumbs(['Site News' => 'news']) !!}
     <h1>Site News</h1>
     @if (count($newses))
