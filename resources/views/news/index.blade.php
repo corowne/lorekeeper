@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('news.layout')
 
 @section('title')
     Site News
