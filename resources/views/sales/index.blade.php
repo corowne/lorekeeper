@@ -1,10 +1,10 @@
-@extends('layouts.app')
+@extends('sales.layout')
 
 @section('title')
     Site Sales
 @endsection
 
-@section('content')
+@section('sales-content')
     {!! breadcrumbs(['Site Sales' => 'sales']) !!}
     <h1>Site Sales</h1>
 
