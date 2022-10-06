@@ -11,7 +11,7 @@
     @else
         <li class="sidebar-section">
             <div class="sidebar-section-header">Recent News</div>
-            @foreach (App\Models\News::visible()->orderBy('updated_at', 'DESC')->take(10)->get() as $news)
+            @foreach ($recentnews as $news)
                 @php $newslink = 'news/'.$news->slug; @endphp
                 <div class="sidebar-item"><a href="{{ $news->url }}" class="{{ set_active($newslink) }}">{{ $news->title }}</a></div>
             @endforeach

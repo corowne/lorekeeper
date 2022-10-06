@@ -16,6 +16,14 @@ class NewsController extends Controller {
     */
 
     /**
+     * Create a new controller instance.
+     */
+    public function __construct()
+    {
+		View::share('recentnews', News::visible()->orderBy('updated_at', 'DESC')->take(10)->get());
+    }
+
+    /**
      * Shows the news index.
      *
      * @return \Illuminate\Contracts\Support\Renderable
