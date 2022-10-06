@@ -18,9 +18,8 @@ class NewsController extends Controller {
     /**
      * Create a new controller instance.
      */
-    public function __construct()
-    {
-		View::share('recentnews', News::visible()->orderBy('updated_at', 'DESC')->take(10)->get());
+    public function __construct() {
+        View::share('recentnews', News::visible()->orderBy('updated_at', 'DESC')->take(10)->get());
     }
 
     /**
