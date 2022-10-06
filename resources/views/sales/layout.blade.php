@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title') 
+@section('title')
     Site Sales :: @yield('sales-title')
 @endsection
 
@@ -9,5 +9,5 @@
 @endsection
 
 @section('content')
-	@yield('sales-content')
+    @yield('sales-content')
 @endsection

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title') 
+@section('title')
     Site News :: @yield('news-title')
 @endsection
 
@@ -9,5 +9,5 @@
 @endsection
 
 @section('content')
-	@yield('news-content')
+    @yield('news-content')
 @endsection
