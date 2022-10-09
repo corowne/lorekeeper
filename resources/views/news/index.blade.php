@@ -1,10 +1,10 @@
-@extends('layouts.app')
+@extends('news.layout')
 
 @section('title')
     Site News
 @endsection
 
-@section('content')
+@section('news-content')
     {!! breadcrumbs(['Site News' => 'news']) !!}
     <h1>Site News</h1>
     @if (count($newses))
