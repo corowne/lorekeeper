@@ -102,7 +102,7 @@ class Feature extends Model
      */
     public function getVisualTraitsUrlAttribute()
     {
-        return url('/world/universal/'.$this->id.'/traits');
+        return url('/world/universaltraits');
     }
 
     /**********************************************************************************************
