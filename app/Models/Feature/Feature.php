@@ -95,6 +95,16 @@ class Feature extends Model
         return $this->belongsTo('App\Models\Feature\FeatureCategory', 'feature_category_id');
     }
 
+    /**
+     * Gets the URL the visual index of universal traits.
+     *
+     * @return string
+     */
+    public function getVisualTraitsUrlAttribute()
+    {
+        return url('/world/universal/'.$this->id.'/traits');
+    }
+
     /**********************************************************************************************
 
         SCOPES
