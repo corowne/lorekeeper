@@ -24,7 +24,6 @@ Route::feeds('feeds');
     Routes that require login
 **************************************************************************************************/
 Route::group(['middleware' => ['auth', 'verified']], function () {
-
     // LINK DA ACCOUNT
     Route::get('/link', 'HomeController@getLink')->name('link');
 

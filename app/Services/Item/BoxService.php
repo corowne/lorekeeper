@@ -115,7 +115,7 @@ class BoxService extends Service {
         DB::beginTransaction();
 
         try {
-            foreach ($stacks as $key=>$stack) {
+            foreach ($stacks as $key=> $stack) {
                 // We don't want to let anyone who isn't the owner of the box open it,
                 // so do some validation...
                 if ($stack->user_id != $user->id) {

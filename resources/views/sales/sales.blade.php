@@ -1,10 +1,10 @@
-@extends('layouts.app')
+@extends('sales.layout')
 
-@section('title')
+@section('sales-title')
     {{ $sales->title }}
 @endsection
 
-@section('content')
+@section('sales-content')
     {!! breadcrumbs(['Site Sales' => 'sales', $sales->title => $sales->url]) !!}
     @include('sales._sales', ['sales' => $sales, 'page' => true])
 

@@ -194,6 +194,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Masterlist Image Automation Removing Manual Upload For Users
+    |--------------------------------------------------------------------------
+    |
+    | NOTE: This feature will only function if the above feature, the
+    | Masterlist Image Automation Replacing Cropper, is also enabled.
+    |
+    | The following option is for if you DO want to disable the manual uploading
+    | of thumbnails, to ensure users do not attempt to upload their
+    | own thumbnails regardless of the automation.
+    | This will remove it purely for users, not administration.
+    |
+    | 0: Keeps the manual thumbnail upload for users.
+    | 1: Hides the thumbnail upload for users.
+    |
+    */
+    'masterlist_image_automation_hide_manual_thumbnail' => 0,
+
+    /*
+    |--------------------------------------------------------------------------
     | Trade Asset Limit
     |--------------------------------------------------------------------------
     |

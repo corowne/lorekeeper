@@ -38,11 +38,11 @@ class TradeController extends Controller {
 
         $stacks = [];
         foreach ($trades->get() as $trade) {
-            foreach ($trade->data as $side=>$assets) {
+            foreach ($trade->data as $side=> $assets) {
                 if (isset($assets['user_items'])) {
                     $user_items = UserItem::with('item')->find(array_keys($assets['user_items']));
                     $items = [];
-                    foreach ($assets['user_items'] as $id=>$quantity) {
+                    foreach ($assets['user_items'] as $id=> $quantity) {
                         $user_item = $user_items->find($id);
                         $user_item['quantity'] = $quantity;
                         array_push($items, $user_item);

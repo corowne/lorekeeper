@@ -44,7 +44,6 @@ class SetupAdminUser extends Command {
 
         // First things first, check if user ranks exist...
         if (!Rank::count()) {
-
             // These need to be created even if the seeder isn't run for the site to work correctly.
             $adminRank = Rank::create([
                 'name'        => 'Admin',

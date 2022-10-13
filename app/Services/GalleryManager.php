@@ -119,7 +119,7 @@ class GalleryManager extends Service {
 
             if (isset($data['collaborator_id']) && $collaborators->count()) {
                 // Attach any collaborators to the submission
-                foreach ($data['collaborator_id'] as $key=>$collaborator) {
+                foreach ($data['collaborator_id'] as $key=> $collaborator) {
                     GalleryCollaborator::create([
                         'user_id'               => $collaborator,
                         'gallery_submission_id' => $submission->id,
@@ -140,7 +140,7 @@ class GalleryManager extends Service {
 
             if (isset($data['participant_id']) && $participants->count()) {
                 // Attach any participants to the submission
-                foreach ($data['participant_id'] as $key=>$participant) {
+                foreach ($data['participant_id'] as $key=> $participant) {
                     GalleryCollaborator::create([
                         'user_id'               => $participant,
                         'gallery_submission_id' => $submission->id,
@@ -219,7 +219,7 @@ class GalleryManager extends Service {
 
                 if (isset($data['collaborator_id']) && $collaborators->count()) {
                     // Attach any collaborators to the submission
-                    foreach ($data['collaborator_id'] as $key=>$collaborator) {
+                    foreach ($data['collaborator_id'] as $key=> $collaborator) {
                         GalleryCollaborator::create([
                             'user_id'               => $collaborator,
                             'gallery_submission_id' => $submission->id,
@@ -244,7 +244,7 @@ class GalleryManager extends Service {
 
                 if (isset($data['participant_id']) && $participants->count()) {
                     // Attach any participants to the submission
-                    foreach ($data['participant_id'] as $key=>$participant) {
+                    foreach ($data['participant_id'] as $key=> $participant) {
                         GalleryCollaborator::create([
                             'user_id'               => $participant,
                             'gallery_submission_id' => $submission->id,
@@ -434,7 +434,7 @@ class GalleryManager extends Service {
             // Count up the existing votes to see if the required number has been reached
             $rejectSum = 0;
             $approveSum = 0;
-            foreach ($submission->voteData as $voter=>$vote) {
+            foreach ($submission->voteData as $voter=> $vote) {
                 if ($vote == 1) {
                     $rejectSum += 1;
                 }
@@ -650,7 +650,7 @@ class GalleryManager extends Service {
                 }
 
                 // Send a notification to each user that received a currency award
-                foreach ($grantedList as $key=>$grantedUser) {
+                foreach ($grantedList as $key=> $grantedUser) {
                     Notifications::create('GALLERY_SUBMISSION_VALUED', $grantedUser, [
                         'currency_quantity' => $awardQuantity[$key],
                         'currency_name'     => $currency->name,

@@ -1,10 +1,10 @@
-@extends('layouts.app')
+@extends('news.layout')
 
-@section('title')
+@section('news-title')
     {{ $news->title }}
 @endsection
 
-@section('content')
+@section('news-content')
     {!! breadcrumbs(['Site News' => 'news', $news->title => $news->url]) !!}
     @include('news._news', ['news' => $news, 'page' => true])
     <hr class="mb-5" />
