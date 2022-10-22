@@ -1,7 +1,7 @@
 @php
-if (old('stack_id')) {
-    $old_selection = array_combine(old('stack_id'), old('stack_quantity'));
-}
+    if (old('stack_id')) {
+        $old_selection = array_combine(old('stack_id'), old('stack_quantity'));
+    }
 @endphp
 <h3>
     Your Inventory <a class="small inventory-collapse-toggle collapse-toggle collapsed" href="#userInventory" data-toggle="collapse">Show</a></h3>

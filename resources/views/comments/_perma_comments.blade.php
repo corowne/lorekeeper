@@ -1,6 +1,6 @@
 @inject('markdown', 'Parsedown')
 @php
-$markdown->setSafeMode(true);
+    $markdown->setSafeMode(true);
 @endphp
 
 @if ($comment->deleted_at == null)
