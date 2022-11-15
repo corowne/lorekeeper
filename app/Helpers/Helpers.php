@@ -243,10 +243,13 @@ function checkAlias($url, $failOnError = true)
         }
 
         // and 2. if it contains an alias associated with a user on-site.
-        if($matches[1] != [] && isset($matches[1][0])) {
-            $alias = App\Models\User\UserAlias::where('site', $urlSite)->where('alias', $matches[1][0])->first();
-            if($alias) $recipient = $alias->user;
-            else $recipient = $url;
+        if (isset($matches[0]) && $matches[0] != [] && isset($matches[0][1])) {
+            $alias = App\Models\User\UserAlias::where('site', $urlSite)->where('alias', $matches[0][0])->first();
+            if ($alias) {
+                $recipient = $alias->user;
+            } else {
+                $recipient = $url;
+            }
         }
 
         return $recipient;
