@@ -1,6 +1,7 @@
 <div class="card h-100">
     <div class="m-1">
         <div class="row">
+		@if($character->character)
             <div class="col-md-6 text-center align-self-center">
                 <a href="{{ $character->character->url }}"><img src="{{ $loop->count == 1 ? $character->image->imageUrl : $character->image->thumbnailUrl }}" class="mw-100 img-thumbnail" alt="{{ $character->fullName }}" /></a>
             </div>
@@ -99,6 +100,24 @@
                     <p>{!! $character->description !!}</p>
                 </div>
             </div>
+		@else
+		    <div class="col-md-6 text-center align-self-center">
+                <div class="text-danger character-info" data-id="0">Character not found.</div>
+            </div>
+            <div class="col-md text-center">
+                <div class="mt-2">
+                    <h5>
+                        Character not found.
+                    </h5>
+
+                    <h6>
+                        If you see this text, please contact an administrator.
+                    </h6>
+
+                    <p>This should only occur if a character was deleted. This entry was likely left in error, or is currently in the process of being removed.</p>
+                </div>
+            </div>
+		@endif
         </div>
     </div>
 </div>
