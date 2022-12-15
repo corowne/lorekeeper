@@ -83,6 +83,18 @@ Route::group(['prefix' => 'trades', 'namespace' => 'Users'], function() {
     Route::post('{id}/cancel-trade', 'TradeController@postCancelTrade');
 });
 
+Route::group(['prefix' => 'usershops', 'namespace' => 'Users'], function() {
+    Route::get('/', 'UserShopController@getUserIndex');
+    Route::get('create', 'UserShopController@getCreateShop');
+    Route::get('edit/{id}', 'UserShopController@getEditShop');
+    Route::get('delete/{id}', 'UserShopController@getDeleteShop');
+    Route::post('create', 'UserShopController@postCreateEditShop');
+    Route::post('edit/{id?}', 'UserShopController@postCreateEditShop');
+    Route::post('stock/{id}', 'UserShopController@postEditShopStock');
+    Route::post('delete/{id}', 'UserShopController@postDeleteShop');
+    Route::post('sort', 'UserShopController@postSortShop');
+});
+
 /**************************************************************************************************
     Characters
 **************************************************************************************************/
