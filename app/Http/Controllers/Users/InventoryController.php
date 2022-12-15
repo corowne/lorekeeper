@@ -14,6 +14,7 @@ use App\Models\Item\UserItemLog;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterItem;
 use App\Services\InventoryManager;
+use App\Models\Shop\UserShop;
 
 use App\Models\Trade;
 use App\Models\Character\CharacterDesignUpdate;
@@ -75,7 +76,7 @@ class InventoryController extends Controller
         $readOnly = $request->get('read_only') ? : ((Auth::check() && $first_instance && ($first_instance->user_id == Auth::user()->id || Auth::user()->hasPower('edit_inventories'))) ? 0 : 1);
         $stack = UserItem::where([['user_id', $first_instance->user_id], ['item_id', $first_instance->item_id], ['count', '>', 0]])->get();
         $item = Item::where('id', $first_instance->item_id)->first();
-        $shops = UserShop::get()->pluck('shop.name', 'id');
+        $shops = UserShop::pluck('name', 'id');
 
         return view('home._inventory_stack', [
             'stack' => $stack,
@@ -84,7 +85,7 @@ class InventoryController extends Controller
             'userOptions' => ['' => 'Select User'] + User::visible()->where('id', '!=', $first_instance ? $first_instance->user_id : 0)->orderBy('name')->get()->pluck('verified_name', 'id')->toArray(),
             'readOnly' => $readOnly,
             'characterOptions' => Character::visible()->myo(0)->where('user_id', optional(Auth::user())->id)->orderBy('sort','DESC')->get()->pluck('fullName','id')->toArray(),
-            'shops' => $shops
+            'shopOptions' => $shops
         ]);
     }
 
@@ -144,6 +145,9 @@ class InventoryController extends Controller
                     break;
                 case 'characterTransfer':
                     return $this->postTransferToCharacter($request, $service);
+                    break;
+                case 'shopTransfer':
+                    return $this->postShop($request, $service);
                     break;
                 case 'resell':
                     return $this->postResell($request, $service);
@@ -302,17 +306,18 @@ class InventoryController extends Controller
      * transfers item to shop
      *
      * @param  \Illuminate\Http\Request       $request
-     * @param  App\Services\UserShopManager  $service
+     * @param  App\Services\InventoryManager  $service
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postShop(Request $request, UserShopManager $service, $id)
+    public function postShop(Request $request, InventoryManager $service, $id)
     {
-        if($service->sendShop(UserShop::find($id), $request->get('id'))) {
-            flash('Item successfully sent to shop.')->success();
+        if($service->sendShop(Auth::user(), Usershop::where('id', $request->get('shop_id'))->first(), UserItem::find($request->get('ids')), $request->get('quantities'))) {
+            flash('Item transferred successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
         return redirect()->back();
     }
+
 }

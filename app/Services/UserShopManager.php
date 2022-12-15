@@ -153,7 +153,7 @@ class ShopManager extends Service
      * @param  int       $quantities
      * @return bool
      */
-    public function sendShop($item, $id)
+    public function sendShop($item, $id, $service)
     {
         DB::beginTransaction();
 

@@ -537,4 +537,44 @@ class InventoryManager extends Service
             ]
         );
     }
+
+    /**
+     * Transfers items between a user and character.
+     *
+     * @param  \App\Models\User\User|\App\Models\Shop\UserShop          $sender
+     * @param  \App\Models\User\User|\App\Models\Shop\UserShop          $recipient
+     * @param  \App\Models\User\UserItem|\App\Models\Shop\UserShopStock  $stacks
+     * @param  int                                                            $quantities
+     * @return bool
+     */
+    public function postShop($sender, $recipient, $stacks, $quantities)
+    {
+        DB::beginTransaction();
+
+        try {
+            foreach($stacks as $key=>$stack) {
+                $quantity = $quantities[$key];
+
+                if(!$stack) throw new \Exception("Invalid or no stack selected.");
+                if(!$recipient) throw new \Exception("Invalid recipient selected.");
+                if(!$sender) throw new \Exception("Invalid sender selected.");
+                if(!$stacks) throw new \Exception("Invalid stack selected.");
+                if($quantity <= 0) throw new \Exception("Invalid quantity entered.");
+                
+                if(($recipient && !$sender->hasPower('edit_inventories') && !Auth::user() == $recipient->user) || ($recipient->logType == 'User' && !Auth::user()->hasPower('edit_inventories') && !Auth::user() == $sender->user)) throw new \Exception("Cannot transfer items to/from a shop you don't own.");
+                
+                if((!$stack->item->allow_transfer || isset($stack->data['disallow_transfer'])) && !Auth::user()->hasPower('edit_inventories')) throw new \Exception("One of the selected items cannot be transferred.");
+                if($stack->count < $quantity) throw new \Exception("Quantity to transfer exceeds item count.");
+
+                $this->creditItem($sender, $recipient, $stack->data, $stack->item, $quantity);
+
+                $stack->count -= $quantity;
+                $stack->save();
+            }
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
 }

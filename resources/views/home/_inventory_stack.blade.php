@@ -93,6 +93,19 @@
                         </div>
                     </li>
                 @endif
+                
+                <li class="list-group-item">
+                        <a class="card-title h5 collapse-title" data-toggle="collapse" href="#shoptransferForm">@if($stack->first()->user_id != $user->id) [ADMIN] @endif Transfer Item to Shop</a>
+                        <div id="shoptransferForm" class="collapse">
+                            <p>This will transfer this stack or stacks to the selected user shop.</p>
+                            <div class="form-group">
+                                {!! Form::select('shop_id', $shopOptions, null, ['class' => 'form-control mr-2 default shop-select', 'placeholder' => 'Select Shop']) !!}
+                            </div>
+                            <div class="text-right">
+                                {!! Form::button('Transfer', ['class' => 'btn btn-primary', 'name' => 'action', 'value' => 'shopTransfer', 'type' => 'submit']) !!}
+                            </div>
+                        </div>
+                    </li>
                 @if(isset($item->data['resell']) && App\Models\Currency\Currency::where('id', $item->resell->flip()->pop())->first() && Config::get('lorekeeper.extensions.item_entry_expansion.resale_function'))
                     <li class="list-group-item">
                         <a class="card-title h5 collapse-title" data-toggle="collapse" href="#resellForm">@if($stack->first()->user_id != $user->id) [ADMIN] @endif Sell Item</a>
