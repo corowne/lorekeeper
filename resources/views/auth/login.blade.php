@@ -65,6 +65,11 @@
             </div>
         </div>
     </form>
+    {{-- TODO: Only show Appropriate button if set in settings --}}
+    <div class="text-center pt-5 w-75 m-auto">
+        <h3>Alternate Login's</h3>
+        <a href="{{ url('/login/redirect/toyhouse') }}" class="btn btn-primary text-white w-100"><i class="fas fa-home"></i> Login With Toyhouse</a>
+    </div>
 @else 
     @include('auth._require_setup')
 @endif
