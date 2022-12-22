@@ -88,7 +88,7 @@ class WorldController extends Controller
         return view('world.specieses', [
             'specieses' => $query->with(['subtypes' => function($query) {
                 $query->orderBy('sort', 'DESC');
-            }])->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
+            }])->visible()->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -104,7 +104,7 @@ class WorldController extends Controller
         $name = $request->get('name');
         if($name) $query->where('name', 'LIKE', '%'.$name.'%');
         return view('world.subtypes', [
-            'subtypes' => $query->with('species')->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
+            'subtypes' => $query->with('species')->visible()->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -193,7 +193,7 @@ class WorldController extends Controller
         return view('world.features', [
             'features' => $query->paginate(20)->appends($request->query()),
             'rarities' => ['none' => 'Any Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'specieses' => ['none' => 'Any Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'specieses' => ['none' => 'Any Species'] + Species::visible()->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'categories' => ['none' => 'Any Category'] + FeatureCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }

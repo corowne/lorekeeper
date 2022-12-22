@@ -100,6 +100,7 @@ class SpeciesService extends Service
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
         
+        if(!isset($data['is_visible'])) $data['is_visible'] = 0;
         if(isset($data['remove_image']))
         {
             if($species && $species->has_image && $data['remove_image']) 
@@ -239,6 +240,7 @@ class SpeciesService extends Service
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
         
+        if(!isset($data['is_visible'])) $data['is_visible'] = 0;
         if(isset($data['remove_image']))
         {
             if($subtype && $subtype->has_image && $data['remove_image']) 

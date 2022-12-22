@@ -42,6 +42,11 @@
     {!! Form::textarea('description', $species->description, ['class' => 'form-control wysiwyg']) !!}
 </div>
 
+<div class="form-group">
+    {!! Form::checkbox('is_visible', 1, $species->id ? $species->is_visible : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+    {!! Form::label('is_visible', 'Is Visible', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned off, the species will not be visible in the species list or available for selection in search and design updates. Permissioned staff will still be able to add them to characters, however.') !!}
+</div>
+
 <div class="text-right">
     {!! Form::submit($species->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
 </div>
