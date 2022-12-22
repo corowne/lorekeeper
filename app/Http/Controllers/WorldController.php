@@ -105,7 +105,7 @@ class WorldController extends Controller {
         }
 
         return view('world.subtypes', [
-            'subtypes' => $query->with('species')->visible()->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
+            'subtypes' => $query->with('species')->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
 
