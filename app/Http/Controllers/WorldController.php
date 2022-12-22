@@ -213,7 +213,7 @@ class WorldController extends Controller {
     public function getSpeciesFeatures($id) {
         $categories = FeatureCategory::orderBy('sort', 'DESC')->get();
         $rarities = Rarity::orderBy('sort', 'ASC')->get();
-        $species = Species::where('id', $id)->first();
+        $species = Species::visible()->where('id', $id)->first();
         if (!$species) {
             abort(404);
         }
