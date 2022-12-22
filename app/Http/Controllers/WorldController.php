@@ -88,7 +88,7 @@ class WorldController extends Controller {
         return view('world.specieses', [
             'specieses' => $query->with(['subtypes' => function ($query) {
                 $query->orderBy('sort', 'DESC');
-            }])->visible()->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
+            }])->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -198,7 +198,7 @@ class WorldController extends Controller {
         return view('world.features', [
             'features'   => $query->paginate(20)->appends($request->query()),
             'rarities'   => ['none' => 'Any Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'specieses'  => ['none' => 'Any Species'] + Species::visible()->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'specieses'  => ['none' => 'Any Species'] + Species::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'categories' => ['none' => 'Any Category'] + FeatureCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
@@ -213,7 +213,7 @@ class WorldController extends Controller {
     public function getSpeciesFeatures($id) {
         $categories = FeatureCategory::orderBy('sort', 'DESC')->get();
         $rarities = Rarity::orderBy('sort', 'ASC')->get();
-        $species = Species::visible()->where('id', $id)->first();
+        $species = Species::visible(Auth::check() ? Auth::user() : null)->where('id', $id)->first();
         if (!$species) {
             abort(404);
         }
