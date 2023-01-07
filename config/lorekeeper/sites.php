@@ -33,6 +33,9 @@ return [
         // Auth is for whether or not the site should offer this provider as an option for users
         // to authenticate with,
         'auth' => 1,
+        // Login is for whether the site should be used as a login / registration provider instead of email verification with password
+        // Login can only be used when auth has already been turned on as well.
+        'login' => 0,
         // while primary alias is whether or not an alias on this site can be a user's primary alias.
         'primary_alias' => 1,
     ],
@@ -44,6 +47,7 @@ return [
         'link'          => 'toyhou.se',
         'icon'          => 'fas fa-home',
         'auth'          => 1,
+        'login'         => 1,
         'primary_alias' => 1,
     ],
 
@@ -54,6 +58,7 @@ return [
         'link'          => 'twitter.com',
         'icon'          => 'fab fa-twitter',
         'auth'          => 0,
+        'login'         => 0,
         'primary_alias' => 0,
     ],
 
@@ -64,6 +69,7 @@ return [
         'link'          => 'instagram.com',
         'icon'          => 'fab fa-instagram',
         'auth'          => 0,
+        'login'         => 0,
         'primary_alias' => 0,
     ],
 
@@ -74,6 +80,7 @@ return [
         'link'          => 'tumblr.com',
         'icon'          => 'fab fa-tumblr',
         'auth'          => 0,
+        'login'         => 0,
         'primary_alias' => 0,
     ],
 
@@ -84,6 +91,7 @@ return [
         'link'          => 'imgur.com/user/',
         'icon'          => 'far fa-image',
         'auth'          => 0,
+        'login'         => 0,
         'primary_alias' => 0,
     ],
 
@@ -94,6 +102,7 @@ return [
         'link'          => 'twitch.tv',
         'icon'          => 'fab fa-twitch',
         'auth'          => 0,
+        'login'         => 0,
         'primary_alias' => 0,
     ],
 

@@ -74,7 +74,7 @@ class RegisterController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function postRegisterWithDriver(LinkService $service, Request $request, $provider) {
-        $providerData = Socialite::driver('toyhouse')->userFromToken($request->get('token'));
+        $providerData = Socialite::driver($provider)->userFromToken($request->get('token'));
 
         if (UserAlias::where('site', $provider)->where('user_snowflake', $providerData->id)->first()) {
             flash("An Account is already tied to the authorized " . $provider . " account.")->error();

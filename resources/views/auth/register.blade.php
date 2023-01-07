@@ -9,13 +9,17 @@
             <h1>Register</h1>
         </div>
     </div>
-    {{-- TODO: Only show Appropriate button if set in settings --}}
-    <div class="text-center w-75 m-auto pt-2 pb-4">
-        <h3>Alternate Registrations</h3>
-        <a href="{{ url('/login/redirect/toyhouse') }}" class="btn btn-primary text-white w-100"><i class="fas fa-home"></i> Register With Toyhouse</a>
-    </div>
+     
+    <h3 class="text-center">Alternate Registrations</h3>
+    @foreach(Config::get('lorekeeper.sites') as $provider => $site)
+        @if(isset($site['login']) && $site['login'])
+            <div class="text-center w-75 m-auto pt-2 pb-2">
+                <a href="{{ url('/login/redirect/'.$provider) }}" class="btn btn-primary text-white w-100"><i class="{{ $site['icon'] }} mr-2"></i> Register With {{ ucfirst($provider) }}</a>
+            </div>
+        @endif
+    @endforeach
     
-    <h3 class="mt-3 text-center">Regular Registration</h3>
+    <h3 class="mt-5 text-center">Regular Registration</h3>
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
