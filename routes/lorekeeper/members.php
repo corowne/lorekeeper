@@ -117,7 +117,7 @@ Route::group(['prefix' => 'myo', 'namespace' => 'Characters'], function() {
 **************************************************************************************************/
 
 Route::group(['prefix' => 'gallery'], function() {
-    Route::get('submissions/{type}', 'GalleryController@getUserSubmissions')->where('type', 'pending|accepted|rejected');
+    Route::get('submissions/{type}', 'GalleryController@getUserSubmissions')->where('type', 'draft|pending|accepted|rejected');
 
     Route::post('favorite/{id}', 'GalleryController@postFavoriteSubmission');
 
@@ -140,12 +140,22 @@ Route::group(['prefix' => 'submissions', 'namespace' => 'Users'], function() {
     Route::get('new/character/{slug}', 'SubmissionController@getCharacterInfo');
     Route::get('new/prompt/{id}', 'SubmissionController@getPromptInfo');
     Route::post('new', 'SubmissionController@postNewSubmission');
+    Route::post('new/{draft}', 'SubmissionController@postNewSubmission')->where('draft', 'draft');
+    Route::get('draft/{id}', 'SubmissionController@getEditSubmission');
+    Route::post('draft/{id}', 'SubmissionController@postEditSubmission');
+    Route::post('draft/{id}/{submit}', 'SubmissionController@postEditSubmission')->where('submit', 'submit');
+    Route::post('draft/{id}/delete', 'SubmissionController@postDeleteSubmission');
 });
 
 Route::group(['prefix' => 'claims', 'namespace' => 'Users'], function() {
     Route::get('/', 'SubmissionController@getClaimsIndex');
     Route::get('new', 'SubmissionController@getNewClaim');
     Route::post('new', 'SubmissionController@postNewClaim');
+    Route::post('new/{draft}', 'SubmissionController@postNewClaim')->where('draft', 'draft');
+    Route::get('draft/{id}', 'SubmissionController@getEditClaim');
+    Route::post('draft/{id}', 'SubmissionController@postEditClaim');
+    Route::post('draft/{id}/{submit}', 'SubmissionController@postEditClaim')->where('submit', 'submit');
+    Route::post('draft/{id}/delete', 'SubmissionController@postDeleteClaim');
 });
 
 Route::group(['prefix' => 'reports', 'namespace' => 'Users'], function() {
@@ -156,7 +166,7 @@ Route::group(['prefix' => 'reports', 'namespace' => 'Users'], function() {
 });
 
 Route::group(['prefix' => 'designs', 'namespace' => 'Characters'], function() {
-    Route::get('{type?}', 'DesignController@getDesignUpdateIndex')->where('type', 'pending|approved|rejected');
+    Route::get('{type?}', 'DesignController@getDesignUpdateIndex')->where('type', 'draft|pending|approved|rejected');
     Route::get('{id}', 'DesignController@getDesignUpdate');
 
     Route::get('{id}/comments', 'DesignController@getComments');

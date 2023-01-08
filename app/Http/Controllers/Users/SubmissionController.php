@@ -72,11 +72,12 @@ class SubmissionController extends Controller
         $inventory = isset($submission->data['user']) ? parseAssetData($submission->data['user']) : null;
         if(!$submission) abort(404);
         return view('home.submission', [
-            'submission' => $submission,
-            'user' => $submission->user,
-            'categories' => ItemCategory::orderBy('sort', 'DESC')->get(),
-            'inventory' => $inventory,
-            'itemsrow' => Item::all()->keyBy('id')
+            'submission'    => $submission,
+            'user'          => $submission->user,
+            'categories'    => ItemCategory::orderBy('sort', 'DESC')->get(),
+            'inventory'     => $inventory,
+            'itemsrow'      => Item::all()->keyBy('id'),
+            'isClaim'       => false,
         ]);
     }
 
@@ -91,20 +92,53 @@ class SubmissionController extends Controller
         $closed = !Settings::get('is_prompts_open');
         $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get();
         return view('home.create_submission', [
-            'closed' => $closed,
-            'isClaim' => false,
+            'closed'                => $closed,
+            'isClaim'               => false,
         ] + ($closed ? [] : [
-            'submission' => new Submission,
-            'prompts' => Prompt::active()->sortAlphabetical()->pluck('name', 'id')->toArray(),
-            'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
-            'categories' => ItemCategory::orderBy('sort', 'DESC')->get(),
-            'item_filter' => Item::orderBy('name')->released()->get()->keyBy('id'),
-            'items' => Item::orderBy('name')->released()->pluck('name', 'id'),
-            'character_items' => Item::whereIn('item_category_id', ItemCategory::where('is_character_owned',1)->pluck('id')->toArray() )->orderBy('name')->released()->pluck('name', 'id'),
-            'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
-            'inventory' => $inventory,
-            'page' => 'submission',
-            'expanded_rewards' => Config::get('lorekeeper.extensions.character_reward_expansion.expanded')
+            'submission'            => new Submission,
+            'prompts'               => Prompt::active()->sortAlphabetical()->pluck('name', 'id')->toArray(),
+            'characterCurrencies'   => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
+            'categories'            => ItemCategory::orderBy('sort', 'DESC')->get(),
+            'item_filter'           => Item::orderBy('name')->released()->get()->keyBy('id'),
+            'items'                 => Item::orderBy('name')->released()->pluck('name', 'id'),
+            'character_items'       => Item::whereIn('item_category_id', ItemCategory::where('is_character_owned',1)->pluck('id')->toArray() )->orderBy('name')->released()->pluck('name', 'id'),
+            'currencies'            => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
+            'inventory'             => $inventory,
+            'page'                  => 'submission',
+            'expanded_rewards'      => Config::get('lorekeeper.extensions.character_reward_expansion.expanded')
+        ]));
+    }
+
+    /**
+     * Shows the edit submission page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getEditSubmission(Request $request, $id)
+    {
+        $closed = !Settings::get('is_prompts_open');
+        $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get();
+        $submission = Submission::where('id', $id)->where('status','Draft')->where('user_id',Auth::user()->id)->first();
+        if(!$submission) abort(404);
+
+        return view('home.edit_submission', [
+            'closed'                => $closed,
+            'isClaim'               => false,
+        ] + ($closed ? [] : [
+            'submission'            => $submission,
+            'prompts'               => Prompt::active()->sortAlphabetical()->pluck('name', 'id')->toArray(),
+            'characterCurrencies'   => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
+            'categories'            => ItemCategory::orderBy('sort', 'DESC')->get(),
+            'item_filter'           => Item::orderBy('name')->released()->get()->keyBy('id'),
+            'items'                 => Item::orderBy('name')->released()->pluck('name', 'id'),
+            'character_items'       => Item::whereIn('item_category_id', ItemCategory::where('is_character_owned',1)->pluck('id')->toArray() )->orderBy('name')->released()->pluck('name', 'id'),
+            'currencies'            => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
+            'inventory'             => $inventory,
+            'page'                  => 'submission',
+            'expanded_rewards'      => Config::get('lorekeeper.extensions.character_reward_expansion.expanded'),
+            'selectedInventory'     => isset($submission->data['user']) ? parseAssetData($submission->data['user']) : null,
+            'count' => Submission::where('prompt_id', $submission->prompt_id)->where('status', 'Approved')->where('user_id', $submission->user_id)->count()
         ]));
     }
 
@@ -147,11 +181,21 @@ class SubmissionController extends Controller
      * @param  App\Services\SubmissionManager  $service
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postNewSubmission(Request $request, SubmissionManager $service)
+    public function postNewSubmission(Request $request, SubmissionManager $service, $draft = false)
     {
+        if(!isset($draft)) $draft = false;
+        else $draft = true;
+
         $request->validate(Submission::$createRules);
-        if($service->createSubmission($request->only(['url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity']), Auth::user())) {
-            flash('Prompt submitted successfully.')->success();
+        if($submission = $service->createSubmission($request->only(['url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity']), Auth::user(), false, $draft)) {
+            if($submission->status == 'Draft') {
+                flash('Draft created successfully.')->success();
+                return redirect()->to('submissions?type=draft');
+            }
+            else {
+                flash('Prompt submitted successfully.')->success();
+                return redirect()->to('submissions');
+            }
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
@@ -159,6 +203,52 @@ class SubmissionController extends Controller
         }
         return redirect()->to('submissions');
     }
+
+    /**
+     * Edits a submission draft
+     *
+     * @param  \Illuminate\Http\Request        $request
+     * @param  App\Services\SubmissionManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postEditSubmission(Request $request, SubmissionManager $service, $id, $submit = false)
+    {
+        $submission = Submission::where('id', $id)->where('status','Draft')->where('user_id',Auth::user()->id)->first();
+        if(!$submission) abort(404);
+
+        $request->validate(Submission::$updateRules);
+        if ($submit && $service->editSubmission($submission, $request->only(['url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity']), Auth::user(), false, $submit)) {
+            flash('Draft submitted successfully.')->success();
+        } else if ($service->editSubmission($submission, $request->only(['url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity']), Auth::user())) {
+            flash('Draft saved successfully.')->success();
+        } else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+            return redirect()->back();
+        }
+        return redirect()->to('submissions/view/'.$submission->id);
+    }
+
+    /**
+     * Deletes a submission draft.
+     *
+     * @param  \Illuminate\Http\Request        $request
+     * @param  App\Services\SubmissionManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postDeleteSubmission(Request $request, SubmissionManager $service, $id)
+    {
+        $submission = Submission::where('id', $id)->where('status','Draft')->where('user_id',Auth::user()->id)->first();
+        if(!$submission) abort(404);
+
+        if ($service->deleteSubmission($submission, Auth::user())) {
+            flash('Draft deleted successfully.')->success();
+        } else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+            return redirect()->back();
+        }
+        return redirect()->to('submissions?type=draft');
+    }
+
 
     /**********************************************************************************************
 
@@ -198,11 +288,12 @@ class SubmissionController extends Controller
         $inventory = isset($submission->data['user']) ? parseAssetData($submission->data['user']) : null;
         if(!$submission) abort(404);
         return view('home.submission', [
-            'submission' => $submission,
-            'user' => $submission->user,
-            'categories' => ItemCategory::orderBy('sort', 'DESC')->get(),
-            'itemsrow' => Item::all()->keyBy('id'),
-            'inventory' => $inventory
+            'submission'    => $submission,
+            'user'          => $submission->user,
+            'categories'    => ItemCategory::orderBy('sort', 'DESC')->get(),
+            'itemsrow'      => Item::all()->keyBy('id'),
+            'inventory'     => $inventory,
+            'isClaim'       => true,
         ]);
     }
 
@@ -217,19 +308,51 @@ class SubmissionController extends Controller
         $closed = !Settings::get('is_claims_open');
         $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get();
         return view('home.create_submission', [
-            'closed' => $closed,
-            'isClaim' => true,
+            'closed'                => $closed,
+            'isClaim'               => true,
         ] + ($closed ? [] : [
-            'submission' => new Submission,
-            'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
-            'categories' => ItemCategory::orderBy('sort', 'DESC')->get(),
-            'inventory' => $inventory,
-            'item_filter' => Item::orderBy('name')->released()->get()->keyBy('id'),
-            'items' => Item::orderBy('name')->released()->pluck('name', 'id'),
-            'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
-            'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
-            'page' => 'submission',
-            'expanded_rewards' => Config::get('lorekeeper.extensions.character_reward_expansion.expanded')
+            'submission'            => new Submission,
+            'characterCurrencies'   => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
+            'character_items'       => Item::whereIn('item_category_id', ItemCategory::where('is_character_owned',1)->pluck('id')->toArray() )->orderBy('name')->released()->pluck('name', 'id'),
+            'categories'            => ItemCategory::orderBy('sort', 'DESC')->get(),
+            'currencies'            => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
+            'inventory'             => $inventory,
+            'item_filter'           => Item::orderBy('name')->released()->get()->keyBy('id'),
+            'items'                 => Item::orderBy('name')->released()->pluck('name', 'id'),
+            'raffles'               => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
+            'page'                  => 'submission',
+            'expanded_rewards'      => Config::get('lorekeeper.extensions.character_reward_expansion.expanded')
+        ]));
+    }
+    /**
+     * Shows the edit submission page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getEditClaim(Request $request, $id)
+    {
+        $closed = !Settings::get('is_claims_open');
+        $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get();
+        $submission = Submission::where('id', $id)->where('status','Draft')->where('user_id',Auth::user()->id)->first();
+        if(!$submission) abort(404);
+
+        return view('home.edit_submission', [
+            'closed'                => $closed,
+            'isClaim'               => true,
+        ] + ($closed ? [] : [
+            'submission'            => $submission,
+            'characterCurrencies'   => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
+            'character_items'       => Item::whereIn('item_category_id', ItemCategory::where('is_character_owned',1)->pluck('id')->toArray() )->orderBy('name')->released()->pluck('name', 'id'),
+            'categories'            => ItemCategory::orderBy('sort', 'DESC')->get(),
+            'currencies'            => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
+            'item_filter'           => Item::orderBy('name')->released()->get()->keyBy('id'),
+            'items'                 => Item::orderBy('name')->released()->pluck('name', 'id'),
+            'inventory'             => $inventory,
+            'raffles'               => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
+            'page'                  => 'submission',
+            'expanded_rewards'      => Config::get('lorekeeper.extensions.character_reward_expansion.expanded'),
+            'selectedInventory'     => isset($submission->data['user']) ? parseAssetData($submission->data['user']) : null,
         ]));
     }
 
@@ -240,16 +363,70 @@ class SubmissionController extends Controller
      * @param  App\Services\SubmissionManager  $service
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postNewClaim(Request $request, SubmissionManager $service)
+    public function postNewClaim(Request $request, SubmissionManager $service, $draft = false)
     {
+        if(isset($draft) && $draft != false) $draft = true;
+
         $request->validate(Submission::$createRules);
-        if($service->createSubmission($request->only(['url', 'comments', 'stack_id', 'stack_quantity', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type','rewardable_id', 'quantity', 'currency_id', 'currency_quantity']), Auth::user(), true)) {
-            flash('Claim submitted successfully.')->success();
+        if($submission = $service->createSubmission($request->only(['url', 'comments', 'stack_id', 'stack_quantity', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type','rewardable_id', 'quantity', 'currency_id', 'currency_quantity']), Auth::user(), true, $draft)) {
+            if($submission->status == 'Draft') {
+                flash('Draft created successfully.')->success();
+                return redirect()->to('claims?type=draft');
+            }
+            else {
+                flash('Claim submitted successfully.')->success();
+                return redirect()->to('claims');
+            }
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
             return redirect()->back();
         }
         return redirect()->to('claims');
+    }
+
+    /**
+     * Edits a claim draft.
+     *
+     * @param  \Illuminate\Http\Request        $request
+     * @param  App\Services\SubmissionManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postEditClaim(Request $request, SubmissionManager $service, $id, $submit = false)
+    {
+        $submission = Submission::where('id', $id)->where('status','Draft')->where('user_id',Auth::user()->id)->first();
+        if(!$submission) abort(404);
+
+        $request->validate(Submission::$createRules);
+        if($submit && $service->editSubmission($submission, $request->only(['url', 'comments', 'stack_id', 'stack_quantity', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type','rewardable_id', 'quantity', 'currency_id', 'currency_quantity']), Auth::user(), true, $submit)) {
+            flash('Draft submitted successfully.')->success();
+        } else if ($service->editSubmission($submission, $request->only(['url', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity']), Auth::user(), true)) {
+            flash('Draft saved successfully.')->success();
+        } else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+            return redirect()->back();
+        }
+        return redirect()->to('claims?type=draft');
+    }
+
+    /**
+     * Deletes a claim draft.
+     *
+     * @param  \Illuminate\Http\Request        $request
+     * @param  App\Services\SubmissionManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postDeleteClaim(Request $request, SubmissionManager $service, $id)
+    {
+        $submission = Submission::where('id', $id)->where('status','Draft')->where('user_id',Auth::user()->id)->first();
+        if(!$submission) abort(404);
+
+        if ($service->deleteSubmission($submission, Auth::user())) {
+            flash('Draft deleted successfully.')->success();
+        } else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+            return redirect()->back();
+        }
+        return redirect()->to('claims?type=draft');
     }
 }

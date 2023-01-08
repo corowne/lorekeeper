@@ -61,7 +61,7 @@ class SubmissionController extends Controller
      */
     public function getSubmission($id)
     {
-        $submission = Submission::whereNotNull('prompt_id')->where('id', $id)->first();
+        $submission = Submission::whereNotNull('prompt_id')->where('id', $id)->where('status','!=','Draft')->first();
         $inventory = isset($submission->data['user']) ? parseAssetData($submission->data['user']) : null;
         if(!$submission) abort(404);
         return view('admin.submissions.submission', [
@@ -117,7 +117,7 @@ class SubmissionController extends Controller
      */
     public function getClaim($id)
     {
-        $submission = Submission::whereNull('prompt_id')->where('id', $id)->first();
+        $submission = Submission::whereNull('prompt_id')->where('id', $id)->where('status','!=','Draft')->first();
         $inventory = isset($submission->data['user']) ? parseAssetData($submission->data['user']) : null;
         if(!$submission) abort(404);
         return view('admin.submissions.submission', [
@@ -150,6 +150,10 @@ class SubmissionController extends Controller
         $data = $request->only(['slug',  'character_rewardable_quantity', 'character_rewardable_id',  'character_rewardable_type', 'character_currency_id', 'rewardable_type', 'rewardable_id', 'quantity', 'staff_comments' ]);
         if($action == 'reject' && $service->rejectSubmission($request->only(['staff_comments']) + ['id' => $id], Auth::user())) {
             flash('Submission rejected successfully.')->success();
+        }
+        elseif($action == 'cancel' && $service->cancelSubmission($request->only(['staff_comments']) + ['id' => $id], Auth::user())) {
+            flash('Submission canceled successfully.')->success();
+            return redirect()->to('admin/submissions');
         }
         elseif($action == 'approve' && $service->approveSubmission($data + ['id' => $id], Auth::user())) {
             flash('Submission approved successfully.')->success();

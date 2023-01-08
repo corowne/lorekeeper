@@ -23,6 +23,9 @@
 
 <ul class="nav nav-tabs mb-3">
     <li class="nav-item">
+        <a class="nav-link {{ Request::get('type') == 'draft' ? 'active' : '' }}" href="{{ url($isClaims ? 'claims' : 'submissions') . '?type=draft' }}">Drafts</a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link {{ !Request::get('type') || Request::get('type') == 'pending' ? 'active' : '' }}" href="{{ url($isClaims ? 'claims' : 'submissions') }}">Pending</a>
     </li>
     <li class="nav-item">

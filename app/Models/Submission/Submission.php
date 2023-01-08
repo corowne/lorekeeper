@@ -108,6 +108,17 @@ class Submission extends Model
     }
 
     /**
+     * Scope a query to only include drafted submissions.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeDrafts($query)
+    {
+        return $query->where('status', 'Drafts');
+    }
+
+    /**
      * Scope a query to only include viewable submissions.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
