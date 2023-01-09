@@ -194,7 +194,6 @@ class GallerySubmission extends Model {
      * Scope a query to only include submissions the user has either submitted or collaborated on.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param                                       $user
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
