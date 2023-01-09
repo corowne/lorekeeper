@@ -21,7 +21,7 @@ use Notifications;
 use Settings;
 use Spatie\Honeypot\ProtectAgainstSpam;
 
-class CommentController extends Controller implements CommentControllerInterface {
+class CommentController extends Controller {
     public function __construct() {
         $this->middleware('web');
 
@@ -35,8 +35,27 @@ class CommentController extends Controller implements CommentControllerInterface
 
     /**
      * Creates a new comment for given model.
+     *
+     * @param mixed $model
+     * @param mixed $id
      */
-    public function store(Request $request) {
+    public function store(Request $request, $model, $id) {
+        $model = urldecode(base64_decode($model));
+
+        $accepted_models = [
+            'App\Models\User\UserProfile',
+            'App\Models\News',
+            'App\Models\Sales\Sales',
+            'App\Models\Gallery\GallerySubmission',
+            'App\Models\Report\Report',
+            'App\Models\SitePage',
+            'App\Models\Gallery\GallerySubmission',
+        ];
+
+        if (!in_array($model, $accepted_models)) {
+            abort(404);
+        }
+
         // If guest commenting is turned off, authorize this action.
         if (Config::get('comments.guest_commenting') == false) {
             Gate::authorize('create-comment', Comment::class);
@@ -52,12 +71,15 @@ class CommentController extends Controller implements CommentControllerInterface
 
         // Merge guest rules, if any, with normal validation rules.
         Validator::make($request->all(), array_merge($guest_rules ?? [], [
-            'commentable_type' => 'required|string',
-            'commentable_id'   => 'required|string|min:1',
             'message'          => 'required|string',
         ]))->validate();
 
-        $model = $request->commentable_type::findOrFail($request->commentable_id);
+        $base = $model::findOrFail($id);
+        if (isset($base->is_visible) && !$base->is_visible) {
+            flash('Invalid Model')->error();
+
+            return redirect()->back();
+        }
 
         $commentClass = Config::get('comments.model');
         $comment = new $commentClass;
@@ -69,7 +91,7 @@ class CommentController extends Controller implements CommentControllerInterface
             $comment->commenter()->associate(Auth::user());
         }
 
-        $comment->commentable()->associate($model);
+        $comment->commentable()->associate($base);
         $comment->comment = $request->message;
         $comment->approved = !Config::get('comments.approval_required');
         $comment->type = isset($request['type']) && $request['type'] ? $request['type'] : 'User-User';
@@ -82,7 +104,7 @@ class CommentController extends Controller implements CommentControllerInterface
         $sender = User::find($comment->commenter_id);
         $type = $comment->type;
 
-        switch ($model_type) {
+        switch ($model) {
             case 'App\Models\User\UserProfile':
                 $recipient = User::find($comment->commentable_id);
                 $post = 'your profile';
@@ -126,6 +148,9 @@ class CommentController extends Controller implements CommentControllerInterface
                 }
                 $post = (($type != 'User-User') ? 'your gallery submission\'s staff comments' : 'your gallery submission');
                 $link = (($type != 'User-User') ? $submission->queueUrl.'/#comment-'.$comment->getKey() : $submission->url.'/#comment-'.$comment->getKey());
+                break;
+            default:
+                throw new \Exception('Comment type not supported.');
                 break;
         }
 
