@@ -24,7 +24,7 @@
         "socialiteproviders/deviantart": "^4.1",
         "socialiteproviders/discord": "^4.1",
         "socialiteproviders/imgur": "^4.1",
-        "socialiteproviders/instagram": "^4.1",
+        "socialiteproviders/instagram": "^5.0",
         "socialiteproviders/tumblr": "^4.1",
         "socialiteproviders/twitch": "^5.3",
         "socialiteproviders/twitter": "^4.1",
