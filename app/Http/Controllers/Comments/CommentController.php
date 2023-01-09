@@ -42,15 +42,12 @@ class CommentController extends Controller {
     public function store(Request $request, $model, $id) {
         $model = urldecode(base64_decode($model));
 
-        $accepted_models = [
-            'App\Models\User\UserProfile',
-            'App\Models\News',
-            'App\Models\Sales\Sales',
-            'App\Models\Gallery\GallerySubmission',
-            'App\Models\Report\Report',
-            'App\Models\SitePage',
-            'App\Models\Gallery\GallerySubmission',
-        ];
+        $accepted_models = Config::get('lorekeeper.allowed_comment_models');
+        if (!count($accepted_models)) {
+            flash('Invalid Models')->error();
+
+            return redirect()->back();
+        }
 
         if (!in_array($model, $accepted_models)) {
             abort(404);
