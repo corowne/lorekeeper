@@ -201,7 +201,7 @@ class CharacterController extends Controller {
             'userInventory' => UserItem::with('item')->whereIn('item_id', $itemOptions->pluck('id'))->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get()->filter(function ($userItem) {
                 return $userItem->isTransferrable == true;
             })->sortBy('item.name'),
-            'page' => 'character',
+            'page'          => 'character',
         ] : []));
     }
 

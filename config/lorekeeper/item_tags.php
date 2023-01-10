@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'box' => [
+    'box'  => [
         'name'             => 'Box',
         'text_color'       => '#ffffff',
         'background_color' => '#f6993f',

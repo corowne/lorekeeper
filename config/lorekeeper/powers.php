@@ -15,31 +15,31 @@ return [
         'name'        => 'Edit Site Settings',
         'description' => 'Allow rank to modify site settings and upload new images to replace the site layout images.',
     ],
-    'edit_data' => [
+    'edit_data'          => [
         'name'        => 'Edit World Data',
         'description' => 'Allow rank to modify the world data. This includes creating/editing/uploading images for species, items, traits, etc.',
     ],
-    'edit_pages' => [
+    'edit_pages'         => [
         'name'        => 'Edit Text Pages',
         'description' => 'Allow rank to create/modify text pages. This includes pages created using the page creator tool and news posts.',
     ],
-    'edit_user_info' => [
+    'edit_user_info'     => [
         'name'        => 'Manage Users',
         'description' => 'Allow rank to view/modify user account info and create invitation keys. This will grant access to the user admin panel.',
     ],
-    'edit_ranks' => [
+    'edit_ranks'         => [
         'name'        => 'Edit Ranks',
         'description' => 'Allow rank to change the rank of a user. This power requires the Edit User Info power to be attached as well.',
     ],
-    'edit_inventories' => [
+    'edit_inventories'   => [
         'name'        => 'Edit Inventories',
         'description' => 'Allow rank to grant and remove items from user inventories, as well as grant/remove currency from users and characters.',
     ],
-    'manage_characters' => [
+    'manage_characters'  => [
         'name'        => 'Manage Masterlist',
         'description' => 'Allow rank to create/edit new characters. This includes uploading new images, modifying traits on an existing character and forcing ownership transfers.',
     ],
-    'manage_raffles' => [
+    'manage_raffles'     => [
         'name'        => 'Manage Raffles',
         'description' => 'Allow rank to create/edit raffles, add/remove tickets for users and roll raffles.',
     ],
@@ -47,7 +47,7 @@ return [
         'name'        => 'Manage Submissions',
         'description' => 'Allow rank to view the submissions queue, edit rewards attached to a submission and approve/reject them.',
     ],
-    'manage_reports' => [
+    'manage_reports'     => [
         'name'        => 'Manage Reports',
         'description' => 'Allow rank to view the reports queue.',
     ],

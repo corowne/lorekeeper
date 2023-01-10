@@ -1358,7 +1358,7 @@ class CharacterManager extends Service {
                 'status'       => 'Pending',
 
                 // if the queue is closed, all transfers are auto-approved
-                'is_approved' => !$queueOpen,
+                'is_approved'  => !$queueOpen,
             ]);
 
             if (!$queueOpen) {

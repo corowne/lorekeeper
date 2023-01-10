@@ -62,9 +62,9 @@ class DesignUpdateManager extends Service {
                 'update_type'   => $character->is_myo_slot ? 'MYO' : 'Character',
 
                 // Set some data based on the character's existing stats
-                'rarity_id'  => $character->image->rarity_id,
-                'species_id' => $character->image->species_id,
-                'subtype_id' => $character->image->subtype_id,
+                'rarity_id'     => $character->image->rarity_id,
+                'species_id'    => $character->image->species_id,
+                'subtype_id'    => $character->image->subtype_id,
             ];
 
             $request = CharacterDesignUpdate::create($data);

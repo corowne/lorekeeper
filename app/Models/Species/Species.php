@@ -79,7 +79,7 @@ class Species extends Model {
      * Scope a query to show only visible species.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param                                       $user
+     * @param mixed|null                            $user
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */

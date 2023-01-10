@@ -24,7 +24,7 @@ return [
     | Do not change this value!
     |
     */
-    'version' => '2.1.0',
+    'version'                                           => '2.1.0',
 
     /*
     |--------------------------------------------------------------------------
@@ -36,7 +36,7 @@ return [
     | site wherever the name needs to be displayed.
     |
     */
-    'site_name' => 'Lorekeeper',
+    'site_name'                                         => 'Lorekeeper',
 
     /*
     |--------------------------------------------------------------------------
@@ -48,7 +48,7 @@ return [
     | It is not, however, displayed on the site itself. This should be kept short and snappy!
     |
     */
-    'site_desc' => 'A Lorekeeper ARPG',
+    'site_desc'                                         => 'A Lorekeeper ARPG',
 
     /*
     |--------------------------------------------------------------------------
@@ -107,13 +107,13 @@ return [
     |       Default: 0/Disabled, 1 to enable.
     |
     */
-    'character_codes'         => '{category}-{number}',
-    'character_number_digits' => 3,
-    'character_pull_number'   => 'all',
+    'character_codes'                                   => '{category}-{number}',
+    'character_number_digits'                           => 3,
+    'character_pull_number'                             => 'all',
 
-    'reset_character_status_on_transfer'  => 0,
-    'reset_character_profile_on_transfer' => 0,
-    'clear_myo_slot_name_on_approval'     => 0,
+    'reset_character_status_on_transfer'                => 0,
+    'reset_character_profile_on_transfer'               => 0,
+    'clear_myo_slot_name_on_approval'                   => 0,
 
     /*
     |--------------------------------------------------------------------------
@@ -137,10 +137,10 @@ return [
     | 'masterlist_image_background' => 'png',
     |
     */
-    'watermark_masterlist_images' => 0,
-    'masterlist_image_dimension'  => 0,
-    'masterlist_image_format'     => null,
-    'masterlist_image_background' => '#ffffff',
+    'watermark_masterlist_images'                       => 0,
+    'masterlist_image_dimension'                        => 0,
+    'masterlist_image_format'                           => null,
+    'masterlist_image_background'                       => '#ffffff',
 
     /*
     |--------------------------------------------------------------------------
@@ -154,8 +154,8 @@ return [
     | Images above this cap in either dimension will be resized to suit. Enter "0" to disable resizing.
     |
     */
-    'store_masterlist_fullsizes' => 0,
-    'masterlist_fullsizes_cap'   => 0,
+    'store_masterlist_fullsizes'                        => 0,
+    'masterlist_fullsizes_cap'                          => 0,
 
     /*
     |--------------------------------------------------------------------------
@@ -170,11 +170,11 @@ return [
     | Expects the whole of the character to be visible in the thumbnail.
     |
     */
-    'masterlist_thumbnails' => [
+    'masterlist_thumbnails'                             => [
         'width'  => 200,
         'height' => 200,
     ],
-    'watermark_masterlist_thumbnails' => 0,
+    'watermark_masterlist_thumbnails'                   => 0,
 
     /*
     |--------------------------------------------------------------------------
@@ -190,7 +190,7 @@ return [
     | Simply change to "1" to enable, or keep at "0" to disable.
     |
     */
-    'masterlist_image_automation' => 0,
+    'masterlist_image_automation'                       => 0,
 
     /*
     |--------------------------------------------------------------------------
@@ -221,7 +221,7 @@ return [
     | there are limits on data storage, so raising this is not recommended.
     |
     */
-    'trade_asset_limit' => 20,
+    'trade_asset_limit'                                 => 20,
 
     /*
     |--------------------------------------------------------------------------
@@ -232,7 +232,7 @@ return [
     | single shop transaction.
     |
     */
-    'default_purchase_limit' => 99,
+    'default_purchase_limit'                            => 99,
 
     /*
     |--------------------------------------------------------------------------
@@ -242,6 +242,6 @@ return [
     | Symbol for the (real world) currency used for sales posts.
     |
     */
-    'currency_symbol' => '$',
+    'currency_symbol'                                   => '$',
 
 ];
