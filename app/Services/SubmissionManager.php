@@ -399,22 +399,34 @@ class SubmissionManager extends Service
             if(isset($data['staff_comments']) && $data['staff_comments']) $data['parsed_staff_comments'] = parse($data['staff_comments']);
             else $data['parsed_staff_comments'] = null;
 
-            // The only things we need to set are:
-            // 1. staff comment
-            // 2. staff ID
-            // 3. status
-            $submission->update([
-                'staff_comments' => $data['staff_comments'],
-                'parsed_staff_comments' => $data['parsed_staff_comments'],
-                'staff_id' => $user->id,
-                'status' => 'Draft'
-            ]);
+            if($user->id != $submission->user_id) {
+                // The only things we need to set are:
+                // 1. staff comment
+                // 2. staff ID
+                // 3. status
+                $submission->update([
+                    'staff_comments' => $data['staff_comments'],
+                    'parsed_staff_comments' => $data['parsed_staff_comments'],
+                    'staff_id' => $user->id,
+                    'status' => 'Draft'
+                ]);
 
-            Notifications::create($submission->prompt_id ? 'SUBMISSION_CANCELLED' : 'CLAIM_CANCELLED', $submission->user, [
-                'staff_url' => $user->url,
-                'staff_name' => $user->name,
-                'submission_id' => $submission->id,
-            ]);
+                Notifications::create($submission->prompt_id ? 'SUBMISSION_CANCELLED' : 'CLAIM_CANCELLED', $submission->user, [
+                    'staff_url' => $user->url,
+                    'staff_name' => $user->name,
+                    'submission_id' => $submission->id,
+                ]);
+            } else {
+                // This is when a user cancels their own submission back into draft form
+
+                // The only things we need to set are:
+                // 1. staff comment
+                // 2. staff ID
+                // 3. status
+                $submission->update([
+                    'status' => 'Draft'
+                ]);
+            }
 
 
             return $this->commitReturn($submission);

@@ -59,78 +59,87 @@
     @endif
 </div>
 
-<div class="card mb-3">
-    <div class="card-header h2">Rewards</div>
-    <div class="card-body">
-        <table class="table table-sm">
-            <thead class="thead-light">
-                <tr>
-                    <th width="70%">Reward</th>
-                    <th width="30%">Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach(parseAssetData( isset($submission->data['rewards']) ? $submission->data['rewards'] : $submission->data ) as $type)
-                    @foreach($type as $asset)
-                        <tr>
-                            <td>{!! $asset['asset'] ? $asset['asset']->displayName : 'Deleted Asset' !!}</td>
-                            <td>{{ $asset['quantity'] }}</td>
-                        </tr>
+@if(array_filter(parseAssetData(isset($submission->data['rewards']) ? $submission->data['rewards'] : $submission->data)))
+    <div class="card mb-3">
+        <div class="card-header h2">Rewards</div>
+        <div class="card-body">
+            <table class="table table-sm">
+                <thead class="thead-light">
+                    <tr>
+                        <th width="70%">Reward</th>
+                        <th width="30%">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(parseAssetData( isset($submission->data['rewards']) ? $submission->data['rewards'] : $submission->data ) as $type)
+                        @foreach($type as $asset)
+                            <tr>
+                                <td>{!! $asset['asset'] ? $asset['asset']->displayName : 'Deleted Asset' !!}</td>
+                                <td>{{ $asset['quantity'] }}</td>
+                            </tr>
+                        @endforeach
                     @endforeach
-                @endforeach
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
+@endif
 
 <div class="card mb-3">
     <div class="card-header h2">Characters</div>
     <div class="card-body">
         @foreach($submission->characters as $character)
             <div class="submission-character-row mb-2">
-                <div class="submission-character-thumbnail"><a href="{{ $character->character->url }}"><img src="{{ $character->character->image->thumbnailUrl }}" class="img-thumbnail" alt="Thumbnail for {{ $character->character->fullName }}" /></a></div>
+                <div class="submission-character-thumbnail">
+                    <a href="{{ $character->character->url }}"><img src="{{ $character->character->image->thumbnailUrl }}" class="img-thumbnail" alt="Thumbnail for {{ $character->character->fullName }}" /></a>
+                </div>
                 <div class="submission-character-info card ml-2">
                     <div class="card-body">
                         <div class="submission-character-info-content">
                             <h3 class="mb-2 submission-character-info-header"><a href="{{ $character->character->url }}">{{ $character->character->fullName }}</a></h3>
                             <div class="submission-character-info-body">
-                            <table class="table table-sm mb-0">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th width="70%">Reward</th>
-                                        <th width="30%">Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach(parseAssetData($character->data) as $key => $type)
-
-                                        @foreach($type as $asset)
+                                @if(array_filter(parseAssetData($character->data)))
+                                    <table class="table table-sm mb-0">
+                                        <thead class="thead-light">
                                             <tr>
-                                                <td>{!! $asset['asset']->displayName !!} ({!! ucfirst($key) !!})</td>
-                                                <td>{{ $asset['quantity'] }}</td>
+                                                <th width="70%">Reward</th>
+                                                <th width="30%">Amount</th>
                                             </tr>
-                                        @endforeach
-                                    @endforeach
-
-                                    {{--
-
-                                    If you want to "Categorize" the rewards by type, uncomment this and comment or remove the above @foreach.
-
-                                    @foreach(parseAssetData($character->data) as $key => $type)
-                                        @if(count($type))
-                                        <tr><td colspan="2"><strong>{!! strtoupper($key) !!}</strong></td></tr>
-                                            @foreach($type as $asset)
-                                                <tr>
-                                                    <td>{!! $asset['asset']->displayName !!}</td>
-                                                    <td>{{ $asset['quantity'] }}</td>
-                                                </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach(parseAssetData($character->data) as $key => $type)
+                                                @foreach($type as $asset)
+                                                    <tr>
+                                                        <td>{!! $asset['asset']->displayName !!} ({!! ucfirst($key) !!})</td>
+                                                        <td>{{ $asset['quantity'] }}</td>
+                                                    </tr>
+                                                @endforeach
                                             @endforeach
-                                        @endif
-                                    @endforeach
 
-                                    --}}
-                                </tbody>
-                            </table>
+                                            {{--
+
+                                            If you want to "Categorize" the rewards by type, uncomment this and comment or remove the above @foreach.
+
+                                            @foreach(parseAssetData($character->data) as $key => $type)
+                                                @if(count($type))
+                                                <tr><td colspan="2"><strong>{!! strtoupper($key) !!}</strong></td></tr>
+                                                    @foreach($type as $asset)
+                                                        <tr>
+                                                            <td>{!! $asset['asset']->displayName !!}</td>
+                                                            <td>{{ $asset['quantity'] }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                @endif
+                                            @endforeach
+
+                                            --}}
+                                        </tbody>
+                                    </table>
+                                @else
+                                    <p>
+                                        No rewards set.
+                                    </p>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -140,7 +149,7 @@
     </div>
 </div>
 
-@if(isset($inventory['user_items']))
+@if(isset($inventory['user_items']) && array_filter($inventory['user_items']))
     <div class="card mb-3">
         <div class="card-header h2">Add-Ons</div>
         <div class="card-body">
@@ -169,7 +178,7 @@
     </div>
 @endif
 
-@if(isset($inventory['currencies']))
+@if(isset($inventory['currencies']) && array_filter($inventory['currencies']))
     <div class="card mb-3">
         <div class="card-header h2">{!! $submission->user->displayName !!}'s Bank</div>
         <div class="card-body">

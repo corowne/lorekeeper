@@ -55,9 +55,9 @@
                 <p>Note that any rewards added here are <u>in addition</u> to the default prompt rewards. If you do not require any additional rewards, you can leave this blank.</p>
             @endif
             @if($isClaim)
-                @include('widgets._loot_select', ['loots' => $submission->rewards, 'showLootTables' => false, 'showRaffles' => true])
+                @include('widgets._loot_select', ['loots' => ( $submission->id ? $submission->rewards : null ), 'showLootTables' => false, 'showRaffles' => true])
             @else
-                @include('widgets._loot_select', ['loots' => $submission->rewards, 'showLootTables' => false, 'showRaffles' => false])
+                @include('widgets._loot_select', ['loots' => ( $submission->id ? $submission->rewards : null ), 'showLootTables' => false, 'showRaffles' => false])
             @endif
 
             @if(!$isClaim)
@@ -90,8 +90,8 @@
         <div class="card-body">
             <p>If your {{ $isClaim ? 'claim' : 'submission' }} consumes items, attach them here. Otherwise, this section can be left blank. These items will be removed from your inventory but refunded if your {{ $isClaim ? 'claim' : 'submission' }} is rejected.</p>
             <div id="addons" class="mb-3">
-            @include('widgets._inventory_select', ['user' => Auth::user(), 'inventory' => $inventory, 'categories' => $categories, 'selected' => $submission->getInventory($submission->user), 'page' => $page])
-            @include('widgets._bank_select', ['owner' => Auth::user(), 'selected' => $submission->getCurrencies($submission->user)])
+            @include('widgets._inventory_select', ['user' => Auth::user(), 'inventory' => $inventory, 'categories' => $categories, 'selected' => ($submission->id ? $submission->getInventory($submission->user) : []), 'page' => $page])
+            @include('widgets._bank_select', ['owner' => Auth::user(), 'selected' => ($submission->id ? $submission->getCurrencies($submission->user) : [])])
             </div>
         </div>
     </div>

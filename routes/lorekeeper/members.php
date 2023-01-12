@@ -145,6 +145,7 @@ Route::group(['prefix' => 'submissions', 'namespace' => 'Users'], function() {
     Route::post('draft/{id}', 'SubmissionController@postEditSubmission');
     Route::post('draft/{id}/{submit}', 'SubmissionController@postEditSubmission')->where('submit', 'submit');
     Route::post('draft/{id}/delete', 'SubmissionController@postDeleteSubmission');
+    Route::post('draft/{id}/cancel', 'SubmissionController@postCancelSubmission');
 });
 
 Route::group(['prefix' => 'claims', 'namespace' => 'Users'], function() {
@@ -156,6 +157,7 @@ Route::group(['prefix' => 'claims', 'namespace' => 'Users'], function() {
     Route::post('draft/{id}', 'SubmissionController@postEditClaim');
     Route::post('draft/{id}/{submit}', 'SubmissionController@postEditClaim')->where('submit', 'submit');
     Route::post('draft/{id}/delete', 'SubmissionController@postDeleteClaim');
+    Route::post('draft/{id}/cancel', 'SubmissionController@postCancelClaim');
 });
 
 Route::group(['prefix' => 'reports', 'namespace' => 'Users'], function() {

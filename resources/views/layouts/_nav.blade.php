@@ -37,12 +37,6 @@
                             <a class="dropdown-item" href="{{ url('characters/myos') }}">
                                 My MYO Slots
                             </a>
-                            <a class="dropdown-item" href="{{ url('submissions?type=draft') }}">
-                                My Submission Drafts
-                            </a>
-                            <a class="dropdown-item" href="{{ url('claims?type=draft') }}">
-                                My Claim Drafts
-                            </a>
                             <a class="dropdown-item" href="{{ url('inventory') }}">
                                 Inventory
                             </a>
@@ -59,11 +53,17 @@
                             <a class="dropdown-item" href="{{ url('submissions') }}">
                                 Prompt Submissions
                             </a>
+                            <a class="dropdown-item" href="{{ url('submissions?type=draft') }}">
+                                Submission Drafts
+                            </a>
                             <a class="dropdown-item" href="{{ url('claims') }}">
                                 Claims
                             </a>
+                            <a class="dropdown-item" href="{{ url('claims?type=draft') }}">
+                                Claim Drafts
+                            </a>
                             <a class="dropdown-item" href="{{ url('reports') }}">
-                                My Reports
+                                Reports
                             </a>
                             <a class="dropdown-item" href="{{ url('designs') }}">
                                 Design Approvals

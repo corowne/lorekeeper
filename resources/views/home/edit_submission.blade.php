@@ -29,7 +29,7 @@
     </div>
 @else
 
-@include('home._submission_form', ['submission' => $submission])
+    @include('home._submission_form', ['submission' => $submission])
 
     <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">

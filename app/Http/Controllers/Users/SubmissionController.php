@@ -183,14 +183,12 @@ class SubmissionController extends Controller
      */
     public function postNewSubmission(Request $request, SubmissionManager $service, $draft = false)
     {
-        if(!isset($draft)) $draft = false;
-        else $draft = true;
-
+        if(isset($draft) && $draft != false) $draft = true;
         $request->validate(Submission::$createRules);
         if($submission = $service->createSubmission($request->only(['url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity']), Auth::user(), false, $draft)) {
             if($submission->status == 'Draft') {
                 flash('Draft created successfully.')->success();
-                return redirect()->to('submissions?type=draft');
+                return redirect()->back();
             }
             else {
                 flash('Prompt submitted successfully.')->success();
@@ -248,6 +246,29 @@ class SubmissionController extends Controller
         }
         return redirect()->to('submissions?type=draft');
     }
+
+    /**
+     * Cancels a submission and makes it into a draft again.
+     *
+     * @param  \Illuminate\Http\Request        $request
+     * @param  App\Services\SubmissionManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postCancelSubmission(Request $request, SubmissionManager $service, $id)
+    {
+        $submission = Submission::where('id', $id)->where('status','Pending')->where('user_id',Auth::user()->id)->first();
+        if(!$submission) abort(404);
+
+        if ($service->cancelSubmission($submission, Auth::user())) {
+            flash('Submission returned to drafts successfully. You may wish to delete the draft completely, you may do that from the Edit Draft page.')->success();
+        } else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+            return redirect()->back();
+        }
+        return redirect()->to('submissions/draft/'.$submission->id);
+    }
+
+
 
 
     /**********************************************************************************************
@@ -366,12 +387,11 @@ class SubmissionController extends Controller
     public function postNewClaim(Request $request, SubmissionManager $service, $draft = false)
     {
         if(isset($draft) && $draft != false) $draft = true;
-
         $request->validate(Submission::$createRules);
         if($submission = $service->createSubmission($request->only(['url', 'comments', 'stack_id', 'stack_quantity', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type','rewardable_id', 'quantity', 'currency_id', 'currency_quantity']), Auth::user(), true, $draft)) {
             if($submission->status == 'Draft') {
                 flash('Draft created successfully.')->success();
-                return redirect()->to('claims?type=draft');
+                return redirect()->back();
             }
             else {
                 flash('Claim submitted successfully.')->success();
@@ -429,4 +449,27 @@ class SubmissionController extends Controller
         }
         return redirect()->to('claims?type=draft');
     }
+
+
+    /**
+     * Cancels a claim and makes it into a draft again.
+     *
+     * @param  \Illuminate\Http\Request        $request
+     * @param  App\Services\SubmissionManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postCancelClaim(Request $request, SubmissionManager $service, $id)
+    {
+        $submission = Submission::where('id', $id)->where('status','Pending')->where('user_id',Auth::user()->id)->first();
+        if(!$submission) abort(404);
+
+        if ($service->cancelSubmission($submission, Auth::user())) {
+            flash('Claim returned to drafts successfully. You may wish to delete the draft completely, you may do that from the Edit Draft page below.')->success();
+        } else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+            return redirect()->back();
+        }
+        return redirect()->to('claims/draft/'.$submission->id);
+    }
+
 }
