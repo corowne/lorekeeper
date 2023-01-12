@@ -14,6 +14,12 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Settings;
 
+use App\Models\User\UserAlias;
+use App\Services\LinkService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
+
 class RegisterController extends Controller {
     /*
     |--------------------------------------------------------------------------
@@ -47,6 +53,48 @@ class RegisterController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
+    public function getRegisterWithDriver($provider) {
+        $userData = session()->get('userData');
+
+        return view('auth.register_with_driver', [
+            'userCount' => User::count(),
+            'provider' => $provider,
+            'user' => $userData->nickname ?? null,
+            'token' => $userData->token ?? null,
+        ]);
+    }
+
+    /**
+     * Show the application registration form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function postRegisterWithDriver(LinkService $service, Request $request, $provider) {
+        $providerData = Socialite::driver($provider)->userFromToken($request->get('token'));
+
+        if (UserAlias::where('site', $provider)->where('user_snowflake', $providerData->id)->first()) {
+            flash("An Account is already tied to the authorized " . $provider . " account.")->error();
+            return redirect()->back();
+        }
+
+        $data = $request->all();
+
+        $this->validator($data, true)->validate();
+        $user = $this->create($data);
+        if ($service->saveProvider($provider, $providerData, $user)) {
+            Auth::login($user);
+            return redirect('/');
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+            return redirect()->back();
+        }
+    }
+
+    /**
+     * Show the application registration form.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function showRegistrationForm() {
         return view('auth.register', ['userCount' => User::count()]);
     }
@@ -56,20 +104,21 @@ class RegisterController extends Controller {
      *
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data) {
+    protected function validator(array $data, $socialite = false) {
         return Validator::make($data, [
-            'name'                 => ['required', 'string', 'min:3', 'max:25', 'alpha_dash', 'unique:users'],
-            'email'                => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'agreement'            => ['required', 'accepted'],
-            'password'             => ['required', 'string', 'min:8', 'confirmed'],
-            'dob'                  => ['required', function ($attribute, $value, $fail) {
-                $date = $value['day'].'-'.$value['month'].'-'.$value['year'];
-                $formatDate = carbon::parse($date);
-                $now = Carbon::now();
-                if ($formatDate->diffInYears($now) < 13) {
-                    $fail('You must be 13 or older to access this site.');
-                }
-            },
+            'name' => ['required', 'string', 'min:3', 'max:25', 'alpha_dash', 'unique:users'],
+            'email' => ($socialite ? [] : ['required']) + ['string', 'email', 'max:255', 'unique:users'],
+            'agreement' => ['required', 'accepted'],
+            'password' => ($socialite ? [] : ['required']) + ['string', 'min:8', 'confirmed'],
+            'dob' => [
+                'required', function ($attribute, $value, $fail) { 
+                        $date = $value['day'] . "-" . $value['month'] . "-" . $value['year'];
+                        $formatDate = carbon::parse($date);
+                        $now = Carbon::now();
+                        if ($formatDate->diffInYears($now) < 13) {
+                            $fail('You must be 13 or older to access this site.');
+                        }
+                    }
             ],
             'code'                 => ['string', function ($attribute, $value, $fail) {
                 if (!Settings::get('is_registration_open')) {

@@ -12,7 +12,7 @@ class UserAlias extends Model {
      * @var array
      */
     protected $fillable = [
-        'user_id', 'site', 'alias', 'is_visible', 'is_primary_alias',
+        'user_id', 'site', 'alias', 'is_visible', 'is_primary_alias', 'user_snowflake'
     ];
 
     /**
@@ -26,7 +26,7 @@ class UserAlias extends Model {
 
         RELATIONS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Get the user this set of settings belongs to.
@@ -39,7 +39,7 @@ class UserAlias extends Model {
 
         SCOPES
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Scope a query to only include visible aliases.
@@ -56,7 +56,7 @@ class UserAlias extends Model {
 
         ACCESSORS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Gets the URL for the user's account on a given site.

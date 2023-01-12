@@ -6,6 +6,7 @@ use App\Models\User\UserAlias;
 use App\Models\User\UserUpdateLog;
 use DB;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Config;
 
 class LinkService extends Service {
     /*
@@ -24,12 +25,14 @@ class LinkService extends Service {
      *
      * @return string
      */
-    public function getAuthRedirect($provider) {
-        if ($provider == 'deviantart') {
-            return Socialite::driver($provider)->setScopes(['user'])->redirect();
-        } else {
-            return Socialite::driver($provider)->redirect();
-        }
+    public function getAuthRedirect($provider, $login = false) {
+        $socialite = Socialite::driver($provider);
+
+        if ($provider == 'deviantart') $socialite->setScopes(['user']);
+        // We want to go to a different endpoint if we're trying to login
+        if ($login) $socialite->redirectUrl(str_replace('auth', 'login', url(Config::get('services.' . $provider . '.redirect'))));
+
+        return $socialite->redirect();
     }
 
     /**
@@ -58,6 +61,8 @@ class LinkService extends Service {
                 'alias'            => $result->nickname,
                 'is_visible'       => !$user->has_alias,
                 'is_primary_alias' => !$user->has_alias,
+                // ID should always exist but just in case.
+                'user_snowflake' => $result->id ?? $result->nickname,
             ]);
 
             // Save that the user has an alias
