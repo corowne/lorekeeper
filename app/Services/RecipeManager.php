@@ -92,6 +92,9 @@ class RecipeManager extends Service
                     $stack = UserItem::find($id);
                     if(!$service->debitStack($user, 'Crafting', ['data' => 'Used in '.$recipe->name.' Recipe'], $stack, $quantity)) throw new \Exception('Items could not be removed.');
                 }
+            } else {
+                $items = $recipe->ingredients->where('ingredient_type', 'Item');
+                if ($items) throw new \Exception('Insufficient ingredients selected.');
             }
 
             // Debit the currency
