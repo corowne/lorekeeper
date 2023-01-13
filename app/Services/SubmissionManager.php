@@ -559,7 +559,7 @@ class SubmissionManager extends Service
         // Get a list of rewards, then create the submission itself
         $promptRewards = createAssetsArray();
         if(isset($submission->prompt_id) && $submission->prompt_id) {
-            foreach($prompt->rewards as $reward)
+            foreach ($submission->prompt->rewards as $reward)
             {
                 addAsset($promptRewards, $reward->reward, $reward->quantity);
             }
