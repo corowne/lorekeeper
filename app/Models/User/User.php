@@ -334,6 +334,28 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Gets the display URL for a user's avatar, or the default avatar if they don't have one.
+     * 
+     * @return url
+     */
+    public function getAvatarUrlAttribute()
+    {
+        if ($this->avatar == 'default.jpg') {
+            // check if a gravatar exists
+            $hash = md5(strtolower(trim($this->email)));
+            $url = 'https://www.gravatar.com/avatar/'.$hash.'??d=mm&s=200';
+            $headers = @get_headers($url);
+            return $url;
+            if (!preg_match("|200|", $headers[0])) {
+                return url('assets/images/avatars/default.jpeg');
+            } else {
+                return 'https://www.gravatar.com/avatar/'.$hash.'?d=mm&s=200';
+            }
+        }
+        return url('images/avatars/'.$this->avatar);
+    }
+
+    /**
      * Gets the user's log type for log creation.
      *
      * @return string

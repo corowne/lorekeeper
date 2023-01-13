@@ -2,7 +2,7 @@
 
 @section('profile-title') {{ $user->name }}'s Profile @endsection
 
-@section('meta-img') {{ asset('/images/avatars/'.$user->avatar) }} @endsection
+@section('meta-img') {{ $user->avatarUrl }} @endsection
 
 @section('profile-content')
 {!! breadcrumbs(['Users' => 'users', $user->name => $user->url]) !!}
@@ -11,7 +11,7 @@
     <div class="alert alert-danger">This user has been banned.</div>
 @endif
 <h1>
-    <img src="/images/avatars/{{ $user->avatar }}" style="width:125px; height:125px; float:left; border-radius:50%; margin-right:25px;" alt="{{ $user->name }}" >
+    <img src="{{ $user->avatarUrl }}" style="width:125px; height:125px; float:left; border-radius:50%; margin-right:25px;" alt="{{ $user->name }}" >
     {!! $user->displayName !!}
     <a href="{{ url('reports/new?url=') . $user->url }}"><i class="fas fa-exclamation-triangle fa-xs" data-toggle="tooltip" title="Click here to report this user." style="opacity: 50%; font-size:0.5em;"></i></a>
 
