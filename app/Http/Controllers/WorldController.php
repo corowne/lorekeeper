@@ -150,7 +150,7 @@ class WorldController extends Controller {
      */
     public function getFeatures(Request $request) {
         $query = Feature::visible()->with('category')->with('rarity')->with('species');
-        $data = $request->only(['rarity_id', 'feature_category_id', 'species_id', 'name', 'sort']);
+        $data = $request->only(['rarity_id', 'feature_category_id', 'species_id', 'subtype_id', 'name', 'sort']);
         if (isset($data['rarity_id']) && $data['rarity_id'] != 'none') {
             $query->where('rarity_id', $data['rarity_id']);
         }
@@ -160,6 +160,9 @@ class WorldController extends Controller {
         if (isset($data['species_id']) && $data['species_id'] != 'none') {
             $query->where('species_id', $data['species_id']);
         }
+        if(isset($data['subtype_id']) && $data['subtype_id'] != 'none') {
+            $query->where('subtype_id', $data['subtype_id']);
+		}
         if (isset($data['name'])) {
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
         }
@@ -184,6 +187,9 @@ class WorldController extends Controller {
                 case 'species':
                     $query->sortSpecies();
                     break;
+                case 'subtypes':
+                    $query->sortSubtype();
+                    break;  
                 case 'newest':
                     $query->sortNewest();
                     break;
@@ -199,6 +205,7 @@ class WorldController extends Controller {
             'features'   => $query->paginate(20)->appends($request->query()),
             'rarities'   => ['none' => 'Any Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses'  => ['none' => 'Any Species'] + Species::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+			'subtypes' => ['none' => 'Any Subtype'] + Subtype::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'categories' => ['none' => 'Any Category'] + FeatureCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
@@ -231,6 +238,7 @@ class WorldController extends Controller {
                 ->get()
                 ->groupBy(['feature_category_id', 'id']) :
             $species->features()
+			    ->visible()
                 ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
                 ->orderBy('has_image', 'DESC')
                 ->orderBy('name')
