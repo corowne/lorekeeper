@@ -429,6 +429,37 @@ class CharacterManager extends Service
         // Watermark the image if desired
         if(Config::get('lorekeeper.settings.watermark_masterlist_images') == 1) {
             $watermark = Image::make('images/watermark.png');
+			
+			$imageWidth = $image->width();
+			$imageHeight = $image->height();
+			
+			$wmWidth = $watermark->width();
+			$wmHeight = $watermark->height();
+			
+			//Assume Landscape by Default
+			$maxSize = $imageWidth * 0.9;
+			
+			if( $imageWidth > $imageHeight ) {
+				//Landscape
+				$maxSize = $imageWidth * 0.9;
+			}
+			else {
+				// Portrait
+				$maxSize = $imageHeight * 0.9;
+			}
+			
+			if( $wmWidth > $wmHeight ) {
+				//Landscape
+				$watermark->resize($maxSize, null, function ($constraint) {
+					$constraint->aspectRatio();
+				});
+			}
+			else {
+				// Portrait
+				$watermark->resize(null, $maxSize, function ($constraint) {
+					$constraint->aspectRatio();
+				});
+			}
             $image->insert($watermark, 'center');
         }
 
