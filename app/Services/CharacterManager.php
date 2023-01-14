@@ -267,6 +267,41 @@ class CharacterManager extends Service {
         // Watermark the image if desired
         if (Config::get('lorekeeper.settings.watermark_masterlist_images') == 1) {
             $watermark = Image::make('images/watermark.png');
+			
+            if(Config::get('lorekeeper.settings.watermark_resizing') == 1) {
+                $imageWidth = $image->width();
+                $imageHeight = $image->height();
+                
+                $wmWidth = $watermark->width();
+                $wmHeight = $watermark->height();
+                
+                $wmScale = Config::get('lorekeeper.settings.watermark_percent');
+                
+                //Assume Landscape by Default
+                $maxSize = $imageWidth * $wmScale;
+                
+                if( $imageWidth > $imageHeight ) {
+                    //Landscape
+                    $maxSize = $imageWidth * $wmScale;
+                }
+                else {
+                    // Portrait
+                    $maxSize = $imageHeight * $wmScale;
+                }
+                
+                if( $wmWidth > $wmHeight ) {
+                    //Landscape
+                    $watermark->resize($maxSize, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                }
+                else {
+                    // Portrait
+                    $watermark->resize(null, $maxSize, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                }
+            }
             $image->insert($watermark, 'center');
         }
 
@@ -341,6 +376,41 @@ class CharacterManager extends Service {
                 }
                 // Watermark the image
                 $watermark = Image::make('images/watermark.png');
+                
+                if(Config::get('lorekeeper.settings.watermark_resizing_thumb') == 1) {
+                    $imageWidth = $image->width();
+                    $imageHeight = $image->height();
+                    
+                    $wmWidth = $watermark->width();
+                    $wmHeight = $watermark->height();
+                    
+                    $wmScale = Config::get('lorekeeper.settings.watermark_percent');
+                    
+                    //Assume Landscape by Default
+                    $maxSize = $imageWidth * $wmScale;
+                    
+                    if( $imageWidth > $imageHeight ) {
+                        //Landscape
+                        $maxSize = $imageWidth * $wmScale;
+                    }
+                    else {
+                        // Portrait
+                        $maxSize = $imageHeight * $wmScale;
+                    }
+                    
+                    if( $wmWidth > $wmHeight ) {
+                        //Landscape
+                        $watermark->resize($maxSize, null, function ($constraint) {
+                            $constraint->aspectRatio();
+                        });
+                    }
+                    else {
+                        // Portrait
+                        $watermark->resize(null, $maxSize, function ($constraint) {
+                            $constraint->aspectRatio();
+                        });
+                    }
+                }
                 $image->insert($watermark, 'center');
             }
             // Now shrink the image
