@@ -174,7 +174,32 @@ return [
         'height' => 200
     ],
     'watermark_masterlist_thumbnails' => 0,
-
+	
+	/*
+    |--------------------------------------------------------------------------
+    | Watermark Resizing (90 Percent Watermark)
+    |--------------------------------------------------------------------------
+    |
+    | This affects the size of the watermark, resizing it to fit the masterlist image.
+	| This requires the 'watermark_masterlist_images' option to be set to 1.
+    |
+    | 0: Does not automatically resize watermark. 1: Resize watermarks.
+    | Expects the whole of the character to be visible in the thumbnail.
+    |
+	| The watermark percent is the scale of the watermark.
+	| The default is '0.9', or 90%, as per it's origin as extension.
+	| 
+	| The final option is to also resize watermarks on thumbnails.
+	| It will assume the same scale as masterlist image.
+	| 0: Does not resize thumbnail watermarks. 1: Resizes thumbnail watermarks.
+	| This requires the 'watermark_masterlist_thumbnails' option to be set to 1.
+	|
+    */
+	
+	'watermark_resizing'       => 0,
+	'watermark_percent'        => 0.9,
+	'watermark_resizing_thumb' => 0,
+	
     /*
     |--------------------------------------------------------------------------
     | Masterlist Image Automation Replacing Cropper
