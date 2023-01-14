@@ -160,9 +160,9 @@ class WorldController extends Controller {
         if (isset($data['species_id']) && $data['species_id'] != 'none') {
             $query->where('species_id', $data['species_id']);
         }
-        if(isset($data['subtype_id']) && $data['subtype_id'] != 'none') {
+        if (isset($data['subtype_id']) && $data['subtype_id'] != 'none') {
             $query->where('subtype_id', $data['subtype_id']);
-		}
+        }
         if (isset($data['name'])) {
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
         }
@@ -189,7 +189,7 @@ class WorldController extends Controller {
                     break;
                 case 'subtypes':
                     $query->sortSubtype();
-                    break;  
+                    break;
                 case 'newest':
                     $query->sortNewest();
                     break;
@@ -205,7 +205,7 @@ class WorldController extends Controller {
             'features'   => $query->paginate(20)->appends($request->query()),
             'rarities'   => ['none' => 'Any Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses'  => ['none' => 'Any Species'] + Species::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-			'subtypes' => ['none' => 'Any Subtype'] + Subtype::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes'   => ['none' => 'Any Subtype'] + Subtype::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'categories' => ['none' => 'Any Category'] + FeatureCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
@@ -238,7 +238,7 @@ class WorldController extends Controller {
                 ->get()
                 ->groupBy(['feature_category_id', 'id']) :
             $species->features()
-			    ->visible()
+                ->visible()
                 ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
                 ->orderBy('has_image', 'DESC')
                 ->orderBy('name')
