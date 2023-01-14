@@ -68,6 +68,9 @@
         <p class="mb-0 col-md-4">
             <strong>Watermarking - Masterlist Image Automation addition</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
         </p>
+        <p class="mb-0 col-md-4">
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:90_Percent_Watermark"><strong>Watermark Resizing</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
+        </p>
 
         <p class="mb-0 col-md-4">
             <strong>Auto-populate New Image Traits</strong> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('lorekeeper.extensions.autopopulate_image_features') ? 'Enabled' : 'Disabled' }})
