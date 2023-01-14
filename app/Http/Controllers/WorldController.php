@@ -17,6 +17,7 @@ use App\Models\Species\Species;
 use App\Models\Species\Subtype;
 use App\Models\User\User;
 use Config;
+use Auth;
 use Illuminate\Http\Request;
 
 class WorldController extends Controller {
@@ -87,7 +88,7 @@ class WorldController extends Controller {
 
         return view('world.specieses', [
             'specieses' => $query->with(['subtypes' => function ($query) {
-                $query->orderBy('sort', 'DESC');
+                $query->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC');
             }])->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
@@ -105,7 +106,7 @@ class WorldController extends Controller {
         }
 
         return view('world.subtypes', [
-            'subtypes' => $query->with('species')->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
+            'subtypes' => $query->with('species')->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -236,6 +237,13 @@ class WorldController extends Controller {
                 ->orderBy('has_image', 'DESC')
                 ->orderBy('name')
                 ->get()
+                ->filter(function ($feature) {
+                    if ($feature->subtype) {
+                        return $feature->subtype->is_visible;
+                    }
+
+                    return true;
+                })
                 ->groupBy(['feature_category_id', 'id']) :
             $species->features()
                 ->visible()
@@ -243,6 +251,13 @@ class WorldController extends Controller {
                 ->orderBy('has_image', 'DESC')
                 ->orderBy('name')
                 ->get()
+                ->filter(function ($feature) {
+                    if ($feature->subtype) {
+                        return $feature->subtype->is_visible;
+                    }
+
+                    return true;
+                })
                 ->groupBy(['feature_category_id', 'id']);
 
         return view('world.species_features', [

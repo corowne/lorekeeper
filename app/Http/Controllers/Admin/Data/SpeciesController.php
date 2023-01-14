@@ -197,7 +197,7 @@ class SpeciesController extends Controller {
     public function postCreateEditSubtype(Request $request, SpeciesService $service, $id = null) {
         $id ? $request->validate(Subtype::$updateRules) : $request->validate(Subtype::$createRules);
         $data = $request->only([
-            'species_id', 'name', 'description', 'image', 'remove_image',
+            'species_id', 'name', 'description', 'image', 'remove_image', 'is_visible',
         ]);
         if ($id && $service->updateSubtype(Subtype::find($id), $data, Auth::user())) {
             flash('Subtype updated successfully.')->success();
