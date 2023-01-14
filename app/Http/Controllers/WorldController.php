@@ -229,12 +229,26 @@ class WorldController extends Controller {
                 ->orderBy('has_image', 'DESC')
                 ->orderBy('name')
                 ->get()
+                ->filter(function($feature) {
+                    if ($feature->subtype)
+                    {
+                        return $feature->subtype->is_visible;
+                    }
+                    return true;
+                })
                 ->groupBy(['feature_category_id', 'id']) :
             $species->features()
                 ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
                 ->orderBy('has_image', 'DESC')
                 ->orderBy('name')
                 ->get()
+                ->filter(function($feature) {
+                    if ($feature->subtype)
+                    {
+                        return $feature->subtype->is_visible;
+                    }
+                    return true;
+                })
                 ->groupBy(['feature_category_id', 'id']);
 
         return view('world.species_features', [
