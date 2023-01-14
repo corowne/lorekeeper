@@ -745,7 +745,7 @@ class CharacterManager extends Service {
                         unlink($image->imagePath.'/'.$image->fullsizeFileName);
                     }
                 }
-                if (file_exist($image->imagePath.'/'.$image->thumbnailFileName)) {
+                if (file_exists($image->imagePath.'/'.$image->thumbnailFileName)) {
                     unlink($image->imagePath.'/'.$image->thumbnailFileName);
                 }
 
