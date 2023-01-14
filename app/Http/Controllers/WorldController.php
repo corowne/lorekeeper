@@ -229,11 +229,11 @@ class WorldController extends Controller {
                 ->orderBy('has_image', 'DESC')
                 ->orderBy('name')
                 ->get()
-                ->filter(function($feature) {
-                    if ($feature->subtype)
-                    {
+                ->filter(function ($feature) {
+                    if ($feature->subtype) {
                         return $feature->subtype->is_visible;
                     }
+
                     return true;
                 })
                 ->groupBy(['feature_category_id', 'id']) :
@@ -242,11 +242,11 @@ class WorldController extends Controller {
                 ->orderBy('has_image', 'DESC')
                 ->orderBy('name')
                 ->get()
-                ->filter(function($feature) {
-                    if ($feature->subtype)
-                    {
+                ->filter(function ($feature) {
+                    if ($feature->subtype) {
                         return $feature->subtype->is_visible;
                     }
+
                     return true;
                 })
                 ->groupBy(['feature_category_id', 'id']);

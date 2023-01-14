@@ -76,6 +76,7 @@ class Subtype extends Model {
      * Scope a query to show only visible subtypes.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed|null                            $user
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
