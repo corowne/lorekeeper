@@ -94,7 +94,7 @@ class RecipeManager extends Service
                 }
             } else {
                 $items = $recipe->ingredients->where('ingredient_type', 'Item');
-                if ($items) throw new \Exception('Insufficient ingredients selected.');
+                if (count($items) > 0) throw new \Exception('Insufficient ingredients selected.');
             }
 
             // Debit the currency
