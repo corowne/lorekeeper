@@ -18,6 +18,7 @@ use App\Models\User\UserAlias;
 use App\Services\LinkService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Laravel\Socialite\Facades\Socialite;
 
 class RegisterController extends Controller {
@@ -96,7 +97,11 @@ class RegisterController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function showRegistrationForm() {
-        return view('auth.register', ['userCount' => User::count()]);
+        $altRegistrations = array_filter(Config::get('lorekeeper.sites'), function ($item) {
+            return isset($item['login']) && $item['login'] === 1;
+        });
+
+        return view('auth.register', ['userCount' => User::count(), 'altRegistrations' => $altRegistrations]);
     }
 
     /**

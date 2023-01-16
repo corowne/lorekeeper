@@ -45,7 +45,10 @@ class LoginController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function showLoginForm() {
-        return view('auth.login', ['userCount' => User::count()]);
+        $altLogins = array_filter(Config::get('lorekeeper.sites'), function ($item) {
+            return isset($item['login']) && $item['login'] === 1;
+        });
+        return view('auth.login', ['userCount' => User::count(), 'altLogins' => $altLogins]);
     }
 
     /**
