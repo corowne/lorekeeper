@@ -52,8 +52,12 @@ class PromptsController extends Controller {
     public function getPrompts(Request $request) {
         $query = Prompt::active()->staffOnly(Auth::check() ? Auth::user() : null)->with('category');
         $data = $request->only(['prompt_category_id', 'name', 'sort', 'open_prompts']);
-        if (isset($data['prompt_category_id']) && $data['prompt_category_id'] != 'none') {
-            $query->where('prompt_category_id', $data['prompt_category_id']);
+		if (isset($data['prompt_category_id']) && $data['prompt_category_id'] != 'none') {
+            if ($data['prompt_category_id'] == 'non_specific') {
+                $query->whereNull('prompt_category_id');
+            } else {
+                $query->where('prompt_category_id', $data['prompt_category_id']);
+            }
         }
         if (isset($data['name'])) {
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
@@ -110,7 +114,7 @@ class PromptsController extends Controller {
 
         return view('prompts.prompts', [
             'prompts'    => $query->paginate(20)->appends($request->query()),
-            'categories' => ['none' => 'Any Category'] + PromptCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'categories' => ['none' => 'Any Category'] + ['non_specific' => 'No Specific Category'] + PromptCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
 
