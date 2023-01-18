@@ -156,22 +156,25 @@ class WorldController extends Controller {
             $query->where('rarity_id', $data['rarity_id']);
         }
         if (isset($data['feature_category_id']) && $data['feature_category_id'] != 'none') {
-            if($data['feature_category_id'] == 'non_specific')
+            if ($data['feature_category_id'] == 'non_specific') {
                 $query->whereNull('feature_category_id');
-            else
+            } else {
                 $query->where('feature_category_id', $data['feature_category_id']);
+            }
         }
         if (isset($data['species_id']) && $data['species_id'] != 'none') {
-            if($data['species_id'] == 'non_specific')
+            if ($data['species_id'] == 'non_specific') {
                 $query->whereNull('species_id');
-            else
+            } else {
                 $query->where('species_id', $data['species_id']);
+            }
         }
         if (isset($data['subtype_id']) && $data['subtype_id'] != 'none') {
-            if($data['subtype_id'] == 'non_specific')
+            if ($data['subtype_id'] == 'non_specific') {
                 $query->whereNull('subtype_id');
-            else
+            } else {
                 $query->where('subtype_id', $data['subtype_id']);
+            }
         }
         if (isset($data['name'])) {
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
@@ -286,10 +289,11 @@ class WorldController extends Controller {
         $query = Item::with('category')->released();
         $data = $request->only(['item_category_id', 'name', 'sort', 'artist']);
         if (isset($data['item_category_id']) && $data['item_category_id'] != 'none') {
-            if($data['item_category_id'] == 'non_specific')
+            if ($data['item_category_id'] == 'non_specific') {
                 $query->whereNull('item_category_id');
-            else
+            } else {
                 $query->where('item_category_id', $data['item_category_id']);
+            }
         }
         if (isset($data['name'])) {
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
