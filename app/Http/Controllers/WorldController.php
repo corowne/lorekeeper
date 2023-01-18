@@ -399,7 +399,11 @@ class WorldController extends Controller {
         $query = Prompt::active()->with('category');
         $data = $request->only(['prompt_category_id', 'name', 'sort']);
         if (isset($data['prompt_category_id']) && $data['prompt_category_id'] != 'none') {
-            $query->where('prompt_category_id', $data['prompt_category_id']);
+            if ($data['prompt_category_id'] == 'non_specific') {
+                $query->whereNull('prompt_category_id');
+            } else {
+                $query->where('prompt_category_id', $data['prompt_category_id']);
+            }
         }
         if (isset($data['name'])) {
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
@@ -441,7 +445,7 @@ class WorldController extends Controller {
 
         return view('world.prompts', [
             'prompts'    => $query->paginate(20)->appends($request->query()),
-            'categories' => ['none' => 'Any Category'] + PromptCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'categories' => ['none' => 'Any Category'] + ['non_specific' => 'No Specific Category'] + PromptCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
 }
