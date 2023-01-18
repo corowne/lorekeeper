@@ -52,7 +52,7 @@ class PromptsController extends Controller {
     public function getPrompts(Request $request) {
         $query = Prompt::active()->staffOnly(Auth::check() ? Auth::user() : null)->with('category');
         $data = $request->only(['prompt_category_id', 'name', 'sort', 'open_prompts']);
-		if (isset($data['prompt_category_id']) && $data['prompt_category_id'] != 'none') {
+        if (isset($data['prompt_category_id']) && $data['prompt_category_id'] != 'none') {
             if ($data['prompt_category_id'] == 'non_specific') {
                 $query->whereNull('prompt_category_id');
             } else {
