@@ -30,6 +30,10 @@ class LinkService extends Service {
 
         if ($provider == 'deviantart') $socialite->setScopes(['user']);
         // We want to go to a different endpoint if we're trying to login
+        if ($login && $provider == 'tumblr') {
+            flash('Tumblr is currently unsupported for login')->error();
+            return redirect()->back();
+        }
         if ($login) $socialite->redirectUrl(str_replace('auth', 'login', url(Config::get('services.' . $provider . '.redirect'))));
 
         return $socialite->redirect();
