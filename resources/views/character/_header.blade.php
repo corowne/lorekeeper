@@ -1,17 +1,17 @@
-@if (!$character->is_myo_slot && Config::get('lorekeeper.extensions.display_previous_and_next_characters'))
-    @if ($prevCharName || $nextCharName)
+@if(!$character->is_myo_slot && Config::get('lorekeeper.extensions.display_previous_and_next_characters'))
+    @if($extPrevAndNextBtns['prevCharName'] || $extPrevAndNextBtns['nextCharName'])
         <div class="row mb-4">
-            @if ($prevCharName)
+            @if($extPrevAndNextBtns['prevCharName'])
                 <div class="col text-left float-left">
-                    <a class="btn btn-outline-success text-success" href="{{ $prevCharUrl }}{!! !isset($url_addition) ? '' : $url_addition !!}">
-                        <i class="fas fa-angle-double-left"></i> Previous Character ・ <span class="text-primary">{!! $prevCharName !!}</span>
+                    <a class="btn btn-outline-success text-success" href="{{ $extPrevAndNextBtns['prevCharUrl'] }}{!! !isset($extPrevAndNextBtnsUrl) ? '' : $extPrevAndNextBtnsUrl !!}">
+                        <i class="fas fa-angle-double-left"></i> Previous Character ・ <span class="text-primary">{!! $extPrevAndNextBtns['prevCharName'] !!}</span>
                     </a>
                 </div>
             @endif
-            @if ($nextCharName)
+            @if($extPrevAndNextBtns['nextCharName'])
                 <div class="col text-right float-right">
-                    <a class="btn btn-outline-success text-success" href="{{ $nextCharUrl }}{!! !isset($url_addition) ? '' : $url_addition !!}">
-                        <span class="text-primary">{!! $nextCharName !!}</span> ・ Next Character <i class="fas fa-angle-double-right"></i><br />
+                    <a class="btn btn-outline-success text-success" href="{{ $extPrevAndNextBtns['nextCharUrl'] }}{!! !isset($extPrevAndNextBtnsUrl) ? '' : $extPrevAndNextBtnsUrl !!}">
+                        <span class="text-primary">{!! $extPrevAndNextBtns['nextCharName'] !!}</span> ・ Next Character <i class="fas fa-angle-double-right"></i><br />
                     </a>
                 </div>
             @endif
