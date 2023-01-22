@@ -457,7 +457,7 @@ class UserService extends Service {
 
             Notifications::create('USER_REACTIVATED', User::find(Settings::get('admin_user')), [
                 'user_url'   => $user->url,
-                'user_name'  => uc_first($user->name),
+                'user_name'  => ucfirst($user->name),
                 'staff_url'  => $staff->url,
                 'staff_name' => $staff->name,
             ]);
