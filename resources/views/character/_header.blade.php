@@ -1,4 +1,4 @@
-@if(!$character->is_myo_slot && Config::get('lorekeeper.settings.display_previous_and_next_characters'))
+@if(!$character->is_myo_slot && Config::get('lorekeeper.extensions.display_previous_and_next_characters'))
     @if($prevCharName || $nextCharName)
         <div class="row mb-4">
             @if($prevCharName)

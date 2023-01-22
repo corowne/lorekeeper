@@ -114,19 +114,6 @@ return [
     'reset_character_status_on_transfer'                => 0,
     'reset_character_profile_on_transfer'               => 0,
     'clear_myo_slot_name_on_approval'                   => 0,
-    /*
-    |--------------------------------------------------------------------------
-    | Previous and Next buttons on Character pages
-    |--------------------------------------------------------------------------
-    |
-	| Buttons linking to the previous character as well
-	| as the next character on all character pages
-    |
-	| You can turn the on or off with the below setting.
-	| 0: Do not display the buttons. 1: Do display the buttons.
-    |
-    */
-    'display_previous_and_next_characters' => 0,
 
     /*
     |--------------------------------------------------------------------------
