@@ -108,7 +108,7 @@
         <p class="mb-0 col-md-4">
             <strong>Organised Traits Dropdown</strong> by <a href="https://github.com/draginraptor">Draginraptor</a> ({{ Config::get('lorekeeper.extensions.organised_traits_dropdown') ? 'Enabled' : 'Disabled' }})
         </p>
-		<p class="mb-0 col-md-4">
+        <p class="mb-0 col-md-4">
             <strong>Previous & Next buttons on Character pages</strong> by <a href="https://github.com/SpeedyD">Speedy</a> ({{ Config::get('lorekeeper.extensions.display_previous_and_next_characters') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
