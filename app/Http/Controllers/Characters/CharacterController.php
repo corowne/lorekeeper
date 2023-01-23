@@ -98,6 +98,7 @@ class CharacterController extends Controller {
         return view('character.character', [
             'character'   => $this->character,
             'showMention' => true,
+            'extPrevAndNextBtnsUrl' => "",
         ]);
     }
 
