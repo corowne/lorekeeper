@@ -64,25 +64,24 @@ class CharacterController extends Controller {
             $prevCharUrl = null;
             $nextCharName = null;
             $nextCharUrl = null;
-            
+
             $previousCharacter = $query->get()->first();
             if (!$previousCharacter || $previousCharacter->id == $this->character->id) {
                 $previousCharacter = null;
-            }
-            else {
+            } else {
                 $prevCharName = $previousCharacter->fullName;
                 $prevCharUrl = $previousCharacter->url;
             }
             $nextCharacter = $query->get()->last();
             if (!$nextCharacter || $nextCharacter->id == $this->character->id) {
                 $nextCharacter = null;
-            }
-            else {
+            } else {
                 $nextCharName = $nextCharacter->fullName;
                 $nextCharUrl = $nextCharacter->url;
             }
-            $extPrevAndNextBtns = array('prevCharName' => $prevCharName, 'prevCharUrl' => $prevCharUrl, 'nextCharName' => $nextCharName, 'nextCharUrl' => $nextCharUrl);
+            $extPrevAndNextBtns = ['prevCharName' => $prevCharName, 'prevCharUrl' => $prevCharUrl, 'nextCharName' => $nextCharName, 'nextCharUrl' => $nextCharUrl];
             View::share('extPrevAndNextBtns', $extPrevAndNextBtns);
+
             return $next($request);
         });
     }
@@ -96,9 +95,9 @@ class CharacterController extends Controller {
      */
     public function getCharacter($slug) {
         return view('character.character', [
-            'character'   => $this->character,
-            'showMention' => true,
-            'extPrevAndNextBtnsUrl' => "",
+            'character'             => $this->character,
+            'showMention'           => true,
+            'extPrevAndNextBtnsUrl' => '',
         ]);
     }
 
@@ -111,8 +110,8 @@ class CharacterController extends Controller {
      */
     public function getCharacterProfile($slug) {
         return view('character.profile', [
-            'character' => $this->character,
-            'extPrevAndNextBtnsUrl' => "/profile",
+            'character'             => $this->character,
+            'extPrevAndNextBtnsUrl' => '/profile',
         ]);
     }
 
@@ -180,9 +179,9 @@ class CharacterController extends Controller {
      */
     public function getCharacterGallery(Request $request, $slug) {
         return view('character.gallery', [
-            'character'   => $this->character,
-            'extPrevAndNextBtnsUrl' => "/gallery",
-            'submissions' => GallerySubmission::whereIn('id', $this->character->gallerySubmissions->pluck('gallery_submission_id')->toArray())->visible()->accepted()->orderBy('created_at', 'DESC')->paginate(20)->appends($request->query()),
+            'character'             => $this->character,
+            'extPrevAndNextBtnsUrl' => '/gallery',
+            'submissions'           => GallerySubmission::whereIn('id', $this->character->gallerySubmissions->pluck('gallery_submission_id')->toArray())->visible()->accepted()->orderBy('created_at', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -195,9 +194,9 @@ class CharacterController extends Controller {
      */
     public function getCharacterImages($slug) {
         return view('character.images', [
-            'user'      => Auth::check() ? Auth::user() : null,
-            'character' => $this->character,
-            'extPrevAndNextBtnsUrl' => "/images",
+            'user'                  => Auth::check() ? Auth::user() : null,
+            'character'             => $this->character,
+            'extPrevAndNextBtnsUrl' => '/images',
         ]);
     }
 
@@ -226,12 +225,13 @@ class CharacterController extends Controller {
                 ->orderBy('updated_at')
                 ->get()
                 ->groupBy(['item_category_id', 'id']);
+
         return view('character.inventory', [
-            'character'  => $this->character,
-            'extPrevAndNextBtnsUrl' => "/inventory",
-            'categories' => $categories->keyBy('id'),
-            'items'      => $items,
-            'logs'       => $this->character->getItemLogs(),
+            'character'             => $this->character,
+            'extPrevAndNextBtnsUrl' => '/inventory',
+            'categories'            => $categories->keyBy('id'),
+            'items'                 => $items,
+            'logs'                  => $this->character->getItemLogs(),
         ] + (Auth::check() && (Auth::user()->hasPower('edit_inventories') || Auth::user()->id == $this->character->user_id) ? [
             'itemOptions'   => $itemOptions->pluck('name', 'id'),
             'userInventory' => UserItem::with('item')->whereIn('item_id', $itemOptions->pluck('id'))->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get()->filter(function ($userItem) {
@@ -250,11 +250,12 @@ class CharacterController extends Controller {
      */
     public function getCharacterBank($slug) {
         $character = $this->character;
+
         return view('character.bank', [
-            'character'  => $this->character,
-            'extPrevAndNextBtnsUrl' => "/bank",
-            'currencies' => $character->getCurrencies(true),
-            'logs'       => $this->character->getCurrencyLogs(),
+            'character'             => $this->character,
+            'extPrevAndNextBtnsUrl' => '/bank',
+            'currencies'            => $character->getCurrencies(true),
+            'logs'                  => $this->character->getCurrencyLogs(),
         ] + (Auth::check() && Auth::user()->id == $this->character->user_id ? [
             'takeCurrencyOptions' => Currency::where('allow_character_to_user', 1)->where('is_user_owned', 1)->where('is_character_owned', 1)->whereIn('id', CharacterCurrency::where('character_id', $this->character->id)->pluck('currency_id')->toArray())->orderBy('sort_character', 'DESC')->pluck('name', 'id')->toArray(),
             'giveCurrencyOptions' => Currency::where('allow_user_to_character', 1)->where('is_user_owned', 1)->where('is_character_owned', 1)->whereIn('id', UserCurrency::where('user_id', Auth::user()->id)->pluck('currency_id')->toArray())->orderBy('sort_user', 'DESC')->pluck('name', 'id')->toArray(),
@@ -343,9 +344,9 @@ class CharacterController extends Controller {
      */
     public function getCharacterCurrencyLogs($slug) {
         return view('character.currency_logs', [
-            'character' => $this->character,
-            'extPrevAndNextBtnsUrl' => "/currency-logs",
-            'logs'      => $this->character->getCurrencyLogs(0),
+            'character'             => $this->character,
+            'extPrevAndNextBtnsUrl' => '/currency-logs',
+            'logs'                  => $this->character->getCurrencyLogs(0),
         ]);
     }
 
@@ -358,9 +359,9 @@ class CharacterController extends Controller {
      */
     public function getCharacterItemLogs($slug) {
         return view('character.item_logs', [
-            'character' => $this->character,
-            'extPrevAndNextBtnsUrl' => "/item-logs",
-            'logs'      => $this->character->getItemLogs(0),
+            'character'             => $this->character,
+            'extPrevAndNextBtnsUrl' => '/item-logs',
+            'logs'                  => $this->character->getItemLogs(0),
         ]);
     }
 
@@ -373,9 +374,9 @@ class CharacterController extends Controller {
      */
     public function getCharacterOwnershipLogs($slug) {
         return view('character.ownership_logs', [
-            'character' => $this->character,
-            'extPrevAndNextBtnsUrl' => "/ownership",
-            'logs'      => $this->character->getOwnershipLogs(0),
+            'character'             => $this->character,
+            'extPrevAndNextBtnsUrl' => '/ownership',
+            'logs'                  => $this->character->getOwnershipLogs(0),
         ]);
     }
 
@@ -388,9 +389,9 @@ class CharacterController extends Controller {
      */
     public function getCharacterLogs($slug) {
         return view('character.character_logs', [
-            'character' => $this->character,
-            'extPrevAndNextBtnsUrl' => "/change-log",
-            'logs'      => $this->character->getCharacterLogs(),
+            'character'             => $this->character,
+            'extPrevAndNextBtnsUrl' => '/change-log',
+            'logs'                  => $this->character->getCharacterLogs(),
         ]);
     }
 
@@ -403,9 +404,9 @@ class CharacterController extends Controller {
      */
     public function getCharacterSubmissions($slug) {
         return view('character.submission_logs', [
-            'character' => $this->character,
-            'extPrevAndNextBtnsUrl' => "/submissions",
-            'logs'      => $this->character->getSubmissions(),
+            'character'             => $this->character,
+            'extPrevAndNextBtnsUrl' => '/submissions',
+            'logs'                  => $this->character->getSubmissions(),
         ]);
     }
 
