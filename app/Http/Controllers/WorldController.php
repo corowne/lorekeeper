@@ -156,21 +156,21 @@ class WorldController extends Controller {
             $query->where('rarity_id', $data['rarity_id']);
         }
         if (isset($data['feature_category_id']) && $data['feature_category_id'] != 'none') {
-            if ($data['feature_category_id'] == 'non_specific') {
+            if ($data['feature_category_id'] == 'nonSpecific') {
                 $query->whereNull('feature_category_id');
             } else {
                 $query->where('feature_category_id', $data['feature_category_id']);
             }
         }
         if (isset($data['species_id']) && $data['species_id'] != 'none') {
-            if ($data['species_id'] == 'non_specific') {
+            if ($data['species_id'] == 'nonSpecific') {
                 $query->whereNull('species_id');
             } else {
                 $query->where('species_id', $data['species_id']);
             }
         }
         if (isset($data['subtype_id']) && $data['subtype_id'] != 'none') {
-            if ($data['subtype_id'] == 'non_specific') {
+            if ($data['subtype_id'] == 'nonSpecific') {
                 $query->whereNull('subtype_id');
             } else {
                 $query->where('subtype_id', $data['subtype_id']);
@@ -217,9 +217,9 @@ class WorldController extends Controller {
         return view('world.features', [
             'features'   => $query->paginate(20)->appends($request->query()),
             'rarities'   => ['none' => 'Any Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'specieses'  => ['none' => 'Any Species'] + ['non_specific' => 'No Specific Species'] + Species::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes'   => ['none' => 'Any Subtype'] + ['non_specific' => 'No Specific Subtype'] + Subtype::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'categories' => ['none' => 'Any Category'] + ['non_specific' => 'No Specific Category'] + FeatureCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'specieses'  => ['none' => 'Any Species'] + ['nonSpecific' => 'No Specific Species'] + Species::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes'   => ['none' => 'Any Subtype'] + ['nonSpecific' => 'No Specific Subtype'] + Subtype::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'categories' => ['none' => 'Any Category'] + ['nonSpecific' => 'No Specific Category'] + FeatureCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
 
@@ -289,7 +289,7 @@ class WorldController extends Controller {
         $query = Item::with('category')->released();
         $data = $request->only(['item_category_id', 'name', 'sort', 'artist']);
         if (isset($data['item_category_id']) && $data['item_category_id'] != 'none') {
-            if ($data['item_category_id'] == 'non_specific') {
+            if ($data['item_category_id'] == 'nonSpecific') {
                 $query->whereNull('item_category_id');
             } else {
                 $query->where('item_category_id', $data['item_category_id']);
@@ -326,7 +326,7 @@ class WorldController extends Controller {
 
         return view('world.items', [
             'items'      => $query->paginate(20)->appends($request->query()),
-            'categories' => ['none' => 'Any Category'] + ['non_specific' => 'No Specific Category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'categories' => ['none' => 'Any Category'] + ['nonSpecific' => 'No Specific Category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'shops'      => Shop::orderBy('sort', 'DESC')->get(),
             'artists'    => ['none' => 'Any Artist'] + User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray(),
         ]);
