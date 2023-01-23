@@ -12,7 +12,7 @@
     },
     "devDependencies": {
         "axios": "^1.2.2",
-        "blade-formatter": "^1.32.4",
+        "blade-formatter": "^1.32.5",
         "bootstrap": "^4.6",
         "cross-env": "^7.0",
         "jquery": "^3.6",
