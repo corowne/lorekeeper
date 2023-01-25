@@ -1,3 +1,23 @@
+@if (!$character->is_myo_slot && Config::get('lorekeeper.extensions.display_previous_and_next_characters') && isset($extPrevAndNextBtnsUrl))
+    @if ($extPrevAndNextBtns['prevCharName'] || $extPrevAndNextBtns['nextCharName'])
+        <div class="row mb-4">
+            @if ($extPrevAndNextBtns['prevCharName'])
+                <div class="col text-left float-left">
+                    <a class="btn btn-outline-success text-success" href="{{ $extPrevAndNextBtns['prevCharUrl'] }}{!! $extPrevAndNextBtnsUrl !!}">
+                        <i class="fas fa-angle-double-left"></i> Previous Character ・ <span class="text-primary">{!! $extPrevAndNextBtns['prevCharName'] !!}</span>
+                    </a>
+                </div>
+            @endif
+            @if ($extPrevAndNextBtns['nextCharName'])
+                <div class="col text-right float-right">
+                    <a class="btn btn-outline-success text-success" href="{{ $extPrevAndNextBtns['nextCharUrl'] }}{!! $extPrevAndNextBtnsUrl !!}">
+                        <span class="text-primary">{!! $extPrevAndNextBtns['nextCharName'] !!}</span> ・ Next Character <i class="fas fa-angle-double-right"></i><br />
+                    </a>
+                </div>
+            @endif
+        </div>
+    @endif
+@endif
 <div class="character-masterlist-categories">
     @if (!$character->is_myo_slot)
         {!! $character->category->displayName !!} ・ {!! $character->image->species->displayName !!} ・ {!! $character->image->rarity->displayName !!}
