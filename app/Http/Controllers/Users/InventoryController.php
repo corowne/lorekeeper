@@ -309,7 +309,7 @@ class InventoryController extends Controller
      * @param  App\Services\InventoryManager  $service
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postShop(Request $request, InventoryManager $service, $id)
+    public function postShop(Request $request, InventoryManager $service)
     {
         if($service->sendShop(Auth::user(), Usershop::where('id', $request->get('shop_id'))->first(), UserItem::find($request->get('ids')), $request->get('quantities'))) {
             flash('Item transferred successfully.')->success();

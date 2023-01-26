@@ -547,7 +547,7 @@ class InventoryManager extends Service
      * @param  int                                                            $quantities
      * @return bool
      */
-    public function postShop($sender, $recipient, $stacks, $quantities)
+    public function sendShop($sender, $recipient, $stacks, $quantities)
     {
         DB::beginTransaction();
 
@@ -566,7 +566,8 @@ class InventoryManager extends Service
                 if((!$stack->item->allow_transfer || isset($stack->data['disallow_transfer'])) && !Auth::user()->hasPower('edit_inventories')) throw new \Exception("One of the selected items cannot be transferred.");
                 if($stack->count < $quantity) throw new \Exception("Quantity to transfer exceeds item count.");
 
-                $this->creditItem($sender, $recipient, $stack->data, $stack->item, $quantity);
+                $this->creditItem($sender, $recipient, $sender->logType == 'User' ? 'User → Shop Transfer' : 'Shop → User Transfer', $stack->data, $stack->item, $quantity);
+
 
                 $stack->count -= $quantity;
                 $stack->save();
