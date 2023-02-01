@@ -82,7 +82,7 @@ class AddSiteSettings extends Command {
         $this->addSiteSetting('deactivated_key', 0, 'Optional key to view the deactivated list. Enter "0" to not require one.');
 
         $this->addSiteSetting('comment_dislikes_enabled', 0, '0: Dislikes disabled, 1: Dislikes enabled.');
-        
+
         $this->addSiteSetting('enable_optional_alias', 0, '0: Optional alias disabled, 1: Optional alias enabled.');
 
         $this->line("\nSite settings up to date!");
