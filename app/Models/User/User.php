@@ -180,11 +180,11 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany('App\Models\Gallery\GalleryFavorite')->where('user_id', $this->id);
     }
-    
+
     /**
      * Get all of the user's character bookmarks.
      */
-    public function bookmarks() 
+    public function bookmarks()
     {
         return $this->hasMany('App\Models\Character\CharacterBookmark')->where('user_id', $this->id);
     }
@@ -229,6 +229,9 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getHasAliasAttribute()
     {
+        if (!config('lorekeeper.settings.require_alias')) {
+            return true;
+        }
         return $this->attributes['has_alias'];
     }
 
@@ -319,6 +322,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getDisplayAliasAttribute()
     {
+        if (!config('lorekeeper.settings.require_alias') && !$this->attributes['has_alias']) return '(No Alias)';
         if (!$this->hasAlias) return '(Unverified)';
         return $this->primaryAlias->displayAlias;
     }
@@ -376,7 +380,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getcheckBirthdayAttribute()
     {
-        $bday = $this->birthday; 
+        $bday = $this->birthday;
         if(!$bday || $bday->diffInYears(carbon::now()) < 13) return false;
         else return true;
     }
@@ -508,7 +512,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function updateCharacters()
     {
-        if(!$this->hasAlias) return;
+        if(!$this->attributes['has_alias']) return;
 
         // Pluck alias from url and check for matches
         $urlCharacters = Character::whereNotNull('owner_url')->pluck('owner_url','id');
@@ -532,7 +536,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function updateArtDesignCredits()
     {
-        if(!$this->hasAlias) return;
+        if(!$this->attributes['has_alias']) return;
 
         // Pluck alias from url and check for matches
         $urlCreators = CharacterImageCreator::whereNotNull('url')->pluck('url','id');
