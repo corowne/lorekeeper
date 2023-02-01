@@ -15,6 +15,11 @@
         <div class="sidebar-item"><a href="{{ url('trades/open') }}" class="{{ set_active('trades/open*') }}">Trades</a></div>
     </li>
     <li class="sidebar-section">
+        <div class="sidebar-section-header">Crafting</div>
+        <div class="sidebar-item"><a href="{{ url('crafting') }}" class="{{ set_active('crafting') }}">My Recipes</a></div>
+        <div class="sidebar-item"><a href="{{ url('world/recipes') }}" class="{{ set_active('world/recipes') }}">All Recipes</a></div>
+    </li>
+    <li class="sidebar-section">
         <div class="sidebar-section-header">Reports</div>
         <div class="sidebar-item"><a href="{{ url('reports') }}" class="{{ set_active('reports*') }}">Reports</a></div>
     </li>
