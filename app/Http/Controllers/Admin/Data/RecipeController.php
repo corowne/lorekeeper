@@ -12,6 +12,7 @@ use App\Models\Loot\LootTable;
 use App\Models\Raffle\Raffle;
 use App\Models\Currency\Currency;
 use App\Models\Recipe\Recipe;
+use App\Models\Recipe\RecipeCategory;
 
 use App\Services\RecipeService;
 
@@ -27,6 +28,17 @@ class RecipeController extends Controller
     | Handles creation/editing of recipes.
     |
     */
+        /**
+     * Shows the item category index.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getIndex()
+    {
+        return view('admin.recipes.recipe_categories', [
+            'recipe_categories' => RecipeCategory::orderBy('sort', 'DESC')->get()
+        ]);
+    }
 
     /**********************************************************************************************
     
@@ -47,10 +59,116 @@ class RecipeController extends Controller
         if(isset($data['name'])) 
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
         return view('admin.recipes.recipes', [
-            'recipes' => $query->paginate(20)->appends($request->query())
+            'recipes' => $query->paginate(20)->appends($request->query()),
+            'recipe_categories' => recipeCategory::orderBy('sort', 'DESC')->get(),
         ]);
     }
     
+    /**
+     * Shows the create item category page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCreateRecipeCategory()
+    {
+        return view('admin.recipes.create_edit_recipe_category', [
+            'category' => new RecipeCategory
+        ]);
+    }
+
+    /**
+     * Shows the edit item category page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getEditRecipeCategory($id)
+    {
+        $category = RecipeCategory::find($id);
+        if(!$category) abort(404);
+        return view('admin.recipes.create_edit_recipe_category', [
+            'category' => $category
+        ]);
+    }
+
+        /**
+     * Creates or edits an item category.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\RecipeService  $service
+     * @param  int|null                  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postCreateEditRecipeCategory(Request $request, RecipeService $service, $id = null)
+    {
+        $id ? $request->validate(RecipeCategory::$updateRules) : $request->validate(RecipeCategory::$createRules);
+        $data = $request->only([
+            'name', 'description', 'image', 'remove_image',
+        ]);
+        if($id && $service->updateRecipeCategory(RecipeCategory::find($id), $data, Auth::user())) {
+            flash('Category updated successfully.')->success();
+        }
+        else if (!$id && $category = $service->createRecipeCategory($data, Auth::user())) {
+            flash('Category created successfully.')->success();
+            return redirect()->to('admin/data/recipe-categories/edit/'.$category->id);
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Gets the item category deletion modal.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getDeleteItemCategory($id)
+    {
+        $category = RecipeCategory::find($id);
+        return view('admin.recipes._delete_recipe_category', [
+            'category' => $category,
+        ]);
+    }
+
+        /**
+     * Deletes an item category.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\RecipeService  $service
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postDeleteRecipeCategory(Request $request, RecipeService $service, $id)
+    {
+        if($id && $service->deleteRecipeCategory(RecipeCategory::find($id))) {
+            flash('Category deleted successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->to('admin/data/recipe-categories');
+    }
+
+        /**
+     * Sorts item categories.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\RecipeService  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postSortRecipeCategory(Request $request, RecipeService $service)
+    {
+        if($service->sortRecipeCategory($request->get('sort'))) {
+            flash('Category order updated successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
     /**
      * Shows the create recipe page.
      *
@@ -62,6 +180,7 @@ class RecipeController extends Controller
             'recipe' => new Recipe,
             'items' => Item::orderBy('name')->pluck('name', 'id'),
             'categories' => ItemCategory::orderBy('name')->pluck('name', 'id'),
+            'recipe_categories' => ['none' => 'No category'] + RecipeCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
             'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
             'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
@@ -83,6 +202,7 @@ class RecipeController extends Controller
             'recipe' => $recipe,
             'items' => Item::orderBy('name')->pluck('name', 'id'),
             'categories' => ItemCategory::orderBy('name')->pluck('name', 'id'),
+            'recipe_categories' => ['none' => 'No category'] + RecipeCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
             'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
             'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
@@ -103,7 +223,7 @@ class RecipeController extends Controller
         $id ? $request->validate(Recipe::$updateRules) : $request->validate(Recipe::$createRules);
         $data = $request->only([
             'name', 'description', 'image', 'remove_image', 'needs_unlocking',
-            'ingredient_type', 'ingredient_data', 'ingredient_quantity',
+            'ingredient_type', 'ingredient_data', 'ingredient_quantity', 'recipe_category_id',
             'rewardable_type', 'rewardable_id', 'reward_quantity', 
             'is_limited', 'limit_type', 'limit_id', 'limit_quantity'
         ]);

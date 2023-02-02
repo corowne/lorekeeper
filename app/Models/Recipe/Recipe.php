@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models\Recipe;
+use App\Models\RecipeCategory;
 
 use Config;
 use DB;
@@ -14,7 +15,7 @@ class Recipe extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'has_image', 'needs_unlocking', 'description', 'parsed_description', 'reference_url', 'artist_alias' ,'artist_url', 'is_limited'
+        'name', 'has_image', 'needs_unlocking', 'description', 'parsed_description', 'reference_url', 'artist_alias' ,'artist_url', 'is_limited', 'recipe_category_id'
     ];
 
     protected $appends = ['image_url'];
@@ -32,6 +33,7 @@ class Recipe extends Model
      * @var array
      */
     public static $createRules = [
+        'recipe_category_id' => 'nullable',
         'name' => 'required|unique:recipes',
         'description' => 'nullable',
         'image' => 'mimes:png',
@@ -43,6 +45,7 @@ class Recipe extends Model
      * @var array
      */
     public static $updateRules = [
+        'recipe_category_id' => 'nullable',
         'name' => 'required',
         'description' => 'nullable',
         'image' => 'mimes:png',
@@ -53,7 +56,13 @@ class Recipe extends Model
         RELATIONS
 
     **********************************************************************************************/
-
+    /**
+     * Get the category the item belongs to.
+     */
+    public function category()
+    {
+        return $this->belongsTo('App\Models\Recipe\RecipeCategory', 'recipe_category_id');
+    }
     /**
      * Get the recipe's ingredients.
      */
@@ -93,6 +102,17 @@ class Recipe extends Model
         return $query->orderBy('name', $reverse ? 'DESC' : 'ASC');
     }
 
+        /**
+     * Scope a query to sort recipes in category order.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSortCategory($query)
+    {
+        $ids = RecipeCategory::orderBy('sort', 'DESC')->pluck('id')->toArray();
+        return count($ids) ? $query->orderByRaw(DB::raw('FIELD(recipe_category_id, '.implode(',', $ids).')')) : $query;
+    }
     /**
      * Scope a query to sort items by newest first.
      *

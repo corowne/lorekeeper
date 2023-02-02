@@ -32,6 +32,15 @@
     @endif
 </div>
 
+<div class="row">
+    <div class="col-md">
+        <div class="form-group">
+            {!! Form::label('Recipe Category (Optional)') !!}
+            {!! Form::select('recipe_category_id', $recipe_categories, $recipe->recipe_category_id, ['class' => 'form-control']) !!}
+        </div>
+    </div>
+</div>
+
 <div class="form-group mb-2">
 {!! Form::checkbox('needs_unlocking', 1, $recipe->needs_unlocking, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'data-on' => 'Needs to be Unlocked', 'data-off' => 'Automatically Unlocked']) !!}
 </div>
@@ -73,7 +82,7 @@
     <h3>Preview</h3>
     <div class="card mb-3">
         <div class="card-body">
-            @include('world._entry', ['imageUrl' => $recipe->imageUrl, 'name' => $recipe->displayName, 'description' => $recipe->parsed_description, 'searchUrl' => $recipe->searchUrl])
+            @include('world._entry', ['imageUrl' => $recipe->imageUrl, 'name' => $recipe->displayName, 'description' => $recipe->parsed_description, 'recipe_category_id' => $recipe_categories, 'searchUrl' => $recipe->searchUrl])
         </div>
     </div>
 @endif
