@@ -10,7 +10,7 @@
     "require": {
         "php": "~8.1",
         "boxconnect/deviant-php": "dev-master",
-        "doctrine/dbal": "2.2",
+        "doctrine/dbal": "^2.2",
         "erusev/parsedown": "^1.7",
         "ezyang/htmlpurifier": "^4.10",
         "fideloper/proxy": "^4.0",
