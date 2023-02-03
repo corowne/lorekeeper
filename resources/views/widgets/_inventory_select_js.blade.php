@@ -33,7 +33,7 @@
             var rowId = "#itemRow" + $checkbox.val()
             if($checkbox.is(":checked")) {
                 $(rowId).addClass('category-selected');
-                $(rowId).find('.quantity-select').prop('name', 'stack_quantity[]')
+                $(rowId).find('.quantity-select').prop('name', 'stack_quantity['+$checkbox.val()+']')
             }
             else {
                 $(rowId).removeClass('category-selected');
@@ -43,7 +43,7 @@
         $('#toggle-checks').on('click', function() {
             ($(this).is(":checked")) ? selectVisible() : deselectVisible();
         });
-        
+
         function refreshFilter() {
             var display = $userItemCategory.val();
             var itemId = $itemIdFilter.val();
@@ -53,15 +53,14 @@
         }
         function selectVisible() {
             var $target = $('.user-item:not(.hide)');
-            $target.addClass('category-selected');
             $target.find('.inventory-checkbox').prop('checked', true);
+            $target.find('.inventory-checkbox').trigger('change');
             $('#toggle-checks').prop('checked', true);
-            $target.find('.quantity-select').prop('name', 'stack_quantity[]');
         }
         function deselectVisible() {
             var $target = $('.user-item:not(.hide)');
-            $target.removeClass('category-selected');
             $target.find('.inventory-checkbox').prop('checked', false);
+            $target.find('.inventory-checkbox').trigger('change');
             $('#toggle-checks').prop('checked', false);
             $target.find('.quantity-select').prop('name', '');
         }
@@ -69,7 +68,7 @@
             item = JSON.parse(item.text);
             option_render = '<div class="option">';
             if(item['image_url']) {
-                option_render += '<div class="d-inline mr-1"><img class="small-icon"  src="' + escape(item['image_url']) + '"></div>';
+                option_render += '<div class="d-inline mr-1"><img class="small-icon" alt="'+ escape(item['name']) +'" src="' + escape(item['image_url']) + '"></div>';
             }
             option_render += '<span>' + escape(item['name']) + '</span></div>';
             return option_render;

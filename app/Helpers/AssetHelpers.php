@@ -37,7 +37,7 @@ function calculateGroupCurrency($data)
         $total += ($data['art_finish'] + $data['art_type']);
         // This multiplies each option selected in the "bonus" form field by
         // the result from the "art type" field, and adds it to the total.
-        if(isset($data['art_bonus'])) foreach($data['art_bonus'] as $bonus) $total += (round($bonus) * $data['art_type']);
+        if(isset($data['art_bonus'])) foreach((array)$data['art_bonus'] as $bonus) $total += (round($bonus) * $data['art_type']);
     }
 
     // Likewise for if the user selected that the submission has a written component:

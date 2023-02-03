@@ -2,8 +2,8 @@
 
 Lorekeeper is a framework for managing deviantART-based ARPGs/closed species masterlists coded using the Laravel framework. In simple terms - you will be able to make a copy of the site, do some minor setup/enter data about your species and game, and it'll provide you with the automation to keep track of your species, players and ARPG submissions.
 
-Demo site: [http://lorekeeper.me/](http://lorekeeper.me/)
-Wiki for users: [http://lorekeeper-arpg.wikidot.com/](http://lorekeeper-arpg.wikidot.com/)
+- Demo site: [http://lorekeeper.me/](http://lorekeeper.me/)
+- Wiki: [http://wiki.lorekeeper.me](http://wiki.lorekeeper.me/index.php?title=Main_Page)
 
 # Features
 
@@ -19,11 +19,11 @@ Wiki for users: [http://lorekeeper-arpg.wikidot.com/](http://lorekeeper-arpg.wik
 - Speaking of which, you can search for characters based on traits, rarity, etc. Also, trait/item/etc. data get their own searchable lists - no need to create additional pages detailing restrictions on how a trait should be drawn/described.
 - Unless you want to, in which case you can add custom pages in HTML without touching the codebase!
 - A raffle roller for consecutive raffles! Mods can add/remove tickets and users who have already won something will be automatically removed from future raffles in the sequence.
-- ...and more! Please refer to the [Wiki](http://lorekeeper-arpg.wikidot.com/) for more information and instructions for usage.
+- ...and more! Please refer to the [Wiki](http://wiki.lorekeeper.me/index.php?title=Category:Documentation) for more information and instructions for usage.
 
 # Setup
 
-Important: For those who are not familiar with web dev, please refer to the [Wiki](http://lorekeeper-arpg.wikidot.com/) for a much more detailed set of instructions!!
+Important: For those who are not familiar with web dev, please refer to the [Wiki](http://wiki.lorekeeper.me/index.php?title=Tutorial:_Setting_Up) for a much more detailed set of instructions!!
 
 ## Obtain a copy of the code
 
@@ -37,16 +37,12 @@ $ git clone https://github.com/corowne/lorekeeper.git
 $ cp .env.example .env
 ```
 
-deviantART client ID and secret are required for this step.
-While obtaining the ID and secret, also add whitelist entries for redirection for your site URL (if being hosted) or localhost (if working locally).
+Client ID and secret for at least one supported social media platform are required for this step. See [the Wiki](http://wiki.lorekeeper.me/index.php?title=Category:Social_Media_Authentication) for platform-specific instructions.
+
 Add the following to .env, filling them in as required (also fill in the rest of .env where relevant):
 ```
 CONTACT_ADDRESS=(contact email address)
 DEVIANTART_ACCOUNT=(username of ARPG group account)
-
-DEVIANTART_CLIENT_ID=(client ID as supplied by deviantART)
-DEVIANTART_CLIENT_SECRET=(client secret as supplied by deviantART)
-DEVIANTART_CALLBACK_URL=/
 ```
 
 ## Setting up
@@ -74,8 +70,8 @@ Finally, set up the admin account for logging in:
 $ php artisan setup-admin-user
 ```
 
-You will need to send yourself the verification email and then link your dA account as prompted.
+You will need to send yourself the verification email and then link your social media account as prompted.
 
 ## Contact
 
-If you have any questions, please feel free to contact me through email: corowne@gmail.com
+If you have any questions, please feel free to ask in the Discord server: https://discord.gg/U4JZfsu
