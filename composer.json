@@ -37,7 +37,7 @@
         "laravel/pint": "^1.0",
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^6.1",
-        "phpunit/phpunit": "^9.0",
+        "phpunit/phpunit": "^10.0",
         "spatie/laravel-ignition": "^1.2"
     },
     "config": {
