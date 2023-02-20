@@ -115,6 +115,9 @@
                         <a class="dropdown-item" href="{{ url('usershops') }}">
                             My Shops
                         </a>
+                        <a class="dropdown-item" href="{{ url('usershops/shop-index') }}">
+                            All User Shops
+                        </a>
                     </div>
                 </li>
                 <li class="nav-item">

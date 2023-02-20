@@ -49,61 +49,59 @@
 
 {!! Form::close() !!}
 
-SHOP STOCK MODAL
+@if($shop->id)
+<h3>Shop Stock</h3> 
+    <div id="shopStock">
+        <div class="row col-12">
+        @foreach($shop->stock as $stock)
+        <div class="col-md-4">
+            <div class="card p-3 my-1">
+                <div class="row">
+                    @if($stock->item->has_image)
+                        <div class="col-2">
+                            <img src="{{ $stock->item->imageUrl }}" style="width: 100%;" alt="{{ $stock->item->name }}">
+                        </div>
+                    @endif
+                    <div class="col-{{ $stock->item->has_image ? '8' : '10' }}">
+                        <div><a href="{{ $stock->item->idUrl }}"><strong>{{ $stock->item->name }} - {{ $stock->stock_type }}</strong></a></div>
+                        <div><strong>Cost: </strong> {!! $stock->currency->display($stock->cost) !!}</div>
+                    </div>
+                    @if(!$stock->is_visible)<div class="col-2"> <i class="fas fa-eye-slash"></i></div>@endif
+                </div> 
+                <div class="text-right">
+                    <button class="btn btn-primary" onclick="editStock({{$stock->id}})">
+                        {{-- pencil icon --}}
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                    <div class="btn btn-danger" onclick="removeShopStock({{$stock->id}})">
+                        {{-- trash icon --}}
+                        <i class="fas fa-trash"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
+@endif
 
 @endsection
 
 @section('scripts')
 @parent
 <script>
-$( document ).ready(function() {
-    var $shopStock = $('#shopStock');
-    var $stock = $('#shopStockData').find('.stock');
-
+    // edit stock function
+    function editStock(id) {
+        loadModal("{{ url('usershops/stock/edit') }}/" + id, 'Edit Stock');
+    }
+    function removeShopStock(id) {
+        loadModal("{{ url('usershops/stock/remove') }}/" + id, 'Remove Stock');
+    }
+    
     $('.delete-shop-button').on('click', function(e) {
         e.preventDefault();
         loadModal("{{ url('usershops/delete') }}/{{ $shop->id }}", 'Delete Shop');
     });
-    $('.add-stock-button').on('click', function(e) {
-        e.preventDefault();
-
-        var clone = $stock.clone();
-        $shopStock.append(clone);
-        clone.removeClass('hide');
-        attachStockListeners(clone);
-        refreshStockFieldNames();
-    });
-
-    attachStockListeners($('#shopStock .stock'));
-    function attachStockListeners(stock) {
-        stock.find('.stock-toggle').bootstrapToggle();
-        stock.find('.stock-limited').on('change', function(e) {
-            var $this = $(this);
-            if($this.is(':checked')) {
-                $this.parent().parent().parent().parent().find('.stock-limited-quantity').removeClass('hide');
-            }
-            else {
-                $this.parent().parent().parent().parent().find('.stock-limited-quantity').addClass('hide');
-            }
-        });
-        stock.find('.remove-stock-button').on('click', function(e) {
-            e.preventDefault();
-            $(this).parent().parent().parent().remove();
-            refreshStockFieldNames();
-        });
-        stock.find('.card-body [data-toggle=tooltip]').tooltip({html: true});
-    }
-    function refreshStockFieldNames()
-    {
-        $('.stock').each(function(index) {
-            var $this = $(this);
-            var key = index;
-            $this.find('.stock-field').each(function() {
-                $(this).attr('name', $(this).data('name') + '[' + key + ']');
-            });
-        });
-    }
-});
+    
     
 </script>
 @endsection

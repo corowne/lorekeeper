@@ -199,8 +199,8 @@ class UserShopService extends Service
         DB::beginTransaction();
 
         try {
-            // Delete shop stock
-            $shop->stock()->delete();
+             
+            if($shop->stock) throw new \Exception("This shop currently has items stocked. Please remove them and try again.");
 
             if($shop->has_image) $this->deleteImage($shop->shopImagePath, $shop->shopImageFileName); 
             $shop->delete();
@@ -236,4 +236,5 @@ class UserShopService extends Service
         }
         return $this->rollbackReturn(false);
     }
+
 }

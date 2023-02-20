@@ -66,13 +66,24 @@ class UserShop extends Model
     {
         return $this->belongsTo('App\Models\User\User', 'user_id');
     }
-    
     /**
      * Get the shop stock as items for display purposes.
      */
     public function displayStock()
     {
-        return $this->belongsToMany('App\Models\Item\Item', 'shop_stock')->withPivot('item_id', 'currency_id', 'cost', 'use_user_bank', 'use_character_bank', 'quantity','id');
+        return $this->belongsToMany('App\Models\Item\Item', 'user_shop_stock')->where('stock_type', 'Item')->withPivot('item_id', 'currency_id', 'cost', 'use_user_bank', 'quantity', 'id', 'is_visible')->wherePivot('is_visible', 1);
+    }
+
+    /**
+     * Scope a query to show only visible features.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeVisible($query, $withHidden = 0)
+    {
+        if($withHidden) return $query;
+        return $query->where('is_active', 1);
     }
 
     /**********************************************************************************************
@@ -139,6 +150,6 @@ class UserShop extends Model
      */
     public function getUrlAttribute()
     {
-        return url('user/shops/'.$this->id);
+        return url('/usershops/shop/'.$this->id);
     }
 }

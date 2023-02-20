@@ -13,7 +13,7 @@ class UserShopStock extends Model
      * @var array
      */
     protected $fillable = [
-        'shop_id', 'item_id', 'currency_id', 'cost', 'use_user_bank', 'use_character_bank', 'quantity'
+        'user_shop_id', 'item_id', 'currency_id', 'cost', 'use_user_bank', 'use_character_bank', 'quantity','data', 'stock_type', 'is_visible',
     ];
 
     /**
@@ -28,7 +28,27 @@ class UserShopStock extends Model
         RELATIONS
 
     **********************************************************************************************/
+    /**
+     * Get the data attribute as an associative array.
+     *
+     * @return array
+     */
+    public function getDataAttribute() 
+    {
+        return json_decode($this->attributes['data'], true);
+    }
     
+    /**
+     * Checks if the stack is transferrable.
+     *
+     * @return array
+     */
+    public function getIsTransferrableAttribute()
+    {
+        if(!isset($this->data['disallow_transfer']) && $this->item->allow_transfer) return true;
+        return false;
+    }
+
     /**
      * Get the item being stocked.
      */

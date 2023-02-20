@@ -1,13 +1,16 @@
-@extends('user.layout')
+@extends('home.layout')
 
-@section('user-title') {{ $shop->name }} @endsection
+@section('home-title') Shop Index @endsection
 
-@section('user-content')
-{!! breadcrumbs(['User' => 'user', $shop->name => $shop->url]) !!}
+@section('home-content')
+{!! breadcrumbs(['Home' => 'home']) !!}
 
 <h1>
-   {{ $user->name }} 's' {{ $shop->name }}
+   {{ $shop->name }}
 </h1>
+<div class="mb-3">
+    Owned by {!! $shop->user->displayName !!}
+</div>
 
 <div class="text-center">
     <img src="{{ $shop->shopImageUrl }}" style="max-width:100%" alt="{{ $shop->name }}" />
@@ -29,9 +32,8 @@
                             </div>
                             <div>
                                 <a href="#" class="inventory-stack inventory-stack-name"><strong>{{ $item->name }}</strong></a>
-                                <div><strong>Cost: </strong> {!! $currencies[$item->pivot->currency_id]->display($item->pivot->cost) !!}</div>
-                                @if($item->pivot->is_limited_stock) <div>Stock: {{ $item->pivot->quantity }}</div> @endif
-                                @if($item->pivot->purchase_limit) <div class="text-danger">Max {{ $item->pivot->purchase_limit }} per user</div> @endif
+                                <div><strong>Cost: </strong> {!! $currencies[$item->pivot->currency_id]->display($item->pivot->cost) !!}</div> 
+                                <div>Stock: {{ $item->pivot->quantity }}</div>
                             </div>
                         </div>
                     @endforeach
@@ -49,7 +51,7 @@
         $('.inventory-item').on('click', function(e) {
             e.preventDefault();
 
-            loadModal("{{ url('user/'.$shop->id) }}/" + $(this).data('id'), 'Purchase Item');
+            loadModal("{{ url('usershops/'.$shop->id) }}/" + $(this).data('id'), 'Purchase Item');
         });
     });
 

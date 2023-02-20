@@ -16,7 +16,7 @@ class AddUserShops extends Migration
         Schema::create('user_shops', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
+            $table->integer('user_id')->unsigned()->default(1);
             $table->string('name');
             $table->boolean('has_image')->default(0);
             $table->text('description')->nullable()->default(null);
@@ -29,30 +29,15 @@ class AddUserShops extends Migration
         Schema::create('user_shop_stock', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            $table->integer('shop_id')->unsigned()->index();
+            $table->integer('user_shop_id')->unsigned()->index();
             $table->integer('item_id')->unsigned();
-            $table->integer('currency_id')->unsigned();
+            $table->integer('currency_id')->unsigned()->default(1);
             $table->float('cost')->default(0);
-            $table->boolean('use_user_bank')->default(1);
-            $table->boolean('use_character_bank')->default(1);
+            $table->string('data', 1024)->nullable(); // includes information like staff notes, etc.
             $table->integer('quantity')->default(0);
             $table->string('stock_type')->default('Item');
-            $table->boolean('is_visible')->default(true);
-        });
-        Schema::create('user_shop_log', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-            $table->increments('id');
-            $table->integer('shop_id')->unsigned()->index();
-            $table->integer('user_id')->unsigned()->index();
-            $table->integer('character_id')->unsigned()->nullable()->default(null);
-            
-            $table->integer('currency_id')->unsigned();
-            $table->float('cost')->default(0);
-
-            $table->integer('item_id')->unsigned();
-            $table->integer('quantity')->default(1);
-            $table->timestamps();
-        });
+            $table->boolean('is_visible')->default(0);
+        }); 
     }
 
     /**
@@ -61,8 +46,7 @@ class AddUserShops extends Migration
      * @return void
      */
     public function down()
-    {
-        Schema::dropIfExists('user_shop_log');
+    { 
         Schema::dropIfExists('user_shop_stock');
         Schema::dropIfExists('user_shops');
     }

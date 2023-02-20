@@ -11,7 +11,6 @@ use App\Services\UserShopManager;
 
 use App\Models\Shop\UserShop;
 use App\Models\Shop\UserShopStock;
-use App\Models\Shop\UserShopLog;
 use App\Models\Item\Item;
 use App\Models\Currency\Currency;
 use App\Models\Item\ItemCategory;
@@ -29,15 +28,41 @@ class UserShopController extends Controller
     */
 
     /**
-     * Shows the shop index.
+     * Shows the user list.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex()
+    public function getIndex(Request $request)
     {
-        return view('home.index_shop', [
-            'shops' => UserShop::where('is_active', 1)->orderBy('sort', 'DESC')->get()
-            ]);
+        $query = UserShop::visible();
+        $sort = $request->only(['sort']);
+
+        if($request->get('name')) $query->where(function($query) use ($request) {
+            $query->where('shops.name', 'LIKE', '%' . $request->get('name') . '%');
+        }); 
+
+        switch(isset($sort['sort']) ? $sort['sort'] : null) {
+            default:
+                $query->orderBy('name', 'DESC');
+                break;
+            case 'alpha':
+                $query->orderBy('name');
+                break;
+            case 'alpha-reverse':
+                $query->orderBy('name', 'DESC');
+                break;
+            case 'newest':
+                $query->orderBy('created_at', 'DESC');
+                break;
+            case 'oldest':
+                $query->orderBy('created_at', 'ASC');
+                break;
+        }
+
+        return view('home.user_shops.index_shop', [
+            'shops' => $query->paginate(30)->appends($request->query()), 
+        ]);
     }
 
     /**
@@ -52,12 +77,12 @@ class UserShopController extends Controller
         $shop = UserShop::where('id', $id)->where('is_active', 1)->first();
         if(!$shop) abort(404);
         $items = count($categories) ? $shop->displayStock()->orderByRaw('FIELD(item_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')->orderBy('name')->get()->groupBy('item_category_id') : $shop->displayStock()->orderBy('name')->get()->groupBy('item_category_id');
-        return view('user.shop', [
+        return view('home.user_shops.shop', [
             'shop' => $shop,
             'categories' => $categories->keyBy('id'),
             'items' => $items,
             'shops' => UserShop::where('is_active', 1)->orderBy('sort', 'DESC')->get(),
-            'currencies' => Currency::whereIn('id', UserShopStock::where('shop_id', $shop->id)->pluck('currency_id')->toArray())->get()->keyBy('id')
+            'currencies' => Currency::whereIn('id', UserShopStock::where('user_shop_id', $shop->id)->pluck('currency_id')->toArray())->get()->keyBy('id')
         ]);
     }
 
@@ -72,7 +97,7 @@ class UserShopController extends Controller
     public function getShopStock(UserShopManager $service, $id, $stockId)
     {
         $shop = UserShop::where('id', $id)->where('is_active', 1)->first();
-        $stock = UserShopStock::with('item')->where('id', $stockId)->where('shop_id', $id)->first();
+        $stock = UserShopStock::with('item')->where('id', $stockId)->where('user_shop_id', $id)->first();
 
         $user = Auth::user();
         if($user){
@@ -80,7 +105,7 @@ class UserShopController extends Controller
         }
 
         if(!$shop) abort(404);
-        return view('home._stock_modal', [
+        return view('home.user_shops._stock_modal', [
             'shop' => $shop,
             'stock' => $stock,
             'userOwned' => $user ? $userOwned : null
@@ -96,8 +121,7 @@ class UserShopController extends Controller
      */
     public function postBuy(Request $request, UserShopManager $service)
     {
-        $request->validate(UserShopLog::$createRules);
-        if($service->buyStock($request->only(['stock_id', 'shop_id', 'slug', 'bank', 'quantity']), Auth::user())) {
+        if($service->buyStock($request->only(['stock_id', 'user_shop_id', 'bank', 'quantity']), Auth::user())) {
             flash('Successfully purchased item.')->success();
         }
         else {
@@ -106,18 +130,7 @@ class UserShopController extends Controller
         return redirect()->back();
     }
 
-    /**
-     * Shows the user's purchase history.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function getPurchaseHistory()
-    {
-        return view('home.purchase_history', [
-            'logs' => Auth::user()->getShopLogs(0),
-            'shops' => UserShop::where('is_active', 1)->orderBy('sort', 'DESC')->get(),
-        ]);
-    }
+
 }
 
 

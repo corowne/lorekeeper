@@ -76,7 +76,7 @@ class InventoryController extends Controller
         $readOnly = $request->get('read_only') ? : ((Auth::check() && $first_instance && ($first_instance->user_id == Auth::user()->id || Auth::user()->hasPower('edit_inventories'))) ? 0 : 1);
         $stack = UserItem::where([['user_id', $first_instance->user_id], ['item_id', $first_instance->item_id], ['count', '>', 0]])->get();
         $item = Item::where('id', $first_instance->item_id)->first();
-        $shops = UserShop::pluck('name', 'id');
+        $shops = UserShop::where('user_id', '=', Auth::user()->id)->pluck('name', 'id');
 
         return view('home._inventory_stack', [
             'stack' => $stack,
@@ -311,7 +311,7 @@ class InventoryController extends Controller
      */
     public function postShop(Request $request, InventoryManager $service)
     {
-        if($service->sendShop(Auth::user(), Usershop::where('id', $request->get('shop_id'))->first(), UserItem::find($request->get('ids')), $request->get('quantities'))) {
+        if($service->sendShop(Auth::user(), UserShop::where('id', $request->get('shop_id'))->first(), UserItem::find($request->get('ids')), $request->get('quantities'))) {
             flash('Item transferred successfully.')->success();
         }
         else {
@@ -319,5 +319,6 @@ class InventoryController extends Controller
         }
         return redirect()->back();
     }
+    
 
 }

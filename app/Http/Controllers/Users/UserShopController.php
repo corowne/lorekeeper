@@ -10,6 +10,8 @@ use App\Models\Shop\UserShop;
 use App\Models\Shop\UserShopStock;
 use App\Models\Item\Item;
 use App\Models\Currency\Currency;
+use App\Services\InventoryManager;
+
 
 use App\Services\UserShopService;
 
@@ -26,6 +28,7 @@ class UserShopController extends Controller
     |
     */
 
+
     /**
      * Shows the shop index.
      *
@@ -33,7 +36,7 @@ class UserShopController extends Controller
      */
     public function getUserIndex()
     {
-        return view('home.shops', [
+        return view('home.user_shops.my_shops', [
             'shops' => UserShop::orderBy('sort', 'DESC')->get()
         ]);
     }
@@ -45,7 +48,7 @@ class UserShopController extends Controller
      */
     public function getCreateShop()
     {
-        return view('home.create_edit_shop', [
+        return view('home.user_shops.create_edit_shop', [
             'shop' => new UserShop
         ]);
     }
@@ -60,7 +63,7 @@ class UserShopController extends Controller
     {
         $shop = UserShop::find($id);
         if(!$shop) abort(404);
-        return view('home.create_edit_shop', [
+        return view('home.user_shops.create_edit_shop', [
             'shop' => $shop,
             'items' => Item::orderBy('name')->pluck('name', 'id'),
             'currencies' => Currency::orderBy('name')->pluck('name', 'id'),
@@ -95,21 +98,6 @@ class UserShopController extends Controller
     }
 
     /**
-     * loads the create stock modal
-     */
-    public function getCreateShopStock($id)
-    {
-        $shop = UserShop::find($id);
-        if(!$shop) abort(404);
-
-        return view('home._stock_modal', [
-            'shop' => $shop,
-            'currencies' => Currency::orderBy('name')->pluck('name', 'id'),
-            'stock' => new UserShopStock
-        ]);
-    }
-
-    /**
      * loads the edit stock modal
      */
     public function getEditShopStock($id)
@@ -117,10 +105,10 @@ class UserShopController extends Controller
         $stock = UserShopStock::find($id);
         if(!$stock) abort(404);
 
-        return view('home._stock_modal', [
+        return view('home.user_shops._edit_stock_modal', [
             'shop' => $stock->shop,
             'stock' => $stock,
-            'currencies' => Currency::orderBy('name')->pluck('name', 'id'),
+            'currencies' => Currency::where('is_user_owned', 1)->where('allow_user_to_user', 1)->orderBy('name')->pluck('name', 'id'),
             'items' => Item::orderBy('name')->pluck('name', 'id'),
         ]);
     }
@@ -132,7 +120,7 @@ class UserShopController extends Controller
     {
         $type = $request->input('type');
         if($type == 'Item') {
-            return view('home._stock_item', [
+            return view('home.user_shops._stock_item', [
                 'items' => Item::orderBy('name')->pluck('name', 'id')
             ]);
         }
@@ -149,7 +137,7 @@ class UserShopController extends Controller
     public function postEditShopStock(Request $request, UserShopService $service, $id)
     {
         $data = $request->only([
-            'shop_id', 'item_id', 'currency_id', 'cost', 'use_user_bank', 'use_character_bank', 'quantity','stock_type','is_visible'
+            'shop_id', 'item_id', 'currency_id', 'cost', 'use_user_bank','stock_type','is_visible'
         ]);
         if($service->editShopStock(UserShopStock::find($id), $data, Auth::user())) {
             flash('Shop stock updated successfully.')->success();
@@ -162,22 +150,17 @@ class UserShopController extends Controller
     }
 
     /**
-     * Edits a shop's stock.
+     * Gets the stock deletion modal.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  App\Services\UserShopService  $service
-     * @param  int                       $id
-     * @return \Illuminate\Http\RedirectResponse
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function postCreateShopStock(Request $request, UserShopService $service, $id)
+    public function getRemoveShopStock($id)
     {
-        $data = $request->only([
-            'shop_id', 'item_id', 'currency_id', 'cost', 'use_user_bank', 'use_character_bank', 'quantity','stock_type', 'is_visible'
+        $stock = UserShopStock::find($id);
+        return view('home.user_shops._delete_stock', [
+            'stock' => $stock,
         ]);
-        if($service->updateShopStock(UserShop::find($id), $data, Auth::user())) {
-            flash('Shop stock updated successfully.')->success();
-        }
-        return redirect()->back();
     }
     
     /**
@@ -189,7 +172,7 @@ class UserShopController extends Controller
     public function getDeleteShop($id)
     {
         $shop = UserShop::find($id);
-        return view('home._delete_shop', [
+        return view('home.user_shops._delete_shop', [
             'shop' => $shop,
         ]);
     }
@@ -230,5 +213,25 @@ class UserShopController extends Controller
         }
         return redirect()->back();
     }
+
+
+    /**
+     * Transfers inventory items back to a user.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\InventoryManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postRemoveStock(Request $request, InventoryManager $service)
+    {
+        if($service->sendShop($this->shop, $this->shop->user, UserShopStock::find($request->get('ids')), $request->get('quantities'))) {
+            flash('Item transferred successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
 
 }
