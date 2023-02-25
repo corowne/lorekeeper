@@ -38,6 +38,20 @@ class AddUserShops extends Migration
             $table->string('stock_type')->default('Item');
             $table->boolean('is_visible')->default(0);
         }); 
+
+        Schema::create('user_shop_log', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->increments('id');
+            $table->integer('shop_id')->unsigned()->index();
+            $table->integer('user_id')->unsigned()->index();
+            
+            $table->integer('currency_id')->unsigned();
+            $table->float('cost')->default(0);
+
+            $table->integer('item_id')->unsigned();
+            $table->integer('quantity')->default(1);
+            $table->timestamps();
+        });
     }
 
     /**
@@ -49,5 +63,6 @@ class AddUserShops extends Migration
     { 
         Schema::dropIfExists('user_shop_stock');
         Schema::dropIfExists('user_shops');
+        Schema::dropIfExists('user_shop_log');
     }
 }

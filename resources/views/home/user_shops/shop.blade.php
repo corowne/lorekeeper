@@ -16,7 +16,7 @@
     <img src="{{ $shop->shopImageUrl }}" style="max-width:100%" alt="{{ $shop->name }}" />
     <p>{!! $shop->parsed_description !!}</p>
 </div>
-
+@if(count($items))
 @foreach($items as $categoryId=>$categoryItems)
     <div class="card mb-3 inventory-category">
         <h5 class="card-header inventory-header">
@@ -42,6 +42,11 @@
         </div>
     </div>
 @endforeach
+@else
+<div class="alert alert-secondary text-center mb-3">
+    This shop currently has no stock.
+</div>
+@endif
 
 @endsection
 

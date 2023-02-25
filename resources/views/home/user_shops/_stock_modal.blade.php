@@ -43,15 +43,3 @@
     @endif
 @endif
 
-@if(Auth::check())
-    <script>
-        var $useCharacterBank = $('.use-character-bank');
-        $('.bank-select').on('click', function(e) {
-            if($('input[name=bank]:checked').val() == 'character')
-                $useCharacterBank.removeClass('hide');
-            else
-                $useCharacterBank.addClass('hide');
-        });
-
-    </script>
-@endif

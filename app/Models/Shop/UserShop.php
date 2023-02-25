@@ -71,7 +71,7 @@ class UserShop extends Model
      */
     public function displayStock()
     {
-        return $this->belongsToMany('App\Models\Item\Item', 'user_shop_stock')->where('stock_type', 'Item')->withPivot('item_id', 'currency_id', 'cost', 'use_user_bank', 'quantity', 'id', 'is_visible')->wherePivot('is_visible', 1);
+        return $this->belongsToMany('App\Models\Item\Item', 'user_shop_stock')->where('stock_type', 'Item')->withPivot('item_id', 'currency_id', 'cost', 'quantity', 'id', 'is_visible')->wherePivot('is_visible', 1);
     }
 
     /**

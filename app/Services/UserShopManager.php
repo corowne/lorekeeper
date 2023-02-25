@@ -6,6 +6,7 @@ use DB;
 use Config;
 
 use App\Models\Shop\UserShop;
+use App\Models\Shop\UserShopLog;
 use App\Models\Shop\UserShopStock; 
 
 class UserShopManager extends Service
@@ -48,18 +49,28 @@ class UserShopManager extends Service
 
             $total_cost = $shopStock->cost * $quantity;
 
-                if($shopStock->cost > 0 && !(new CurrencyManager)->debitCurrency($user, null, 'User Shop Purchase', 'Purchased '.$shopStock->item->name.' from '.$shop->name, $shopStock->currency, $total_cost)) throw new \Exception("Not enough currency to make this purchase.");
+            if($shopStock->cost > 0 && !(new CurrencyManager)->debitCurrency($user, null, 'User Shop Purchase', 'Purchased '.$shopStock->item->name.' from '.$shop->name, $shopStock->currency, $total_cost)) throw new \Exception("Not enough currency to make this purchase.");
 
                 $shopStock->quantity -= $quantity;
                 $shopStock->save();
 
-            $itemdata = 'Purchased from '.$this->shop->name.' by '.$this->user->displayName. ' for ' . $this->cost . ' ' . $this->currency->name . '.';
-            
+            // Add a purchase log
+            $shopLog = UserShopLog::create([
+                'shop_id' => $shop->id,
+                'user_id' => $user->id,
+                'currency_id' => $shopStock->currency->id,
+                'cost' =>  $shopStock->cost,
+                'item_id' => $shopStock->item_id,
+                'quantity' => $quantity
+            ]);
+
             // Give the user the item, noting down 1. whose currency was used (user or character) 2. who purchased it 3. which shop it was purchased from
-            if(!(new InventoryManager)->creditItem(null, $user, 'User Shop Purchase', [
-                'data' => $itemdata, 
-                'notes' => 'Purchased ' . format_date(Carbon::now())
-            ], $shopStock->item, $quantity)) throw new \Exception("Failed to purchase item.");
+            if($shopStock->stock_type == 'Item') {
+                if(!(new InventoryManager)->creditItem(null, $user, 'Shop Purchase', [
+                    'data' => $shopLog->itemData,
+                    'notes' => 'Purchased ' . format_date($shopLog->created_at),
+                ], $shopStock->item, $quantity)) throw new \Exception("Failed to purchase item.");
+            }
 
             return $this->commitReturn($shop);
         } catch(\Exception $e) { 

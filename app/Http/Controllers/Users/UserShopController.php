@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Users;
 use Illuminate\Http\Request;
 
 use Auth;
+use Route;
 
 use App\Models\Shop\UserShop;
 use App\Models\Shop\UserShopStock;
@@ -27,7 +28,6 @@ class UserShopController extends Controller
     | Handles creation/editing of shops and shop stock.
     |
     */
-
 
     /**
      * Shows the shop index.
@@ -137,7 +137,7 @@ class UserShopController extends Controller
     public function postEditShopStock(Request $request, UserShopService $service, $id)
     {
         $data = $request->only([
-            'shop_id', 'item_id', 'currency_id', 'cost', 'use_user_bank','stock_type','is_visible'
+            'shop_id', 'item_id', 'currency_id', 'cost','stock_type','is_visible'
         ]);
         if($service->editShopStock(UserShopStock::find($id), $data, Auth::user())) {
             flash('Shop stock updated successfully.')->success();
@@ -223,8 +223,9 @@ class UserShopController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postRemoveStock(Request $request, InventoryManager $service)
-    {
-        if($service->sendShop($this->shop, $this->shop->user, UserShopStock::find($request->get('ids')), $request->get('quantities'))) {
+    {   $recipient = Auth::user();
+        $sender = $this->shop;
+        if($service->sendShop($sender, $recipient, UserShopStock::find($request->get('ids')), $request->get('quantities'))) {
             flash('Item transferred successfully.')->success();
         }
         else {
@@ -233,5 +234,40 @@ class UserShopController extends Controller
         return redirect()->back();
     }
 
+    /**
+     * Shows the user's purchase history.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getPurchaseHistory()
+    {
+        return view('home.user_shops.purchase_history', [
+            'logs' => Auth::user()->getUserShopLogs(0),
+            'shops' => UserShop::where('is_active', 1)->orderBy('sort', 'DESC')->get(),
+        ]);
+    }
+
+    /**
+     * Show the item search page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getItemSearch(Request $request)
+    { 
+        $item = Item::find($request->only(['item_id']))->first();
+
+        if($item) {
+            // Gather all instances of this item
+            $shopItems = UserShopStock::where('item_id', $item->id)->where('is_visible', 1)->where('quantity', '>', 0)->get();
+            $shops = UserShop::whereIn('id', $shopItems->pluck('shop_id')->toArray())->orderBy('name', 'ASC')->get();
+        }
+
+        return view('home.user_shops.search_items', [
+            'item' => $item ? $item : null,
+            'items' => Item::orderBy('name')->pluck('name', 'id'),
+            'shopItems' => $item ? $shopItems : null, 
+            'shops' => $item ? $shops : null,
+        ]);
+    }
 
 }

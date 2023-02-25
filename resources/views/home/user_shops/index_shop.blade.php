@@ -8,6 +8,9 @@
 <h1>
     User Shops
 </h1>
+<div class="text-right mb-3">
+        <a class="btn btn-primary" href="{{ url('usershops/item-search') }}"><i class="fas fa-search"></i> Item Search</a>
+</div>
 
 <div>
     {!! Form::open(['method' => 'GET', 'class' => 'form-inline justify-content-end']) !!}
@@ -43,5 +46,9 @@
 {!! $shops->render() !!}
 
 <div class="text-center mt-4 small text-muted">{{ $shops->total() }} result{{ $shops->total() == 1 ? '' : 's' }} found.</div>
+
+<div class="text-right mb-4">
+<a href="{{ url('usershops/history') }}">View purchase logs...</a>
+</div>
 
 @endsection

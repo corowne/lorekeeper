@@ -15,6 +15,7 @@ use App\Models\Item\Item;
 use App\Models\Currency\Currency;
 use App\Models\Item\ItemCategory;
 use App\Models\User\UserItem;
+use App\Models\Shop\UserShopLog;
 
 class UserShopController extends Controller
 {
@@ -121,6 +122,7 @@ class UserShopController extends Controller
      */
     public function postBuy(Request $request, UserShopManager $service)
     {
+        $request->validate(UserShopLog::$createRules);
         if($service->buyStock($request->only(['stock_id', 'user_shop_id', 'bank', 'quantity']), Auth::user())) {
             flash('Successfully purchased item.')->success();
         }
@@ -129,7 +131,6 @@ class UserShopController extends Controller
         }
         return redirect()->back();
     }
-
 
 }
 

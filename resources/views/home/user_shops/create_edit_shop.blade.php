@@ -51,6 +51,8 @@
 
 @if($shop->id)
 <h3>Shop Stock</h3> 
+
+<div class="alert alert-warning text-center">Other users cannot buy items until the stock is set to visible. </div>
     <div id="shopStock">
         <div class="row col-12">
         @foreach($shop->stock as $stock)

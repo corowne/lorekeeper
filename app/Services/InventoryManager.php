@@ -554,7 +554,9 @@ class InventoryManager extends Service
         DB::beginTransaction();
 
         try {
+            
             foreach($stacks as $key=>$stack) {
+
                 $quantity = $quantities[$key];
 
                 if(!$stack) throw new \Exception("Invalid or no stack selected.");
