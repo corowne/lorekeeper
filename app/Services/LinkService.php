@@ -16,7 +16,7 @@ class LinkService extends Service
     | Handles connection to social media sites to verify a user's identity.
     |
     */
-    
+
     /**
      * Get the Auth URL for dA.
      *
@@ -29,7 +29,7 @@ class LinkService extends Service
 
     /**
      * Link the user's social media account name to their account
-     * 
+     *
      * @param  \App\Models\User\User  $user
      */
     public function saveProvider($provider, $result, $user) {
@@ -52,11 +52,11 @@ class LinkService extends Service
             // Save that the user has an alias
             $user->has_alias = 1;
             $user->save();
-            
+
             UserUpdateLog::create(['user_id' => $user->id, 'data' => json_encode(['alias' => $result->nickname, 'site' => $provider]), 'type' => 'Alias Added']);
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -64,7 +64,7 @@ class LinkService extends Service
 
     /**
      * Makes the selected alias the user's primary alias.
-     * 
+     *
      * @param  \App\Models\User\User  $user
      */
     public function makePrimary($aliasId, $user) {
@@ -83,11 +83,11 @@ class LinkService extends Service
             $alias->is_visible = 1;
             $alias->is_primary_alias = 1;
             $alias->save();
-            
+
             UserUpdateLog::create(['user_id' => $user->id, 'data' => json_encode(['alias' => $alias->alias, 'site' => $alias->site]), 'type' => 'Primary Alias Changed']);
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -95,25 +95,30 @@ class LinkService extends Service
 
     /**
      * Hides or unhides the selected alias.
-     * 
+     *
      * @param  \App\Models\User\User  $user
      */
     public function hideAlias($aliasId, $user) {
         DB::beginTransaction();
 
         try {
-            $alias = UserAlias::where('id', $aliasId)->where('user_id', $user->id)->where('is_primary_alias', 0)->first();
+            $alias = UserAlias::where('id', $aliasId)->where('user_id', $user->id);
+            if(config('lorekeeper.settings.require_alias')) {
+                $alias = $alias->where('is_primary_alias', 0)->first();
+            } else {
+                $alias = $alias->first();
+            }
 
             if(!$alias) throw new \Exception("Invalid alias selected.");
 
             // Update the alias's visibility
             $alias->is_visible = !$alias->is_visible;
             $alias->save();
-            
+
             UserUpdateLog::create(['user_id' => $user->id, 'data' => json_encode(['alias' => $alias->alias, 'site' => $alias->site]), 'type' => 'Alias Visibility Changed']);
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -121,24 +126,35 @@ class LinkService extends Service
 
     /**
      * Removes the selected alias.
-     * 
+     *
      * @param  \App\Models\User\User  $user
      */
     public function removeAlias($aliasId, $user) {
         DB::beginTransaction();
 
         try {
-            $alias = UserAlias::where('id', $aliasId)->where('user_id', $user->id)->where('is_primary_alias', 0)->first();
+            $alias = UserAlias::where('id', $aliasId)->where('user_id', $user->id);
+            if(config('lorekeeper.settings.require_alias')) {
+                $alias = $alias->where('is_primary_alias', 0)->first();
+            } else {
+                $alias = $alias->first();
+            }
 
             if(!$alias) throw new \Exception("Invalid alias selected.");
-            
+
             UserUpdateLog::create(['user_id' => $user->id, 'data' => json_encode(['alias' => $alias->alias, 'site' => $alias->site]), 'type' => 'Alias Deleted']);
 
             // Delete the alias
             $alias->delete();
 
+            if(!config('lorekeeper.settings.require_alias') && $user->aliases->count() == 0) {
+                $user->update([
+                    'has_alias' => 0,
+                ]);
+            }
+
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);

@@ -27,8 +27,8 @@
                 @if(!$alias->is_visible) <i class="fas fa-eye-slash" data-toggle="tooltip" title="This alias is hidden from public view."></i> @endif
             </div>
             <div class="col-5 text-right">
-                @if(!$alias->is_primary_alias)
-                    @if(Config::get('lorekeeper.sites.'.$alias->site.'.primary_alias')) 
+                @if(!$alias->is_primary_alias || !config('lorekeeper.settings.require_alias'))
+                    @if(Config::get('lorekeeper.sites.'.$alias->site.'.primary_alias'))
                         <a href="#" class="btn btn-outline-primary btn-sm make-primary" data-id="{{ $alias->id }}">Make Primary</a>
                     @endif
                     <a href="#" class="btn btn-outline-secondary btn-sm hide-alias" data-id="{{ $alias->id }}">{{ $alias->is_visible ? 'Hide' : 'Unhide' }}</a>
@@ -49,7 +49,7 @@
         <div class="d-flex mb-3">
             <div class="d-flex justify-content-end align-items-center"><i class="{{ $site['icon'] }} fa-fw mr-3"></i></div>
             <div class="">
-                <a href="{{ url('auth/redirect/'.$provider) }}" class="btn btn-outline-primary mr-3">Link <strong>{{ $site['full_name'] }}</strong> Account</a> 
+                <a href="{{ url('auth/redirect/'.$provider) }}" class="btn btn-outline-primary mr-3">Link <strong>{{ $site['full_name'] }}</strong> Account</a>
                 @if(isset($site['primary_alias']) && $site['primary_alias'])<span class="badge badge-success">Primary</span>@endif
             </div>
         </div>
