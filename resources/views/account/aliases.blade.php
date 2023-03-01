@@ -55,7 +55,7 @@
                         </div>
                         <div class="col-5 text-right">
                             <div class="logs-table-cell">
-                                @if (!$alias->is_primary_alias)
+                                @if (!$alias->is_primary_alias || !config('lorekeeper.settings.require_alias'))
                                     @if (Config::get('lorekeeper.sites.' . $alias->site . '.primary_alias'))
                                         <a href="#" class="btn btn-outline-primary btn-sm make-primary" data-id="{{ $alias->id }}">Make Primary</a>
                                     @endif
