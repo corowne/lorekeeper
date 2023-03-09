@@ -21,6 +21,7 @@ use App\Services\DesignUpdateManager;
 use App\Services\InventoryManager;
 use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
 use Route;
 use Settings;
@@ -52,8 +53,11 @@ class CharacterController extends Controller {
 
             $this->character->updateOwner();
 
-            // Get only characters of this category
-            $query = Character::myo(0)->where('character_category_id', $this->character->character_category_id);
+            $query = Character::myo(0);
+            // Get only characters of this category if pull number is limited to category
+            if (Config::get('lorekeeper.settings.character_pull_number') === 'category')
+                $query->where('character_category_id', $this->character->character_category_id);
+            
             if (!(Auth::check() && Auth::user()->hasPower('manage_characters'))) {
                 $query->where('is_visible', 1);
             }
