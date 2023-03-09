@@ -55,9 +55,10 @@ class CharacterController extends Controller {
 
             $query = Character::myo(0);
             // Get only characters of this category if pull number is limited to category
-            if (Config::get('lorekeeper.settings.character_pull_number') === 'category')
+            if (Config::get('lorekeeper.settings.character_pull_number') === 'category') {
                 $query->where('character_category_id', $this->character->character_category_id);
-            
+            }
+
             if (!(Auth::check() && Auth::user()->hasPower('manage_characters'))) {
                 $query->where('is_visible', 1);
             }
