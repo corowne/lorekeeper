@@ -28,7 +28,7 @@
             </div>
             <div class="col-5 text-right">
                 @if(!$alias->is_primary_alias || !config('lorekeeper.settings.require_alias'))
-                    @if(Config::get('lorekeeper.sites.'.$alias->site.'.primary_alias'))
+                    @if(!$alias->is_primary_alias && Config::get('lorekeeper.sites.'.$alias->site.'.primary_alias'))
                         <a href="#" class="btn btn-outline-primary btn-sm make-primary" data-id="{{ $alias->id }}">Make Primary</a>
                     @endif
                     <a href="#" class="btn btn-outline-secondary btn-sm hide-alias" data-id="{{ $alias->id }}">{{ $alias->is_visible ? 'Hide' : 'Unhide' }}</a>
