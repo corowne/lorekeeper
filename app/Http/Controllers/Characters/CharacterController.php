@@ -54,7 +54,6 @@ class CharacterController extends Controller {
             $this->character->updateOwner();
 
             if (Config::get('lorekeeper.extensions.previous_and_next_characters.display')) {
-
                 $query = Character::myo(0);
                 // Get only characters of this category if pull number is limited to category
                 if (Config::get('lorekeeper.settings.character_pull_number') === 'category') {
@@ -72,7 +71,7 @@ class CharacterController extends Controller {
                 $nextCharUrl = null;
 
                 if ($query->count()) {
-                    $characters = $query->orderBy('number','DESC')->get();
+                    $characters = $query->orderBy('number', 'DESC')->get();
 
                     // Filter
                     $lowerChar = $characters->where('number', '<', $this->character->number)->first();
@@ -80,12 +79,12 @@ class CharacterController extends Controller {
                 }
 
                 if (Config::get('lorekeeper.extensions.previous_and_next_characters.reverse') == 0) {
-				    $nextCharacter = $lowerChar;
-				    $previousCharacter = $higherChar;
-				} else {
-				    $previousCharacter = $lowerChar;
-				    $nextCharacter = $higherChar;
-				}
+                    $nextCharacter = $lowerChar;
+                    $previousCharacter = $higherChar;
+                } else {
+                    $previousCharacter = $lowerChar;
+                    $nextCharacter = $higherChar;
+                }
 
                 if (!$previousCharacter || $previousCharacter->id == $this->character->id) {
                     $previousCharacter = null;
@@ -101,9 +100,10 @@ class CharacterController extends Controller {
                     $nextCharUrl = $nextCharacter->url;
                 }
 
-			    $extPrevAndNextBtns = ['prevCharName' => $prevCharName, 'prevCharUrl' => $prevCharUrl, 'nextCharName' => $nextCharName, 'nextCharUrl' => $nextCharUrl];
+                $extPrevAndNextBtns = ['prevCharName' => $prevCharName, 'prevCharUrl' => $prevCharUrl, 'nextCharName' => $nextCharName, 'nextCharUrl' => $nextCharUrl];
                 View::share('extPrevAndNextBtns', $extPrevAndNextBtns);
-			}
+            }
+
             return $next($request);
         });
     }
