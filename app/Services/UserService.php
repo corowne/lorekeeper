@@ -46,11 +46,12 @@ class UserService extends Service {
         $formatDate = carbon::parse($date);
 
         $user = User::create([
-            'name'     => $data['name'],
-            'email'    => $data['email'],
-            'rank_id'  => $data['rank_id'],
-            'password' => Hash::make($data['password']),
-            'birthday' => $formatDate,
+            'name'      => $data['name'],
+            'email'     => $data['email'],
+            'rank_id'   => $data['rank_id'],
+            'password'  => Hash::make($data['password']),
+            'birthday'  => $formatDate,
+            'has_alias' => $data['has_alias'] ?? false,
         ]);
         $user->settings()->create([
             'user_id' => $user->id,
