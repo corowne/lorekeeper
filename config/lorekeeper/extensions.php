@@ -76,5 +76,8 @@ return [
 
     // Previous & Next buttons on Character pages - Speedy
     // Adds buttons linking to the previous character as well as the next character on all character pages.
-    'display_previous_and_next_characters' => 0,
+    'previous_and_next_characters' => [
+        'display' => 0,
+        'reverse' => 0, // By default, 0 has the lower number on the 'Next' side and the higher number on the 'Previous' side, reflecting the default masterlist order. Setting this to 1 reverses this.
+    ],
 ];
