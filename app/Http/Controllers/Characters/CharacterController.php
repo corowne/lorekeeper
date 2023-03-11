@@ -76,7 +76,7 @@ class CharacterController extends Controller {
                 $previousCharacter = $characters->where('number', '<', $this->character->number)->last();
                 $nextCharacter = $characters->where('number', '>', $this->character->number)->first();
             }
-			
+
             if (!$previousCharacter || $previousCharacter->id == $this->character->id) {
                 $previousCharacter = null;
             } else {
