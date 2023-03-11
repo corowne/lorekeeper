@@ -62,7 +62,6 @@ class CharacterController extends Controller {
             if (!(Auth::check() && Auth::user()->hasPower('manage_characters'))) {
                 $query->where('is_visible', 1);
             }
-            $query->whereBetween('number', [$this->character->number - 1, $this->character->number + 1])->orderBy('number');
 
             // Get the previous and next characters, if they exist
             $prevCharName = null;
@@ -70,14 +69,21 @@ class CharacterController extends Controller {
             $nextCharName = null;
             $nextCharUrl = null;
 
-            $previousCharacter = $query->get()->first();
+            if ($query->count()) {
+                $characters = $query->orderBy('number')->get();
+
+                // Filter
+                $previousCharacter = $characters->where('number', '<', $this->character->number)->last();
+                $nextCharacter = $characters->where('number', '>', $this->character->number)->first();
+            }
+			
             if (!$previousCharacter || $previousCharacter->id == $this->character->id) {
                 $previousCharacter = null;
             } else {
                 $prevCharName = $previousCharacter->fullName;
                 $prevCharUrl = $previousCharacter->url;
             }
-            $nextCharacter = $query->get()->last();
+
             if (!$nextCharacter || $nextCharacter->id == $this->character->id) {
                 $nextCharacter = null;
             } else {
