@@ -16,7 +16,7 @@ class CheckAlias
      */
     public function handle($request, Closure $next)
     {
-        if(!$request->user()->has_alias && config('lorekeeper.settings.require_alias')) {
+        if(!$request->user()->hasAlias) {
             return redirect('/link');
         }
         if(!$request->user()->birthday) {
