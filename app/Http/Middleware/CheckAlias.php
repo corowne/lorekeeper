@@ -18,7 +18,7 @@ class CheckAlias {
         if (Settings::get('is_maintenance_mode') == 1 && !$request->user()->hasPower('maintenance_access')) {
             return redirect('/');
         }
-        if (!$request->user()->has_alias && config('lorekeeper.settings.require_alias')) {
+        if (!$request->user()->hasAlias) {
             return redirect('/link');
         }
         if (!$request->user()->birthday) {
