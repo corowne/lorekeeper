@@ -136,4 +136,40 @@ class PromptsController extends Controller {
             'prompt' => $prompt,
         ]);
     }
+	
+	/**
+     * Shows the prompt calendar page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getPromptCalendar(int $year = null)
+    {
+        return view('prompts.prompt_calendar');
+    }
+	
+	/**
+     * Returns JSON of the given prompt
+     *
+     * @param     $prompt
+     * @return    JSON
+     */
+    public function getPromptJSON()
+    {
+        $query = Prompt::where('start_at', '<>', null)->where('end_at', '<>', null)->sortStart()->get();
+
+		$array = array();
+
+		foreach ($query as $prompt) {
+			$newArray = array();
+			$newArray["id"] = $prompt->id;
+			$newArray["title"] = $prompt->name;
+			$newArray["url"] = $prompt->id;
+			$newArray["start"] = $prompt->start_at->toW3cString();
+			$newArray["end"] = $prompt->end_at->toW3cString();
+			array_push($array, $newArray);
+		}
+
+        return response()->json($array);
+    }
 }

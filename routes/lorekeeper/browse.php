@@ -115,6 +115,8 @@ Route::group(['prefix' => 'world'], function () {
 Route::group(['prefix' => 'prompts'], function () {
     Route::get('/', 'PromptsController@getIndex');
     Route::get('prompt-categories', 'PromptsController@getPromptCategories');
+	Route::get('prompt-calendar', 'PromptsController@getPromptCalendar');
+	Route::get('prompt-json', 'PromptsController@getPromptJSON');
     Route::get('prompts', 'PromptsController@getPrompts');
     Route::get('{id}', 'PromptsController@getPrompt');
 });
