@@ -44,14 +44,14 @@ class UserService extends Service {
         $formatDate = carbon::parse($date);
 
         $user = User::create([
-            'name' => $data['name'],
-            'email' => isset($data['email']) ? $data['email'] : null,
-            'rank_id' => $data['rank_id'],
-            'password' => isset($data['password']) ? Hash::make($data['password']) : null,
-            'birthday' => $formatDate,
+            'name'      => $data['name'],
+            'email'     => isset($data['email']) ? $data['email'] : null,
+            'rank_id'   => $data['rank_id'],
+            'password'  => isset($data['password']) ? Hash::make($data['password']) : null,
+            'birthday'  => $formatDate,
+            'has_alias' => $data['has_alias'] ?? false,
             // Verify the email if we're logging them in with their social
             'email_verified_at' => (!isset($data['password']) && !isset($data['email'])) ? now() : null,
-            'has_alias' => 0,
         ]);
         $user->settings()->create([
             'user_id' => $user->id,
@@ -455,7 +455,7 @@ class UserService extends Service {
 
             Notifications::create('USER_REACTIVATED', User::find(Settings::get('admin_user')), [
                 'user_url'   => $user->url,
-                'user_name'  => uc_first($user->name),
+                'user_name'  => ucfirst($user->name),
                 'staff_url'  => $staff->url,
                 'staff_name' => $staff->name,
             ]);
