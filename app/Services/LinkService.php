@@ -5,8 +5,8 @@ namespace App\Services;
 use App\Models\User\UserAlias;
 use App\Models\User\UserUpdateLog;
 use DB;
-use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Config;
+use Laravel\Socialite\Facades\Socialite;
 
 class LinkService extends Service {
     /*
@@ -22,19 +22,25 @@ class LinkService extends Service {
      * Get the Auth URL for dA.
      *
      * @param mixed $provider
+     * @param mixed $login
      *
      * @return string
      */
     public function getAuthRedirect($provider, $login = false) {
         $socialite = Socialite::driver($provider);
 
-        if ($provider == 'deviantart') $socialite->setScopes(['user']);
+        if ($provider == 'deviantart') {
+            $socialite->setScopes(['user']);
+        }
         // We want to go to a different endpoint if we're trying to login
         if ($login && $provider == 'tumblr') {
             flash('Tumblr is currently unsupported for login')->error();
+
             return redirect()->back();
         }
-        if ($login) $socialite->redirectUrl(str_replace('auth', 'login', url(Config::get('services.' . $provider . '.redirect'))));
+        if ($login) {
+            $socialite->redirectUrl(str_replace('auth', 'login', url(Config::get('services.'.$provider.'.redirect'))));
+        }
 
         return $socialite->redirect();
     }

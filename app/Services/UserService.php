@@ -37,15 +37,17 @@ class UserService extends Service {
      */
     public function createUser($data) {
         // If the rank is not given, create a user with the lowest existing rank.
-        if (!isset($data['rank_id'])) $data['rank_id'] = Rank::orderBy('sort')->first()->id;
+        if (!isset($data['rank_id'])) {
+            $data['rank_id'] = Rank::orderBy('sort')->first()->id;
+        }
 
         // Make birthday into format we can store
-        $date = $data['dob']['day'] . "-" . $data['dob']['month'] . "-" . $data['dob']['year'];
+        $date = $data['dob']['day'].'-'.$data['dob']['month'].'-'.$data['dob']['year'];
         $formatDate = carbon::parse($date);
 
         $user = User::create([
             'name'      => $data['name'],
-            'email'     => isset($data['email']) ? $data['email'] : null,
+            'email'     => $data['email'] ?? null,
             'rank_id'   => $data['rank_id'],
             'password'  => isset($data['password']) ? Hash::make($data['password']) : null,
             'birthday'  => $formatDate,
@@ -91,12 +93,15 @@ class UserService extends Service {
      * @return bool
      */
     public function updatePassword($data, $user) {
-
         DB::beginTransaction();
 
         try {
-            if (isset($user->password) && !Hash::check($data['old_password'], $user->password)) throw new \Exception("Please enter your old password.");
-            if (Hash::make($data['new_password']) == $user->password) throw new \Exception("Please enter a different password.");
+            if (isset($user->password) && !Hash::check($data['old_password'], $user->password)) {
+                throw new \Exception('Please enter your old password.');
+            }
+            if (Hash::make($data['new_password']) == $user->password) {
+                throw new \Exception('Please enter a different password.');
+            }
 
             $user->password = Hash::make($data['new_password']);
             $user->save();

@@ -21,7 +21,6 @@ Route::get('/login/callback/{driver}', 'Auth\LoginController@getAuthCallback');
 Route::get('register/{driver}', 'Auth\RegisterController@getRegisterWithDriver');
 Route::post('register/{driver}', 'Auth\RegisterController@postRegisterWithDriver');
 
-
 Auth::routes(['verify' => true]);
 
 // BROWSE

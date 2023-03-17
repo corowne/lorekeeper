@@ -10,6 +10,10 @@ use Laravel\Socialite\Two\User;
 class ToyhouseProvider extends AbstractProvider implements ProviderInterface {
     protected $scopes = [];
 
+    public function getRedirectUrl() {
+        return $this->redirectUrl;
+    }
+
     /**
      * Get the authentication URL for the provider.
      *
@@ -30,10 +34,6 @@ class ToyhouseProvider extends AbstractProvider implements ProviderInterface {
         return 'https://toyhou.se/~oauth/token';
     }
 
-    public function getRedirectUrl() {
-        return $this->redirectUrl;
-    }
-
     /**
      * Get the raw user for the given access token.
      *
@@ -46,7 +46,7 @@ class ToyhouseProvider extends AbstractProvider implements ProviderInterface {
             'https://toyhou.se/~api/v1/me',
             [
                 RequestOptions::HEADERS => [
-                    'Authorization' => 'Bearer ' . $token,
+                    'Authorization' => 'Bearer '.$token,
                 ],
             ]
         );

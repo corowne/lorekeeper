@@ -12,7 +12,7 @@ class UserAlias extends Model {
      * @var array
      */
     protected $fillable = [
-        'user_id', 'site', 'alias', 'is_visible', 'is_primary_alias', 'user_snowflake'
+        'user_id', 'site', 'alias', 'is_visible', 'is_primary_alias', 'user_snowflake',
     ];
 
     /**
