@@ -259,7 +259,7 @@ class ItemService extends Service {
                 throw new \Exception('The selected item category is invalid.');
             }
 
-            $data = $this->populateData($data);
+            $data = $this->populateData($data, $item);
 
             $image = null;
             if (isset($data['image']) && $data['image']) {
