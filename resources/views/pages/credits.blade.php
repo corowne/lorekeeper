@@ -109,7 +109,7 @@
             <strong>Organised Traits Dropdown</strong> by <a href="https://github.com/draginraptor">Draginraptor</a> ({{ Config::get('lorekeeper.extensions.organised_traits_dropdown') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
-            <strong>Previous & Next buttons on Character pages</strong> by <a href="https://github.com/SpeedyD">Speedy</a> ({{ Config::get('lorekeeper.extensions.display_previous_and_next_characters') ? 'Enabled' : 'Disabled' }})
+            <strong>Previous & Next buttons on Character pages</strong> by <a href="https://github.com/SpeedyD">Speedy</a> ({{ Config::get('lorekeeper.extensions.previous_and_next_characters.display') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Species_Trait_Index"><strong>Species Trait Index</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
