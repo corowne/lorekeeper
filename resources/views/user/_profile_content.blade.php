@@ -16,7 +16,19 @@
             <div class="col-md-2 col-4">
                 <h5>Alias</h5>
             </div>
-            <div class="col-md-10 col-8">{!! $user->displayAlias !!}</div>
+            <div class="col-md-10 col-8">
+                {!! $user->displayAlias !!}
+                @if (count($aliases) > 1 && Config::get('lorekeeper.extensions.aliases_on_userpage'))
+                    <a class="small collapse-toggle collapsed" href="#otherUserAliases" data-toggle="collapse">&nbsp;</a>
+                    <p class="collapse mb-0" id="otherUserAliases">
+                        @foreach ($aliases as $alias)
+                            @if ($alias != $user->primaryAlias)
+                                <a href="{{ $alias->url }}"><i class="{{ $alias->config['icon'] }} fa-fw mr-1" data-toggle="tooltip" title="{{ $alias->alias . '@' . $alias->siteDisplayName }}"></i></a>
+                            @endif
+                        @endforeach
+                    </p>
+                @endif
+            </div>
         </div>
         <div class="row col-md-6">
             <div class="col-md-2 col-4">
