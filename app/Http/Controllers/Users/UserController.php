@@ -59,7 +59,7 @@ class UserController extends Controller {
             $characters->visible();
         }
 
-		$aliases = $this->user->aliases();
+        $aliases = $this->user->aliases();
         if(!Auth::check() || !(Auth::check() && Auth::user()->hasPower('edit_user_info'))) {
             $aliases->visible();
         }
