@@ -60,7 +60,7 @@ class UserController extends Controller {
         }
 
         $aliases = $this->user->aliases();
-        if(!Auth::check() || !(Auth::check() && Auth::user()->hasPower('edit_user_info'))) {
+        if (!Auth::check() || !(Auth::check() && Auth::user()->hasPower('edit_user_info'))) {
             $aliases->visible();
         }
 
@@ -68,7 +68,7 @@ class UserController extends Controller {
             'user'       => $this->user,
             'items'      => $this->user->items()->where('count', '>', 0)->orderBy('user_items.updated_at', 'DESC')->take(4)->get(),
             'characters' => $characters,
-			'aliases'    => $aliases->orderBy('is_primary_alias', 'DESC')->orderBy('site')->get(),
+            'aliases'    => $aliases->orderBy('is_primary_alias', 'DESC')->orderBy('site')->get(),
         ]);
     }
 

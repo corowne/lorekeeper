@@ -81,7 +81,7 @@ return [
         'reverse' => 0, // By default, 0 has the lower number on the 'Next' side and the higher number on the 'Previous' side, reflecting the default masterlist order. Setting this to 1 reverses this.
     ],
 
-	// Aliases on Userpage - Speedy
+    // Aliases on Userpage - Speedy
     'aliases_on_userpage' => 0, // By default, does not display the aliases on userpage. Enable to add a small arrow to display these underneath the primary alias.
 
 ];
