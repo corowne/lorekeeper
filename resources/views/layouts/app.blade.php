@@ -34,6 +34,10 @@
     <meta property="twitter:title" content="{{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} -@yield('title')">
     <meta property="twitter:description" content="@if (View::hasSection('meta-desc')) @yield('meta-desc') @else {{ config('lorekeeper.settings.site_desc', 'A Lorekeeper ARPG') }} @endif">
 
+    <!-- No AI scraping directives -->
+    <meta name="robots" content="noai">
+    <meta name="robots" content="noimageai">
+
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/site.js') }}"></script>
@@ -53,7 +57,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/lorekeeper.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/lorekeeper.css?v=' . filemtime(public_path('css/lorekeeper.css'))) }}" rel="stylesheet">
 
     {{-- Font Awesome --}}
     <link href="{{ asset('css/all.min.css') }}" rel="stylesheet">
@@ -72,7 +76,7 @@
     <link href="{{ asset('css/selectize.bootstrap4.css') }}" rel="stylesheet">
 
     @if (file_exists(public_path() . '/css/custom.css'))
-        <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/custom.css') . '?v=' . filemtime(public_path('css/lorekeeper.css')) }}" rel="stylesheet">
     @endif
 
     @include('feed::links')

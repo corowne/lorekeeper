@@ -58,11 +58,11 @@ class RegisterController extends Controller {
      */
     protected function validator(array $data) {
         return Validator::make($data, [
-            'name'      => ['required', 'string', 'min:3', 'max:25', 'alpha_dash', 'unique:users'],
-            'email'     => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'agreement' => ['required', 'accepted'],
-            'password'  => ['required', 'string', 'min:8', 'confirmed'],
-            'dob'       => ['required', function ($attribute, $value, $fail) {
+            'name'                 => ['required', 'string', 'min:3', 'max:25', 'alpha_dash', 'unique:users'],
+            'email'                => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'agreement'            => ['required', 'accepted'],
+            'password'             => ['required', 'string', 'min:8', 'confirmed'],
+            'dob'                  => ['required', function ($attribute, $value, $fail) {
                 $date = $value['day'].'-'.$value['month'].'-'.$value['year'];
                 $formatDate = carbon::parse($date);
                 $now = Carbon::now();
@@ -71,7 +71,7 @@ class RegisterController extends Controller {
                 }
             },
             ],
-            'code' => ['string', function ($attribute, $value, $fail) {
+            'code'                 => ['string', function ($attribute, $value, $fail) {
                 if (!Settings::get('is_registration_open')) {
                     if (!$value) {
                         $fail('An invitation code is required to register an account.');

@@ -121,7 +121,12 @@ class LinkService extends Service {
         DB::beginTransaction();
 
         try {
-            $alias = UserAlias::where('id', $aliasId)->where('user_id', $user->id)->where('is_primary_alias', 0)->first();
+            $alias = UserAlias::where('id', $aliasId)->where('user_id', $user->id);
+            if (config('lorekeeper.settings.require_alias')) {
+                $alias = $alias->where('is_primary_alias', 0)->first();
+            } else {
+                $alias = $alias->first();
+            }
 
             if (!$alias) {
                 throw new \Exception('Invalid alias selected.');
@@ -151,7 +156,12 @@ class LinkService extends Service {
         DB::beginTransaction();
 
         try {
-            $alias = UserAlias::where('id', $aliasId)->where('user_id', $user->id)->where('is_primary_alias', 0)->first();
+            $alias = UserAlias::where('id', $aliasId)->where('user_id', $user->id);
+            if (config('lorekeeper.settings.require_alias')) {
+                $alias = $alias->where('is_primary_alias', 0)->first();
+            } else {
+                $alias = $alias->first();
+            }
 
             if (!$alias) {
                 throw new \Exception('Invalid alias selected.');
@@ -161,6 +171,12 @@ class LinkService extends Service {
 
             // Delete the alias
             $alias->delete();
+
+            if (!config('lorekeeper.settings.require_alias') && $user->aliases->count() == 0) {
+                $user->update([
+                    'has_alias' => 0,
+                ]);
+            }
 
             return $this->commitReturn(true);
         } catch (\Exception $e) {

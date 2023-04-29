@@ -1,17 +1,17 @@
 @php
-if (isset($approved) and $approved == true) {
-    if (isset($type) && $type != null) {
-        $comments = $model->approvedComments->where('type', $type);
+    if (isset($approved) and $approved == true) {
+        if (isset($type) && $type != null) {
+            $comments = $model->approvedComments->where('type', $type);
+        } else {
+            $comments = $model->approvedComments->where('type', 'User-User');
+        }
     } else {
-        $comments = $model->approvedComments->where('type', 'User-User');
+        if (isset($type) && $type != null) {
+            $comments = $model->commentz->where('type', $type);
+        } else {
+            $comments = $model->commentz->where('type', 'User-User');
+        }
     }
-} else {
-    if (isset($type) && $type != null) {
-        $comments = $model->commentz->where('type', $type);
-    } else {
-        $comments = $model->commentz->where('type', 'User-User');
-    }
-}
 @endphp
 
 @if (!isset($type) || $type == 'User-User')

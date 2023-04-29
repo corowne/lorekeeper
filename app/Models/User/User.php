@@ -234,6 +234,10 @@ class User extends Authenticatable implements MustVerifyEmail {
      * @return bool
      */
     public function getHasAliasAttribute() {
+        if (!config('lorekeeper.settings.require_alias')) {
+            return true;
+        }
+
         return $this->attributes['has_alias'];
     }
 
@@ -317,6 +321,9 @@ class User extends Authenticatable implements MustVerifyEmail {
      * @return string
      */
     public function getDisplayAliasAttribute() {
+        if (!config('lorekeeper.settings.require_alias') && !$this->attributes['has_alias']) {
+            return '(No Alias)';
+        }
         if (!$this->hasAlias) {
             return '(Unverified)';
         }
@@ -530,7 +537,7 @@ class User extends Authenticatable implements MustVerifyEmail {
      * Checks if there are characters credited to the user's alias and updates ownership to their account accordingly.
      */
     public function updateCharacters() {
-        if (!$this->hasAlias) {
+        if (!$this->attributes['has_alias']) {
             return;
         }
 
@@ -563,7 +570,7 @@ class User extends Authenticatable implements MustVerifyEmail {
      * Checks if there are art or design credits credited to the user's alias and credits them to their account accordingly.
      */
     public function updateArtDesignCredits() {
-        if (!$this->hasAlias) {
+        if (!$this->attributes['has_alias']) {
             return;
         }
 
