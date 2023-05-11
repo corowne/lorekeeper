@@ -4,16 +4,16 @@
             <h5>Recent Gallery Submissions</h5>
         </div>
         <div class="card-body">
-            @if(count($gallerySubmissions))
+            @if (count($gallerySubmissions))
                 <div class="row">
-                    @foreach($gallerySubmissions as $gallerySubmission)
+                    @foreach ($gallerySubmissions as $gallerySubmission)
                         <div class="col-md-3 col-6 profile-inventory-item">
                             @include('galleries._thumb', ['submission' => $gallerySubmission, 'gallery' => false])
                         </div>
                     @endforeach
                     <div class="col-12"><a class="float-right" href="gallery/all">View all Recent Submissions...</a></div>
                 </div>
-            @else 
+            @else
                 <div>No Gallery Submissions.</div>
             @endif
         </div>

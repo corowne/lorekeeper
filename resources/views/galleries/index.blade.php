@@ -6,16 +6,16 @@
 
 @section('gallery-content')
     {!! breadcrumbs(['Gallery' => 'gallery']) !!}
-<h1>
-    @if (Config::get('lorekeeper.extensions.show_all_recent_submissions.enable') && Config::get('lorekeeper.extensions.show_all_recent_submissions.links.indexbutton'))
-        <div class="float-right">
-            <a class="btn btn-primary" href="gallery/all">
-                All Recent Submissions
-            </a>
-        </div>
-    @endif
-    Gallery
-</h1>
+    <h1>
+        @if (Config::get('lorekeeper.extensions.show_all_recent_submissions.enable') && Config::get('lorekeeper.extensions.show_all_recent_submissions.links.indexbutton'))
+            <div class="float-right">
+                <a class="btn btn-primary" href="gallery/all">
+                    All Recent Submissions
+                </a>
+            </div>
+        @endif
+        Gallery
+    </h1>
 
     @if ($galleries->count())
         {!! $galleries->render() !!}
