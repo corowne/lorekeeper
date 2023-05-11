@@ -12,6 +12,8 @@ use DB;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 
+use App\Models\Gallery\GallerySubmission;
+
 class HomeController extends Controller {
     /*
     |--------------------------------------------------------------------------
@@ -28,8 +30,10 @@ class HomeController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getIndex() {
+        $query = GallerySubmission::visible(Auth::check() ? Auth::user() : null)->accepted()->orderBy('created_at', 'DESC');	 
         return view('welcome', [
             'about' => SitePage::where('key', 'about')->first(),
+            'gallerySubmissions' => $query->get()->take(8),
         ]);
     }
 

@@ -115,6 +115,10 @@
             <strong>Previous & Next buttons on Character pages</strong> by <a href="https://github.com/SpeedyD">Speedy</a> ({{ Config::get('lorekeeper.extensions.previous_and_next_characters.display') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
+            <strong>Show All Recent Submissions</strong> by <a href="https://github.com/SpeedyD">Speedy</a> 
+            ({{ Config::get('lorekeeper.extensions.show_all_recent_submissions.enable') ? 'Enabled' . ((Config::get('lorekeeper.extensions.show_all_recent_submissions.links.sidebar') && Config::get('lorekeeper.extensions.show_all_recent_submissions.links.indexbutton') ? '/Both' : ((Config::get('lorekeeper.extensions.show_all_recent_submissions.links.sidebar') ? '/Sidebar' : '') . (Config::get('lorekeeper.extensions.show_all_recent_submissions.links.indexbutton') ? '/Button' : ''))) . (Config::get('lorekeeper.extensions.show_all_recent_submissions.section_on_front') ? '/Front' : '' )) : 'Disabled'}})
+        </p>
+        <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Species_Trait_Index"><strong>Species Trait Index</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
             ({{ Config::get('lorekeeper.extensions.species_trait_index') ? 'Enabled' : 'Disabled' }})
         </p>
