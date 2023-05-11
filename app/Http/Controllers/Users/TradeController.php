@@ -93,11 +93,11 @@ class TradeController extends Controller {
      */
     public function getCreateTrade() {
         $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)
-        ->get()
-        ->filter(function ($userItem) {
-            return $userItem->isTransferrable == true;
-        })
-        ->sortBy('item.name');
+            ->get()
+            ->filter(function ($userItem) {
+                return $userItem->isTransferrable == true;
+            })
+            ->sortBy('item.name');
 
         return view('home.trades.create_trade', [
             'categories'          => ItemCategory::orderBy('sort', 'DESC')->get(),
@@ -124,11 +124,11 @@ class TradeController extends Controller {
 
         if ($trade) {
             $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)
-            ->get()
-            ->filter(function ($userItem) {
-                return $userItem->isTransferrable == true;
-            })
-            ->sortBy('item.name');
+                ->get()
+                ->filter(function ($userItem) {
+                    return $userItem->isTransferrable == true;
+                })
+                ->sortBy('item.name');
         } else {
             $trade = null;
         }
