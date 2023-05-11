@@ -153,8 +153,9 @@ class GalleryController extends Controller {
                     $query->orderBy('created_at', 'ASC');
                     break;
             }
+        } else {
+            $query->orderBy('created_at', 'DESC');
         }
-        else $query->orderBy('created_at', 'DESC');
 
         return view('galleries.showall', [
             'submissions' => $query->paginate(20)->appends($request->query()),
