@@ -109,13 +109,13 @@ class Submission extends Model {
      */
     public function scopeViewable($query, $user = null) {
         $forbiddenSubmissions = $this
-        ->whereHas('prompt', function ($q) {
-            $q->where('hide_submissions', 1)->whereNotNull('end_at')->where('end_at', '>', Carbon::now());
-        })
-        ->orWhereHas('prompt', function ($q) {
-            $q->where('hide_submissions', 2);
-        })
-        ->orWhere('status', '!=', 'Approved')->pluck('id')->toArray();
+            ->whereHas('prompt', function ($q) {
+                $q->where('hide_submissions', 1)->whereNotNull('end_at')->where('end_at', '>', Carbon::now());
+            })
+            ->orWhereHas('prompt', function ($q) {
+                $q->where('hide_submissions', 2);
+            })
+            ->orWhere('status', '!=', 'Approved')->pluck('id')->toArray();
 
         if ($user && $user->hasPower('manage_submissions')) {
             return $query;
