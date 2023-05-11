@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Gallery\GallerySubmission;
 use App\Models\SitePage;
 use App\Services\LinkService;
 use App\Services\UserService;
@@ -11,8 +12,6 @@ use Config;
 use DB;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
-
-use App\Models\Gallery\GallerySubmission;
 
 class HomeController extends Controller {
     /*
@@ -30,9 +29,10 @@ class HomeController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getIndex() {
-        $query = GallerySubmission::visible(Auth::check() ? Auth::user() : null)->accepted()->orderBy('created_at', 'DESC');	 
+        $query = GallerySubmission::visible(Auth::check() ? Auth::user() : null)->accepted()->orderBy('created_at', 'DESC');
+
         return view('welcome', [
-            'about' => SitePage::where('key', 'about')->first(),
+            'about'              => SitePage::where('key', 'about')->first(),
             'gallerySubmissions' => $query->get()->take(8),
         ]);
     }
