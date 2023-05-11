@@ -128,9 +128,6 @@ class GalleryController extends Controller {
         if ($request->get('prompt_id')) {
             $query->where('prompt_id', $request->get('prompt_id'));
         }
-        if ($request->get('location_id')) {
-            $query->where('location_id', $request->get('location_id'));
-        }
 
         if (isset($sort['sort'])) {
             switch ($sort['sort']) {
@@ -166,7 +163,6 @@ class GalleryController extends Controller {
         return view('galleries.showall', [
             'submissions' => $query->paginate(20)->appends($request->query()),
             'prompts'     => [0 => 'Any Prompt'] + Prompt::whereIn('id', GallerySubmission::visible(Auth::check() ? Auth::user() : null)->accepted()->whereNotNull('prompt_id')->pluck('prompt_id')->toArray())->orderBy('name')->pluck('name', 'id')->toArray(),
-            'locations'   => [0 => 'Any Location'] + Location::whereIn('id', GallerySubmission::visible(Auth::check() ? Auth::user() : null)->accepted()->whereNotNull('location_id')->pluck('location_id')->toArray())->orderBy('name')->get()->pluck('styleParent', 'id')->toArray(),
             'galleryPage' => false,
         ]);
     }
