@@ -143,12 +143,6 @@ class GalleryController extends Controller {
                 case 'prompt-reverse':
                     $query->orderBy('prompt_id', 'ASC');
                     break;
-                case 'prompt':
-                    $query->orderBy('location_id', 'DESC');
-                    break;
-                case 'prompt-reverse':
-                    $query->orderBy('location_id', 'ASC');
-                    break;
                 case 'newest':
                     $query->orderBy('created_at', 'DESC');
                     break;
