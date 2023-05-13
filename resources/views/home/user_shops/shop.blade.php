@@ -3,7 +3,11 @@
 @section('home-title') Shop Index @endsection
 
 @section('home-content')
-{!! breadcrumbs(['Home' => 'home']) !!}
+{!! breadcrumbs(['User Shops' => 'usershops', $shop->name => 'usershops/shop/1']) !!}
+
+@if(Auth::check() && Auth::user()->id === $shop->user_id)
+    <a data-toggle="tooltip" title="Edit Your Shop" href="{{ url('usershops/edit').'/'.$shop->id }}" class="mb-2 float-right"><h3><i class="fas fa-pencil-alt"></i></h3></a>
+@endif
 
 <h1>
    {{ $shop->name }} <a href="{{ url('reports/new?url=') . $shop->url }}"><i class="fas fa-exclamation-triangle fa-xs" data-toggle="tooltip" title="Click here to report this shop." style="opacity: 50%; font-size:0.5em;"></i></a>

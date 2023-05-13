@@ -1,9 +1,9 @@
-@extends('shops.layout')
+@extends('home.layout')
 
-@section('shops-title') My Purchase History @endsection
+@section('home-title') My Purchase History @endsection
 
-@section('shops-content')
-{!! breadcrumbs(['Shops' => 'shops', 'My Purchase History' => 'history']) !!}
+@section('home-content')
+{!! breadcrumbs(['User Shops' => 'usershops/shop-index', 'My Purchase History' => 'usershops/history']) !!}
 
 <h1>
     My Purchase History
@@ -21,7 +21,7 @@
     <div class="col-6 col-md-2 font-weight-bold">Date</div>
   </div>
     @foreach($logs as $log)
-        @include('shops.user_shops._purchase_history_row', ['log' => $log])
+        @include('home.user_shops._purchase_history_row', ['log' => $log])
     @endforeach
 </div>
 {!! $logs->render() !!}

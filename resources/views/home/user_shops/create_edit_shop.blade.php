@@ -3,7 +3,7 @@
 @section('home-title') My Shops @endsection
 
 @section('home-content')
-{!! breadcrumbs(['Home' => 'home', 'My Shops' => 'usershops', ($shop->id ? 'Edit' : 'Create').' Shop' => $shop->id ? 'usershops/edit/'.$shop->id : 'usershops/create']) !!}
+{!! breadcrumbs(['My Shops' => 'usershops', ($shop->id ? 'Edit' : 'Create').' Shop' => $shop->id ? 'usershops/edit/'.$shop->id : 'usershops/create']) !!}
 
 <h1>{{ $shop->id ? 'Edit' : 'Create' }} Shop
     @if($shop->id)
@@ -82,6 +82,21 @@
         </div>
         @endforeach
     </div>
+
+<hr>
+<h3> Preview </h3>
+<br>
+<h1>
+   {{ $shop->name }}
+</h1>
+<div class="mb-3">
+    Owned by {!! $shop->user->displayName !!}
+</div>
+
+<div class="text-center">
+    <img src="{{ $shop->shopImageUrl }}" style="max-width:100%" alt="{{ $shop->name }}" />
+    <p>{!! $shop->parsed_description !!}</p>
+</div>
 @endif
 
 @endsection

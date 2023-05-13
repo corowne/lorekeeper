@@ -63,6 +63,7 @@ class UserShopController extends Controller
     {
         $shop = UserShop::find($id);
         if(!$shop) abort(404);
+        if($shop->user_id != Auth::user()->id && !Auth::user()->hasPower('edit_inventories')) abort(404);
         return view('home.user_shops.create_edit_shop', [
             'shop' => $shop,
             'items' => Item::orderBy('name')->pluck('name', 'id'),
@@ -207,9 +208,8 @@ class UserShopController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postRemoveStock(Request $request, InventoryManager $service)
-    {   $recipient = Auth::user();
-        $sender = $this->shop;
-        if($service->sendShop($sender, $recipient, UserShopStock::find($request->get('ids')), $request->get('quantities'))) {
+    {
+        if($service->sendShop(UserShop::find($request->get('shop_id')), Auth::user(), UserShopStock::find($request->get('ids')), $request->get('quantities'))) {
             flash('Item transferred successfully.')->success();
         }
         else {
@@ -226,8 +226,7 @@ class UserShopController extends Controller
     public function getPurchaseHistory()
     {
         return view('home.user_shops.purchase_history', [
-            'logs' => Auth::user()->getUserShopLogs(0),
-            'shops' => UserShop::where('is_active', 1)->orderBy('sort', 'DESC')->get(),
+            'logs' => Auth::user()->getUserShopLogs(0)
         ]);
     }
 

@@ -3,7 +3,7 @@
 @section('home-title') User Shop Search @endsection
 
 @section('home-content')
-{!! breadcrumbs(['Home' => 'home']) !!}
+{!! breadcrumbs(['User Shops' => 'usershops/shop-index', 'Item Search' => 'usershops/item-search']) !!}
 
 <h1>User Shop Search</h1>
 

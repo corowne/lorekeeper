@@ -505,7 +505,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getUserShopLogs($limit = 10)
     {
         $user = $this;
-        $query = UserShopLog::where('user_id', $this->id)->with('character')->with('shop')->with('item')->with('currency')->orderBy('id', 'DESC');
+        $query = UserShopLog::where('user_id', $this->id)->with('shop')->with('item')->with('currency')->orderBy('id', 'DESC');
         if($limit) return $query->take($limit)->get();
         else return $query->paginate(30);
     }

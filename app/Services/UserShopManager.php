@@ -76,7 +76,7 @@ class UserShopManager extends Service
             }
             
             //credit the currency to the shop owner
-            if(!(new CurrencyManager)->creditCurrency($user, $shop->user, 'User Shop Credit', 'Sold a '.$shopStock->item->displayName.' in '.$shop->displayName, $shopStock->currency, $total_cost)) throw new \Exception("Failed to credit currency.");   
+            if(!(new CurrencyManager)->creditCurrency(null, $shop->user, 'User Shop Credit', 'Sold a '.$shopStock->item->displayName.' in '.$shop->displayName, $shopStock->currency, $total_cost)) throw new \Exception("Failed to credit currency.");   
             //notify the shop owner
             Notifications::create('USER_SHOP_ITEM_SOLD', $shop->user, [
                 'shop_id' => $shop->id,
