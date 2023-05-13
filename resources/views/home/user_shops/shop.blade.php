@@ -5,8 +5,8 @@
 @section('home-content')
 {!! breadcrumbs(['User Shops' => 'usershops', $shop->name => 'usershops/shop/1']) !!}
 
-@if(Auth::check() && Auth::user()->id === $shop->user_id)
-    <a data-toggle="tooltip" title="Edit Your Shop" href="{{ url('usershops/edit').'/'.$shop->id }}" class="mb-2 float-right"><h3><i class="fas fa-pencil-alt"></i></h3></a>
+@if(Auth::check() && Auth::user()->id === $shop->user_id || Auth::user()->hasPower('edit_inventories'))
+    <a data-toggle="tooltip" title="Edit Shop" href="{{ url('usershops/edit').'/'.$shop->id }}" class="mb-2 float-right"><h3><i class="fas fa-pencil-alt"></i></h3></a>
 @endif
 
 <h1>
@@ -17,7 +17,9 @@
 </div>
 
 <div class="text-center">
+    @if($shop->shopImageUrl)
     <img src="{{ $shop->shopImageUrl }}" style="max-width:100%" alt="{{ $shop->name }}" />
+    @endif
     <p>{!! $shop->parsed_description !!}</p>
 </div>
 @if(count($items))

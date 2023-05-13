@@ -143,8 +143,10 @@ class UserShopController extends Controller
     public function getRemoveShopStock($id)
     {
         $stock = UserShopStock::find($id);
+        $shop = UserShop::where('id', $stock->user_shop_id)->first();
         return view('home.user_shops._delete_stock', [
             'stock' => $stock,
+            'shop' => $shop
         ]);
     }
     
@@ -209,7 +211,7 @@ class UserShopController extends Controller
      */
     public function postRemoveStock(Request $request, InventoryManager $service)
     {
-        if($service->sendShop(UserShop::find($request->get('shop_id')), Auth::user(), UserShopStock::find($request->get('ids')), $request->get('quantities'))) {
+        if($service->sendShop(UserShop::where('id', $request->get('user_shop_id'))->first(), Auth::user(), UserShopStock::find($request->get('ids')), $request->get('quantities'))) {
             flash('Item transferred successfully.')->success();
         }
         else {
