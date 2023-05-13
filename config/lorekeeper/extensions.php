@@ -84,4 +84,14 @@ return [
     // Aliases on Userpage - Speedy
     'aliases_on_userpage' => 0, // By default, does not display the aliases on userpage. Enable to add a small arrow to display these underneath the primary alias.
 
+    // Show All Recent Submissions - Speedy
+    'show_all_recent_submissions' => [
+        'enable' => 0,
+        'links'  => [
+            'sidebar'      => 1,      // By default, ON, and will display in the sidebar.
+            'indexbutton'  => 1, // By default, ON, and will display a button on the index.
+        ],
+        'section_on_front' => 0, // By default, does not display on the front page. Enable to add a block above the footer.
+    ],
+
 ];
