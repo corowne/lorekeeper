@@ -42,7 +42,7 @@ class AddUserShops extends Migration
         Schema::create('user_shop_log', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            $table->integer('shop_id')->unsigned()->index();
+            $table->integer('user_shop_id')->unsigned()->index();
             $table->integer('user_id')->unsigned()->index();
             
             $table->integer('currency_id')->unsigned();

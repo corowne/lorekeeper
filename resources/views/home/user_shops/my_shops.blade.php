@@ -9,6 +9,9 @@
 
 <p>Here is a list of your user-owned shops. </p> 
 <p>The sorting order reflects the order in which the shops will be listed on the shop index.</p>
+@if(Settings::get('user_shop_limit') > 0)
+<p> You may make a maximum of <b>{{Settings::get('user_shop_limit')}}</b> shops.</p>
+@endif
 
 <div class="text-right mb-3"><a class="btn btn-primary" href="{{ url('usershops/create') }}"><i class="fas fa-plus"></i> Create New Shop</a></div>
 @if(!count($shops))

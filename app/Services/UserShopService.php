@@ -4,6 +4,7 @@ use App\Services\Service;
 
 use DB;
 use Config;
+use Settings;
 
 use App\Models\Shop\UserShop;
 use App\Models\Shop\UserShopStock;
@@ -38,6 +39,12 @@ class UserShopService extends Service
 
         try {
 
+            //check for shop limit, if there is one
+            if(Settings::get('user_shop_limit') != 0) {
+                if(UserShop::where('user_id', $user->id)->count() >= Settings::get('user_shop_limit')) throw new \Exception("You have already created the maximum number of shops.");
+            }
+
+            $data['user_id'] = $user->id;
             $data = $this->populateShopData($data);
 
             $image = null;
@@ -108,18 +115,12 @@ class UserShopService extends Service
         DB::beginTransaction();
 
         try {
-            if(!$data['stock_type']) throw new \Exception("Please select a stock type.");
-            if(!$data['item_id']) throw new \Exception("You must select an item.");
 
             $shop->stock()->create([
                 'shop_id'               => $shop->id,
                 'item_id'               => $data['item_id'],
                 'currency_id'           => $data['currency_id'],
                 'cost'                  => $data['cost'],
-                'use_user_bank'         => isset($data['use_user_bank']),
-                'use_character_bank'    => isset($data['use_character_bank']),
-                'quantity'              => isset($data['is_limited_stock']) ? $data['quantity'] : 0,
-                'stock_type'            => $data['stock_type'],
                 'is_visible'            => isset($data['is_visible']) ? $data['is_visible'] : 0,
             ]);
 
@@ -143,16 +144,10 @@ class UserShopService extends Service
         DB::beginTransaction();
 
         try {
-            if(!$data['stock_type']) throw new \Exception("Please select a stock type.");
-            if(!$data['item_id']) throw new \Exception("You must select an item.");
 
             $stock->update([
-                'shop_id'               => $stock->shop->id,
-                'item_id'               => $data['item_id'],
                 'currency_id'           => $data['currency_id'],
                 'cost'                  => $data['cost'],
-                'quantity'              => isset($data['is_limited_stock']) ? $data['quantity'] : 0,
-                'stock_type'            => $data['stock_type'],
                 'is_visible'            => isset($data['is_visible']) ? $data['is_visible'] : 0,
             ]);
 

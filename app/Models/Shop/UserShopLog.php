@@ -13,7 +13,7 @@ class UserShopLog extends Model
      * @var array
      */
     protected $fillable = [
-        'shop_id', 'user_id', 'currency_id', 'cost', 'item_id', 'quantity'
+        'user_shop_id', 'user_id', 'currency_id', 'cost', 'item_id', 'quantity'
     ];
 
     /**
@@ -37,7 +37,7 @@ class UserShopLog extends Model
      */
     public static $createRules = [
         'stock_id' => 'required',
-        'shop_id' => 'required',
+        'user_shop_id' => 'required',
         'bank' => 'required|in:user'
     ];
 
@@ -79,19 +79,4 @@ class UserShopLog extends Model
         return $this->belongsTo('App\Models\Currency\Currency');
     }
 
-    /**********************************************************************************************
-    
-        ACCESSORS
-
-    **********************************************************************************************/
-
-    /**
-     * Get the item data that will be added to the stack as a record of its source.
-     *
-     * @return string
-     */
-    public function getItemDataAttribute()
-    {
-        return 'Purchased from '.$this->shop->name.' by '. $this->user->displayName . ' for ' . $this->cost . ' ' . $this->currency->name . '.';
-    }
 }

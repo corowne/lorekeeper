@@ -27,7 +27,7 @@
             </span>
         </h5>
         
-            {!! Form::open(['url' => 'shops/buy']) !!}
+            {!! Form::open(['url' => 'usershops/shop/buy']) !!}
                 {!! Form::hidden('user_shop_id', $shop->id) !!}
                 {!! Form::hidden('stock_id', $stock->id) !!}
                 {!! Form::label('quantity', 'Quantity') !!}

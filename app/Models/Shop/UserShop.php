@@ -13,7 +13,7 @@ class UserShop extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_active'
+        'name', 'user_id','sort', 'has_image', 'description', 'parsed_description', 'is_active'
     ];
 
     /**
@@ -71,7 +71,7 @@ class UserShop extends Model
      */
     public function displayStock()
     {
-        return $this->belongsToMany('App\Models\Item\Item', 'user_shop_stock')->where('stock_type', 'Item')->withPivot('item_id', 'currency_id', 'cost', 'quantity', 'id', 'is_visible')->wherePivot('is_visible', 1);
+        return $this->belongsToMany('App\Models\Item\Item', 'user_shop_stock')->where('stock_type', 'Item')->withPivot('item_id', 'currency_id', 'cost', 'quantity', 'id', 'is_visible')->wherePivot('quantity', '>', 0)->wherePivot('is_visible', 1);
     }
 
     /**

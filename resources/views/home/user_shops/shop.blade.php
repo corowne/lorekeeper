@@ -6,7 +6,7 @@
 {!! breadcrumbs(['Home' => 'home']) !!}
 
 <h1>
-   {{ $shop->name }}
+   {{ $shop->name }} <a href="{{ url('reports/new?url=') . $shop->url }}"><i class="fas fa-exclamation-triangle fa-xs" data-toggle="tooltip" title="Click here to report this shop." style="opacity: 50%; font-size:0.5em;"></i></a>
 </h1>
 <div class="mb-3">
     Owned by {!! $shop->user->displayName !!}

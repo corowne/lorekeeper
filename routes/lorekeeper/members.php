@@ -107,7 +107,7 @@ Route::group(['prefix' => 'usershops', 'namespace' => 'Users'], function() {
 Route::group(['prefix' => 'usershops',], function() {
     Route::get('/shop-index', 'UserShopController@getIndex'); 
     Route::get('/shop/{id}', 'UserShopController@getShop'); 
-    Route::post('buy', 'UserShopController@postBuy');
+    Route::post('/shop/buy', 'UserShopController@postBuy');
     Route::get('{id}/{stockId}', 'UserShopController@getShopStock')->where(['id' => '[0-9]+', 'stockId' => '[0-9]+']);
 });
 

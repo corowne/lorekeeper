@@ -37,7 +37,7 @@ class UserShopController extends Controller
     public function getUserIndex()
     {
         return view('home.user_shops.my_shops', [
-            'shops' => UserShop::orderBy('sort', 'DESC')->get()
+            'shops' => UserShop::where('user_id', Auth::user()->id)->orderBy('sort', 'DESC')->get()
         ]);
     }
     
@@ -98,22 +98,6 @@ class UserShopController extends Controller
     }
 
     /**
-     * loads the edit stock modal
-     */
-    public function getEditShopStock($id)
-    {
-        $stock = UserShopStock::find($id);
-        if(!$stock) abort(404);
-
-        return view('home.user_shops._edit_stock_modal', [
-            'shop' => $stock->shop,
-            'stock' => $stock,
-            'currencies' => Currency::where('is_user_owned', 1)->where('allow_user_to_user', 1)->orderBy('name')->pluck('name', 'id'),
-            'items' => Item::orderBy('name')->pluck('name', 'id'),
-        ]);
-    }
-
-    /**
      * Ajax function to return stock type
      */
     public function getShopStockType(Request $request)
@@ -137,7 +121,7 @@ class UserShopController extends Controller
     public function postEditShopStock(Request $request, UserShopService $service, $id)
     {
         $data = $request->only([
-            'shop_id', 'item_id', 'currency_id', 'cost','stock_type','is_visible'
+            'shop_id', 'currency_id', 'cost','is_visible'
         ]);
         if($service->editShopStock(UserShopStock::find($id), $data, Auth::user())) {
             flash('Shop stock updated successfully.')->success();
@@ -259,7 +243,7 @@ class UserShopController extends Controller
         if($item) {
             // Gather all instances of this item
             $shopItems = UserShopStock::where('item_id', $item->id)->where('is_visible', 1)->where('quantity', '>', 0)->get();
-            $shops = UserShop::whereIn('id', $shopItems->pluck('shop_id')->toArray())->orderBy('name', 'ASC')->get();
+            $shops = UserShop::whereIn('id', $shopItems->pluck('user_shop_id')->toArray())->orderBy('name', 'ASC')->get();
         }
 
         return view('home.user_shops.search_items', [

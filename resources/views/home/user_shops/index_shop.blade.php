@@ -8,8 +8,9 @@
 <h1>
     User Shops
 </h1>
+<p>These are user-owned shops that sell items. Not to be confused with official, admin-made shops.</p>
 <div class="text-right mb-3">
-        <a class="btn btn-primary" href="{{ url('usershops/item-search') }}"><i class="fas fa-search"></i> Item Search</a>
+        <a class="btn btn-primary" href="{{ url('usershops/item-search') }}"><i class="fas fa-search"></i>Search For an Item</a>
 </div>
 
 <div>

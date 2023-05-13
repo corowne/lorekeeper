@@ -4,10 +4,12 @@ use App\Services\Service;
 
 use DB;
 use Config;
+use Auth;
 
 use App\Models\Shop\UserShop;
 use App\Models\Shop\UserShopLog;
 use App\Models\Shop\UserShopStock; 
+use Notifications;
 
 class UserShopManager extends Service
 {
@@ -37,6 +39,7 @@ class UserShopManager extends Service
 
             // Check that the shop exists and is open
             $shop = UserShop::where('id', $data['user_shop_id'])->where('is_active', 1)->first();
+            if($shop->user->id == Auth::user()->id) throw new \Exception("You can't buy from a shop that you own!");
             if(!$shop) throw new \Exception("Invalid shop selected.");
 
             // Check that the stock exists and belongs to the shop
@@ -56,7 +59,7 @@ class UserShopManager extends Service
 
             // Add a purchase log
             $shopLog = UserShopLog::create([
-                'shop_id' => $shop->id,
+                'user_shop_id' => $shop->id,
                 'user_id' => $user->id,
                 'currency_id' => $shopStock->currency->id,
                 'cost' =>  $shopStock->cost,
@@ -67,45 +70,25 @@ class UserShopManager extends Service
             // Give the user the item, noting down 1. whose currency was used (user or character) 2. who purchased it 3. which shop it was purchased from
             if($shopStock->stock_type == 'Item') {
                 if(!(new InventoryManager)->creditItem(null, $user, 'Shop Purchase', [
-                    'data' => $shopLog->itemData,
+                    'data' => 'Purchased from '.$shop->displayName.' by '. $user->displayName . ' for ' . $shopStock->currency->name . ' ' . $total_cost . '.',
                     'notes' => 'Purchased ' . format_date($shopLog->created_at),
                 ], $shopStock->item, $quantity)) throw new \Exception("Failed to purchase item.");
             }
+            
+            //credit the currency to the shop owner
+            if(!(new CurrencyManager)->creditCurrency($user, $shop->user, 'User Shop Credit', 'Sold a '.$shopStock->item->displayName.' in '.$shop->displayName, $shopStock->currency, $total_cost)) throw new \Exception("Failed to credit currency.");   
+            //notify the shop owner
+            Notifications::create('USER_SHOP_ITEM_SOLD', $shop->user, [
+                'shop_id' => $shop->id,
+                'shop_name' => $shop->name,
+                'item_name' => $shopStock->item->displayName,
+                'currency_name' => $shopStock->currency->name,
+                'currency_quantity' => $total_cost,
+
+            ]);
 
             return $this->commitReturn($shop);
         } catch(\Exception $e) { 
-            $this->setError('error', $e->getMessage());
-        }
-        return $this->rollbackReturn(false);
-    }
-
-    /**
-     * sends item to shop
-     *
-     * @param  \App\Models\User\User $owner
-     * @param  \App\Models\User\UserItem $stacks
-     * @param  int       $quantities
-     * @return bool
-     */
-    public function sendShop($item, $id, $service)
-    {
-        DB::beginTransaction();
-
-        try {
-                $user = Auth::user();
-                if($id == NULL) throw new \Exception("No shop selected.");
-                $shop = UserShop::find($id);
-                if(!$user->hasAlias) throw new \Exception("Your deviantART account must be verified before you can perform this action.");
-                if(!$item) throw new \Exception("An invalid item was selected.");
-                if($pet->user_id != $user->id && !$user->hasPower('edit_inventories')) throw new \Exception("You do not own this item.");
-                if(!$shop) throw new \Exception("An invalid shop was selected.");
-                if($shop->user_id !== $user->id && !$user->hasPower('edit_inventories'))throw new \Exception("You do not own this shop.");
-
-                $item['user_shop_id'] = $shop->id;
-                $item->save();
-
-            return $this->commitReturn(true);
-        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);

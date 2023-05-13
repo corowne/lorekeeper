@@ -66,15 +66,13 @@
                     @endif
                     <div class="col-{{ $stock->item->has_image ? '8' : '10' }}">
                         <div><a href="{{ $stock->item->idUrl }}"><strong>{{ $stock->item->name }} - {{ $stock->stock_type }}</strong></a></div>
-                        <div><strong>Cost: </strong> {!! $stock->currency->display($stock->cost) !!}</div>
+                        <div><strong>Quantity: </strong> {!! $stock->quantity !!}</div>
                     </div>
                     @if(!$stock->is_visible)<div class="col-2"> <i class="fas fa-eye-slash"></i></div>@endif
                 </div> 
+                @include('home.user_shops._edit_stock_modal', ['stock' => $stock])
                 <div class="text-right">
-                    <button class="btn btn-primary" onclick="editStock({{$stock->id}})">
-                        {{-- pencil icon --}}
-                        <i class="fas fa-pencil-alt"></i>
-                    </button>
+                   
                     <div class="btn btn-danger" onclick="removeShopStock({{$stock->id}})">
                         {{-- trash icon --}}
                         <i class="fas fa-trash"></i>
@@ -91,10 +89,6 @@
 @section('scripts')
 @parent
 <script>
-    // edit stock function
-    function editStock(id) {
-        loadModal("{{ url('usershops/stock/edit') }}/" + id, 'Edit Stock');
-    }
     function removeShopStock(id) {
         loadModal("{{ url('usershops/stock/remove') }}/" + id, 'Remove Stock');
     }

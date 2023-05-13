@@ -1,13 +1,13 @@
 @extends('home.layout')
 
-@section('home-title') Shop Index @endsection
+@section('home-title') User Shop Search @endsection
 
 @section('home-content')
 {!! breadcrumbs(['Home' => 'home']) !!}
 
-<h1>Item Search</h1>
+<h1>User Shop Search</h1>
 
-<p>Select an item to search for all occurrences of it in shop and character inventories. It will only display currently extant stacks (where the count is more than zero). If a stack is currently "held" in a trade, design update, or submission, this will be stated and all held locations will be linked.</p>
+<p>Select an item that you are looking to buy from other users, and you will be able to see if any shops are currently stocking it, as well as the cost of each user's items.</p>
 
 {!! Form::open(['method' => 'GET', 'class' => '']) !!}
 <div class="form-inline justify-content-end">
@@ -22,19 +22,27 @@
 
 @if($item)
     <h3>{{ $item->name }}</h3>
-
-    <p>There are currently {{ $shopItems->pluck('count') }} of this item owned by shops and characters.</p>
-
-    <ul>
-        @foreach($shops as $shop)
-            <li>
-                {!! $shop->displayName !!} has {{ $shopItems->where('shop_id', $shop->id)->pluck('count')->sum() }}
-                @if($shopItems->where('shop_id', $shop->id)->pluck('count')->sum() > $shopItems->where('shop_id', $shop->id)->pluck('availableQuantity')->sum())
-                 ({{ $shopItems->where('shop_id', $shop->id)->pluck('availableQuantity')->sum() }} Available)
-                @endif
-            </li>
-        @endforeach 
-    </ul>
+@if($shopItems->pluck('quantity')->count() > 0)
+    <div class="row ml-md-2">
+    <div class="d-flex row flex-wrap col-12 pb-1 px-0 ubt-bottom">
+      <div class="col-12 col-md-4 font-weight-bold">Shop</div>
+      <div class="col-4 col-md-3 font-weight-bold">Shop Owner</div> 
+      <div class="col-4 col-md-3 font-weight-bold">Cost</div> 
+    </div>
+    @foreach($shops as $shop)
+    @php 
+    $item = $shop->stock->where('user_shop_id', $shop->id)->where('item_id', $item->id)->first();
+    @endphp
+    <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-top">
+      <div class="col-12 col-md-4 ">{!! $shop->displayName !!}</div>
+      <div class="col-4 col-md-3">{!! $shop->user->displayName !!}</div> 
+      <div class="col-4 col-md-3">{!! $item->cost !!} {!! $item->currency->name !!}</div> 
+    </div>
+    @endforeach
+  </div>
+  @else
+  No shops are currently stocking this item.
+  @endif
 @endif
 
 <script>
