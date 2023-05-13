@@ -86,6 +86,11 @@ class UserShopManager extends Service
                 'currency_quantity' => $total_cost,
             ]);
 
+                        //after all is done, if the qty has reached 0, delete it or things will get a bit weird
+                        if($shopStock->quantity == 0) {
+                            $shopStock->delete();
+                        }
+
             return $this->commitReturn($shop);
         } catch(\Exception $e) { 
             $this->setError('error', $e->getMessage());
