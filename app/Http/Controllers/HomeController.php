@@ -29,11 +29,16 @@ class HomeController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getIndex() {
-        $query = GallerySubmission::visible(Auth::check() ? Auth::user() : null)->accepted()->orderBy('created_at', 'DESC');
+        if (Config::get('lorekeeper.extensions.show_all_recent_submissions.enable')) {
+            $query = GallerySubmission::visible(Auth::check() ? Auth::user() : null)->accepted()->orderBy('created_at', 'DESC');
+            $gallerySubmissions = $query->get()->take(8);
+        } else {
+            $gallerySubmissions = [];
+        }
 
         return view('welcome', [
             'about'              => SitePage::where('key', 'about')->first(),
-            'gallerySubmissions' => $query->get()->take(8),
+            'gallerySubmissions'  => $gallerySubmissions,
         ]);
     }
 
