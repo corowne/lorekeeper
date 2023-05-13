@@ -99,19 +99,6 @@ class UserShopController extends Controller
     }
 
     /**
-     * Ajax function to return stock type
-     */
-    public function getShopStockType(Request $request)
-    {
-        $type = $request->input('type');
-        if($type == 'Item') {
-            return view('home.user_shops._stock_item', [
-                'items' => Item::orderBy('name')->pluck('name', 'id')
-            ]);
-        }
-    }
-
-    /**
      * Edits a shop's stock.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -243,8 +230,8 @@ class UserShopController extends Controller
 
         if($item) {
             // Gather all instances of this item
-            $shopItems = UserShopStock::where('item_id', $item->id)->where('is_visible', 1)->where('quantity', '>', 0)->get();
-            $shops = UserShop::whereIn('id', $shopItems->pluck('user_shop_id')->toArray())->orderBy('name', 'ASC')->get();
+            $shopItems = UserShopStock::where('item_id', $item->id)->where('stock_type', 'Item')->where('is_visible', 1)->where('quantity', '>', 0)->get();
+            $shops = UserShop::whereIn('id', $shopItems->pluck('user_shop_id')->toArray())->orderBy('name', 'ASC')->get()->paginate(20);
         }
 
         return view('home.user_shops.search_items', [
@@ -255,4 +242,18 @@ class UserShopController extends Controller
         ]);
     }
 
+/**
+     * Shows the user's purchase history.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getShopHistory($id)
+    {
+        $shop = UserShop::find($id);
+        if($shop->user_id != Auth::user()->id && !Auth::user()->hasPower('edit_inventories')) abort(404);
+        return view('home.user_shops.sale_history', [
+            'logs' => $shop->getShopLogs(0),
+            'shop' => $shop,
+        ]);
+    }
 }

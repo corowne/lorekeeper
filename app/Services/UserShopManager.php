@@ -67,10 +67,10 @@ class UserShopManager extends Service
                 'quantity' => $quantity
             ]);
 
-            // Give the user the item, noting down 1. whose currency was used (user or character) 2. who purchased it 3. which shop it was purchased from
+            // Give the user the item, noting down 1. whose currency was used 2. who purchased it 3. which shop it was purchased from
             if($shopStock->stock_type == 'Item') {
                 if(!(new InventoryManager)->creditItem(null, $user, 'Shop Purchase', [
-                    'data' => 'Purchased from '.$shop->displayName.' by '. $user->displayName . ' for ' . $shopStock->currency->name . ' ' . $total_cost . '.',
+                    'data' => 'Purchased from '.$shop->displayName.' by '. $user->displayName . ' for  ' . $total_cost .' '. $shopStock->currency->name . '.',
                     'notes' => 'Purchased ' . format_date($shopLog->created_at),
                 ], $shopStock->item, $quantity)) throw new \Exception("Failed to purchase item.");
             }
@@ -84,7 +84,6 @@ class UserShopManager extends Service
                 'item_name' => $shopStock->item->displayName,
                 'currency_name' => $shopStock->currency->name,
                 'currency_quantity' => $total_cost,
-
             ]);
 
             return $this->commitReturn($shop);

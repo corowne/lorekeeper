@@ -50,6 +50,7 @@
 {!! Form::close() !!}
 
 @if($shop->id)
+
 <h3>Shop Stock</h3> 
 
 <div class="alert alert-warning text-center">Other users cannot buy items until the stock is set to visible. </div>

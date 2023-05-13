@@ -75,6 +75,14 @@ class UserShop extends Model
     }
 
     /**
+     * Get the user logs attached to this code.
+     */
+    public function buyers()
+    {
+        return $this->hasMany('App\Models\Shop\UserShopLog', 'user_shop_id');
+    }
+
+    /**
      * Scope a query to show only visible features.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
@@ -151,5 +159,19 @@ class UserShop extends Model
     public function getUrlAttribute()
     {
         return url('/usershops/shop/'.$this->id);
+    }
+
+    /**
+     * Get the shop's shop sale logs.
+     *
+     * @param  int  $limit
+     * @return \Illuminate\Support\Collection|\Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getShopLogs($limit = 10)
+    {
+        $user = $this;
+        $query = UserShopLog::where('user_shop_id', $this->id)->with('shop')->with('item')->with('currency')->orderBy('id', 'DESC');
+        if($limit) return $query->take($limit)->get();
+        else return $query->paginate(30);
     }
 }

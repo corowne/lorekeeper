@@ -25,8 +25,9 @@
 @if($shopItems->pluck('quantity')->count() > 0)
     <div class="row ml-md-2">
     <div class="d-flex row flex-wrap col-12 pb-1 px-0 ubt-bottom">
-      <div class="col-12 col-md-4 font-weight-bold">Shop</div>
+      <div class="col-12 col-md-3 font-weight-bold">Shop</div>
       <div class="col-4 col-md-3 font-weight-bold">Shop Owner</div> 
+      <div class="col-4 col-md-3 font-weight-bold">Quantity</div> 
       <div class="col-4 col-md-3 font-weight-bold">Cost</div> 
     </div>
     @foreach($shops as $shop)
@@ -34,8 +35,9 @@
     $item = $shop->stock->where('user_shop_id', $shop->id)->where('item_id', $item->id)->first();
     @endphp
     <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-top">
-      <div class="col-12 col-md-4 ">{!! $shop->displayName !!}</div>
+      <div class="col-12 col-md-3 ">{!! $shop->displayName !!}</div>
       <div class="col-4 col-md-3">{!! $shop->user->displayName !!}</div> 
+      <div class="col-4 col-md-3">{!! $item->quantity !!}</div> 
       <div class="col-4 col-md-3">{!! $item->cost !!} {!! $item->currency->name !!}</div> 
     </div>
     @endforeach

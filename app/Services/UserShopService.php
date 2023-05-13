@@ -102,34 +102,6 @@ class UserShopService extends Service
         return $this->rollbackReturn(false);
     }
     
-    /**
-     * Updates shop stock.
-     *
-     * @param  \App\Models\Shop\UserShop  $shop
-     * @param  array                  $data 
-     * @param  \App\Models\User\User  $user
-     * @return bool|\App\Models\Shop\UserShop
-     */
-    public function updateShopStock($shop, $data, $user)
-    {
-        DB::beginTransaction();
-
-        try {
-
-            $shop->stock()->create([
-                'shop_id'               => $shop->id,
-                'item_id'               => $data['item_id'],
-                'currency_id'           => $data['currency_id'],
-                'cost'                  => $data['cost'],
-                'is_visible'            => isset($data['is_visible']) ? $data['is_visible'] : 0,
-            ]);
-
-            return $this->commitReturn($shop);
-        } catch(\Exception $e) {
-            $this->setError('error', $e->getMessage());
-        }
-        return $this->rollbackReturn(false);
-    }
 
     /**
      * Updates shop stock.
@@ -195,7 +167,7 @@ class UserShopService extends Service
 
         try {
              
-            if($shop->stock) throw new \Exception("This shop currently has items stocked. Please remove them and try again.");
+            if($shop->stock->count()) throw new \Exception("This shop currently has items stocked. Please remove them and try again.");
 
             if($shop->has_image) $this->deleteImage($shop->shopImagePath, $shop->shopImageFileName); 
             $shop->delete();

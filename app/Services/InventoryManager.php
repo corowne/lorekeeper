@@ -602,7 +602,7 @@ class InventoryManager extends Service
         DB::beginTransaction();
 
         try {
-            $encoded_data = \json_encode($data);
+            $encoded_data = null; //remove item data or the shop will get really cursed really fast
 
             if($recipient->logType == 'User') {
                 $recipient_stack = UserItem::where([

@@ -25,6 +25,9 @@
                         <a class="fas fa-arrows-alt-v handle mr-3" href="#"></a>
                         {!! $shop->displayName !!}
                     </td>
+                    <td>
+                        <a href="{{ url('usershops/sales/'.$shop->id) }}">View sale history...</a>
+                    </td>
                     <td class="text-right">
                         <a href="{{ url('usershops/edit/'.$shop->id) }}" class="btn btn-primary">Edit</a>
                     </td>

@@ -102,6 +102,8 @@ Route::group(['prefix' => 'usershops', 'namespace' => 'Users'], function() {
     Route::get('/stock-type', 'UserShopController@getShopStockType');
     Route::get('/history', 'UserShopController@getPurchaseHistory');
     Route::get('item-search', 'UserShopController@getItemSearch');
+
+    Route::get('sales/{id}', 'UserShopController@getShopHistory');
 });
 
 Route::group(['prefix' => 'usershops',], function() {
