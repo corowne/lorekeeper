@@ -56,7 +56,7 @@
 <div class="alert alert-warning text-center">Other users cannot buy items until the stock is set to visible. </div>
     <div id="shopStock">
         <div class="row col-12">
-        @foreach($shop->stock as $stock)
+        @foreach($shop->stock->where('quantity', '>', 0) as $stock)
         <div class="col-md-4">
             <div class="card p-3 my-1">
                 <div class="row">

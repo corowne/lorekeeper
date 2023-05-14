@@ -67,10 +67,12 @@ class UserShopManager extends Service
                 'quantity' => $quantity
             ]);
 
+            //log message because the logs hate me so i have to define it here
+            $itemData = 'Purchased from '.$shop->displayName.' by '. $user->displayName . ' for  ' . $total_cost .' '. $shopStock->currency->name . '.';
             // Give the user the item, noting down 1. whose currency was used 2. who purchased it 3. which shop it was purchased from
             if($shopStock->stock_type == 'Item') {
                 if(!(new InventoryManager)->creditItem(null, $user, 'Shop Purchase', [
-                    'data' => 'Purchased from '.$shop->displayName.' by '. $user->displayName . ' for  ' . $total_cost .' '. $shopStock->currency->name . '.',
+                    'data' => $itemData,
                     'notes' => 'Purchased ' . format_date($shopLog->created_at),
                 ], $shopStock->item, $quantity)) throw new \Exception("Failed to purchase item.");
             }
