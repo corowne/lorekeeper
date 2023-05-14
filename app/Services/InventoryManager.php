@@ -606,6 +606,7 @@ class InventoryManager extends Service
         DB::beginTransaction();
 
         try {
+            $data = ['data' => '', 'notes' => '']; //make back and forth data blank for both transfers because things get. wacky. 
             $encoded_data = \json_encode($data); 
 
             if($recipient->logType == 'User') {
