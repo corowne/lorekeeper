@@ -572,11 +572,15 @@ class InventoryManager extends Service
                 if(($recipient->logType == 'Shop' && !$sender->hasPower('edit_inventories') && !Auth::user() == $recipient->user) || ($recipient->logType == 'User' && !Auth::user()->hasPower('edit_inventories') && !Auth::user() == $sender->user)) throw new \Exception("Cannot transfer items to/from a shop you don't own.");
                 
                 if((!$stack->item->allow_transfer || isset($stack->data['disallow_transfer'])) && !Auth::user()->hasPower('edit_inventories')) throw new \Exception("One of the selected items cannot be transferred.");
-                if($stack->count < $quantity) throw new \Exception("Quantity to transfer exceeds item count."); 
+                if($recipient->logType == 'Shop' && $stack->count < $quantity) throw new \Exception("Quantity to transfer exceeds item count."); 
+
+                if($recipient->logType == 'User' && $stack->quantity < $quantity) throw new \Exception("Quantity to transfer exceeds item count."); 
 
                 if(!$this->shopItem($sender, $recipient, $sender->logType == 'User' ? 'User → Shop Transfer' : 'Shop → User Transfer', $stack->data, $stack->item, $quantity)) throw new \Exception("Could not transfer item to shop.");
 
-                $stack->count -= $quantity;
+                if($stack->count){
+                $stack->count -= $quantity;}
+                else{$stack->quantity -= $quantity;} 
                 $stack->save();
             }
             return $this->commitReturn(true);
@@ -602,7 +606,7 @@ class InventoryManager extends Service
         DB::beginTransaction();
 
         try {
-            $encoded_data = null; //remove item data or the shop will get really cursed really fast
+            $encoded_data = \json_encode($data); 
 
             if($recipient->logType == 'User') {
                 $recipient_stack = UserItem::where([
@@ -628,8 +632,6 @@ class InventoryManager extends Service
                 $recipient_stack->quantity += $quantity;
                 $recipient_stack->save();
             }
-            if($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, $recipient ? $recipient->id : null, $recipient ? $recipient->logType : null, null, $type, $data['data'], $item->id, $quantity)) throw new \Exception("Failed to create log.");
-
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
             $this->setError('error', $e->getMessage());
