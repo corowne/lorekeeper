@@ -573,7 +573,9 @@ class InventoryManager extends Service
                 
                 if((!$stack->item->allow_transfer || isset($stack->data['disallow_transfer'])) && !Auth::user()->hasPower('edit_inventories')) throw new \Exception("One of the selected items cannot be transferred.");
 
-                if($stack->item->category->can_user_sell == 0 && !Auth::user()->hasPower('edit_inventories')) throw new \Exception("This item cannot be sold in user shops."); 
+                if($stack->item->category){
+                    if($stack->item->category->can_user_sell == 0 && !Auth::user()->hasPower('edit_inventories')) throw new \Exception("This item cannot be sold in user shops."); 
+                }
 
                 if($recipient->logType == 'Shop' && $stack->count < $quantity) throw new \Exception("Quantity to transfer exceeds item count."); 
 
