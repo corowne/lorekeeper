@@ -5,7 +5,7 @@
 @section('home-content')
 {!! breadcrumbs(['User Shops' => 'usershops/shop-index', 'Item Search' => 'usershops/item-search']) !!}
 
-<h1>User Shop Search</h1>
+<h1>User Shop Item Search</h1>
 
 <p>Select an item that you are looking to buy from other users, and you will be able to see if any shops are currently stocking it, as well as the cost of each user's items.</p>
 
@@ -32,13 +32,13 @@
     </div>
     @foreach($shops as $shop)
     @php 
-    $item = $shop->stock->where('user_shop_id', $shop->id)->where('item_id', $item->id)->first();
+    $itemStock = $shop->stock->where('user_shop_id', $shop->id)->where('item_id', $item->id)->first();
     @endphp
     <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-top">
       <div class="col-12 col-md-3 ">{!! $shop->displayName !!}</div>
       <div class="col-4 col-md-3">{!! $shop->user->displayName !!}</div> 
-      <div class="col-4 col-md-3">{!! $item->quantity !!}</div> 
-      <div class="col-4 col-md-3">{!! $item->cost !!} {!! $item->currency->name !!}</div> 
+      <div class="col-4 col-md-3">{!! $itemStock->quantity !!}</div> 
+      <div class="col-4 col-md-3">{!! $itemStock->cost !!} {!! $itemStock->currency->name !!}</div> 
     </div>
     @endforeach
   </div>

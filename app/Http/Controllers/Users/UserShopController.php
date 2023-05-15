@@ -236,7 +236,7 @@ class UserShopController extends Controller
 
         return view('home.user_shops.search_items', [
             'item' => $item ? $item : null,
-            'items' => Item::orderBy('name')->pluck('name', 'id'),
+            'items' => Item::released()->orderBy('name')->pluck('name', 'id'),
             'shopItems' => $item ? $shopItems : null, 
             'shops' => $item ? $shops : null,
         ]);

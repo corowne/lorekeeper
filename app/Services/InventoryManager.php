@@ -582,11 +582,18 @@ class InventoryManager extends Service
                 if($recipient->logType == 'User' && $stack->quantity < $quantity) throw new \Exception("Quantity to transfer exceeds item count."); 
 
                 if(!$this->shopItem($sender, $recipient, $sender->logType == 'User' ? 'User → Shop Transfer' : 'Shop → User Transfer', $stack->data, $stack->item, $quantity)) throw new \Exception("Could not transfer item to shop.");
-
+                
                 if($stack->count){
-                $stack->count -= $quantity;}
-                else{$stack->quantity -= $quantity;} 
-                $stack->save();
+                    $stack->count -= $quantity; }
+                    //for shops stock
+                    else{$stack->quantity -= $quantity;
+                        if($stack->quantity == 0) {
+                            $stack->is_visible = 0; //set it to hidden.
+                            // there might be a situation where an item data sticks around and someone accidentally has an item in the shop that isn't ready to be sold and it gets sold :pensive:
+                            //so hiding it until an item of this same id gets added back in will prevent accidents 
+                        }
+                    } 
+                    $stack->save();
             }
             return $this->commitReturn(true);
         } catch(\Exception $e) { 

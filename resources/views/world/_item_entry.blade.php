@@ -76,12 +76,12 @@
             </div>
             @endif
             @if(isset($item->category) && $item->category)
-                @if($item->category->can_user_sell == 1)
+                @if($item->category->can_user_sell == 1  && $item->allow_transfer)
                     <div class="text-right mb-4">
                         <a class="btn btn-secondary " href="{{ url('usershops/item-search?item_id='.$item->id) }}"><i class="fas fa-search"></i>User Shop Search</a>
                     </div>
                 @endif
-            @elseif(!$item->category)
+            @elseif(!$item->category && $item->allow_transfer)
                 <div class="text-right mb-4">
                     <a class="btn btn-secondary " href="{{ url('usershops/item-search?item_id='.$item->id) }}"><i class="fas fa-search"></i>User Shop Search</a>
                 </div>
