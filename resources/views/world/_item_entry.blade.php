@@ -75,6 +75,17 @@
                 @endif
             </div>
             @endif
+            @if(isset($item->category) && $item->category)
+                @if($item->category->can_user_sell == 1)
+                    <div class="text-right mb-4">
+                        <a class="btn btn-secondary " href="{{ url('usershops/item-search?item_id='.$item->id) }}"><i class="fas fa-search"></i>User Shop Search</a>
+                    </div>
+                @endif
+            @elseif(!$item->category)
+                <div class="text-right mb-4">
+                    <a class="btn btn-secondary " href="{{ url('usershops/item-search?item_id='.$item->id) }}"><i class="fas fa-search"></i>User Shop Search</a>
+                </div>
+            @endif
         </div>
     </div>
 </div>
