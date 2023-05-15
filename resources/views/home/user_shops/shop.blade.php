@@ -1,9 +1,9 @@
-@extends('home.layout')
+@extends('home.user_shops.layout')
 
-@section('home-title') Shop Index @endsection
+@section('home.user_shops-title') Shop Index @endsection
 
-@section('home-content')
-{!! breadcrumbs(['User Shops' => 'usershops', $shop->name => 'usershops/shop/1']) !!}
+@section('home.user_shops-content')
+{!! breadcrumbs(['User Shops' => 'usershops/shop-index', $shop->name => 'usershops/shop/1']) !!}
 
 @if(Auth::check() && Auth::user()->id === $shop->user_id || Auth::user()->hasPower('edit_inventories'))
     <a data-toggle="tooltip" title="Edit Shop" href="{{ url('usershops/edit').'/'.$shop->id }}" class="mb-2 float-right"><h3><i class="fas fa-pencil-alt"></i></h3></a>

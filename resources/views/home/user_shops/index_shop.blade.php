@@ -1,8 +1,8 @@
-@extends('home.layout')
+@extends('home.user_shops.layout')
 
-@section('home-title') Shop Index @endsection
+@section('home.user_shops-title') Shop Index @endsection
 
-@section('home-content')
+@section('home.user_shops-content')
 {!! breadcrumbs(['User Shops' => 'usershops/shop-index']) !!}
 
 <h1>

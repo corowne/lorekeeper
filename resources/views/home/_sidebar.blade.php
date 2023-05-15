@@ -15,13 +15,6 @@
         <div class="sidebar-item"><a href="{{ url('trades/open') }}" class="{{ set_active('trades/open*') }}">Trades</a></div>
     </li>
     <li class="sidebar-section">
-        <div class="sidebar-section-header">User Shops</div>
-        <div class="sidebar-item"><a href="{{ url('usershops') }}" class="{{ set_active('usershops*') }}">My Shops</a></div>
-        <div class="sidebar-item"><a href="{{ url('usershops/shop-index') }}" class="{{ set_active('usershops/shop-index*') }}">All User Shops</a></div>
-        <div class="sidebar-item"><a href="{{ url('usershops/item-search') }}" class="{{ set_active('usershops/item-search*') }}">Search For Item</a></div>
-        <div class="sidebar-item"><a href="{{ url('usershops/history') }}" class="{{ set_active('usershops/history*') }}">Purchase History</a></div>
-</li>
-    <li class="sidebar-section">
         <div class="sidebar-section-header">Reports</div>
         <div class="sidebar-item"><a href="{{ url('reports') }}" class="{{ set_active('reports*') }}">Reports</a></div>
     </li>

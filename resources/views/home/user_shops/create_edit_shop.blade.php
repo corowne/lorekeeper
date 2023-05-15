@@ -1,8 +1,8 @@
-@extends('home.layout')
+@extends('home.user_shops.layout')
 
-@section('home-title') My Shops @endsection
+@section('home.user_shops-title') My Shops @endsection
 
-@section('home-content')
+@section('home.user_shops-content')
 {!! breadcrumbs(['My Shops' => 'usershops', ($shop->id ? 'Edit' : 'Create').' Shop' => $shop->id ? 'usershops/edit/'.$shop->id : 'usershops/create']) !!}
 
 <h1>{{ $shop->id ? 'Edit' : 'Create' }} Shop
