@@ -11,7 +11,7 @@ class CharacterCategory extends Model {
      * @var array
      */
     protected $fillable = [
-        'code', 'name', 'sort', 'has_image', 'description', 'parsed_description', 'masterlist_sub_id',
+        'code', 'name', 'sort', 'has_image', 'description', 'parsed_description', 'masterlist_sub_id', 'is_visible',
     ];
 
     /**
@@ -20,6 +20,7 @@ class CharacterCategory extends Model {
      * @var string
      */
     protected $table = 'character_categories';
+
     /**
      * Validation rules for creation.
      *
@@ -55,6 +56,25 @@ class CharacterCategory extends Model {
      */
     public function sublist() {
         return $this->belongsTo('App\Models\Character\Sublist', 'masterlist_sub_id');
+    }
+
+    /**********************************************************************************************
+
+        SCOPES
+
+    **********************************************************************************************/
+
+    /**
+     * Scope a query to show only visible categories.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  bool $withHidden
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeVisible($query, $withHidden = 0)
+    {
+        if($withHidden) return $query;
+        return $query->where('is_visible', 1);
     }
 
     /**********************************************************************************************
