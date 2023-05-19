@@ -146,8 +146,8 @@ class BrowseController extends Controller {
 
         if ($sublists = Sublist::where('show_main', 0)->get()) {
             $subCategories = [];
+            $subSpecies = [];
         }
-        $subSpecies = [];
         foreach ($sublists as $sublist) {
             $subCategories = array_merge($subCategories, $sublist->categories->pluck('id')->toArray());
             $subSpecies = array_merge($subSpecies, $sublist->species->pluck('id')->toArray());
