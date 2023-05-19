@@ -67,13 +67,16 @@ class CharacterCategory extends Model {
     /**
      * Scope a query to show only visible categories.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  bool $withHidden
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param bool                                  $withHidden
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeVisible($query, $withHidden = 0)
-    {
-        if($withHidden) return $query;
+    public function scopeVisible($query, $withHidden = 0) {
+        if ($withHidden) {
+            return $query;
+        }
+
         return $query->where('is_visible', 1);
     }
 
