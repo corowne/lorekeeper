@@ -55,7 +55,7 @@
                         <div class="row flex-wrap">
                             <div class="col-5 col-md-6">
                                 <div class="logs-table-cell">
-                                    @if(!$item->is_released)
+                                    @if (!$item->is_released)
                                         <i class="fas fa-eye-slash mr-1"></i>
                                     @endif
                                     {{ $item->name }}
