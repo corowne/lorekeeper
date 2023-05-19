@@ -58,7 +58,7 @@ class SalesController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCharacterInfo($slug) {
-        $character = Character::visible()->where('slug', $slug)->first();
+        $character = Character::where('slug', $slug)->first();
 
         return view('home._character', [
             'character' => $character,
