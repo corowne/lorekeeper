@@ -68,7 +68,12 @@
                     <div class="logs-table-row">
                         <div class="row flex-wrap">
                             <div class="col-12 col-md-3">
-                                <div class="logs-table-cell">{{ $feature->name }}</div>
+                                <div class="logs-table-cell">
+                                @if(!$feature->is_visible)
+                                    <i class="fas fa-eye-slash mr-1"></i>
+                                @endif
+                                {{ $feature->name }}
+                                </div>
                             </div>
                             <div class="col-6 col-md-2">
                                 <div class="logs-table-cell">{!! $feature->rarity->displayName !!}</div>
