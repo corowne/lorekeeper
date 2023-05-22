@@ -53,7 +53,6 @@ class ItemCategory extends Model {
      * Scope a query to show only visible subtypes.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param                                       $user
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
