@@ -68,6 +68,7 @@ class CharacterCategory extends Model {
      * Scope a query to show only visible categories.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed|null                            $user
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
