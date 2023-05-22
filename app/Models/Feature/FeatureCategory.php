@@ -50,7 +50,7 @@ class FeatureCategory extends Model {
     **********************************************************************************************/
 
     /**
-     * Scope a query to show only visible subtypes.
+     * Scope a query to show only visible categories.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      *
