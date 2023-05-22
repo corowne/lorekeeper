@@ -349,7 +349,9 @@ class WorldController extends Controller {
             abort(404);
         }
         if (!$item->category->is_visible) {
-            abort(404);
+            if (Auth::check() ? !Auth::user()->isStaff : true) {
+                abort(404);
+            }
         }
 
         return view('world.item_page', [

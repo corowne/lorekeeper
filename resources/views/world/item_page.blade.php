@@ -40,7 +40,15 @@
                             <div class="row">
                                 @if (isset($item->category) && $item->category)
                                     <div class="col-md">
-                                        <p><strong>Category:</strong> {!! $item->category->name !!}</p>
+                                        <p>
+                                            <strong>Category:</strong>
+                                            @if (!$item->category->is_visible)
+                                                <i class="fas fa-eye-slash mx-1 text-danger"></i>
+                                            @endif
+                                            <a href="{!! $item->category->url !!}">
+                                                {!! $item->category->name !!}
+                                            </a>
+                                        </p>
                                     </div>
                                 @endif
                                 @if (Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields'))
@@ -74,13 +82,20 @@
                             </div>
                             <div class="world-entry-text">
                                 @if (isset($item->reference) && $item->reference && Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields'))
-                                    <p><strong>Reference Link:</strong> <a href="{{ $item->reference }}">{{ $item->reference }}</a></p>
+                                    <p>
+                                        <strong>Reference Link:</strong>
+                                        <a href="{{ $item->reference }}">
+                                            {{ $item->reference }}
+                                        </a>
+                                    </p>
                                 @endif
                                 {!! $description !!}
                                 @if (((isset($item->uses) && $item->uses) || (isset($item->source) && $item->source) || $shops->count() || (isset($item->data['prompts']) && $item->data['prompts'])) && Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields'))
 
                                     @if (isset($item->uses) && $item->uses)
-                                        <p><strong>Uses:</strong> {!! $item->uses !!}</p>
+                                        <p>
+                                            <strong>Uses:</strong> {!! $item->uses !!}
+                                        </p>
                                     @endif
                                     @if ((isset($item->source) && $item->source) || $shops->count() || (isset($item->data['prompts']) && $item->data['prompts']))
                                         <h5>Availability</h5>
@@ -93,10 +108,16 @@
                                             @endif
                                             @if ($shops->count())
                                                 <div class="col">
-                                                    <p><strong>Purchaseable At:</strong></p>
+                                                    <p>
+                                                        <strong>Purchaseable At:</strong>
+                                                    </p>
                                                     <div class="row">
                                                         @foreach ($shops as $shop)
-                                                            <span class="badge" style="font-size:95%; margin:5px;"><a href="{{ $shop->url }}">{{ $shop->name }}</a></span>
+                                                            <span class="badge" style="font-size:95%; margin:5px;">
+                                                            <a href="{{ $shop->url }}">
+                                                                {{ $shop->name }}
+                                                            </a>
+                                                            </span>
                                                         @endforeach
                                                     </div>
                                                 </div>
@@ -106,7 +127,11 @@
                                                     <p><strong>Drops From:</strong></p>
                                                     <div class="row">
                                                         @foreach ($item->prompts as $prompt)
-                                                            <span class="badge" style="font-size:95%; background-color: #fefcf6; margin:5px;"><a href="{{ $prompt->url }}">{{ $prompt->name }}</a></span>
+                                                            <span class="badge" style="font-size:95%; background-color: #fefcf6; margin:5px;">
+                                                            <a href="{{ $prompt->url }}">
+                                                                {{ $prompt->name }}
+                                                            </a>
+                                                            </span>
                                                         @endforeach
                                                     </div>
                                                 </div>
