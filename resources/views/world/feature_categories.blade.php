@@ -10,12 +10,12 @@
 
     <div>
         {!! Form::open(['method' => 'GET', 'class' => 'form-inline justify-content-end']) !!}
-            <div class="form-group mr-3 mb-3">
-                {!! Form::text('name', Request::get('name'), ['class' => 'form-control']) !!}
-            </div>
-            <div class="form-group mb-3">
-                {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
-            </div>
+        <div class="form-group mr-3 mb-3">
+            {!! Form::text('name', Request::get('name'), ['class' => 'form-control']) !!}
+        </div>
+        <div class="form-group mb-3">
+            {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
+        </div>
         {!! Form::close() !!}
     </div>
 
@@ -26,13 +26,13 @@
                 @include('world._entry', [
                     'edit' => [
                         'object' => $category,
-                        'title' => 'Category'
+                        'title' => 'Category',
                     ],
                     'imageUrl' => $category->categoryImageUrl,
                     'name' => $category->displayName,
                     'description' => $category->parsed_description,
                     'searchUrl' => $category->searchUrl,
-                    'visible' => $category->is_visible
+                    'visible' => $category->is_visible,
                 ])
             </div>
         </div>

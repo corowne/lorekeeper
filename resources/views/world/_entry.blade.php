@@ -16,9 +16,9 @@
             @endif
             {!! $name !!}
             @if (isset($searchUrl) && $searchUrl)
-            <a href="{{ $searchUrl }}" class="world-entry-search text-muted">
-                <i class="fas fa-search"></i>
-            </a>
+                <a href="{{ $searchUrl }}" class="world-entry-search text-muted">
+                    <i class="fas fa-search"></i>
+                </a>
             @endif
         </h3>
         <div class="world-entry-text">
