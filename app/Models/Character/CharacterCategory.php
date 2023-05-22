@@ -65,15 +65,15 @@ class CharacterCategory extends Model {
     **********************************************************************************************/
 
     /**
-     * Scope a query to show only visible categories.
+     * Scope a query to show only visible subtypes.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param bool                                  $withHidden
+     * @param                                       $user
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeVisible($query, $withHidden = 0) {
-        if ($withHidden) {
+    public function scopeVisible($query, $user = null) {
+        if ($user && $user->hasPower('edit_data')) {
             return $query;
         }
 
