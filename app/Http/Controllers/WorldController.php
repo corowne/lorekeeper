@@ -287,6 +287,9 @@ class WorldController extends Controller {
      */
     public function getItems(Request $request) {
         $query = Item::with('category')->released();
+
+        $categoryVisibleCheck = ItemCategory::visible(Auth::check() ? Auth::user() : null)->pluck('id', 'name')->toArray();
+        $query->whereIn('item_category_id', $categoryVisibleCheck);
         $data = $request->only(['item_category_id', 'name', 'sort', 'artist']);
         if (isset($data['item_category_id']) && $data['item_category_id'] != 'none') {
             if ($data['item_category_id'] == 'withoutOption') {
@@ -343,6 +346,9 @@ class WorldController extends Controller {
         $categories = ItemCategory::orderBy('sort', 'DESC')->get();
         $item = Item::where('id', $id)->released()->first();
         if (!$item) {
+            abort(404);
+        }
+        if (!$item->category->is_visible) {
             abort(404);
         }
 
