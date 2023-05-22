@@ -114,9 +114,9 @@
                                                     <div class="row">
                                                         @foreach ($shops as $shop)
                                                             <span class="badge" style="font-size:95%; margin:5px;">
-                                                            <a href="{{ $shop->url }}">
-                                                                {{ $shop->name }}
-                                                            </a>
+                                                                <a href="{{ $shop->url }}">
+                                                                    {{ $shop->name }}
+                                                                </a>
                                                             </span>
                                                         @endforeach
                                                     </div>
@@ -128,9 +128,9 @@
                                                     <div class="row">
                                                         @foreach ($item->prompts as $prompt)
                                                             <span class="badge" style="font-size:95%; background-color: #fefcf6; margin:5px;">
-                                                            <a href="{{ $prompt->url }}">
-                                                                {{ $prompt->name }}
-                                                            </a>
+                                                                <a href="{{ $prompt->url }}">
+                                                                    {{ $prompt->name }}
+                                                                </a>
                                                             </span>
                                                         @endforeach
                                                     </div>
