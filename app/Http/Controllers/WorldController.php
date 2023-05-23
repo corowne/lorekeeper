@@ -8,8 +8,6 @@ use App\Models\Feature\Feature;
 use App\Models\Feature\FeatureCategory;
 use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
-use App\Models\Prompt\Prompt;
-use App\Models\Prompt\PromptCategory;
 use App\Models\Rarity;
 use App\Models\Shop\Shop;
 use App\Models\Shop\ShopStock;
@@ -370,78 +368,6 @@ class WorldController extends Controller {
 
         return view('world.character_categories', [
             'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
-        ]);
-    }
-
-    /**
-     * Shows the prompt categories page.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function getPromptCategories(Request $request) {
-        $query = PromptCategory::query();
-        $name = $request->get('name');
-        if ($name) {
-            $query->where('name', 'LIKE', '%'.$name.'%');
-        }
-
-        return view('world.prompt_categories', [
-            'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
-        ]);
-    }
-
-    /**
-     * Shows the prompts page.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function getPrompts(Request $request) {
-        $query = Prompt::active()->with('category');
-        $data = $request->only(['prompt_category_id', 'name', 'sort']);
-        if (isset($data['prompt_category_id']) && $data['prompt_category_id'] != 'none') {
-            $query->where('prompt_category_id', $data['prompt_category_id']);
-        }
-        if (isset($data['name'])) {
-            $query->where('name', 'LIKE', '%'.$data['name'].'%');
-        }
-
-        if (isset($data['sort'])) {
-            switch ($data['sort']) {
-                case 'alpha':
-                    $query->sortAlphabetical();
-                    break;
-                case 'alpha-reverse':
-                    $query->sortAlphabetical(true);
-                    break;
-                case 'category':
-                    $query->sortCategory();
-                    break;
-                case 'newest':
-                    $query->sortNewest();
-                    break;
-                case 'oldest':
-                    $query->sortOldest();
-                    break;
-                case 'start':
-                    $query->sortStart();
-                    break;
-                case 'start-reverse':
-                    $query->sortStart(true);
-                    break;
-                case 'end':
-                    $query->sortEnd();
-                    break;
-                case 'end-reverse':
-                    $query->sortEnd(true);
-                    break;
-            }
-        } else {
-            $query->sortCategory();
-        }
-
-        return view('world.prompts', [
-            'prompts'    => $query->paginate(20)->appends($request->query()),
-            'categories' => ['none' => 'Any Category'] + PromptCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
 }
