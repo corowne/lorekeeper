@@ -53,7 +53,7 @@ class ShopController extends Controller {
                 ->orWhereNull('item_category_id');
         });
 
-        $items = count($categories) ? $query->orderByRaw('FIELD(item_category_id,' . implode(',', $categories->pluck('id')->toArray()) . ')')->orderBy('name')->get()->groupBy('item_category_id') : $shop->displayStock()->orderBy('name')->get()->groupBy('item_category_id');
+        $items = count($categories) ? $query->orderByRaw('FIELD(item_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')->orderBy('name')->get()->groupBy('item_category_id') : $shop->displayStock()->orderBy('name')->get()->groupBy('item_category_id');
 
         return view('shops.shop', [
             'shop'       => $shop,
