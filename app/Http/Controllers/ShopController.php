@@ -47,7 +47,13 @@ class ShopController extends Controller {
         if (!$shop) {
             abort(404);
         }
-        $items = count($categories) ? $shop->displayStock()->orderByRaw('FIELD(item_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')->orderBy('name')->get()->groupBy('item_category_id') : $shop->displayStock()->orderBy('name')->get()->groupBy('item_category_id');
+
+        $query = $shop->displayStock()->where(function ($query) use ($categories) {
+            $query->whereIn('item_category_id', $categories->pluck('id')->toArray())
+                ->orWhereNull('item_category_id');
+        });
+
+        $items = count($categories) ? $query->orderByRaw('FIELD(item_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')->orderBy('name')->get()->groupBy('item_category_id') : $shop->displayStock()->orderBy('name')->get()->groupBy('item_category_id');
 
         return view('shops.shop', [
             'shop'       => $shop,
