@@ -27,7 +27,7 @@ class CommentPolicy
      */
     public function delete($user, Comment $comment) : bool
     {
-            if(auth::user()->isStaff) {
+            if(Auth::user()->isStaff) {
                 return true;
             }
             else {
