@@ -300,7 +300,7 @@ class Feature extends Model {
     public static function getDropdownItems($withHidden = 0) {
         if (Config::get('lorekeeper.extensions.organised_traits_dropdown')) {
             $visibleOnly = 1;
-            if($withHidden) {
+            if ($withHidden) {
                 $visibleOnly = 0;
             }
             $sorted_feature_categories = collect(FeatureCategory::all()->where('is_visible', '>=', $visibleOnly)->sortBy('sort')->pluck('name')->toArray());
