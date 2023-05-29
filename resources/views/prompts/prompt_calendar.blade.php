@@ -10,7 +10,7 @@
 
     <div id='calendar'></div>
 
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.js'></script>
+    <script src="{{ asset('js/plugins/fullcalendar/index.global.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const calendarEl = document.getElementById('calendar')
