@@ -20,9 +20,9 @@
     @foreach ($items as $categoryId => $categoryItems)
         @php
             $visible = '';
-        if (!$categories[$categoryId]->is_visible) {
-            $visible = '<i class="fas fa-eye-slash mr-1"></i>';
-        }
+            if (!$categories[$categoryId]->is_visible) {
+                $visible = '<i class="fas fa-eye-slash mr-1"></i>';
+            }
         @endphp
         <div class="card mb-3 inventory-category">
             <h5 class="card-header inventory-header">
