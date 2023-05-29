@@ -94,4 +94,7 @@ return [
         'section_on_front' => 0, // By default, does not display on the front page. Enable to add a block above the footer.
     ],
 
+    // collapsible admin sidebar - Newt
+    'collapsible_admin_sidebar' => 0,
+
 ];

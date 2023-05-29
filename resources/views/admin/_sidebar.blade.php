@@ -6,7 +6,7 @@
             <li class="sidebar-section">
                 <div class="sidebar-section-header" data-toggle="collapse" href="#collapse-{!! $key !!}" role="button" aria-expanded="false" aria-controls="collapse-{!! $key !!}">{{ str_replace(' ', '', $key) }} </div>
 
-                <div class="collapse collapse-{!! $key !!}" id="collapse-{!! $key !!}">
+                <div class="{{ Config::get('lorekeeper.extensions.collapsible_admin_sidebar') ? 'collapse' : '' }} collapse-{!! $key !!}" id="collapse-{!! $key !!}">
                     {{-- order by name --}}
                     @php
                         usort($section['links'], function ($a, $b) {
@@ -25,6 +25,7 @@
 
 </ul>
 
+@if(Config::get('lorekeeper.extensions.collapsible_admin_sidebar'))
 @section('scripts')
     <script>
         $(document).ready(function() {
@@ -42,3 +43,4 @@
         })
     </script>
 @endsection
+@endif
