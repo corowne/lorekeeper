@@ -4,8 +4,8 @@
     {{ $user->name }}'s Profile
 @endsection
 
-@section('meta-img') 
-    {{ $user->avatarUrl }} 
+@section('meta-img')
+    {{ $user->avatarUrl }}
 @endsection
 
 @section('profile-content')
