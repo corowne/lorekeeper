@@ -67,15 +67,14 @@
                 </div>
             </div>
         </form>
-        
-        @if($altLogins)
+
+        @if ($altLogins)
             <h3 class="text-center mt-5 pt-2">Alternate Logins</h3>
-            @foreach($altLogins as $provider => $site)
-                @if(isset($site['login']) && $site['login'])
+            @foreach ($altLogins as $provider => $site)
+                @if (isset($site['login']) && $site['login'])
                     <div class="text-center pt-3 w-75 m-auto">
-                        <a href="{{ url('/login/redirect/'.$provider) }}" class="btn btn-primary text-white w-100"><i class="{{ $site['icon'] }} mr-2"></i> Login With {{ ucfirst($provider) }}</a>
+                        <a href="{{ url('/login/redirect/' . $provider) }}" class="btn btn-primary text-white w-100"><i class="{{ $site['icon'] }} mr-2"></i> Login With {{ ucfirst($provider) }}</a>
                     </div>
-            
                 @endif
             @endforeach
         @endif
