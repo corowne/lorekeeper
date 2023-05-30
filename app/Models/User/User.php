@@ -29,7 +29,7 @@ class User extends Authenticatable implements MustVerifyEmail {
      * @var array
      */
     protected $fillable = [
-        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned', 'has_alias', 'avatar', 'is_sales_unread', 'birthday',
+        'name', 'alias', 'rank_id', 'email', 'email_verified_at', 'password', 'is_news_unread', 'is_banned', 'has_alias', 'avatar', 'is_sales_unread', 'birthday',
         'is_deactivated', 'deactivater_id',
     ];
 
@@ -78,7 +78,7 @@ class User extends Authenticatable implements MustVerifyEmail {
 
         RELATIONS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Get user settings.
@@ -189,7 +189,7 @@ class User extends Authenticatable implements MustVerifyEmail {
 
         SCOPES
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Scope a query to only include visible (non-banned) users.
@@ -217,7 +217,7 @@ class User extends Authenticatable implements MustVerifyEmail {
 
         ACCESSORS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Get the user's alias.
@@ -397,7 +397,7 @@ class User extends Authenticatable implements MustVerifyEmail {
 
         OTHER FUNCTIONS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Checks if the user can edit the given rank.

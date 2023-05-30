@@ -47,11 +47,13 @@ class UserService extends Service {
 
         $user = User::create([
             'name'      => $data['name'],
-            'email'     => $data['email'],
+            'email'     => $data['email'] ?? null,
             'rank_id'   => $data['rank_id'],
-            'password'  => Hash::make($data['password']),
+            'password'  => isset($data['password']) ? Hash::make($data['password']) : null,
             'birthday'  => $formatDate,
             'has_alias' => $data['has_alias'] ?? false,
+            // Verify the email if we're logging them in with their social
+            'email_verified_at' => (!isset($data['password']) && !isset($data['email'])) ? now() : null,
         ]);
         $user->settings()->create([
             'user_id' => $user->id,
@@ -94,7 +96,7 @@ class UserService extends Service {
         DB::beginTransaction();
 
         try {
-            if (!Hash::check($data['old_password'], $user->password)) {
+            if (isset($user->password) && !Hash::check($data['old_password'], $user->password)) {
                 throw new \Exception('Please enter your old password.');
             }
             if (Hash::make($data['new_password']) == $user->password) {
