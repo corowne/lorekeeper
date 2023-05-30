@@ -2,11 +2,9 @@
 
 namespace App\Models\Loot;
 
-use Config;
 use App\Models\Model;
 
-class Loot extends Model
-{
+class Loot extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -14,7 +12,7 @@ class Loot extends Model
      */
     protected $fillable = [
         'loot_table_id', 'rewardable_type', 'rewardable_id',
-        'quantity', 'weight', 'data'
+        'quantity', 'weight', 'data',
     ];
 
     /**
@@ -23,7 +21,6 @@ class Loot extends Model
      * @var string
      */
     protected $table = 'loots';
-
     /**
      * Validation rules for creation.
      *
@@ -31,9 +28,9 @@ class Loot extends Model
      */
     public static $createRules = [
         'rewardable_type' => 'required',
-        'rewardable_id' => 'required',
-        'quantity' => 'required|integer|min:1',
-        'weight' => 'required|integer|min:1',
+        'rewardable_id'   => 'required',
+        'quantity'        => 'required|integer|min:1',
+        'weight'          => 'required|integer|min:1',
     ];
 
     /**
@@ -43,9 +40,9 @@ class Loot extends Model
      */
     public static $updateRules = [
         'rewardable_type' => 'required',
-        'rewardable_id' => 'required',
-        'quantity' => 'required|integer|min:1',
-        'weight' => 'required|integer|min:1',
+        'rewardable_id'   => 'required',
+        'quantity'        => 'required|integer|min:1',
+        'weight'          => 'required|integer|min:1',
     ];
 
     /**********************************************************************************************
@@ -57,10 +54,8 @@ class Loot extends Model
     /**
      * Get the reward attached to the loot entry.
      */
-    public function reward()
-    {
-        switch ($this->rewardable_type)
-        {
+    public function reward() {
+        switch ($this->rewardable_type) {
             case 'Item':
                 return $this->belongsTo('App\Models\Item\Item', 'rewardable_id');
             case 'ItemRarity':
@@ -77,6 +72,7 @@ class Loot extends Model
                 // Laravel requires a relationship instance to be returned (cannot return null), so returning one that doesn't exist here.
                 return $this->belongsTo('App\Models\Loot\Loot', 'rewardable_id', 'loot_table_id')->whereNull('loot_table_id');
         }
+
         return null;
     }
 
@@ -91,9 +87,11 @@ class Loot extends Model
      *
      * @return array
      */
-    public function getDataAttribute()
-    {
-        if (!$this->attributes['data']) return null;
+    public function getDataAttribute() {
+        if (!$this->attributes['data']) {
+            return null;
+        }
+
         return json_decode($this->attributes['data'], true);
     }
 }

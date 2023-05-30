@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
-use Config;
-use App\Models\Model;
-use Illuminate\Support\Str;
-
 use App\Traits\Commentable;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
+use Spatie\Feed\Feedable;
+use Spatie\Feed\FeedItem;
 
-class News extends Model
-{
+class News extends Model implements Feedable {
     use Commentable;
     /**
      * The attributes that are mass assignable.
@@ -18,7 +16,7 @@ class News extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'text', 'parsed_text', 'title', 'is_visible', 'post_at'
+        'user_id', 'text', 'parsed_text', 'title', 'is_visible', 'post_at',
     ];
 
     /**
@@ -49,9 +47,9 @@ class News extends Model
      */
     public static $createRules = [
         'title' => 'required|between:3,100',
-        'text' => 'required',
+        'text'  => 'required',
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -59,25 +57,24 @@ class News extends Model
      */
     public static $updateRules = [
         'title' => 'required|between:3,100',
-        'text' => 'required',
+        'text'  => 'required',
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the user who created the news post.
      */
-    public function user() 
-    {
+    public function user() {
         return $this->belongsTo('App\Models\User\User');
     }
 
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -85,27 +82,27 @@ class News extends Model
     /**
      * Scope a query to only include visible posts.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeVisible($query)
-    {
+    public function scopeVisible($query) {
         return $query->where('is_visible', 1);
     }
 
     /**
      * Scope a query to only include posts that are scheduled to be posted and are ready to post.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeShouldBeVisible($query)
-    {
+    public function scopeShouldBeVisible($query) {
         return $query->whereNotNull('post_at')->where('post_at', '<', Carbon::now())->where('is_visible', 0);
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -115,9 +112,8 @@ class News extends Model
      *
      * @return bool
      */
-    public function getSlugAttribute()
-    {
-        return $this->id . '.' . Str::slug($this->title);
+    public function getSlugAttribute() {
+        return $this->id.'.'.Str::slug($this->title);
     }
 
     /**
@@ -125,8 +121,7 @@ class News extends Model
      *
      * @return string
      */
-    public function getDisplayNameAttribute()
-    {
+    public function getDisplayNameAttribute() {
         return '<a href="'.$this->url.'">'.$this->title.'</a>';
     }
 
@@ -135,8 +130,55 @@ class News extends Model
      *
      * @return string
      */
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return url('news/'.$this->slug);
+    }
+
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute() {
+        return url('admin/news/edit/'.$this->id);
+    }
+
+    /**
+     * Gets the power required to edit this model.
+     *
+     * @return string
+     */
+    public function getAdminPowerAttribute() {
+        return 'edit_pages';
+    }
+
+    /**********************************************************************************************
+
+        OTHER FUNCTIONS
+
+    **********************************************************************************************/
+
+    /**
+     * Returns all feed items.
+     */
+    public static function getFeedItems() {
+        return self::visible()->get();
+    }
+
+    /**
+     * Generates feed item information.
+     *
+     * @return /Spatie/Feed/FeedItem;
+     */
+    public function toFeedItem(): FeedItem {
+        return FeedItem::create([
+            'id'         => '/news/'.$this->id,
+            'title'      => $this->title,
+            'summary'    => $this->parsed_text,
+            'updated'    => $this->updated_at,
+            'link'       => $this->url,
+            'author'     => $this->user->name,
+            'authorName' => $this->user->name,
+        ]);
     }
 }

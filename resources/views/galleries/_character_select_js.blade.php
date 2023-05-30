@@ -18,9 +18,9 @@
         });
 
         function attachListeners(node) {
-            node.find('.character-code').on('change', function(e) {
+            node.find('.character-code').on('input', function(e) {
                 var $parent = $(this).parent().parent().parent().parent();
-                $parent.find('.character-image-loaded').load('{{ url('gallery/submit/character') }}/'+$(this).val(), function(response, status, xhr) {
+                $parent.find('.character-image-loaded').load('{{ url('gallery/submit/character') }}/' + $(this).val(), function(response, status, xhr) {
                     $parent.find('.character-image-blank').addClass('hide');
                     $parent.find('.character-image-loaded').removeClass('hide');
                     $parent.find('.character-rewards').removeClass('hide');

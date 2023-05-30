@@ -1,17 +1,14 @@
 <?php
 
 namespace App\Models;
-use App\Models\Model;
 
 use App\Events\CommentCreated;
-use App\Events\CommentUpdated;
 use App\Events\CommentDeleted;
+use App\Events\CommentUpdated;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Config;
 
-class Comment extends Model
-{
-	use SoftDeletes;
+class Comment extends Model {
+    use SoftDeletes;
 
     /**
      * The relations to eager load on every query.
@@ -19,7 +16,7 @@ class Comment extends Model
      * @var array
      */
     protected $with = [
-        'commenter'
+        'commenter',
     ];
 
     /**
@@ -28,16 +25,8 @@ class Comment extends Model
      * @var array
      */
     protected $fillable = [
-        'comment', 'approved', 'guest_name', 'guest_email', 'is_featured', 'type'
+        'comment', 'approved', 'guest_name', 'guest_email', 'is_featured', 'type',
     ];
-
-    /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
-
 
     /**
      * The attributes that should be cast to native types.
@@ -45,7 +34,7 @@ class Comment extends Model
      * @var array
      */
     protected $casts = [
-        'approved' => 'boolean'
+        'approved' => 'boolean',
     ];
 
     /**
@@ -60,56 +49,66 @@ class Comment extends Model
     ];
 
     /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
+
+    /**
      * The user who posted the comment.
      */
-    public function commenter()
-    {
+    public function commenter() {
         return $this->morphTo();
     }
 
     /**
      * The model that was commented upon.
      */
-    public function commentable()
-    {
-        return $this->morphTo();
+    public function commentable() {
+        return $this->morphTo()->withTrashed();
     }
 
     /**
      * Returns all comments that this comment is the parent of.
      */
-    public function children()
-    {
-        return $this->hasMany('App\Models\Comment', 'child_id');
+    public function children() {
+        return $this->hasMany('App\Models\Comment', 'child_id')->withTrashed();
     }
 
     /**
      * Returns the comment to which this comment belongs to.
      */
-    public function parent()
-    {
-        return $this->belongsTo('App\Models\Comment', 'child_id');
+    public function parent() {
+        return $this->belongsTo('App\Models\Comment', 'child_id')->withTrashed();
     }
 
     /**
-     * Gets / Creates permalink for comments - allows user to go directly to comment
-     *
-     * @return string
+     * Gets the likes for this comment.
      */
-    public function getUrlAttribute()
-    {
-        return url('comment/' . $this->id);
+    public function likes() {
+        return $this->hasMany('App\Models\CommentLike');
     }
 
     /**
-     * Gets top comment
+     * Gets / Creates permalink for comments - allows user to go directly to comment.
      *
      * @return string
      */
-    public function getTopCommentAttribute()
-    {
-        if(!$this->parent) { return $this; }
-        else {return $this->parent->topComment;}
+    public function getUrlAttribute() {
+        return url('comment/'.$this->id);
     }
 
+    /**
+     * Gets top comment.
+     *
+     * @return string
+     */
+    public function getTopCommentAttribute() {
+        if (!$this->parent) {
+            return $this;
+        } else {
+            return $this->parent->topComment;
+        }
+    }
 }
