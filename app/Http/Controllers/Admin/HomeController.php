@@ -59,7 +59,6 @@ class HomeController extends Controller {
             $query->where('id', 1)->orWhereHas('powers');
         })->get()->pluck('name', 'id');
 
-
         $query = AdminLog::query();
 
         $data = $request->only(['user_id', 'action']);
@@ -73,8 +72,8 @@ class HomeController extends Controller {
         $query->orderBy('created_at', 'DESC');
 
         return view('admin.logs', [
-            'logs' => $query->paginate(20)->appends($request->query()),
-            'staff' => $staff,
+            'logs'    => $query->paginate(20)->appends($request->query()),
+            'staff'   => $staff,
             'actions' => AdminLog::pluck('action', 'action')->unique(),
         ]);
     }
