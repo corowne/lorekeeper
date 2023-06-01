@@ -68,7 +68,13 @@
         <h3>Preview</h3>
         <div class="card mb-3">
             <div class="card-body">
-                @include('world._entry', ['imageUrl' => $category->categoryImageUrl, 'name' => $category->displayName, 'description' => $category->parsed_description, 'searchUrl' => $category->searchUrl, 'visible' => $category->is_visible,])
+                @include('world._entry', [
+                    'imageUrl' => $category->categoryImageUrl,
+                    'name' => $category->displayName,
+                    'description' => $category->parsed_description,
+                    'searchUrl' => $category->searchUrl,
+                    'visible' => $category->is_visible,
+                ])
             </div>
         </div>
     @endif
