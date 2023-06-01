@@ -72,7 +72,7 @@ class CharacterCategoryController extends Controller {
     public function postCreateEditCharacterCategory(Request $request, CharacterCategoryService $service, $id = null) {
         $id ? $request->validate(CharacterCategory::$updateRules) : $request->validate(CharacterCategory::$createRules);
         $data = $request->only([
-            'code', 'name', 'description', 'image', 'remove_image', 'masterlist_sub_id',
+            'code', 'name', 'description', 'image', 'remove_image', 'masterlist_sub_id', 'is_visible', 
         ]);
         if ($id && $service->updateCharacterCategory(CharacterCategory::find($id), $data, Auth::user())) {
             flash('Category updated successfully.')->success();
