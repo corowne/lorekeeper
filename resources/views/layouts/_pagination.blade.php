@@ -19,7 +19,8 @@
                     @php
                         $instanceID = mt_rand();
                     @endphp
-                    <li class="page-item pageSelectPopover{{ $instanceID }}" data-container="body" data-toggle="popover" data-placement="top" data-title="Jump to Page" data-html="true" data-content='
+                    <li class="page-item pageSelectPopover{{ $instanceID }}" data-container="body" data-toggle="popover" data-placement="top" data-title="Jump to Page" data-html="true"
+                        data-content='
                     <form>
                     <div class="form-group justify-content-center">
                             <input type="range" class="form-control-range custom-range" id="paginationPageRange{{ $instanceID }}" min="1" max="{{ $paginator->lastPage() }}" value="{{ $paginator->currentPage() }}" onchange="pageUpdateSelectText{{ $instanceID }}()">
@@ -27,7 +28,8 @@
                             <button type="button" class="btn btn-primary" onclick="pageGo{{ $instanceID }}()">Go</button>
                         </div>
                     </form>
-                    '><span class="page-link">{{ $element }}</span></li>
+                    '>
+                        <span class="page-link">{{ $element }}</span></li>
                     @include('layouts._pagination_js', ['ID' => $instanceID])
                 @endif
 
