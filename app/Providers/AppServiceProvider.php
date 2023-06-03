@@ -23,7 +23,8 @@ class AppServiceProvider extends ServiceProvider {
     public function boot() {
         //
         Schema::defaultStringLength(191);
-        Paginator::useBootstrap();
+		Paginator::defaultView('layouts._pagination');
+        Paginator::defaultSimpleView('layouts._simple-pagination');
 
         /*
          * Paginate a standard Laravel Collection.
