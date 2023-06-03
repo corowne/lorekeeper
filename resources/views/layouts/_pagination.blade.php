@@ -29,7 +29,8 @@
                         </div>
                     </form>
                     '>
-                        <span class="page-link">{{ $element }}</span></li>
+                        <span class="page-link">{{ $element }}</span>
+                    </li>
                     @include('layouts._pagination_js')
                 @endif
 
