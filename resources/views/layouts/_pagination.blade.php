@@ -30,7 +30,7 @@
                     </form>
                     '>
                         <span class="page-link">{{ $element }}</span></li>
-                    @include('layouts._pagination_js', ['ID' => $instanceID])
+                    @include('layouts._pagination_js')
                 @endif
 
                 {{-- Array Of Links --}}
