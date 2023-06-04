@@ -19,19 +19,16 @@
                     @php
                         $instanceID = mt_rand();
                     @endphp
-                    <li class="page-item pageSelectPopover{{ $instanceID }}" data-container="body" data-toggle="popover" data-placement="top" data-title="Jump to Page" data-html="true"
+                    <li class="page-item pageSelectPopover" data-container="body" data-toggle="popover" data-placement="top" data-title="Jump to Page" data-html="true"
                         data-content='
-                    <form>
-                    <div class="form-group justify-content-center">
-                            <input type="range" class="form-control-range custom-range" id="paginationPageRange{{ $instanceID }}" min="1" max="{{ $paginator->lastPage() }}" value="{{ $paginator->currentPage() }}" onchange="pageUpdateSelectText{{ $instanceID }}()">
-                            <input type="number" id="paginationPageText{{ $instanceID }}" min="1" max="{{ $paginator->lastPage() }}" value="{{ $paginator->currentPage() }}" onchange="pageUpdateSelectRange{{ $instanceID }}()">
-                            <button type="button" class="btn btn-primary" onclick="pageGo{{ $instanceID }}()">Go</button>
+                        <div class="d-flex align-items-center" style="gap: 10px;">
+                            <input type="range" class="form-control-range custom-range paginationPageRange" min="1" max="{{ $paginator->lastPage() }}" value="{{ $paginator->currentPage() }}" oninput="this.nextElementSibling.value = this.value">
+                            <output>{{ $paginator->currentPage() }}</output>
+                            <span class="badge badge-primary paginator-btn p-1 px-2" style="cursor: pointer;">Go</span>
                         </div>
-                    </form>
                     '>
                         <span class="page-link">{{ $element }}</span>
                     </li>
-                    @include('layouts._pagination_js')
                 @endif
 
                 {{-- Array Of Links --}}
