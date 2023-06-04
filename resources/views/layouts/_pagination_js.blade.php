@@ -1,5 +1,6 @@
 <script>
     $('.pageSelectPopover').popover()
+
     function onClick(e) {
         const pageCurrent = new URL(window.location.href);
         pageCurrent.searchParams.set("page", e.currentTarget.parentElement.querySelector('.paginationPageRange').value);
