@@ -505,6 +505,10 @@ class ItemService extends Service {
         isset($data['character_limit']) && $data['character_limit'] ? $data['character_limit'] : $data['character_limit'] = 0;
         isset($data['can_name']) && $data['can_name'] ? $data['can_name'] : $data['can_name'] = 0;
 
+        if (!isset($data['is_visible'])) {
+            $data['is_visible'] = 0;
+        }
+
         if (isset($data['remove_image'])) {
             if ($category && $category->has_image && $data['remove_image']) {
                 $data['has_image'] = 0;

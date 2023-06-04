@@ -192,7 +192,7 @@ class UserController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getUserInventory($name) {
-        $categories = ItemCategory::orderBy('sort', 'DESC')->get();
+        $categories = ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->get();
         $items = count($categories) ?
             $this->user->items()
                 ->where('count', '>', 0)

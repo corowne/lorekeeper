@@ -121,7 +121,7 @@ class WorldController extends Controller {
         }
 
         return view('world.item_categories', [
-            'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
+            'categories' => $query->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -138,7 +138,7 @@ class WorldController extends Controller {
         }
 
         return view('world.feature_categories', [
-            'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
+            'categories' => $query->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -217,7 +217,7 @@ class WorldController extends Controller {
             'rarities'   => ['none' => 'Any Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses'  => ['none' => 'Any Species'] + ['withoutOption' => 'Without Species'] + Species::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'subtypes'   => ['none' => 'Any Subtype'] + ['withoutOption' => 'Without Subtype'] + Subtype::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'categories' => ['none' => 'Any Category'] + ['withoutOption' => 'Without Category'] + FeatureCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'categories' => ['none' => 'Any Category'] + ['withoutOption' => 'Without Category'] + FeatureCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
 
@@ -285,6 +285,9 @@ class WorldController extends Controller {
      */
     public function getItems(Request $request) {
         $query = Item::with('category')->released();
+
+        $categoryVisibleCheck = ItemCategory::visible(Auth::check() ? Auth::user() : null)->pluck('id', 'name')->toArray();
+        $query->whereIn('item_category_id', $categoryVisibleCheck);
         $data = $request->only(['item_category_id', 'name', 'sort', 'artist']);
         if (isset($data['item_category_id']) && $data['item_category_id'] != 'none') {
             if ($data['item_category_id'] == 'withoutOption') {
@@ -324,7 +327,7 @@ class WorldController extends Controller {
 
         return view('world.items', [
             'items'      => $query->paginate(20)->appends($request->query()),
-            'categories' => ['none' => 'Any Category'] + ['withoutOption' => 'Without Category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'categories' => ['none' => 'Any Category'] + ['withoutOption' => 'Without Category'] + ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'shops'      => Shop::orderBy('sort', 'DESC')->get(),
             'artists'    => ['none' => 'Any Artist'] + User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray(),
         ]);
@@ -342,6 +345,11 @@ class WorldController extends Controller {
         $item = Item::where('id', $id)->released()->first();
         if (!$item) {
             abort(404);
+        }
+        if (!$item->category->is_visible) {
+            if (Auth::check() ? !Auth::user()->isStaff : true) {
+                abort(404);
+            }
         }
 
         return view('world.item_page', [
@@ -367,7 +375,7 @@ class WorldController extends Controller {
         }
 
         return view('world.character_categories', [
-            'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
+            'categories' => $query->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
 }
