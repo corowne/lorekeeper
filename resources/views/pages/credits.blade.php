@@ -125,7 +125,12 @@
         <p class="mb-0 col-md-4">
             <strong>Staff Rewards</strong> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('lorekeeper.extensions.staff_rewards.enabled') ? 'Enabled' : 'Disabled' }})
         </p>
-
+        <p class="mb-0 col-md-4">
+            <strong>Collapsible Admin Sidebar</strong> by <a href="https://github.com/ne-wt/">Newt</a> ({{ Config::get('lorekeeper.extensions.collapsible_admin_sidebar') ? 'Enabled' : 'Disabled' }})
+        </p>
+        <p class="mb-0 col-md-4">
+            <strong>Gravatar</strong> by <a href="https://github.com/ne-wt/">Newt</a> ({{ Config::get('lorekeeper.extensions.use_gravatar') ? 'Enabled' : 'Disabled' }})
+        </p>
     </div>
 
     <hr />

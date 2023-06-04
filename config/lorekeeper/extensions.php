@@ -97,4 +97,7 @@ return [
     // collapsible admin sidebar - Newt
     'collapsible_admin_sidebar' => 0,
 
+    // use gravatar for user avatars - Newt
+    'use_gravatar' => 0,
+
 ];
