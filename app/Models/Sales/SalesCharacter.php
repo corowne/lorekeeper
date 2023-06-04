@@ -2,6 +2,7 @@
 
 namespace App\Models\Sales;
 
+use App\Models\Character\CharacterImage;
 use App\Models\Model;
 use Config;
 
@@ -12,7 +13,7 @@ class SalesCharacter extends Model {
      * @var array
      */
     protected $fillable = [
-        'sales_id', 'character_id', 'description', 'type', 'data', 'link', 'is_open',
+        'sales_id', 'character_id', 'image_id', 'description', 'type', 'data', 'link', 'is_open',
     ];
 
     /**
@@ -177,6 +178,6 @@ class SalesCharacter extends Model {
      * @return App\Models\Character\CharacterImage
      */
     public function getImageAttribute() {
-        return $this->character->image;
+        return $this->image_id ? CharacterImage::find($this->image_id) : CharacterImage::where('is_visible', 1)->where('character_id', $this->character_id)->orderBy('created_at')->first();
     }
 }

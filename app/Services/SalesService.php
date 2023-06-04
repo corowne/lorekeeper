@@ -232,6 +232,7 @@ class SalesService extends Service {
             // Record data/attach the character to the sales post
             SalesCharacter::create([
                 'character_id' => $character->id,
+                'image_id'     => $character->image->id, 
                 'sales_id'     => $sales->id,
                 'type'         => $charData[$key]['type'],
                 'data'         => json_encode($charData[$key]),
