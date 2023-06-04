@@ -376,6 +376,18 @@ main > .row {
     flex-wrap: wrap;
 }
 
+/* Chrome, Safari, Edge, Opera */
+.pagination-popover input::-webkit-outer-spin-button,
+.pagination-popover input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.pagination-popover input[type=number] {
+  -moz-appearance: textfield;
+}
+
 .spoiler {
     border: 1px solid rgba(0,0,0,0.1);
     border-radius: 5px;
