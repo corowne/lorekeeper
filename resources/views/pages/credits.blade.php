@@ -63,13 +63,13 @@
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:User_Transfer_Reasons"><strong>User Transfer Reasons</strong></a> by <a href="https://github.com/snupsplus">Snupsplus</a>
         </p>
         <p class="mb-0 col-md-4">
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:90_Percent_Watermark"><strong>Watermark Resizing</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
+        </p>
+        <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Watermarking"><strong>Watermarking</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
         </p>
         <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Watermarking_Image_Automation"><strong>Watermarking - Masterlist Image Automation addition</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
-        </p>
-        <p class="mb-0 col-md-4">
-            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:90_Percent_Watermark"><strong>Watermark Resizing</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
         </p>
 
         <p class="mb-0 col-md-4">
@@ -91,8 +91,14 @@
             ({{ Config::get('lorekeeper.extensions.character_TH_profile_link') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
+            <strong>Collapsible Admin Sidebar</strong> by <a href="https://github.com/ne-wt/">Newt</a> ({{ Config::get('lorekeeper.extensions.collapsible_admin_sidebar') ? 'Enabled' : 'Disabled' }})
+        </p>
+        <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Design_Update_Voting"><strong>Design Update Voting</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
             ({{ Config::get('lorekeeper.extensions.design_update_voting') ? 'Enabled' : 'Disabled' }})
+        </p>
+        <p class="mb-0 col-md-4">
+            <strong>Gravatar</strong> by <a href="https://github.com/ne-wt/">Newt</a> ({{ Config::get('lorekeeper.extensions.use_gravatar') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
             <strong>Group Traits by Category</strong> by <a href="https://github.com/preimpression">Preimpression</a> ({{ Config::get('lorekeeper.extensions.traits_by_category') ? 'Enabled' : 'Disabled' }})
@@ -124,12 +130,6 @@
         </p>
         <p class="mb-0 col-md-4">
             <strong>Staff Rewards</strong> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('lorekeeper.extensions.staff_rewards.enabled') ? 'Enabled' : 'Disabled' }})
-        </p>
-        <p class="mb-0 col-md-4">
-            <strong>Collapsible Admin Sidebar</strong> by <a href="https://github.com/ne-wt/">Newt</a> ({{ Config::get('lorekeeper.extensions.collapsible_admin_sidebar') ? 'Enabled' : 'Disabled' }})
-        </p>
-        <p class="mb-0 col-md-4">
-            <strong>Gravatar</strong> by <a href="https://github.com/ne-wt/">Newt</a> ({{ Config::get('lorekeeper.extensions.use_gravatar') ? 'Enabled' : 'Disabled' }})
         </p>
     </div>
 
