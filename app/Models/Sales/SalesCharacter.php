@@ -178,6 +178,6 @@ class SalesCharacter extends Model {
      * @return App\Models\Character\CharacterImage
      */
     public function getImageAttribute() {
-        return CharacterImage::where('is_visible', 1)->where('character_id', $this->character_id)->orderBy('created_at')->first();
+        return $this->character->image;
     }
 }
