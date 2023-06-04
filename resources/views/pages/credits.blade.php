@@ -33,7 +33,7 @@
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Deactivate_Account"><strong>Deactivate Account</strong></a> by <a href="https://github.com/preimpression">Preimpression</a>
         </p>
         <p class="mb-0 col-md-4">
-            <strong>Extended Mentions</strong> by <a href="https://github.com/SpeedyD">Speedy</a>
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Extended_Mentions"><strong>Extended Mentions</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
         </p>
         <p class="mb-0 col-md-4">
             <strong>Extension Tracker</strong> by <a href="https://github.com/preimpression">Preimpression</a> (This page/the section below!)
@@ -66,14 +66,14 @@
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Watermarking"><strong>Watermarking</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
         </p>
         <p class="mb-0 col-md-4">
-            <strong>Watermarking - Masterlist Image Automation addition</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Watermarking_Image_Automation"><strong>Watermarking - Masterlist Image Automation addition</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
         </p>
         <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:90_Percent_Watermark"><strong>Watermark Resizing</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
         </p>
 
         <p class="mb-0 col-md-4">
-            <strong>Aliases on Userpage</strong> by <a href="https://github.com/SpeedyD">Speedy</a> ({{ Config::get('lorekeeper.extensions.aliases_on_userpage') ? 'Enabled' : 'Disabled' }})
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Aliases_on_Userpage"><strong>Aliases on Userpage</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a> ({{ Config::get('lorekeeper.extensions.aliases_on_userpage') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
             <strong>Auto-populate New Image Traits</strong> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('lorekeeper.extensions.autopopulate_image_features') ? 'Enabled' : 'Disabled' }})
@@ -112,10 +112,10 @@
             <strong>Organised Traits Dropdown</strong> by <a href="https://github.com/draginraptor">Draginraptor</a> ({{ Config::get('lorekeeper.extensions.organised_traits_dropdown') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
-            <strong>Previous & Next buttons on Character pages</strong> by <a href="https://github.com/SpeedyD">Speedy</a> ({{ Config::get('lorekeeper.extensions.previous_and_next_characters.display') ? 'Enabled' : 'Disabled' }})
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Character_Prev_and_Next"><strong>Previous & Next buttons on Character pages</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a> ({{ Config::get('lorekeeper.extensions.previous_and_next_characters.display') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
-            <strong>Show All Recent Submissions</strong> by <a href="https://github.com/SpeedyD">Speedy</a>
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Gallery_Recent_Submissions"><strong>Show All Recent Submissions</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
             ({{ Config::get('lorekeeper.extensions.show_all_recent_submissions.enable') ? 'Enabled' . ((Config::get('lorekeeper.extensions.show_all_recent_submissions.links.sidebar') && Config::get('lorekeeper.extensions.show_all_recent_submissions.links.indexbutton') ? '/Both' : (Config::get('lorekeeper.extensions.show_all_recent_submissions.links.sidebar') ? '/Sidebar' : '') . (Config::get('lorekeeper.extensions.show_all_recent_submissions.links.indexbutton') ? '/Button' : '')) . (Config::get('lorekeeper.extensions.show_all_recent_submissions.section_on_front') ? '/Front' : '')) : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
