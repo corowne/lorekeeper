@@ -18,13 +18,15 @@
                     <div class="col-md-6">
                         <h3 class="text-center">Main Image</h3>
                         <div class="text-center">
-                            <a href="{{ $request->imageUrl }}?v={{ $request->updated_at->timestamp}}" data-lightbox="entry" data-title="Request #{{ $request->id }}"><img src="{{ $request->imageUrl }}?v={{ $request->updated_at->timestamp}}" class="mw-100" alt="Request {{ $request->id }}" /></a>
+                            <a href="{{ $request->imageUrl }}?v={{ $request->updated_at->timestamp }}" data-lightbox="entry" data-title="Request #{{ $request->id }}"><img src="{{ $request->imageUrl }}?v={{ $request->updated_at->timestamp }}" class="mw-100"
+                                    alt="Request {{ $request->id }}" /></a>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <h3 class="text-center">Thumbnail Image</h3>
                         <div class="text-center">
-                            <a href="{{ $request->thumbnailUrl }}?v={{ $request->updated_at->timestamp}}" data-lightbox="entry" data-title="Request #{{ $request->id }} thumbnail"><img src="{{ $request->thumbnailUrl }}?v={{ $request->updated_at->timestamp}}" class="mw-100" alt="Thumbnail for request {{ $request->id }}" /></a>
+                            <a href="{{ $request->thumbnailUrl }}?v={{ $request->updated_at->timestamp }}" data-lightbox="entry" data-title="Request #{{ $request->id }} thumbnail"><img
+                                    src="{{ $request->thumbnailUrl }}?v={{ $request->updated_at->timestamp }}" class="mw-100" alt="Thumbnail for request {{ $request->id }}" /></a>
                         </div>
                     </div>
                 </div>
