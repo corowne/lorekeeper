@@ -26,6 +26,10 @@ class PermalinkController extends Controller {
             abort(404);
         }
 
+        if (isset($comment->commentable->is_visible) && !$comment->commentable->is_visible) {
+            abort(404);
+        }
+
         // Check if the comment can be viewed
         switch ($comment->type) {
             case 'Staff-User':

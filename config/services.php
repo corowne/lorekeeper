@@ -14,27 +14,27 @@ return [
     |
     */
 
-    'mailgun' => [
+    'mailgun'    => [
         'domain'   => env('MAILGUN_DOMAIN'),
         'secret'   => env('MAILGUN_SECRET'),
         'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
     ],
 
-    'postmark' => [
+    'postmark'   => [
         'token' => env('POSTMARK_TOKEN'),
     ],
 
-    'ses' => [
+    'ses'        => [
         'key'    => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_REGION', 'us-east-1'),
     ],
 
-    'sparkpost' => [
+    'sparkpost'  => [
         'secret' => env('SPARKPOST_SECRET'),
     ],
 
-    'stripe' => [
+    'stripe'     => [
         'model'   => App\Models\User\User::class,
         'key'     => env('STRIPE_KEY'),
         'secret'  => env('STRIPE_SECRET'),
@@ -44,7 +44,7 @@ return [
         ],
     ],
 
-    'toyhouse' => [
+    'toyhouse'   => [
         'client_id'     => env('TOYHOUSE_CLIENT_ID'),
         'client_secret' => env('TOYHOUSE_CLIENT_SECRET'),
         'redirect'      => env('TOYHOUSE_REDIRECT_URI', '/auth/callback/toyhouse'),
@@ -56,37 +56,38 @@ return [
         'redirect'      => env('DEVIANTART_REDIRECT_URI', '/auth/callback/deviantart'),
     ],
 
-    'twitter' => [
+    'twitter'    => [
         'client_id'     => env('TWITTER_CLIENT_ID'),
         'client_secret' => env('TWITTER_CLIENT_SECRET'),
         'redirect'      => env('TWITTER_REDIRECT_URI', '/auth/callback/twitter'),
+        'oauth'         => 2,
     ],
 
-    'instagram' => [
+    'instagram'  => [
         'client_id'     => env('INSTAGRAM_CLIENT_ID'),
         'client_secret' => env('INSTAGRAM_CLIENT_SECRET'),
         'redirect'      => env('INSTAGRAM_REDIRECT_URI', '/auth/callback/instagram'),
     ],
 
-    'tumblr' => [
+    'tumblr'     => [
         'client_id'     => env('TUMBLR_CLIENT_ID'),
         'client_secret' => env('TUMBLR_CLIENT_SECRET'),
         'redirect'      => env('TUMBLR_REDIRECT_URI', '/auth/callback/tumblr'),
     ],
 
-    'imgur' => [
+    'imgur'      => [
         'client_id'     => env('IMGUR_CLIENT_ID'),
         'client_secret' => env('IMGUR_CLIENT_SECRET'),
         'redirect'      => env('IMGUR_REDIRECT_URI', '/auth/callback/imgur'),
     ],
 
-    'twitch' => [
+    'twitch'     => [
         'client_id'     => env('TWITCH_CLIENT_ID'),
         'client_secret' => env('TWITCH_CLIENT_SECRET'),
         'redirect'      => env('TWITCH_REDIRECT_URI', '/auth/callback/twitch'),
     ],
 
-    'discord' => [
+    'discord'    => [
         'client_id'     => env('DISCORD_CLIENT_ID'),
         'client_secret' => env('DISCORD_CLIENT_SECRET'),
         'redirect'      => env('DISCORD_REDIRECT_URI', '/auth/callback/discord'),

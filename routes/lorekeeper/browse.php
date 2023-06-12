@@ -159,6 +159,7 @@ Route::get('comment/{id}', 'PermalinkController@getComment');
 **************************************************************************************************/
 Route::group(['prefix' => 'gallery'], function () {
     Route::get('/', 'GalleryController@getGalleryIndex');
+    Route::get('all', 'GalleryController@getAll');
     Route::get('{id}', 'GalleryController@getGallery');
     Route::get('view/{id}', 'GalleryController@getSubmission');
     Route::get('view/favorites/{id}', 'GalleryController@getSubmissionFavorites');

@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'Admin' => [
+    'Admin'      => [
         'power' => 'admin',
         'links' => [
             [
@@ -31,7 +31,7 @@ return [
             ],
         ],
     ],
-    'Reports' => [
+    'Reports'    => [
         'power' => 'manage_reports',
         'links' => [
             [
@@ -40,7 +40,7 @@ return [
             ],
         ],
     ],
-    'Site' => [
+    'Site'       => [
         'power' => 'edit_pages',
         'links' => [
             [
@@ -57,7 +57,7 @@ return [
             ],
         ],
     ],
-    'Users' => [
+    'Users'      => [
         'power' => 'edit_user_info',
         'links' => [
             [
@@ -70,7 +70,7 @@ return [
             ],
         ],
     ],
-    'Queues' => [
+    'Queues'     => [
         'power' => 'manage_submissions',
         'links' => [
             [
@@ -91,7 +91,7 @@ return [
             ],
         ],
     ],
-    'Grants' => [
+    'Grants'     => [
         'power' => 'edit_inventories',
         'links' => [
             [
@@ -133,7 +133,7 @@ return [
             ],
         ],
     ],
-    'Data' => [
+    'Data'       => [
         'power' => 'edit_data',
         'links' => [
             [
@@ -186,7 +186,7 @@ return [
             ],
         ],
     ],
-    'Raffles' => [
+    'Raffles'    => [
         'power' => 'manage_raffles',
         'links' => [
             [
@@ -195,7 +195,7 @@ return [
             ],
         ],
     ],
-    'Settings' => [
+    'Settings'   => [
         'power' => 'edit_site_settings',
         'links' => [
             [

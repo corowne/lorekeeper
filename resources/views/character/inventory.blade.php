@@ -28,8 +28,9 @@
         <div class="card mb-3 inventory-category">
             <h5 class="card-header inventory-header">
                 {!! isset($categories[$categoryId]) ? '<a href="' . $categories[$categoryId]->searchUrl . '">' . $categories[$categoryId]->name . '</a>' : 'Miscellaneous' !!}
+                <a class="small inventory-collapse-toggle collapse-toggle" href="#categoryId_{!! isset($categories[$categoryId]) ? $categories[$categoryId]->id : 'miscellaneous' !!}" data-toggle="collapse">Show</a>
             </h5>
-            <div class="card-body inventory-body">
+            <div class="card-body inventory-body collapse show" id="categoryId_{!! isset($categories[$categoryId]) ? $categories[$categoryId]->id : 'miscellaneous' !!}">
                 @foreach ($categoryItems->chunk(4) as $chunk)
                     <div class="row mb-3">
                         @foreach ($chunk as $itemId => $stack)

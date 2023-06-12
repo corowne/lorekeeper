@@ -45,7 +45,7 @@ class SalesService extends Service {
             // The character identification comes in both the slug field and as character IDs
             // First, check if the characters are accessible to begin with.
             if (isset($data['slug'])) {
-                $characters = Character::myo(0)->visible()->whereIn('slug', $data['slug'])->get();
+                $characters = Character::myo(0)->whereIn('slug', $data['slug'])->get();
                 if (count($characters) != count($data['slug'])) {
                     throw new \Exception('One or more of the selected characters do not exist.');
                 }
@@ -99,7 +99,7 @@ class SalesService extends Service {
             // The character identification comes in both the slug field and as character IDs
             // First, check if the characters are accessible to begin with.
             if (isset($data['slug'])) {
-                $characters = Character::myo(0)->visible()->whereIn('slug', $data['slug'])->get();
+                $characters = Character::myo(0)->whereIn('slug', $data['slug'])->get();
                 if (count($characters) != count($data['slug'])) {
                     throw new \Exception('One or more of the selected characters do not exist.');
                 }
@@ -178,7 +178,7 @@ class SalesService extends Service {
      */
     private function processCharacters($sales, $data) {
         foreach ($data['slug'] as $key=> $slug) {
-            $character = Character::myo(0)->visible()->where('slug', $slug)->first();
+            $character = Character::myo(0)->where('slug', $slug)->first();
 
             // Assemble data
             $charData[$key] = [];

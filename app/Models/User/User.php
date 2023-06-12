@@ -29,7 +29,7 @@ class User extends Authenticatable implements MustVerifyEmail {
      * @var array
      */
     protected $fillable = [
-        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned', 'has_alias', 'avatar', 'is_sales_unread', 'birthday',
+        'name', 'alias', 'rank_id', 'email', 'email_verified_at', 'password', 'is_news_unread', 'is_banned', 'has_alias', 'avatar', 'is_sales_unread', 'birthday',
         'is_deactivated', 'deactivater_id',
     ];
 
@@ -78,7 +78,7 @@ class User extends Authenticatable implements MustVerifyEmail {
 
         RELATIONS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Get user settings.
@@ -189,7 +189,7 @@ class User extends Authenticatable implements MustVerifyEmail {
 
         SCOPES
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Scope a query to only include visible (non-banned) users.
@@ -217,7 +217,7 @@ class User extends Authenticatable implements MustVerifyEmail {
 
         ACCESSORS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Get the user's alias.
@@ -234,6 +234,10 @@ class User extends Authenticatable implements MustVerifyEmail {
      * @return bool
      */
     public function getHasAliasAttribute() {
+        if (!config('lorekeeper.settings.require_alias')) {
+            return true;
+        }
+
         return $this->attributes['has_alias'];
     }
 
@@ -317,6 +321,9 @@ class User extends Authenticatable implements MustVerifyEmail {
      * @return string
      */
     public function getDisplayAliasAttribute() {
+        if (!config('lorekeeper.settings.require_alias') && !$this->attributes['has_alias']) {
+            return '(No Alias)';
+        }
         if (!$this->hasAlias) {
             return '(Unverified)';
         }
@@ -331,6 +338,28 @@ class User extends Authenticatable implements MustVerifyEmail {
      */
     public function getAvatar() {
         return $this->avatar;
+    }
+
+    /**
+     * Gets the display URL for a user's avatar, or the default avatar if they don't have one.
+     *
+     * @return url
+     */
+    public function getAvatarUrlAttribute() {
+        if ($this->avatar == 'default.jpg' && Config::get('lorekeeper.extensions.use_gravatar')) {
+            // check if a gravatar exists
+            $hash = md5(strtolower(trim($this->email)));
+            $url = 'https://www.gravatar.com/avatar/'.$hash.'??d=mm&s=200';
+            $headers = @get_headers($url);
+
+            if (!preg_match('|200|', $headers[0])) {
+                return url('images/avatars/default.jpg');
+            } else {
+                return 'https://www.gravatar.com/avatar/'.$hash.'?d=mm&s=200';
+            }
+        }
+
+        return url('images/avatars/'.$this->avatar);
     }
 
     /**
@@ -390,7 +419,7 @@ class User extends Authenticatable implements MustVerifyEmail {
 
         OTHER FUNCTIONS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Checks if the user can edit the given rank.
@@ -530,7 +559,7 @@ class User extends Authenticatable implements MustVerifyEmail {
      * Checks if there are characters credited to the user's alias and updates ownership to their account accordingly.
      */
     public function updateCharacters() {
-        if (!$this->hasAlias) {
+        if (!$this->attributes['has_alias']) {
             return;
         }
 
@@ -563,7 +592,7 @@ class User extends Authenticatable implements MustVerifyEmail {
      * Checks if there are art or design credits credited to the user's alias and credits them to their account accordingly.
      */
     public function updateArtDesignCredits() {
-        if (!$this->hasAlias) {
+        if (!$this->attributes['has_alias']) {
             return;
         }
 

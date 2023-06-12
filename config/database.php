@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default'     => env('DB_CONNECTION', 'mysql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -40,7 +40,7 @@ return [
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
 
-        'mysql' => [
+        'mysql'  => [
             'driver'         => 'mysql',
             'host'           => env('DB_HOST', '127.0.0.1'),
             'port'           => env('DB_PORT', '3306'),
@@ -59,7 +59,7 @@ return [
             ]),
         ],
 
-        'pgsql' => [
+        'pgsql'  => [
             'driver'         => 'pgsql',
             'host'           => env('DB_HOST', '127.0.0.1'),
             'port'           => env('DB_PORT', '5432'),
@@ -98,7 +98,7 @@ return [
     |
     */
 
-    'migrations' => 'migrations',
+    'migrations'  => 'migrations',
 
     /*
     |--------------------------------------------------------------------------
@@ -111,9 +111,9 @@ return [
     |
     */
 
-    'redis' => [
+    'redis'       => [
 
-        'client' => env('REDIS_CLIENT', 'predis'),
+        'client'  => env('REDIS_CLIENT', 'predis'),
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'predis'),
@@ -126,7 +126,7 @@ return [
             'database' => env('REDIS_DB', 0),
         ],
 
-        'cache' => [
+        'cache'   => [
             'host'     => env('REDIS_HOST', '127.0.0.1'),
             'password' => env('REDIS_PASSWORD', null),
             'port'     => env('REDIS_PORT', 6379),

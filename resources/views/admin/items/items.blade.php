@@ -26,7 +26,7 @@
             {!! Form::text('name', Request::get('name'), ['class' => 'form-control', 'placeholder' => 'Name']) !!}
         </div>
         <div class="form-group mr-3 mb-3">
-            {!! Form::select('item_category_id', $categories, Request::get('name'), ['class' => 'form-control']) !!}
+            {!! Form::select('item_category_id', $categories, Request::get('item_category_id'), ['class' => 'form-control']) !!}
         </div>
         <div class="form-group mb-3">
             {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
@@ -54,7 +54,12 @@
                     <div class="logs-table-row">
                         <div class="row flex-wrap">
                             <div class="col-5 col-md-6">
-                                <div class="logs-table-cell">{{ $item->name }}</div>
+                                <div class="logs-table-cell">
+                                    @if (!$item->is_released)
+                                        <i class="fas fa-eye-slash mr-1"></i>
+                                    @endif
+                                    {{ $item->name }}
+                                </div>
                             </div>
                             <div class="col-4 col-md-5">
                                 <div class="logs-table-cell">{{ $item->category ? $item->category->name : '' }}</div>

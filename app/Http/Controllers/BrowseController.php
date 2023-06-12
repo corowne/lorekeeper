@@ -146,8 +146,8 @@ class BrowseController extends Controller {
 
         if ($sublists = Sublist::where('show_main', 0)->get()) {
             $subCategories = [];
+            $subSpecies = [];
         }
-        $subSpecies = [];
         foreach ($sublists as $sublist) {
             $subCategories = array_merge($subCategories, $sublist->categories->pluck('id')->toArray());
             $subSpecies = array_merge($subSpecies, $sublist->species->pluck('id')->toArray());
@@ -305,9 +305,9 @@ class BrowseController extends Controller {
         return view('browse.masterlist', [
             'isMyo'       => false,
             'characters'  => $query->paginate(24)->appends($request->query()),
-            'categories'  => [0 => 'Any Category'] + CharacterCategory::whereNotIn('id', $subCategories)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'specieses'   => [0 => 'Any Species'] + Species::whereNotIn('id', $subSpecies)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes'    => [0 => 'Any Subtype'] + Subtype::orderBy('subtypes.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'categories'  => [0 => 'Any Category'] + CharacterCategory::whereNotIn('id', $subCategories)->visible(Auth::check() ? Auth::user() : null)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'specieses'   => [0 => 'Any Species'] + Species::whereNotIn('id', $subSpecies)->visible(Auth::check() ? Auth::user() : null)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes'    => [0 => 'Any Subtype'] + Subtype::visible(Auth::check() ? Auth::user() : null)->orderBy('subtypes.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities'    => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features'    => Feature::getDropdownItems(),
             'sublists'    => Sublist::orderBy('sort', 'DESC')->get(),
@@ -433,7 +433,7 @@ class BrowseController extends Controller {
         return view('browse.myo_masterlist', [
             'isMyo'       => true,
             'slots'       => $query->paginate(30)->appends($request->query()),
-            'specieses'   => [0 => 'Any Species'] + Species::orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'specieses'   => [0 => 'Any Species'] + Species::visible(Auth::check() ? Auth::user() : null)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities'    => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features'    => Feature::getDropdownItems(),
             'sublists'    => Sublist::orderBy('sort', 'DESC')->get(),
@@ -613,11 +613,11 @@ class BrowseController extends Controller {
 
         $subCategory = CharacterCategory::where('masterlist_sub_id', $sublist->id)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray();
         if (!$subCategory) {
-            $subCategory = CharacterCategory::orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray();
+            $subCategory = CharacterCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray();
         }
         $subSpecies = Species::where('masterlist_sub_id', $sublist->id)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray();
         if (!$subSpecies) {
-            $subSpecies = Species::orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray();
+            $subSpecies = Species::visible(Auth::check() ? Auth::user() : null)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray();
         }
 
         return view('browse.sub_masterlist', [
@@ -625,7 +625,7 @@ class BrowseController extends Controller {
             'characters'  => $query->paginate(24)->appends($request->query()),
             'categories'  => [0 => 'Any Category'] + $subCategory,
             'specieses'   => [0 => 'Any Species'] + $subSpecies,
-            'subtypes'    => [0 => 'Any Subtype'] + Subtype::orderBy('subtypes.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes'    => [0 => 'Any Subtype'] + Subtype::visible(Auth::check() ? Auth::user() : null)->orderBy('subtypes.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities'    => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features'    => Feature::getDropdownItems(),
             'sublist'     => $sublist,
