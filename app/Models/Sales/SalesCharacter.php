@@ -60,6 +60,13 @@ class SalesCharacter extends Model {
         return $this->belongsTo('App\Models\Character\Character', 'character_id');
     }
 
+    /**
+     * Get the image being attached to the sale.
+     */
+    public function image() {
+        return $this->belongsTo('App\Models\Character\CharacterImage', 'image_id');
+    }
+
     /**********************************************************************************************
 
         ACCESSORS
@@ -178,6 +185,8 @@ class SalesCharacter extends Model {
      * @return App\Models\Character\CharacterImage
      */
     public function getImageAttribute() {
-        return $this->image_id ? CharacterImage::find($this->image_id) : CharacterImage::where('is_visible', 1)->where('character_id', $this->character_id)->orderBy('created_at')->first();
+        // Have to call the relationship function or it doesn't grab it correctly
+        // likely because of the function name override
+        return $this->image()->first() ?? CharacterImage::where('is_visible', 1)->where('character_id', $this->character_id)->orderBy('created_at')->first();
     }
 }

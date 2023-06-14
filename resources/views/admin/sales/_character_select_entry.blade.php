@@ -7,6 +7,7 @@
                     <div class="character-image-blank hide">Enter character code.</div>
                     <div class="character-image-loaded">
                         @include('home._character', ['character' => $character->character])
+                        {!! Form::hidden('image_id', $character->image_id) !!}
                     </div>
                 </div>
             </div>
