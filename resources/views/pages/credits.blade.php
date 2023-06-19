@@ -131,7 +131,7 @@
         </p>
         <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Species_Trait_Index"><strong>Species Trait Index</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
-            ({{ Config::get('lorekeeper.extensions.species_trait_index') ? 'Enabled' : 'Disabled' }})
+            ({{ Config::get('lorekeeper.extensions.species_trait_index.enable') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
             <strong>Staff Rewards</strong> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('lorekeeper.extensions.staff_rewards.enabled') ? 'Enabled' : 'Disabled' }})
