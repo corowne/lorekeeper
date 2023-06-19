@@ -281,14 +281,20 @@ class WorldController extends Controller {
     /**
      * Provides a single trait's description html for use in a modal.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param mixed $speciesId
+     * @param mixed $id
+     *
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getSpeciesFeatureDetail($speciesId, $id) {
         $feature = Feature::where('id', $id)->first();
 
-        if (!$feature) abort(404);
-        if (!Config::get('lorekeeper.extensions.species_trait_index.trait_modals')) abort(404);
+        if (!$feature) {
+            abort(404);
+        }
+        if (!Config::get('lorekeeper.extensions.species_trait_index.trait_modals')) {
+            abort(404);
+        }
 
         return view('world._feature_entry', [
             'feature' => $feature,
