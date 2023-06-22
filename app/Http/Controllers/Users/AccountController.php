@@ -84,6 +84,7 @@ class AccountController extends Controller {
                 flash($error)->error();
             }
         }
+        
         return redirect()->back();
     }
 
