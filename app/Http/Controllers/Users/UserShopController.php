@@ -67,7 +67,7 @@ class UserShopController extends Controller
         return view('home.user_shops.create_edit_shop', [
             'shop' => $shop,
             'items' => Item::orderBy('name')->pluck('name', 'id'),
-            'currencies' => Currency::orderBy('name')->pluck('name', 'id'),
+            'currencies' => Currency::where('is_user_owned', 1)->where('allow_user_to_user', 1)->orderBy('name')->pluck('name', 'id'),
         ]);
     }
 
