@@ -31,7 +31,7 @@
                 {!! Form::hidden('user_shop_id', $shop->id) !!}
                 {!! Form::hidden('stock_id', $stock->id) !!}
                 {!! Form::label('quantity', 'Quantity') !!}
-                {!! Form::selectRange('quantity', 1, ['class' => 'form-control mb-3']) !!}
+                {!! Form::selectRange('quantity', 1, $stock->quantity, 1, ['class' => 'form-control mb-3']) !!}
                     <p>This item will be paid for using your user account bank.</p>
                     {!! Form::hidden('bank', 'user') !!}
                 <div class="text-right">
