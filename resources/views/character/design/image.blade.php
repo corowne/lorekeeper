@@ -168,8 +168,8 @@
 
         {!! Form::close() !!}
     @endif
-    
-    
+
+
     <div class="designer-row hide mb-2">
         {!! Form::select('designer_id[]', $users, null, ['class' => 'form-control mr-2 designer-select', 'placeholder' => 'Select a Designer']) !!}
         {!! Form::text('designer_url[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Designer URL']) !!}
