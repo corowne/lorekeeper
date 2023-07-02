@@ -18,7 +18,7 @@
 
 <div class="text-center">
     @if($shop->shopImageUrl)
-    <img src="{{ $shop->shopImageUrl }}" style="max-width:100%" alt="{{ $shop->name }}" />
+        <img src="{{ $shop->shopImageUrl }}" style="max-width:50%;" alt="{{ $shop->name }}"/>
     @endif
     <p>{!! $shop->parsed_description !!}</p>
 </div>

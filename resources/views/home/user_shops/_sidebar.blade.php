@@ -12,7 +12,7 @@
 
     <li class="sidebar-section">
         <div class="sidebar-section-header">User Shops</div>
-        <div class="sidebar-item"><a href="{{ url('usershops') }}" class="{{ set_active('usershops*') }}">My Shops</a></div>
+        <div class="sidebar-item"><a href="{{ url('usershops') }}" class="{{ set_active('usershops') }}">My Shops</a></div>
         <div class="sidebar-item"><a href="{{ url('usershops/shop-index') }}" class="{{ set_active('usershops/shop-index*') }}">All User Shops</a></div>
         <div class="sidebar-item"><a href="{{ url('usershops/item-search') }}" class="{{ set_active('usershops/item-search*') }}">Search For Item</a></div>
 </li>

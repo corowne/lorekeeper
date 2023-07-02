@@ -93,7 +93,7 @@
                         </div>
                     </li>
                 @endif
-                
+                @if(!isset($item->category) && $item->allow_transfer || isset($item->category) && $item->category->can_user_sell == 1  && $item->allow_transfer || Auth::user()->hasPower('edit_inventories'))
                 <li class="list-group-item">
                         <a class="card-title h5 collapse-title" data-toggle="collapse" href="#shoptransferForm">@if($stack->first()->user_id != $user->id) [ADMIN] @endif Transfer Item to Shop</a>
                         <div id="shoptransferForm" class="collapse">
@@ -106,6 +106,7 @@
                             </div>
                         </div>
                     </li>
+                @endif
                 @if(isset($item->data['resell']) && App\Models\Currency\Currency::where('id', $item->resell->flip()->pop())->first() && Config::get('lorekeeper.extensions.item_entry_expansion.resale_function'))
                     <li class="list-group-item">
                         <a class="card-title h5 collapse-title" data-toggle="collapse" href="#resellForm">@if($stack->first()->user_id != $user->id) [ADMIN] @endif Sell Item</a>
