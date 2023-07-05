@@ -3,15 +3,15 @@
     {{ Form::hidden('user_shop_id', $shop->id) }}
         <table class="table table-sm">
             <thead class="thead">
-                <tr class="d-flex">
-                    <th class="col-2">Quantity</th>
-                    <th class="col-1"><i class="fas fa-lock invisible"></i></th>
+                <tr>
+                    <th>Remove?</th>
+                    <th>Quantity</th>
                 </tr>
             </thead>
             <tbody>
                     <tr id ="stock{{ $stock->id }}">
-                        <td class="col-1">{!! Form::checkbox('ids[]', $stock->id, false, ['class' => 'item-check', 'onclick' => 'updateQuantities(this)']) !!}</td>
-                        <td class="col-2">{!! Form::selectRange('', 1, $stock->quantity, 1, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;']) !!}</td>
+                        <td>{!! Form::checkbox('ids[]', $stock->id, false, ['class' => 'item-check', 'onclick' => 'updateQuantities(this)']) !!}</td>
+                        <td>{!! Form::selectRange('', 1, $stock->quantity, 1, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;']) !!}</td>
                     </tr>
             </tbody>
         </table>
