@@ -40,7 +40,7 @@ class UserShopController extends Controller
         $sort = $request->only(['sort']);
 
         if($request->get('name')) $query->where(function($query) use ($request) {
-            $query->where('shops.name', 'LIKE', '%' . $request->get('name') . '%');
+            $query->where('name', 'LIKE', '%' . $request->get('name') . '%');
         }); 
 
         switch(isset($sort['sort']) ? $sort['sort'] : null) {
