@@ -62,7 +62,7 @@ class UserShopStock extends Model
      */
     public function shop() 
     {
-        return $this->belongsTo('App\Models\Shop\UserShop');
+        return $this->belongsTo('App\Models\Shop\UserShop', 'user_shop_id');
     }
     
     /**

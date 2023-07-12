@@ -66,7 +66,7 @@
                         </div>
                     @endif
                     <div class="col-{{ $stock->item->has_image ? '9' : '12' }}">
-                        <div><a href="{{ $stock->item->idUrl }}"><strong>{{ $stock->item->name }} - {{ $stock->stock_type }}</strong></a>  @if(!$stock->is_visible)<i class="fas fa-eye-slash"></i>@endif</div>
+                        <div><a href="{{ $stock->item->idUrl }}"><strong>{{ $stock->item->name }} - {{ $stock->stock_type }}</strong></a>  @if(!$stock->is_visible)<i class="fas fa-eye-slash"></i>@endif <a href="{{ url('usershops/item-search?item_id=' . $stock->item->id) }}"><i class="fas fa-search"></i></a></div>
                         <div><strong>Quantity: </strong> {!! $stock->quantity !!}</div>
                     </div>
                 </div> 

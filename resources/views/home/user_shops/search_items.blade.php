@@ -30,9 +30,9 @@
       <div class="col-4 col-md-3 font-weight-bold">Quantity</div> 
       <div class="col-4 col-md-3 font-weight-bold">Cost</div> 
     </div>
-    @foreach($shops as $shop)
+    @foreach($shopItems as $itemStock)
     @php 
-    $itemStock = $shop->stock->where('user_shop_id', $shop->id)->where('item_id', $item->id)->first();
+    $shop = $itemStock->shop;
     @endphp
     <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-top">
       <div class="col-12 col-md-3 ">{!! $shop->displayName !!}</div>

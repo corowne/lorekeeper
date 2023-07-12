@@ -230,7 +230,7 @@ class UserShopController extends Controller
 
         if($item) {
             // Gather all instances of this item
-            $shopItems = UserShopStock::where('item_id', $item->id)->where('stock_type', 'Item')->where('is_visible', 1)->where('quantity', '>', 0)->get();
+            $shopItems = UserShopStock::where('item_id', $item->id)->where('stock_type', 'Item')->where('is_visible', 1)->where('quantity', '>', 0)->orderBy('cost', 'ASC')->get();
             $shops = UserShop::whereIn('id', $shopItems->pluck('user_shop_id')->toArray())->orderBy('name', 'ASC')->get()->paginate(20);
         }
 
