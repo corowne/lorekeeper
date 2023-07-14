@@ -65,7 +65,7 @@ class SubmissionManager extends Service
             $submission = Submission::create([
                 'user_id'   => $user->id,
                 'url'       => isset($data['url']) ? $data['url'] : null,
-                'status'    => 'Pending',
+                'status'    => $isDraft ? 'Draft' : 'Pending',
                 'comments'  => $data['comments'],
                 'data'      => null,
             ] + ($isClaim ? [] : ['prompt_id' => $prompt->id,]));
@@ -84,8 +84,6 @@ class SubmissionManager extends Service
 
             // Set characters that have been attached.
             $this->createCharacterAttachments($submission, $data);
-
-            if($isDraft) $submission->update(['status' => 'Draft']);
 
             return $this->commitReturn($submission);
         } catch(\Exception $e) {
@@ -558,7 +556,7 @@ class SubmissionManager extends Service
 
         // Get a list of rewards, then create the submission itself
         $promptRewards = createAssetsArray();
-        if(isset($submission->prompt_id) && $submission->prompt_id) {
+        if($submission->status == 'Pending' && isset($submission->prompt_id) && $submission->prompt_id) {
             foreach ($submission->prompt->rewards as $reward)
             {
                 addAsset($promptRewards, $reward->reward, $reward->quantity);
