@@ -1,6 +1,6 @@
 <?php
 return [
-    
+
     // FORMAT EXAMPLE.
     //
     // 'extension_tracker' => [
@@ -11,6 +11,15 @@ return [
     //     ]),
     //     'version' => '1.0.0',
     // ],
-    
+
+    'submission_drafts' => [
+        'key' => 'submission_drafts',
+        'wiki_key' => 'Submission_Drafts',
+        'creators' => json_encode([
+            'Uri' => 'https://github.com/preimpression/',
+        ]),
+        'version' => '2.0.0',
+    ],
+
 
 ];
