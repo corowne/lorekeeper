@@ -217,8 +217,10 @@ class SubmissionController extends Controller
         $request->validate(Submission::$updateRules);
         if ($submit && $service->editSubmission($submission, $request->only(['url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity']), Auth::user(), false, $submit)) {
             flash('Draft submitted successfully.')->success();
+            return redirect()->back();
         } else if ($service->editSubmission($submission, $request->only(['url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity']), Auth::user())) {
             flash('Draft saved successfully.')->success();
+            return redirect()->back();
         } else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
             return redirect()->back();

@@ -397,16 +397,26 @@ class SubmissionManager extends Service
             if(isset($data['staff_comments']) && $data['staff_comments']) $data['parsed_staff_comments'] = parse($data['staff_comments']);
             else $data['parsed_staff_comments'] = null;
 
+            $assets         = $submission->data;
+            $userAssets     = $assets['user'];
+            // Remove prompt-only rewards
+            $promptRewards  = $this->removePromptAttachments($submission);
+
             if($user->id != $submission->user_id) {
                 // The only things we need to set are:
                 // 1. staff comment
                 // 2. staff ID
                 // 3. status
                 $submission->update([
-                    'staff_comments' => $data['staff_comments'],
+                    'staff_comments'        => $data['staff_comments'],
                     'parsed_staff_comments' => $data['parsed_staff_comments'],
-                    'staff_id' => $user->id,
-                    'status' => 'Draft'
+                    'updated_at' => Carbon::now(),
+                    'staff_id'   => $user->id,
+                    'status'     => 'Draft',
+                    'data'       => json_encode([
+                        'user'      => $userAssets,
+                        'rewards'   => getDataReadyAssets($promptRewards)
+                        ]) // list of rewards and addons
                 ]);
 
                 Notifications::create($submission->prompt_id ? 'SUBMISSION_CANCELLED' : 'CLAIM_CANCELLED', $submission->user, [
@@ -416,13 +426,13 @@ class SubmissionManager extends Service
                 ]);
             } else {
                 // This is when a user cancels their own submission back into draft form
-
-                // The only things we need to set are:
-                // 1. staff comment
-                // 2. staff ID
-                // 3. status
                 $submission->update([
-                    'status' => 'Draft'
+                    'status'     => 'Draft',
+                    'updated_at' => Carbon::now(),
+                    'data'       => json_encode([
+                        'user'      => $userAssets,
+                        'rewards'   => getDataReadyAssets($promptRewards)
+                        ]) // list of rewards and addons
                 ]);
             }
 
@@ -465,6 +475,8 @@ class SubmissionManager extends Service
             $this->removeAttachments($submission);
             SubmissionCharacter::where('submission_id',$submission->id)->delete();
 
+            if($isSubmit) $submission->update(['status' => 'Pending']);
+
             // Then, re-attach everything fresh.
             $assets         = $this->createUserAttachments($submission, $data, $user);
             $userAssets     = $assets['userAssets'];
@@ -473,15 +485,15 @@ class SubmissionManager extends Service
 
             // Modify submission
             $submission->update([
-                'url' => isset($data['url']) ? $data['url'] : null,
-                'comments' => $data['comments'],
-                'data' => json_encode([
-                    'user' => Arr::only(getDataReadyAssets($userAssets), ['user_items','currencies']),
-                    'rewards' => getDataReadyAssets($promptRewards)
+                'url'           => isset($data['url']) ? $data['url'] : null,
+                'updated_at'    => Carbon::now(),
+                'comments'      => $data['comments'],
+                'data'          => json_encode([
+                    'user'          => Arr::only(getDataReadyAssets($userAssets), ['user_items','currencies']),
+                    'rewards'       => getDataReadyAssets($promptRewards)
                     ]) // list of rewards and addons
             ] + ($isClaim ? [] : ['prompt_id' => $prompt->id,]));
 
-            if($isSubmit) $submission->update(['status' => 'Pending']);
 
             return $this->commitReturn($submission);
         } catch(\Exception $e) {
@@ -557,8 +569,7 @@ class SubmissionManager extends Service
         // Get a list of rewards, then create the submission itself
         $promptRewards = createAssetsArray();
         if($submission->status == 'Pending' && isset($submission->prompt_id) && $submission->prompt_id) {
-            foreach ($submission->prompt->rewards as $reward)
-            {
+            foreach ($submission->prompt->rewards as $reward) {
                 addAsset($promptRewards, $reward->reward, $reward->quantity);
             }
         }
@@ -568,6 +579,21 @@ class SubmissionManager extends Service
             'userAssets'    => $userAssets,
             'promptRewards' =>  $promptRewards,
         ];
+    }
+
+
+    private function removePromptAttachments($submission)
+    {
+        $assets         = $submission->data;
+        // Get a list of rewards, then create the submission itself
+        $promptRewards = createAssetsArray();
+        $promptRewards = mergeAssetsArrays($promptRewards, parseAssetData($assets['rewards']));
+        if(isset($submission->prompt_id) && $submission->prompt_id) {
+            foreach ($submission->prompt->rewards as $reward) {
+                removeAsset($promptRewards, $reward->reward, $reward->quantity);
+            }
+        }
+        return $promptRewards;
     }
 
 
