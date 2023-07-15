@@ -188,11 +188,11 @@ class SubmissionController extends Controller
         if($submission = $service->createSubmission($request->only(['url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity']), Auth::user(), false, $draft)) {
             if($submission->status == 'Draft') {
                 flash('Draft created successfully.')->success();
-                return redirect()->back();
+                return redirect()->to('submissions/draft/'.$submission->id);
             }
             else {
                 flash('Prompt submitted successfully.')->success();
-                return redirect()->to('submissions');
+                return redirect()->to('submissions/view/'.$submission->id);
             }
         }
         else {
@@ -217,7 +217,6 @@ class SubmissionController extends Controller
         $request->validate(Submission::$updateRules);
         if ($submit && $service->editSubmission($submission, $request->only(['url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity']), Auth::user(), false, $submit)) {
             flash('Draft submitted successfully.')->success();
-            return redirect()->back();
         } else if ($service->editSubmission($submission, $request->only(['url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity']), Auth::user())) {
             flash('Draft saved successfully.')->success();
             return redirect()->back();
@@ -393,11 +392,11 @@ class SubmissionController extends Controller
         if($submission = $service->createSubmission($request->only(['url', 'comments', 'stack_id', 'stack_quantity', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type','rewardable_id', 'quantity', 'currency_id', 'currency_quantity']), Auth::user(), true, $draft)) {
             if($submission->status == 'Draft') {
                 flash('Draft created successfully.')->success();
-                return redirect()->back();
+                return redirect()->to('claims/draft/'.$submission->id);
             }
             else {
                 flash('Claim submitted successfully.')->success();
-                return redirect()->to('claims');
+                return redirect()->to('claims/view/'.$submission->id);
             }
         }
         else {
@@ -422,6 +421,7 @@ class SubmissionController extends Controller
         $request->validate(Submission::$createRules);
         if($submit && $service->editSubmission($submission, $request->only(['url', 'comments', 'stack_id', 'stack_quantity', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type','rewardable_id', 'quantity', 'currency_id', 'currency_quantity']), Auth::user(), true, $submit)) {
             flash('Draft submitted successfully.')->success();
+            return redirect()->to('claims/draft/'.$submission->id);
         } else if ($service->editSubmission($submission, $request->only(['url', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity']), Auth::user(), true)) {
             flash('Draft saved successfully.')->success();
         } else {
