@@ -36,7 +36,7 @@ class UserShopController extends Controller
      */
     public function getIndex(Request $request)
     {
-        $query = UserShop::visible();
+        $query = UserShop::visible(Auth::check() ? Auth::user() : null);
         $sort = $request->only(['sort']);
 
         if($request->get('name')) $query->where(function($query) use ($request) {

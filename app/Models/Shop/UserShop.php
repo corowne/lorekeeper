@@ -88,10 +88,22 @@ class UserShop extends Model
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeVisible($query, $withHidden = 0)
-    {
-        if($withHidden) return $query;
+    public function scopeVisible($query, $user = null) {
+        if ($user && $user->hasPower('edit_inventories')) {
+            return $query;
+        }
+
         return $query->where('is_active', 1);
+    }
+
+    /**
+     * Gets the user's log type for log creation.
+     *
+     * @return string
+     */
+    public function getLogTypeAttribute()
+    {
+        return 'Shop';
     }
 
     /**********************************************************************************************
@@ -107,7 +119,7 @@ class UserShop extends Model
      */
     public function getDisplayNameAttribute()
     {
-        return '<a href="'.$this->url.'" class="display-shop">'.$this->name.'</a>';
+        return (!$this->is_active ? '<i class="fas fa-eye-slash mr-1"></i>' : '') .'<a href="'.$this->url.'" class="display-shop">'.$this->name.'</a>';
     }
 
     /**

@@ -198,7 +198,8 @@ class UserShopController extends Controller
      */
     public function postRemoveStock(Request $request, InventoryManager $service)
     {
-        if($service->sendShop(UserShop::where('id', $request->get('user_shop_id'))->first(), Auth::user(), UserShopStock::find($request->get('ids')), $request->get('quantities'))) {
+        $shop = UserShop::where('id', $request->get('user_shop_id'))->first();
+        if($service->sendShop($shop, $shop->user, UserShopStock::find($request->get('ids')), $request->get('quantities'))) {
             flash('Item transferred successfully.')->success();
         }
         else {

@@ -167,7 +167,9 @@ class UserShopService extends Service
 
         try {
              
-            if($shop->stock->count()) throw new \Exception("This shop currently has items stocked. Please remove them and try again.");
+            if($shop->stock->where('quantity', '>', 0)->count()) throw new \Exception("This shop currently has items stocked. Please remove them and try again.");
+            //delete the 0 stock items or the shop cannot be deleted
+            $shop->stock()->delete();
 
             if($shop->has_image) $this->deleteImage($shop->shopImagePath, $shop->shopImageFileName); 
             $shop->delete();

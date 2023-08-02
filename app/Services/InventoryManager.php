@@ -564,7 +564,6 @@ class InventoryManager extends Service
                 if(!$sender) throw new \Exception("Invalid sender selected.");
 
                 if($recipient->logType == 'Shop' && $sender->logType == 'Shop') throw new \Exception("Cannot transfer items between shops.");
-                if($recipient->logType == 'Shop' && !$sender->hasPower('edit_inventories') && !$recipient->is_visible) throw new \Exception("Invalid shop selected.");
                 if(!$stacks) throw new \Exception("Invalid stack selected.");
                 if($sender->logType == 'Shop' && $quantity <= 0 && $stack->count > 0) $quantity = $stack->count;
                 if($quantity <= 0) throw new \Exception("Invalid quantity entered.");
@@ -645,6 +644,7 @@ class InventoryManager extends Service
                 $recipient_stack->quantity += $quantity;
                 $recipient_stack->save();
             }
+            if($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, $recipient ? $recipient->id : null, $recipient ? $recipient->logType : null, null, $type, $data['data'], $item->id, $quantity)) throw new \Exception("Failed to create log.");
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
             $this->setError('error', $e->getMessage());

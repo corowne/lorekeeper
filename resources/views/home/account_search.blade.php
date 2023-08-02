@@ -7,7 +7,7 @@
 
 <h1>Account Search</h1>
 
-<p>Select an item to search for all occurrences of it in your and your characters' inventories. If a stack is currently "held" in a trade, design update, or submission, this will be stated and all held locations will be linked.</p>
+<p>Select an item to search for all occurrences of it in your and your characters' inventories, as well as your shops. If a stack is currently "held" in a trade, design update, or submission, this will be stated and all held locations will be linked.</p>
 
 {!! Form::open(['method' => 'GET', 'class' => '']) !!}
 <div class="form-inline justify-content-end">
@@ -23,7 +23,7 @@
 @if($item)
     <h3>{{ $item->name }}</h3>
 
-    <p>You currently have {{ $userItems->pluck('count')->sum()+$characterItems->pluck('count')->sum() }} of this item between your and your characters' inventories.</p>
+    <p>You currently have {{ $userItems->pluck('count')->sum()+$characterItems->pluck('count')->sum()+$shopItems->pluck('quantity')->sum() }} of this item between your and your characters' inventories.</p>
 
     @if($userItems->count())
         <h5>In Your Inventory:</h5>
@@ -79,6 +79,16 @@
             @foreach($characterItems as $item)
                 <li>
                     <a href="{{ $item->character->url }}">{{ $item->character->fullName }}</a> has a stack of {{ $item->count }}
+                </li>
+            @endforeach
+        </ul>
+    @endif
+    @if($shopItems->count())
+        <h5>In your shops:</h5>
+        <ul>
+            @foreach($shopItems as $item)
+                <li>
+                    {!! $item->shop->displayName !!} has {{ $item->quantity }}
                 </li>
             @endforeach
         </ul>
