@@ -92,7 +92,7 @@
             @if ($report->staff_id == null)
                 <a href="#" class="btn btn-danger mr-2" id="assignButton">Assign</a>
             @endif
-            @if ($report->status == 'Assigned' && auth::user()->id == $report->staff_id)
+            @if ($report->status == 'Assigned' && Auth::user()->id == $report->staff_id)
                 <a href="#" class="btn btn-success" id="closalButton">Close</a>
             @endif
         </div>
