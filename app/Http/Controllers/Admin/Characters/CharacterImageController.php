@@ -82,7 +82,7 @@ class CharacterImageController extends Controller {
             flash('Image uploaded successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
 
             return redirect()->back()->withInput();
@@ -128,7 +128,7 @@ class CharacterImageController extends Controller {
             flash('Character traits edited successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -181,7 +181,7 @@ class CharacterImageController extends Controller {
             flash('Image notes edited successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -220,7 +220,7 @@ class CharacterImageController extends Controller {
             flash('Image credits edited successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -258,7 +258,7 @@ class CharacterImageController extends Controller {
             flash('Image uploaded successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -283,7 +283,7 @@ class CharacterImageController extends Controller {
             flash('Image settings edited successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -320,7 +320,7 @@ class CharacterImageController extends Controller {
             flash('Active character image set successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -357,7 +357,7 @@ class CharacterImageController extends Controller {
             flash('Character image deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -384,7 +384,7 @@ class CharacterImageController extends Controller {
             return redirect()->back();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

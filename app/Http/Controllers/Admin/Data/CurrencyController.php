@@ -82,7 +82,7 @@ class CurrencyController extends Controller {
             return redirect()->to('admin/data/currencies/edit/'.$currency->id);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -117,7 +117,7 @@ class CurrencyController extends Controller {
             flash('Currency deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -149,7 +149,7 @@ class CurrencyController extends Controller {
             flash('Currency order updated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

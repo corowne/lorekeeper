@@ -66,7 +66,7 @@ class RankController extends Controller {
             flash('Rank created successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -98,7 +98,7 @@ class RankController extends Controller {
             flash('Rank deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -110,7 +110,7 @@ class RankController extends Controller {
             flash('Ranks sorted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

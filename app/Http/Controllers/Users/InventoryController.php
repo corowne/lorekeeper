@@ -219,7 +219,7 @@ class InventoryController extends Controller {
             flash('Inventory consolidated.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -238,7 +238,7 @@ class InventoryController extends Controller {
             flash('Item transferred successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -257,7 +257,7 @@ class InventoryController extends Controller {
             flash('Item transferred successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -276,7 +276,7 @@ class InventoryController extends Controller {
             flash('Item deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -295,7 +295,7 @@ class InventoryController extends Controller {
             flash('Item sold successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -317,7 +317,7 @@ class InventoryController extends Controller {
             flash('Invalid action selected.')->error();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

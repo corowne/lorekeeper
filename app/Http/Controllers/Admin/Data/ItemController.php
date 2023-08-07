@@ -91,7 +91,7 @@ class ItemController extends Controller {
             return redirect()->to('admin/data/item-categories/edit/'.$category->id);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -126,7 +126,7 @@ class ItemController extends Controller {
             flash('Category deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -145,7 +145,7 @@ class ItemController extends Controller {
             flash('Category order updated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -240,7 +240,7 @@ class ItemController extends Controller {
             return redirect()->to('admin/data/items/edit/'.$item->id);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -275,7 +275,7 @@ class ItemController extends Controller {
             flash('Item deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -322,7 +322,7 @@ class ItemController extends Controller {
             return redirect()->to($tag->adminUrl);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -365,7 +365,7 @@ class ItemController extends Controller {
             flash('Tag edited successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -405,7 +405,7 @@ class ItemController extends Controller {
             flash('Tag deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

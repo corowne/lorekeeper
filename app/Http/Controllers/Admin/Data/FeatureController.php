@@ -90,7 +90,7 @@ class FeatureController extends Controller {
             return redirect()->to('admin/data/trait-categories/edit/'.$category->id);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -125,7 +125,7 @@ class FeatureController extends Controller {
             flash('Category deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -144,7 +144,7 @@ class FeatureController extends Controller {
             flash('Category order updated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -248,7 +248,7 @@ class FeatureController extends Controller {
             return redirect()->to('admin/data/traits/edit/'.$feature->id);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -283,7 +283,7 @@ class FeatureController extends Controller {
             flash('Trait deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

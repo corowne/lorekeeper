@@ -98,7 +98,7 @@ class LootTableController extends Controller {
             return redirect()->to('admin/data/loot-tables/edit/'.$table->id);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -133,7 +133,7 @@ class LootTableController extends Controller {
             flash('Loot table deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

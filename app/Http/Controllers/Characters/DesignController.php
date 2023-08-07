@@ -95,7 +95,7 @@ class DesignController extends Controller {
             flash('Request edited successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -144,7 +144,7 @@ class DesignController extends Controller {
             flash('Request edited successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -200,7 +200,7 @@ class DesignController extends Controller {
             flash('Request edited successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -265,7 +265,7 @@ class DesignController extends Controller {
             flash('Request edited successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -311,7 +311,7 @@ class DesignController extends Controller {
             flash('Request submitted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -357,7 +357,7 @@ class DesignController extends Controller {
             flash('Request deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

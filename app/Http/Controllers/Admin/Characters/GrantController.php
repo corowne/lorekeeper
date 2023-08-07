@@ -25,7 +25,7 @@ class GrantController extends Controller {
             flash('Currency granted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -46,7 +46,7 @@ class GrantController extends Controller {
             flash('Items granted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

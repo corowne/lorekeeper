@@ -113,7 +113,7 @@ class CharacterController extends Controller {
             return redirect()->to($character->url);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -145,7 +145,7 @@ class CharacterController extends Controller {
             return redirect()->to($character->url);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -219,7 +219,7 @@ class CharacterController extends Controller {
             return redirect()->to($this->character->url);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -251,7 +251,7 @@ class CharacterController extends Controller {
             return redirect()->to($this->character->url);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -318,7 +318,7 @@ class CharacterController extends Controller {
             return redirect()->to($this->character->url);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -347,7 +347,7 @@ class CharacterController extends Controller {
             return redirect()->to($this->character->url);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -376,7 +376,7 @@ class CharacterController extends Controller {
             return redirect()->to($this->character->url);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -405,7 +405,7 @@ class CharacterController extends Controller {
             return redirect()->to($this->character->url);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -470,7 +470,7 @@ class CharacterController extends Controller {
             return redirect()->to('masterlist');
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -497,7 +497,7 @@ class CharacterController extends Controller {
             return redirect()->to('myos');
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -522,7 +522,7 @@ class CharacterController extends Controller {
             flash('Character transferred successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -547,7 +547,7 @@ class CharacterController extends Controller {
             flash('Character transferred successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -630,7 +630,7 @@ class CharacterController extends Controller {
             }
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -728,7 +728,7 @@ class CharacterController extends Controller {
             flash('Trade rejected.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

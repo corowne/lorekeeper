@@ -83,7 +83,7 @@ class SpeciesController extends Controller {
             return redirect()->to('admin/data/species/edit/'.$species->id);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -118,7 +118,7 @@ class SpeciesController extends Controller {
             flash('Species deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -137,7 +137,7 @@ class SpeciesController extends Controller {
             flash('Species order updated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -207,7 +207,7 @@ class SpeciesController extends Controller {
             return redirect()->to('admin/data/subtypes/edit/'.$subtype->id);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -242,7 +242,7 @@ class SpeciesController extends Controller {
             flash('Subtype deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -261,7 +261,7 @@ class SpeciesController extends Controller {
             flash('Subtype order updated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

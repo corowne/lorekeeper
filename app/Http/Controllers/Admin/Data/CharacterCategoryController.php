@@ -82,7 +82,7 @@ class CharacterCategoryController extends Controller {
             return redirect()->to('admin/data/character-categories/edit/'.$category->id);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -117,7 +117,7 @@ class CharacterCategoryController extends Controller {
             flash('Category deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -136,7 +136,7 @@ class CharacterCategoryController extends Controller {
             flash('Category order updated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

@@ -80,7 +80,7 @@ class PromptController extends Controller {
             return redirect()->to('admin/data/prompt-categories/edit/'.$category->id);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -115,7 +115,7 @@ class PromptController extends Controller {
             flash('Category deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -134,7 +134,7 @@ class PromptController extends Controller {
             flash('Category order updated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -220,7 +220,7 @@ class PromptController extends Controller {
             return redirect()->to('admin/data/prompts/edit/'.$prompt->id);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -255,7 +255,7 @@ class PromptController extends Controller {
             flash('Prompt deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

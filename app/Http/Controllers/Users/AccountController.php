@@ -81,7 +81,7 @@ class AccountController extends Controller {
             flash('Avatar updated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -110,7 +110,7 @@ class AccountController extends Controller {
             flash('Password updated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -132,7 +132,7 @@ class AccountController extends Controller {
             flash('Email updated successfully. A verification email has been sent to your new email address.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -151,7 +151,7 @@ class AccountController extends Controller {
             flash('Setting updated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -240,7 +240,7 @@ class AccountController extends Controller {
             flash('Your primary alias has been changed successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -270,7 +270,7 @@ class AccountController extends Controller {
             flash('Your alias\'s visibility setting has been changed successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -300,7 +300,7 @@ class AccountController extends Controller {
             flash('Your alias has been removed successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -331,7 +331,7 @@ class AccountController extends Controller {
             flash($wasDeactivated ? 'Deactivation reason edited successfully.' : 'Your account has successfully been deactivated. We hope to see you again and wish you the best!')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -352,7 +352,7 @@ class AccountController extends Controller {
             flash('You have reactivated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

@@ -102,7 +102,7 @@ class ReportController extends Controller {
             flash('Report submitted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

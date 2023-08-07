@@ -151,7 +151,7 @@ class SubmissionController extends Controller {
             flash('Prompt submitted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
 
             return redirect()->back();
@@ -248,7 +248,7 @@ class SubmissionController extends Controller {
             flash('Claim submitted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
 
             return redirect()->back();

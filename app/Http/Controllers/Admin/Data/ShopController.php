@@ -83,7 +83,7 @@ class ShopController extends Controller {
             return redirect()->to('admin/data/shops/edit/'.$shop->id);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -108,7 +108,7 @@ class ShopController extends Controller {
             return redirect()->back();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -143,7 +143,7 @@ class ShopController extends Controller {
             flash('Shop deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -162,7 +162,7 @@ class ShopController extends Controller {
             flash('Shop order updated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

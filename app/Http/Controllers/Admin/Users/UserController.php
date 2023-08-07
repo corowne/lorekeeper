@@ -211,7 +211,7 @@ class UserController extends Controller {
             flash('Birthday updated successfully!')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -287,7 +287,7 @@ class UserController extends Controller {
             flash($wasBanned ? 'User ban reason edited successfully.' : 'User banned successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -324,7 +324,7 @@ class UserController extends Controller {
             flash('User unbanned successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -380,7 +380,7 @@ class UserController extends Controller {
             flash($wasDeactivated ? 'User deactivation reason edited successfully.' : 'User deactivated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -417,7 +417,7 @@ class UserController extends Controller {
             flash('User reactivated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

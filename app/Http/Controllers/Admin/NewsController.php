@@ -70,7 +70,7 @@ class NewsController extends Controller {
             return redirect()->to('admin/news/edit/'.$news->id);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -105,7 +105,7 @@ class NewsController extends Controller {
             flash('News deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
