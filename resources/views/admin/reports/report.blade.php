@@ -9,15 +9,15 @@
 
     @if ($report->status !== 'Closed')
         @if ($report->status == 'Assigned' && Auth::user()->id !== $report->staff_id)
-            <div class="alert alert-danger">This report is not assigned to you</div>
+            <div class="alert alert-danger">This report is not assigned to you.</div>
         @elseif($report->status == 'Pending')
-            <div class="alert alert-warning">This report needs assigning</div>
+            <div class="alert alert-warning">This report needs assigning.</div>
         @endif
+
         <h1>
             Report (#{{ $report->id }})
             <span class="float-right badge badge-{{ $report->status == 'Pending' ? 'secondary' : ($report->status == 'Closed' ? 'success' : 'danger') }}">{{ $report->status }}</span>
         </h1>
-
         <div class="mb-1">
             <div class="row">
                 <div class="col-md-2 col-4">
@@ -34,34 +34,27 @@
             @if ($report->is_br == 1)
                 <div class="row">
                     <div class="col-md-2 col-4">
-                        <h5>URL / Title</h5>
+                        <h5>Bug Type</h5>
                     </div>
-                    <div class="col-md-10 col-8"><a href="{{ $report->url }}">{{ $report->url }}</a></div>
+                    <div class="col-md-10 col-8">{{ ucfirst($report->error_type) . ($report->error_type != 'exploit' ? ' Error' : '') }}</div>
                 </div>
-                @if ($report->is_br == 1)
-                    <div class="row">
-                        <div class="col-md-2 col-4">
-                            <h5>Bug Type</h5>
-                        </div>
-                        <div class="col-md-10 col-8">{{ ucfirst($report->error_type) . ($report->error_type != 'exploit' ? ' Error' : '') }}</div>
-                    </div>
-                @endif
-                <div class="row">
-                    <div class="col-md-2 col-4">
-                        <h5>Submitted</h5>
-                    </div>
-                    <div class="col-md-10 col-8">{!! format_date($report->created_at) !!} ({{ $report->created_at->diffForHumans() }})</div>
+            @endif
+            <div class="row">
+                <div class="col-md-2 col-4">
+                    <h5>Submitted</h5>
                 </div>
-                <div class="row">
-                    <div class="col-md-2 col-4">
-                        <h5>Assigned to</h5>
-                    </div>
-                    <div class="col-md-10 col-8">
-                        @if ($report->staff != null)
-                            {!! $report->staff->displayName !!}
-                        @endif
-                    </div>
+                <div class="col-md-10 col-8">{!! format_date($report->created_at) !!} ({{ $report->created_at->diffForHumans() }})</div>
+            </div>
+            <div class="row">
+                <div class="col-md-2 col-4">
+                    <h5>Assigned to</h5>
                 </div>
+                <div class="col-md-10 col-8">
+                    @if ($report->staff != null)
+                        {!! $report->staff->displayName !!}
+                    @endif
+                </div>
+            </div>
         </div>
 
         <h2>Report Details</h2>
@@ -137,6 +130,7 @@
         <div class="alert alert-danger">This report has already been closed.</div>
         @include('home._report_content', ['report' => $report])
     @endif
+
 @endsection
 
 @section('scripts')
