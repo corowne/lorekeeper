@@ -1,18 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class AddIsFeatured extends Migration
-{
+class AddIsFeatured extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::table('comments', function (Blueprint $table) {
             $table->integer('is_featured')->default(0);
         });
@@ -20,13 +16,10 @@ class AddIsFeatured extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::table('comments', function (Blueprint $table) {
             $table->dropColumn('is_featured');
-        }); 
+        });
     }
 }

@@ -1,4 +1,4 @@
-@if(!$user->is_banned)
+@if (!$user->is_banned)
     <p>Are you sure you want to ban {!! $user->displayName !!}?</p>
     <div class="text-right"><a href="#" class="btn btn-danger ban-confirm-button">Ban</a></div>
 
@@ -8,6 +8,6 @@
             $('#banForm').submit();
         });
     </script>
-@else 
+@else
     <p>This user is already banned.</p>
 @endif

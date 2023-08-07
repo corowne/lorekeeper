@@ -1,5 +1,5 @@
-@if($sublist)
-    {!! Form::open(['url' => 'admin/data/sublists/delete/'.$sublist->id]) !!}
+@if ($sublist)
+    {!! Form::open(['url' => 'admin/data/sublists/delete/' . $sublist->id]) !!}
 
     <p>You are about to delete the sublist <strong>{{ $sublist->name }}</strong>. This is not reversible.</p>
     <p>Are you sure you want to delete <strong>{{ $sublist->name }}</strong>?</p>
@@ -9,6 +9,6 @@
     </div>
 
     {!! Form::close() !!}
-@else 
+@else
     Invalid sublist selected.
 @endif

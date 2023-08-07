@@ -7,10 +7,10 @@
     </thead>
     <tbody>
         <?php $count = 1; ?>
-        @foreach($results as $result)
-            @foreach($result as $type)
-                @if(count($type))
-                    @foreach($type as $t)
+        @foreach ($results as $result)
+            @foreach ($result as $type)
+                @if (count($type))
+                    @foreach ($type as $t)
                         <tr>
                             <td>{{ $count++ }}</td>
                             <td>{!! $t['asset']->displayName !!}</td>
