@@ -1,18 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class AddCharacterItemsTable extends Migration
-{
+class AddCharacterItemsTable extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
-    {
+    public function up() {
         // Create tables for storing character-owned items and the associated logs.
         Schema::create('character_items', function (Blueprint $table) {
             $table->engine = 'InnoDB';
@@ -31,7 +27,7 @@ class AddCharacterItemsTable extends Migration
             $table->foreign('character_id')->references('id')->on('characters');
         });
 
-        Schema::create('character_items_log', function(Blueprint $table) {
+        Schema::create('character_items_log', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->integer('item_id')->unsigned();
@@ -50,11 +46,8 @@ class AddCharacterItemsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
-    {
+    public function down() {
         //
         Schema::dropIfExists('character_items');
         Schema::dropIfExists('character_items_log');

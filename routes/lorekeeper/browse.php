@@ -20,8 +20,8 @@ Route::get('items/character/{id}', 'Users\InventoryController@getCharacterStack'
 /**************************************************************************************************
     News
 **************************************************************************************************/
-# PROFILES
-Route::group(['prefix' => 'news'], function() {
+// PROFILES
+Route::group(['prefix' => 'news'], function () {
     Route::get('/', 'NewsController@getIndex');
     Route::get('{id}.{slug?}', 'NewsController@getNews');
     Route::get('{id}.', 'NewsController@getNews');
@@ -30,8 +30,8 @@ Route::group(['prefix' => 'news'], function() {
 /**************************************************************************************************
     Sales
 **************************************************************************************************/
-# PROFILES
-Route::group(['prefix' => 'sales'], function() {
+// PROFILES
+Route::group(['prefix' => 'sales'], function () {
     Route::get('/', 'SalesController@getIndex');
     Route::get('{id}.{slug?}', 'SalesController@getSales');
     Route::get('{id}.', 'SalesController@getSales');
@@ -42,9 +42,10 @@ Route::group(['prefix' => 'sales'], function() {
 **************************************************************************************************/
 Route::get('/users', 'BrowseController@getUsers');
 Route::get('/blacklist', 'BrowseController@getBlacklist');
+Route::get('/deactivated-list', 'BrowseController@getDeactivated');
 
-# PROFILES
-Route::group(['prefix' => 'user', 'namespace' => 'Users'], function() {
+// PROFILES
+Route::group(['prefix' => 'user', 'namespace' => 'Users'], function () {
     Route::get('{name}/gallery', 'UserController@getUserGallery');
     Route::get('{name}/favorites', 'UserController@getUserFavorites');
     Route::get('{name}/favorites/own-characters', 'UserController@getUserOwnCharacterFavorites');
@@ -56,7 +57,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'Users'], function() {
     Route::get('{name}/myos', 'UserController@getUserMyoSlots');
     Route::get('{name}/inventory', 'UserController@getUserInventory');
     Route::get('{name}/bank', 'UserController@getUserBank');
-    
+
     Route::get('{name}/currency-logs', 'UserController@getUserCurrencyLogs');
     Route::get('{name}/item-logs', 'UserController@getUserItemLogs');
     Route::get('{name}/ownership', 'UserController@getUserOwnershipLogs');
@@ -69,13 +70,13 @@ Route::group(['prefix' => 'user', 'namespace' => 'Users'], function() {
 Route::get('/masterlist', 'BrowseController@getCharacters');
 Route::get('/myos', 'BrowseController@getMyos');
 Route::get('/sublist/{key}', 'BrowseController@getSublist');
-Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() {
+Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function () {
     Route::get('{slug}', 'CharacterController@getCharacter');
     Route::get('{slug}/profile', 'CharacterController@getCharacterProfile');
     Route::get('{slug}/bank', 'CharacterController@getCharacterBank');
     Route::get('{slug}/inventory', 'CharacterController@getCharacterInventory');
     Route::get('{slug}/images', 'CharacterController@getCharacterImages');
-    
+
     Route::get('{slug}/currency-logs', 'CharacterController@getCharacterCurrencyLogs');
     Route::get('{slug}/item-logs', 'CharacterController@getCharacterItemLogs');
     Route::get('{slug}/ownership', 'CharacterController@getCharacterOwnershipLogs');
@@ -84,26 +85,26 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() 
 
     Route::get('{slug}/gallery', 'CharacterController@getCharacterGallery');
 });
-Route::group(['prefix' => 'myo', 'namespace' => 'Characters'], function() {
+Route::group(['prefix' => 'myo', 'namespace' => 'Characters'], function () {
     Route::get('{id}', 'MyoController@getCharacter');
     Route::get('{id}/profile', 'MyoController@getCharacterProfile');
     Route::get('{id}/ownership', 'MyoController@getCharacterOwnershipLogs');
     Route::get('{id}/change-log', 'MyoController@getCharacterLogs');
 });
 
-
 /**************************************************************************************************
     World
 **************************************************************************************************/
 
-Route::group(['prefix' => 'world'], function() {
+Route::group(['prefix' => 'world'], function () {
     Route::get('/', 'WorldController@getIndex');
-    
+
     Route::get('currencies', 'WorldController@getCurrencies');
     Route::get('rarities', 'WorldController@getRarities');
     Route::get('species', 'WorldController@getSpecieses');
     Route::get('subtypes', 'WorldController@getSubtypes');
     Route::get('species/{id}/traits', 'WorldController@getSpeciesFeatures');
+    Route::get('species/{speciesId}/trait/{id}', 'WorldController@getSpeciesFeatureDetail')->where(['id' => '[0-9]+', 'speciesId' => '[0-9]+']);
     Route::get('item-categories', 'WorldController@getItemCategories');
     Route::get('items', 'WorldController@getItems');
     Route::get('items/{id}', 'WorldController@getItem');
@@ -112,13 +113,14 @@ Route::group(['prefix' => 'world'], function() {
     Route::get('character-categories', 'WorldController@getCharacterCategories');
 });
 
-Route::group(['prefix' => 'prompts'], function() {
+Route::group(['prefix' => 'prompts'], function () {
     Route::get('/', 'PromptsController@getIndex');
     Route::get('prompt-categories', 'PromptsController@getPromptCategories');
     Route::get('prompts', 'PromptsController@getPrompts');
+    Route::get('{id}', 'PromptsController@getPrompt');
 });
 
-Route::group(['prefix' => 'shops'], function() {
+Route::group(['prefix' => 'shops'], function () {
     Route::get('/', 'ShopController@getIndex');
     Route::get('{id}', 'ShopController@getShop')->where(['id' => '[0-9]+']);
     Route::get('{id}/{stockId}', 'ShopController@getShopStock')->where(['id' => '[0-9]+', 'stockId' => '[0-9]+']);
@@ -141,10 +143,10 @@ Route::group(['prefix' => 'raffles'], function () {
 /**************************************************************************************************
     Submissions
 **************************************************************************************************/
-Route::group(['prefix' => 'submissions', 'namespace' => 'Users'], function() {
+Route::group(['prefix' => 'submissions', 'namespace' => 'Users'], function () {
     Route::get('view/{id}', 'SubmissionController@getSubmission');
 });
-Route::group(['prefix' => 'claims', 'namespace' => 'Users'], function() {
+Route::group(['prefix' => 'claims', 'namespace' => 'Users'], function () {
     Route::get('view/{id}', 'SubmissionController@getClaim');
 });
 
@@ -156,8 +158,9 @@ Route::get('comment/{id}', 'PermalinkController@getComment');
 /**************************************************************************************************
     Galleries
 **************************************************************************************************/
-Route::group(['prefix' => 'gallery'], function() {
+Route::group(['prefix' => 'gallery'], function () {
     Route::get('/', 'GalleryController@getGalleryIndex');
+    Route::get('all', 'GalleryController@getAll');
     Route::get('{id}', 'GalleryController@getGallery');
     Route::get('view/{id}', 'GalleryController@getSubmission');
     Route::get('view/favorites/{id}', 'GalleryController@getSubmissionFavorites');
@@ -166,8 +169,6 @@ Route::group(['prefix' => 'gallery'], function() {
 /**************************************************************************************************
     Reports
 **************************************************************************************************/
-Route::group(['prefix' => 'reports', 'namespace' => 'Users'], function() {
+Route::group(['prefix' => 'reports', 'namespace' => 'Users'], function () {
     Route::get('/bug-reports', 'ReportController@getBugIndex');
 });
-
-

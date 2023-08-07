@@ -5,7 +5,6 @@ namespace App\Helpers;
 use DB;
 
 class Settings {
-
     /*
     |--------------------------------------------------------------------------
     | Settings
@@ -18,13 +17,16 @@ class Settings {
     /**
      * Gets a site setting.
      *
-     * @param  string  $key
+     * @param string $key
+     *
      * @return mixed|null
      */
-    public function get($key)
-    {
+    public function get($key) {
         $setting = DB::table('site_settings')->where('key', $key)->first();
-        if($setting) return $setting->value;
-        else return null;
+        if ($setting) {
+            return $setting->value;
+        } else {
+            return null;
+        }
     }
 }

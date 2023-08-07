@@ -2,15 +2,12 @@
 
 namespace App\Models\Character;
 
-use Config;
-use DB;
-use App\Models\Model;
 use App\Models\Feature\FeatureCategory;
-use App\Models\Character\CharacterCategory;
+use App\Models\Model;
+use DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class CharacterImage extends Model
-{
+class CharacterImage extends Model {
     use SoftDeletes;
 
     /**
@@ -47,9 +44,9 @@ class CharacterImage extends Model
      */
     public static $createRules = [
         'species_id' => 'required',
-        'rarity_id' => 'required',
-        'image' => 'required|mimes:jpeg,jpg,gif,png|max:20000',
-        'thumbnail' => 'nullable|mimes:jpeg,jpg,gif,png|max:20000',
+        'rarity_id'  => 'required',
+        'image'      => 'required|mimes:jpeg,jpg,gif,png|max:20000',
+        'thumbnail'  => 'nullable|mimes:jpeg,jpg,gif,png|max:20000',
     ];
 
     /**
@@ -59,10 +56,10 @@ class CharacterImage extends Model
      */
     public static $updateRules = [
         'character_id' => 'required',
-        'user_id' => 'required',
-        'species_id' => 'required',
-        'rarity_id' => 'required',
-        'description' => 'nullable',
+        'user_id'      => 'required',
+        'species_id'   => 'required',
+        'rarity_id'    => 'required',
+        'description'  => 'nullable',
     ];
 
     /**********************************************************************************************
@@ -74,48 +71,42 @@ class CharacterImage extends Model
     /**
      * Get the character associated with the image.
      */
-    public function character()
-    {
+    public function character() {
         return $this->belongsTo('App\Models\Character\Character', 'character_id');
     }
 
     /**
      * Get the user who owned the character at the time of image creation.
      */
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo('App\Models\User\User', 'user_id');
     }
 
     /**
      * Get the species of the character image.
      */
-    public function species()
-    {
+    public function species() {
         return $this->belongsTo('App\Models\Species\Species', 'species_id');
     }
 
     /**
      * Get the subtype of the character image.
      */
-    public function subtype()
-    {
+    public function subtype() {
         return $this->belongsTo('App\Models\Species\Subtype', 'subtype_id');
     }
 
     /**
      * Get the rarity of the character image.
      */
-    public function rarity()
-    {
+    public function rarity() {
         return $this->belongsTo('App\Models\Rarity', 'rarity_id');
     }
 
     /**
      * Get the features (traits) attached to the character image, ordered by display order.
      */
-    public function features()
-    {
+    public function features() {
         $ids = FeatureCategory::orderBy('sort', 'DESC')->pluck('id')->toArray();
 
         $query = $this->hasMany('App\Models\Character\CharacterFeature', 'character_image_id')->where('character_features.character_type', 'Character')->join('features', 'features.id', '=', 'character_features.feature_id')->select(['character_features.*', 'features.*', 'character_features.id AS character_feature_id']);
@@ -126,24 +117,21 @@ class CharacterImage extends Model
     /**
      * Get the designers/artists attached to the character image.
      */
-    public function creators()
-    {
+    public function creators() {
         return $this->hasMany('App\Models\Character\CharacterImageCreator', 'character_image_id');
     }
 
     /**
      * Get the designers attached to the character image.
      */
-    public function designers()
-    {
+    public function designers() {
         return $this->hasMany('App\Models\Character\CharacterImageCreator', 'character_image_id')->where('type', 'Designer')->where('character_type', 'Character');
     }
 
     /**
      * Get the artists attached to the character image.
      */
-    public function artists()
-    {
+    public function artists() {
         return $this->hasMany('App\Models\Character\CharacterImageCreator', 'character_image_id')->where('type', 'Artist')->where('character_type', 'Character');
     }
 
@@ -156,13 +144,17 @@ class CharacterImage extends Model
     /**
      * Scope a query to only include images visible to guests and regular logged-in users.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed|null                            $user
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeImages($query, $user = null)
-    {
-        if(!$user || !$user->hasPower('manage_characters')) return $query->where('is_visible', 1)->orderBy('sort')->orderBy('id', 'DESC');
-        else return $query->orderBy('sort')->orderBy('id', 'DESC');
+    public function scopeImages($query, $user = null) {
+        if (!$user || !$user->hasPower('manage_characters')) {
+            return $query->where('is_visible', 1)->orderBy('sort')->orderBy('id', 'DESC');
+        } else {
+            return $query->orderBy('sort')->orderBy('id', 'DESC');
+        }
     }
 
     /**********************************************************************************************
@@ -176,8 +168,7 @@ class CharacterImage extends Model
      *
      * @return string
      */
-    public function getImageDirectoryAttribute()
-    {
+    public function getImageDirectoryAttribute() {
         return 'images/characters/'.floor($this->id / 1000);
     }
 
@@ -186,9 +177,8 @@ class CharacterImage extends Model
      *
      * @return string
      */
-    public function getImageFileNameAttribute()
-    {
-        return $this->id . '_'.$this->hash.'.'.$this->extension;
+    public function getImageFileNameAttribute() {
+        return $this->id.'_'.$this->hash.'.'.$this->extension;
     }
 
     /**
@@ -196,8 +186,7 @@ class CharacterImage extends Model
      *
      * @return string
      */
-    public function getImagePathAttribute()
-    {
+    public function getImagePathAttribute() {
         return public_path($this->imageDirectory);
     }
 
@@ -206,9 +195,8 @@ class CharacterImage extends Model
      *
      * @return string
      */
-    public function getImageUrlAttribute()
-    {
-        return asset($this->imageDirectory . '/' . $this->imageFileName);
+    public function getImageUrlAttribute() {
+        return asset($this->imageDirectory.'/'.$this->imageFileName);
     }
 
     /**
@@ -216,9 +204,8 @@ class CharacterImage extends Model
      *
      * @return string
      */
-    public function getFullsizeFileNameAttribute()
-    {
-        return $this->id . '_'.$this->hash.'_'.$this->fullsize_hash.'_full.'.$this->extension;
+    public function getFullsizeFileNameAttribute() {
+        return $this->id.'_'.$this->hash.'_'.$this->fullsize_hash.'_full.'.$this->extension;
     }
 
     /**
@@ -226,22 +213,24 @@ class CharacterImage extends Model
      *
      * @return string
      */
-    public function getFullsizeUrlAttribute()
-    {
-        return asset($this->imageDirectory . '/' . $this->fullsizeFileName);
+    public function getFullsizeUrlAttribute() {
+        return asset($this->imageDirectory.'/'.$this->fullsizeFileName);
     }
 
     /**
      * Gets the file name of the model's fullsize image.
      *
      * @param  user
+     * @param mixed|null $user
+     *
      * @return string
      */
-    public function canViewFull($user = null)
-    {
-        if(((isset($this->character->user_id) && ($user ? $this->character->user->id == $user->id : false)) || ($user ? $user->hasPower('manage_characters') : false)))
-        return true;
-        else return false;
+    public function canViewFull($user = null) {
+        if (((isset($this->character->user_id) && ($user ? $this->character->user->id == $user->id : false)) || ($user ? $user->hasPower('manage_characters') : false))) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -249,9 +238,8 @@ class CharacterImage extends Model
      *
      * @return string
      */
-    public function getThumbnailFileNameAttribute()
-    {
-        return $this->id . '_'.$this->hash.'_th.'.$this->extension;
+    public function getThumbnailFileNameAttribute() {
+        return $this->id.'_'.$this->hash.'_th.'.$this->extension;
     }
 
     /**
@@ -259,8 +247,7 @@ class CharacterImage extends Model
      *
      * @return string
      */
-    public function getThumbnailPathAttribute()
-    {
+    public function getThumbnailPathAttribute() {
         return $this->imagePath;
     }
 
@@ -269,8 +256,7 @@ class CharacterImage extends Model
      *
      * @return string
      */
-    public function getThumbnailUrlAttribute()
-    {
-        return asset($this->imageDirectory . '/' . $this->thumbnailFileName);
+    public function getThumbnailUrlAttribute() {
+        return asset($this->imageDirectory.'/'.$this->thumbnailFileName);
     }
 }

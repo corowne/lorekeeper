@@ -1,18 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class FixCharacterItemLogTable extends Migration
-{
+class FixCharacterItemLogTable extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
-    {
+    public function up() {
         DB::statement('ALTER TABLE character_items_log CHANGE `count` `quantity` INT(10) unsigned;');
 
         Schema::table('character_items_log', function (Blueprint $table) {
@@ -22,16 +18,12 @@ class FixCharacterItemLogTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
-    {
+    public function down() {
         DB::statement('ALTER TABLE character_items_log CHANGE `quantity` `count` INT(10) unsigned;');
 
         Schema::table('character_items_log', function (Blueprint $table) {
             $table->integer('stack_id')->unsigned()->change();
         });
-        
     }
 }

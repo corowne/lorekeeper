@@ -1,5 +1,5 @@
 <tr>
-    @if($submission->prompt_id)
+    @if ($submission->prompt_id)
         <td>{!! $submission->prompt->displayName !!}</td>
     @endif
     <td class="text-break"><a href="{{ $submission->url }}">{{ $submission->url }}</a></td>
