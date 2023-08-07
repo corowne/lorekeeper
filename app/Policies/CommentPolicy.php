@@ -20,14 +20,12 @@ class CommentPolicy {
      *
      * @param mixed $user
      */
-    public function delete($user, Comment $comment) : bool
-    {
-            if(Auth::user()->isStaff) {
-                return true;
-            }
-            else {
-                return false;
-            }
+    public function delete($user, Comment $comment): bool {
+        if (Auth::user()->isStaff) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
