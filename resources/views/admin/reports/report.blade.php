@@ -8,7 +8,7 @@
     {!! breadcrumbs(['Admin Panel' => 'admin', 'Report Queue' => 'admin/reports/pending', 'Report (#' . $report->id . ')' => $report->viewUrl]) !!}
 
     @if ($report->status !== 'Closed')
-        @if ($report->status == 'Assigned' && auth::user()->id !== $report->staff_id)
+        @if ($report->status == 'Assigned' && Auth::user()->id !== $report->staff_id)
             <div class="alert alert-danger">This report is not assigned to you.</div>
         @elseif($report->status == 'Pending')
             <div class="alert alert-warning">This report needs assigning.</div>
@@ -79,7 +79,7 @@
         @endif
 
         {!! Form::open(['url' => url()->current(), 'id' => 'reportForm']) !!}
-        @if ($report->status == 'Assigned' && auth::user()->id == $report->staff_id)
+        @if ($report->status == 'Assigned' && Auth::user()->id == $report->staff_id)
             @if (Auth::user()->hasPower('manage_reports'))
                 <div class="alert alert-warning">Please include a small paragraph on the solution and as many important details as you deem necessary, as the user will no longer be able to view the comments after the report is closed.</div>
             @endif
