@@ -176,7 +176,7 @@ class UserService extends Service {
             $filename = $user->id.'.'.$avatar->getClientOriginalExtension();
 
             if ($user->avatar !== 'default.jpg') {
-                $file = 'images/avatars/' . $user->avatar;
+                $file = 'images/avatars/'.$user->avatar;
                 //$destinationPath = 'uploads/' . $id . '/';
 
                 if (File::exists($file)) {
