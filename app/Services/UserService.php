@@ -176,7 +176,7 @@ class UserService extends Service {
             $filename = $user->id.'.'.$avatar->getClientOriginalExtension();
 
             if ($user->avatar !== 'default.jpg') {
-                $file = 'images/avatars/'.$user->avatar;
+                $file = 'images/avatars/' . $user->avatar;
                 //$destinationPath = 'uploads/' . $id . '/';
 
                 if (File::exists($file)) {
@@ -188,13 +188,7 @@ class UserService extends Service {
 
             // Checks if uploaded file is a GIF
             if ($avatar->getClientOriginalExtension() == 'gif') {
-                if (!copy($avatar, $file)) {
-                    throw new \Exception('Failed to copy file.');
-                }
-                if (!$file->move(public_path('images/avatars', $filename))) {
-                    throw new \Exception('Failed to move file.');
-                }
-                if (!$avatar->move(public_path('images/avatars', $filename))) {
+                if (!$avatar->move(public_path('images/avatars'), $filename)) {
                     throw new \Exception('Failed to move file.');
                 }
             } else {
