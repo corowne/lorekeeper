@@ -106,7 +106,7 @@ class PageController extends Controller {
                 'title'  => $news_item->title,
                 'url'    => $news_item->url,
                 'start'  => $news_item->post_at ? $news_item->post_at->startOfDay()->toW3cString() : $news_item->created_at->startOfDay()->toW3cString(),
-                'allDay' => "true",
+                'allDay' => 'true',
                 'color'  => '#ad283e',
             ];
         }
@@ -118,7 +118,7 @@ class PageController extends Controller {
                 'start'  => $sale->post_at ? $sale->post_at->startOfDay()->toW3cString() : $sale->created_at->startOfDay()->toW3cString(),
                 // if there is a comment_open_at set, set end to that, else set end to start of next day
                 'end'    => $sale->comments_open_at ? $sale->comments_open_at->endOfDay()->toW3cString() : null,
-                'allDay' => "true",
+                'allDay' => 'true',
                 'color'  => '#f5a623',
             ];
         }
