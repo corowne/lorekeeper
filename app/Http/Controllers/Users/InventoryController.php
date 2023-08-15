@@ -248,7 +248,7 @@ class InventoryController extends Controller {
 
         return view('home.inventory_full', [
             'categories' => $categories->keyBy('id'),
-            'items'      => $items->sortBy('name')->sortBy('updated_at')->groupBy(['item_category_id', 'id']),
+            'items'     => $items->sortBy('name')->sortBy('updated_at')->groupBy(['item_category_id', 'id']),
             'user'       => $user,
             'characters' => $characters,
         ]);
