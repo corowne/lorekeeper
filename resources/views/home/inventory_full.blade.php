@@ -37,11 +37,20 @@
                                                 @php
                                                     $charaname = $char->name ? $char->name : $char->slug;
                                                     $charalink = $char->url;
+                                                    $charavisi = '';
+                                                    if (!$char->is_visible) {
+                                                        $charavisi = '<i class="fas fa-eye-slash"></i>';
+                                                    }
                                                 @endphp
                                             @endif
                                         @endforeach
-                                        <a class="invchar" data-id="{{ $item->pivot->id }}" data-name="{{ $charaname }}'s {{ $item->name }}" href="#">Stack</a> of x{{ $item->pivot->count }} in <a
-                                            href="{{ $charalink }}">{{ $charaname }}</a>'s inventory.
+                                        <a class="invchar" data-id="{{ $item->pivot->id }}" data-name="{{ $charaname }}'s {{ $item->name }}" href="#">
+                                            Stack
+                                        </a>
+                                        of x{{ $item->pivot->count }} in {!! $charavisi !!}
+                                        <a href="{{ $charalink }}">
+                                            {{ $charaname }}
+                                        </a>'s inventory.
                                     @endif
                                 </li>
                             @endforeach

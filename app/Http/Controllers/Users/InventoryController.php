@@ -206,8 +206,12 @@ class InventoryController extends Controller {
     public function getFullInventory() {
         $user = Auth::user();
 
-        // Gather the user's characters and the items they own
-        $characters = Character::where('user_id', $user->id)->orderBy('slug', 'ASC')->get();
+        // Gather the user's characters
+        $characters = $user->allCharacters;
+
+        if (!Auth::check() || !$user->hasPower('manage_characters')) {
+            $characters = $characters->where('is_visible', 1);
+        }
 
         // Set up Categories
         $categories = ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->get();
