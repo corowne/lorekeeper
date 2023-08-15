@@ -20,9 +20,9 @@
         });
 
         function attachListeners(node) {
-            node.find('.character-code').on('change', function(e) {
+            node.find('.character-code').on('input', function(e) {
                 var $parent = $(this).parent().parent().parent().parent();
-                $parent.find('.character-image-loaded').load('{{ url('submissions/new/character') }}/'+$(this).val(), function(response, status, xhr) {
+                $parent.find('.character-image-loaded').load('{{ url('submissions/new/character') }}/' + $(this).val(), function(response, status, xhr) {
                     $parent.find('.character-image-blank').addClass('hide');
                     $parent.find('.character-image-loaded').removeClass('hide');
                     $parent.find('.character-rewards').removeClass('hide');
@@ -55,16 +55,14 @@
                 $cell.children().addClass('hide');
                 $cell.children().children().val(null);
 
-                if(val == 'Item') {
+                if (val == 'Item') {
                     $cell.children('.character-items').addClass('show');
                     $cell.children('.character-items').removeClass('hide');
                     $cell.children('.character-items');
-                }
-                else if (val == 'Currency'){
+                } else if (val == 'Currency') {
                     $cell.children('.character-currencies').addClass('show');
                     $cell.children('.character-currencies').removeClass('hide');
-                }
-                else if (val == 'LootTable'){
+                } else if (val == 'LootTable') {
                     $cell.children('.character-tables').addClass('show');
                     $cell.children('.character-tables').addClass('show');
                     $cell.children('.character-tables').removeClass('hide');

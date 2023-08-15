@@ -2,11 +2,10 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Services\SalesService;
+use Illuminate\Console\Command;
 
-class CheckSales extends Command
-{
+class CheckSales extends Command {
     /**
      * The name and signature of the console command.
      *
@@ -23,11 +22,8 @@ class CheckSales extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
     }
 
@@ -36,8 +32,7 @@ class CheckSales extends Command
      *
      * @return mixed
      */
-    public function handle()
-    {
+    public function handle() {
         //
         (new SalesService)->updateQueue();
     }

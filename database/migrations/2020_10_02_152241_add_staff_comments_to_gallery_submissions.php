@@ -1,18 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class AddStaffCommentsToGallerySubmissions extends Migration
-{
+class AddStaffCommentsToGallerySubmissions extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::table('gallery_submissions', function (Blueprint $table) {
             //
             $table->text('staff_comments')->nullable();
@@ -23,11 +19,8 @@ class AddStaffCommentsToGallerySubmissions extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::table('gallery_submissions', function (Blueprint $table) {
             //
             $table->dropColumn('staff_comments');

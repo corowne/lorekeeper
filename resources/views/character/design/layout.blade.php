@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title') 
+@section('title')
     @yield('design-title')
 @endsection
 
@@ -13,5 +13,5 @@
 @endsection
 
 @section('scripts')
-@parent
+    @parent
 @endsection

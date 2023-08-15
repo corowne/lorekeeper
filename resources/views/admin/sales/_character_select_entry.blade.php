@@ -7,6 +7,7 @@
                     <div class="character-image-blank hide">Enter character code.</div>
                     <div class="character-image-loaded">
                         @include('home._character', ['character' => $character->character])
+                        {!! Form::hidden('image_id[]', $character->image_id) !!}
                     </div>
                 </div>
             </div>
@@ -21,7 +22,10 @@
 
                     <div class="form-group mb-2">
                         {!! Form::label('Type') !!}
-                        {!! Form::select('sale_type[]', ['flatsale' => 'Flatsale', 'auction' => 'Auction', 'ota' => 'OTA', 'xta' => 'XTA', 'raffle' => 'Raffle', 'flaffle' => 'Flatsale Raffle', 'pwyw' => 'Pay What You Want'], $character->type, ['class' => 'form-control character-sale-type', 'placeholder' => 'Select Sale Type']) !!}
+                        {!! Form::select('sale_type[]', ['flatsale' => 'Flatsale', 'auction' => 'Auction', 'ota' => 'OTA', 'xta' => 'XTA', 'raffle' => 'Raffle', 'flaffle' => 'Flatsale Raffle', 'pwyw' => 'Pay What You Want'], $character->type, [
+                            'class' => 'form-control character-sale-type',
+                            'placeholder' => 'Select Sale Type',
+                        ]) !!}
                     </div>
 
                     <div class="saleType">
@@ -72,13 +76,13 @@
                         {!! Form::text('link[]', $character->link, ['class' => 'form-control', 'placeholder' => 'URL']) !!}
                     </div>
 
-                    @if($sales->characters->count() > 1)
+                    @if ($sales->characters->count() > 1)
                         <div class="form-group text-right">
-                            {!! Form::checkbox('character_is_open['.$character->character->slug.']', 1, $character->is_open, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+                            {!! Form::checkbox('character_is_open[' . $character->character->slug . ']', 1, $character->is_open, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
                             {!! Form::label('character_is_open', 'Is Open', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Whether or not this particular character is open or available. If the sale post itself is closed, all character sales attached will also be displayed as closed.') !!}
                         </div>
                     @else
-                        {!! Form::hidden('character_is_open['.$character->character->slug.']', 1) !!}
+                        {!! Form::hidden('character_is_open[' . $character->character->slug . ']', 1) !!}
                     @endif
 
                     {!! Form::hidden('new_entry[]', 0) !!}
@@ -87,4 +91,3 @@
         </div>
     </div>
 </div>
-

@@ -10,9 +10,9 @@
         </div>
         <div class="col-md-7">
             <a href="#" class="float-right fas fa-close"></a>
-                <div class="form-group">
-                    {!! Form::text('slug[]', $character->character->slug, ['class' => 'form-control character-code']) !!}
-                </div>
+            <div class="form-group">
+                {!! Form::text('slug[]', $character->character->slug, ['class' => 'form-control character-code']) !!}
+            </div>
         </div>
         <div class="col-md-1 text-right">
             <a href="#" class="remove-character text-muted"><i class="fas fa-times"></i></a>

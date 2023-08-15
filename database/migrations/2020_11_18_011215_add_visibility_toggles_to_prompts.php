@@ -1,18 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class AddVisibilityTogglesToPrompts extends Migration
-{
+class AddVisibilityTogglesToPrompts extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::table('prompts', function (Blueprint $table) {
             //
             $table->integer('hide_submissions')->unsigned()->default(0);
@@ -21,11 +17,8 @@ class AddVisibilityTogglesToPrompts extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::table('prompts', function (Blueprint $table) {
             //
             $table->dropColumn('hide_submissions');

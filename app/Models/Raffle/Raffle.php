@@ -1,17 +1,17 @@
-<?php namespace App\Models\Raffle;
+<?php
+
+namespace App\Models\Raffle;
 
 use App\Models\Model;
-use DB;
 
-class Raffle extends Model
-{
+class Raffle extends Model {
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'is_active', 'winner_count', 'group_id', 'order'
+        'name', 'is_active', 'winner_count', 'group_id', 'order', 'ticket_cap',
     ];
 
     /**
@@ -20,7 +20,6 @@ class Raffle extends Model
      * @var string
      */
     protected $table = 'raffles';
-
     /**
      * Dates on the model to convert to Carbon instances.
      *
@@ -40,32 +39,30 @@ class Raffle extends Model
      *
      * @var string
      */
-    public $timestamps = false; 
+    public $timestamps = false;
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the raffle tickets attached to this raffle.
      */
-    public function tickets()
-    {
+    public function tickets() {
         return $this->hasMany('App\Models\Raffle\RaffleTicket');
     }
-    
+
     /**
      * Get the group that this raffle belongs to.
      */
-    public function group()
-    {
+    public function group() {
         return $this->belongsTo('App\Models\Raffle\RaffleGroup', 'group_id');
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -75,8 +72,7 @@ class Raffle extends Model
      *
      * @return string
      */
-    public function getDisplayNameAttribute()
-    {
+    public function getDisplayNameAttribute() {
         return $this->displayName();
     }
 
@@ -85,33 +81,48 @@ class Raffle extends Model
      *
      * @return string
      */
-    public function getNameWithGroupAttribute()
-    {
-        return ($this->group_id ? '[' . $this->group->name . '] ' : '') . $this->name;
+    public function getNameWithGroupAttribute() {
+        return ($this->group_id ? '['.$this->group->name.'] ' : '').$this->name;
     }
 
     /**
-     * Gets the raffle's asset type for asset management. 
+     * Gets the raffle's asset type for asset management.
      *
      * @return string
      */
-    public function getAssetTypeAttribute()
-    {
+    public function getAssetTypeAttribute() {
         return 'raffle_tickets';
     }
 
     /**
-     * Gets the raffle's url. 
+     * Gets the raffle's url.
      *
      * @return string
      */
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return url('raffles/view/'.$this->id);
     }
 
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute() {
+        return url('admin/raffles'); // Raffles are edited via a modal so don't have a unique raffle edit page
+    }
+
+    /**
+     * Gets the power required to edit this model.
+     *
+     * @return string
+     */
+    public function getAdminPowerAttribute() {
+        return 'manage_raffles';
+    }
+
     /**********************************************************************************************
-    
+
         OTHER FUNCTIONS
 
     **********************************************************************************************/
@@ -119,10 +130,11 @@ class Raffle extends Model
     /**
      * Displays the raffle's name, linked to the raffle page.
      *
+     * @param mixed $asReward
+     *
      * @return string
      */
-    public function displayName($asReward = true)
-    {
+    public function displayName($asReward = true) {
         return '<a href="'.$this->url.'" class="display-raffle">'.$this->name.($asReward ? ' (Raffle Ticket)' : '').'</a>';
     }
 }
