@@ -10,6 +10,12 @@
         </li>
     @endauth
 
+    @if (Config::get('lorekeeper.extensions.show_all_recent_submissions.enable') && Config::get('lorekeeper.extensions.show_all_recent_submissions.links.sidebar'))
+        <li class="sidebar-section">
+            <div class="sidebar-item"><a href="{{ url('gallery/all') }}" class="{{ set_active('gallery/all') }}">All Recent Submissions</a></div>
+        </li>
+    @endif
+
     @if ($galleryPage && $sideGallery->children->count())
         <li class="sidebar-section">
             <div class="sidebar-section-header">{{ $sideGallery->name }}: Sub-Galleries</div>
@@ -22,7 +28,7 @@
     <li class="sidebar-section">
         <div class="sidebar-section-header">Galleries</div>
         @foreach ($sidebarGalleries as $gallery)
-            <div class="sidebar-item"><a href="{{ url('gallery/' . $gallery->id) }}" class="{{ set_active('gallery/.$gallery->id') }}">{{ $gallery->name }}</a></div>
+            <div class="sidebar-item"><a href="{{ url('gallery/' . $gallery->id) }}" class="{{ set_active('gallery/' . $gallery->id) }}">{{ $gallery->name }}</a></div>
         @endforeach
     </li>
 </ul>

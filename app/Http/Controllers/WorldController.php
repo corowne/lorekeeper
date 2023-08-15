@@ -8,8 +8,6 @@ use App\Models\Feature\Feature;
 use App\Models\Feature\FeatureCategory;
 use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
-use App\Models\Prompt\Prompt;
-use App\Models\Prompt\PromptCategory;
 use App\Models\Rarity;
 use App\Models\Shop\Shop;
 use App\Models\Shop\ShopStock;
@@ -123,7 +121,7 @@ class WorldController extends Controller {
         }
 
         return view('world.item_categories', [
-            'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
+            'categories' => $query->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -140,7 +138,7 @@ class WorldController extends Controller {
         }
 
         return view('world.feature_categories', [
-            'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
+            'categories' => $query->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -219,7 +217,7 @@ class WorldController extends Controller {
             'rarities'   => ['none' => 'Any Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses'  => ['none' => 'Any Species'] + ['withoutOption' => 'Without Species'] + Species::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'subtypes'   => ['none' => 'Any Subtype'] + ['withoutOption' => 'Without Subtype'] + Subtype::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'categories' => ['none' => 'Any Category'] + ['withoutOption' => 'Without Category'] + FeatureCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'categories' => ['none' => 'Any Category'] + ['withoutOption' => 'Without Category'] + FeatureCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
 
@@ -237,7 +235,7 @@ class WorldController extends Controller {
         if (!$species) {
             abort(404);
         }
-        if (!Config::get('lorekeeper.extensions.species_trait_index')) {
+        if (!Config::get('lorekeeper.extensions.species_trait_index.enable')) {
             abort(404);
         }
 
@@ -281,12 +279,38 @@ class WorldController extends Controller {
     }
 
     /**
+     * Provides a single trait's description html for use in a modal.
+     *
+     * @param mixed $speciesId
+     * @param mixed $id
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getSpeciesFeatureDetail($speciesId, $id) {
+        $feature = Feature::where('id', $id)->first();
+
+        if (!$feature) {
+            abort(404);
+        }
+        if (!Config::get('lorekeeper.extensions.species_trait_index.trait_modals')) {
+            abort(404);
+        }
+
+        return view('world._feature_entry', [
+            'feature' => $feature,
+        ]);
+    }
+
+    /**
      * Shows the items page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getItems(Request $request) {
         $query = Item::with('category')->released();
+
+        $categoryVisibleCheck = ItemCategory::visible(Auth::check() ? Auth::user() : null)->pluck('id', 'name')->toArray();
+        $query->whereIn('item_category_id', $categoryVisibleCheck);
         $data = $request->only(['item_category_id', 'name', 'sort', 'artist']);
         if (isset($data['item_category_id']) && $data['item_category_id'] != 'none') {
             if ($data['item_category_id'] == 'withoutOption') {
@@ -326,7 +350,7 @@ class WorldController extends Controller {
 
         return view('world.items', [
             'items'      => $query->paginate(20)->appends($request->query()),
-            'categories' => ['none' => 'Any Category'] + ['withoutOption' => 'Without Category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'categories' => ['none' => 'Any Category'] + ['withoutOption' => 'Without Category'] + ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'shops'      => Shop::orderBy('sort', 'DESC')->get(),
             'artists'    => ['none' => 'Any Artist'] + User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray(),
         ]);
@@ -344,6 +368,11 @@ class WorldController extends Controller {
         $item = Item::where('id', $id)->released()->first();
         if (!$item) {
             abort(404);
+        }
+        if (!$item->category->is_visible) {
+            if (Auth::check() ? !Auth::user()->isStaff : true) {
+                abort(404);
+            }
         }
 
         return view('world.item_page', [
@@ -369,79 +398,7 @@ class WorldController extends Controller {
         }
 
         return view('world.character_categories', [
-            'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
-        ]);
-    }
-
-    /**
-     * Shows the prompt categories page.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function getPromptCategories(Request $request) {
-        $query = PromptCategory::query();
-        $name = $request->get('name');
-        if ($name) {
-            $query->where('name', 'LIKE', '%'.$name.'%');
-        }
-
-        return view('world.prompt_categories', [
-            'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
-        ]);
-    }
-
-    /**
-     * Shows the prompts page.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function getPrompts(Request $request) {
-        $query = Prompt::active()->with('category');
-        $data = $request->only(['prompt_category_id', 'name', 'sort']);
-        if (isset($data['prompt_category_id']) && $data['prompt_category_id'] != 'none') {
-            $query->where('prompt_category_id', $data['prompt_category_id']);
-        }
-        if (isset($data['name'])) {
-            $query->where('name', 'LIKE', '%'.$data['name'].'%');
-        }
-
-        if (isset($data['sort'])) {
-            switch ($data['sort']) {
-                case 'alpha':
-                    $query->sortAlphabetical();
-                    break;
-                case 'alpha-reverse':
-                    $query->sortAlphabetical(true);
-                    break;
-                case 'category':
-                    $query->sortCategory();
-                    break;
-                case 'newest':
-                    $query->sortNewest();
-                    break;
-                case 'oldest':
-                    $query->sortOldest();
-                    break;
-                case 'start':
-                    $query->sortStart();
-                    break;
-                case 'start-reverse':
-                    $query->sortStart(true);
-                    break;
-                case 'end':
-                    $query->sortEnd();
-                    break;
-                case 'end-reverse':
-                    $query->sortEnd(true);
-                    break;
-            }
-        } else {
-            $query->sortCategory();
-        }
-
-        return view('world.prompts', [
-            'prompts'    => $query->paginate(20)->appends($request->query()),
-            'categories' => ['none' => 'Any Category'] + PromptCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'categories' => $query->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
 }

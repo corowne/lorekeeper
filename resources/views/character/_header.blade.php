@@ -53,8 +53,23 @@
     @endif
     @if (!$character->is_visible)
         <i class="fas fa-eye-slash"></i>
-    @endif {!! $character->displayName !!}
+    @endif
+    {!! $character->displayName !!}
+    <i data-toggle="tooltip" title="Click to Copy the Character Code" id="copy" style="font-size: 14px; vertical-align: middle;" class="far fa-copy text-small"></i>
 </h1>
 <div class="mb-3">
     Owned by {!! $character->displayOwner !!}
 </div>
+
+
+<script>
+    $('#copy').on('click', async (e) => {
+        await window.navigator.clipboard.writeText("{{ $character->slug }}");
+        e.currentTarget.classList.remove('toCopy');
+        e.currentTarget.classList.add('toCheck');
+        setTimeout(() => {
+            e.currentTarget.classList.remove('toCheck');
+            e.currentTarget.classList.add('toCopy');
+        }, 2000);
+    });
+</script>

@@ -43,6 +43,11 @@
         {!! Form::textarea('description', $category->description, ['class' => 'form-control wysiwyg']) !!}
     </div>
 
+    <div class="form-group">
+        {!! Form::checkbox('is_visible', 1, $category->id ? $category->is_visible : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+        {!! Form::label('is_visible', 'Is Visible', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned off, the category will not be visible in the category list or available for selection in search. Permissioned staff will still be able to add items to them, however.') !!}
+    </div>
+
     <div class="card mb-3" id="characterOptions">
         <div class="card-body">
             <div class="mb-2">

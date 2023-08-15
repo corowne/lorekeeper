@@ -22,6 +22,9 @@
                     <tr class="sort-item" data-id="{{ $category->id }}">
                         <td>
                             <a class="fas fa-arrows-alt-v handle mr-3" href="#"></a>
+                            @if (!$category->is_visible)
+                                <i class="fas fa-eye-slash mr-1"></i>
+                            @endif
                             {!! $category->displayName !!}
                         </td>
                         <td class="text-right">

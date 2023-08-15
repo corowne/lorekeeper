@@ -96,10 +96,16 @@ class AccountController extends Controller {
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postPassword(Request $request, UserService $service) {
+        $user = Auth::user();
+        if (!isset($user->password) && (!isset($user->email) || !isset($user->email_verified_at))) {
+            flash('Please set and verify an email before setting a password for email login.')->error();
+
+            return redirect()->back();
+        }
+
         $request->validate([
-            'old_password' => 'required|string',
             'new_password' => 'required|string|min:8|confirmed',
-        ]);
+        ] + (isset($user->password) ? ['old_password' => 'required|string'] : []));
         if ($service->updatePassword($request->only(['old_password', 'new_password', 'new_password_confirmation']), Auth::user())) {
             flash('Password updated successfully.')->success();
         } else {

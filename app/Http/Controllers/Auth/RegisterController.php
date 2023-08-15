@@ -5,13 +5,19 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Invitation;
 use App\Models\User\User;
+use App\Models\User\UserAlias;
 use App\Services\InvitationService;
+use App\Services\LinkService;
 use App\Services\UserService;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
+use Laravel\Socialite\Facades\Socialite;
 use Settings;
 
 class RegisterController extends Controller {
@@ -45,31 +51,89 @@ class RegisterController extends Controller {
     /**
      * Show the application registration form.
      *
+     * @param mixed $provider
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getRegisterWithDriver($provider) {
+        $userData = session()->get('userData');
+
+        return view('auth.register_with_driver', [
+            'userCount' => User::count(),
+            'provider'  => $provider,
+            'user'      => $userData->nickname ?? null,
+            'token'     => $userData->token ?? null,
+        ]);
+    }
+
+    /**
+     * Show the application registration form.
+     *
+     * @param mixed $provider
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function postRegisterWithDriver(LinkService $service, Request $request, $provider) {
+        $providerData = Socialite::driver($provider)->userFromToken($request->get('token'));
+
+        if (UserAlias::where('site', $provider)->where('user_snowflake', $providerData->id)->first()) {
+            flash('An Account is already tied to the authorized '.$provider.' account.')->error();
+
+            return redirect()->back();
+        }
+
+        $data = $request->all();
+
+        $this->validator($data, true)->validate();
+        $user = $this->create($data);
+        if ($service->saveProvider($provider, $providerData, $user)) {
+            Auth::login($user);
+
+            return redirect('/');
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+
+            return redirect()->back();
+        }
+    }
+
+    /**
+     * Show the application registration form.
+     *
      * @return \Illuminate\Http\Response
      */
     public function showRegistrationForm() {
-        return view('auth.register', ['userCount' => User::count()]);
+        $altRegistrations = array_filter(Config::get('lorekeeper.sites'), function ($item) {
+            return isset($item['login']) && $item['login'] === 1 && $item['display_name'] != 'tumblr';
+        });
+
+        return view('auth.register', ['userCount' => User::count(), 'altRegistrations' => $altRegistrations]);
     }
 
     /**
      * Get a validator for an incoming registration request.
      *
+     * @param mixed $socialite
+     *
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data) {
+    protected function validator(array $data, $socialite = false) {
         return Validator::make($data, [
-            'name'                 => ['required', 'string', 'min:3', 'max:25', 'alpha_dash', 'unique:users'],
-            'email'                => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'agreement'            => ['required', 'accepted'],
-            'password'             => ['required', 'string', 'min:8', 'confirmed'],
-            'dob'                  => ['required', function ($attribute, $value, $fail) {
-                $date = $value['day'].'-'.$value['month'].'-'.$value['year'];
-                $formatDate = carbon::parse($date);
-                $now = Carbon::now();
-                if ($formatDate->diffInYears($now) < 13) {
-                    $fail('You must be 13 or older to access this site.');
-                }
-            },
+            'name'      => ['required', 'string', 'min:3', 'max:25', 'alpha_dash', 'unique:users'],
+            'email'     => ($socialite ? [] : ['required']) + ['string', 'email', 'max:255', 'unique:users'],
+            'agreement' => ['required', 'accepted'],
+            'password'  => ($socialite ? [] : ['required']) + ['string', 'min:8', 'confirmed'],
+            'dob'       => [
+                'required', function ($attribute, $value, $fail) {
+                    $date = $value['day'].'-'.$value['month'].'-'.$value['year'];
+                    $formatDate = carbon::parse($date);
+                    $now = Carbon::now();
+                    if ($formatDate->diffInYears($now) < 13) {
+                        $fail('You must be 13 or older to access this site.');
+                    }
+                },
             ],
             'code'                 => ['string', function ($attribute, $value, $fail) {
                 if (!Settings::get('is_registration_open')) {

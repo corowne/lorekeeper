@@ -24,7 +24,7 @@ return [
     | Do not change this value!
     |
     */
-    'version'                                           => '2.1.0',
+    'version'                                           => '3.0.0',
 
     /*
     |--------------------------------------------------------------------------
@@ -49,6 +49,21 @@ return [
     |
     */
     'site_desc'                                         => 'A Lorekeeper ARPG',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Alias Requirement
+    |--------------------------------------------------------------------------
+    |
+    | Whether or not users are required to link an off-site account to access
+    | the site's full features. Note that this does not disable aliases outright,
+    | and you should still set up at least one of the auth options provided.
+    | Note also that any functionality which makes use of the alias system
+    | (e.g. ownership checking for characters only associated with an off-site account)
+    | will still work provided users link the relevant alias(es).
+    |
+    */
+    'require_alias'                                     => 1,
 
     /*
     |--------------------------------------------------------------------------
@@ -254,7 +269,7 @@ return [
     | Shop Purchase Limit
     |--------------------------------------------------------------------------
     |
-    | This is an arbitrary upper limit on how many items a uses can buy in a
+    | This is an arbitrary upper limit on how many items a user can buy in a
     | single shop transaction.
     |
     */

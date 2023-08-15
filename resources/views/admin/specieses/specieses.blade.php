@@ -26,6 +26,9 @@
                     <tr class="sort-item" data-id="{{ $species->id }}">
                         <td>
                             <a class="fas fa-arrows-alt-v handle mr-3" href="#"></a>
+                            @if (!$species->is_visible)
+                                <i class="fas fa-eye-slash mr-1"></i>
+                            @endif
                             {!! $species->displayName !!}
                         </td>
                         <td>
