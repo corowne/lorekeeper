@@ -29,6 +29,7 @@
             const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 lazyFetching: true,
+                height: '60vh',
                 timeZone: "{{ config('app.timezone') }}",
                 headerToolbar: {
                     left: 'prev,next',
