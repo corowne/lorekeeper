@@ -336,5 +336,6 @@ function createRewardsString($array)
         foreach($contents as $asset)
             $string[] = $asset['asset']->displayName . ' x'.$asset['quantity'];
     }
+    if (!count ($string)) return;
     return implode(', ', array_slice($string, 0, count($string) - 1)) . (count($string) > 2 ? ', and ' : ' and ') . end($string);
 }
