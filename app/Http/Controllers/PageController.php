@@ -95,7 +95,7 @@ class PageController extends Controller {
                 'url'   => $prompt->url,
                 'start' => $prompt->start_at->toW3cString(),
                 'end'   => $prompt->end_at->toW3cString(),
-                'color' => '#80c9e8',
+                'color' => '#4c96d4',
             ];
         }
         // set start to start of 'post_at' day, if post_at is set, else use created_at
