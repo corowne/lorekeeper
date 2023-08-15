@@ -12,6 +12,7 @@
         <div class="float-right mb-3">
             <a class="btn btn-secondary consolidate-inventory" href="#">Consolidate</a>
             <a class="btn btn-primary" href="{{ url('inventory/account-search') }}"><i class="fas fa-search"></i> Account Search</a>
+            <a class="btn btn-primary" href="{{ url('inventory/full-inventory') }}"><i class="fas fa-warehouse"></i> Full Inventory</a>
         </div>
     </h1>
 
@@ -30,7 +31,9 @@
                             <div class="col-sm-3 col-6 text-center inventory-item" data-id="{{ $stack->first()->pivot->id }}" data-name="{{ $user->name }}'s {{ $stack->first()->name }}">
                                 @if ($stack->first()->has_image)
                                     <div class="mb-1">
-                                        <a href="#" class="inventory-stack"><img src="{{ $stack->first()->imageUrl }}" alt="{{ $stack->first()->name }}" /></a>
+                                        <a href="#" class="inventory-stack">
+                                            <img src="{{ $stack->first()->imageUrl }}" alt="{{ $stack->first()->name }}" />
+                                        </a>
                                     </div>
                                 @endif
                                 <div>

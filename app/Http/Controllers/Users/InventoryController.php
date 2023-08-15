@@ -199,6 +199,62 @@ class InventoryController extends Controller {
     }
 
     /**
+     * Show the full inventory page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getFullInventory() {
+        $user = Auth::user();
+
+        // Gather the user's characters and the items they own
+        $characters = Character::where('user_id', $user->id)->orderBy('slug', 'ASC')->get();
+
+        // Set up Categories
+        $categories = ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->get();
+
+        if (count($categories)) {
+            $items =
+                Auth::user()->items()
+                    ->where('count', '>', 0)
+                    ->orderByRaw('FIELD(item_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
+                    ->orderBy('name')
+                    ->orderBy('updated_at')
+                    ->get();
+            foreach ($characters as $character) {
+                $itemCollect = $character->items()
+                    ->where('count', '>', 0)
+                    ->orderByRaw('FIELD(item_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
+                    ->orderBy('name')
+                    ->orderBy('updated_at')
+                    ->get();
+                isset($items) ? $items = $items->mergeRecursive($itemCollect) : $items = $itemCollect;
+            }
+        } else {
+            $items =
+                Auth::user()->items()
+                    ->where('count', '>', 0)
+                    ->orderBy('name')
+                    ->orderBy('updated_at')
+                    ->get();
+            foreach ($characters as $character) {
+                $itemCollect = $character->items()
+                    ->where('count', '>', 0)
+                    ->orderBy('name')
+                    ->orderBy('updated_at')
+                    ->get();
+                isset($items) ? $items = $items->mergeRecursive($itemCollect) : $items = $itemCollect;
+            }
+        }
+
+        return view('home.inventory_full', [
+            'categories' => $categories->keyBy('id'),
+            'items'      => $items->sortBy('name')->sortBy('updated_at')->groupBy(['item_category_id', 'id']),
+            'user'       => $user,
+            'characters' => $characters,
+        ]);
+    }
+
+    /**
      * Shows the confirmation modal for inventory consolidation.
      *
      * @return \Illuminate\Contracts\Support\Renderable
