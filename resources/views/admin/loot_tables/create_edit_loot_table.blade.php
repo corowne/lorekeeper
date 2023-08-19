@@ -55,7 +55,7 @@
                 @foreach ($table->loot as $loot)
                     <tr class="loot-row">
                         <td>{!! Form::select(
-                            'rewardable_type['.$loop->index.']',
+                            'rewardable_type[]',
                             Config::get('lorekeeper.extensions.item_entry_expansion.loot_tables.enable')
                                 ? ['Item' => 'Item', 'ItemRarity' => 'Item Rarity', 'Currency' => 'Currency', 'LootTable' => 'Loot Table', 'ItemCategory' => 'Item Category', 'ItemCategoryRarity' => 'Item Category (Conditional)', 'None' => 'None']
                                 : ['Item' => 'Item', 'Currency' => 'Currency', 'LootTable' => 'Loot Table', 'ItemCategory' => 'Item Category', 'None' => 'None'],
