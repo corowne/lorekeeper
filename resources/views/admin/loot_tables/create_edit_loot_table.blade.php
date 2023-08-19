@@ -55,7 +55,7 @@
                 @foreach ($table->loot as $loot)
                     <tr class="loot-row">
                         <td>{!! Form::select(
-                            'rewardable_type[]',
+                            'rewardable_type['.$loop->index.']',
                             Config::get('lorekeeper.extensions.item_entry_expansion.loot_tables.enable')
                                 ? ['Item' => 'Item', 'ItemRarity' => 'Item Rarity', 'Currency' => 'Currency', 'LootTable' => 'Loot Table', 'ItemCategory' => 'Item Category', 'ItemCategoryRarity' => 'Item Category (Conditional)', 'None' => 'None']
                                 : ['Item' => 'Item', 'Currency' => 'Currency', 'LootTable' => 'Loot Table', 'ItemCategory' => 'Item Category', 'None' => 'None'],
@@ -77,8 +77,8 @@
                             @elseif($loot->rewardable_type == 'ItemCategoryRarity')
                                 <div class="category-rarity-select d-flex">
                                     {!! Form::select('rewardable_id[]', $categories, $loot->rewardable_id, ['class' => 'form-control selectize', 'placeholder' => 'Category']) !!}
-                                    {!! Form::select('criteria[]', ['=' => '=', '<' => '<', '>' => '>', '<=' => '<=', '>=' => '>='], isset($loot->data['criteria']) ? $loot->data['criteria'] : null, ['class' => 'form-control', 'placeholder' => 'Criteria']) !!}
-                                    {!! Form::select('rarity[]', $rarities, isset($loot->data['rarity']) ? $loot->data['rarity'] : null, ['class' => 'form-control', 'placeholder' => 'Rarity']) !!}
+                                    {!! Form::select('criteria['.$loop->index.']', ['=' => '=', '<' => '<', '>' => '>', '<=' => '<=', '>=' => '>='], isset($loot->data['criteria']) ? $loot->data['criteria'] : null, ['class' => 'form-control', 'placeholder' => 'Criteria']) !!}
+                                    {!! Form::select('rarity['.$loop->index.']', $rarities, isset($loot->data['rarity']) ? $loot->data['rarity'] : null, ['class' => 'form-control', 'placeholder' => 'Rarity']) !!}
                                 </div>
                             @elseif($loot->rewardable_type == 'ItemCategory')
                                 {!! Form::select('rewardable_id[]', $categories, $loot->rewardable_id, ['class' => 'form-control item-select selectize', 'placeholder' => 'Select Item']) !!}
@@ -208,6 +208,11 @@
                 $cell.html('');
                 $cell.append($clone);
                 if (val != 'ItemCategoryRarity' && val != 'ItemRarity') $clone.selectize();
+                else {
+                    var row_num = $(this).parent().parent().index();
+                    $clone.find('[name="rarity[]"]').setAttribute('name', `rarity[${row_num}]`);
+                    $clone.find('[name="criteria[]"]').setAttribute('name', `criteria[${row_num}]`);
+                }
             });
 
             function attachRewardTypeListener(node) {
@@ -227,6 +232,11 @@
                     $cell.html('');
                     $cell.append($clone);
                     if (val != 'ItemCategoryRarity' && val != 'ItemRarity') $clone.selectize();
+                    else {
+                        var row_num = $(this).parent().parent().index();
+                        $clone.find('[name="rarity[]"]').attr('name', `rarity[${row_num}]`);
+                        $clone.find('[name="criteria[]"]').attr('name', `criteria[${row_num}]`);
+                    }
                 });
             }
 
