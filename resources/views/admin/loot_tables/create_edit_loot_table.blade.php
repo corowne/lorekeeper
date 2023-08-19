@@ -210,8 +210,8 @@
                 if (val != 'ItemCategoryRarity' && val != 'ItemRarity') $clone.selectize();
                 else {
                     var row_num = $(this).parent().parent().index();
-                    $clone.find('[name="rarity[]"]').setAttribute('name', `rarity[${row_num}]`);
-                    $clone.find('[name="criteria[]"]').setAttribute('name', `criteria[${row_num}]`);
+                    $clone.find('[name="rarity[]"]').attr('name', `rarity[${row_num}]`);
+                    $clone.find('[name="criteria[]"]').attr('name', `criteria[${row_num}]`);
                 }
             });
 
