@@ -52,8 +52,7 @@
                                     ->toArray()[$stack->first()->pivot->id];
                                 $stackNameClean = htmlentities($stackName);
                                 ?>
-                                <div class="col-sm-3 col-6 text-center inventory-item"
-                                    data-id="{{ $stack->first()->pivot->id }}"
+                                <div class="col-sm-3 col-6 text-center inventory-item" data-id="{{ $stack->first()->pivot->id }}"
                                     data-name="{!! $canName && $stackName ? htmlentities($stackNameClean) . ' [' : null !!}{{ $character->name ? $character->name : $character->slug }}'s {{ $stack->first()->name }}{!! $canName && $stackName ? ']' : null !!}">
                                     <div class="mb-1">
                                         <a href="#" class="inventory-stack">
@@ -103,9 +102,7 @@
                                     $stackName = $itemNames[$item->pivot->id];
                                     $stackNameClean = htmlentities($stackName);
                                     ?>
-                                    <div
-                                        data-id="{{ $item->pivot->id }}"
-                                        data-name="{!! $canName && $stackName ? htmlentities($stackNameClean) . ' [' : null !!}{{ $character->name ? $character->name : $character->slug }}'s {{ $item->name }}{!! $canName && $stackName ? ']' : null !!}">
+                                    <div data-id="{{ $item->pivot->id }}" data-name="{!! $canName && $stackName ? htmlentities($stackNameClean) . ' [' : null !!}{{ $character->name ? $character->name : $character->slug }}'s {{ $item->name }}{!! $canName && $stackName ? ']' : null !!}">
                                         <li>
                                             <a class="inventory-stack" href="#">
                                                 Stack of x{{ $item->pivot->count }}.

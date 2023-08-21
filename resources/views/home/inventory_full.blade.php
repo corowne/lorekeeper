@@ -30,12 +30,10 @@
                             @foreach ($itemtype as $item)
                                 <li>
                                     @if (isset($item->pivot->user_id))
-                                        <a class="invuser"
-                                            data-id="{{ $item->pivot->id }}"
-                                            data-name="{{ $user->name }}'s {{ $item->name }}" href="#">
+                                        <a class="invuser" data-id="{{ $item->pivot->id }}" data-name="{{ $user->name }}'s {{ $item->name }}" href="#">
                                             Stack
                                         </a>
-                                        of x{{ $item->pivot->count }} in 
+                                        of x{{ $item->pivot->count }} in
                                         <a href="/inventory">
                                             your inventory
                                         </a>.
@@ -58,9 +56,7 @@
                                         $stackName = $itemNames[$item->pivot->id];
                                         $stackNameClean = htmlentities($stackName);
                                         ?>
-                                        <a class="invchar"
-                                            data-id="{{ $item->pivot->id }}"
-                                            data-name="{!! $canName && $stackName ? htmlentities($stackNameClean) . ' [' : null !!}{{ $charaname }}'s {{ $item->name }}{!! $canName && $stackName ? ']' : null !!}" href="#">
+                                        <a class="invchar" data-id="{{ $item->pivot->id }}" data-name="{!! $canName && $stackName ? htmlentities($stackNameClean) . ' [' : null !!}{{ $charaname }}'s {{ $item->name }}{!! $canName && $stackName ? ']' : null !!}" href="#">
                                             Stack
                                         </a>
                                         of x{{ $item->pivot->count }} in {!! $charavisi !!}
