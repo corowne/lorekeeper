@@ -19,25 +19,22 @@
             setView('sum');
         });
 
-        function initView()
-        {
+        function initView() {
             view = window.localStorage.getItem('lorekeeper_inventory_view');
-            if(!view) view = 'def';
+            if (!view) view = 'def';
             setView(view);
         }
 
-        function setView(status)
-        {
+        function setView(status) {
             view = status;
 
-            if(view == 'def') {
+            if (view == 'def') {
                 $defView.removeClass('hide');
                 $defButton.addClass('active');
                 $sumView.addClass('hide');
                 $sumButton.removeClass('active');
                 window.localStorage.setItem('lorekeeper_inventory_view', 'def');
-            }
-            else if (view == 'sum') {
+            } else if (view == 'sum') {
                 $sumView.removeClass('hide');
                 $sumButton.addClass('active');
                 $defView.addClass('hide');

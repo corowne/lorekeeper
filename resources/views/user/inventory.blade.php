@@ -106,11 +106,10 @@
             @endforeach
         </div>
     </div>
-    
+
     <div class="text-right">
         <a href="{{ url($user->url . '/item-logs') }}">View all...</a>
     </div>
-
 @endsection
 
 @section('scripts')

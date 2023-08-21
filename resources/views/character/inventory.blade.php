@@ -43,15 +43,14 @@
                         <div class="row mb-3">
                             @foreach ($chunk as $itemId => $stack)
                                 <?php
-                                    $canName = $stack->first()->category->can_name;
-                                    $stackName = $stack
-                                        ->first()
-                                        ->pivot->pluck('stack_name', 'id')
-                                        ->toArray()[$stack->first()->pivot->id];
-                                    $stackNameClean = htmlentities($stackName);
+                                $canName = $stack->first()->category->can_name;
+                                $stackName = $stack
+                                    ->first()
+                                    ->pivot->pluck('stack_name', 'id')
+                                    ->toArray()[$stack->first()->pivot->id];
+                                $stackNameClean = htmlentities($stackName);
                                 ?>
-                                <div class="col-sm-3 col-6 text-center inventory-item"
-                                    data-id="{{ $stack->first()->pivot->id }}"
+                                <div class="col-sm-3 col-6 text-center inventory-item" data-id="{{ $stack->first()->pivot->id }}"
                                     data-name="{!! $canName && $stackName ? htmlentities($stackNameClean) . ' [' : null !!}{{ $character->name ? $character->name : $character->slug }}'s {{ $stack->first()->name }}{!! $canName && $stackName ? ']' : null !!}">
                                     <div class="mb-1">
                                         <a href="#" class="inventory-stack">
@@ -94,18 +93,16 @@
                             <ul class="mb-0">
                                 @foreach ($itemtype as $item)
                                     <?php
-                                        $canName = $item->category->can_name;
-                                        $itemNames = $item->pivot->pluck('stack_name', 'id');
-                                        $stackName = $itemNames[$item->pivot->id];
-                                        $stackNameClean = htmlentities($stackName);
-                                    ?> 
-                                    <div
-                                    data-id="{{ $item->pivot->id }}"
-                                    data-name="{!! $canName && $stackName ? htmlentities($stackNameClean) . ' [' : null !!}{{ $character->name ? $character->name : $character->slug }}'s {{ $item->name }}{!! $canName && $stackName ? ']' : null !!}">
+                                    $canName = $item->category->can_name;
+                                    $itemNames = $item->pivot->pluck('stack_name', 'id');
+                                    $stackName = $itemNames[$item->pivot->id];
+                                    $stackNameClean = htmlentities($stackName);
+                                    ?>
+                                    <div data-id="{{ $item->pivot->id }}" data-name="{!! $canName && $stackName ? htmlentities($stackNameClean) . ' [' : null !!}{{ $character->name ? $character->name : $character->slug }}'s {{ $item->name }}{!! $canName && $stackName ? ']' : null !!}">
                                         <li>
                                             <a class="inventory-stack" href="#">
                                                 Stack of x{{ $item->pivot->count }}.
-                                                @if($canName && $stackName)
+                                                @if ($canName && $stackName)
                                                     <span class="text-info m-0" style="font-size:95%; margin:5px;" data-toggle="tooltip" data-placement="top" title='Named stack:<br />"{{ $stackName }}"'>
                                                         &nbsp;<i class="fas fa-tag"></i>
                                                     </span>

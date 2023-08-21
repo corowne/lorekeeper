@@ -45,19 +45,19 @@
                                             @endif
                                         @endforeach
                                         <?php
-                                            $canName = $item->category->can_name;
-                                            $itemNames = $item->pivot->pluck('stack_name', 'id');
-                                            $stackName = $itemNames[$item->pivot->id];
-                                            $stackNameClean = htmlentities($stackName);
-                                        ?> 
-                                        <a class="invchar" data-id="{{ $item->pivot->id }}" data-name="{!! $canName && $stackName ? htmlentities($stackNameClean).' [' : null !!}{{ $charaname }}'s {{ $item->name }}{!! $canName && $stackName ? ']' : null !!}" href="#">
+                                        $canName = $item->category->can_name;
+                                        $itemNames = $item->pivot->pluck('stack_name', 'id');
+                                        $stackName = $itemNames[$item->pivot->id];
+                                        $stackNameClean = htmlentities($stackName);
+                                        ?>
+                                        <a class="invchar" data-id="{{ $item->pivot->id }}" data-name="{!! $canName && $stackName ? htmlentities($stackNameClean) . ' [' : null !!}{{ $charaname }}'s {{ $item->name }}{!! $canName && $stackName ? ']' : null !!}" href="#">
                                             Stack
                                         </a>
                                         of x{{ $item->pivot->count }} in {!! $charavisi !!}
                                         <a href="{{ $charalink }}">
                                             {{ $charaname }}
                                         </a>'s inventory.
-                                        @if($canName && $stackName)
+                                        @if ($canName && $stackName)
                                             <span class="text-info m-0" style="font-size:95%; margin:5px;" data-toggle="tooltip" data-placement="top" title='Named stack:<br />"{{ $stackName }}"'>
                                                 &nbsp;<i class="fas fa-tag"></i>
                                             </span>
