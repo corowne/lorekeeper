@@ -36,7 +36,9 @@
             <div class="card mb-3 inventory-category">
                 <h5 class="card-header inventory-header">
                     {!! isset($categories[$categoryId]) ? '<a href="' . $categories[$categoryId]->searchUrl . '">' . $categories[$categoryId]->name . '</a>' : 'Miscellaneous' !!}
-                    <a class="small inventory-collapse-toggle collapse-toggle" href="#categoryId_{!! isset($categories[$categoryId]) ? $categories[$categoryId]->id : 'miscellaneous' !!}" data-toggle="collapse">Show</a>
+                    <a class="small inventory-collapse-toggle collapse-toggle" href="#categoryId_{!! isset($categories[$categoryId]) ? $categories[$categoryId]->id : 'miscellaneous' !!}" data-toggle="collapse">
+                        Show
+                    </a>
                 </h5>
                 <div class="card-body inventory-body collapse show" id="categoryId_{!! isset($categories[$categoryId]) ? $categories[$categoryId]->id : 'miscellaneous' !!}">
                     @foreach ($categoryItems->chunk(4) as $chunk)
@@ -50,7 +52,8 @@
                                     ->toArray()[$stack->first()->pivot->id];
                                 $stackNameClean = htmlentities($stackName);
                                 ?>
-                                <div class="col-sm-3 col-6 text-center inventory-item" data-id="{{ $stack->first()->pivot->id }}"
+                                <div class="col-sm-3 col-6 text-center inventory-item"
+                                    data-id="{{ $stack->first()->pivot->id }}"
                                     data-name="{!! $canName && $stackName ? htmlentities($stackNameClean) . ' [' : null !!}{{ $character->name ? $character->name : $character->slug }}'s {{ $stack->first()->name }}{!! $canName && $stackName ? ']' : null !!}">
                                     <div class="mb-1">
                                         <a href="#" class="inventory-stack">
@@ -81,7 +84,9 @@
             <div class="card mb-2">
                 <h5 class="card-header">
                     {!! isset($categories[$categoryId]) ? '<a href="' . $categories[$categoryId]->searchUrl . '">' . $categories[$categoryId]->name . '</a>' : 'Miscellaneous' !!}
-                    <a class="small inventory-collapse-toggle collapse-toggle" href="#categoryId_{!! isset($categories[$categoryId]) ? $categories[$categoryId]->id : 'miscellaneous' !!}" data-toggle="collapse">Show</a>
+                    <a class="small inventory-collapse-toggle collapse-toggle" href="#categoryId_{!! isset($categories[$categoryId]) ? $categories[$categoryId]->id : 'miscellaneous' !!}" data-toggle="collapse">
+                        Show
+                    </a>
                 </h5>
                 <div class="card-body p-2 collapse show row" id="categoryId_{!! isset($categories[$categoryId]) ? $categories[$categoryId]->id : 'miscellaneous' !!}">
                     @foreach ($categoryItems as $itemtype)
@@ -98,7 +103,9 @@
                                     $stackName = $itemNames[$item->pivot->id];
                                     $stackNameClean = htmlentities($stackName);
                                     ?>
-                                    <div data-id="{{ $item->pivot->id }}" data-name="{!! $canName && $stackName ? htmlentities($stackNameClean) . ' [' : null !!}{{ $character->name ? $character->name : $character->slug }}'s {{ $item->name }}{!! $canName && $stackName ? ']' : null !!}">
+                                    <div
+                                        data-id="{{ $item->pivot->id }}"
+                                        data-name="{!! $canName && $stackName ? htmlentities($stackNameClean) . ' [' : null !!}{{ $character->name ? $character->name : $character->slug }}'s {{ $item->name }}{!! $canName && $stackName ? ']' : null !!}">
                                         <li>
                                             <a class="inventory-stack" href="#">
                                                 Stack of x{{ $item->pivot->count }}.
