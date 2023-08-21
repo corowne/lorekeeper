@@ -35,8 +35,8 @@
                                         </a>
                                         of x{{ $item->pivot->count }} in
                                         <a href="/inventory">
-                                            your inventory
-                                        </a>.
+                                            your inventory.
+                                        </a>
                                     @else
                                         @foreach ($characters as $char)
                                             @if ($char->id == $item->pivot->character_id)
