@@ -13,7 +13,9 @@
     </h1>
 
     <div class="text-center">
-        @if($shop->has_image) <img src="{{ $shop->shopImageUrl }}" style="max-width:100%" alt="{{ $shop->name }}" /> @endif
+        @if ($shop->has_image)
+            <img src="{{ $shop->shopImageUrl }}" style="max-width:100%" alt="{{ $shop->name }}" />
+        @endif
         <p>{!! $shop->parsed_description !!}</p>
     </div>
 
