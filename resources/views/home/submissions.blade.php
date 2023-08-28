@@ -44,7 +44,7 @@
             <div class="col-12 col-md-2 font-weight-bold">Prompt</div>
             @endif
             <div class="col-6 {{ !$isClaims ? 'col-md-3' : 'col-md-4' }} font-weight-bold">Link</div>
-            <div class="col-6 {{ !$isClaims ? 'col-md-5' : 'col-md-6' }} font-weight-bold">Last Action</div> {{ /* Changed to Last Action/Updated At due to Drafts */ }}
+            <div class="col-6 {{ !$isClaims ? 'col-md-5' : 'col-md-6' }} font-weight-bold">Last Action</div> <!-- Changed to Last Action/Updated At due to Drafts -->
             <div class="col-12 col-md-1 font-weight-bold">Status</div>
         </div>
 
