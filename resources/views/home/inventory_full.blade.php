@@ -20,17 +20,23 @@
                 <a class="small inventory-collapse-toggle collapse-toggle" href="#categoryId_{!! isset($categories[$categoryId]) ? $categories[$categoryId]->id : 'miscellaneous' !!}" data-toggle="collapse">Show</a>
             </h5>
             <div class="card-body p-2 collapse show row" id="categoryId_{!! isset($categories[$categoryId]) ? $categories[$categoryId]->id : 'miscellaneous' !!}">
-                @foreach ($categoryItems as $itemId => $itemtype)
+                @foreach ($categoryItems as $itemtype)
                     <div class="col-lg-3 col-sm-4 col-12">
-                        @if ($categoryItems[$itemId]->first()->has_image)
-                            <img src="{{ $categoryItems[$itemId]->first()->imageUrl }}" style="height: 25px;" alt="{{ $categoryItems[$itemId]->first()->name }}" />
+                        @if ($itemtype->first()->has_image)
+                            <img src="{{ $itemtype->first()->imageUrl }}" style="height: 25px;" alt="{{ $itemtype->first()->name }}" />
                         @endif
-                        <a href="{{ $categoryItems[$itemId]->first()->idUrl }}">{{ $categoryItems[$itemId]->first()->name }}</a>
+                        <a href="{{ $itemtype->first()->idUrl }}">{{ $itemtype->first()->name }}</a>
                         <ul class="mb-0">
                             @foreach ($itemtype as $item)
                                 <li>
                                     @if (isset($item->pivot->user_id))
-                                        <a class="invuser" data-id="{{ $item->pivot->id }}" data-name="{{ $user->name }}'s {{ $item->name }}" href="#">Stack</a> of x{{ $item->pivot->count }} in <a href="/inventory">your inventory</a>.
+                                        <a class="invuser" data-id="{{ $item->pivot->id }}" data-name="{{ $user->name }}'s {{ $item->name }}" href="#">
+                                            Stack
+                                        </a>
+                                        of x{{ $item->pivot->count }} in
+                                        <a href="/inventory">
+                                            your inventory.
+                                        </a>
                                     @else
                                         @foreach ($characters as $char)
                                             @if ($char->id == $item->pivot->character_id)
@@ -44,13 +50,24 @@
                                                 @endphp
                                             @endif
                                         @endforeach
-                                        <a class="invchar" data-id="{{ $item->pivot->id }}" data-name="{{ $charaname }}'s {{ $item->name }}" href="#">
+                                        <?php
+                                        $canName = $item->category->can_name;
+                                        $itemNames = $item->pivot->pluck('stack_name', 'id');
+                                        $stackName = $itemNames[$item->pivot->id];
+                                        $stackNameClean = htmlentities($stackName);
+                                        ?>
+                                        <a class="invchar" data-id="{{ $item->pivot->id }}" data-name="{!! $canName && $stackName ? htmlentities($stackNameClean) . ' [' : null !!}{{ $charaname }}'s {{ $item->name }}{!! $canName && $stackName ? ']' : null !!}" href="#">
                                             Stack
                                         </a>
                                         of x{{ $item->pivot->count }} in {!! $charavisi !!}
                                         <a href="{{ $charalink }}">
                                             {{ $charaname }}
                                         </a>'s inventory.
+                                        @if ($canName && $stackName)
+                                            <span class="text-info m-0" style="font-size:95%; margin:5px;" data-toggle="tooltip" data-placement="top" title='Named stack:<br />"{{ $stackName }}"'>
+                                                &nbsp;<i class="fas fa-tag"></i>
+                                            </span>
+                                        @endif
                                     @endif
                                 </li>
                             @endforeach
