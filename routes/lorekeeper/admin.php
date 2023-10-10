@@ -226,6 +226,15 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('prompts/create', 'PromptController@postCreateEditPrompt');
     Route::post('prompts/edit/{id?}', 'PromptController@postCreateEditPrompt');
     Route::post('prompts/delete/{id}', 'PromptController@postDeletePrompt');
+
+    # ENCOUNTERS
+    Route::get('encounters', 'EncounterController@getEncounterIndex');
+    Route::get('encounters/create', 'EncounterController@getCreateEncounter');
+    Route::get('encounters/edit/{id}', 'EncounterController@getEditEncounter');
+    Route::get('encounters/delete/{id}', 'EncounterController@getDeleteEncounter');
+    Route::post('encounters/create', 'EncounterController@postCreateEditEncounter');
+    Route::post('encounters/edit/{id?}', 'EncounterController@postCreateEditEncounter');
+    Route::post('encounters/delete/{id}', 'EncounterController@postDeleteEncounter');
 });
 
 
@@ -437,3 +446,4 @@ Route::group(['prefix' => 'designs', 'middleware' => 'power:manage_characters'],
     Route::post('vote/{id}/{action}', 'DesignController@postVote')->where('action', 'approve|reject');
 });
 Route::get('{type}/{status}', 'DesignController@getDesignIndex')->where('type', 'myo-approvals|design-approvals')->where('status', 'pending|approved|rejected');
+
