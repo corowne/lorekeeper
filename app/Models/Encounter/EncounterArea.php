@@ -8,7 +8,7 @@ use Carbon\Carbon;
 use App\Models\Model;
 use App\Models\Encounter\EncounterReward;
 
-class Encounter extends Model
+class EncounterArea extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -16,7 +16,7 @@ class Encounter extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'data', 'is_active','initial_prompt','has_image', 'start_at', 'end_at'
+        'name','description','parsed_description', 'is_active','has_image', 'start_at', 'end_at'
     ];
 
     /**
@@ -24,7 +24,7 @@ class Encounter extends Model
      *
      * @var string
      */
-    protected $table = 'encounters';
+    protected $table = 'encounter_areas';
 
     /**
      * Validation rules for character creation.
@@ -33,7 +33,6 @@ class Encounter extends Model
      */
     public static $createRules = [
         'name' => 'required|between:3,100',
-        'initial_prompt' => 'required',
     ];
 
     /**
@@ -43,7 +42,6 @@ class Encounter extends Model
      */
     public static $updateRules = [
         'name' => 'required|between:3,100',
-        'initial_prompt' => 'required',
     ];
 
     /**********************************************************************************************
@@ -53,20 +51,13 @@ class Encounter extends Model
     **********************************************************************************************/
 
     /**
-     * Get the rewards attached to this encounter.
+     * Get the loot data for this loot table.
      */
-    public function rewards()
+    public function encounters()
     {
-        return $this->hasMany('App\Models\Encounter\EncounterReward', 'encounter_id');
+        return $this->hasMany('App\Models\Encounter\AreaEncounters', 'encounter_area_id');
     }
 
-    /**
-     * Get the prompts attached to this encounter.
-     */
-    public function prompts()
-    {
-        return $this->hasMany('App\Models\Encounter\EncounterPrompt', 'encounter_id');
-    }
 
     /**********************************************************************************************
 
@@ -108,6 +99,18 @@ class Encounter extends Model
         return $query->orderBy('id');
     }
 
+         /**
+     * Scope a query to show only visible features.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeActive($query, $withHidden = 0)
+    {
+        if($withHidden) return $query;
+        return $query->where('is_active', 1);
+    }
+
     /**********************************************************************************************
 
         ACCESSORS
@@ -125,14 +128,56 @@ class Encounter extends Model
     }
 
     /**
-     * Gets the encounter's asset type for asset management.
+     * Gets the URL of the model's encyclopedia page.
      *
      * @return string
      */
-    public function getAssetTypeAttribute()
+    public function getUrlAttribute()
     {
-        return 'encounters';
+        return url('encounter-areas/'.$this->id);
     }
+
+    /**
+     * Rolls on the loot table and consolidates the rewards.
+     *
+     * @param  int  $quantity
+     * @return \Illuminate\Support\Collection
+     */
+    public function roll($quantity = 1)
+    { 
+        $rewards = createAssetsArray();
+
+        $loot = $this->encounters;
+        $totalWeight = 0;
+        foreach($loot as $l) $totalWeight += $l->weight;
+
+        for($i = 0; $i < $quantity; $i++)
+        {
+            $roll = mt_rand(0, $totalWeight - 1);
+            $result = null;
+            $prev = null;
+            $count = 0;
+            foreach($loot as $l)
+            {
+                $count += $l->weight;
+
+                if($roll < $count)
+                {
+                    $result = $l;
+                    break;
+                }
+                $prev = $l;
+            }
+            if(!$result) $result = $prev;
+
+            if($result) {
+                // If this is chained to another loot table, roll on that table
+                addAsset($rewards, $result->reward, $result->quantity);
+            }
+        }
+        return $rewards;
+    }
+    
 
     /**
      * Gets the file directory containing the model's image.
@@ -141,7 +186,7 @@ class Encounter extends Model
      */
     public function getImageDirectoryAttribute()
     {
-        return 'images/data/encounters/encounters';
+        return 'images/data/encounters/areas';
     }
 
     /**
