@@ -24,7 +24,7 @@ class Encounter extends Model
      *
      * @var string
      */
-    protected $table = 'encounters';
+    protected $table = 'encounter';
 
     /**
      * Validation rules for character creation.
