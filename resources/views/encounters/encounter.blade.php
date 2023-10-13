@@ -9,11 +9,16 @@
 
     <h1>Encounter in {{ $area->name }} </h1>
     <div class="text-center">
-        <h1>{{ $encounter->name }}</h1>
-        @if ($encounter->has_image)
-            <img src="{{ $encounter->imageUrl }}" />
-        @endif
-        {!! $encounter->initial_prompt !!}
+        <h3>{!! $encounter->name !!}</h3>
+        <div class="d-flex align-items-end justify-content-center"
+            style="background:url({{ $area->imageUrl }}); height:500px;background-size: cover;">
+            <!-- image -->
+            @if ($encounter->has_image)
+                <img src="{{ $encounter->imageUrl }}"
+                    style="position: absolute; right: {{ isset($encounter->extras['position_right']) ? $encounter->extras['position_right'] : '80' }}%; bottom: {{ isset($encounter->extras['position_bottom']) ? $encounter->extras['position_bottom'] : '80' }}%; z-index: 2;">
+            @endif
+        </div>
+        <p>{!! $encounter->initial_prompt !!}</p>
         <h5> what do you do?</h5>
         {!! Form::open(['url' => 'encounter-areas/' . $area->id . '/act']) !!}
         {!! Form::hidden('area_id', $area->id) !!}

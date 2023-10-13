@@ -53,7 +53,7 @@ class EncounterController extends Controller
         $user = Auth::user();
                 
         if ($user->settings->encounter_energy < 1) { 
-            flash('You don\'t have more energy to explore.')->error();
+            flash('You don\'t have more energy to visit an area.')->error();
         return redirect()->back();
         }
 
@@ -62,17 +62,14 @@ class EncounterController extends Controller
             abort(404);
         }
 
-        //do the rolling here when it works
-        //for now we test with id 6
-
-        $encounter = Encounter::find(6);
+        $result = $area->roll(1);
+        $encounter = Encounter::find($result->encounter_id);
         if (!$encounter) {
             abort(404);
         }
 
         $user->settings->encounter_energy -= 1;
         $user->settings->save();
-
 
         return view('encounters.encounter', [
             'area'   => $area,
@@ -103,5 +100,6 @@ class EncounterController extends Controller
         }
         return redirect()->back();
     }
+
 }
 

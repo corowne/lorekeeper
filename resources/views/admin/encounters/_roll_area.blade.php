@@ -6,17 +6,11 @@
     </thead>
     <tbody>
         <?php $count = 1; ?>
-        @foreach($results as $result)
-            @foreach($result as $type)
-                @if(count($type))
-                    @foreach($type as $t)
-                        <tr>
-                            <td>{{ $count++ }}</td>
-                            <td>{!! $t['asset']->displayName !!}</td>
-                        </tr>
-                    @endforeach
-                @endif
-            @endforeach
+        @foreach ($results as $result)
+            <tr>
+                <td>{{ $count++ }}</td>
+                <td>{!! \App\Models\Encounter\Encounter::find($result->encounter_id)->name !!}</td>
+            </tr>
         @endforeach
     </tbody>
 </table>

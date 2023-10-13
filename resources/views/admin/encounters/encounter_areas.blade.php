@@ -21,22 +21,36 @@
         @if (!count($areas))
             <p>No encounter areas found.</p>
         @else
-            <table class="table table-sm area-table">
-                <tbody>
-                    @foreach ($areas as $area)
-                        <tr data-id="{{ $area->id }}">
-                            <td>
-                                <a class="fas fa-arrows-alt-v handle mr-3" href="#"></a>
-                                {!! $area->displayName !!}
-                            </td>
-                            <td class="text-right">
-                                <a href="{{ url('admin/data/encounters/areas/edit/' . $area->id) }}"
-                                    class="btn btn-primary">Edit</a>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            <div class="row ml-md-2">
+                <div class="d-flex row flex-wrap col-12 pb-1 px-0 ubt-bottom">
+                    <div class="col-4 col-md-2 font-weight-bold">Name</div>
+                    <div class="col-4 col-md-3 font-weight-bold">Active?</div>
+                     <div class="col-4 col-md-3 font-weight-bold">Start</div>
+                      <div class="col-4 col-md-3 font-weight-bold">End</div>
+                </div>
+                @foreach ($areas as $area)
+                    <div class="d-flex row flex-wrap col-12 mt-1 pt-2 px-0 ubt-top">
+                        <div class="col-5 col-md-2 text-truncate">
+                            {!! $area->has_thumbnail
+                                ? '<img src="' . $area->thumbImageUrl . '" class="img-fluid mr-2" style="height: 2em;" />'
+                                : '' !!}{!! $area->has_image ? '<img src="' . $area->imageUrl . '" class="img-fluid mr-2" style="height: 2em;" />' : '' !!}{!! $area->name !!}
+                        </div>
+                        <div class="col-5 col-md-3 text-truncate">
+                           {!! $area->is_active ? '<i class="text-success fas fa-check"></i>' : '' !!}
+                        </div>
+                        <div class="col-5 col-md-3 text-truncate">
+                          {!! $area->start_at ? pretty_date($area->start_at) : '-' !!}
+                        </div>
+                        <div class="col-5 col-md-3 text-truncate">
+                           {!! $area->end_at ? pretty_date($area->end_at) : '-' !!}
+                        </div>
+                        <div class="col-3 col-md-1 text-right">
+                            <a href="{{ url('admin/data/encounters/areas/edit/' . $area->id) }}"
+                                class="btn btn-primary">Edit</a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
         @endif
     @endif
 

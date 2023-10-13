@@ -15,9 +15,7 @@ class EncounterArea extends Model
      *
      * @var array
      */
-    protected $fillable = [
-        'name','description','parsed_description', 'is_active','has_image', 'start_at', 'end_at'
-    ];
+    protected $fillable = ['name', 'description', 'parsed_description', 'is_active', 'has_image', 'start_at', 'end_at', 'has_thumbnail'];
 
     /**
      * The table associated with the model.
@@ -25,6 +23,13 @@ class EncounterArea extends Model
      * @var string
      */
     protected $table = 'encounter_areas';
+
+    /**
+     * Dates on the model to convert to Carbon instances.
+     *
+     * @var array
+     */
+    public $dates = ['start_at', 'end_at'];
 
     /**
      * Validation rules for character creation.
@@ -57,7 +62,6 @@ class EncounterArea extends Model
     {
         return $this->hasMany('App\Models\Encounter\AreaEncounters', 'encounter_area_id');
     }
-
 
     /**********************************************************************************************
 
@@ -99,7 +103,7 @@ class EncounterArea extends Model
         return $query->orderBy('id');
     }
 
-         /**
+    /**
      * Scope a query to show only visible features.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
@@ -107,7 +111,9 @@ class EncounterArea extends Model
      */
     public function scopeActive($query, $withHidden = 0)
     {
-        if($withHidden) return $query;
+        if ($withHidden) {
+            return $query;
+        }
         return $query->where('is_active', 1);
     }
 
@@ -124,7 +130,7 @@ class EncounterArea extends Model
      */
     public function getDisplayNameAttribute()
     {
-        return '<a href="'.$this->url.'" class="display-encounter">'.$this->name.'</a>';
+        return '<a href="' . $this->url . '" class="display-encounter">' . $this->name . '</a>';
     }
 
     /**
@@ -134,50 +140,50 @@ class EncounterArea extends Model
      */
     public function getUrlAttribute()
     {
-        return url('encounter-areas/'.$this->id);
+        return url('encounter-areas/' . $this->id);
     }
 
     /**
-     * Rolls on the loot table and consolidates the rewards.
+     * Selects which encounter the user will get in this area.
      *
-     * @param  int  $quantity
-     * @return \Illuminate\Support\Collection
+     *
+     * @return object $result
      */
     public function roll($quantity = 1)
-    { 
-        $rewards = createAssetsArray();
-
-        $loot = $this->encounters;
+    {
+        $encounters = $this->encounters;
         $totalWeight = 0;
-        foreach($loot as $l) $totalWeight += $l->weight;
+        foreach ($encounters as $encounter) {
+            $totalWeight += $encounter->weight;
+        }
 
-        for($i = 0; $i < $quantity; $i++)
-        {
+        for ($i = 0; $i < $quantity; $i++) {
             $roll = mt_rand(0, $totalWeight - 1);
             $result = null;
             $prev = null;
             $count = 0;
-            foreach($loot as $l)
-            {
-                $count += $l->weight;
+            foreach ($encounters as $l) {
+                $count += $encounter->weight;
 
-                if($roll < $count)
-                {
+                if ($roll < $count) {
                     $result = $l;
                     break;
                 }
                 $prev = $l;
             }
-            if(!$result) $result = $prev;
-
-            if($result) {
-                // If this is chained to another loot table, roll on that table
-                addAsset($rewards, $result->reward, $result->quantity);
+            if (!$result) {
+                $result = $prev;
             }
         }
-        return $rewards;
+
+        return $result;
     }
-    
+
+    /**********************************************************************************************
+
+        BACKGROUND IMAGE
+
+    **********************************************************************************************/
 
     /**
      * Gets the file directory containing the model's image.
@@ -208,7 +214,7 @@ class EncounterArea extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
@@ -216,7 +222,58 @@ class EncounterArea extends Model
      */
     public function getImageUrlAttribute()
     {
-        if (!$this->has_image) return null;
+        if (!$this->has_image) {
+            return null;
+        }
         return asset($this->imageDirectory . '/' . $this->imageFileName);
+    }
+
+    /**********************************************************************************************
+
+        THUMBNAIL IMAGE
+
+    **********************************************************************************************/
+
+    /**
+     * Gets the file directory containing the model's image.
+     *
+     * @return string
+     */
+    public function getThumbImageDirectoryAttribute()
+    {
+        return 'images/data/encounters/areas';
+    }
+
+    /**
+     * Gets the file name of the model's image.
+     *
+     * @return string
+     */
+    public function getThumbImageFileNameAttribute()
+    {
+        return $this->id . '-th-image.png';
+    }
+
+    /**
+     * Gets the path to the file directory containing the model's image.
+     *
+     * @return string
+     */
+    public function getThumbImagePathAttribute()
+    {
+        return public_path($this->imageDirectory);
+    }
+
+    /**
+     * Gets the URL of the model's image.
+     *
+     * @return string
+     */
+    public function getThumbImageUrlAttribute()
+    {
+        if (!$this->has_thumbnail) {
+            return null;
+        }
+        return asset($this->thumbImageDirectory . '/' . $this->thumbImageFileName);
     }
 }

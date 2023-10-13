@@ -32,6 +32,33 @@
         {!! Form::text('name', $area->name, ['class' => 'form-control']) !!}
     </div>
 
+    <h5>Thumbnail Image</h5>
+    <p>This will be the thumbnail image for this area that will show on the area index.</p>
+    <div class="row">
+        @if ($area->has_thumbnail)
+            <div class="col-md-2">
+                <div class="form-group">
+                    <img src="{{ $area->thumbImageUrl }}" class="img-fluid mr-2 mb-2" style="height: 10em;" />
+                    <br>
+                </div>
+            </div>
+        @endif
+        <div class="col-md-6">
+            <div class="form-group">
+                {!! Form::label('Thumbnail (Optional)') !!} {!! add_help('This thumbnail is used on the area index.') !!}
+                <div>{!! Form::file('thumb') !!}</div>
+                <div class="text-muted">Recommended size: 100px x 100px</div>
+                @if ($area->has_thumbnail)
+                    <div class="form-check">
+                        {!! Form::checkbox('remove_thumb', 1, false, ['class' => 'form-check-input']) !!}
+                        {!! Form::label('remove_thumb', 'Remove current thumbnail', ['class' => 'form-check-label']) !!}
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+    <h5>Background Image</h5>
+    <p>This will be the background image for this area's encounters.</p>
     <div class="row">
         @if ($area->has_image)
             <div class="col-md-2">
@@ -43,7 +70,7 @@
         @endif
         <div class="col-md-6">
             <div class="form-group">
-                {!! Form::label('World Page Image (Optional)') !!} {!! add_help('This image is used on the world information pages and side widget.') !!}
+                {!! Form::label('World Page Image (Optional)') !!} {!! add_help('This image is used on the encounter page.') !!}
                 <div>{!! Form::file('image') !!}</div>
                 <div class="text-muted">Recommended size: 100px x 100px</div>
                 @if ($area->has_image)
@@ -170,7 +197,7 @@
         <h3>Preview</h3>
         <div class="card mb-3">
             <div class="card-body">
-                put preview here (user view)
+                @include('encounters._area_entry')
             </div>
         </div>
     @endif
