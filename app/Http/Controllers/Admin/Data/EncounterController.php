@@ -18,6 +18,14 @@ use App\Models\Encounter\EncounterPrompt;
 
 use App\Http\Controllers\Controller;
 
+/**use App\Models\Pet\Pet;
+use App\Models\Award\Award;
+use App\Models\Claymore\Gear;
+use App\Models\Claymore\Weapon;
+use App\Models\Claymore\Enchantment;
+use App\Models\Recipe\Recipe;
+use App\Models\Collection\Collection;**/
+
 
 class EncounterController extends Controller
 {
@@ -77,6 +85,15 @@ class EncounterController extends Controller
         return view('admin.encounters.create_edit_encounter_area', [
             'area' => $area,
             'encounters' => Encounter::orderBy('name')->pluck('name', 'id'),
+            'items' => Item::orderBy('name')->pluck('name', 'id'),
+            'currencies' => Currency::orderBy('name')->pluck('name', 'id'),
+            /**'pets' => Pet::orderBy('name')->pluck('name', 'id'),
+            'awards' => Award::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
+            'gears' => Gear::orderBy('name')->pluck('name', 'id'),
+            'weapons' => Weapon::orderBy('name')->pluck('name', 'id'),
+            'enchantments' => Enchantment::orderBy('name')->pluck('name', 'id'),
+            'recipes' => Recipe::where('needs_unlocking', 1)->orderBy('name')->pluck('name', 'id'),
+            'collections' => Collection::orderBy('name')->pluck('name', 'id')**/
         ]);
     }
 
@@ -167,6 +184,29 @@ class EncounterController extends Controller
             'results' => $results,
             'quantity' => $request->get('quantity')
         ]);
+    }
+
+     /**
+     * Restrict an area behind items
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\WeatherService  $service
+     * @param  int                       $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function postRestrictArea(Request $request, EncounterService $service, $id)
+    {
+        $data = $request->only([
+            'item_id', 'item_type'
+        ]);
+
+        if($service->restrictArea($data, $id)) {
+            flash('Area limits updated successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
     }
 
 

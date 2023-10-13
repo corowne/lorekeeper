@@ -194,6 +194,80 @@
     @endif
 
     @if ($area->id)
+        {!! Form::open(['url' => 'admin/data/encounters/areas/restrictions/' . $area->id]) !!}
+        <h3>Restrict Area</h3>
+        <p>Users must obtain all these requirements to be able to enter the area.</p>
+
+        <div class="text-right mb-3">
+            <a href="#" class="btn btn-outline-info" id="addLimit">Add Limit</a>
+        </div>
+        <table class="table table-sm" id="limitTable">
+            <thead>
+                <tr>
+                    <th width="35%">Limit Type</th>
+                    <th width="35%">Limit</th>
+                    <th width="10%"></th>
+                </tr>
+            </thead>
+            <tbody id="limitTableBody">
+                @if ($area->limits)
+                    @foreach ($area->limits as $limit)
+                        <tr class="limit-row">
+                            <td>{!! Form::select('item_type[]', ['Item' => 'Item', 'Currency' => 'Currency'], $limit->item_type, [
+                                'class' => 'form-control reward-type',
+                                'placeholder' => 'Select limit Type',
+                            ]) !!}</td>
+                            <td class="limit-row-select">
+                                @if ($limit->item_type == 'Item')
+                                    {!! Form::select('item_id[]', $items, $limit->item_id, [
+                                        'class' => 'form-control item-select selectize',
+                                        'placeholder' => 'Select Item',
+                                    ]) !!}
+                                @elseif($limit->item_type == 'Currency')
+                                    {!! Form::select('item_id[]', $currencies, $limit->item_id, [
+                                        'class' => 'form-control currency-select selectize',
+                                        'placeholder' => 'Select Currency',
+                                    ]) !!}
+                                @endif
+                            </td>
+                            <td class="text-right"><a href="#" class="btn btn-danger remove-limit-button">Remove</a>
+                            </td>
+                        </tr>
+                    @endforeach
+                @endif
+            </tbody>
+        </table>
+
+        <div class="text-right">
+            {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
+        </div>
+
+        {!! Form::close() !!}
+
+        <div id="limitRowData" class="hide">
+            <table class="table table-sm">
+                <tbody id="limitRow">
+                    <tr class="limit-row">
+                        <td>{!! Form::select('item_type[]', ['Item' => 'Item', 'Currency' => 'Currency'], null, [
+                            'class' => 'form-control reward-type',
+                            'placeholder' => 'Select limit Type',
+                        ]) !!}</td>
+                        <td class="limit-row-select"></td>
+                        <td class="text-right"><a href="#" class="btn btn-danger remove-limit-button">Remove</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            {!! Form::select('item_id[]', $items, null, [
+                'class' => 'form-control item-select',
+                'placeholder' => 'Select Item',
+            ]) !!}
+            {!! Form::select('item_id[]', $currencies, null, [
+                'class' => 'form-control currency-select',
+                'placeholder' => 'Select Currency',
+            ]) !!}
+
+        </div>
+
         <h3>Preview</h3>
         <div class="card mb-3">
             <div class="card-body">
@@ -270,6 +344,59 @@
                 $('#encounterAreaBody .encounter-row-chance').each(function(index) {
                     var current = (weights[index] / total) * 100;
                     $(this).html(current.toString() + '%');
+                });
+            }
+
+            var $limitTable = $('#limitTableBody');
+            var $limitRow = $('#limitRow').find('.limit-row');
+            var $itemSelect = $('#limitRowData').find('.item-select');
+            var $currencySelect = $('#limitRowData').find('.currency-select');
+
+
+            $('#limitTableBody .selectize').selectize();
+            attachRewardTypeListener($('#limitTableBody .reward-type'));
+            attachRemoveListener($('#limitTableBody .remove-limit-button'));
+
+            $('#addLimit').on('click', function(e) {
+                e.preventDefault();
+                var $clone = $limitRow.clone();
+                $limitTable.append($clone);
+                attachRewardTypeListener($clone.find('.reward-type'));
+                attachRemoveListener($clone.find('.remove-limit-button'));
+            });
+
+            $('.reward-type').on('change', function(e) {
+                var val = $(this).val();
+                var $cell = $(this).parent().find('.limit-row-select');
+
+                var $clone = null;
+                if (val == 'Item') $clone = $itemSelect.clone();
+                else if (val == 'Currency') $clone = $currencySelect.clone();
+
+
+                $cell.html('');
+                $cell.append($clone);
+            });
+
+            function attachRewardTypeListener(node) {
+                node.on('change', function(e) {
+                    var val = $(this).val();
+                    var $cell = $(this).parent().parent().find('.limit-row-select');
+
+                    var $clone = null;
+                    if (val == 'Item') $clone = $itemSelect.clone();
+                    else if (val == 'Currency') $clone = $currencySelect.clone();
+
+                    $cell.html('');
+                    $cell.append($clone);
+                    $clone.selectize();
+                });
+            }
+
+            function attachRemoveListener(node) {
+                node.on('click', function(e) {
+                    e.preventDefault();
+                    $(this).parent().parent().remove();
                 });
             }
         });

@@ -11,6 +11,7 @@ use App\Models\Encounter\EncounterArea;
 use App\Models\Encounter\EncounterReward;
 use App\Models\Encounter\AreaEncounters;
 use App\Models\Encounter\EncounterPrompt;
+use App\Models\Encounter\AreaLimit;
 
 class EncounterService extends Service
 {
@@ -223,6 +224,41 @@ class EncounterService extends Service
                 'weight' => $data['weight'][$key],
             ]);
         }
+    }
+
+    
+    /**
+     * Restrict an area behind items
+     *
+     * @param  \App\Models\Encounter\Encounter  $season
+     * @param  array                       $data
+     */
+    public function restrictArea($data, $id)
+    {
+        DB::beginTransaction();
+
+        try {
+
+            $area = EncounterArea::find($id);
+
+            $area->limits()->delete();
+
+            if(isset($data['item_type'])) {
+                foreach($data['item_type'] as $key => $type)
+                {
+                    AreaLimit::create([
+                        'encounter_area_id'       => $area->id,
+                        'item_type' => $type,
+                        'item_id' => $data['item_id'][$key],
+                    ]);
+                }
+            }
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
     }
 
     /**********************************************************************************************

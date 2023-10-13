@@ -63,6 +63,14 @@ class EncounterArea extends Model
         return $this->hasMany('App\Models\Encounter\AreaEncounters', 'encounter_area_id');
     }
 
+    /**
+     * Get the required items / assets to enter the shop.
+     */
+    public function limits()
+    {
+        return $this->hasMany('App\Models\Encounter\AreaLimit');
+    }
+
     /**********************************************************************************************
 
         SCOPES

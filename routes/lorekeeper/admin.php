@@ -250,6 +250,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('encounters/areas/edit/{id?}', 'EncounterController@postCreateEditEncounterArea');
     Route::post('encounters/areas/delete/{id}', 'EncounterController@postDeleteEncounterArea');
     Route::get('encounters/areas/roll/{id}', 'EncounterController@getRollArea');
+    Route::post('encounters/areas/restrictions/{id}', 'EncounterController@postRestrictArea');
 });
 
 
