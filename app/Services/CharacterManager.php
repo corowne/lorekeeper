@@ -237,8 +237,8 @@ class CharacterManager extends Service
                 // Use default images for MYO slots without an image provided
                 if(!isset($data['image']))
                 {
-                    $data['image'] = asset('images/myo.png');
-                    $data['thumbnail'] = asset('images/myo-th.png');
+                    $data['image'] = public_path('images/myo.png');
+                    $data['thumbnail'] = public_path('images/myo-th.png');
                     $data['extension'] = 'png';
                     $data['default_image'] = true;
                     unset($data['use_cropper']);
