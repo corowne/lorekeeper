@@ -130,10 +130,12 @@ class SalesService extends Service
                 case 'ota':
                     if(isset($data['autobuy'][$key])) $charData[$key]['autobuy'] = $data['autobuy'][$key];
                     if(isset($data['end_point'][$key])) $charData[$key]['end_point'] = $data['end_point'][$key];
+					if(isset($data['minimum'][$key])) $charData[$key]['minimum'] = $data['minimum'][$key];
                     break;
                 case 'xta':
                     if(isset($data['autobuy'][$key])) $charData[$key]['autobuy'] = $data['autobuy'][$key];
                     if(isset($data['end_point'][$key])) $charData[$key]['end_point'] = $data['end_point'][$key];
+					if(isset($data['minimum'][$key])) $charData[$key]['minimum'] = $data['minimum'][$key];
                     break;
                 case 'flaffle':
                     $charData[$key]['price'] = $data['price'][$key];
