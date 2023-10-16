@@ -62,8 +62,6 @@ class PermalinkController extends Controller
                         break;
                 }
                 break;
-            default:
-                break;
         }
 
         if($comment->commentable_type == 'App\Models\User\UserProfile') $comment->location = $comment->commentable->user->url;
