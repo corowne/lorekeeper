@@ -49,7 +49,7 @@ class PermalinkController extends Controller
                         if(!$isMod && !$isOwner) abort(404);
                         break;
                     default:
-                        abort(404);
+                        if(!Auth::user()->isStaff) abort(404);
                         break;
                 }
             case "Staff-Staff":
