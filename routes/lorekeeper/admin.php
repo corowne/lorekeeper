@@ -235,6 +235,16 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('encounters/create', 'EncounterController@postCreateEditEncounter');
     Route::post('encounters/edit/{id?}', 'EncounterController@postCreateEditEncounter');
     Route::post('encounters/delete/{id}', 'EncounterController@postDeleteEncounter');
+
+    # AREAS
+    Route::get('encounters/areas', 'EncounterController@getEncounterAreaIndex');
+    Route::get('encounters/areas/create', 'EncounterController@getCreateEncounterArea');
+    Route::get('encounters/areas/edit/{id}', 'EncounterController@getEditEncounterArea');
+    Route::get('encounters/areas/delete/{id}', 'EncounterController@getDeleteEncounterArea');
+    Route::post('encounters/areas/create', 'EncounterController@postCreateEditEncounterArea');
+    Route::post('encounters/areas/edit/{id?}', 'EncounterController@postCreateEditEncounterArea');
+    Route::post('encounters/areas/delete/{id}', 'EncounterController@postDeleteEncounterArea');
+    Route::get('encounters/areas/roll/{id}', 'EncounterController@getRollArea');
 });
 
 

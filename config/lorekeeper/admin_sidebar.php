@@ -180,6 +180,10 @@ return [
                 'name' => 'Encounters',
                 'url' => 'admin/data/encounters'
             ],
+            [
+                'name' => 'Encounter Areas',
+                'url' => 'admin/data/encounters/areas'
+            ],
         ]
     ],
     'Raffles' => [
