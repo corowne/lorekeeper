@@ -168,16 +168,18 @@ class SalesCharacter extends Model
                 ;
                 break;
             case 'ota':
-                return (isset($this->data['autobuy']) ? '<br/>Autobuy: '.$symbol.$this->data['autobuy'] : '');
+                return (isset($this->data['autobuy']) ? 'Autobuy: '.$symbol.$this->data['autobuy'].'<br/>' : '').
+				(isset($this->data['minimum']) ? 'Minimum: '.$symbol.$this->data['minimum'].'<br/>' : '');
                 break;
             case 'xta':
-                return (isset($this->data['autobuy']) ? '<br/>Autobuy: '.$symbol.$this->data['autobuy'] : '');
+                return (isset($this->data['autobuy']) ? 'Autobuy: '.$symbol.$this->data['autobuy'].'<br/>' : '').
+				(isset($this->data['minimum']) ? 'Minimum: '.$symbol.$this->data['minimum'].'<br/>' : '');
                 break;
             case 'flaffle':
                 return 'Price: '.$symbol.$this->data['price'];
                 break;
             case 'pwyw':
-                return 'Minimum: '.$symbol.$this->data['minimum'];
+                return (isset($this->data['minimum']) ? 'Minimum: '.$symbol.$this->data['minimum'].'<br/>' : '');
                 break;
         }
     }
