@@ -52,11 +52,11 @@
             @endif
 		</div></div>
     @endif
-    
+
     @if($report->status == 'Assigned' && $report->user_id == Auth::user()->id || Auth::user()->hasPower('manage_reports'))
-    @comments([ 'model' => $report, 'perPage' => 5 ])
+    @comments([ 'type' => 'Staff-User', 'model' => $report, 'perPage' => 5 ])
     @endif
-    
+
     {!! Form::open(['url' => url()->current(), 'id' => 'reportForm']) !!}
     @if($report->status == 'Assigned' && Auth::user()->id == $report->staff_id)
     @if(Auth::user()->hasPower('manage_reports'))<div class="alert alert-warning">Please include a small paragraph on the solution and as many important details as you deem necessary, as the user will no longer be able to view the comments after the report is closed</div>@endif
@@ -111,10 +111,10 @@
 @endsection
 
 @section('scripts')
-@parent 
+@parent
 @if($report->status !== 'Closed')
     <script>
-        
+
         $(document).ready(function() {
             var $confirmationModal = $('#confirmationModal');
             var $reportForm = $('#reportForm');
@@ -126,14 +126,14 @@
             var $assignButton = $('#assignButton');
             var $assignContent = $('#assignContent');
             var $assignSubmit = $('#assignSubmit');
-            
+
             $closalButton.on('click', function(e) {
                 e.preventDefault();
                 $closalContent.removeClass('hide');
                 $assignContent.addClass('hide');
                 $confirmationModal.modal('show');
             });
-            
+
             $assignButton.on('click', function(e) {
                 e.preventDefault();
                 $assignContent.removeClass('hide');
