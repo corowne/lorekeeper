@@ -1,5 +1,9 @@
 @php
-    $characters = \App\Models\Character\Character::visible(Auth::check() ? Auth::user() : null)->orderBy('slug', 'DESC')->get()->pluck('fullName', 'slug')->toArray();
+    $characters = \App\Models\Character\Character::visible(Auth::check() ? Auth::user() : null)
+        ->orderBy('slug', 'DESC')
+        ->get()
+        ->pluck('fullName', 'slug')
+        ->toArray();
 @endphp
 
 <div class="sales-character-entry mb-3 card">
