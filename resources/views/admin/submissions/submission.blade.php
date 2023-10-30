@@ -171,8 +171,8 @@
                         <div class="col-md-10">
                             <a href="#" class="float-right fas fa-close"></a>
                             <div class="form-group">
-                                {!! Form::label('character_codes', 'Character Code') !!}
-                                {!! Form::select('character_codes[]', $characters, null, ['class' => 'form-control character-code', 'placeholder' => 'Select Character']) !!}
+                                {!! Form::label('slug', 'Character Code') !!}
+                                {!! Form::select('slug[]', $characters, null, ['class' => 'form-control character-code', 'placeholder' => 'Select Character']) !!}
                             </div>
                             <div class="character-rewards hide">
                                 <h4>Character Rewards</h4>

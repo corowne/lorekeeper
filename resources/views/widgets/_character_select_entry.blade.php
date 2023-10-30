@@ -22,7 +22,7 @@
                 <a href="#" class="float-right fas fa-close"></a>
                 <div class="form-group">
                     {!! Form::label('slug[]', 'Character Code') !!}
-                    {!! Form::select('slug[]', $characters, $character->character->slug, ['class' => 'form-control character-code']) !!}
+                    {!! Form::select('slug[]', $characters, $character->character->slug, ['class' => 'form-control character-code', 'placeholder' => 'Select Character']) !!}
                 </div>
                 <div class="character-rewards">
                     <h4>Character Rewards</h4>

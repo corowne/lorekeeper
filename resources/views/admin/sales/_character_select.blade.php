@@ -21,7 +21,7 @@
                     <a href="#" class="float-right fas fa-close"></a>
                     <div class="form-group">
                         {!! Form::label('slug', 'Character Code') !!}
-                        {!! Form::select('slug[]', $characters, null, ['class' => 'form-control character-code', 'placeholder' => 'Select Character']) !!}
+                        {!! Form::select('slug[]', $characters, null, ['class' => 'form-control character-code', 'placeholder' => 'Select Character', 'placeholder' => 'Select Character']) !!}
                     </div>
                     <div class="character-details hide">
                         <h4>Sale Details</h4>
