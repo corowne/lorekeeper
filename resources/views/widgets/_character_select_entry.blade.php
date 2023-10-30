@@ -1,3 +1,7 @@
+@php
+    $characters = \App\Models\Character\Character::visible(Auth::check() ? Auth::user() : null)->orderBy('slug', 'DESC')->get()->pluck('fullName', 'slug')->toArray();
+@endphp
+
 <div class="submission-character mb-3 card">
     <div class="card-body">
         <div class="text-right"><a href="#" class="remove-character text-muted"><i class="fas fa-times"></i></a></div>
@@ -14,7 +18,7 @@
                 <a href="#" class="float-right fas fa-close"></a>
                 <div class="form-group">
                     {!! Form::label('slug[]', 'Character Code') !!}
-                    {!! Form::text('slug[]', $character->character->slug, ['class' => 'form-control character-code']) !!}
+                    {!! Form::select('slug[]', $characters, $character->character->slug, ['class' => 'form-control character-code']) !!}
                 </div>
                 <div class="character-rewards">
                     <h4>Character Rewards</h4>

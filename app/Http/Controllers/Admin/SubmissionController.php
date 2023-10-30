@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Item\Item;
+use App\Models\Currency\Currency;
+use App\Models\Loot\LootTable;
+use App\Models\Raffle\Raffle;
 use App\Models\Prompt\PromptCategory;
 use App\Models\Submission\Submission;
 use App\Services\SubmissionManager;
