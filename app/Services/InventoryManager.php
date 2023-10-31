@@ -541,7 +541,7 @@ class InventoryManager extends Service
 
 
     /**
-     * Transfers items between a user and shop.
+     * quickstocks items between a user and shop.
      *
      * @param  \App\Models\User\User|\App\Models\Shop\UserShop          $sender
      * @param  \App\Models\User\User|\App\Models\Shop\UserShop          $recipient
@@ -549,33 +549,26 @@ class InventoryManager extends Service
      * @param  int                                                            $quantities
      * @return bool
      */
-    public function sendShop($sender, $recipient, $stacks, $quantities)
+    public function sendShop($sender, $recipient, $stack, $quantity)
     {
         DB::beginTransaction();
 
         try {
-            
-            foreach($stacks as $key=>$stack) {
-
-                $quantity = $quantities[$key];
-
                 if(!$stack) throw new \Exception("Invalid or no stack selected.");
                 if(!$recipient) throw new \Exception("Invalid recipient selected.");
                 if(!$sender) throw new \Exception("Invalid sender selected.");
 
                 if($recipient->logType == 'Shop' && $sender->logType == 'Shop') throw new \Exception("Cannot transfer items between shops.");
-                if(!$stacks) throw new \Exception("Invalid stack selected.");
                 if($sender->logType == 'Shop' && $quantity <= 0 && $stack->count > 0) $quantity = $stack->count;
                 if($quantity <= 0) throw new \Exception("Invalid quantity entered.");
                 
                 if(($recipient->logType == 'Shop' && !$sender->hasPower('edit_inventories') && !Auth::user() == $recipient->user) || ($recipient->logType == 'User' && !Auth::user()->hasPower('edit_inventories') && !Auth::user() == $sender->user)) throw new \Exception("Cannot transfer items to/from a shop you don't own.");
                 
-                if((!$stack->item->allow_transfer || isset($stack->data['disallow_transfer'])) && !Auth::user()->hasPower('edit_inventories')) throw new \Exception("One of the selected items cannot be transferred.");
-
-                if($stack->item->category){
-                    if($stack->item->category->can_user_sell == 0 && !Auth::user()->hasPower('edit_inventories')) throw new \Exception("This item cannot be sold in user shops."); 
-                }
-
+                //streamlining and also adding a small failsafe in case transfer status gets changed to unsellable for any reason while an item is stocked
+                //items won't get trapped this way
+                if($recipient->logType == 'Shop' && !$stack->isTransferrable && !Auth::user()->hasPower('edit_inventories')) throw new \Exception("One of the selected items cannot be transferred.");
+                if($recipient->logType == 'Shop' && !$stack->item->canUserSell) throw new \Exception("This item cannot be sold in user shops."); 
+                
                 if($recipient->logType == 'Shop' && $stack->count < $quantity) throw new \Exception("Quantity to transfer exceeds item count."); 
 
                 if($recipient->logType == 'User' && $stack->quantity < $quantity) throw new \Exception("Quantity to transfer exceeds item count."); 
@@ -593,7 +586,6 @@ class InventoryManager extends Service
                         }
                     } 
                     $stack->save();
-            }
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
             $this->setError('error', $e->getMessage());
@@ -647,6 +639,36 @@ class InventoryManager extends Service
             if($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, $recipient ? $recipient->id : null, $recipient ? $recipient->logType : null, null, $type, $data['data'], $item->id, $quantity)) throw new \Exception("Failed to create log.");
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * quickstock items
+     *
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $user
+     * @param  bool                   $isClaim
+     * @return mixed
+     */
+    public function quickstockItems($data, $user, $recipient)
+    {
+        DB::beginTransaction();
+
+        try {
+
+            if(isset($data['stack_id'])) {
+                foreach($data['stack_id'] as $stackId) {
+                    $stack = UserItem::with('item')->find($stackId);
+                    if(!$stack || $stack->user_id != $user->id) throw new \Exception("Invalid item selected.");
+                    if(!isset($data['stack_quantity'][$stackId])) throw new \Exception("Invalid quantity selected.");
+                    if(!$this->sendShop($user, $recipient, $stack, $data['stack_quantity'][$stackId])) throw new \Exception("Could not transfer item to shop.");
+                }
+            }
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);

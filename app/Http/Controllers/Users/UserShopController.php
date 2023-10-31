@@ -120,22 +120,6 @@ class UserShopController extends Controller
         }
         return redirect()->back();
     }
-
-    /**
-     * Gets the stock deletion modal.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function getRemoveShopStock($id)
-    {
-        $stock = UserShopStock::find($id);
-        $shop = UserShop::where('id', $stock->user_shop_id)->first();
-        return view('home.user_shops._delete_stock', [
-            'stock' => $stock,
-            'shop' => $shop
-        ]);
-    }
     
     /**
      * Gets the shop deletion modal.
@@ -188,26 +172,6 @@ class UserShopController extends Controller
         return redirect()->back();
     }
 
-
-    /**
-     * Transfers inventory items back to a user.
-     *
-     * @param  \Illuminate\Http\Request       $request
-     * @param  App\Services\InventoryManager  $service
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function postRemoveStock(Request $request, InventoryManager $service)
-    {
-        $shop = UserShop::where('id', $request->get('user_shop_id'))->first();
-        if($service->sendShop($shop, $shop->user, UserShopStock::find($request->get('ids')), $request->get('quantities'))) {
-            flash('Item transferred successfully.')->success();
-        }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
-        return redirect()->back();
-    }
-
     /**
      * Shows the user's purchase history.
      *
@@ -243,7 +207,7 @@ class UserShopController extends Controller
         ]);
     }
 
-/**
+    /**
      * Shows the user's purchase history.
      *
      * @return \Illuminate\Contracts\Support\Renderable
@@ -256,5 +220,23 @@ class UserShopController extends Controller
             'logs' => $shop->getShopLogs(0),
             'shop' => $shop,
         ]);
+    }
+
+    /**
+     * transfers item to shop
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\InventoryManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postQuickstockStock(Request $request, UserShopService $service, $id)
+    {
+        if($service->quickstockStock($request->only(['stock_id','quantity','is_visible','cost','currency_id']), UserShop::where('id', $id)->first(), Auth::user())) {
+            flash('Stock edited successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
     }
 }

@@ -8,6 +8,7 @@ use Settings;
 
 use App\Models\Shop\UserShop;
 use App\Models\Shop\UserShopStock;
+use App\Models\Currency\Currency;
 
 class UserShopService extends Service
 {
@@ -101,34 +102,6 @@ class UserShopService extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
-
-    /**
-     * Updates shop stock.
-     *
-     * @param  \App\Models\Shop\UserShop  $shop
-     * @param  array                  $data
-     * @param  \App\Models\User\User  $user
-     * @return bool|\App\Models\Shop\UserShop
-     */
-    public function editShopStock($stock, $data, $user)
-    {
-        DB::beginTransaction();
-
-        try {
-
-            $stock->update([
-                'currency_id'           => $data['currency_id'],
-                'cost'                  => $data['cost'],
-                'is_visible'            => isset($data['is_visible']) ? $data['is_visible'] : 0,
-            ]);
-
-            return $this->commitReturn($stock);
-        } catch(\Exception $e) {
-            $this->setError('error', $e->getMessage());
-        }
-        return $this->rollbackReturn(false);
-    }
 
     /**
      * Processes user input for creating/updating a shop.
@@ -201,6 +174,50 @@ class UserShopService extends Service
 
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * quick edit stock
+     *
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $user
+     * @param  bool                   $isClaim
+     * @return mixed
+     */
+    public function quickstockStock($data, $shop, $user)
+    {
+        DB::beginTransaction();
+        try { 
+
+            if(isset($data['stock_id'])) {
+                foreach($data['stock_id'] as $key => $itemId) {
+
+                    if($data['cost'][$key] == null) throw new \Exception("One or more of the items is missing a cost.");
+                    if($data['cost'][$key] < 0) throw new \Exception("One or more of the items has a negative cost.");
+
+                    //check for the currency id here
+                    if($data['currency_id'][$key] == null) throw new \Exception("One or more of the items is missing a currency.");
+                    if((isset($data['currency_id'][$key]) && $data['currency_id'][$key]) && !Currency::where('id', $data['currency_id'][$key])->exists()) throw new \Exception("The selected currency is invalid.");
+
+                    $stock = UserShopStock::find($itemId);
+                    //update the data of the stocks
+                    $stock->update([
+                        'is_visible' => isset($data['is_visible'][$key]) ? $data['is_visible'][$key] : 0, 
+                        'cost' => $data['cost'][$key], 
+                        'currency_id' => $data['currency_id'][$key]
+                    ]);
+                    //transfer them if qty selected
+                    if(isset($data['quantity'][$key]) && $data['quantity'][$key] > 0) {
+                        if(!(new InventoryManager)->sendShop($shop, $shop->user, $stock, $data['quantity'][$key])) throw new \Exception("Could not transfer item to user.");
+                    }
+                }
+            }
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);

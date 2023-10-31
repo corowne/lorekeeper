@@ -50,6 +50,9 @@ Route::group(['prefix' => 'inventory', 'namespace' => 'Users'], function() {
     Route::get('account-search', 'InventoryController@getAccountSearch');
 
     Route::get('selector', 'InventoryController@getSelector');
+
+    Route::get('quickstock', 'InventoryController@getQuickstock');
+    Route::post('quickstock-items', 'InventoryController@postQuickstock');
 });
 
 Route::group(['prefix' => 'characters', 'namespace' => 'Users'], function() {
@@ -93,17 +96,15 @@ Route::group(['prefix' => 'usershops', 'namespace' => 'Users'], function() {
     Route::post('stock/{id}', 'UserShopController@postEditShopStock');
     Route::post('delete/{id}', 'UserShopController@postDeleteShop');
     Route::post('sort', 'UserShopController@postSortShop');
-    Route::get('/stock/edit/{id}', 'UserShopController@getEditShopStock');
-    Route::post('/stock/edit/{id}', 'UserShopController@postEditShopStock');
-    // delete
-    Route::get('/stock/remove/{id}', 'UserShopController@getRemoveShopStock'); 
-    Route::post('/stock/remove/{id}', 'UserShopController@postRemoveStock');
+
     // misc
     Route::get('/stock-type', 'UserShopController@getShopStockType');
     Route::get('/history', 'UserShopController@getPurchaseHistory');
     Route::get('item-search', 'UserShopController@getItemSearch');
 
     Route::get('sales/{id}', 'UserShopController@getShopHistory');
+
+    Route::post('quickstock/{id}', 'UserShopController@postQuickstockStock');
 });
 
 Route::group(['prefix' => 'usershops',], function() {

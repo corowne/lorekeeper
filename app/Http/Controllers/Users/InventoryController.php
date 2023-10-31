@@ -309,6 +309,24 @@ class InventoryController extends Controller
         ]);
     }
 
+       /**
+     * Shows the user's quickstock page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getQuickstock()
+    {
+        $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get();
+        return view('home.quickstock', [
+            'user' => Auth::user(),
+            'item_filter' => Item::orderBy('name')->released()->get()->keyBy('id'),
+            'items' => Item::orderBy('name')->released()->pluck('name', 'id'),
+            'inventory' => $inventory,
+            'page' => 'quickstock',
+            'categories' => ItemCategory::orderBy('sort', 'DESC')->get(),
+            'shopOptions' => UserShop::where('user_id', '=', Auth::user()->id)->pluck('name', 'id'),
+        ]);
+    }
     /**
      * transfers item to shop
      *
@@ -316,9 +334,9 @@ class InventoryController extends Controller
      * @param  App\Services\InventoryManager  $service
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postShop(Request $request, InventoryManager $service)
+    public function postQuickstock(Request $request, InventoryManager $service)
     {
-        if($service->sendShop(Auth::user(), UserShop::where('id', $request->get('shop_id'))->first(), UserItem::find($request->get('ids')), $request->get('quantities'))) {
+        if($service->quickstockItems($request->only(['stack_id', 'stack_quantity']), Auth::user(), UserShop::where('id', $request->get('shop_id'))->first())) {
             flash('Item transferred successfully.')->success();
         }
         else {
@@ -327,5 +345,4 @@ class InventoryController extends Controller
         return redirect()->back();
     }
     
-
 }

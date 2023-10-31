@@ -195,7 +195,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function shops()
     {
-        return $this->belongsTo('App\Models\Shop\UserShop', 'user_id');
+        return $this->hasMany('App\Models\Shop\UserShop', 'user_id');
     }
 
     /**********************************************************************************************
