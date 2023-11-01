@@ -44,7 +44,7 @@
                                 Bank
                             </a>
                             <a class="dropdown-item" href="{{ url('encounter-areas') }}">
-                                encounters
+                                Encounters
                             </a>
                         </div>
                     </li>
@@ -114,9 +114,6 @@
                         </a>
                         <a class="dropdown-item" href="{{ url('shops') }}">
                             Shops
-                        </a>
-                        <a class="dropdown-item" href="{{ url('encounters') }}">
-                                Encounters
                         </a>
                     </div>
                 </li>

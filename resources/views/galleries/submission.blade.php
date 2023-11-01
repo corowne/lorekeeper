@@ -55,11 +55,8 @@
         <div class="row mb-4 no-gutters">
 
                 
-            <div class="col-md-2 mb-4 d-md-block d-none" style="width:125px; height:125px; float:left; border-radius:50%;">
-                <!-- avatar -->
-                    <img class="avatar" src="https://f2.toyhou.se/file/f2-toyhou-se/images/56896798_7lJRJrmSIv2ptXt.png" style="position: absolute; border-radius:50%; width:125px; height:125px;border: 16px solid rgba(0, 0, 0, .0); ">
-                <!-- frame -->
-                    <img src="https://static.wikia.nocookie.net/toweroffantasy/images/8/8f/Avatar_Frame_Under_the_Sunglasses.png" style="position: absolute;width:125px; height:125px;"  alt="avatar frame">
+            <div class="col-md-2 mb-4 mobile-hide text-center">
+                <a href="/user/{{ $submission->user->name }}"><img src="/images/avatars/{{ $submission->user->avatar }}" style="border-radius:50%; margin-right:25px; max-width:100%;" data-toggle="tooltip" title="{{ $submission->user->name }}" alt="{{ $submission->user->name }}"/></a>
             </div>
 
 
