@@ -205,7 +205,7 @@ class UserShopService extends Service
                     $stock = UserShopStock::find($itemId);
                     //update the data of the stocks
                     $stock->update([
-                        'is_visible' => isset($data['is_visible'][$key]) ? $data['is_visible'][$key] : 0, 
+                        'is_visible' => isset($data['is_visible'][$itemId]),
                         'cost' => $data['cost'][$key], 
                         'currency_id' => $data['currency_id'][$key]
                     ]);
