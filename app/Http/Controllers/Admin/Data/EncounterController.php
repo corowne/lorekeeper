@@ -14,8 +14,17 @@ use App\Models\Loot\LootTable;
 use App\Models\Raffle\Raffle;
 
 use App\Services\EncounterService;
+use App\Models\Encounter\EncounterPrompt;
 
 use App\Http\Controllers\Controller;
+
+/**use App\Models\Pet\Pet;
+use App\Models\Award\Award;
+use App\Models\Claymore\Gear;
+use App\Models\Claymore\Weapon;
+use App\Models\Claymore\Enchantment;
+use App\Models\Recipe\Recipe;
+use App\Models\Collection\Collection;**/
 
 
 class EncounterController extends Controller
@@ -76,6 +85,15 @@ class EncounterController extends Controller
         return view('admin.encounters.create_edit_encounter_area', [
             'area' => $area,
             'encounters' => Encounter::orderBy('name')->pluck('name', 'id'),
+            'items' => Item::orderBy('name')->pluck('name', 'id'),
+            'currencies' => Currency::orderBy('name')->pluck('name', 'id'),
+            /**'pets' => Pet::orderBy('name')->pluck('name', 'id'),
+            'awards' => Award::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
+            'gears' => Gear::orderBy('name')->pluck('name', 'id'),
+            'weapons' => Weapon::orderBy('name')->pluck('name', 'id'),
+            'enchantments' => Enchantment::orderBy('name')->pluck('name', 'id'),
+            'recipes' => Recipe::where('needs_unlocking', 1)->orderBy('name')->pluck('name', 'id'),
+            'collections' => Collection::orderBy('name')->pluck('name', 'id')**/
         ]);
     }
 
@@ -91,7 +109,8 @@ class EncounterController extends Controller
     {
         $id ? $request->validate(EncounterArea::$updateRules) : $request->validate(EncounterArea::$createRules);
         $data = $request->only([
-            'name', 'description', 'image', 'remove_image','is_active','encounter_id', 'weight', 'start_at', 'end_at', 'encounter_id', 'weight',
+            'name', 'description', 'image', 'remove_image','is_active','encounter_id', 
+            'weight', 'start_at', 'end_at', 'encounter_id', 'weight', 'thumb', 'remove_thumb',
 
         ]);
         if($id && $service->updateEncounterArea(EncounterArea::find($id), $data, Auth::user())) {
@@ -167,6 +186,29 @@ class EncounterController extends Controller
         ]);
     }
 
+     /**
+     * Restrict an area behind items
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\WeatherService  $service
+     * @param  int                       $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function postRestrictArea(Request $request, EncounterService $service, $id)
+    {
+        $data = $request->only([
+            'item_id', 'item_type'
+        ]);
+
+        if($service->restrictArea($data, $id)) {
+            flash('Area limits updated successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
 
      /**********************************************************************************************
 
@@ -239,7 +281,8 @@ class EncounterController extends Controller
     {
         $id ? $request->validate(Encounter::$updateRules) : $request->validate(Encounter::$createRules);
         $data = $request->only([
-            'name', 'description', 'image', 'remove_image', 'initial_prompt', 'option_name', 'option_description', 'option_reward', 'is_active', 'rewardable_type', 'rewardable_id', 'quantity', 'start_at', 'end_at',
+            'name', 'description', 'image', 'remove_image', 'initial_prompt', 'option_name', 'option_description', 'is_active',
+              'start_at', 'end_at','position_right','position_bottom',
         ]);
         if($id && $service->updateEncounter(Encounter::find($id), $data, Auth::user())) {
             flash('Encounter updated successfully.')->success();
@@ -286,5 +329,51 @@ class EncounterController extends Controller
         }
         return redirect()->to('admin/data/encounters');
     }
+
+     /**********************************************************************************************
+     
+        ENCOUNTER PROMPTS
+        
+    **********************************************************************************************/
+
+    /**
+     * Gets the create / edit encounter prompt modal.
+     */
+    public function getCreateEditPrompt($encounter_id, $id = null)
+    {
+        return view('admin.encounters._create_edit_prompt', [
+            'encounter' => Encounter::find($encounter_id),
+            'prompt' => $id ? EncounterPrompt::find($id) : new EncounterPrompt(),
+            'items' => Item::orderBy('name')->pluck('name', 'id'),
+            'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
+            'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
+            'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
+        ]);
+    }
+
+    /**
+     * Edits encounter prompts
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\EncounterService  $service
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postCreateEditPrompt(Request $request, EncounterService $service, $encounter_id, $id = null)
+    {
+        $id ? $request->validate(EncounterPrompt::$updateRules) : $request->validate(EncounterPrompt::$createRules);
+        $data = $request->only(['encounter_id', 'name', 'result','rewardable_type', 'rewardable_id', 'quantity','math_type','energy_value','result_type','delete', ]);
+        if ($id && $service->editPrompt(EncounterPrompt::findOrFail($id), $data)) {
+            // we dont flash in case we are deleting the prompt
+        } elseif (!$id && $service->createPrompt(Encounter::find($encounter_id), $data)) {
+            flash('Option created successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+        return redirect()->back();
+    }
+    
 }
 

@@ -42,7 +42,7 @@
         @endif
         <div class="col-md-6">
             <div class="form-group">
-                {!! Form::label('World Page Image (Optional)') !!} {!! add_help('This image is used on the world information pages and side widget.') !!}
+                {!! Form::label('Encounter Image (Optional)') !!} {!! add_help('This image will show up when the user gets this encounter.') !!}
                 <div>{!! Form::file('image') !!}</div>
                 <div class="text-muted">Recommended size: 100px x 100px</div>
                 @if ($encounter->has_image)
@@ -54,6 +54,26 @@
             </div>
         </div>
     </div>
+    <h5>Image Positioning</h5>
+        <p>Where the image will rest on the encounter page (relative to the area background)</p>
+        <div class="row">
+            <div class="form-group col-6">
+                {!! Form::label('position_right', 'Right Position') !!} {!! add_help('The positioning as seen from the right. As this is a percentage, it should be a number 1-100. Please note that images set to 100 will fall of the container, and can not be seen.') !!}
+                {!! Form::number(
+                    'position_right',
+                    isset($encounter->extras['position_right']) ? $encounter->extras['position_right'] : '',
+                    ['class' => 'form-control', 'placeholder' => 'Right Position', 'min' => 1, 'max' => 100],
+                ) !!}
+            </div>
+            <div class="form-group col-6">
+                {!! Form::label('position_bottom', 'Bottom Position') !!} {!! add_help('The positioning as seen from the bottom. As this is a percentage, it should be a number 1-100. Please note that images set to 100 will fall of the container, and can not be seen.') !!}
+                {!! Form::number(
+                    'position_bottom',
+                    isset($encounter->extras['position_bottom']) ? $encounter->extras['position_bottom'] : '',
+                    ['class' => 'form-control', 'placeholder' => 'Bottom Position', 'min' => 1, 'max' => 100],
+                ) !!}
+            </div>
+        </div>
 
     <div class="form-group">
         {!! Form::label('initial prompt') !!}{!! add_help('This is the initial prompt the user will see for this encounter.') !!}
@@ -71,113 +91,43 @@
     </div>
 
 
-    <h4>Encounter Options</h4>
-    <p>You can create a series of options the user can choose from when they run into this encounter. You can create a short
-        option that can be clicked on, as well as a description of the result from the result of that option.</p>
-    <p>You can also choose if the user gets rewards or not, they will get the rewards that you choose for this encounter
-        below.</p>
-
-    <div id="optionList" class="my-2">
-        @if ($encounter->prompts)
-            @foreach ($encounter->prompts as $option)
-                <div class="my-2">
-                    <div class="row">
-                        <div class="col-md form-group">
-                            {!! Form::label('Option') !!}
-                            {!! Form::text('option_name[]', $option->name, [
-                                'class' => 'form-control',
-                                'placeholder' => 'A short name',
-                                'aria-label' => 'Option Name',
-                                'aria-describedby' => 'option-name-group',
-                            ]) !!}
-                        </div>
-                        <div class="col-md form-group">
-                            {!! Form::checkbox('option_reward[]', 1, $option->give_reward, [
-                                'class' => 'form-check-input',
-                                'data-name' => 'option_reward',
-                            ]) !!}
-                            {!! Form::label('option_reward[]', 'Gives Reward?', ['class' => 'form-check-label ml-3']) !!}
-                        </div>
-                        <div class="col-md form-group">
-                            <button class="btn btn-outline-danger remove-option" type="button"
-                                id="option-name-group">Remove
-                                Option</button>
-                        </div>
-                    </div>
-                    {!! Form::label('Description/Result') !!}
-                    {!! Form::textarea('option_description[]', $option->result, [
-                        'class' => 'form-control mr-2',
-                        'placeholder' =>
-                            'Describe the result of this encounter. Ex: The bear was friendly... you missed out on a potential friend!',
-                    ]) !!}
-                    <hr />
-                </div>
-            @endforeach
-        @endif
-    </div>
-    <div class="text-right"><a href="#" class="btn btn-primary" id="add-option">Add Option</a></div>
-
-    <h3>Rewards</h3>
-    <p>You can add loot tables containing any kind of currencies (both user- and character-attached), but be sure to keep
-        track of which are being distributed! Character-only currencies cannot be given to users.</p>
-    @include('widgets._loot_select', [
-        'loots' => $encounter->rewards,
-        'showLootTables' => true,
-        'showRaffles' => true,
-    ])
-
     <div class="text-right">
         {!! Form::submit($encounter->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
     </div>
 
     {!! Form::close() !!}
 
-    <div class="option-row hide my-2">
-        <div class="row">
-            <div class="col-md form-group">
-                {!! Form::label('Option') !!}
-                {!! Form::text('option_name[]', null, [
-                    'class' => 'form-control',
-                    'placeholder' => 'What option does the player get to choose? Ex: Run and hide from the bear!',
-                    'aria-label' => 'Option name',
-                    'aria-describedby' => 'option-name-group',
-                ]) !!}
-            </div>
-            <div class="col-md form-group">
-                {!! Form::checkbox('option_reward[]', 1, null, [
-                    'class' => 'form-check-input stock-toggle',
-                    'data-name' => 'option_reward',
-                ]) !!}
-                {!! Form::label('option_reward[]', 'Gives Reward?', ['class' => 'form-check-label ml-3']) !!}
-            </div>
-            <div class="col-md form-group">
-                <button class="btn btn-outline-danger remove-option" type="button" id="option-name-group">Remove
-                    Option</button>
+    @if ($encounter->id)
+    @endif
+
+        <div class="card-body text-center">
+            <h4>Encounter Options</h4>
+            <p>You can create a series of options the user can choose from when they run into this encounter. You can
+                create a short
+                option that can be clicked on, as well as a description of the result from the result of that option.
+            </p>
+            <p>You can also choose if the user gets rewards or not, they will get the rewards that you choose for this
+                encounter
+                below.</p>
+            <div class="mb-2 text-right">
+                <a href="#" class="btn btn-primary" id="add-prompt">Add Option</a>
             </div>
         </div>
-        {!! Form::label('Description/Result') !!}
-        {!! Form::textarea('option_description[]', null, [
-            'class' => 'form-control mr-2',
-            'placeholder' =>
-                'Describe the result of this encounter. Ex: The bear was friendly... you missed out on a potential friend!',
-        ]) !!}
-        <hr />
-    </div>
-
-    @include('widgets._loot_select_row', [
-        'items' => $items,
-        'currencies' => $currencies,
-        'tables' => $tables,
-        'raffles' => $raffles,
-        'showLootTables' => true,
-        'showRaffles' => true,
-    ])
-
+        @foreach ($encounter->prompts as $prompt)
+            <div class="d-flex row flex-wrap col-12 mt-1 pt-2 px-0 ubt-top">
+                <div class="col-5 col-md-11 text-truncate">
+                    {{ $prompt->name }}
+                </div>
+                <div class="col-3 col-md-1 text-right">
+                    <a href="#" class="btn btn-sm btn-primary edit-prompt" data-id="{{ $prompt->id }}"><i
+                            class="fas fa-cog mr-1"></i>Edit</a>
+                </div>
+            </div>
+        @endforeach
 @endsection
 
 @section('scripts')
     @parent
-    @include('js._loot_js', ['showLootTables' => true, 'showRaffles' => true])
 
     <script>
         $(document).ready(function() {
@@ -187,29 +137,18 @@
                     'Delete Encounter');
             });
 
-            $('#add-option').on('click', function(e) {
+            $('#add-prompt').on('click', function(e) {
                 e.preventDefault();
-                addOptionRow();
+                loadModal("{{ url('admin/data/encounters/edit/' . $encounter->id . '/prompts/create') }}",
+                    'Create Prompt');
             });
-            $('.remove-option').on('click', function(e) {
+
+            $('.edit-prompt').on('click', function(e) {
                 e.preventDefault();
-                removeOptionRow($(this));
-            })
+                loadModal("{{ url('admin/data/encounters/edit/' . $encounter->id . '/prompts/edit') }}/" +
+                    $(this).data('id'), 'Edit Prompt');
+            });
 
-            function addOptionRow() {
-                var $clone = $('.option-row').clone();
-                $('#optionList').append($clone);
-                $clone.removeClass('hide option-row');
-                $clone.find('.remove-option').on('click', function(e) {
-                    e.preventDefault();
-                    removeOptionRow($(this));
-                })
-                $clone.find('.option-select').selectize();
-            }
-
-            function removeOptionRow($trigger) {
-                $trigger.parent().parent().parent().remove();
-            }
         });
     </script>
 @endsection

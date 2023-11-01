@@ -16,7 +16,7 @@ class Encounter extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'data', 'is_active','initial_prompt','has_image', 'start_at', 'end_at'
+        'name', 'extras', 'is_active','initial_prompt','has_image', 'start_at', 'end_at'
     ];
 
     /**
@@ -51,14 +51,6 @@ class Encounter extends Model
         RELATIONS
 
     **********************************************************************************************/
-
-    /**
-     * Get the rewards attached to this encounter.
-     */
-    public function rewards()
-    {
-        return $this->hasMany('App\Models\Encounter\EncounterReward', 'encounter_id');
-    }
 
     /**
      * Get the prompts attached to this encounter.
@@ -115,26 +107,6 @@ class Encounter extends Model
     **********************************************************************************************/
 
     /**
-     * Displays the model's name, linked to its encyclopedia page.
-     *
-     * @return string
-     */
-    public function getDisplayNameAttribute()
-    {
-        return '<a href="'.$this->url.'" class="display-encounter">'.$this->name.'</a>';
-    }
-
-    /**
-     * Gets the encounter's asset type for asset management.
-     *
-     * @return string
-     */
-    public function getAssetTypeAttribute()
-    {
-        return 'encounters';
-    }
-
-    /**
      * Gets the file directory containing the model's image.
      *
      * @return string
@@ -174,4 +146,16 @@ class Encounter extends Model
         if (!$this->has_image) return null;
         return asset($this->imageDirectory . '/' . $this->imageFileName);
     }
+
+        /**
+     * Get the data attribute as an associative array.
+     *
+     * @return array
+     */
+    public function getExtrasAttribute()
+    {
+        if (!$this->id) return null;
+        return json_decode($this->attributes['extras'], true);
+    }
+
 }

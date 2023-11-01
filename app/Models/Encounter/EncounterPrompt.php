@@ -13,7 +13,7 @@ class EncounterPrompt extends Model
      * @var array
      */
     protected $fillable = [
-        'encounter_id', 'name', 'result', 'give_reward'
+        'encounter_id', 'name', 'result', 'output', 'extras'
     ];
 
     /**
@@ -29,7 +29,7 @@ class EncounterPrompt extends Model
      * @var array
      */
     public static $createRules = [
-        'name' => 'required',
+        'name' => 'required|between:3,50',
         'result' => 'required',
     ];
     
@@ -39,7 +39,7 @@ class EncounterPrompt extends Model
      * @var array
      */
     public static $updateRules = [
-        'name' => 'required',
+        'name' => 'required|between:3,50',
         'result' => 'required',
     ];
 
@@ -55,6 +55,54 @@ class EncounterPrompt extends Model
     public function encounter()
     {
         return $this->belongsTo('App\Models\Encounter\Encounter', 'encounter_id');
+    }
+
+     /**
+     * Gets the decoded output json
+     *
+     * @return array
+     */
+    public function getRewardsAttribute()
+    {
+        $rewards = [];
+        if($this->output) {
+            $assets = $this->getRewardItemsAttribute();
+
+            foreach($assets as $type => $a)
+            {
+                $class = getAssetModelString($type, false);
+                foreach($a as $id => $asset)
+                {
+                    $rewards[] = (object)[
+                        'rewardable_type' => $class,
+                        'rewardable_id' => $id,
+                        'quantity' => $asset['quantity']
+                    ];
+                }
+            }
+        }
+        return $rewards;
+    }
+
+    /**
+     * Interprets the json output and retrieves the corresponding items
+     *
+     * @return array
+     */
+    public function getRewardItemsAttribute()
+    {
+        return parseAssetData(json_decode($this->output, true));
+    }
+
+        /**
+     * Get the data attribute as an associative array.
+     *
+     * @return array
+     */
+    public function getExtrasAttribute()
+    {
+        if (!$this->id) return null;
+        return json_decode($this->attributes['extras'], true);
     }
  
 }

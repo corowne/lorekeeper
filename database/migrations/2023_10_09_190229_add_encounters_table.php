@@ -44,7 +44,6 @@ class AddEncountersTable extends Migration
             $table->integer('encounter_id')->unsigned();
             $table->string('name');
             $table->text('result');
-            $table->boolean('give_reward')->default(0);
         });
 
         //table for outputs to roll on for the areas
@@ -55,14 +54,6 @@ class AddEncountersTable extends Migration
             $table->integer('encounter_id')->unsigned();
             $table->integer('weight')->unsigned();  
             $table->foreign('encounter_area_id')->references('id')->on('encounter_areas');
-        });
-
-        Schema::create('encounter_rewards', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-            $table->integer('encounter_id')->unsigned()->default(0);
-            $table->string('rewardable_type');
-            $table->integer('rewardable_id')->unsigned();
-            $table->integer('quantity')->unsigned();
         });
 
         Schema::table('user_settings', function (Blueprint $table) {
@@ -81,6 +72,5 @@ class AddEncountersTable extends Migration
         Schema::dropIfExists('encounter_areas');
         Schema::dropIfExists('encounter_prompts');
         Schema::dropIfExists('area_encounters');
-        Schema::dropIfExists('encounter_rewards');
     }
 }

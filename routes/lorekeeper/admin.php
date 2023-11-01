@@ -236,6 +236,11 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('encounters/edit/{id?}', 'EncounterController@postCreateEditEncounter');
     Route::post('encounters/delete/{id}', 'EncounterController@postDeleteEncounter');
 
+    Route::get('encounters/edit/{encounter_id}/prompts/create', 'EncounterController@getCreateEditPrompt');
+    Route::get('encounters/edit/{encounter_id}/prompts/edit/{id}', 'EncounterController@getCreateEditPrompt');
+    Route::post('encounters/edit/{encounter_id}/prompts/create', 'EncounterController@postCreateEditPrompt');
+    Route::post('encounters/edit/{encounter_id}/prompts/edit/{id}', 'EncounterController@postCreateEditPrompt');
+
     # AREAS
     Route::get('encounters/areas', 'EncounterController@getEncounterAreaIndex');
     Route::get('encounters/areas/create', 'EncounterController@getCreateEncounterArea');
@@ -245,6 +250,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('encounters/areas/edit/{id?}', 'EncounterController@postCreateEditEncounterArea');
     Route::post('encounters/areas/delete/{id}', 'EncounterController@postDeleteEncounterArea');
     Route::get('encounters/areas/roll/{id}', 'EncounterController@getRollArea');
+    Route::post('encounters/areas/restrictions/{id}', 'EncounterController@postRestrictArea');
 });
 
 
