@@ -1,5 +1,5 @@
 <div class="p-2">
-    {!! Form::open(['url' => 'usershops/stock/edit/'.$stock->id]) !!}
+    {!! Form::open(['url' => 'user-shops/stock/edit/'.$stock->id]) !!}
 
     <div class="form-group">
         {!! Form::label('cost', 'Cost') !!}

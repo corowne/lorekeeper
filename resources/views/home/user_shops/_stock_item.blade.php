@@ -1,5 +1,5 @@
 <div class="p-2">
-    {!! Form::open(['url' => 'usershops/stock/edit/'.$stock->id]) !!}
+    {!! Form::open(['url' => 'user-shops/stock/edit/'.$stock->id]) !!}
 
     <div class="form-group">
         {!! Form::label('cost', 'Cost') !!}
@@ -29,7 +29,7 @@
         $('#type').change(function() {
             var type = $(this).val();
             $.ajax({
-            type: "GET", url: "{{ url('usershops/stock/stock-type') }}?type="+type, dataType: "text"
+            type: "GET", url: "{{ url('user-shops/stock/stock-type') }}?type="+type, dataType: "text"
             }).done(function (res) { $("#stock").html(res); }).fail(function (jqXHR, textStatus, errorThrown) { alert("AJAX call failed: " + textStatus + ", " + errorThrown); });
         }); 
     });

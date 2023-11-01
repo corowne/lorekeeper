@@ -6,8 +6,8 @@
 
 @section('home.user_shops-content')
     {!! breadcrumbs([
-        'My Shops' => 'usershops',
-        ($shop->id ? 'Edit' : 'Create') . ' Shop' => $shop->id ? 'usershops/edit/' . $shop->id : 'usershops/create',
+        'My Shops' => 'user-shops',
+        ($shop->id ? 'Edit' : 'Create') . ' Shop' => $shop->id ? 'user-shops/edit/' . $shop->id : 'user-shops/create',
     ]) !!}
 
     <h1>{{ $shop->id ? 'Edit' : 'Create' }} Shop
@@ -17,7 +17,7 @@
         @endif
     </h1>
 
-    {!! Form::open(['url' => $shop->id ? 'usershops/edit/' . $shop->id : 'usershops/create', 'files' => true]) !!}
+    {!! Form::open(['url' => $shop->id ? 'user-shops/edit/' . $shop->id : 'user-shops/create', 'files' => true]) !!}
 
     <h3>Basic Information</h3>
 
@@ -69,7 +69,7 @@
                     data-toggle="collapse">Show</a></h3>
             <hr>
             <div class="collapse" id="userInventory">
-                {!! Form::open(['url' => 'usershops/quickstock/' . $shop->id]) !!}
+                {!! Form::open(['url' => 'user-shops/quickstock/' . $shop->id]) !!}
                 @include('widgets._user_shop_select')
 
                 <div class="text-right">
@@ -92,7 +92,7 @@
             </div>
 
             <div class="text-center">
-                <img src="{{ $shop->shopImageUrl }}" style="max-width:50%;" alt="{{ $shop->name }}" />
+                <img src="{{ $shop->shopImageUrl }}" style="max-width: 200px !important; max-height: 200px !important;" alt="{{ $shop->name }}" />
                 <p>{!! $shop->parsed_description !!}</p>
             </div>
     @endif
@@ -106,7 +106,7 @@
 
         $('.delete-shop-button').on('click', function(e) {
             e.preventDefault();
-            loadModal("{{ url('usershops/delete') }}/{{ $shop->id }}", 'Delete Shop');
+            loadModal("{{ url('user-shops/delete') }}/{{ $shop->id }}", 'Delete Shop');
         });
     </script>
 @endsection

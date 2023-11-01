@@ -3,10 +3,10 @@
 @section('home.user_shops-title') Shop Index @endsection
 
 @section('home.user_shops-content')
-{!! breadcrumbs(['User Shops' => 'usershops/shop-index', $shop->name => 'usershops/shop/1']) !!}
+{!! breadcrumbs(['User Shops' => 'user-shops/shop-index', $shop->name => 'user-shops/shop/1']) !!}
 
 @if(Auth::check() && Auth::user()->id === $shop->user_id || Auth::user()->hasPower('edit_inventories'))
-    <a data-toggle="tooltip" title="Edit Shop" href="{{ url('usershops/edit').'/'.$shop->id }}" class="mb-2 float-right"><h3><i class="fas fa-pencil-alt"></i></h3></a>
+    <a data-toggle="tooltip" title="Edit Shop" href="{{ url('user-shops/edit').'/'.$shop->id }}" class="mb-2 float-right"><h3><i class="fas fa-pencil-alt"></i></h3></a>
 @endif
 
 <h1>
@@ -71,7 +71,7 @@
         $('.inventory-item').on('click', function(e) {
             e.preventDefault();
 
-            loadModal("{{ url('usershops/'.$shop->id) }}/" + $(this).data('id'), 'Purchase Item');
+            loadModal("{{ url('user-shops/'.$shop->id) }}/" + $(this).data('id'), 'Purchase Item');
         });
     });
 

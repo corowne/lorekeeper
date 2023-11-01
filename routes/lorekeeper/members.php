@@ -86,7 +86,7 @@ Route::group(['prefix' => 'trades', 'namespace' => 'Users'], function() {
     Route::post('{id}/cancel-trade', 'TradeController@postCancelTrade');
 });
 
-Route::group(['prefix' => 'usershops', 'namespace' => 'Users'], function() {
+Route::group(['prefix' => 'user-shops', 'namespace' => 'Users'], function() {
     Route::get('/', 'UserShopController@getUserIndex'); 
     Route::get('create', 'UserShopController@getCreateShop');
     Route::get('edit/{id}', 'UserShopController@getEditShop');
@@ -107,7 +107,7 @@ Route::group(['prefix' => 'usershops', 'namespace' => 'Users'], function() {
     Route::post('quickstock/{id}', 'UserShopController@postQuickstockStock');
 });
 
-Route::group(['prefix' => 'usershops',], function() {
+Route::group(['prefix' => 'user-shops',], function() {
     Route::get('/shop-index', 'UserShopController@getIndex'); 
     Route::get('/shop/{id}', 'UserShopController@getShop'); 
     Route::post('/shop/buy', 'UserShopController@postBuy');

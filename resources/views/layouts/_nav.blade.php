@@ -112,10 +112,12 @@
                         <a class="dropdown-item" href="{{ url('shops') }}">
                             Shops
                         </a>
-                        <a class="dropdown-item" href="{{ url('usershops') }}">
-                            My Shops
-                        </a>
-                        <a class="dropdown-item" href="{{ url('usershops/shop-index') }}">
+                        @if(Auth::check())
+                            <a class="dropdown-item" href="{{ url('user-shops') }}">
+                                My Shops
+                            </a>
+                        @endif
+                        <a class="dropdown-item" href="{{ url('user-shops/shop-index') }}">
                             All User Shops
                         </a>
                     </div>

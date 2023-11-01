@@ -20,7 +20,7 @@
                     @if (!$stock->is_visible)
                         <i class="fas fa-eye-slash mr-1"></i>
                     @endif
-                    <a href="{{ url('usershops/item-search?item_id=' . $stock->item->id) }}">
+                    <a href="{{ url('user-shops/item-search?item_id=' . $stock->item->id) }}">
                         <i class="fas fa-search"></i>
                     </a>
                 </td>

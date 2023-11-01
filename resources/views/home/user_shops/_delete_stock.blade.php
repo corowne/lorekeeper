@@ -1,5 +1,5 @@
 @if($stock)
-    {!! Form::open(['url' => 'usershops/stock/remove/'.$stock->id]) !!}
+    {!! Form::open(['url' => 'user-shops/stock/remove/'.$stock->id]) !!}
     {{ Form::hidden('user_shop_id', $shop->id) }}
         <table class="table table-sm">
             <thead class="thead">
