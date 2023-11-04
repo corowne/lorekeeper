@@ -45,7 +45,7 @@ class UserShopController extends Controller
 
         switch(isset($sort['sort']) ? $sort['sort'] : null) {
             default:
-                $query->orderBy('name', 'DESC');
+                $query->inRandomOrder();
                 break;
             case 'alpha':
                 $query->orderBy('name');
