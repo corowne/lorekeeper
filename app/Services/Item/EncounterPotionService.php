@@ -87,7 +87,7 @@ class EncounterPotionService extends Service {
                 }
 
                 // Next, try to delete the tag item. If successful, we can start applying potion effects.
-                if ((new InventoryManager)->debitStack($stack->user, 'Foraging Potion Used', ['data' => ''], $stack, $data['quantities'][$key])) {
+                if ((new InventoryManager)->debitStack($stack->user, 'Encounter Potion Used', ['data' => ''], $stack, $data['quantities'][$key])) {
                     for ($q = 0; $q < $data['quantities'][$key]; $q++) {
 
                         $quantity = $stack->item->tag($data['tag'])->getData()['value'];
