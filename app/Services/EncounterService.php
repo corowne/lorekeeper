@@ -12,6 +12,9 @@ use App\Models\Encounter\EncounterReward;
 use App\Models\Encounter\AreaEncounters;
 use App\Models\Encounter\EncounterPrompt;
 use App\Models\Encounter\AreaLimit;
+use App\Models\Character\Character;
+use App\Services\CurrencyManager;
+use App\Models\Currency\Currency;
 
 class EncounterService extends Service
 {
@@ -33,7 +36,6 @@ class EncounterService extends Service
         DB::beginTransaction();
 
         try {
-
             $data = $this->populateAreaData($data);
 
             $image = null;
@@ -54,12 +56,15 @@ class EncounterService extends Service
                 $data['has_thumbnail'] = 0;
             }
 
-            if(!isset($data['encounter_id'])) throw new \Exception('Areas must have at least one encounter.');
+            if (!isset($data['encounter_id'])) {
+                throw new \Exception('Areas must have at least one encounter.');
+            }
 
-            if(isset($data['encounter_id'])) {
-                foreach($data['encounter_id'] as $key => $encounter)
-                {
-                    if(!$encounter) throw new \Exception("Please select an encounter.");
+            if (isset($data['encounter_id'])) {
+                foreach ($data['encounter_id'] as $key => $encounter) {
+                    if (!$encounter) {
+                        throw new \Exception('Please select an encounter.');
+                    }
                 }
             }
 
@@ -94,7 +99,6 @@ class EncounterService extends Service
         DB::beginTransaction();
 
         try {
-
             // More specific validation
             if (
                 EncounterArea::where('name', $data['name'])
@@ -104,12 +108,15 @@ class EncounterService extends Service
                 throw new \Exception('The name has already been taken.');
             }
 
-            if(!isset($data['encounter_id'])) throw new \Exception('Areas must have at least one encounter.');
+            if (!isset($data['encounter_id'])) {
+                throw new \Exception('Areas must have at least one encounter.');
+            }
 
-            if(isset($data['encounter_id'])) {
-                foreach($data['encounter_id'] as $key => $encounter)
-                {
-                    if(!$encounter) throw new \Exception("Please select an encounter.");
+            if (isset($data['encounter_id'])) {
+                foreach ($data['encounter_id'] as $key => $encounter) {
+                    if (!$encounter) {
+                        throw new \Exception('Please select an encounter.');
+                    }
                 }
             }
 
@@ -226,7 +233,6 @@ class EncounterService extends Service
         }
     }
 
-    
     /**
      * Restrict an area behind items
      *
@@ -238,16 +244,14 @@ class EncounterService extends Service
         DB::beginTransaction();
 
         try {
-
             $area = EncounterArea::find($id);
 
             $area->limits()->delete();
 
-            if(isset($data['item_type'])) {
-                foreach($data['item_type'] as $key => $type)
-                {
+            if (isset($data['item_type'])) {
+                foreach ($data['item_type'] as $key => $type) {
                     AreaLimit::create([
-                        'encounter_area_id'       => $area->id,
+                        'encounter_area_id' => $area->id,
                         'item_type' => $type,
                         'item_id' => $data['item_id'][$key],
                     ]);
@@ -255,7 +259,7 @@ class EncounterService extends Service
             }
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -419,17 +423,21 @@ class EncounterService extends Service
         DB::beginTransaction();
 
         try {
-
             if ($data['result_type'] == null) {
                 throw new \Exception('Encounter prompts must have a result type.');
             }
 
-            if(isset($data['rewardable_type'])) {
-                foreach($data['rewardable_type'] as $key => $type)
-                {
-                    if(!$type) throw new \Exception("Please select a reward type.");
-                    if(!$data['rewardable_id'][$key]) throw new \Exception("Please select a reward");
-                    if(!$data['quantity'][$key] || $data['quantity'][$key] < 1) throw new \Exception("Quantity is required and must be an integer greater than 0.");
+            if (isset($data['rewardable_type'])) {
+                foreach ($data['rewardable_type'] as $key => $type) {
+                    if (!$type) {
+                        throw new \Exception('Please select a reward type.');
+                    }
+                    if (!$data['rewardable_id'][$key]) {
+                        throw new \Exception('Please select a reward');
+                    }
+                    if (!$data['quantity'][$key] || $data['quantity'][$key] < 1) {
+                        throw new \Exception('Quantity is required and must be an integer greater than 0.');
+                    }
                 }
             }
 
@@ -465,26 +473,28 @@ class EncounterService extends Service
         DB::beginTransaction();
 
         try {
-
             if ($data['result_type'] == null) {
                 throw new \Exception('Encounter prompts must have a result type.');
             }
-
 
             $prompt->update([
                 'name' => $data['name'],
                 'result' => parse($data['result']),
             ]);
 
-            if(isset($data['rewardable_type'])) {
-                foreach($data['rewardable_type'] as $key => $type)
-                {
-                    if(!$type) throw new \Exception("Please select a reward type.");
-                    if(!$data['rewardable_id'][$key]) throw new \Exception("Please select a reward");
-                    if(!$data['quantity'][$key] || $data['quantity'][$key] < 1) throw new \Exception("Quantity is required and must be an integer greater than 0.");
+            if (isset($data['rewardable_type'])) {
+                foreach ($data['rewardable_type'] as $key => $type) {
+                    if (!$type) {
+                        throw new \Exception('Please select a reward type.');
+                    }
+                    if (!$data['rewardable_id'][$key]) {
+                        throw new \Exception('Please select a reward');
+                    }
+                    if (!$data['quantity'][$key] || $data['quantity'][$key] < 1) {
+                        throw new \Exception('Quantity is required and must be an integer greater than 0.');
+                    }
                 }
             }
-
 
             $prompt->update([
                 'extras' => json_encode([
@@ -577,9 +587,9 @@ class EncounterService extends Service
 
             if ($action->extras['result_type'] == 'success') {
                 flash('<div class="text-center"><p>' . $action->result . '</p></div>')->success();
-            } else if ($action->extras['result_type'] == 'neutral') {
+            } elseif ($action->extras['result_type'] == 'neutral') {
                 flash('<div class="text-center"><p>' . $action->result . '</p></div>');
-            }else{
+            } else {
                 flash('<div class="text-center"><p>' . $action->result . '</p></div>')->error();
             }
 
@@ -597,22 +607,94 @@ class EncounterService extends Service
                 flash($this->getRewardsString($rewards));
             }
 
-            //if it alters the energy, then alter it
-            if ($action->extras != null && $action->extras['math_type'] != null && $action->extras['energy_value'] != null) {
-                // map to map subtract, add etc to ops
-                $operators = [
-                    'add' => '+',
-                    'subtract' => '-',
-                ];
-                $quantity = eval('return ' . $user->settings->encounter_energy . $operators[$action->extras['math_type']] . $action->extras['energy_value'] . ';');
+            $use_energy = Config::get('lorekeeper.encounters.use_energy');
 
-                $user->settings->encounter_energy = $quantity;
-                $user->settings->save();
+            if (Config::get('lorekeeper.encounters.use_characters')) {
+                $character = $user->settings->encounterCharacter;
+                //if it alters the energy, then alter it
+                if ($action->extras != null && $action->extras['math_type'] != null && $action->extras['energy_value'] != null) {
+                    //use energy
+                    if($use_energy){
+                        // map to map subtract, add etc to ops
+                            $operators = [
+                                'add' => '+',
+                                'subtract' => '-',
+                            ];
 
-                if ($action->extras['math_type'] == 'subtract') {
-                    flash('You lost ' . $action->extras['energy_value'] . ' energy...')->error();
-                } elseif($action->extras['math_type'] == 'add') {
-                    flash('You regained ' . $action->extras['energy_value'] . ' energy!')->success();
+                        $quantity = eval('return ' . $character->encounter_energy . $operators[$action->extras['math_type']] . $action->extras['energy_value'] . ';');
+
+                        $character->encounter_energy = $quantity;
+                        $character->save();
+
+                        //if would become negative set to 0
+                        if($character->encounter_energy < 0){
+                            $character->encounter_energy = 0;
+                            $character->save();
+                        }
+                    }else{
+                        //use currency
+                         if($action->extras['math_type'] == 'subtract'){
+                            if (!(new CurrencyManager())->debitCurrency($character, null, 'Encounter Removal', 'Lost energy in ' . $area->name.'...', Currency::find(Config::get('lorekeeper.encounters.energy_replacement_id')), $action->extras['energy_value'])) {
+                                flash('Could not debit currency.')->error();
+                                return redirect()->back();
+                            }
+                         }else{
+                            if (!(new CurrencyManager())->creditCurrency(null, $character, 'Encounter Grant', 'Gained energy in ' . $area->name.'!', Currency::find(Config::get('lorekeeper.encounters.energy_replacement_id')), $action->extras['energy_value'])) {
+                                flash('Could not grant currency.')->error();
+                                return redirect()->back();
+                            }
+                         }
+                    }
+                    
+
+                    if ($action->extras['math_type'] == 'subtract') {
+                        flash($character->fullName.' lost ' . $action->extras['energy_value'] . ' energy...')->error();
+                    } elseif ($action->extras['math_type'] == 'add') {
+                        flash($character->fullName.' regained ' . $action->extras['energy_value'] . ' energy!')->success();
+                    }
+                }
+            } else {
+                //if it alters the energy, then alter it
+                if ($action->extras != null && $action->extras['math_type'] != null && $action->extras['energy_value'] != null) {
+                    //use energy
+                    if($use_energy){
+                        // map to map subtract, add etc to ops
+                            $operators = [
+                                'add' => '+',
+                                'subtract' => '-',
+                            ];
+
+                        $quantity = eval('return ' . $user->settings->encounter_energy . $operators[$action->extras['math_type']] . $action->extras['energy_value'] . ';');
+
+                        $user->settings->encounter_energy = $quantity;
+                        $user->settings->save();
+
+                        //if would become negative set to 0
+                        if($user->settings->encounter_energy < 0){
+                            $user->settings->encounter_energy = 0;
+                            $user->settings->save();
+                        }
+                    }else{
+                        //use currency
+                         if($action->extras['math_type'] == 'subtract'){
+                            if (!(new CurrencyManager())->debitCurrency($user, null, 'Encounter Removal', 'Lost energy in ' . $area->name.'...', Currency::find(Config::get('lorekeeper.encounters.energy_replacement_id')), $action->extras['energy_value'])) {
+                                flash('Could not debit currency.')->error();
+                                return redirect()->back();
+                            }
+                         }else{
+                            if (!(new CurrencyManager())->creditCurrency(null, $user, 'Encounter Grant', 'Gained energy in ' . $area->name.'!', Currency::find(Config::get('lorekeeper.encounters.energy_replacement_id')), $action->extras['energy_value'])) {
+                                flash('Could not grant currency.')->error();
+                                return redirect()->back();
+                            }
+                         }
+                    }
+                    
+
+                    if ($action->extras['math_type'] == 'subtract') {
+                        flash('You lost ' . $action->extras['energy_value'] . ' energy...')->error();
+                    } elseif ($action->extras['math_type'] == 'add') {
+                        flash('You regained ' . $action->extras['energy_value'] . ' energy!')->success();
+                    }
                 }
             }
 
@@ -641,5 +723,35 @@ class EncounterService extends Service
             }
         }
         return $results . implode(', ', $result_elements);
+    }
+
+    /**
+     * Select character
+     */
+    public function selectCharacter($user, $id)
+    {
+        DB::beginTransaction();
+
+        try {
+            if (!$id) {
+                throw new \Exception('Please select a character.');
+            }
+            $character = Character::find($id);
+            if (!$character) {
+                throw new \Exception('Invalid character.');
+            }
+            if ($character->user_id != $user->id) {
+                throw new \Exception('You do not own this character.');
+            }
+
+            $user->settings->encounter_character_id = $id;
+            $user->settings->save();
+
+            return $this->commitReturn($user);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return $this->rollbackReturn(false);
     }
 }

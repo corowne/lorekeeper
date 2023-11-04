@@ -98,9 +98,7 @@
     {!! Form::close() !!}
 
     @if ($encounter->id)
-    @endif
-
-        <div class="card-body text-center">
+            <div class="card-body text-center">
             <h4>Encounter Options</h4>
             <p>You can create a series of options the user can choose from when they run into this encounter. You can
                 create a short
@@ -124,6 +122,8 @@
                 </div>
             </div>
         @endforeach
+    @endif
+
 @endsection
 
 @section('scripts')

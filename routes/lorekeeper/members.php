@@ -188,6 +188,7 @@ Route::group(['prefix' => 'encounter-areas'], function() {
 
     Route::get('{id}', 'EncounterController@exploreArea')->where('id', '[0-9]+');
     Route::post('{id}/act', 'EncounterController@postAct')->where('id', '[0-9]+');
+    Route::post('select-character', 'EncounterController@postSelectCharacter');
 });
 
 /**************************************************************************************************
@@ -210,9 +211,3 @@ Route::group(['prefix' => 'comments', 'namespace' => 'Comments'], function() {
     Route::post('/{id}/feature', 'CommentController@feature')->name('comments.feature');
 });
 
-/**************************************************************************************************
-    Encounters
-**************************************************************************************************/
-Route::group(['prefix' => 'encounters'], function() {
-    Route::get('/', 'EncounterController@getIndex');
-});
