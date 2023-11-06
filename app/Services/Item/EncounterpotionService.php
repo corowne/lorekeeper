@@ -7,7 +7,6 @@ namespace App\Services\Item;
 use App\Services\InventoryManager;
 use App\Services\Service;
 use DB;
-use App\Services\ForageStamManager;
 
 class EncounterpotionService extends Service {
     /*
