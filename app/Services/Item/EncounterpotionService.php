@@ -9,7 +9,7 @@ use App\Services\Service;
 use DB;
 use App\Services\ForageStamManager;
 
-class EncounterPotionService extends Service {
+class EncounterpotionService extends Service {
     /*
     |--------------------------------------------------------------------------
     | Potion Service
