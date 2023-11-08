@@ -148,6 +148,17 @@ class UserService extends Service
     }
 
     /**
+     * Updates user's warning visibility setting
+     */
+    public function updateWarningVisibility($data, $user)
+    {
+        $user->settings->warning_visibility = $data;
+        $user->settings->save();
+
+        return true;
+    }
+
+    /**
      * Updates the user's avatar. 
      *
      * @param  array                  $data

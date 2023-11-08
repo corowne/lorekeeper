@@ -35,7 +35,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned', 'has_alias', 'avatar', 'is_sales_unread', 'birthday'
+        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned', 'has_alias', 'avatar', 'is_sales_unread', 'birthday', 'warning_visibility'
     ];
 
     /**
@@ -367,6 +367,24 @@ class User extends Authenticatable implements MustVerifyEmail
             break;
             case 3:
                 return $bday->format('d M Y') . $icon;
+            break;
+        }
+    }
+
+    /**
+     * Get's user character warning visibility setting
+     */
+    public function getWarningVisibility()
+    {
+        switch($this->settings->warning_visibility) {
+            case 0:
+                return null;
+            break;
+            case 1:
+                return null;
+            break;
+            case 2:
+                return null;
             break;
         }
     }

@@ -12,5 +12,13 @@ return [
     //     'version' => '1.0.0',
     // ],
     
+    'character_warnings' => [
+        'key' => 'character_warnings',
+        'wiki_key' => 'Character_Warnings',
+        'creators' => json_encode([
+            'Lexi'  => 'https://github.com/redcrowz/',
+        ]),
+        'version' => '1.0.0',
+    ],
 
 ];
