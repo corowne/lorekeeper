@@ -16,7 +16,7 @@ return [
         'key' => 'character_warnings',
         'wiki_key' => 'Character_Warnings',
         'creators' => json_encode([
-            'Lexi'  => 'https://github.com/redcrowz/',
+            'Lexi'  => 'https://github.com/redcr0wz/',
         ]),
         'version' => '1.0.0',
     ],
