@@ -59,6 +59,12 @@ class UserShopController extends Controller
             case 'oldest':
                 $query->orderBy('id', 'ASC');
                 break;
+            case 'update':
+                $query->orderBy('updated_at', 'DESC');
+                break;
+            case 'update-reverse':
+                $query->orderBy('updated_at', 'ASC');
+                break;
         }
 
         return view('home.user_shops.index_shop', [

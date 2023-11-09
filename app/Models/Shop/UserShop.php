@@ -13,7 +13,7 @@ class UserShop extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'user_id','sort', 'has_image', 'description', 'parsed_description', 'is_active'
+        'name', 'user_id','sort', 'has_image', 'description', 'parsed_description', 'is_active','updated_at'
     ];
 
     /**
@@ -22,6 +22,13 @@ class UserShop extends Model
      * @var string
      */
     protected $table = 'user_shops';
+
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
     
     /**
      * Validation rules for creation.
@@ -56,7 +63,15 @@ class UserShop extends Model
      */
     public function stock() 
     {
-        return $this->hasMany('App\Models\Shop\UserShopStock');
+        return $this->hasMany('App\Models\Shop\UserShopStock')->orderBy('id', 'DESC');
+    }
+
+    /**
+     * Get the shop stock (visible & non 0 quantity for public display)
+     */
+    public function visibleStock() 
+    {
+        return $this->hasMany('App\Models\Shop\UserShopStock')->where('quantity', '>', 0)->where('is_visible', 1);
     }
 
     /**
