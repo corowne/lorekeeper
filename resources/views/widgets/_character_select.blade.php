@@ -1,3 +1,12 @@
+@php
+    $characters = \App\Models\Character\Character::visible(Auth::check() ? Auth::user() : null)
+        ->myo(0)
+        ->orderBy('slug', 'DESC')
+        ->get()
+        ->pluck('fullName', 'slug')
+        ->toArray();
+@endphp
+
 <div id="characterComponents" class="hide">
     <div class="submission-character mb-3 card">
         <div class="card-body">
@@ -12,8 +21,8 @@
                 <div class="col-md-10">
                     <a href="#" class="float-right fas fa-close"></a>
                     <div class="form-group">
-                        {!! Form::label('slug[]', 'Character Code') !!}
-                        {!! Form::text('slug[]', null, ['class' => 'form-control character-code']) !!}
+                        {!! Form::label('slug', 'Character Code') !!}
+                        {!! Form::select('slug[]', $characters, null, ['class' => 'form-control character-code', 'placeholder' => 'Select Character']) !!}
                     </div>
                     <div class="character-rewards hide">
                         <h4>Character Rewards</h4>
