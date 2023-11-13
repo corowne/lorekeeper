@@ -26,7 +26,7 @@
             <a href="{{ $character->image->canViewFull(Auth::check() ? Auth::user() : null) && file_exists(public_path($character->image->imageDirectory . '/' . $character->image->fullsizeFileName)) ? $character->image->fullsizeUrl : $character->image->imageUrl }}"
                 data-lightbox="entry" data-title="{{ $character->fullName }}">
                 <img src="{{ $character->image->canViewFull(Auth::check() ? Auth::user() : null) && file_exists(public_path($character->image->imageDirectory . '/' . $character->image->fullsizeFileName)) ? $character->image->fullsizeUrl : $character->image->imageUrl }}"
-                    class="image" style="max-height:700px; max-width:700px;" alt="{{ $character->fullName }}" />
+                    class="image img-fluid" alt="{{ $character->fullName }}" />
             </a>
         </div>
         @if ($character->image->canViewFull(Auth::check() ? Auth::user() : null) && file_exists(public_path($character->image->imageDirectory . '/' . $character->image->fullsizeFileName)))
