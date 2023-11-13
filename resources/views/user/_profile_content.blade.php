@@ -1,43 +1,55 @@
 @if ($deactivated)
     <div style="filter:grayscale(1); opacity:0.75">
 @endif
-<h1>
-    <img src="/images/avatars/{{ $user->avatar }}" style="width:125px; height:125px; float:left; border-radius:50%; margin-right:25px;" alt="{{ $user->name }}'s Avatar">
-    {!! $user->displayName !!}
-    <a href="{{ url('reports/new?url=') . $user->url }}"><i class="fas fa-exclamation-triangle fa-xs" data-toggle="tooltip" title="Click here to report this user." style="opacity: 50%; font-size:0.5em;"></i></a>
 
-    @if ($user->settings->is_fto)
-        <span class="badge badge-success float-right" data-toggle="tooltip" title="This user has not owned any characters from this world before.">FTO</span>
-    @endif
-</h1>
-<div class="mb-4">
-    <div class="row">
-        <div class="row col-md-6">
-            <div class="col-md-2 col-4">
-                <h5>Alias</h5>
+<div class="row mb-3">
+    <div class="col-md-2 text-center">
+        <!-- User Icon -->
+        <img src="/images/avatars/{{ $user->avatar }}" class="img-fluid rounded-circle" style="max-height: 125px;" alt="{{ $user->name }}'s Avatar">
+    </div>
+
+    <div class="col">
+        <!-- Username & optional FTO Badge -->
+        <div class="row no-gutters">
+            <div class="col h2 text-center text-md-left">
+                {!! $user->displayName !!}
+                <a href="{{ url('reports/new?url=') . $user->url }}"><i class="fas fa-exclamation-triangle fa-xs" data-toggle="tooltip" title="Click here to report this user." style="opacity: 50%; font-size:0.5em;"></i></a>
             </div>
-            <div class="col-md-10 col-8">{!! $user->displayAlias !!}</div>
-        </div>
-        <div class="row col-md-6">
-            <div class="col-md-2 col-4">
-                <h5>Joined</h5>
+
+            <div class="col-md-1 text-center">
+                <span class="badge badge-success float-md-right" data-toggle="tooltip" title="This user has not owned any characters from this world before.">FTO</span>
             </div>
-            <div class="col-md-10 col-8">{!! format_date($user->created_at, false) !!} ({{ $user->created_at->diffForHumans() }})</div>
         </div>
-        <div class="row col-md-6">
-            <div class="col-md-2 col-4">
-                <h5>Rank</h5>
-            </div>
-            <div class="col-md-10 col-8">{!! $user->rank->displayName !!} {!! add_help($user->rank->parsed_description) !!}</div>
-        </div>
-        @if ($user->birthdayDisplay && isset($user->birthday))
-            <div class="row col-md-6">
-                <div class="col-md-2 col-4">
-                    <h5>Birthday</h5>
+
+        <!-- User Information -->
+        <div class="row no-gutters">
+            <div class="row col-sm-5">
+                <div class="col-lg-2 col-md-3 col-4">
+                    <h5>Alias</h5>
                 </div>
-                <div class="col-md-10 col-8">{!! $user->birthdayDisplay !!}</div>
+                <div class="col-lg-10 col-md-9 col-8 pl-3">{!! $user->displayAlias !!}</div>
             </div>
-        @endif
+            <div class="row col-sm-7">
+                <div class="col-md-3 col-4">
+                    <h5>Joined</h5>
+                </div>
+                <div class="col-md-9 col-8">{!! format_date($user->created_at, false) !!} ({{ $user->created_at->diffForHumans() }})</div>
+            </div>
+            <div class="row col-sm-5">
+                <div class="col-lg-2 col-md-3 col-4">
+                    <h5>Rank</h5>
+                </div>
+                <div class="col-lg-10 col-md-9 col-8">{!! $user->rank->displayName !!} {!! add_help($user->rank->parsed_description) !!}</div>
+            </div>
+            @if ($user->birthdayDisplay && isset($user->birthday))
+                <div class="row col-sm-7">
+                    <div class="col-md-3 col-4">
+                        <h5>Birthday</h5>
+                    </div>
+                    <div class="col-md-9 col-8">{!! $user->birthdayDisplay !!}</div>
+                </div>
+            @endif
+        </div>
     </div>
 </div>
 
@@ -123,7 +135,7 @@
         @comments(['model' => $user->profile, 'perPage' => 5])
 
     </div>
-    <div class="col-4">
+    <div class="col-md-4">
         <div class="card mb-4">
             <div class="card-header">
                 <h5>Mention This User</h5>
