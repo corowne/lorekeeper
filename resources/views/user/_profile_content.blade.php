@@ -16,9 +16,11 @@
                 <a href="{{ url('reports/new?url=') . $user->url }}"><i class="fas fa-exclamation-triangle fa-xs" data-toggle="tooltip" title="Click here to report this user." style="opacity: 50%; font-size:0.5em;"></i></a>
             </div>
 
-            <div class="col-md-1 text-center">
-                <span class="badge badge-success float-md-right" data-toggle="tooltip" title="This user has not owned any characters from this world before.">FTO</span>
-            </div>
+            @if ($user->settings->is_fto)
+                <div class="col-md-1 text-center">
+                    <span class="badge badge-success float-md-right" data-toggle="tooltip" title="This user has not owned any characters from this world before.">FTO</span>
+                </div>
+            @endif
         </div>
 
         <!-- User Information -->
