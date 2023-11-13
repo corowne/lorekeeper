@@ -5,8 +5,8 @@
             {!! Form::label('name', 'Character Name/Code: ', ['class' => 'mr-2']) !!}
             {!! Form::text('name', Request::get('name'), ['class' => 'form-control']) !!}
         </div>
-        <div class="form-group mb-3">
-            {!! Form::select('rarity_id', $rarities, Request::get('rarity_id'), ['class' => 'form-control mr-3']) !!}
+        <div class="form-group mb-3 mr-1">
+            {!! Form::select('rarity_id', $rarities, Request::get('rarity_id'), ['class' => 'form-control mr-2']) !!}
         </div>
         <div class="form-group mb-3">
             {!! Form::select('species_id', $specieses, Request::get('species_id'), ['class' => 'form-control']) !!}
@@ -18,11 +18,11 @@
             @if (!$isMyo)
                 <div class="masterlist-search-field">
                     {!! Form::label('character_category_id', 'Category: ') !!}
-                    {!! Form::select('character_category_id', $categories, Request::get('character_category_id'), ['class' => 'form-control']) !!}
+                    {!! Form::select('character_category_id', $categories, Request::get('character_category_id'), ['class' => 'form-control', 'style' => 'width: 250px']) !!}
                 </div>
                 <div class="masterlist-search-field">
                     {!! Form::label('subtype_id', 'Species Subtype: ') !!}
-                    {!! Form::select('subtype_id', $subtypes, Request::get('subtype_id'), ['class' => 'form-control']) !!}
+                    {!! Form::select('subtype_id', $subtypes, Request::get('subtype_id'), ['class' => 'form-control', 'style' => 'width: 250px']) !!}
                 </div>
             @endif
             <hr />
@@ -54,20 +54,20 @@
             <hr />
             <div class="masterlist-search-field">
                 {!! Form::label('sale_value_min', 'Resale Minimum ($): ') !!}
-                {!! Form::text('sale_value_min', Request::get('sale_value_min'), ['class' => 'form-control']) !!}
+                {!! Form::text('sale_value_min', Request::get('sale_value_min'), ['class' => 'form-control', 'style' => 'width: 250px']) !!}
             </div>
             <div class="masterlist-search-field">
                 {!! Form::label('sale_value_max', 'Resale Maximum ($): ') !!}
-                {!! Form::text('sale_value_max', Request::get('sale_value_max'), ['class' => 'form-control']) !!}
+                {!! Form::text('sale_value_max', Request::get('sale_value_max'), ['class' => 'form-control', 'style' => 'width: 250px']) !!}
             </div>
             @if (!$isMyo)
                 <div class="masterlist-search-field">
                     {!! Form::label('is_gift_art_allowed', 'Gift Art Status: ') !!}
-                    {!! Form::select('is_gift_art_allowed', [0 => 'Any', 2 => 'Ask First', 1 => 'Yes', 3 => 'Yes OR Ask First'], Request::get('is_gift_art_allowed'), ['class' => 'form-control']) !!}
+                    {!! Form::select('is_gift_art_allowed', [0 => 'Any', 2 => 'Ask First', 1 => 'Yes', 3 => 'Yes OR Ask First'], Request::get('is_gift_art_allowed'), ['class' => 'form-control', 'style' => 'width: 250px']) !!}
                 </div>
                 <div class="masterlist-search-field">
                     {!! Form::label('is_gift_writing_allowed', 'Gift Writing Status: ') !!}
-                    {!! Form::select('is_gift_writing_allowed', [0 => 'Any', 2 => 'Ask First', 1 => 'Yes', 3 => 'Yes OR Ask First'], Request::get('is_gift_writing_allowed'), ['class' => 'form-control']) !!}
+                    {!! Form::select('is_gift_writing_allowed', [0 => 'Any', 2 => 'Ask First', 1 => 'Yes', 3 => 'Yes OR Ask First'], Request::get('is_gift_writing_allowed'), ['class' => 'form-control', 'style' => 'width: 250px']) !!}
                 </div>
             @endif
             <br />
@@ -87,10 +87,10 @@
             <hr />
             <a href="#" class="float-right btn btn-sm btn-outline-primary add-feature-button">Add Trait</a>
             {!! Form::label('Has Traits: ') !!} {!! add_help('This will narrow the search to characters that have ALL of the selected traits at the same time.') !!}
-            <div id="featureBody" class="row">
+            <div id="featureBody" class="row w-100">
                 @if (Request::get('feature_id'))
                     @foreach (Request::get('feature_id') as $featureId)
-                        <div class="feature-block col-md-3 col-sm-4 col-6 mt-3">
+                        <div class="feature-block col-md-4 col-sm-6 mt-3 p-1">
                             <div class="card">
                                 <div class="card-body d-flex">
                                     {!! Form::select('feature_id[]', $features, $featureId, ['class' => 'form-control feature-select selectize', 'placeholder' => 'Select Trait']) !!}
@@ -127,7 +127,7 @@
     {!! Form::close() !!}
 </div>
 <div class="hide" id="featureContent">
-    <div class="feature-block col-md-3 col-sm-4 col-6 mt-3">
+    <div class="feature-block col-md-4 col-sm-6 mt-3 p-1">
         <div class="card">
             <div class="card-body d-flex">
                 {!! Form::select('feature_id[]', $features, null, ['class' => 'form-control feature-select selectize', 'placeholder' => 'Select Trait']) !!}
