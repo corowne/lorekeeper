@@ -36,7 +36,7 @@
                     'newest' => 'Newest First',
                     'oldest' => 'Oldest First',
                 ],
-                Request::get('sort') ?: 'category',
+                Request::get('sort') ?: 'rank',
                 ['class' => 'form-control'],
             ) !!}
         </div>

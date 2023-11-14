@@ -62,9 +62,9 @@ class DesignUpdateManager extends Service {
                 'update_type'   => $character->is_myo_slot ? 'MYO' : 'Character',
 
                 // Set some data based on the character's existing stats
-                'rarity_id'  => $character->image->rarity_id,
-                'species_id' => $character->image->species_id,
-                'subtype_id' => $character->image->subtype_id,
+                'rarity_id'     => $character->image->rarity_id,
+                'species_id'    => $character->image->species_id,
+                'subtype_id'    => $character->image->subtype_id,
             ];
 
             $request = CharacterDesignUpdate::create($data);
@@ -214,9 +214,9 @@ class DesignUpdateManager extends Service {
                 $this->handleImage($data['image'], $request->imageDirectory, $request->imageFileName, null, isset($data['default_image']));
             }
 
-            // Save thumbnail
-            if (!$isAdmin || ($isAdmin && isset($data['modify_thumbnail']))) {
-                if (isset($data['use_cropper'])) {
+            // Save thumbnail, if we have an image set
+            if ((!$isAdmin) || ($isAdmin && isset($data['modify_thumbnail']))) {
+                if (isset($data['use_cropper']) && isset($data['image'])) {
                     (new CharacterManager)->cropThumbnail(Arr::only($data, ['x0', 'x1', 'y0', 'y1']), $request);
                 } elseif (isset($data['thumbnail'])) {
                     $this->handleImage($data['thumbnail'], $request->imageDirectory, $request->thumbnailFileName);

@@ -94,11 +94,11 @@ class SetupAdminUser extends Command {
             if ($confirm) {
                 $service = new UserService;
                 $user = $service->createUser([
-                    'name'     => $name,
-                    'email'    => $email,
-                    'rank_id'  => $adminRank->id,
-                    'password' => $password,
-                    'dob'      => [
+                    'name'      => $name,
+                    'email'     => $email,
+                    'rank_id'   => $adminRank->id,
+                    'password'  => $password,
+                    'dob'       => [
                         'day'   => '01',
                         'month' => '01',
                         'year'  => '1970',

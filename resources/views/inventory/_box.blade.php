@@ -8,3 +8,13 @@
         </div>
     </div>
 </li>
+
+<script>
+    $('.btn').click(function() {
+        if ($(this).hasClass('disabled')) {
+            return false;
+        }
+        $(this).addClass('disabled');
+        $(this).html('<i class="fas fa-spinner fa-spin"></i>');
+    });
+</script>

@@ -32,7 +32,7 @@ class InventoryController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getIndex() {
-        $categories = ItemCategory::orderBy('sort', 'DESC')->get();
+        $categories = ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->get();
         $items = count($categories) ?
             Auth::user()->items()
                 ->where('count', '>', 0)
@@ -195,6 +195,66 @@ class InventoryController extends Controller {
             'designUpdates'  => $item ? $designUpdates : null,
             'trades'         => $item ? $trades : null,
             'submissions'    => $item ? $submissions : null,
+        ]);
+    }
+
+    /**
+     * Show the full inventory page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getFullInventory() {
+        $user = Auth::user();
+
+        // Gather the user's characters
+        $characters = $user->allCharacters;
+
+        if (!Auth::check() || !$user->hasPower('manage_characters')) {
+            $characters = $characters->where('is_visible', 1);
+        }
+
+        // Set up Categories
+        $categories = ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->get();
+
+        if (count($categories)) {
+            $items =
+                Auth::user()->items()
+                    ->where('count', '>', 0)
+                    ->orderByRaw('FIELD(item_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
+                    ->orderBy('name')
+                    ->orderBy('updated_at')
+                    ->get();
+            foreach ($characters as $character) {
+                $itemCollect = $character->items()
+                    ->where('count', '>', 0)
+                    ->orderByRaw('FIELD(item_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
+                    ->orderBy('name')
+                    ->orderBy('updated_at')
+                    ->get();
+                isset($items) ? $items = $items->mergeRecursive($itemCollect) : $items = $itemCollect;
+            }
+        } else {
+            $items =
+                Auth::user()->items()
+                    ->where('count', '>', 0)
+                    ->orderBy('name')
+                    ->orderBy('updated_at')
+                    ->get();
+            foreach ($characters as $character) {
+                $itemCollect = $character->items()
+                    ->where('count', '>', 0)
+                    ->orderBy('name')
+                    ->orderBy('updated_at')
+                    ->get();
+                isset($items) ? $items = $items->mergeRecursive($itemCollect) : $items = $itemCollect;
+            }
+        }
+
+        return view('home.inventory_full', [
+            'categories' => $categories->keyBy('id'),
+            'items'      => $items->sortBy('name')->sortBy('updated_at')->groupBy(['item_category_id', 'id']),
+            'user'       => $user,
+            'characters' => $characters,
         ]);
     }
 

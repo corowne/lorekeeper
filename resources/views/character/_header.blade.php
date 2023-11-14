@@ -1,3 +1,23 @@
+@if (!$character->is_myo_slot && Config::get('lorekeeper.extensions.previous_and_next_characters.display') && isset($extPrevAndNextBtnsUrl))
+    @if ($extPrevAndNextBtns['prevCharName'] || $extPrevAndNextBtns['nextCharName'])
+        <div class="row mb-4">
+            @if ($extPrevAndNextBtns['prevCharName'])
+                <div class="col text-left float-left">
+                    <a class="btn btn-outline-success text-success" href="{{ $extPrevAndNextBtns['prevCharUrl'] }}{!! $extPrevAndNextBtnsUrl !!}">
+                        <i class="fas fa-angle-double-left"></i> Previous Character ・ <span class="text-primary">{!! $extPrevAndNextBtns['prevCharName'] !!}</span>
+                    </a>
+                </div>
+            @endif
+            @if ($extPrevAndNextBtns['nextCharName'])
+                <div class="col text-right float-right">
+                    <a class="btn btn-outline-success text-success" href="{{ $extPrevAndNextBtns['nextCharUrl'] }}{!! $extPrevAndNextBtnsUrl !!}">
+                        <span class="text-primary">{!! $extPrevAndNextBtns['nextCharName'] !!}</span> ・ Next Character <i class="fas fa-angle-double-right"></i><br />
+                    </a>
+                </div>
+            @endif
+        </div>
+    @endif
+@endif
 <div class="character-masterlist-categories">
     @if (!$character->is_myo_slot)
         {!! $character->category->displayName !!} ・ {!! $character->image->species->displayName !!} ・ {!! $character->image->rarity->displayName !!}
@@ -33,8 +53,23 @@
     @endif
     @if (!$character->is_visible)
         <i class="fas fa-eye-slash"></i>
-    @endif {!! $character->displayName !!}
+    @endif
+    {!! $character->displayName !!}
+    <i data-toggle="tooltip" title="Click to Copy the Character Code" id="copy" style="font-size: 14px; vertical-align: middle;" class="far fa-copy text-small"></i>
 </h1>
 <div class="mb-3">
     Owned by {!! $character->displayOwner !!}
 </div>
+
+
+<script>
+    $('#copy').on('click', async (e) => {
+        await window.navigator.clipboard.writeText("{{ $character->slug }}");
+        e.currentTarget.classList.remove('toCopy');
+        e.currentTarget.classList.add('toCheck');
+        setTimeout(() => {
+            e.currentTarget.classList.remove('toCheck');
+            e.currentTarget.classList.add('toCopy');
+        }, 2000);
+    });
+</script>

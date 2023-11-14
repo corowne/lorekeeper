@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Character\Character;
+use App\Models\Currency\Currency;
 use App\Models\Item\Item;
+use App\Models\Loot\LootTable;
 use App\Models\Prompt\PromptCategory;
+use App\Models\Raffle\Raffle;
 use App\Models\Submission\Submission;
 use App\Services\SubmissionManager;
 use Auth;
@@ -68,6 +72,7 @@ class SubmissionController extends Controller {
             'itemsrow'         => Item::all()->keyBy('id'),
             'page'             => 'submission',
             'expanded_rewards' => Config::get('lorekeeper.extensions.character_reward_expansion.expanded'),
+            'characters'       => Character::visible(Auth::check() ? Auth::user() : null)->myo(0)->orderBy('slug', 'DESC')->get()->pluck('fullName', 'slug')->toArray(),
         ] + ($submission->status == 'Pending' ? [
             'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
             'items'               => Item::orderBy('name')->pluck('name', 'id'),
@@ -126,6 +131,7 @@ class SubmissionController extends Controller {
             'inventory'        => $inventory,
             'itemsrow'         => Item::all()->keyBy('id'),
             'expanded_rewards' => Config::get('lorekeeper.extensions.character_reward_expansion.expanded'),
+            'characters'       => Character::visible(Auth::check() ? Auth::user() : null)->myo(0)->orderBy('slug', 'DESC')->get()->pluck('fullName', 'slug')->toArray(),
         ] + ($submission->status == 'Pending' ? [
             'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
             'items'               => Item::orderBy('name')->pluck('name', 'id'),

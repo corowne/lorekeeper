@@ -24,8 +24,8 @@
                     {!! Form::label('subtype_id', 'Species Subtype: ') !!}
                     {!! Form::select('subtype_id', $subtypes, Request::get('subtype_id'), ['class' => 'form-control', 'style' => 'width: 250px']) !!}
                 </div>
+                <hr />
             @endif
-            <hr />
             <div class="masterlist-search-field">
                 {!! Form::label('owner', 'Owner Username: ') !!}
                 {!! Form::select('owner', $userOptions, Request::get('owner'), ['class' => 'form-control mr-2 userselectize', 'style' => 'width: 250px', 'placeholder' => 'Select a User']) !!}

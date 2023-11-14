@@ -13,7 +13,7 @@ class SalesCharacter extends Model {
      * @var array
      */
     protected $fillable = [
-        'sales_id', 'character_id', 'description', 'type', 'data', 'link', 'is_open',
+        'sales_id', 'character_id', 'image_id', 'description', 'type', 'data', 'link', 'is_open',
     ];
 
     /**
@@ -28,11 +28,11 @@ class SalesCharacter extends Model {
      * @var array
      */
     public static $rules = [
-        'type' => 'required',
-        'link' => 'nullable|url',
+        'type'          => 'required',
+        'link'          => 'nullable|url',
 
         // Flatsale
-        'price' => 'required_if:sale_type,flat',
+        'price'         => 'required_if:sale_type,flat',
 
         // Auction/XTA
         'starting_bid'  => 'required_if:type,auction',
@@ -58,6 +58,13 @@ class SalesCharacter extends Model {
      */
     public function character() {
         return $this->belongsTo('App\Models\Character\Character', 'character_id');
+    }
+
+    /**
+     * Get the image being attached to the sale.
+     */
+    public function image() {
+        return $this->belongsTo('App\Models\Character\CharacterImage', 'image_id');
     }
 
     /**********************************************************************************************
@@ -158,16 +165,18 @@ class SalesCharacter extends Model {
                 (isset($this->data['autobuy']) ? '<br/>Autobuy: '.$symbol.$this->data['autobuy'] : '');
                 break;
             case 'ota':
-                return isset($this->data['autobuy']) ? '<br/>Autobuy: '.$symbol.$this->data['autobuy'] : '';
+                return (isset($this->data['autobuy']) ? 'Autobuy: '.$symbol.$this->data['autobuy'].'<br/>' : '').
+                (isset($this->data['minimum']) ? 'Minimum: '.$symbol.$this->data['minimum'].'<br/>' : '');
                 break;
             case 'xta':
-                return isset($this->data['autobuy']) ? '<br/>Autobuy: '.$symbol.$this->data['autobuy'] : '';
+                return (isset($this->data['autobuy']) ? 'Autobuy: '.$symbol.$this->data['autobuy'].'<br/>' : '').
+                (isset($this->data['minimum']) ? 'Minimum: '.$symbol.$this->data['minimum'].'<br/>' : '');
                 break;
             case 'flaffle':
                 return 'Price: '.$symbol.$this->data['price'];
                 break;
             case 'pwyw':
-                return 'Minimum: '.$symbol.$this->data['minimum'];
+                return isset($this->data['minimum']) ? 'Minimum: '.$symbol.$this->data['minimum'].'<br/>' : '';
                 break;
         }
     }
@@ -178,6 +187,8 @@ class SalesCharacter extends Model {
      * @return App\Models\Character\CharacterImage
      */
     public function getImageAttribute() {
-        return CharacterImage::where('is_visible', 1)->where('character_id', $this->character_id)->orderBy('created_at')->first();
+        // Have to call the relationship function or it doesn't grab it correctly
+        // likely because of the function name override
+        return $this->image()->first() ?? CharacterImage::where('is_visible', 1)->where('character_id', $this->character_id)->orderBy('created_at')->first();
     }
 }

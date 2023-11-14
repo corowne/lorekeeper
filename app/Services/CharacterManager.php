@@ -267,6 +267,39 @@ class CharacterManager extends Service {
         // Watermark the image if desired
         if (Config::get('lorekeeper.settings.watermark_masterlist_images') == 1) {
             $watermark = Image::make('images/watermark.png');
+
+            if (Config::get('lorekeeper.settings.watermark_resizing') == 1) {
+                $imageWidth = $image->width();
+                $imageHeight = $image->height();
+
+                $wmWidth = $watermark->width();
+                $wmHeight = $watermark->height();
+
+                $wmScale = Config::get('lorekeeper.settings.watermark_percent');
+
+                //Assume Landscape by Default
+                $maxSize = $imageWidth * $wmScale;
+
+                if ($imageWidth > $imageHeight) {
+                    //Landscape
+                    $maxSize = $imageWidth * $wmScale;
+                } else {
+                    // Portrait
+                    $maxSize = $imageHeight * $wmScale;
+                }
+
+                if ($wmWidth > $wmHeight) {
+                    //Landscape
+                    $watermark->resize($maxSize, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                } else {
+                    // Portrait
+                    $watermark->resize(null, $maxSize, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                }
+            }
             $image->insert($watermark, 'center');
         }
 
@@ -341,6 +374,39 @@ class CharacterManager extends Service {
                 }
                 // Watermark the image
                 $watermark = Image::make('images/watermark.png');
+
+                if (Config::get('lorekeeper.settings.watermark_resizing_thumb') == 1) {
+                    $imageWidth = $image->width();
+                    $imageHeight = $image->height();
+
+                    $wmWidth = $watermark->width();
+                    $wmHeight = $watermark->height();
+
+                    $wmScale = Config::get('lorekeeper.settings.watermark_percent');
+
+                    //Assume Landscape by Default
+                    $maxSize = $imageWidth * $wmScale;
+
+                    if ($imageWidth > $imageHeight) {
+                        //Landscape
+                        $maxSize = $imageWidth * $wmScale;
+                    } else {
+                        // Portrait
+                        $maxSize = $imageHeight * $wmScale;
+                    }
+
+                    if ($wmWidth > $wmHeight) {
+                        //Landscape
+                        $watermark->resize($maxSize, null, function ($constraint) {
+                            $constraint->aspectRatio();
+                        });
+                    } else {
+                        // Portrait
+                        $watermark->resize(null, $maxSize, function ($constraint) {
+                            $constraint->aspectRatio();
+                        });
+                    }
+                }
                 $image->insert($watermark, 'center');
             }
             // Now shrink the image
@@ -745,7 +811,7 @@ class CharacterManager extends Service {
                         unlink($image->imagePath.'/'.$image->fullsizeFileName);
                     }
                 }
-                if (file_exist($image->imagePath.'/'.$image->thumbnailFileName)) {
+                if (file_exists($image->imagePath.'/'.$image->thumbnailFileName)) {
                     unlink($image->imagePath.'/'.$image->thumbnailFileName);
                 }
 
@@ -1358,7 +1424,7 @@ class CharacterManager extends Service {
                 'status'       => 'Pending',
 
                 // if the queue is closed, all transfers are auto-approved
-                'is_approved' => !$queueOpen,
+                'is_approved'  => !$queueOpen,
             ]);
 
             if (!$queueOpen) {
@@ -1817,8 +1883,8 @@ class CharacterManager extends Service {
 
                 // Use default images for MYO slots without an image provided
                 if (!isset($data['image'])) {
-                    $data['image'] = asset('images/myo.png');
-                    $data['thumbnail'] = asset('images/myo-th.png');
+                    $data['image'] = public_path('images/myo.png');
+                    $data['thumbnail'] = public_path('images/myo-th.png');
                     $data['extension'] = 'png';
                     $data['default_image'] = true;
                     unset($data['use_cropper']);

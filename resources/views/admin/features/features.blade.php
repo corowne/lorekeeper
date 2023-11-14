@@ -31,7 +31,7 @@
             {!! Form::select('rarity_id', $rarities, Request::get('rarity_id'), ['class' => 'form-control']) !!}
         </div>
         <div class="form-group mr-3 mb-3">
-            {!! Form::select('feature_category_id', $categories, Request::get('name'), ['class' => 'form-control']) !!}
+            {!! Form::select('feature_category_id', $categories, Request::get('feature_category_id'), ['class' => 'form-control']) !!}
         </div>
         <div class="form-group mb-3">
             {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
@@ -68,7 +68,12 @@
                     <div class="logs-table-row">
                         <div class="row flex-wrap">
                             <div class="col-12 col-md-3">
-                                <div class="logs-table-cell">{{ $feature->name }}</div>
+                                <div class="logs-table-cell">
+                                    @if (!$feature->is_visible)
+                                        <i class="fas fa-eye-slash mr-1"></i>
+                                    @endif
+                                    {{ $feature->name }}
+                                </div>
                             </div>
                             <div class="col-6 col-md-2">
                                 <div class="logs-table-cell">{!! $feature->rarity->displayName !!}</div>

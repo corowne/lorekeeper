@@ -24,11 +24,15 @@
         <div class="card mb-3">
             <div class="card-body">
                 @include('world._entry', [
-                    'edit' => ['object' => $category, 'title' => 'Category'],
+                    'edit' => [
+                        'object' => $category,
+                        'title' => 'Category',
+                    ],
                     'imageUrl' => $category->categoryImageUrl,
                     'name' => $category->displayName,
                     'description' => $category->parsed_description,
                     'searchUrl' => $category->searchUrl,
+                    'visible' => $category->is_visible,
                 ])
             </div>
         </div>
