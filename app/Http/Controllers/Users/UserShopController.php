@@ -69,6 +69,7 @@ class UserShopController extends Controller
             'shop' => $shop,
             'items' => Item::orderBy('name')->pluck('name', 'id'),
             'currencies' => Currency::where('is_user_owned', 1)->where('allow_user_to_user', 1)->orderBy('name')->pluck('name', 'id'),
+            'stocks' => UserShopStock::where('user_shop_id', $shop->id)->where('quantity', '>', 0)->orderBy('id', 'DESC')->paginate(30),
         ]);
     }
 

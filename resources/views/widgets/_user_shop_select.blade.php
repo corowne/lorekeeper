@@ -6,7 +6,8 @@
         <div class="col-6 col-md-3">Removal Quantity</div>
     </div>
 
-    @foreach ($shop->stock->where('quantity', '>', 0) as $stock)
+    {!! $stocks->render() !!}
+    @foreach ($stocks as $stock)
         <div class="row flex-wrap border-bottom" id="stockTableBody">
             {!! Form::hidden('stock_id[]', $stock->id) !!}
 
@@ -31,18 +32,18 @@
             </div>
 
             <div class="col-6 col-md-3 order-2 order-md-3">
-          <div class="row no-gutters">
-          <div class="col-4">
-            {!! Form::text('cost[]', $stock->cost, ['class' => 'form-control']) !!}
-          </div>
-          <div class="col-8">
-            {!! Form::select('currency_id[]', $currencies, $stock->currency_id, [
-                'class' => 'form-control currency-select selectize',
-                'placeholder' => 'Select Currency',
-            ]) !!}
-          </div>
-        </div>
-      </div>
+                <div class="row no-gutters">
+                    <div class="col-4">
+                        {!! Form::text('cost[]', $stock->cost, ['class' => 'form-control']) !!}
+                    </div>
+                    <div class="col-8">
+                        {!! Form::select('currency_id[]', $currencies, $stock->currency_id, [
+                            'class' => 'form-control currency-select selectize',
+                            'placeholder' => 'Select Currency',
+                        ]) !!}
+                    </div>
+                </div>
+            </div>
 
             <div class="col-6 col-md-3">
                 {!! Form::selectRange('quantity[]', 0, $stock->quantity, 0, [
@@ -53,4 +54,5 @@
             </div>
         </div>
     @endforeach
+    {!! $stocks->render() !!}
 </div>

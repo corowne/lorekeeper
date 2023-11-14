@@ -65,36 +65,33 @@
             <p class="text-center">Quick edit your shop's stock here. Please keep in mind that any quantity set above 0 will
                 REMOVE
                 stock from your shop. You don't need to set a quantity to edit stock.</p>
-            <h3>Items <a class="small inventory-collapse-toggle collapse-toggle collapsed" href="#userInventory"
-                    data-toggle="collapse">Show</a></h3>
             <hr>
-            <div class="collapse" id="userInventory">
-                {!! Form::open(['url' => 'user-shops/quickstock/' . $shop->id]) !!}
-                @include('widgets._user_shop_select')
+            {!! Form::open(['url' => 'user-shops/quickstock/' . $shop->id]) !!}
+            @include('widgets._user_shop_select')
 
-                <div class="text-right">
-                    {!! Form::submit('Edit Stock', ['class' => 'btn btn-primary']) !!}
-                </div>
-                {!! Form::close() !!}
+            <div class="text-right">
+                {!! Form::submit('Edit Stock', ['class' => 'btn btn-primary']) !!}
             </div>
+            {!! Form::close() !!}
         @else
             <div class="alert alert-warning text-center">Add stock to your shop from your inventory.</div>
         @endif
 
-            <hr>
-            <h3> Preview </h3>
-            <br>
-            <h1>
-                {{ $shop->name }}
-            </h1>
-            <div class="mb-3">
-                Owned by {!! $shop->user->displayName !!}
-            </div>
+        <hr>
+        <h3> Preview </h3>
+        <br>
+        <h1>
+            {{ $shop->name }}
+        </h1>
+        <div class="mb-3">
+            Owned by {!! $shop->user->displayName !!}
+        </div>
 
-            <div class="text-center">
-                <img src="{{ $shop->shopImageUrl }}" style="max-width: 200px !important; max-height: 200px !important;" alt="{{ $shop->name }}" />
-                <p>{!! $shop->parsed_description !!}</p>
-            </div>
+        <div class="text-center">
+            <img src="{{ $shop->shopImageUrl }}" style="max-width: 200px !important; max-height: 200px !important;"
+                alt="{{ $shop->name }}" />
+            <p>{!! $shop->parsed_description !!}</p>
+        </div>
     @endif
 
 @endsection
@@ -103,7 +100,6 @@
     @parent
     @include('widgets._inventory_select_js', ['readOnly' => true])
     <script>
-
         $('.delete-shop-button').on('click', function(e) {
             e.preventDefault();
             loadModal("{{ url('user-shops/delete') }}/{{ $shop->id }}", 'Delete Shop');
