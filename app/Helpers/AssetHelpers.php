@@ -384,5 +384,9 @@ function createRewardsString($array) {
         return;
     }
 
+    if (count($string) == 1) {
+        return implode(', ', $string);
+    }
+
     return implode(', ', array_slice($string, 0, count($string) - 1)).(count($string) > 2 ? ', and ' : ' and ').end($string);
 }
