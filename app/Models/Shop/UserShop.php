@@ -22,13 +22,6 @@ class UserShop extends Model
      * @var string
      */
     protected $table = 'user_shops';
-
-    /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
     
     /**
      * Validation rules for creation.
