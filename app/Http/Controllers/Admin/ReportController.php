@@ -22,6 +22,22 @@ class ReportController extends Controller {
         } else {
             $reports = Report::where('status', $status ? ucfirst($status) : 'Pending');
         }
+        $data = $request->only(['sort']);
+        if (isset($data['sort'])) {
+            switch ($data['sort']) {
+                case 'newest':
+                    $reports->sortNewest();
+                    break;
+                case 'oldest':
+                    $reports->sortOldest();
+                    break;
+                case 'bug':
+                    $reports->whereNotNull('error_type');
+                    break;
+            }
+        } else {
+            $reports->sortOldest();
+        }
 
         return view('admin.reports.index', [
             'reports' => $reports->orderBy('id', 'DESC')->paginate(30)->appends($request->query()),

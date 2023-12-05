@@ -16,15 +16,37 @@
             <a class="nav-link {{ set_active('admin/reports/pending*') }} {{ set_active('admin/reports') }}" href="{{ url('admin/reports/pending') }}">Pending</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ set_active('admin/reports/assigned-to-me*') }} {{ set_active('admin/reports') }}" href="{{ url('admin/reports/assigned-to-me') }}">Assigned To Me</a>
+            <a class="nav-link {{ set_active('admin/reports/assigned-to-me*') }}" href="{{ url('admin/reports/assigned-to-me') }}">Assigned To Me</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ set_active('admin/reports/assigned') }} {{ set_active('admin/reports') }}" href="{{ url('admin/reports/assigned') }}">Assigned</a>
+            <a class="nav-link {{ set_active('admin/reports/assigned') }}" href="{{ url('admin/reports/assigned') }}">Assigned</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ set_active('admin/reports/closed*') }} {{ set_active('admin/reports') }}" href="{{ url('admin/reports/closed') }}">Closed</a>
+            <a class="nav-link {{ set_active('admin/reports/closed*') }}" href="{{ url('admin/reports/closed') }}">Closed</a>
         </li>
     </ul>
+
+    <div>
+        {!! Form::open(['method' => 'GET', 'class' => 'form-inline justify-content-end']) !!}
+        <div class="form-inline justify-content-end">
+            <div class="form-group ml-3 mb-3">
+                {!! Form::select(
+                    'sort',
+                    [
+                        'newest' => 'Newest First',
+                        'oldest' => 'Oldest First',
+                        'bug'    => 'Bug Reports',
+                    ],
+                    Request::get('sort') ?: 'oldest',
+                    ['class' => 'form-control'],
+                ) !!}
+            </div>
+            <div class="form-group ml-3 mb-3">
+                {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
+            </div>
+        </div>
+        {!! Form::close() !!}
+    </div>
 
     {!! $reports->render() !!}
     <div class="mb-4 logs-table">
@@ -54,9 +76,12 @@
                         <div class="col-6 col-md-4">
                             <div class="logs-table-cell">
                                 <span class="ubt-texthide">
-                                    @if (!$report->is_br)
+                                    {{-- check if $report->url is url --}}
+                                    @if (filter_var($report->url, FILTER_VALIDATE_URL))
                                         <a href="{{ $report->url }}">
-                                            @endif {{ $report->url }} @if (!$report->is_br)
+                                    @endif
+                                        {{ $report->url }}
+                                    @if (filter_var($report->url, FILTER_VALIDATE_URL))
                                         </a>
                                     @endif
                                 </span>

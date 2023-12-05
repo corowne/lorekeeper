@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Settings;
 
 class GalleryController extends Controller {
+
     /**
      * Shows the submission index page.
      *
@@ -21,10 +22,23 @@ class GalleryController extends Controller {
      */
     public function getSubmissionIndex(Request $request, $status = null) {
         $submissions = GallerySubmission::collaboratorApproved()->where('status', $status ? ucfirst($status) : 'Pending');
-        if ($request->get('gallery_id')) {
-            $submissions->where(function ($query) use ($request) {
-                $query->where('gallery_id', $request->get('gallery_id'));
+        $data = $request->only(['gallery_id', 'sort']);
+        if (isset($data['gallery_id'])) {
+            $submissions->where(function ($query) use ($data) {
+                $query->where('gallery_id', $data['gallery_id']);
             });
+        }
+        if (isset($data['sort'])) {
+            switch ($data['sort']) {
+                case 'newest':
+                    $submissions->sortNewest();
+                    break;
+                case 'oldest':
+                    $submissions->sortOldest();
+                    break;
+            }
+        } else {
+            $submissions->sortOldest();
         }
         if ($status == 'pending' || !$status) {
             $submissions = $submissions->orderBy('created_at', 'ASC');
@@ -47,10 +61,23 @@ class GalleryController extends Controller {
      */
     public function getCurrencyIndex(Request $request, $status = null) {
         $submissions = GallerySubmission::requiresAward()->where('is_valued', !$status || $status == 'pending' ? 0 : 1);
-        if ($request->get('gallery_id')) {
-            $submissions->where(function ($query) use ($request) {
-                $query->where('gallery_id', $request->get('gallery_id'));
+        $data = $request->only(['gallery_id', 'sort']);
+        if (isset($data['gallery_id'])) {
+            $submissions->where(function ($query) use ($data) {
+                $query->where('gallery_id', $data['gallery_id']);
             });
+        }
+        if (isset($data['sort'])) {
+            switch ($data['sort']) {
+                case 'newest':
+                    $submissions->sortNewest();
+                    break;
+                case 'oldest':
+                    $submissions->sortOldest();
+                    break;
+            }
+        } else {
+            $submissions->sortOldest();
         }
         if ($status == 'pending' || !$status) {
             $submissions = $submissions->orderBy('created_at', 'ASC');
