@@ -77,7 +77,12 @@
 </table>
 
 <h2>Characters</h2>
-@foreach ($submission->characters as $character)
+@if (count($submission->characters()->whereRelation('character', 'deleted_at', null)->get()) != count($submission->characters()->get()))
+    <div class="alert alert-warning">
+        Some characters have been deleted since this submission was created.
+    </div>
+@endif
+@foreach ($submission->characters()->whereRelation('character', 'deleted_at', null) as $character)
     <div class="submission-character-row mb-2">
         <div class="submission-character-thumbnail"><a href="{{ $character->character->url }}"><img src="{{ $character->character->image->thumbnailUrl }}" class="img-thumbnail" alt="Thumbnail for {{ $character->character->fullName }}" /></a>
         </div>
