@@ -42,8 +42,7 @@ class UserService extends Service {
         }
 
         // Make birthday into format we can store
-        $date = $data['dob']['day'].'-'.$data['dob']['month'].'-'.$data['dob']['year'];
-        $formatDate = carbon::parse($date);
+        $formatDate = carbon::parse($data['dob']);
 
         $user = User::create([
             'name'      => $data['name'],
