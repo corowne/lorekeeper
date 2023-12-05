@@ -213,6 +213,18 @@ class User extends Authenticatable implements MustVerifyEmail {
         return $query->where('is_deactivated', 1);
     }
 
+    /**
+     * Scope a query based on the user's primary alias.
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * 
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeAliasSort($query, $reverse = false) {
+        return $query->leftJoin('user_aliases', 'users.id', '=', 'user_aliases.user_id')
+        ->orderByRaw('user_aliases.alias IS NULL ASC, user_aliases.alias '.($reverse ? 'DESC' : 'ASC'));
+    }
+
     /**********************************************************************************************
 
         ACCESSORS
