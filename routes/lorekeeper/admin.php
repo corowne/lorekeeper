@@ -251,7 +251,7 @@ Route::group(['prefix' => 'pages', 'middleware' => 'power:edit_pages'], function
 });
 
 // NEWS
-Route::group(['prefix' => 'news', 'middleware' => 'power:edit_pages'], function () {
+Route::group(['prefix' => 'news', 'middleware' => 'power:manage_news'], function () {
     Route::get('/', 'NewsController@getIndex');
     Route::get('create', 'NewsController@getCreateNews');
     Route::get('edit/{id}', 'NewsController@getEditNews');
@@ -262,7 +262,7 @@ Route::group(['prefix' => 'news', 'middleware' => 'power:edit_pages'], function 
 });
 
 // SALES
-Route::group(['prefix' => 'sales', 'middleware' => 'power:edit_pages'], function () {
+Route::group(['prefix' => 'sales', 'middleware' => 'power:manage_sales'], function () {
     Route::get('/', 'SalesController@getIndex');
     Route::get('create', 'SalesController@getCreateSales');
     Route::get('edit/{id}', 'SalesController@getEditSales');
