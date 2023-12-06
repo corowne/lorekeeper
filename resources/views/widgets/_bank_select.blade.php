@@ -1,10 +1,10 @@
-<h3>{{ $owner->logType == 'User' && $owner->id == Auth::user()->id ? 'Your' : $owner->name . '\'s' }} Bank <a class="small inventory-collapse-toggle collapse-toggle collapsed" href="#{{ strtolower($owner->logType) }}Bank-{{ $owner->id }}"
+<h3>{{ $owner->logType == 'User' && $owner->id == Auth::user()->id ? 'Your' : ($owner->logType == 'Character' ? $owner->fullName : $owner->name) . '\'s' }} Bank <a class="small inventory-collapse-toggle collapse-toggle collapsed" href="#{{ strtolower($owner->logType) }}Bank-{{ $owner->id }}"
         data-toggle="collapse">Show</a></h3>
-<div class="collapse" id="{{ strtolower($owner->logType) }}Bank-{{ $owner->id }}">
+<div class="{{ (isset($selected) && count($selected)) ? '' : 'collapse'}}" id="{{ strtolower($owner->logType) }}Bank-{{ $owner->id }}">
     <div class="text-right mb-3">
         <a href="#" class="btn btn-outline-info add-currency-button" data-type="{{ strtolower($owner->logType) }}" data-id="{{ $owner->id }}">Add Currency</a>
     </div>
-    <table class="table table-sm collapse show currency-table">
+    <table class="table table-sm show currency-table">
         <thead>
             <tr>
                 <th width="70%">Currency</th>

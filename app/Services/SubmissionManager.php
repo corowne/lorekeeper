@@ -81,6 +81,10 @@ class SubmissionManager extends Service {
                     if (!isset($data['stack_quantity'][$stackId])) {
                         throw new \Exception('Invalid quantity selected.');
                     }
+                    // make sure the user has enough of the item by checking available quantity
+                    if ($stack->availableQuantity < $data['stack_quantity'][$stackId]) {
+                        throw new \Exception('You do not have enough of this item.');
+                    }
                     $stack->submission_count += $data['stack_quantity'][$stackId];
                     $stack->save();
 

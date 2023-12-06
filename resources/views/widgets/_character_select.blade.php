@@ -74,7 +74,7 @@
             @endif
 
             <td class="d-flex align-items-center">
-                {!! Form::text('character_quantity[]', 0, ['class' => 'form-control mr-2  character-rewardable-quantity']) !!}
+                {!! Form::number('character_rewardable_quantity[]', 1, ['class' => 'form-control mr-2 character-rewardable-quantity']) !!}
                 <a href="#" class="remove-reward d-block"><i class="fas fa-times text-muted"></i></a>
             </td>
         </tr>

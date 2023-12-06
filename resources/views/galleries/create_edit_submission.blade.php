@@ -121,8 +121,7 @@
                     @endif
                     @if (old('slug'))
                         @foreach (old('slug') as $key => $slug)
-                            @php $character = \App\Models\Character\Character::where('slug', $slug)->first(); @endphp
-                            @include('galleries._character_select_entry', ['character' => $character])
+                            @include('galleries._character_select_entry', ['character' => \App\Models\Character\Character::where('slug', $slug)->first()])
                         @endforeach
                     @endif
                 </div>
