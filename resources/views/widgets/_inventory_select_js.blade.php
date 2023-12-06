@@ -31,17 +31,16 @@
         $('.inventory-checkbox').on('change', function() {
             $checkbox = $(this);
             var rowId = "#itemRow" + $checkbox.val()
-            if($checkbox.is(":checked")) {
+            if ($checkbox.is(":checked")) {
                 $(rowId).addClass('category-selected');
-                $(rowId).find('.quantity-select').prop('name', 'stack_quantity['+$checkbox.val()+']')
-            }
-            else {
+                $(rowId).find('.quantity-select').prop('name', 'stack_quantity[' + $checkbox.val() + ']')
+            } else {
                 $(rowId).removeClass('category-selected');
                 $(rowId).find('.quantity-select').prop('name', '')
             }
         });
         $('#toggle-checks').on('click', function() {
-            ($(this).is(":checked")) ? selectVisible() : deselectVisible();
+            ($(this).is(":checked")) ? selectVisible(): deselectVisible();
         });
 
         function refreshFilter() {
@@ -51,12 +50,14 @@
             $('.user-item.category-' + display + '.item-' + (itemId ? itemId : 'all')).removeClass('hide');
             $('#toggle-checks').prop('checked', false);
         }
+
         function selectVisible() {
             var $target = $('.user-item:not(.hide)');
             $target.find('.inventory-checkbox').prop('checked', true);
             $target.find('.inventory-checkbox').trigger('change');
             $('#toggle-checks').prop('checked', true);
         }
+
         function deselectVisible() {
             var $target = $('.user-item:not(.hide)');
             $target.find('.inventory-checkbox').prop('checked', false);
@@ -64,11 +65,12 @@
             $('#toggle-checks').prop('checked', false);
             $target.find('.quantity-select').prop('name', '');
         }
+
         function customItemSelectizeRender(item, escape) {
             item = JSON.parse(item.text);
             option_render = '<div class="option">';
-            if(item['image_url']) {
-                option_render += '<div class="d-inline mr-1"><img class="small-icon" alt="'+ escape(item['name']) +'" src="' + escape(item['image_url']) + '"></div>';
+            if (item['image_url']) {
+                option_render += '<div class="d-inline mr-1"><img class="small-icon" alt="' + escape(item['name']) + '" src="' + escape(item['image_url']) + '"></div>';
             }
             option_render += '<span>' + escape(item['name']) + '</span></div>';
             return option_render;

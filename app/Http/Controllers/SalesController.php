@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
-
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-
 use App\Models\Sales\Sales;
+use Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 
-class SalesController extends Controller
-{
+class SalesController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | sales Controller
@@ -21,24 +18,34 @@ class SalesController extends Controller
     */
 
     /**
+     * Create a new controller instance.
+     */
+    public function __construct() {
+        View::share('forsale', Sales::visible()->orderBy('updated_at', 'DESC')->where('is_open', 1)->get());
+        View::share('recentsales', Sales::visible()->orderBy('updated_at', 'DESC')->take(10)->get());
+    }
+
+    /**
      * Shows the sales index.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex(Request $request)
-    {
-        if(Auth::check() && Auth::user()->is_sales_unread) Auth::user()->update(['is_sales_unread' => 0]);
-        
+    public function getIndex(Request $request) {
+        if (Auth::check() && Auth::user()->is_sales_unread) {
+            Auth::user()->update(['is_sales_unread' => 0]);
+        }
+
         $query = Sales::visible();
         $data = $request->only(['title', 'is_open', 'sort']);
-        if(isset($data['is_open']) && $data['is_open'] != 'none') 
+        if (isset($data['is_open']) && $data['is_open'] != 'none') {
             $query->where('is_open', $data['is_open']);
-        if(isset($data['title'])) 
+        }
+        if (isset($data['title'])) {
             $query->where('title', 'LIKE', '%'.$data['title'].'%');
+        }
 
-        if(isset($data['sort'])) 
-        {
-            switch($data['sort']) {
+        if (isset($data['sort'])) {
+            switch ($data['sort']) {
                 case 'alpha':
                     $query->sortAlphabetical();
                     break;
@@ -58,8 +65,9 @@ class SalesController extends Controller
                     $query->sortBump(true);
                     break;
             }
-        } 
-        else $query->sortBump(true);
+        } else {
+            $query->sortBump(true);
+        }
 
         return view('sales.index', [
             'saleses' => $query->paginate(10)->appends($request->query()),
@@ -69,14 +77,17 @@ class SalesController extends Controller
     /**
      * Shows a sales post.
      *
-     * @param  int          $id
-     * @param  string|null  $slug
+     * @param int         $id
+     * @param string|null $slug
+     *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getSales($id, $slug = null)
-    {
+    public function getSales($id, $slug = null) {
         $sales = Sales::where('id', $id)->where('is_visible', 1)->first();
-        if(!$sales) abort(404);
+        if (!$sales) {
+            abort(404);
+        }
+
         return view('sales.sales', ['sales' => $sales]);
     }
 }
