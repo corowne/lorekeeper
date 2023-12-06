@@ -8,7 +8,6 @@ use App\Models\Gallery\GallerySubmission;
 use App\Models\Rank\Rank;
 use App\Models\Submission\Submission;
 use App\Models\Trade;
-use App\Models\Trade;
 use App\Models\User\User;
 use App\Models\User\UserUpdateLog;
 use Carbon\Carbon;
@@ -154,6 +153,36 @@ class UserService extends Service {
     public function updateDOB($data, $user) {
         $user->settings->birthday_setting = $data;
         $user->settings->save();
+    }
+
+    /**
+     * Confirms a user's two-factor auth.
+     *
+     * @param string           $code
+     * @param array            $data
+     * @param \App\Models\User $user
+     *
+     * @return bool
+     */
+    public function confirmTwoFactor($code, $data, $user) {
+        DB::beginTransaction();
+
+        try {
+            if (app(TwoFactorAuthenticationProvider::class)->verify(decrypt($data['two_factor_secret']), $code['code'])) {
+                $user->forceFill([
+                    'two_factor_secret'         => $data['two_factor_secret'],
+                    'two_factor_recovery_codes' => $data['two_factor_recovery_codes'],
+                ])->save();
+            } else {
+                throw new \Exception('Provided code was invalid.');
+            }
+
+            return $this->commitReturn(true);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return $this->rollbackReturn(false);
     }
 
     /**
