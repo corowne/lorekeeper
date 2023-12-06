@@ -8,20 +8,15 @@ use App\Models\Gallery\GallerySubmission;
 use App\Models\Rank\Rank;
 use App\Models\Submission\Submission;
 use App\Models\Trade;
+use App\Models\Trade;
 use App\Models\User\User;
 use App\Models\User\UserUpdateLog;
 use Carbon\Carbon;
 use DB;
 use File;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
-use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider;
-
-use App\Services\SubmissionManager;
-use App\Services\GalleryManager;
-use App\Services\CharacterManager;
-use App\Models\Trade;
 use Image;
+use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider;
 use Notifications;
 use Settings;
 
@@ -148,7 +143,6 @@ class UserService extends Service {
     public function updateBirthday($data, $user) {
         $user->birthday = $data;
         $user->save();
-
     }
 
     /**
@@ -160,33 +154,34 @@ class UserService extends Service {
     public function updateDOB($data, $user) {
         $user->settings->birthday_setting = $data;
         $user->settings->save();
-
     }
 
     /**
-        * Disables a user's two-factor auth.
-        *
-        * @param  string                 $code
-        * @param  \App\Models\User       $user
-        * @return bool
-        */
-    public function disableTwoFactor($code, $user)
-    {
+     * Disables a user's two-factor auth.
+     *
+     * @param string           $code
+     * @param \App\Models\User $user
+     *
+     * @return bool
+     */
+    public function disableTwoFactor($code, $user) {
         DB::beginTransaction();
 
         try {
-            if(app(TwoFactorAuthenticationProvider::class)->verify(decrypt($user->two_factor_secret), $code['code'])) {
+            if (app(TwoFactorAuthenticationProvider::class)->verify(decrypt($user->two_factor_secret), $code['code'])) {
                 $user->forceFill([
-                    'two_factor_secret' => null,
+                    'two_factor_secret'         => null,
                     'two_factor_recovery_codes' => null,
                 ])->save();
+            } else {
+                throw new \Exception('Provided code was invalid.');
             }
-            else throw new \Exception('Provided code was invalid.');
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
+
         return $this->rollbackReturn(false);
     }
 

@@ -2,38 +2,30 @@
 
 namespace App\Providers;
 
-use Route;
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
+use App\Models\User\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Fortify;
+use Route;
 
-use App\Models\User\User;
-
-class FortifyServiceProvider extends ServiceProvider
-{
+class FortifyServiceProvider extends ServiceProvider {
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
-    {
+    public function register() {
         //
     }
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot()
-    {
+    public function boot() {
         $this->configureRoutes();
 
         Fortify::createUsersUsing(CreateNewUser::class);
@@ -63,16 +55,13 @@ class FortifyServiceProvider extends ServiceProvider
 
     /**
      * Configure the routes offered by the application.
-     *
-     * @return void
      */
-    protected function configureRoutes()
-    {
+    protected function configureRoutes() {
         if (Fortify::$registersRoutes) {
             Route::group([
                 'namespace' => 'Laravel\Fortify\Http\Controllers',
-                'domain' => config('fortify.domain', null),
-                'prefix' => config('fortify.path'),
+                'domain'    => config('fortify.domain', null),
+                'prefix'    => config('fortify.path'),
             ], function () {
                 $this->loadRoutesFrom(base_path('routes/fortify.php'));
             });

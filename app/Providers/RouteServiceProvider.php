@@ -36,13 +36,6 @@ class RouteServiceProvider extends ServiceProvider {
     }
 
     /**
-     * The path to the "home" route for your application.
-     *
-     * @var string
-     */
-    public const HOME = '/';
-
-    /**
      * Define the "web" routes for the application.
      *
      * These routes all receive session state, CSRF protection, etc.
@@ -64,4 +57,11 @@ class RouteServiceProvider extends ServiceProvider {
             ->namespace($this->namespace)
             ->group(base_path('routes/api.php'));
     }
+
+    /**
+     * The path to the "home" route for your application.
+     *
+     * @var string
+     */
+    public const HOME = '/';
 }
