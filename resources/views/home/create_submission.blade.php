@@ -83,36 +83,13 @@
         @endif
         <div id="characters" class="mb-3">
             @if (old('slug'))
-                @foreach (old('slug') as $slug)
-                    @php
-                        $character = \App\Models\Character\Character::where('slug', $slug)->first();
-                    @endphp
-                    @if (old('character_rewardable_type'))
-                        @php
-                            //
-                            $rewardableTypes = old('character_rewardable_type');
-                            $rewardableIds = old('character_rewardable_id');
-                            $rewardableQuantities = old('character_rewardable_quantity');
-                            //
-                            session()->forget('_old_input.character_rewardable_type');
-                            session()->forget('_old_input.character_rewardable_id');
-                            session()->forget('_old_input.character_rewardable_quantity');
-                            //
-                            $characterRewards = [];
-                            foreach ($rewardableTypes as $key => $types) {
-                                if ($key == $character->id) {
-                                    foreach ($types as $typeKey => $type) {
-                                        $characterRewards[$character->id][] = (object) [
-                                            'rewardable_type' => $type,
-                                            'rewardable_id' => $rewardableIds[$key][$type == 'Currency' ? 0 : ($type == 'Item' ? 1 : 2)],
-                                            'quantity' => $rewardableQuantities[$key][$typeKey],
-                                        ];
-                                    }
-                                }
-                            }
-                        @endphp
-                    @endif
-                    @include('widgets._character_select_entry', ['character' => $character, 'characterRewards' => $characterRewards[$character->id] ?? null])
+                @php
+                    session()->forget('_old_input.character_rewardable_type');
+                    session()->forget('_old_input.character_rewardable_id');
+                    session()->forget('_old_input.character_rewardable_quantity');
+                @endphp
+                @foreach (array_unique(old('slug')) as $slug)
+                    @include('widgets._character_select_entry', ['character' => \App\Models\Character\Character::where('slug', $slug)->first()])
                 @endforeach
             @endif
         </div>

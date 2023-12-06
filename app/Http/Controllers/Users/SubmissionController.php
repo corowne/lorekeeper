@@ -251,7 +251,7 @@ class SubmissionController extends Controller {
                 flash($error)->error();
             }
 
-            return redirect()->back();
+            return redirect()->back()->withInput();
         }
 
         return redirect()->to('claims');

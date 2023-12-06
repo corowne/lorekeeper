@@ -41,7 +41,7 @@
                             </tr>
                         </thead>
                         <tbody class="character-rewards">
-                            @foreach ($character->rewards ? $character->rewards : $characterRewards ?? [] as $reward)
+                            @foreach ($character->rewards ?? [] as $reward)
                                 <tr class="character-reward-row">
                                     @if ($expanded_rewards)
                                         <td>
