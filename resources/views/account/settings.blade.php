@@ -110,7 +110,8 @@
         <p>Two-factor authentication acts as a second layer of protection for your account. It uses an app on your phone-- such as Google Authenticator-- and information provided by the site to generate a random code that changes frequently.</p>
 
         <div class="alert alert-info">
-            Please note that two-factor authentication is only used when logging in directly to the site (with an email address and password), and not when logging in via an off-site account. If you log in using an off-site account, consider enabling two-factor authentication on that site instead!
+            Please note that two-factor authentication is only used when logging in directly to the site (with an email address and password), and not when logging in via an off-site account. If you log in using an off-site account, consider enabling
+            two-factor authentication on that site instead!
         </div>
 
         @if (!isset(Auth::user()->two_factor_secret))
