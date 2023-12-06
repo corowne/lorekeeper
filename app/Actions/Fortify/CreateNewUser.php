@@ -6,11 +6,8 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Models\Invitation;
 use App\Models\User\User;
 use App\Services\InvitationService;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
-use Settings;
 
 class CreateNewUser implements CreatesNewUsers {
     use PasswordValidationRules;

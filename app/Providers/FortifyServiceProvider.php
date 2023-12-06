@@ -45,7 +45,7 @@ class FortifyServiceProvider extends ServiceProvider {
             return isset($item['login']) && $item['login'] === 1 && $item['display_name'] != 'tumblr';
         });
         Fortify::registerView(fn () => view('auth.register', [
-            'userCount' => User::count(),
+            'userCount'        => User::count(),
             'altRegistrations' => $altRegistrations,
         ]));
 
