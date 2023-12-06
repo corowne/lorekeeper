@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\User\User;
 use App\Models\User\UserAlias;
 use App\Services\LinkService;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Laravel\Socialite\Facades\Socialite;
@@ -22,8 +21,6 @@ class LoginController extends Controller {
     | to conveniently provide its functionality to your applications.
     |
     */
-
-    use AuthenticatesUsers;
 
     /**
      * Where to redirect users after login.

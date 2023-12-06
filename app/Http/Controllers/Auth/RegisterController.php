@@ -11,7 +11,6 @@ use App\Services\LinkService;
 use App\Services\UserService;
 use Carbon\Carbon;
 use DB;
-use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -31,8 +30,6 @@ class RegisterController extends Controller {
     | provide this functionality without requiring any additional code.
     |
     */
-
-    use RegistersUsers;
 
     /**
      * Where to redirect users after registration.
@@ -119,7 +116,7 @@ class RegisterController extends Controller {
      *
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data, $socialite = false) {
+    public function validator(array $data, $socialite = false) {
         return Validator::make($data, [
             'name'      => ['required', 'string', 'min:3', 'max:25', 'alpha_dash', 'unique:users'],
             'email'     => ($socialite ? [] : ['required']) + ['string', 'email', 'max:255', 'unique:users'],
@@ -147,8 +144,9 @@ class RegisterController extends Controller {
                 }
             },
             ],
+        ] + (config('app.env') == 'production' && config('lorekeeper.extensions.use_recaptcha') ? [
             'g-recaptcha-response' => 'required|recaptchav3:register,0.5',
-        ]);
+        ] : []));
     }
 
     /**

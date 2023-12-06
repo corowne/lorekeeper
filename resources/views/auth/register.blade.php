@@ -26,6 +26,7 @@
         <h3 class="mt-5 text-center">Regular Registration</h3>
         <form method="POST" action="{{ route('register') }}">
             @csrf
+            @honeypot
 
             <div class="form-group row">
                 <label for="name" class="col-md-4 col-form-label text-md-right">Username</label>
@@ -121,7 +122,9 @@
                 </div>
             </div>
 
-            {!! RecaptchaV3::field('register') !!}
+            @if(config('lorekeeper.extensions.use_recaptcha'))
+                {!! RecaptchaV3::field('register') !!}
+            @endif
 
             <div class="form-group row mb-0">
                 <div class="col-md-6 offset-md-4">

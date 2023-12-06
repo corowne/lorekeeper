@@ -41,7 +41,14 @@ class FortifyServiceProvider extends ServiceProvider {
             return Limit::perMinute(5)->by($request->session()->get('login.id'));
         });
 
-        Fortify::registerView(fn () => view('auth.register', ['userCount' => User::count()]));
+        $altRegistrations = array_filter(config('lorekeeper.sites'), function ($item) {
+            return isset($item['login']) && $item['login'] === 1 && $item['display_name'] != 'tumblr';
+        });
+        Fortify::registerView(fn () => view('auth.register', [
+            'userCount' => User::count(),
+            'altRegistrations' => $altRegistrations,
+        ]));
+
         Fortify::loginView(fn () => view('auth.login', ['userCount' => User::count()]));
         Fortify::requestPasswordResetLinkView(fn () => view('auth.passwords.forgot'));
         Fortify::resetPasswordView(fn () => view('auth.passwords.reset'));
