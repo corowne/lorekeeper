@@ -97,19 +97,6 @@ class RegisterController extends Controller {
     }
 
     /**
-     * Show the application registration form.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showRegistrationForm() {
-        $altRegistrations = array_filter(Config::get('lorekeeper.sites'), function ($item) {
-            return isset($item['login']) && $item['login'] === 1 && $item['display_name'] != 'tumblr';
-        });
-
-        return view('auth.register', ['userCount' => User::count(), 'altRegistrations' => $altRegistrations]);
-    }
-
-    /**
      * Get a validator for an incoming registration request.
      *
      * @param mixed $socialite

@@ -37,19 +37,6 @@ class LoginController extends Controller {
     }
 
     /**
-     * Show the application's login form.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showLoginForm() {
-        $altLogins = array_filter(Config::get('lorekeeper.sites'), function ($item) {
-            return isset($item['login']) && $item['login'] === 1 && $item['display_name'] != 'tumblr';
-        });
-
-        return view('auth.login', ['userCount' => User::count(), 'altLogins' => $altLogins]);
-    }
-
-    /**
      * Authenticate via Aliases.
      *
      * @param mixed $provider
