@@ -1,13 +1,15 @@
 @extends('layouts.app')
 
-@section('title') Login: Two-Factor Auth @endsection
+@section('title')
+    Login: Two-Factor Auth
+@endsection
 
 @section('content')
-<div class="text-center">
-    <h1>Two-Factor Authentication</h1>
-</div>
+    <div class="text-center">
+        <h1>Two-Factor Authentication</h1>
+    </div>
 
-{!! Form::open(['url' => 'two-factor-challenge']) !!}
+    {!! Form::open(['url' => 'two-factor-challenge']) !!}
     <div class="form-group row">
         {!! Form::label('Code', null, ['class' => 'col-md-3 col-form-label text-md-right']) !!}
         <div class="col-md-7">
@@ -33,32 +35,31 @@
     <div class="text-right">
         {!! Form::submit('Submit', ['class' => 'btn btn-primary']) !!}
     </div>
-{!! Form::close() !!}
+    {!! Form::close() !!}
 @endsection
 
 @section('scripts')
-@parent
+    @parent
 
-<script>
-    $(document).ready(function() {
-        var $useRecovery = $('#useRecovery');
-        var $recoveryContainer = $('#recoveryContainer');
+    <script>
+        $(document).ready(function() {
+            var $useRecovery = $('#useRecovery');
+            var $recoveryContainer = $('#recoveryContainer');
 
-        var useRecovery = $useRecovery.is(':checked');
-
-        updateOptions();
-
-        $useRecovery.on('change', function(e) {
-            useRecovery = $useRecovery.is(':checked');
+            var useRecovery = $useRecovery.is(':checked');
 
             updateOptions();
+
+            $useRecovery.on('change', function(e) {
+                useRecovery = $useRecovery.is(':checked');
+
+                updateOptions();
+            });
+
+            function updateOptions() {
+                if (useRecovery) $recoveryContainer.removeClass('hide');
+                else $recoveryContainer.addClass('hide');
+            }
         });
-
-        function updateOptions() {
-            if(useRecovery) $recoveryContainer.removeClass('hide');
-            else $recoveryContainer.addClass('hide');
-        }
-    });
-</script>
-
+    </script>
 @endsection

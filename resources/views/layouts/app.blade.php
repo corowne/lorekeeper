@@ -11,7 +11,7 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    @if(config('lorekeeper.extensions.use_recaptcha'))
+    @if (config('lorekeeper.extensions.use_recaptcha'))
         <!-- ReCaptcha v3 -->
         {!! RecaptchaV3::initJs() !!}
     @endif
