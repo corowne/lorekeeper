@@ -15,7 +15,7 @@
 
         <h1>
             {{ $submission->prompt_id ? 'Submission' : 'Claim' }} (#{{ $submission->id }})
-            <span class="float-right badge badge-{{ ($submission->status == 'Pending' || $submission->status == 'Draft') ? 'secondary' : ($submission->status == 'Approved' ? 'success' : 'danger') }}">
+            <span class="float-right badge badge-{{ $submission->status == 'Pending' || $submission->status == 'Draft' ? 'secondary' : ($submission->status == 'Approved' ? 'success' : 'danger') }}">
                 {{ $submission->status }}
             </span>
         </h1>
