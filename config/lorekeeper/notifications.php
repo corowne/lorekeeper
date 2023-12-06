@@ -284,6 +284,7 @@ return [
         'message' => 'The transfer for <a href="{character_url}">{character_name}</a> was approved by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Transfers</a>)',
         'url'     => 'characters/transfers/incoming',
     ],
+
     // BOOKMARK_GIFT_WRITING
     39  => [
         'message' => 'A character you have bookmarked (<a href="{character_url}">{character_name}</a>) has had its Gift Writing Allowed status changed. (<a href="{url}">View Bookmarks</a>)',
@@ -302,6 +303,20 @@ return [
         'name'      => 'User Deactivated',
         'message'   => '<a href="{user_url}">{user_name}\'s</a> account has been deactivated by <a href="{staff_url}">{staff_name}</a>.',
         'url'       => '',
+    ],
+
+    // SUBMISSION_CANCELLED
+    108 => [
+        'name'    => 'Submission Cancelled',
+        'message' => 'Your submission (#{submission_id}) was cancelled and sent back to drafts by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Submission</a>)',
+        'url'     => 'submissions/view/{submission_id}',
+    ],
+
+    // CLAIM_CANCELLED
+    109 => [
+        'name'    => 'Claim Cancelled',
+        'message' => 'Your claim (#{submission_id}) was cancelled and sent back to drafts by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Claim</a>)',
+        'url'     => 'claims/view/{submission_id}',
     ],
 
     // REPORT_ASSIGNED
