@@ -77,7 +77,8 @@
 </table>
 
 <h2>Characters</h2>
-@if (count($submission->characters()->whereRelation('character', 'deleted_at', null)->get()) != count($submission->characters()->get()))
+@if (count(
+        $submission->characters()->whereRelation('character', 'deleted_at', null)->get()) != count($submission->characters()->get()))
     <div class="alert alert-warning">
         Some characters have been deleted since this submission was created.
     </div>

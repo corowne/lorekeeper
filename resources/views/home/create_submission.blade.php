@@ -28,7 +28,7 @@
         @if (!$isClaim)
             <div class="form-group">
                 {!! Form::label('prompt_id', 'Prompt') !!}
-                {!! Form::select('prompt_id', $prompts, old('prompt_id') ?? Request::get('prompt_id') , ['class' => 'form-control selectize', 'id' => 'prompt', 'placeholder' => '']) !!}
+                {!! Form::select('prompt_id', $prompts, old('prompt_id') ?? Request::get('prompt_id'), ['class' => 'form-control selectize', 'id' => 'prompt', 'placeholder' => '']) !!}
             </div>
         @endif
         <div class="form-group">
@@ -53,11 +53,13 @@
         @endif
 
         {{-- previous input --}}
-        @if(old('rewardable_type'))
+        @if (old('rewardable_type'))
             @php
                 $loots = [];
                 foreach (old('rewardable_type') as $key => $type) {
-                    if (!isset(old('rewardable_id')[$key])) continue;
+                    if (!isset(old('rewardable_id')[$key])) {
+                        continue;
+                    }
                     $loots[] = (object) [
                         'rewardable_type' => $type,
                         'rewardable_id' => old('rewardable_id')[$key],
@@ -99,10 +101,10 @@
                             $characterRewards = [];
                             foreach ($rewardableTypes as $key => $types) {
                                 if ($key == $character->id) {
-                                    foreach($types as $typeKey => $type) {
+                                    foreach ($types as $typeKey => $type) {
                                         $characterRewards[$character->id][] = (object) [
                                             'rewardable_type' => $type,
-                                            'rewardable_id' => $rewardableIds[$key][($type == 'Currency' ? 0 : ($type == 'Item' ? 1 : 2))],
+                                            'rewardable_id' => $rewardableIds[$key][$type == 'Currency' ? 0 : ($type == 'Item' ? 1 : 2)],
                                             'quantity' => $rewardableQuantities[$key][$typeKey],
                                         ];
                                     }
@@ -127,12 +129,11 @@
                 'inventory' => $inventory,
                 'categories' => $categories,
                 'selected' => old('stack_id') ? array_combine(old('stack_id'), old('stack_quantity')) : [],
-                'page' => $page
+                'page' => $page,
             ])
             @include('widgets._bank_select', [
                 'owner' => Auth::user(),
-                'selected' => old('currency_id') ?
-                array_combine(old('currency_id')['user-'.Auth::user()->id], old('currency_quantity')['user-'.Auth::user()->id]) : [],
+                'selected' => old('currency_id') ? array_combine(old('currency_id')['user-' . Auth::user()->id], old('currency_quantity')['user-' . Auth::user()->id]) : [],
             ])
         </div>
 

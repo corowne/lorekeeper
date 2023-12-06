@@ -35,7 +35,7 @@
                     [
                         'newest' => 'Newest First',
                         'oldest' => 'Oldest First',
-                        'bug'    => 'Bug Reports',
+                        'bug' => 'Bug Reports',
                     ],
                     Request::get('sort') ?: 'oldest',
                     ['class' => 'form-control'],
@@ -80,7 +80,7 @@
                                     @if (filter_var($report->url, FILTER_VALIDATE_URL))
                                         <a href="{{ $report->url }}">
                                     @endif
-                                        {{ $report->url }}
+                                    {{ $report->url }}
                                     @if (filter_var($report->url, FILTER_VALIDATE_URL))
                                         </a>
                                     @endif
