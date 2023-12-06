@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 use Settings;
 
 class GalleryController extends Controller {
-
     /**
      * Shows the submission index page.
      *

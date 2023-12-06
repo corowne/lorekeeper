@@ -10,7 +10,6 @@ use Auth;
 use Illuminate\Http\Request;
 
 class DesignController extends Controller {
-
     /**
      * Show the design index page.
      *

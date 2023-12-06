@@ -215,14 +215,15 @@ class User extends Authenticatable implements MustVerifyEmail {
 
     /**
      * Scope a query based on the user's primary alias.
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * 
+     * @param mixed                                 $reverse
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeAliasSort($query, $reverse = false) {
         return $query->leftJoin('user_aliases', 'users.id', '=', 'user_aliases.user_id')
-        ->orderByRaw('user_aliases.alias IS NULL ASC, user_aliases.alias '.($reverse ? 'DESC' : 'ASC'));
+            ->orderByRaw('user_aliases.alias IS NULL ASC, user_aliases.alias '.($reverse ? 'DESC' : 'ASC'));
     }
 
     /**********************************************************************************************

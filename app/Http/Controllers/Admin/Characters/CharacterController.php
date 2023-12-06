@@ -21,7 +21,6 @@ use Illuminate\Http\Request;
 use Settings;
 
 class CharacterController extends Controller {
-
     /*
     |--------------------------------------------------------------------------
     | Admin / Character Controller
