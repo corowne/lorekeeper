@@ -19,7 +19,6 @@ use Notifications;
 use Settings;
 
 class SubmissionManager extends Service {
-
     /*
     |--------------------------------------------------------------------------
     | Submission Manager
