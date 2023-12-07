@@ -265,6 +265,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Gallery Image Settings
+    |--------------------------------------------------------------------------
+    |
+    | This affects images submitted to on-site galleries.
+    |
+    | Size, in pixels, to cap gallery images at.
+    | Images above this cap in either dimension will be resized to suit. Enter "0" to disable resizing.
+    |
+    | File format to encode gallery image uploads to.
+    | Set to null to leave images in their original formats.
+    | Example:
+    | 'gallery_images_format' => null,
+    |
+    */
+    'gallery_images_cap'    => 0,
+    'gallery_images_format' => null,
+
+    /*
+    |--------------------------------------------------------------------------
     | Trade Asset Limit
     |--------------------------------------------------------------------------
     |

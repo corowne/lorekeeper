@@ -47,7 +47,7 @@ class GallerySubmission extends Model {
      */
     public static $createRules = [
         'title'       => 'required|between:3,200',
-        'image'       => 'required_without:text|mimes:png,jpeg,jpg,gif|max:3000',
+        'image'       => 'required_without:text|mimes:png,jpeg,jpg,gif,webp|max:3000',
         'text'        => 'required_without:image',
         'description' => 'nullable',
     ];
@@ -60,7 +60,7 @@ class GallerySubmission extends Model {
     public static $updateRules = [
         'title'       => 'required|between:3,200',
         'description' => 'nullable',
-        'image'       => 'mimes:png,jpeg,jpg,gif|max:3000',
+        'image'       => 'mimes:png,jpeg,jpg,gif,webp|max:3000',
     ];
 
     /**********************************************************************************************
