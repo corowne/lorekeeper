@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Comment;
+
+use App\Models\Model;
 
 class CommentLike extends Model {
     /**
@@ -29,7 +31,7 @@ class CommentLike extends Model {
      * Get the comment.
      */
     public function comment() {
-        return $this->belongsTo('App\Models\Comment');
+        return $this->belongsTo('App\Models\Comment\Comment');
     }
 
     /**

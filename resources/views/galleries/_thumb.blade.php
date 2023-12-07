@@ -33,7 +33,7 @@
                 'data-toggle' => 'tooltip',
                 'title' => ($submission->favorites->where('user_id', Auth::user()->id)->first() == null ? 'Add to' : 'Remove from') . ' your Favorites',
                 'type' => 'submit',
-            ]) !!} ・ {{ App\Models\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->where('type', 'User-User')->count() }}
+            ]) !!} ・ {{ App\Models\Comment\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->where('type', 'User-User')->count() }}
             <i class="fas fa-comment"></i>
             {!! Form::close() !!}
         @else
@@ -47,7 +47,7 @@
                 ・
             @endif
             {{ $submission->favorites->count() }} <i class="fas fa-star" data-toggle="tooltip" title="Favorites"></i> ・
-            {{ App\Models\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->where('type', 'User-User')->count() }} <i class="fas fa-comment" data-toggle="tooltip"
+            {{ App\Models\Comment\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->where('type', 'User-User')->count() }} <i class="fas fa-comment" data-toggle="tooltip"
                 title="Comments"></i>
         @endif
     </div>

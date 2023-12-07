@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Comment;
 
+use App\Models\Model;
 use App\Events\CommentCreated;
 use App\Events\CommentDeleted;
 use App\Events\CommentUpdated;
@@ -55,6 +56,12 @@ class Comment extends Model {
      */
     public $timestamps = true;
 
+    /**********************************************************************************************
+
+        RELATIONS
+
+     **********************************************************************************************/
+
     /**
      * The user who posted the comment.
      */
@@ -73,22 +80,36 @@ class Comment extends Model {
      * Returns all comments that this comment is the parent of.
      */
     public function children() {
-        return $this->hasMany('App\Models\Comment', 'child_id')->withTrashed();
+        return $this->hasMany('App\Models\Comment\Comment', 'child_id')->withTrashed();
     }
 
     /**
      * Returns the comment to which this comment belongs to.
      */
     public function parent() {
-        return $this->belongsTo('App\Models\Comment', 'child_id')->withTrashed();
+        return $this->belongsTo('App\Models\Comment\Comment', 'child_id')->withTrashed();
     }
 
     /**
      * Gets the likes for this comment.
      */
     public function likes() {
-        return $this->hasMany('App\Models\CommentLike');
+        return $this->hasMany('App\Models\Comment\CommentLike');
     }
+
+    /**
+     * Get the edit history of the comment.
+     */
+    public function edits() {
+        return $this->hasMany('App\Models\Comment\CommentEdit')->orderBy('created_at', 'desc');
+    }
+
+    /**********************************************************************************************
+
+        ATTRIBUTES
+
+     **********************************************************************************************/
+
 
     /**
      * Gets / Creates permalink for comments - allows user to go directly to comment.

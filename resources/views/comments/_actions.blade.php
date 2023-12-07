@@ -215,3 +215,71 @@
         </div>
     </div>
 </div>
+
+{{-- edits modal --}}
+{{-- the button for this appears in the main view, but to keep it from being cluttered we will keep the models within this section --}}
+@if(Auth::check() && Auth::user()->isStaff)
+    <div class="modal fade" id="show-edits-{{ $comment->id }}" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit History</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @if (count($comment->edits) > 0)
+                        <div class="mb-4 logs-table">
+                            <div class="logs-table-header">
+                                <div class="row">
+                                    <div class="col-4 col-md-3">
+                                        <div class="logs-table-cell">Time</div>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <div class="logs-table-cell">Old Comment</div>
+                                    </div>
+                                    <div class="col-4 col-md-3">
+                                        <div class="logs-table-cell">New Comment</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="logs-table-body">
+                                @foreach ($comment->edits as $edit)
+                                    <div class="logs-table-row">
+                                        <div class="row flex-wrap">
+                                            <div class="col-4 col-md-3">
+                                                <div class="logs-table-cell">
+                                                    {!! format_date($edit->created_at) !!}
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-4">
+                                                <div class="logs-table-cell">
+                                                    <span data-toggle="tooltip" title="{{$edit->data['old_comment']}}">
+                                                        {{ Str::limit($edit->data['old_comment'], 50) }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-4">
+                                                <div class="logs-table-cell">
+                                                    <span data-toggle="tooltip" title="{{$edit->data['new_comment']}}">
+                                                        {{ Str::limit($edit->data['new_comment'], 50) }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @else
+                        <div class="alert alert-info">No edits yet.</div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
+
+{{-- edits modal --}}
+{{-- the button for this appears in the main view, but to keep it from being cluttered we will keep the models within this section --}}

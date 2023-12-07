@@ -30,7 +30,11 @@
                 <p class="border-top pt-1 text-right mb-0">
                     <small class="text-muted">{!! $comment->created_at !!}
                         @if ($comment->created_at != $comment->updated_at)
-                            <span class="text-muted border-left mx-1 px-1">(Edited {!! $comment->updated_at !!})</span>
+                            <span class="text-muted border-left mx-1 px-1">(Edited {!! $comment->updated_at !!})
+                                @if (Auth::check() && Auth::user()->isStaff)
+                                    <a href="#" data-toggle="modal" data-target="#show-edits-{{ $comment->id }}">Edit History</a>
+                                @endif
+                            </span>
                         @endif
                     </small>
                     <a href="{{ url('comment/') . '/' . $comment->id }}"><i class="fas fa-link ml-1" style="opacity: 50%;"></i></a>
