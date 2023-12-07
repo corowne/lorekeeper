@@ -218,7 +218,7 @@
 
 {{-- edits modal --}}
 {{-- the button for this appears in the main view, but to keep it from being cluttered we will keep the models within this section --}}
-@if(Auth::check() && Auth::user()->isStaff)
+@if (Auth::check() && Auth::user()->isStaff)
     <div class="modal fade" id="show-edits-{{ $comment->id }}" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -255,14 +255,14 @@
                                             </div>
                                             <div class="col-12 col-md-4">
                                                 <div class="logs-table-cell">
-                                                    <span data-toggle="tooltip" title="{{$edit->data['old_comment']}}">
+                                                    <span data-toggle="tooltip" title="{{ $edit->data['old_comment'] }}">
                                                         {{ Str::limit($edit->data['old_comment'], 50) }}
                                                     </span>
                                                 </div>
                                             </div>
                                             <div class="col-12 col-md-4">
                                                 <div class="logs-table-cell">
-                                                    <span data-toggle="tooltip" title="{{$edit->data['new_comment']}}">
+                                                    <span data-toggle="tooltip" title="{{ $edit->data['new_comment'] }}">
                                                         {{ Str::limit($edit->data['new_comment'], 50) }}
                                                     </span>
                                                 </div>

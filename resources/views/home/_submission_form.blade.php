@@ -20,7 +20,7 @@
 @if (!$isClaim)
     <div class="form-group">
         {!! Form::label('prompt_id', 'Prompt') !!}
-        {!! Form::select('prompt_id', $prompts, isset($submission->prompt_id) ? $submission->prompt_id : (old('prompt_id') ?? Request::get('prompt_id')), ['class' => 'form-control selectize', 'id' => 'prompt', 'placeholder' => '']) !!}
+        {!! Form::select('prompt_id', $prompts, isset($submission->prompt_id) ? $submission->prompt_id : old('prompt_id') ?? Request::get('prompt_id'), ['class' => 'form-control selectize', 'id' => 'prompt', 'placeholder' => '']) !!}
     </div>
 @endif
 
@@ -31,12 +31,12 @@
     @else
         {!! add_help('Enter the URL of your submission (whether uploaded to dA or some other hosting service).') !!}
     @endif
-    {!! Form::text('url', isset($submission->url) ? $submission->url : (old('url') ?? Request::get('url')), ['class' => 'form-control', 'required']) !!}
+    {!! Form::text('url', isset($submission->url) ? $submission->url : old('url') ?? Request::get('url'), ['class' => 'form-control', 'required']) !!}
 </div>
 
 <div class="form-group">
     {!! Form::label('comments', 'Comments (Optional)') !!} {!! add_help('Enter a comment for your ' . ($isClaim ? 'claim' : 'submission') . ' (no HTML). This will be viewed by the mods when reviewing your ' . ($isClaim ? 'claim' : 'submission') . '.') !!}
-    {!! Form::textarea('comments', isset($submission->comments) ? $submission->comments : (old('comments') ?? Request::get('comments')), ['class' => 'form-control']) !!}
+    {!! Form::textarea('comments', isset($submission->comments) ? $submission->comments : old('comments') ?? Request::get('comments'), ['class' => 'form-control']) !!}
 </div>
 
 @if ($submission->prompt_id)
@@ -73,9 +73,9 @@
             @endphp
         @endif
         @if ($isClaim)
-            @include('widgets._loot_select', ['loots' => $submission->id ? $submission->rewards : ($loots ?? null), 'showLootTables' => false, 'showRaffles' => true])
+            @include('widgets._loot_select', ['loots' => $submission->id ? $submission->rewards : $loots ?? null, 'showLootTables' => false, 'showRaffles' => true])
         @else
-            @include('widgets._loot_select', ['loots' => $submission->id ? $submission->rewards : ($loots ?? null), 'showLootTables' => false, 'showRaffles' => false])
+            @include('widgets._loot_select', ['loots' => $submission->id ? $submission->rewards : $loots ?? null, 'showLootTables' => false, 'showRaffles' => false])
         @endif
 
         @if (!$isClaim)
@@ -101,7 +101,7 @@
                     'tables' => [],
                     'showTables' => false,
                     'character' => $character,
-                    'expanded_rewards' => $expanded_rewards
+                    'expanded_rewards' => $expanded_rewards,
                 ])
             @endforeach
             @if (old('slug') && !$submission->id)
@@ -130,14 +130,12 @@
                 'user' => Auth::user(),
                 'inventory' => $inventory,
                 'categories' => $categories,
-                'selected' => $submission->id ? $submission->getInventory($submission->user) : 
-                (old('stack_id') ? array_combine(old('stack_id'), old('stack_quantity')) : []),
-                'page' => $page
+                'selected' => $submission->id ? $submission->getInventory($submission->user) : (old('stack_id') ? array_combine(old('stack_id'), old('stack_quantity')) : []),
+                'page' => $page,
             ])
             @include('widgets._bank_select', [
                 'owner' => Auth::user(),
-                'selected' => $submission->id ? $submission->getCurrencies($submission->user) : 
-                (old('currency_id') ? array_combine(old('currency_id')['user-' . Auth::user()->id], old('currency_quantity')['user-' . Auth::user()->id]) : [])
+                'selected' => $submission->id ? $submission->getCurrencies($submission->user) : (old('currency_id') ? array_combine(old('currency_id')['user-' . Auth::user()->id], old('currency_quantity')['user-' . Auth::user()->id]) : []),
             ])
         </div>
     </div>

@@ -33,7 +33,8 @@
                 'data-toggle' => 'tooltip',
                 'title' => ($submission->favorites->where('user_id', Auth::user()->id)->first() == null ? 'Add to' : 'Remove from') . ' your Favorites',
                 'type' => 'submit',
-            ]) !!} ・ {{ App\Models\Comment\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->where('type', 'User-User')->count() }}
+            ]) !!} ・
+            {{ App\Models\Comment\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->where('type', 'User-User')->count() }}
             <i class="fas fa-comment"></i>
             {!! Form::close() !!}
         @else
