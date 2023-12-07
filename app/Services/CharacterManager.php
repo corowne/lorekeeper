@@ -226,10 +226,7 @@ class CharacterManager extends Service {
             }
 
             if (config('lorekeeper.settings.masterlist_fullsizes_cap') != 0) {
-                $imageWidth = $image->width();
-                $imageHeight = $image->height();
-
-                if ($imageWidth > $imageHeight) {
+                if ($image->width() > $image->height()) {
                     // Landscape
                     $image->resize(config('lorekeeper.settings.masterlist_fullsizes_cap'), null, function ($constraint) {
                         $constraint->aspectRatio();
