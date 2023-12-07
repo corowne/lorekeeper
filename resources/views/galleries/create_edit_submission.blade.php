@@ -120,7 +120,7 @@
                         @endforeach
                     @endif
                     @if (old('slug'))
-                        @foreach (old('slug') as $key => $slug)
+                        @foreach (array_unique(old('slug')) as $slug)
                             @include('galleries._character_select_entry', ['character' => \App\Models\Character\Character::where('slug', $slug)->first()])
                         @endforeach
                     @endif
