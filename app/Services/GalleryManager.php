@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Facades\Notifications;
+use App\Facades\Settings;
 use App\Models\Character\Character;
 use App\Models\Currency\Currency;
 use App\Models\Gallery\Gallery;
@@ -14,8 +16,6 @@ use App\Models\User\User;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Intervention\Image\Facades\Image;
-use App\Facades\Notifications;
-use App\Facades\Settings;
 
 class GalleryManager extends Service {
     /*
@@ -818,11 +818,11 @@ class GalleryManager extends Service {
             Config::set('image.driver', 'imagick');
         }
 
-        if(config('lorekeeper.settings.gallery_images_cap') || config('lorekeeper.settings.gallery_images_format')) {
+        if (config('lorekeeper.settings.gallery_images_cap') || config('lorekeeper.settings.gallery_images_format')) {
             $image = Image::make($submission->imagePath.'/'.$submission->imageFileName);
 
             // Scale the image if desired/necessary
-            if(config('lorekeeper.settings.gallery_images_cap') && ($imageProperties[0] > config('lorekeeper.settings.gallery_images_cap') || $imageProperties[1] > config('lorekeeper.settings.gallery_images_cap'))) {
+            if (config('lorekeeper.settings.gallery_images_cap') && ($imageProperties[0] > config('lorekeeper.settings.gallery_images_cap') || $imageProperties[1] > config('lorekeeper.settings.gallery_images_cap'))) {
                 if ($image->width() > $image->height()) {
                     // Landscape
                     $image->resize(config('lorekeeper.settings.gallery_images_cap'), null, function ($constraint) {
