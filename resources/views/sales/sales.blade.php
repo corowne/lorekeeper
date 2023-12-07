@@ -9,10 +9,9 @@
     @include('sales._sales', ['sales' => $sales, 'page' => true])
 
     @if (
-        (isset($sales->comments_open_at) && $sales->comments_open_at < Carbon\Carbon::now()) ||
-            (Auth::check() && Auth::user()->hasPower('manage_sales')) ||
-            (Auth::check() && Auth::user()->hasPower('comment_on_sales')) ||
-            !isset($sales->comments_open_at))
+        (isset($sales->comments_open_at) && $sales->comments_open_at < Carbon\Carbon::now())
+        || (Auth::check() && (Auth::user()->hasPower('manage_sales') || Auth::user()->hasPower('comment_on_sales')))
+        || !isset($sales->comments_open_at))
         <hr class="mb-5" />
         @comments(['model' => $sales, 'perPage' => 5])
     @else

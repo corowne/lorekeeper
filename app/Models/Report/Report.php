@@ -122,7 +122,7 @@ class Report extends Model {
     }
 
     /**
-     * Scope a query to sort submissions oldest first.
+     * Scope a query to sort reports by oldest first.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      *
@@ -133,7 +133,7 @@ class Report extends Model {
     }
 
     /**
-     * Scope a query to sort submissions by newest first.
+     * Scope a query to sort reports by newest first.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      *

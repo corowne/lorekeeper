@@ -179,7 +179,7 @@ class CharacterDesignUpdate extends Model {
     }
 
     /**
-     * Scope a query to sort submissions oldest first.
+     * Scope a query to sort updates by oldest first.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      *
@@ -190,7 +190,7 @@ class CharacterDesignUpdate extends Model {
     }
 
     /**
-     * Scope a query to sort submissions by newest first.
+     * Scope a query to sort updates by newest first.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      *

@@ -97,7 +97,7 @@ class CharacterTransfer extends Model {
     }
 
     /**
-     * Scope a query to sort submissions oldest first.
+     * Scope a query to sort transfers by oldest first.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      *
@@ -108,7 +108,7 @@ class CharacterTransfer extends Model {
     }
 
     /**
-     * Scope a query to sort submissions by newest first.
+     * Scope a query to sort transfers by newest first.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      *

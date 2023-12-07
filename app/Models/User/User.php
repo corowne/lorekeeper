@@ -182,7 +182,7 @@ class User extends Authenticatable implements MustVerifyEmail {
      * Gets all of a user's liked / disliked comments.
      */
     public function commentLikes() {
-        return $this->hasMany('App\Models\Comment\CommentLike;');
+        return $this->hasMany('App\Models\Comment\CommentLike');
     }
 
     /**********************************************************************************************
