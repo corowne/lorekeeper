@@ -15,7 +15,9 @@
 
         <h1>
             {{ $submission->prompt_id ? 'Submission' : 'Claim' }} (#{{ $submission->id }})
-            <span class="float-right badge badge-{{ $submission->status == 'Pending' ? 'secondary' : ($submission->status == 'Approved' ? 'success' : 'danger') }}">{{ $submission->status }}</span>
+            <span class="float-right badge badge-{{ $submission->status == 'Pending' || $submission->status == 'Draft' ? 'secondary' : ($submission->status == 'Approved' ? 'success' : 'danger') }}">
+                {{ $submission->status }}
+            </span>
         </h1>
 
         <div class="mb-1">
@@ -150,6 +152,7 @@
 
         <div class="text-right">
             <a href="#" class="btn btn-danger mr-2" id="rejectionButton">Reject</a>
+            <a href="#" class="btn btn-secondary mr-2" id="cancelButton">Cancel</a>
             <a href="#" class="btn btn-success" id="approvalButton">Approve</a>
         </div>
 
@@ -239,6 +242,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="modal-content hide" id="cancelContent">
+                    <div class="modal-header">
+                        <span class="modal-title h5 mb-0">Confirm Cancellation</span>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>This will cancel the {{ $submission->prompt_id ? 'submission' : 'claim' }} and send it back to drafts. Make sure to include a staff comment if you do this!</p>
+                        <div class="text-right">
+                            <a href="#" id="cancelSubmit" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </div>
+                </div>
                 <div class="modal-content hide" id="rejectionContent">
                     <div class="modal-header">
                         <span class="modal-title h5 mb-0">Confirm Rejection</span>
@@ -279,16 +294,30 @@
                 var $rejectionContent = $('#rejectionContent');
                 var $rejectionSubmit = $('#rejectionSubmit');
 
+                var $cancelButton = $('#cancelButton');
+                var $cancelContent = $('#cancelContent');
+                var $cancelSubmit = $('#cancelSubmit');
+
                 $approvalButton.on('click', function(e) {
                     e.preventDefault();
                     $approvalContent.removeClass('hide');
                     $rejectionContent.addClass('hide');
+                    $cancelContent.addClass('hide');
                     $confirmationModal.modal('show');
                 });
 
                 $rejectionButton.on('click', function(e) {
                     e.preventDefault();
                     $rejectionContent.removeClass('hide');
+                    $approvalContent.addClass('hide');
+                    $cancelContent.addClass('hide');
+                    $confirmationModal.modal('show');
+                });
+
+                $cancelButton.on('click', function(e) {
+                    e.preventDefault();
+                    $cancelContent.removeClass('hide');
+                    $rejectionContent.addClass('hide');
                     $approvalContent.addClass('hide');
                     $confirmationModal.modal('show');
                 });
@@ -302,6 +331,12 @@
                 $rejectionSubmit.on('click', function(e) {
                     e.preventDefault();
                     $submissionForm.attr('action', '{{ url()->current() }}/reject');
+                    $submissionForm.submit();
+                });
+
+                $cancelSubmit.on('click', function(e) {
+                    e.preventDefault();
+                    $submissionForm.attr('action', '{{ url()->current() }}/cancel');
                     $submissionForm.submit();
                 });
             });

@@ -205,6 +205,25 @@ function addAsset(&$array, $asset, $quantity = 1) {
 }
 
 /**
+ * Removes an asset from the given array, if it exists.
+ *
+ * @param array $array
+ * @param mixed $asset
+ * @param int   $quantity
+ */
+function removeAsset(&$array, $asset, $quantity = 1) {
+    if (!$asset) {
+        return;
+    }
+    if (isset($array[$asset->assetType][$asset->id])) {
+        $array[$asset->assetType][$asset->id]['quantity'] -= $quantity;
+        if ($array[$asset->assetType][$asset->id]['quantity'] == 0) {
+            unset($array[$asset->assetType][$asset->id]);
+        }
+    }
+}
+
+/**
  * Get a clean version of the asset array to store in the database,
  * where each asset is listed in [id => quantity] format.
  * json_encode this and store in the data attribute.

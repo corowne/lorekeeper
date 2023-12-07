@@ -25,6 +25,9 @@
 
     <ul class="nav nav-tabs mb-3">
         <li class="nav-item">
+            <a class="nav-link {{ Request::get('type') == 'draft' ? 'active' : '' }}" href="{{ url($isClaims ? 'claims' : 'submissions') . '?type=draft' }}">Drafts</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link {{ !Request::get('type') || Request::get('type') == 'pending' ? 'active' : '' }}" href="{{ url($isClaims ? 'claims' : 'submissions') }}">Pending</a>
         </li>
         <li class="nav-item">
@@ -49,7 +52,7 @@
                         <div class="logs-table-cell">Link</div>
                     </div>
                     <div class="col-6 {{ !$isClaims ? 'col-md-5' : 'col-md-6' }} font-weight-bold">
-                        <div class="logs-table-cell">Submitted</div>
+                        <div class="logs-table-cell">Last Action</div>
                     </div>
                     <div class="col-12 col-md-1 font-weight-bold">
                         <div class="logs-table-cell">Status</div>
@@ -71,7 +74,7 @@
                                 </div>
                             </div>
                             <div class="col-6 {{ !$isClaims ? 'col-md-5' : 'col-md-6' }}">
-                                <div class="logs-table-cell">{!! pretty_date($submission->created_at) !!}</div>
+                                <div class="logs-table-cell">{!! pretty_date($submission->updated_at) !!}</div>
                             </div>
                             <div class="col-6 col-md-1 text-right">
                                 <div class="logs-table-cell">
