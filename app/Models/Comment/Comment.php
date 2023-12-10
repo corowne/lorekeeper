@@ -2,10 +2,10 @@
 
 namespace App\Models\Comment;
 
-use App\Models\Model;
 use App\Events\CommentCreated;
 use App\Events\CommentDeleted;
 use App\Events\CommentUpdated;
+use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Comment extends Model {
@@ -109,7 +109,6 @@ class Comment extends Model {
         ATTRIBUTES
 
      **********************************************************************************************/
-
 
     /**
      * Gets / Creates permalink for comments - allows user to go directly to comment.

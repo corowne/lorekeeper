@@ -42,7 +42,7 @@ class CommentEdit extends Model {
     }
 
     /**
-     * Get the user
+     * Get the user.
      */
     public function user() {
         return $this->belongsTo('App\Models\User\User');
@@ -66,5 +66,4 @@ class CommentEdit extends Model {
 
         return json_decode($this->attributes['data'], true);
     }
-
 }

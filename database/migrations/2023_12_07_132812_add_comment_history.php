@@ -4,15 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddCommentHistory extends Migration
-{
+class AddCommentHistory extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
-    {
+    public function up() {
         // so if we remigrate it doesnt error
         if (!Schema::hasColumn('comments', 'updated_at')) {
             Schema::table('comment_likes', function (Blueprint $table) {
@@ -40,12 +36,9 @@ class AddCommentHistory extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
-    {
+    public function down() {
         // comment likes cannot be reversed since its a bugfix
         Schema::dropIfExists('comment_edits');
     }
-};
+}

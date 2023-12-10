@@ -181,7 +181,7 @@ class CommentController extends Controller {
                 'action'      => 'edit',
                 'old_comment' => $comment->comment,
                 'new_comment' => $request->message,
-            ])
+            ]),
         ]);
 
         $comment->update([
