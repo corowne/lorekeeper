@@ -20,7 +20,7 @@
 @if (!$isClaim)
     <div class="form-group">
         {!! Form::label('prompt_id', 'Prompt') !!}
-        {!! Form::select('prompt_id', $prompts, isset($submission->prompt_id) ? $submission->prompt_id : Request::get('prompt_id'), ['class' => 'form-control selectize', 'id' => 'prompt', 'placeholder' => '']) !!}
+        {!! Form::select('prompt_id', $prompts, isset($submission->prompt_id) ? $submission->prompt_id : old('prompt_id') ?? Request::get('prompt_id'), ['class' => 'form-control selectize', 'id' => 'prompt', 'placeholder' => '']) !!}
     </div>
 @endif
 
@@ -31,12 +31,12 @@
     @else
         {!! add_help('Enter the URL of your submission (whether uploaded to dA or some other hosting service).') !!}
     @endif
-    {!! Form::text('url', isset($submission->url) ? $submission->url : Request::get('url'), ['class' => 'form-control', 'required']) !!}
+    {!! Form::text('url', isset($submission->url) ? $submission->url : old('url') ?? Request::get('url'), ['class' => 'form-control', 'required']) !!}
 </div>
 
 <div class="form-group">
     {!! Form::label('comments', 'Comments (Optional)') !!} {!! add_help('Enter a comment for your ' . ($isClaim ? 'claim' : 'submission') . ' (no HTML). This will be viewed by the mods when reviewing your ' . ($isClaim ? 'claim' : 'submission') . '.') !!}
-    {!! Form::textarea('comments', isset($submission->comments) ? $submission->comments : Request::get('comments'), ['class' => 'form-control']) !!}
+    {!! Form::textarea('comments', isset($submission->comments) ? $submission->comments : old('comments') ?? Request::get('comments'), ['class' => 'form-control']) !!}
 </div>
 
 @if ($submission->prompt_id)
@@ -55,10 +55,27 @@
         @else
             <p>Note that any rewards added here are <u>in addition</u> to the default prompt rewards. If you do not require any additional rewards, you can leave this blank.</p>
         @endif
+
+        {{-- previous input --}}
+        @if (old('rewardable_type'))
+            @php
+                $loots = [];
+                foreach (old('rewardable_type') as $key => $type) {
+                    if (!isset(old('rewardable_id')[$key])) {
+                        continue;
+                    }
+                    $loots[] = (object) [
+                        'rewardable_type' => $type,
+                        'rewardable_id' => old('rewardable_id')[$key],
+                        'quantity' => old('quantity')[$key] ?? 1,
+                    ];
+                }
+            @endphp
+        @endif
         @if ($isClaim)
-            @include('widgets._loot_select', ['loots' => $submission->id ? $submission->rewards : null, 'showLootTables' => false, 'showRaffles' => true])
+            @include('widgets._loot_select', ['loots' => $submission->id ? $submission->rewards : $loots ?? null, 'showLootTables' => false, 'showRaffles' => true])
         @else
-            @include('widgets._loot_select', ['loots' => $submission->id ? $submission->rewards : null, 'showLootTables' => false, 'showRaffles' => false])
+            @include('widgets._loot_select', ['loots' => $submission->id ? $submission->rewards : $loots ?? null, 'showLootTables' => false, 'showRaffles' => false])
         @endif
 
         @if (!$isClaim)
@@ -78,8 +95,25 @@
         @endif
         <div id="characters" class="mb-3">
             @foreach ($submission->characters as $character)
-                @include('widgets._character_select_entry', ['characterCurrencies' => $characterCurrencies, 'items' => $items, 'tables' => [], 'showTables' => false, 'character' => $character, 'expanded_rewards' => $expanded_rewards])
+                @include('widgets._character_select_entry', [
+                    'characterCurrencies' => $characterCurrencies,
+                    'items' => $items,
+                    'tables' => [],
+                    'showTables' => false,
+                    'character' => $character,
+                    'expanded_rewards' => $expanded_rewards,
+                ])
             @endforeach
+            @if (old('slug') && !$submission->id)
+                @php
+                    session()->forget('_old_input.character_rewardable_type');
+                    session()->forget('_old_input.character_rewardable_id');
+                    session()->forget('_old_input.character_rewardable_quantity');
+                @endphp
+                @foreach (array_unique(old('slug')) as $slug)
+                    @include('widgets._character_select_entry', ['character' => \App\Models\Character\Character::where('slug', $slug)->first()])
+                @endforeach
+            @endif
         </div>
     </div>
 </div>
@@ -92,8 +126,17 @@
         <p>If your {{ $isClaim ? 'claim' : 'submission' }} consumes items, attach them here. Otherwise, this section can be left blank. These items will be removed from your inventory but refunded if your {{ $isClaim ? 'claim' : 'submission' }} is
             rejected.</p>
         <div id="addons" class="mb-3">
-            @include('widgets._inventory_select', ['user' => Auth::user(), 'inventory' => $inventory, 'categories' => $categories, 'selected' => $submission->id ? $submission->getInventory($submission->user) : [], 'page' => $page])
-            @include('widgets._bank_select', ['owner' => Auth::user(), 'selected' => $submission->id ? $submission->getCurrencies($submission->user) : []])
+            @include('widgets._inventory_select', [
+                'user' => Auth::user(),
+                'inventory' => $inventory,
+                'categories' => $categories,
+                'selected' => $submission->id ? $submission->getInventory($submission->user) : (old('stack_id') ? array_combine(old('stack_id'), old('stack_quantity')) : []),
+                'page' => $page,
+            ])
+            @include('widgets._bank_select', [
+                'owner' => Auth::user(),
+                'selected' => $submission->id ? $submission->getCurrencies($submission->user) : (old('currency_id') ? array_combine(old('currency_id')['user-' . Auth::user()->id], old('currency_quantity')['user-' . Auth::user()->id]) : []),
+            ])
         </div>
     </div>
 </div>

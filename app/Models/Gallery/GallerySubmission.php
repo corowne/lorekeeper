@@ -218,6 +218,28 @@ class GallerySubmission extends Model {
         return $query->where('status', 'Accepted')->where('is_visible', 1);
     }
 
+    /**
+     * Scope a query to sort submissions oldest first.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSortOldest($query) {
+        return $query->orderBy('id');
+    }
+
+    /**
+     * Scope a query to sort submissions by newest first.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSortNewest($query) {
+        return $query->orderBy('id', 'DESC');
+    }
+
     /**********************************************************************************************
 
         ACCESSORS

@@ -10,6 +10,7 @@ use App\Models\Character\CharacterDesignUpdate;
 use App\Models\Character\CharacterFeature;
 use App\Models\Character\CharacterImage;
 use App\Models\Character\CharacterTransfer;
+use App\Models\Sales\SalesCharacter;
 use App\Models\Species\Subtype;
 use App\Models\User\User;
 use Carbon\Carbon;
@@ -1295,7 +1296,7 @@ class CharacterManager extends Service {
             if ($isAdmin && isset($data['alert_user']) && $character->is_visible && $character->user_id) {
                 Notifications::create('CHARACTER_PROFILE_EDIT', $character->user, [
                     'character_name' => $character->name,
-                    'character_slug' => $character->slug,
+                    'character_slug' => $character->is_myo_slot ? $character->id : $character->slug,
                     'sender_url'     => $user->url,
                     'sender_name'    => $user->name,
                 ]);
@@ -1331,6 +1332,9 @@ class CharacterManager extends Service {
         DB::beginTransaction();
 
         try {
+            if (SalesCharacter::where('character_id', $character->id)->exists()) {
+                throw new \Exception('This character currently exists in a previous sale post and cannot be deleted.');
+            }
             if ($character->user_id) {
                 $character->user->settings->save();
             }

@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-use App\Models\Comment;
+use App\Models\Comment\Comment;
 use Config;
 
 /**
@@ -14,14 +14,14 @@ trait Commentable {
      * Returns all comments for this model.
      */
     public function commentz() {
-        return $this->morphMany('App\Models\Comment', 'commentable')->withTrashed();
+        return $this->morphMany('App\Models\Comment\Comment', 'commentable')->withTrashed();
     }
 
     /**
      * Returns only approved comments for this model.
      */
     public function approvedComments() {
-        return $this->morphMany('App\Models\Comment', 'commentable')->where('approved', true)->withTrashed();
+        return $this->morphMany('App\Models\Comment\Comment', 'commentable')->where('approved', true)->withTrashed();
     }
 
     /**

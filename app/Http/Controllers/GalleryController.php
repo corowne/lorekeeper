@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Character\Character;
-use App\Models\Comment;
+use App\Models\Comment\Comment;
 use App\Models\Currency\Currency;
 use App\Models\Gallery\Gallery;
 use App\Models\Gallery\GallerySubmission;

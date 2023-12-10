@@ -43,10 +43,10 @@ class UserController extends Controller {
                 $query->orderBy('name', 'DESC');
                 break;
             case 'alias':
-                $query->orderBy('alias', 'ASC');
+                $query->aliasSort();
                 break;
             case 'alias-reverse':
-                $query->orderBy('alias', 'DESC');
+                $query->aliasSort(true);
                 break;
             case 'rank':
                 $query->orderBy('ranks.sort', 'DESC')->orderBy('name');

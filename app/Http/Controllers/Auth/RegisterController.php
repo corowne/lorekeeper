@@ -127,8 +127,7 @@ class RegisterController extends Controller {
             'password'  => ($socialite ? [] : ['required']) + ['string', 'min:8', 'confirmed'],
             'dob'       => [
                 'required', function ($attribute, $value, $fail) {
-                    $date = $value['day'].'-'.$value['month'].'-'.$value['year'];
-                    $formatDate = carbon::parse($date);
+                    $formatDate = Carbon::createFromFormat('Y-m-d', $value);
                     $now = Carbon::now();
                     if ($formatDate->diffInYears($now) < 13) {
                         $fail('You must be 13 or older to access this site.');
