@@ -70,9 +70,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         {!! Form::label('message', 'Update your message here:') !!}
-                        {!! Form::textarea('message', $comment->comment, ['class' => 'form-control '.config('lorekeeper.settings.wysiwyg_comments') ? 'comment-wysiwyg' : '',
-                            'rows' => 3, config('lorekeeper.settings.wysiwyg_comments') ? '' : 'required'
-                        ]) !!}
+                        {!! Form::textarea('message', $comment->comment, ['class' => 'form-control ' . config('lorekeeper.settings.wysiwyg_comments') ? 'comment-wysiwyg' : '', 'rows' => 3, config('lorekeeper.settings.wysiwyg_comments') ? '' : 'required']) !!}
                         <small class="form-text text-muted"><a target="_blank" href="https://help.github.com/articles/basic-writing-and-formatting-syntax">Markdown</a> cheatsheet.</small>
                     </div>
                 </div>
@@ -100,9 +98,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         {!! Form::label('message', 'Enter your message here:') !!}
-                        {!! Form::textarea('message', null, ['class' => 'form-control '.config('lorekeeper.settings.wysiwyg_comments') ? 'comment-wysiwyg' : '',
-                            'rows' => 3, config('lorekeeper.settings.wysiwyg_comments') ? '' : 'required'
-                        ]) !!}
+                        {!! Form::textarea('message', null, ['class' => 'form-control ' . config('lorekeeper.settings.wysiwyg_comments') ? 'comment-wysiwyg' : '', 'rows' => 3, config('lorekeeper.settings.wysiwyg_comments') ? '' : 'required']) !!}
                         <small class="form-text text-muted"><a target="_blank" href="https://help.github.com/articles/basic-writing-and-formatting-syntax">Markdown</a> cheatsheet.</small>
                     </div>
                 </div>
