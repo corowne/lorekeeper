@@ -17,7 +17,7 @@ class CharacterImage extends Model {
      */
     protected $fillable = [
         'character_id', 'user_id', 'species_id', 'subtype_id', 'rarity_id', 'url',
-        'extension', 'use_cropper', 'hash', 'fullsize_hash', 'sort',
+        'extension', 'use_cropper', 'hash', 'fullsize_hash', 'fullsize_extension', 'sort',
         'x0', 'x1', 'y0', 'y1',
         'description', 'parsed_description',
         'is_valid',
@@ -45,8 +45,8 @@ class CharacterImage extends Model {
     public static $createRules = [
         'species_id' => 'required',
         'rarity_id'  => 'required',
-        'image'      => 'required|mimes:jpeg,jpg,gif,png|max:20000',
-        'thumbnail'  => 'nullable|mimes:jpeg,jpg,gif,png|max:20000',
+        'image'      => 'required|mimes:jpeg,jpg,gif,png,webp|max:20000',
+        'thumbnail'  => 'nullable|mimes:jpeg,jpg,gif,png,webp|max:20000',
     ];
 
     /**
@@ -205,7 +205,7 @@ class CharacterImage extends Model {
      * @return string
      */
     public function getFullsizeFileNameAttribute() {
-        return $this->id.'_'.$this->hash.'_'.$this->fullsize_hash.'_full.'.$this->extension;
+        return $this->id.'_'.$this->hash.'_'.$this->fullsize_hash.'_full.'.$this->fullsize_extension;
     }
 
     /**
