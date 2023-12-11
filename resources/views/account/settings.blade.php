@@ -17,15 +17,15 @@
             </div>
         @endif
         {!! Form::open(['url' => 'account/avatar', 'files' => true]) !!}
-            <div class="form-group row">
-                {!! Form::label('avatar', 'Update Profile Image', ['class' => 'col-md-2 col-form-label']) !!}
-                <div class="col-md-10">
-                    {!! Form::file('avatar', ['class' => 'form-control']) !!}
-                </div>
+        <div class="form-group row">
+            {!! Form::label('avatar', 'Update Profile Image', ['class' => 'col-md-2 col-form-label']) !!}
+            <div class="col-md-10">
+                {!! Form::file('avatar', ['class' => 'form-control']) !!}
             </div>
-            <div class="text-right">
-                {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
-            </div>
+        </div>
+        <div class="text-right">
+            {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
+        </div>
         {!! Form::close() !!}
     </div>
 
@@ -40,21 +40,22 @@
                     You last changed your username on {{ Auth::user()->logs()->where('type', 'Username Change')->orderBy('created_at', 'desc')->first()->created_at->format('F jS, Y') }}.
                     <br />
                     <b>
-                        You will be able to change your username again on {{ Auth::user()->logs()->where('type', 'Username Change')->orderBy('created_at', 'desc')->first()->created_at->addDays(config('lorekeeper.settings.username_change_cooldown'))->format('F jS, Y') }}.
+                        You will be able to change your username again on
+                        {{ Auth::user()->logs()->where('type', 'Username Change')->orderBy('created_at', 'desc')->first()->created_at->addDays(config('lorekeeper.settings.username_change_cooldown'))->format('F jS, Y') }}.
                     </b>
                 </div>
             @endif
         @endif
         {!! Form::open(['url' => 'account/username']) !!}
-            <div class="form-group row">
-                <label class="col-md-2 col-form-label">Username</label>
-                <div class="col-md-10">
-                    {!! Form::text('username', Auth::user()->name, ['class' => 'form-control']) !!}
-                </div>
+        <div class="form-group row">
+            <label class="col-md-2 col-form-label">Username</label>
+            <div class="col-md-10">
+                {!! Form::text('username', Auth::user()->name, ['class' => 'form-control']) !!}
             </div>
-            <div class="text-right">
-                {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
-            </div>
+        </div>
+        <div class="text-right">
+            {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
+        </div>
         {!! Form::close() !!}
     </div>
 
