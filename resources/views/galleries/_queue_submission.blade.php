@@ -45,8 +45,9 @@
                 @endif
 
                 @if (isset($queue) && $queue)
-                    <h6 class="mt-2">{{ App\Models\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->where('type', 'Staff-User')->count() }}
-                        {{ Auth::user()->hasPower('manage_submissions')? 'Staff↔User Comment' .(App\Models\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->where('type', 'Staff-User')->count() != 1? 's': '') .' ・ ': 'Staff Comment' }}{{ Auth::user()->hasPower('manage_submissions')? App\Models\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->where('type', 'Staff-Staff')->count() .' Staff↔Staff Comment' .(App\Models\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->where('type', 'Staff-Staff')->count() != 1? 's': ''): '' }}
+                    <h6 class="mt-2">{{ App\Models\Comment\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->where('type', 'Staff-User')->count() }}
+                        {{ Auth::user()->hasPower('manage_submissions')? 'Staff↔User Comment' .(App\Models\Comment\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->where('type', 'Staff-User')->count() != 1? 's': '') .' ・ ': 'Staff Comment' }}
+                        {{ Auth::user()->hasPower('manage_submissions')? App\Models\Comment\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->where('type', 'Staff-Staff')->count() .' Staff↔Staff Comment' .(App\Models\Comment\Comment::where('commentable_type', 'App\Models\Gallery\GallerySubmission')->where('commentable_id', $submission->id)->where('type', 'Staff-Staff')->count() != 1? 's': ''): '' }}
                     </h6>
                     <h6 class="mt-2"><a href="{{ $submission->queueUrl }}">Detailed Log</a></h6>
                 @endif

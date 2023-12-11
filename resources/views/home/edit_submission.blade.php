@@ -1,30 +1,35 @@
 @extends('home.layout')
 
 @section('home-title')
-    New Submission
+    @if ($isClaim)
+        Claim Draft
+    @else
+        Submission Draft
+    @endif
 @endsection
 
 @section('home-content')
     @if ($isClaim)
-        {!! breadcrumbs(['Claims' => 'claims', 'New Claim' => 'claims/new']) !!}
+        {!! breadcrumbs(['Claims' => 'claims', 'Claim Draft' => 'claims/drafts']) !!}
     @else
-        {!! breadcrumbs(['Prompt Submissions' => 'submissions', 'New Submission' => 'submissions/new']) !!}
+        {!! breadcrumbs(['Prompt Submissions' => 'submissions', 'Submission Draft' => 'submissions/drafts']) !!}
     @endif
 
     <h1>
         @if ($isClaim)
-            New Claim
+            Claim Draft
         @else
-            New Submission
+            Submission Draft
         @endif
     </h1>
 
     @if ($closed)
         <div class="alert alert-danger">
-            The {{ $isClaim ? 'claim' : 'submission' }} queue is currently closed. You cannot make a new {{ $isClaim ? 'claim' : 'submission' }} at this time.
+            The {{ $isClaim ? 'claim' : 'submission' }} queue is currently closed. You cannot edit {{ $isClaim ? 'claim' : 'submission' }} drafts at this time.
         </div>
     @else
         @include('home._submission_form', ['submission' => $submission])
+
         <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
 
@@ -48,19 +53,35 @@
 
                 <div class="modal-content hide" id="draftContent">
                     <div class="modal-header">
-                        <span class="modal-title h5 mb-0">Create Draft</span>
+                        <span class="modal-title h5 mb-0">Save Draft</span>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
                         <p>
-                            This will place the {{ $submission->prompt_id ? 'submission' : 'claim' }} into your drafts.
+                            This will edit the existing {{ $submission->prompt_id ? 'submission' : 'claim' }} draft.
                             Items and other attachments will be held, similar to in design update drafts.
                         </p>
                         <div class="text-right">
-                            <a href="#" id="draftSubmit" class="btn btn-success">Save as Draft</a>
+                            <a href="#" id="draftSubmit" class="btn btn-success">Save Draft</a>
                         </div>
                     </div>
                 </div>
+
+                <div class="modal-content hide" id="cancelContent">
+                    <div class="modal-header">
+                        <span class="modal-title h5 mb-0">Delete Draft</span>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            This will cancel the {{ $submission->prompt_id ? 'submission' : 'claim' }} draft and return any attachments to your inventories.
+                        </p>
+                        <div class="text-right">
+                            <a href="#" id="cancelSubmit" class="btn btn-danger">Delete Draft</a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     @endif
@@ -92,6 +113,11 @@
                 var $draftContent = $('#draftContent');
                 var $draftSubmit = $('#draftSubmit');
 
+                var $cancelButton = $('#cancelButton');
+                var $cancelContent = $('#cancelContent');
+                var $cancelSubmit = $('#cancelSubmit');
+
+
                 @if (!$isClaim)
                     var $prompt = $('#prompt');
                     var $rewards = $('#rewards');
@@ -106,12 +132,13 @@
                     e.preventDefault();
                     $confirmContent.removeClass('hide');
                     $draftContent.addClass('hide');
+                    $cancelContent.addClass('hide');
                     $confirmationModal.modal('show');
                 });
 
                 $confirmSubmit.on('click', function(e) {
                     e.preventDefault();
-                    $submissionForm.attr('action', '{{ url()->current() }}');
+                    $submissionForm.attr('action', '{{ url()->current() }}/submit');
                     $submissionForm.submit();
                 });
 
@@ -119,14 +146,31 @@
                     e.preventDefault();
                     $draftContent.removeClass('hide');
                     $confirmContent.addClass('hide');
+                    $cancelContent.addClass('hide');
                     $confirmationModal.modal('show');
                 });
 
                 $draftSubmit.on('click', function(e) {
                     e.preventDefault();
-                    $submissionForm.attr('action', '{{ url()->current() }}/draft');
+                    $submissionForm.attr('action', '{{ url()->current() }}');
                     $submissionForm.submit();
                 });
+
+                $cancelButton.on('click', function(e) {
+                    e.preventDefault();
+                    $cancelContent.removeClass('hide');
+                    $confirmContent.addClass('hide');
+                    $draftContent.addClass('hide');
+                    $confirmationModal.modal('show');
+                });
+
+                $cancelSubmit.on('click', function(e) {
+                    e.preventDefault();
+                    $submissionForm.attr('action', '{{ url()->current() }}/delete');
+                    $submissionForm.submit();
+                });
+
+
             });
         </script>
     @endif

@@ -12,7 +12,7 @@
         "doctrine/dbal": "^2.2",
         "erusev/parsedown": "^1.7",
         "ezyang/htmlpurifier": "^4.10",
-        "intervention/image": "^2.4",
+        "intervention/image": "^2.0",
         "josiasmontag/laravel-recaptchav3": "^1.0.0",
         "laracasts/flash": "^3.0",
         "laravel/fortify": "^1.7",

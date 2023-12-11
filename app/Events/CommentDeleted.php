@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\Comment;
+use App\Models\Comment\Comment;
 use Illuminate\Queue\SerializesModels;
 
 class CommentDeleted {
