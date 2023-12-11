@@ -315,4 +315,14 @@ return [
     */
     'currency_symbol'                                   => '$',
 
+    /*
+    |--------------------------------------------------------------------------
+    | User Username Change Cooldown
+    |--------------------------------------------------------------------------
+    |
+    | Cooldown period, in days, before a user can change their username again.
+    | Set to 0 / null to disable.
+    |
+    */
+    'username_change_cooldown'                          => 30,
 ];

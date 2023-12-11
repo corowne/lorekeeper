@@ -82,6 +82,13 @@ class User extends Authenticatable implements MustVerifyEmail {
      **********************************************************************************************/
 
     /**
+     * Get all of the user's update logs
+     */
+    public function logs() {
+        return $this->hasMany('App\Models\User\UserUpdateLog');
+    }
+
+    /**
      * Get user settings.
      */
     public function settings() {
@@ -373,7 +380,7 @@ class User extends Authenticatable implements MustVerifyEmail {
             }
         }
 
-        return url('images/avatars/'.$this->avatar);
+        return url('images/avatars/'.$this->avatar.'?v='.filemtime(public_path('images/avatars/'.$this->avatar)));
     }
 
     /**

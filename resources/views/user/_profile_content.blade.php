@@ -5,7 +5,7 @@
 <div class="row mb-3">
     <div class="col-md-2 text-center">
         <!-- User Icon -->
-        <img src="/images/avatars/{{ $user->avatar }}" class="img-fluid rounded-circle" style="max-height: 125px;" alt="{{ $user->name }}'s Avatar">
+        <img src="{{ $user->avatarUrl }}" class="img-fluid rounded-circle" style="max-height: 125px;" alt="{{ $user->name }}'s Avatar">
     </div>
 
     <div class="col">
@@ -171,7 +171,7 @@
                 </div>
                 In a comment:
                 <div class="alert alert-secondary">
-                    [![{{ $user->name }}'s Avatar]({{ asset('/images/avatars/' . $user->avatar) }})]({{ $user->url }}) [{{ $user->name }}]({{ $user->url }})
+                    [![{{ $user->name }}'s Avatar]({{ $user->avatarUrl }})]({{ $user->url }}) [{{ $user->name }}]({{ $user->url }})
                 </div>
             </div>
             @if (Auth::check() && Auth::user()->isStaff)
