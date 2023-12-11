@@ -96,12 +96,7 @@
             <div class="form-group row">
                 {{ Form::label('dob', 'Date of Birth', ['class' => 'col-md-4 col-form-label text-md-right']) }}
                 <div class="col-md-6">
-                    <div class="d-flex col-md-row">
-                        {{ Form::selectRange('dob[day]', 1, 31, null, ['class' => 'form-control col-3']) }}
-                        {{ Form::selectMonth('dob[month]', null, ['class' => 'form-control col-4']) }}
-                        {{ Form::selectYear('dob[year]', date('Y'), date('Y') - 70, null, ['class' => 'form-control col-3']) }}
-                    </div>
-
+                    {!! Form::date('dob', null, ['class' => 'form-control']) !!}
                 </div>
                 @if ($errors->has('dob'))
                     <span class="invalid-feedback" role="alert">

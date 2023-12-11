@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Comment;
+use App\Models\Comment\Comment;
 use Illuminate\Console\Command;
 
 class UpdateCommentTypes extends Command {

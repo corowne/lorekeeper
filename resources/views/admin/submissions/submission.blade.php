@@ -83,7 +83,13 @@
 
         <h2>Characters</h2>
         <div id="characters" class="mb-3">
-            @foreach ($submission->characters as $character)
+            @if (count(
+                    $submission->characters()->whereRelation('character', 'deleted_at', null)->get()) != count($submission->characters()->get()))
+                <div class="alert alert-warning">
+                    Some characters have been deleted since this submission was created.
+                </div>
+            @endif
+            @foreach ($submission->characters()->whereRelation('character', 'deleted_at', null) as $character)
                 @include('widgets._character_select_entry', ['characterCurrencies' => $characterCurrencies, 'items' => $items, 'tables' => $tables, 'character' => $character, 'expanded_rewards' => $expanded_rewards])
             @endforeach
         </div>

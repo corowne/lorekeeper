@@ -57,7 +57,7 @@ class SalesCharacter extends Model {
      * Get the character being attached to the sale.
      */
     public function character() {
-        return $this->belongsTo('App\Models\Character\Character', 'character_id');
+        return $this->belongsTo('App\Models\Character\Character', 'character_id')->withTrashed();
     }
 
     /**

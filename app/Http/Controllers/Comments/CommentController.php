@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Comments;
 
-use App\Models\Comment;
+use App\Models\Comment\Comment;
 use App\Models\Gallery\GallerySubmission;
 use App\Models\News;
 use App\Models\Report\Report;
@@ -172,6 +172,17 @@ class CommentController extends Controller {
         Validator::make($request->all(), [
             'message' => 'required|string',
         ])->validate();
+
+        // add history
+        $comment->edits()->create([
+            'user_id'    => Auth::user()->id,
+            'comment_id' => $comment->id,
+            'data'       => json_encode([
+                'action'      => 'edit',
+                'old_comment' => $comment->comment,
+                'new_comment' => $request->message,
+            ]),
+        ]);
 
         $comment->update([
             'comment' => $request->message,
