@@ -53,7 +53,7 @@
             </div>
             <div class="card p-2">
                 {!! Form::file('image', ['class' => 'form-control-file', 'id' => 'mainImage']) !!}
-                <small>Images may be PNG, GIF, or JPG and up to 3MB in size.</small>
+                <small>Images may be PNG, GIF, JPG, or WebP and up to 3MB in size.</small>
             </div>
         </div>
 
