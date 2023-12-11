@@ -315,6 +315,9 @@ class UserService extends Service {
         DB::beginTransaction();
 
         try {
+            if (!config('lorekeeper.settings.allow_username_changes')) {
+                throw new \Exception('Username changes are currently disabled.');
+            }
             if (!$username) {
                 throw new \Exception('Please enter a username.');
             }
