@@ -305,10 +305,10 @@ class UserService extends Service {
 
     /**
      * Updates a user's username.
-     * 
-     * @param string $username
+     *
+     * @param string                $username
      * @param \App\Models\User\User $user
-     * 
+     *
      * @return bool
      */
     public function updateUsername($username, $user) {
@@ -350,7 +350,7 @@ class UserService extends Service {
                 'staff_id' => null,
                 'user_id'  => $user->id,
                 'data'     => json_encode(['old_name' => $user->name, 'new_name' => $username]),
-                'type'     => 'Username Change'
+                'type'     => 'Username Change',
             ]);
 
             $user->name = $username;
