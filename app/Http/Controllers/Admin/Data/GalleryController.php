@@ -81,7 +81,7 @@ class GalleryController extends Controller {
             return redirect()->to('admin/data/galleries/edit/'.$gallery->id);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -116,7 +116,7 @@ class GalleryController extends Controller {
             flash('Gallery deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

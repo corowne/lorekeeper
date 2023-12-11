@@ -160,7 +160,7 @@ class TradeController extends Controller {
             return redirect()->to($trade->url);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -180,7 +180,7 @@ class TradeController extends Controller {
             flash('Trade offer edited successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -219,7 +219,7 @@ class TradeController extends Controller {
             return redirect()->back();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -258,7 +258,7 @@ class TradeController extends Controller {
             return redirect()->back();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -297,7 +297,7 @@ class TradeController extends Controller {
             return redirect()->back();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

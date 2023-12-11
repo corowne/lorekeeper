@@ -81,7 +81,7 @@ class DesignController extends Controller {
             flash('Request rejected successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -108,7 +108,7 @@ class DesignController extends Controller {
             flash('Voted to approve successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

@@ -70,7 +70,7 @@ class PageController extends Controller {
             return redirect()->to('admin/pages/edit/'.$page->id);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -105,7 +105,7 @@ class PageController extends Controller {
             flash('Page deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

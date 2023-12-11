@@ -383,7 +383,7 @@ class GalleryController extends Controller {
             return redirect()->to('gallery/submissions/pending');
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -403,7 +403,7 @@ class GalleryController extends Controller {
             flash('Submission updated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -424,7 +424,7 @@ class GalleryController extends Controller {
             flash('Collaborator info edited successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -444,7 +444,7 @@ class GalleryController extends Controller {
             flash('Favorite updated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

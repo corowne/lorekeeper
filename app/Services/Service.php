@@ -9,7 +9,9 @@ use Auth;
 use Config;
 use DB;
 use File;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\MessageBag;
+use Illuminate\Support\ViewErrorBag;
 
 abstract class Service {
     /*
@@ -222,6 +224,35 @@ abstract class Service {
             }
         } else {
             return true;
+        }
+    }
+
+    /**
+     * Add an error to Laravel session $errors.
+     *
+     * @author Pavel Lint via https://stackoverflow.com/questions/58690463/best-way-to-store-error-messages-in-laravel-session-or-variable with modifications
+     *
+     * @param string $key
+     * @param bool   $flash
+     * @param string $error_msg
+     */
+    public function addError($error_msg, $flash = true, $key = 'default') {
+        $errors = Session::get('errors', new ViewErrorBag);
+
+        if (!$errors instanceof ViewErrorBag) {
+            $errors = new ViewErrorBag;
+        }
+
+        $bag = $errors->getBags()['default'] ?? new MessageBag;
+        $bag->add($key, $error_msg);
+
+        Session::flash(
+            'errors',
+            $errors->put('default', $bag)
+        );
+
+        if ($flash) {
+            flash($error_msg)->error();
         }
     }
 

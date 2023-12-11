@@ -185,7 +185,7 @@ class CharacterController extends Controller {
             flash('Profile edited successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -308,7 +308,7 @@ class CharacterController extends Controller {
             flash('Currency transferred successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -476,7 +476,7 @@ class CharacterController extends Controller {
             flash('Transfer created successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -501,7 +501,7 @@ class CharacterController extends Controller {
             flash('Transfer cancelled.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -546,7 +546,7 @@ class CharacterController extends Controller {
             return redirect()->to($request->url);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -565,7 +565,7 @@ class CharacterController extends Controller {
             flash('Item transferred successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -584,7 +584,7 @@ class CharacterController extends Controller {
             flash('Item named successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -603,7 +603,7 @@ class CharacterController extends Controller {
             flash('Item deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

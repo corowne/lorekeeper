@@ -45,7 +45,7 @@ class BankController extends Controller {
             flash('Currency transferred successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

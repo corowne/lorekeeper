@@ -11,4 +11,5 @@ npm-debug.log
 yarn-error.log
 *.env
 /composer.phar
+*.env.testing
 *.cache

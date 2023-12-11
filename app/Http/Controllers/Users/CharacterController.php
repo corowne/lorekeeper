@@ -61,7 +61,7 @@ class CharacterController extends Controller {
             return redirect()->back();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -124,7 +124,7 @@ class CharacterController extends Controller {
             }
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

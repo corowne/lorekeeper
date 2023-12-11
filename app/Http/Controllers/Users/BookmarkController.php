@@ -131,7 +131,7 @@ class BookmarkController extends Controller {
             return redirect()->back();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -169,7 +169,7 @@ class BookmarkController extends Controller {
             flash('Bookmark deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

@@ -149,7 +149,7 @@ class GalleryController extends Controller {
             flash('Voted to approve successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -170,7 +170,7 @@ class GalleryController extends Controller {
             flash('Comments updated succesfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -191,7 +191,7 @@ class GalleryController extends Controller {
             flash('Submission evaluated succesfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

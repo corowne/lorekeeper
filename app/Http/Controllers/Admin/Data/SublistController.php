@@ -95,7 +95,7 @@ class SublistController extends Controller {
             return redirect()->to('admin/data/sublists/edit/'.$sublist->id);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -130,7 +130,7 @@ class SublistController extends Controller {
             flash('Sublist deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -149,7 +149,7 @@ class SublistController extends Controller {
             flash('Category order updated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

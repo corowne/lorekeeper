@@ -96,7 +96,7 @@ class HomeController extends Controller {
             return redirect()->to('account/aliases');
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
 
             return redirect()->to(Auth::user()->has_alias ? 'account/aliases' : 'link');
@@ -138,7 +138,7 @@ class HomeController extends Controller {
             return redirect()->to('/');
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
 
             return redirect()->back();

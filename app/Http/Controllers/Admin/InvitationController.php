@@ -31,7 +31,7 @@ class InvitationController extends Controller {
             flash('Generated invitation successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -52,7 +52,7 @@ class InvitationController extends Controller {
             flash('Deleted invitation key successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

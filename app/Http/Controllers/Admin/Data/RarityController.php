@@ -79,7 +79,7 @@ class RarityController extends Controller {
             return redirect()->to('admin/data/rarities/edit/'.$rarity->id);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -114,7 +114,7 @@ class RarityController extends Controller {
             flash('Rarity deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -133,7 +133,7 @@ class RarityController extends Controller {
             flash('Rarity order updated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

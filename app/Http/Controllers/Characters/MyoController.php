@@ -124,7 +124,7 @@ class MyoController extends Controller {
             flash('Profile edited successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -217,7 +217,7 @@ class MyoController extends Controller {
             flash('Transfer created successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -242,7 +242,7 @@ class MyoController extends Controller {
             flash('Transfer cancelled.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
@@ -287,7 +287,7 @@ class MyoController extends Controller {
             return redirect()->to($request->url);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 

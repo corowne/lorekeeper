@@ -115,7 +115,7 @@ class ShopController extends Controller {
             flash('Successfully purchased item.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
-                flash($error)->error();
+                $service->addError($error);
             }
         }
 
