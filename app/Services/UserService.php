@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use DB;
 use File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Image;
 use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider;
 use Notifications;
@@ -63,6 +64,45 @@ class UserService extends Service {
         ]);
 
         return $user;
+    }
+
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param mixed $socialite
+     *
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    public function validator(array $data, $socialite = false) {
+        return Validator::make($data, [
+            'name'      => ['required', 'string', 'min:3', 'max:25', 'alpha_dash', 'unique:users'],
+            'email'     => ($socialite ? [] : ['required']) + ['string', 'email', 'max:255', 'unique:users'],
+            'agreement' => ['required', 'accepted'],
+            'password'  => ($socialite ? [] : ['required']) + ['string', 'min:8', 'confirmed'],
+            'dob'       => [
+                'required', function ($attribute, $value, $fail) {
+                    $formatDate = Carbon::createFromFormat('Y-m-d', $value);
+                    $now = Carbon::now();
+                    if ($formatDate->diffInYears($now) < 13) {
+                        $fail('You must be 13 or older to access this site.');
+                    }
+                },
+            ],
+            'code'                 => ['string', function ($attribute, $value, $fail) {
+                if (!Settings::get('is_registration_open')) {
+                    if (!$value) {
+                        $fail('An invitation code is required to register an account.');
+                    }
+                    $invitation = Invitation::where('code', $value)->whereNull('recipient_id')->first();
+                    if (!$invitation) {
+                        $fail('Invalid code entered.');
+                    }
+                }
+            },
+            ],
+        ] + (config('app.env') == 'production' && config('lorekeeper.extensions.use_recaptcha') ? [
+            'g-recaptcha-response' => 'required|recaptchav3:register,0.5',
+        ] : []));
     }
 
     /**

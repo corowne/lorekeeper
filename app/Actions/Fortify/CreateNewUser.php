@@ -2,10 +2,10 @@
 
 namespace App\Actions\Fortify;
 
-use App\Http\Controllers\Auth\RegisterController;
 use App\Models\Invitation;
 use App\Models\User\User;
 use App\Services\InvitationService;
+use App\Services\UserService;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 
@@ -18,7 +18,7 @@ class CreateNewUser implements CreatesNewUsers {
      * @return \App\Models\User
      */
     public function create(array $input) {
-        (new RegisterController)->validator($input)->validate();
+        (new UserService)->validator($input)->validate();
 
         $user = User::create([
             'name'     => $input['name'],
