@@ -103,4 +103,7 @@ return [
     // use gravatar for user avatars - Newt
     'use_gravatar' => 0,
 
+    // Use ReCaptcha to check new user registrations - Mercury
+    // Requires site key and secret be set in your .env file!
+    'use_recaptcha' => 0,
 ];

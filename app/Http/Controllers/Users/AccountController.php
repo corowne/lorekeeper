@@ -8,8 +8,17 @@ use App\Models\User\User;
 use App\Models\User\UserAlias;
 use App\Services\LinkService;
 use App\Services\UserService;
-use Auth;
+use BaconQrCode\Renderer\Color\Rgb;
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\RendererStyle\Fill;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider;
+use Laravel\Fortify\RecoveryCode;
 
 class AccountController extends Controller {
     /*
@@ -149,6 +158,97 @@ class AccountController extends Controller {
     public function postBirthday(Request $request, UserService $service) {
         if ($service->updateDOB($request->input('birthday_setting'), Auth::user())) {
             flash('Setting updated successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+
+        return redirect()->back();
+    }
+
+    /**
+     * Enables the user's two factor auth.
+     *
+     * @param App\Services\UserService $service
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postEnableTwoFactor(Request $request, UserService $service) {
+        if (!$request->session()->put([
+            'two_factor_secret'         => encrypt(app(TwoFactorAuthenticationProvider::class)->generateSecretKey()),
+            'two_factor_recovery_codes' => encrypt(json_encode(Collection::times(8, function () {
+                return RecoveryCode::generate();
+            })->all())),
+        ])) {
+            flash('2FA info generated. Please confirm to enable 2FA.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+
+        return redirect()->to('account/two-factor/confirm');
+    }
+
+    /**
+     * Shows the confirm two-factor auth page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getConfirmTwoFactor(Request $request) {
+        // Assemble URL and QR Code svg from session information
+        $qrUrl = app(TwoFactorAuthenticationProvider::class)->qrCodeUrl(config('app.name'), Auth::user()->email, decrypt($request->session()->get('two_factor_secret')));
+        $qrCode = (new Writer(
+            new ImageRenderer(
+                new RendererStyle(192, 0, null, null, Fill::uniformColor(new Rgb(255, 255, 255), new Rgb(45, 55, 72))),
+                new SvgImageBackEnd
+            )
+        ))->writeString($qrUrl);
+        $qrCode = trim(substr($qrCode, strpos($qrCode, "\n") + 1));
+
+        return view('auth.confirm_two_factor', [
+            'qrCode'        => $qrCode,
+            'recoveryCodes' => json_decode(decrypt($request->session()->get('two_factor_recovery_codes'))),
+        ]);
+    }
+
+    /**
+     * Confirms and fully enables the user's two factor auth.
+     *
+     * @param App\Services\UserService $service
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postConfirmTwoFactor(Request $request, UserService $service) {
+        $request->validate([
+            'code' => 'required',
+        ]);
+        if ($service->confirmTwoFactor($request->only(['code']), $request->session()->only(['two_factor_secret', 'two_factor_recovery_codes']), Auth::user())) {
+            flash('2FA enabled succesfully.')->success();
+            $request->session()->forget(['two_factor_secret', 'two_factor_recovery_codes']);
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+
+        return redirect()->to('account/settings');
+    }
+
+    /**
+     * Confirms and disables the user's two factor auth.
+     *
+     * @param App\Services\UserService $service
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postDisableTwoFactor(Request $request, UserService $service) {
+        $request->validate([
+            'code' => 'required',
+        ]);
+        if ($service->disableTwoFactor($request->only(['code']), Auth::user())) {
+            flash('2FA disabled succesfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
                 flash($error)->error();

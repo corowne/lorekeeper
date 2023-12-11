@@ -35,6 +35,11 @@ Route::group(['prefix' => 'account', 'namespace' => 'Users'], function () {
     Route::post('remove-alias/{id}', 'AccountController@postRemoveAlias');
     Route::post('dob', 'AccountController@postBirthday');
 
+    Route::get('two-factor/confirm', 'AccountController@getConfirmTwoFactor');
+    Route::post('two-factor/enable', 'AccountController@postEnableTwoFactor');
+    Route::post('two-factor/confirm', 'AccountController@postConfirmTwoFactor');
+    Route::post('two-factor/disable', 'AccountController@postDisableTwoFactor');
+
     Route::get('deactivate', 'AccountController@getDeactivate');
     Route::get('deactivate-confirm', 'AccountController@getDeactivateConfirmation');
     Route::post('deactivate', 'AccountController@postDeactivate');
