@@ -55,5 +55,16 @@ return [
         'name'        => 'Has Maintenance Access',
         'description' => 'Allow rank to browse the site normally during maintenance mode.',
     ],
-
+    'manage_news' => [
+        'name'        => 'Manage News',
+        'description' => 'Allow rank to create/edit news posts.',
+    ],
+    'manage_sales' => [
+        'name'        => 'Manage Sales',
+        'description' => 'Allow rank to create/edit sales and comment on sales in preview mode.',
+    ],
+    'comment_on_sales' => [
+        'name'        => 'Comment on Sales',
+        'description' => 'Allow rank to comment on sales in preview mode.',
+    ],
 ];

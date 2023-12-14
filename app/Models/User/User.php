@@ -19,9 +19,10 @@ use Config;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 
 class User extends Authenticatable implements MustVerifyEmail {
-    use Commenter, Notifiable;
+    use Commenter, Notifiable, TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -29,7 +30,7 @@ class User extends Authenticatable implements MustVerifyEmail {
      * @var array
      */
     protected $fillable = [
-        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned', 'has_alias', 'avatar', 'is_sales_unread', 'birthday',
+        'name', 'alias', 'rank_id', 'email', 'email_verified_at', 'password', 'is_news_unread', 'is_banned', 'has_alias', 'avatar', 'is_sales_unread', 'birthday',
         'is_deactivated', 'deactivater_id',
     ];
 
@@ -78,7 +79,7 @@ class User extends Authenticatable implements MustVerifyEmail {
 
         RELATIONS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Get user settings.
@@ -182,14 +183,14 @@ class User extends Authenticatable implements MustVerifyEmail {
      * Gets all of a user's liked / disliked comments.
      */
     public function commentLikes() {
-        return $this->hasMany('App\Models\CommentLike');
+        return $this->hasMany('App\Models\Comment\CommentLike');
     }
 
     /**********************************************************************************************
 
         SCOPES
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Scope a query to only include visible (non-banned) users.
@@ -213,11 +214,24 @@ class User extends Authenticatable implements MustVerifyEmail {
         return $query->where('is_deactivated', 1);
     }
 
+    /**
+     * Scope a query based on the user's primary alias.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed                                 $reverse
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeAliasSort($query, $reverse = false) {
+        return $query->leftJoin('user_aliases', 'users.id', '=', 'user_aliases.user_id')
+            ->orderByRaw('user_aliases.alias IS NULL ASC, user_aliases.alias '.($reverse ? 'DESC' : 'ASC'));
+    }
+
     /**********************************************************************************************
 
         ACCESSORS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Get the user's alias.
@@ -341,6 +355,28 @@ class User extends Authenticatable implements MustVerifyEmail {
     }
 
     /**
+     * Gets the display URL for a user's avatar, or the default avatar if they don't have one.
+     *
+     * @return url
+     */
+    public function getAvatarUrlAttribute() {
+        if ($this->avatar == 'default.jpg' && Config::get('lorekeeper.extensions.use_gravatar')) {
+            // check if a gravatar exists
+            $hash = md5(strtolower(trim($this->email)));
+            $url = 'https://www.gravatar.com/avatar/'.$hash.'??d=mm&s=200';
+            $headers = @get_headers($url);
+
+            if (!preg_match('|200|', $headers[0])) {
+                return url('images/avatars/default.jpg');
+            } else {
+                return 'https://www.gravatar.com/avatar/'.$hash.'?d=mm&s=200';
+            }
+        }
+
+        return url('images/avatars/'.$this->avatar);
+    }
+
+    /**
      * Gets the user's log type for log creation.
      *
      * @return string
@@ -397,7 +433,7 @@ class User extends Authenticatable implements MustVerifyEmail {
 
         OTHER FUNCTIONS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Checks if the user can edit the given rank.

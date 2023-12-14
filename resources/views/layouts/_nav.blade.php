@@ -61,7 +61,7 @@
                                 Claims
                             </a>
                             <a class="dropdown-item" href="{{ url('reports') }}">
-                                My Reports
+                                Reports
                             </a>
                             <a class="dropdown-item" href="{{ url('designs') }}">
                                 Design Approvals

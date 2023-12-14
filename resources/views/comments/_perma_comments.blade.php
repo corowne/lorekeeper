@@ -11,7 +11,7 @@
     @endif
     <div class="media-body row mw-100 mx-0" style="flex:1;flex-wrap:wrap;">
         <div class="d-none d-md-block">
-            <img class="mr-3 mt-2" src="/images/avatars/{{ $comment->commenter->avatar }}" style="width:70px; height:70px; border-radius:50%;" alt="{{ $comment->commenter->name }}'s Avatar">
+            <img class="mr-3 mt-2" src="{{ $comment->commenter->avatarUrl }}" style="width:70px; height:70px; border-radius:50%;" alt="{{ $comment->commenter->name }}'s Avatar">
         </div>
         <div class="d-block" style="flex:1">
             <div class="row mx-0 px-0 align-items-md-end">
@@ -30,7 +30,11 @@
                 <p class="border-top pt-1 text-right mb-0">
                     <small class="text-muted">{!! $comment->created_at !!}
                         @if ($comment->created_at != $comment->updated_at)
-                            <span class="text-muted border-left mx-1 px-1">(Edited {!! $comment->updated_at !!})</span>
+                            <span class="text-muted border-left mx-1 px-1">(Edited {!! $comment->updated_at !!})
+                                @if (Auth::check() && Auth::user()->isStaff)
+                                    <a href="#" data-toggle="modal" data-target="#show-edits-{{ $comment->id }}">Edit History</a>
+                                @endif
+                            </span>
                         @endif
                     </small>
                     <a href="{{ url('comment/') . '/' . $comment->id }}"><i class="fas fa-link ml-1" style="opacity: 50%;"></i></a>

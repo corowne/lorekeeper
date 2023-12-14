@@ -1,6 +1,6 @@
 /**************************************************************************************************
-    
-    Font definitions 
+
+    Font definitions
 
 **************************************************************************************************/
 
@@ -14,15 +14,15 @@
 }
 
 /**************************************************************************************************
-    
+
     Base styles
-    
+
 **************************************************************************************************/
 
 h1, h2, h3, h4, h5,
 .h1, .h2, .h3, .h4, .h5 {
     text-transform: uppercase;
-    font-family: Roboto Condensed, serif; 
+    font-family: Roboto Condensed, serif;
     font-weight: bold;
 }
 
@@ -46,15 +46,15 @@ a:hover {
 
 body {
     background-color: transparent;
-    font-family: Lato, sans-serif; 
+    font-family: Lato, sans-serif;
     min-height: 100vh;
     font-size: 80%;
 }
 
 /**************************************************************************************************
-    
+
     Helpers
-    
+
 **************************************************************************************************/
 
 .hide {
@@ -69,9 +69,9 @@ body {
 }
 
 /**************************************************************************************************
-    
+
     Layout
-    
+
 **************************************************************************************************/
 
 #app {
@@ -107,7 +107,7 @@ main > .row {
 
 .navbar .navbar-brand, .navbar .nav-item {
     text-transform: uppercase;
-    font-family: Roboto Condensed, serif; 
+    font-family: Roboto Condensed, serif;
 }
 
 .navbar .row { width: 100%; }
@@ -131,14 +131,14 @@ main > .row {
     border-bottom-left-radius: .25rem;
     margin-bottom: 1em;
     padding: 0.4em 0;
-    
+
     box-shadow: 0px 0px 6px 3px rgba(0,0,0,0.1);
 }
 
 .sidebar .sidebar-header,
 .sidebar .sidebar-section .sidebar-section-header {
     text-transform: uppercase;
-    font-family: Roboto Condensed, serif; 
+    font-family: Roboto Condensed, serif;
     font-weight: bold;
 }
 
@@ -188,7 +188,7 @@ main > .row {
 	.site-mobile-header {
 		top: 54px !important;
     }
-    
+
     .timestamp {
 		margin-left: 1rem!important;
 		margin-right: 1rem!important;
@@ -202,7 +202,7 @@ main > .row {
     .site-mobile-header {
         display: block;
         position: fixed;
-		top: 68px;
+		top: 3.45rem;
         z-index: 4;
         width: 100%;
     }
@@ -214,7 +214,7 @@ main > .row {
     }
 
     main.container-fluid {
-        margin-top: 122px;
+        margin-top: 6.45rem;
     }
 
     main.container-fluid > .row {
@@ -236,7 +236,7 @@ main > .row {
     }
     .sidebar.active {
         left: 0%;
-    } 
+    }
 
     .sidebar > ul {
         padding-top: 0px;
@@ -254,19 +254,19 @@ main > .row {
         border-radius: 0;
         margin-bottom: 1em;
         padding: 0.4em 0;
-        
+
         box-shadow: none;
     }
-	
+
 	/*fix for screen being over-wide on mobile*/
 	.row {
 		margin:0; max-width:100%;
 	}
-    
+
 	.container-fluid {
 		padding:0px;
 	}
-    
+
 	.site-footer .navbar .navbar-nav {
 		flex-wrap: wrap; justify-content: center;
 	}
@@ -299,9 +299,9 @@ main > .row {
 }
 
 /**************************************************************************************************
-    
+
     Content
-    
+
 **************************************************************************************************/
 .modal-header {
     border-bottom: 0px;
@@ -311,7 +311,7 @@ main > .row {
 }
 
 .tooltip-inner {
-    max-width: 350px !important; 
+    max-width: 350px !important;
 }
 
 .nav-tabs .nav-link.active {
@@ -374,6 +374,18 @@ main > .row {
 
 .pagination {
     flex-wrap: wrap;
+}
+
+/* Chrome, Safari, Edge, Opera */
+.pagination-popover input::-webkit-outer-spin-button,
+.pagination-popover input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.pagination-popover input[type=number] {
+  -moz-appearance: textfield;
 }
 
 .spoiler {
@@ -544,6 +556,65 @@ tr.accountbound {
     border: 5px solid #ddd;
 }
 
+@keyframes copy-to-check {
+    from {
+        opacity: 1;
+        content: '\f0c5';
+        font-weight: 400;
+    }
+    50% {
+        opacity: 0;
+        content: '\f0c5';
+        font-weight: 400;
+    }
+    51% {
+        opacity: 0;
+        content: '\f00c';
+        font-weight: 900;
+    }
+    to {
+        opacity: 1;
+        content: '\f00c';
+        font-weight: 900;
+    }
+}
+
+@keyframes check-to-copy {
+    from {
+        opacity: 1;
+        content: '\f00c';
+        font-weight: 900;
+    }
+    50% {
+        opacity: 0;
+        content: '\f00c';
+        font-weight: 900;
+    }
+    51% {
+        opacity: 0;
+        content: '\f0c5';
+        font-weight: 400;
+    }
+    to {
+        opacity: 1;
+        content: '\f0c5';
+        font-weight: 400;
+    }
+}
+
+.toCheck::before {
+    animation-name: copy-to-check;
+    animation-iteration-count: 1;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+.toCopy::before {
+    animation-name: check-to-copy;
+    animation-iteration-count: 1;
+    animation-duration: 1s;
+}
+
 /* TRANSFERS *************************************************************************************/
 
 .transfer-row, .submission-character-row {
@@ -667,7 +738,7 @@ tr.accountbound {
         padding-left: 3rem;
         border-left-width: 2px!important;
     }
-    
+
 .comment>p>img {
         max-width: 100%;
         height: auto;

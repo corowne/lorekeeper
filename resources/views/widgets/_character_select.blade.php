@@ -1,3 +1,13 @@
+@php
+    $characters = \App\Models\Character\Character::visible(Auth::check() ? Auth::user() : null)
+        ->myo(0)
+        ->orderBy('slug', 'DESC')
+        ->get()
+        ->pluck('fullName', 'slug')
+        ->toArray();
+    $tables = \App\Models\Loot\LootTable::orderBy('name')->pluck('name', 'id');
+@endphp
+
 <div id="characterComponents" class="hide">
     <div class="submission-character mb-3 card">
         <div class="card-body">
@@ -13,7 +23,7 @@
                     <a href="#" class="float-right fas fa-close"></a>
                     <div class="form-group">
                         {!! Form::label('slug[]', 'Character Code') !!}
-                        {!! Form::text('slug[]', null, ['class' => 'form-control character-code']) !!}
+                        {!! Form::select('slug[]', $characters, null, ['class' => 'form-control character-code', 'placeholder' => 'Select Character']) !!}
                     </div>
                     <div class="character-rewards hide">
                         <h4>Character Rewards</h4>
@@ -65,7 +75,7 @@
             @endif
 
             <td class="d-flex align-items-center">
-                {!! Form::text('character_quantity[]', 0, ['class' => 'form-control mr-2  character-rewardable-quantity']) !!}
+                {!! Form::number('character_rewardable_quantity[]', 1, ['class' => 'form-control mr-2 character-rewardable-quantity']) !!}
                 <a href="#" class="remove-reward d-block"><i class="fas fa-times text-muted"></i></a>
             </td>
         </tr>

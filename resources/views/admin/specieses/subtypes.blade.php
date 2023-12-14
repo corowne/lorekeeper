@@ -21,6 +21,9 @@
                     <tr class="sort-item" data-id="{{ $subtype->id }}">
                         <td>
                             <a class="fas fa-arrows-alt-v handle mr-3" href="#"></a>
+                            @if (!$subtype->is_visible)
+                                <i class="fas fa-eye-slash mr-1"></i>
+                            @endif
                             {!! $subtype->displayName !!}
                         </td>
                         <td>

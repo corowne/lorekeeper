@@ -14,11 +14,12 @@
             $clone = $components.find('.sales-character').clone();
             attachListeners($clone);
             $characters.append($clone);
+            $clone.find('.character-code').selectize();
             count++;
         });
 
         function attachListeners(node) {
-            node.find('.character-code').on('input', function(e) {
+            node.find('.character-code').on('change', function(e) {
                 var $parent = $(this).parent().parent().parent().parent();
                 $parent.find('.character-image-loaded').load('{{ url('admin/sales/character') }}/' + $(this).val(), function(response, status, xhr) {
                     $parent.find('.character-image-blank').addClass('hide');

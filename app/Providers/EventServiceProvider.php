@@ -20,7 +20,6 @@ class EventServiceProvider extends ServiceProvider {
 
         \SocialiteProviders\Manager\SocialiteWasCalled::class => [
             'SocialiteProviders\\Deviantart\\DeviantartExtendSocialite@handle',
-            'SocialiteProviders\\Twitter\\TwitterExtendSocialite@handle',
             'SocialiteProviders\\Instagram\\InstagramExtendSocialite@handle',
             'SocialiteProviders\\Tumblr\\TumblrExtendSocialite@handle',
             'SocialiteProviders\\Imgur\\ImgurExtendSocialite@handle',

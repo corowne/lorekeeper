@@ -152,16 +152,6 @@ class BoxService extends Service {
      * @return string
      */
     private function getBoxRewardsString($rewards) {
-        $results = 'You have received: ';
-        $result_elements = [];
-        foreach ($rewards as $assetType) {
-            if (isset($assetType)) {
-                foreach ($assetType as $asset) {
-                    array_push($result_elements, $asset['asset']->name.(class_basename($asset['asset']) == 'Raffle' ? ' (Raffle Ticket)' : '').' x'.$asset['quantity']);
-                }
-            }
-        }
-
-        return $results.implode(', ', $result_elements);
+        return 'You have received: '.createRewardsString($rewards);
     }
 }

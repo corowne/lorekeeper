@@ -24,7 +24,7 @@ return [
     | Do not change this value!
     |
     */
-    'version'                                           => '2.1.0',
+    'version'                                           => '3.0.0',
 
     /*
     |--------------------------------------------------------------------------
@@ -137,23 +137,28 @@ return [
     |
     | 0: Do not watermark. 1: Automatically watermark masterlist images.
     |
-    | Dimension, in pixels, to scale the shorter dimension (between width/height)
-    | of submitted masterlist images to. Enter "0" to disable resizing.
+    | Dimension, in pixels, to scale submitted masterlist images to. Enter "0" to disable resizing.
+    |
+    | Which dimension to scale submitted masterlist images on. Options are 'shorter' and 'longer'.
+    | Only takes effect if masterlist_image_dimension is set. Defaults to 'shorter'.
     |
     | File format to encode masterlist image uploads to.
     | Set to null to leave images in their original formats.
     | Example:
     | 'masterlist_image_format' => null,
     |
-    | Color to fill non-png images in when masterlist_image_format is set.
+    | Color to fill non-transparent images in when masterlist_image_format is set.
     | This is in an endeavor to make images with a transparent background
     | compress better. Set to null to disable.
     | Example:
-    | 'masterlist_image_background' => 'png',
+    | 'masterlist_image_background' => '#ffffff',
     |
     */
     'watermark_masterlist_images'                       => 0,
+
     'masterlist_image_dimension'                        => 0,
+    'masterlist_image_dimension_target'                 => 'shorter',
+
     'masterlist_image_format'                           => null,
     'masterlist_image_background'                       => '#ffffff',
 
@@ -168,9 +173,15 @@ return [
     | Size, in pixels, to cap full-sized masterlist images at (if storing full-sized images is enabled).
     | Images above this cap in either dimension will be resized to suit. Enter "0" to disable resizing.
     |
+    | File format to encode full-sized masterlist image uploads to.
+    | Set to null to leave images in their original formats.
+    | Example:
+    | 'masterlist_fullsizes_format' => null,
+    |
     */
     'store_masterlist_fullsizes'                        => 0,
     'masterlist_fullsizes_cap'                          => 0,
+    'masterlist_fullsizes_format'                       => null,
 
     /*
     |--------------------------------------------------------------------------
@@ -251,6 +262,25 @@ return [
     |
     */
     'masterlist_image_automation_hide_manual_thumbnail' => 0,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Gallery Image Settings
+    |--------------------------------------------------------------------------
+    |
+    | This affects images submitted to on-site galleries.
+    |
+    | Size, in pixels, to cap gallery images at.
+    | Images above this cap in either dimension will be resized to suit. Enter "0" to disable resizing.
+    |
+    | File format to encode gallery image uploads to.
+    | Set to null to leave images in their original formats.
+    | Example:
+    | 'gallery_images_format' => null,
+    |
+    */
+    'gallery_images_cap'    => 0,
+    'gallery_images_format' => null,
 
     /*
     |--------------------------------------------------------------------------

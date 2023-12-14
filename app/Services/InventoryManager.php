@@ -683,13 +683,13 @@ class InventoryManager extends Service {
             // Group owned items by ID.
             // We'll exclude stacks that are partially contained in trades, updates and submissions.
             $items = UserItem::where('user_id', $user->id)->whereNull('deleted_at')
-                             ->where(function ($query) {
-                                 $query->where('trade_count', 0)->orWhereNull('trade_count');
-                             })->where(function ($query) {
-                                 $query->where('update_count', 0)->orWhereNull('update_count');
-                             })->where(function ($query) {
-                                 $query->where('submission_count', 0)->orWhereNull('submission_count');
-                             })->get()->groupBy('item_id');
+                ->where(function ($query) {
+                    $query->where('trade_count', 0)->orWhereNull('trade_count');
+                })->where(function ($query) {
+                    $query->where('update_count', 0)->orWhereNull('update_count');
+                })->where(function ($query) {
+                    $query->where('submission_count', 0)->orWhereNull('submission_count');
+                })->get()->groupBy('item_id');
 
             foreach ($items as $itemId => $itemVariations) {
                 $variations = [];

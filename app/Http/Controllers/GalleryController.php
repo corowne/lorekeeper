@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Character\Character;
-use App\Models\Comment;
+use App\Models\Comment\Comment;
 use App\Models\Currency\Currency;
 use App\Models\Gallery\Gallery;
 use App\Models\Gallery\GallerySubmission;
@@ -104,6 +104,60 @@ class GalleryController extends Controller {
             'childSubmissions' => GallerySubmission::whereIn('gallery_id', $gallery->children->pluck('id')->toArray())->where('is_visible', 1)->where('status', 'Accepted'),
             'galleryPage'      => true,
             'sideGallery'      => $gallery,
+        ]);
+    }
+
+    /**
+     * Shows all recent submissions.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getAll(Request $request) {
+        if (!Config::get('lorekeeper.extensions.show_all_recent_submissions.enable')) {
+            abort(404);
+        }
+
+        $query = GallerySubmission::visible(Auth::check() ? Auth::user() : null)->accepted();
+        $sort = $request->only(['sort']);
+
+        if ($request->get('title')) {
+            $query->where(function ($query) use ($request) {
+                $query->where('gallery_submissions.title', 'LIKE', '%'.$request->get('title').'%');
+            });
+        }
+        if ($request->get('prompt_id')) {
+            $query->where('prompt_id', $request->get('prompt_id'));
+        }
+
+        if (isset($sort['sort'])) {
+            switch ($sort['sort']) {
+                case 'alpha':
+                    $query->orderBy('title');
+                    break;
+                case 'alpha-reverse':
+                    $query->orderBy('title', 'DESC');
+                    break;
+                case 'prompt':
+                    $query->orderBy('prompt_id', 'DESC');
+                    break;
+                case 'prompt-reverse':
+                    $query->orderBy('prompt_id', 'ASC');
+                    break;
+                case 'newest':
+                    $query->orderBy('created_at', 'DESC');
+                    break;
+                case 'oldest':
+                    $query->orderBy('created_at', 'ASC');
+                    break;
+            }
+        } else {
+            $query->orderBy('created_at', 'DESC');
+        }
+
+        return view('galleries.showall', [
+            'submissions' => $query->paginate(20)->appends($request->query()),
+            'prompts'     => [0 => 'Any Prompt'] + Prompt::whereIn('id', GallerySubmission::visible(Auth::check() ? Auth::user() : null)->accepted()->whereNotNull('prompt_id')->pluck('prompt_id')->toArray())->orderBy('name')->pluck('name', 'id')->toArray(),
+            'galleryPage' => false,
         ]);
     }
 

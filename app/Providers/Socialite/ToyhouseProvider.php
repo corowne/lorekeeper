@@ -10,6 +10,10 @@ use Laravel\Socialite\Two\User;
 class ToyhouseProvider extends AbstractProvider implements ProviderInterface {
     protected $scopes = [];
 
+    public function getRedirectUrl() {
+        return $this->redirectUrl;
+    }
+
     /**
      * Get the authentication URL for the provider.
      *

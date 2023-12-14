@@ -80,7 +80,7 @@ class FeatureController extends Controller {
     public function postCreateEditFeatureCategory(Request $request, FeatureService $service, $id = null) {
         $id ? $request->validate(FeatureCategory::$updateRules) : $request->validate(FeatureCategory::$createRules);
         $data = $request->only([
-            'name', 'description', 'image', 'remove_image',
+            'name', 'description', 'image', 'remove_image', 'is_visible',
         ]);
         if ($id && $service->updateFeatureCategory(FeatureCategory::find($id), $data, Auth::user())) {
             flash('Category updated successfully.')->success();
@@ -164,7 +164,7 @@ class FeatureController extends Controller {
      */
     public function getFeatureIndex(Request $request) {
         $query = Feature::query();
-        $data = $request->only(['rarity_id', 'feature_category_id', 'species_id', 'name']);
+        $data = $request->only(['rarity_id', 'feature_category_id', 'species_id', 'subtype_id', 'name']);
         if (isset($data['rarity_id']) && $data['rarity_id'] != 'none') {
             $query->where('rarity_id', $data['rarity_id']);
         }

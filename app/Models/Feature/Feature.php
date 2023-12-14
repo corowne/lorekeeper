@@ -299,7 +299,11 @@ class Feature extends Model {
 
     public static function getDropdownItems($withHidden = 0) {
         if (Config::get('lorekeeper.extensions.organised_traits_dropdown')) {
-            $sorted_feature_categories = collect(FeatureCategory::all()->sortBy('sort')->pluck('name')->toArray());
+            $visibleOnly = 1;
+            if ($withHidden) {
+                $visibleOnly = 0;
+            }
+            $sorted_feature_categories = collect(FeatureCategory::all()->where('is_visible', '>=', $visibleOnly)->sortBy('sort')->pluck('name')->toArray());
 
             $grouped = self::visible($withHidden)->select('name', 'id', 'feature_category_id')->with('category')->orderBy('name')->get()->keyBy('id')->groupBy('category.name', $preserveKeys = true)->toArray();
             if (isset($grouped[''])) {

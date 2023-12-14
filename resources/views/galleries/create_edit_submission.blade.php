@@ -52,14 +52,14 @@
                 </div>
             </div>
             <div class="card p-2">
-                {!! Form::file('image', ['id' => 'mainImage']) !!}
-                <small>Images may be PNG, GIF, or JPG and up to 3MB in size.</small>
+                {!! Form::file('image', ['class' => 'form-control-file', 'id' => 'mainImage']) !!}
+                <small>Images may be PNG, GIF, JPG, or WebP and up to 3MB in size.</small>
             </div>
         </div>
 
         <div class="form-group">
             {!! Form::label('Text') !!}
-            {!! Form::textarea('text', $submission->text, ['class' => 'form-control wysiwyg']) !!}
+            {!! Form::textarea('text', $submission->text ?? old('text'), ['class' => 'form-control wysiwyg']) !!}
         </div>
 
         <div class="row">
@@ -67,19 +67,19 @@
                 <h3>Basic Information</h3>
                 <div class="form-group">
                     {!! Form::label('Title') !!} {!! add_help('You <strong>do not</strong> need to indicate that a piece is a trade, gift, for a prompt etc. as this will be automatically added based on your input elsewhere in this form.') !!}
-                    {!! Form::text('title', $submission->title, ['class' => 'form-control']) !!}
+                    {!! Form::text('title', $submission->title ?? old('title'), ['class' => 'form-control']) !!}
                 </div>
 
                 <div class="form-group">
                     {!! Form::label('Description (Optional)') !!}
-                    {!! Form::textarea('description', $submission->description, ['class' => 'form-control wysiwyg']) !!}
+                    {!! Form::textarea('description', $submission->description ?? old('description'), ['class' => 'form-control wysiwyg']) !!}
                 </div>
 
                 <div class="form-group">
                     {!! Form::label('Content Warning (Optional)') !!} {!! add_help(
                         'Provide a succinct content warning for the piece if necessary. If a content warning is provided, the thumbnail will be replaced with a generic image and the warning displayed under it. The piece will be displayed in full on its page, however.',
                     ) !!}
-                    {!! Form::text('content_warning', $submission->content_warning, ['class' => 'form-control']) !!}
+                    {!! Form::text('content_warning', $submission->content_warning ?? old('content_warning'), ['class' => 'form-control']) !!}
                 </div>
 
                 @if ($gallery->prompt_selection == 1 && (!$submission->id || Auth::user()->hasPower('manage_submissions')))
@@ -87,7 +87,7 @@
                         {!! Form::label('prompt_id', ($submission->id && Auth::user()->hasPower('manage_submissions') ? '[Admin] ' : '') . 'Prompt (Optional)') !!} {!! add_help(
                             'This <strong>does not</strong> automatically submit to the selected prompt, and you will need to submit to it separately. The prompt selected here will be displayed on the submission page for future reference. You will not be able to edit this after creating the submission.',
                         ) !!}
-                        {!! Form::select('prompt_id', $prompts, $submission->prompt_id, ['class' => 'form-control selectize', 'id' => 'prompt', 'placeholder' => 'Select a Prompt']) !!}
+                        {!! Form::select('prompt_id', $prompts, $submission->prompt_id ?? old('prompt_id'), ['class' => 'form-control selectize', 'id' => 'prompt', 'placeholder' => 'Select a Prompt']) !!}
                     </div>
                 @else
                     {!! $submission->prompt_id ? '<p><strong>Prompt:</strong> ' . $submission->prompt->displayName . '</p>' : '' !!}
@@ -119,6 +119,11 @@
                             @include('galleries._character_select_entry', ['character' => $character])
                         @endforeach
                     @endif
+                    @if (old('slug'))
+                        @foreach (array_unique(old('slug')) as $slug)
+                            @include('galleries._character_select_entry', ['character' => \App\Models\Character\Character::where('slug', $slug)->first()])
+                        @endforeach
+                    @endif
                 </div>
                 <div class="text-right mb-3">
                     <a href="#" class="btn btn-outline-info" id="addCharacter">Add Character</a>
@@ -144,6 +149,17 @@
                                                 <div class="d-flex">{!! $collaborator->has_approved ? '<div class="btn btn-success mb-2 mr-2" data-toggle="tooltip" title="Has Approved"><i class="fas fa-check"></i></div>' : '' !!}{!! Form::select('collaborator_id[]', $users, $collaborator->user_id, ['class' => 'form-control mr-2 collaborator-select original', 'placeholder' => 'Select User']) !!}</div>
                                                 <div class="d-flex">
                                                     {!! Form::text('collaborator_data[]', $collaborator->data, ['class' => 'form-control mr-2', 'placeholder' => 'Role (Sketch, Lines, etc.)']) !!}
+                                                    <a href="#" class="remove-collaborator btn btn-danger mb-2">×</a>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    @endif
+                                    @if (old('collaborator_id'))
+                                        @foreach (old('collaborator_id') as $key => $collaborator)
+                                            <div class="mb-2">
+                                                <div class="d-flex">{!! Form::select('collaborator_id[]', $users, $collaborator, ['class' => 'form-control mr-2 collaborator-select original', 'placeholder' => 'Select User']) !!}</div>
+                                                <div class="d-flex">
+                                                    {!! Form::text('collaborator_data[]', old('collaborator_data')[$key], ['class' => 'form-control mr-2', 'placeholder' => 'Role (Sketch, Lines, etc.)']) !!}
                                                     <a href="#" class="remove-collaborator btn btn-danger mb-2">×</a>
                                                 </div>
                                             </div>
@@ -179,6 +195,20 @@
                                                 <div class="d-flex">{!! Form::select('participant_id[]', $users, $participant->user_id, ['class' => 'form-control mr-2 participant-select original', 'placeholder' => 'Select User']) !!}</div>
                                                 <div class="d-flex">
                                                     {!! Form::select('participant_type[]', ['Gift' => 'Gift For', 'Trade' => 'Traded For', 'Comm' => 'Commissioned', 'Comm (Currency)' => 'Commissioned (' . $currency->name . ')'], $participant->type, [
+                                                        'class' => 'form-control mr-2',
+                                                        'placeholder' => 'Select Role',
+                                                    ]) !!}
+                                                    <a href="#" class="remove-participant btn btn-danger mb-2">×</a>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    @endif
+                                    @if (old('participant_id'))
+                                        @foreach (old('participant_id') as $key => $participant)
+                                            <div class="mb-2">
+                                                <div class="d-flex">{!! Form::select('participant_id[]', $users, $participant, ['class' => 'form-control mr-2 participant-select original', 'placeholder' => 'Select User']) !!}</div>
+                                                <div class="d-flex">
+                                                    {!! Form::select('participant_type[]', ['Gift' => 'Gift For', 'Trade' => 'Traded For', 'Comm' => 'Commissioned', 'Comm (Currency)' => 'Commissioned (' . $currency->name . ')'], old('participant_type')[$key], [
                                                         'class' => 'form-control mr-2',
                                                         'placeholder' => 'Select Role',
                                                     ]) !!}

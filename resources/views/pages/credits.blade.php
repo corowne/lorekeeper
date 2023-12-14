@@ -33,7 +33,7 @@
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Deactivate_Account"><strong>Deactivate Account</strong></a> by <a href="https://github.com/preimpression">Preimpression</a>
         </p>
         <p class="mb-0 col-md-4">
-            <strong>Extended Mentions</strong> by <a href="https://github.com/SpeedyD">Speedy</a>
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Extended_Mentions"><strong>Extended Mentions</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
         </p>
         <p class="mb-0 col-md-4">
             <strong>Extension Tracker</strong> by <a href="https://github.com/preimpression">Preimpression</a> (This page/the section below!)
@@ -46,6 +46,9 @@
         </p>
         <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:MYO_Item_Tag"><strong>MYO Item Tag</strong></a> by <a href="https://github.com/junijwi">Junijwi</a>
+        </p>
+        <p class="mb-0 col-md-4">
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Pagination_Page_Select"><strong>Pagination Page Selector</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a> and <a href="https://github.com/AW0005">Moif</a>
         </p>
         <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Reports"><strong>Reports</strong></a> by <a href="https://github.com/Ne-wt">Ne-wt</a>
@@ -63,17 +66,17 @@
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:User_Transfer_Reasons"><strong>User Transfer Reasons</strong></a> by <a href="https://github.com/snupsplus">Snupsplus</a>
         </p>
         <p class="mb-0 col-md-4">
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:90_Percent_Watermark"><strong>Watermark Resizing</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
+        </p>
+        <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Watermarking"><strong>Watermarking</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
         </p>
         <p class="mb-0 col-md-4">
-            <strong>Watermarking - Masterlist Image Automation addition</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Watermarking_Image_Automation"><strong>Watermarking - Masterlist Image Automation addition</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
         </p>
         <p class="mb-0 col-md-4">
-            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:90_Percent_Watermark"><strong>Watermark Resizing</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
-        </p>
-
-        <p class="mb-0 col-md-4">
-            <strong>Aliases on Userpage</strong> by <a href="https://github.com/SpeedyD">Speedy</a> ({{ Config::get('lorekeeper.extensions.aliases_on_userpage') ? 'Enabled' : 'Disabled' }})
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Aliases_on_Userpage"><strong>Aliases on Userpage</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
+            ({{ Config::get('lorekeeper.extensions.aliases_on_userpage') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
             <strong>Auto-populate New Image Traits</strong> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('lorekeeper.extensions.autopopulate_image_features') ? 'Enabled' : 'Disabled' }})
@@ -91,8 +94,14 @@
             ({{ Config::get('lorekeeper.extensions.character_TH_profile_link') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
+            <strong>Collapsible Admin Sidebar</strong> by <a href="https://github.com/ne-wt/">Newt</a> ({{ Config::get('lorekeeper.extensions.collapsible_admin_sidebar') ? 'Enabled' : 'Disabled' }})
+        </p>
+        <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Design_Update_Voting"><strong>Design Update Voting</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
             ({{ Config::get('lorekeeper.extensions.design_update_voting') ? 'Enabled' : 'Disabled' }})
+        </p>
+        <p class="mb-0 col-md-4">
+            <strong>Gravatar</strong> by <a href="https://github.com/ne-wt/">Newt</a> ({{ Config::get('lorekeeper.extensions.use_gravatar') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
             <strong>Group Traits by Category</strong> by <a href="https://github.com/preimpression">Preimpression</a> ({{ Config::get('lorekeeper.extensions.traits_by_category') ? 'Enabled' : 'Disabled' }})
@@ -112,16 +121,23 @@
             <strong>Organised Traits Dropdown</strong> by <a href="https://github.com/draginraptor">Draginraptor</a> ({{ Config::get('lorekeeper.extensions.organised_traits_dropdown') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
-            <strong>Previous & Next buttons on Character pages</strong> by <a href="https://github.com/SpeedyD">Speedy</a> ({{ Config::get('lorekeeper.extensions.previous_and_next_characters.display') ? 'Enabled' : 'Disabled' }})
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Character_Prev_and_Next"><strong>Previous & Next buttons on Character pages</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
+            ({{ Config::get('lorekeeper.extensions.previous_and_next_characters.display') ? 'Enabled' : 'Disabled' }})
+        </p>
+        <p class="mb-0 col-md-4">
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Gallery_Recent_Submissions"><strong>Show All Recent Submissions</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
+            ({{ Config::get('lorekeeper.extensions.show_all_recent_submissions.enable') ? 'Enabled' . ((Config::get('lorekeeper.extensions.show_all_recent_submissions.links.sidebar') && Config::get('lorekeeper.extensions.show_all_recent_submissions.links.indexbutton') ? '/Both' : (Config::get('lorekeeper.extensions.show_all_recent_submissions.links.sidebar') ? '/Sidebar' : '') . (Config::get('lorekeeper.extensions.show_all_recent_submissions.links.indexbutton') ? '/Button' : '')) . (Config::get('lorekeeper.extensions.show_all_recent_submissions.section_on_front') ? '/Front' : '')) : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Species_Trait_Index"><strong>Species Trait Index</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
-            ({{ Config::get('lorekeeper.extensions.species_trait_index') ? 'Enabled' : 'Disabled' }})
+            ({{ Config::get('lorekeeper.extensions.species_trait_index.enable') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
             <strong>Staff Rewards</strong> by <a href="https://github.com/itinerare">itinerare</a> ({{ Config::get('lorekeeper.extensions.staff_rewards.enabled') ? 'Enabled' : 'Disabled' }})
         </p>
-
+        <p class="mb-0 col-md-4">
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Submission_Drafts"><strong>Submission Drafts</strong></a> by <a href="https://github.com/preimpression/">Preimpression</a>
+        </p>
     </div>
 
     <hr />

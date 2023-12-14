@@ -11,6 +11,7 @@ use App\Models\Gallery\GallerySubmission;
 use App\Models\Report\Report;
 use App\Models\Submission\Submission;
 use App\Models\Trade;
+use App\Models\User\User;
 use Auth;
 use Config;
 use DB;
@@ -50,9 +51,30 @@ class HomeController extends Controller {
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getLogs() {
+    public function getLogs(Request $request) {
+        // get all staff users so we can search by them
+        // have to check rank relation
+        $staff = User::whereHas('rank', function ($query) {
+            // check rank id = 1 OR the rank has existing relation powers
+            $query->where('id', 1)->orWhereHas('powers');
+        })->get()->pluck('name', 'id');
+
+        $query = AdminLog::query();
+
+        $data = $request->only(['user_id', 'action']);
+        if (isset($data['user_id']) && $data['user_id'] != '') {
+            $query->where('user_id', $data['user_id']);
+        }
+        if (isset($data['action']) && $data['action'] != '') {
+            $query->where('action', $data['action']);
+        }
+
+        $query->orderBy('created_at', 'DESC');
+
         return view('admin.logs', [
-            'logs' => Adminlog::orderBy('created_at', 'DESC')->get()->paginate(20),
+            'logs'    => $query->paginate(20)->appends($request->query()),
+            'staff'   => $staff,
+            'actions' => AdminLog::pluck('action', 'action')->unique(),
         ]);
     }
 

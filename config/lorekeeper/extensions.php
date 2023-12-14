@@ -23,7 +23,10 @@ return [
     'navbar_news_notif'                    => 0,
 
     // Species Trait Index - Mercury
-    'species_trait_index'                  => 0,
+    'species_trait_index'                  => [
+        'enable'       => 0,
+        'trait_modals' => 0, // Enables modals when you click on a trait for more info instead of linking to the traits page - Moif
+    ],
 
     // Character Status Badges - Juni
     'character_status_badges'              => 0,
@@ -84,4 +87,23 @@ return [
     // Aliases on Userpage - Speedy
     'aliases_on_userpage' => 0, // By default, does not display the aliases on userpage. Enable to add a small arrow to display these underneath the primary alias.
 
+    // Show All Recent Submissions - Speedy
+    'show_all_recent_submissions' => [
+        'enable' => 0,
+        'links'  => [
+            'sidebar'      => 1,      // By default, ON, and will display in the sidebar.
+            'indexbutton'  => 1, // By default, ON, and will display a button on the index.
+        ],
+        'section_on_front' => 0, // By default, does not display on the front page. Enable to add a block above the footer.
+    ],
+
+    // collapsible admin sidebar - Newt
+    'collapsible_admin_sidebar' => 0,
+
+    // use gravatar for user avatars - Newt
+    'use_gravatar' => 0,
+
+    // Use ReCaptcha to check new user registrations - Mercury
+    // Requires site key and secret be set in your .env file!
+    'use_recaptcha' => 0,
 ];

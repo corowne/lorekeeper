@@ -230,7 +230,7 @@ class CharacterController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCharacterInventory($slug) {
-        $categories = ItemCategory::where('is_character_owned', '1')->orderBy('sort', 'DESC')->get();
+        $categories = ItemCategory::visible(Auth::check() ? Auth::user() : null)->where('is_character_owned', '1')->orderBy('sort', 'DESC')->get();
         $itemOptions = Item::whereIn('item_category_id', $categories->pluck('id'));
 
         $items = count($categories) ?

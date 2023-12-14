@@ -35,6 +35,11 @@ Route::group(['prefix' => 'account', 'namespace' => 'Users'], function () {
     Route::post('remove-alias/{id}', 'AccountController@postRemoveAlias');
     Route::post('dob', 'AccountController@postBirthday');
 
+    Route::get('two-factor/confirm', 'AccountController@getConfirmTwoFactor');
+    Route::post('two-factor/enable', 'AccountController@postEnableTwoFactor');
+    Route::post('two-factor/confirm', 'AccountController@postConfirmTwoFactor');
+    Route::post('two-factor/disable', 'AccountController@postDisableTwoFactor');
+
     Route::get('deactivate', 'AccountController@getDeactivate');
     Route::get('deactivate-confirm', 'AccountController@getDeactivateConfirmation');
     Route::post('deactivate', 'AccountController@postDeactivate');
@@ -52,6 +57,7 @@ Route::group(['prefix' => 'inventory', 'namespace' => 'Users'], function () {
     Route::get('/', 'InventoryController@getIndex');
     Route::post('edit', 'InventoryController@postEdit');
     Route::get('account-search', 'InventoryController@getAccountSearch');
+    Route::get('full-inventory', 'InventoryController@getFullInventory');
     Route::get('consolidate-inventory', 'InventoryController@getConsolidateInventory');
     Route::post('consolidate', 'InventoryController@postConsolidateInventory');
 
@@ -123,7 +129,7 @@ Route::group(['prefix' => 'myo', 'namespace' => 'Characters'], function () {
 **************************************************************************************************/
 
 Route::group(['prefix' => 'gallery'], function () {
-    Route::get('submissions/{type}', 'GalleryController@getUserSubmissions')->where('type', 'pending|accepted|rejected');
+    Route::get('submissions/{type}', 'GalleryController@getUserSubmissions')->where('type', 'draft|pending|accepted|rejected');
 
     Route::post('favorite/{id}', 'GalleryController@postFavoriteSubmission');
 
@@ -146,12 +152,24 @@ Route::group(['prefix' => 'submissions', 'namespace' => 'Users'], function () {
     Route::get('new/character/{slug}', 'SubmissionController@getCharacterInfo');
     Route::get('new/prompt/{id}', 'SubmissionController@getPromptInfo');
     Route::post('new', 'SubmissionController@postNewSubmission');
+    Route::post('new/{draft}', 'SubmissionController@postNewSubmission')->where('draft', 'draft');
+    Route::get('draft/{id}', 'SubmissionController@getEditSubmission');
+    Route::post('draft/{id}', 'SubmissionController@postEditSubmission');
+    Route::post('draft/{id}/{submit}', 'SubmissionController@postEditSubmission')->where('submit', 'submit');
+    Route::post('draft/{id}/delete', 'SubmissionController@postDeleteSubmission');
+    Route::post('draft/{id}/cancel', 'SubmissionController@postCancelSubmission');
 });
 
 Route::group(['prefix' => 'claims', 'namespace' => 'Users'], function () {
     Route::get('/', 'SubmissionController@getClaimsIndex');
     Route::get('new', 'SubmissionController@getNewClaim');
     Route::post('new', 'SubmissionController@postNewClaim');
+    Route::post('new/{draft}', 'SubmissionController@postNewClaim')->where('draft', 'draft');
+    Route::get('draft/{id}', 'SubmissionController@getEditClaim');
+    Route::post('draft/{id}', 'SubmissionController@postEditClaim');
+    Route::post('draft/{id}/{submit}', 'SubmissionController@postEditClaim')->where('submit', 'submit');
+    Route::post('draft/{id}/delete', 'SubmissionController@postDeleteClaim');
+    Route::post('draft/{id}/cancel', 'SubmissionController@postCancelClaim');
 });
 
 Route::group(['prefix' => 'reports', 'namespace' => 'Users'], function () {
@@ -162,7 +180,7 @@ Route::group(['prefix' => 'reports', 'namespace' => 'Users'], function () {
 });
 
 Route::group(['prefix' => 'designs', 'namespace' => 'Characters'], function () {
-    Route::get('{type?}', 'DesignController@getDesignUpdateIndex')->where('type', 'pending|approved|rejected');
+    Route::get('{type?}', 'DesignController@getDesignUpdateIndex')->where('type', 'draft|pending|approved|rejected');
     Route::get('{id}', 'DesignController@getDesignUpdate');
 
     Route::get('{id}/comments', 'DesignController@getComments');
