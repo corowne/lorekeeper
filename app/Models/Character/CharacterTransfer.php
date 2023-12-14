@@ -96,6 +96,28 @@ class CharacterTransfer extends Model {
         return $query;
     }
 
+    /**
+     * Scope a query to sort transfers by oldest first.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSortOldest($query) {
+        return $query->orderBy('id');
+    }
+
+    /**
+     * Scope a query to sort transfers by newest first.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSortNewest($query) {
+        return $query->orderBy('id', 'DESC');
+    }
+
     /**********************************************************************************************
 
         ACCESSORS

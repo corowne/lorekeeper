@@ -57,4 +57,11 @@ class RouteServiceProvider extends ServiceProvider {
             ->namespace($this->namespace)
             ->group(base_path('routes/api.php'));
     }
+
+    /**
+     * The path to the "home" route for your application.
+     *
+     * @var string
+     */
+    public const HOME = '/';
 }

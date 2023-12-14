@@ -580,6 +580,10 @@ class CharacterController extends Controller {
      * @return \Illuminate\Http\RedirectResponse
      */
     private function postName(Request $request, InventoryManager $service) {
+        $request->validate([
+            'stack_name' => 'nullable|max:100',
+        ]);
+
         if ($service->nameStack($this->character, CharacterItem::find($request->get('ids')), $request->get('stack_name'), Auth::user())) {
             flash('Item named successfully.')->success();
         } else {

@@ -499,6 +499,13 @@ class InventoryManager extends Service {
                 $recipient_stack->count += $quantity;
                 $recipient_stack->save();
             }
+
+            if (!$item->is_released) {
+                $item->update([
+                    'is_released' => 1,
+                ]);
+            }
+
             if ($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, $recipient ? $recipient->id : null, $recipient ? $recipient->logType : null, null, $type, $data['data'], $item->id, $quantity)) {
                 throw new \Exception('Failed to create log.');
             }

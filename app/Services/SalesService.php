@@ -204,6 +204,9 @@ class SalesService extends Service {
                     if (isset($data['end_point'][$key])) {
                         $charData[$key]['end_point'] = $data['end_point'][$key];
                     }
+                    if (isset($data['minimum'][$key])) {
+                        $charData[$key]['minimum'] = $data['minimum'][$key];
+                    }
                     break;
                 case 'xta':
                     if (isset($data['autobuy'][$key])) {
@@ -211,6 +214,9 @@ class SalesService extends Service {
                     }
                     if (isset($data['end_point'][$key])) {
                         $charData[$key]['end_point'] = $data['end_point'][$key];
+                    }
+                    if (isset($data['minimum'][$key])) {
+                        $charData[$key]['minimum'] = $data['minimum'][$key];
                     }
                     break;
                 case 'flaffle':

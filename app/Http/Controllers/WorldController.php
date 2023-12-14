@@ -235,7 +235,7 @@ class WorldController extends Controller {
         if (!$species) {
             abort(404);
         }
-        if (!Config::get('lorekeeper.extensions.species_trait_index')) {
+        if (!Config::get('lorekeeper.extensions.species_trait_index.enable')) {
             abort(404);
         }
 
@@ -279,6 +279,29 @@ class WorldController extends Controller {
     }
 
     /**
+     * Provides a single trait's description html for use in a modal.
+     *
+     * @param mixed $speciesId
+     * @param mixed $id
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getSpeciesFeatureDetail($speciesId, $id) {
+        $feature = Feature::where('id', $id)->first();
+
+        if (!$feature) {
+            abort(404);
+        }
+        if (!Config::get('lorekeeper.extensions.species_trait_index.trait_modals')) {
+            abort(404);
+        }
+
+        return view('world._feature_entry', [
+            'feature' => $feature,
+        ]);
+    }
+
+    /**
      * Shows the items page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
@@ -287,7 +310,10 @@ class WorldController extends Controller {
         $query = Item::with('category')->released();
 
         $categoryVisibleCheck = ItemCategory::visible(Auth::check() ? Auth::user() : null)->pluck('id', 'name')->toArray();
-        $query->whereIn('item_category_id', $categoryVisibleCheck);
+        // query where category is visible, or, no category and released
+        $query->where(function ($query) use ($categoryVisibleCheck) {
+            $query->whereIn('item_category_id', $categoryVisibleCheck)->orWhereNull('item_category_id');
+        });
         $data = $request->only(['item_category_id', 'name', 'sort', 'artist']);
         if (isset($data['item_category_id']) && $data['item_category_id'] != 'none') {
             if ($data['item_category_id'] == 'withoutOption') {
@@ -346,7 +372,7 @@ class WorldController extends Controller {
         if (!$item) {
             abort(404);
         }
-        if (!$item->category->is_visible) {
+        if ($item->category && !$item->category->is_visible) {
             if (Auth::check() ? !Auth::user()->isStaff : true) {
                 abort(404);
             }

@@ -16,7 +16,7 @@ class CommentProvider extends ServiceProvider {
 
         $this->definePermissions();
 
-        Route::model('comment', 'App\Models\Comment');
+        Route::model('comment', 'App\Models\Comment\Comment');
     }
 
     public function register() {
