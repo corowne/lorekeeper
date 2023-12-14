@@ -58,7 +58,7 @@
 {{-- Modals --}}
 @can('edit-comment', $comment)
     <div class="modal fade" id="comment-modal-{{ $comment->getKey() }}" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 {{ Form::model($comment, ['route' => ['comments.update', $comment->getKey()]]) }}
                 <div class="modal-header">
@@ -70,7 +70,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         {!! Form::label('message', 'Update your message here:') !!}
-                        {!! Form::textarea('message', $comment->comment, ['class' => 'form-control', 'rows' => 3, 'required']) !!}
+                        {!! Form::textarea('message', $comment->comment, ['class' => 'form-control ' . config('lorekeeper.settings.wysiwyg_comments') ? 'comment-wysiwyg' : '', 'rows' => 3, config('lorekeeper.settings.wysiwyg_comments') ? '' : 'required']) !!}
                         <small class="form-text text-muted"><a target="_blank" href="https://help.github.com/articles/basic-writing-and-formatting-syntax">Markdown</a> cheatsheet.</small>
                     </div>
                 </div>
@@ -83,10 +83,10 @@
         </div>
     </div>
 @endcan
-
+{{-- modal large --}}
 @can('reply-to-comment', $comment)
     <div class="modal fade" id="reply-modal-{{ $comment->getKey() }}" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 {{ Form::open(['route' => ['comments.reply', $comment->getKey()]]) }}
                 <div class="modal-header">
@@ -98,7 +98,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         {!! Form::label('message', 'Enter your message here:') !!}
-                        {!! Form::textarea('message', null, ['class' => 'form-control', 'rows' => 3, 'required']) !!}
+                        {!! Form::textarea('message', null, ['class' => 'form-control ' . config('lorekeeper.settings.wysiwyg_comments') ? 'comment-wysiwyg' : '', 'rows' => 3, config('lorekeeper.settings.wysiwyg_comments') ? '' : 'required']) !!}
                         <small class="form-text text-muted"><a target="_blank" href="https://help.github.com/articles/basic-writing-and-formatting-syntax">Markdown</a> cheatsheet.</small>
                     </div>
                 </div>
@@ -114,7 +114,7 @@
 
 @can('delete-comment', $comment)
     <div class="modal fade" id="delete-modal-{{ $comment->getKey() }}" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Delete Comment</h5>
@@ -142,7 +142,7 @@
 @endcan
 
 <div class="modal fade" id="feature-modal-{{ $comment->getKey() }}" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{{ $comment->is_featured ? 'Unf' : 'F' }}eature Comment</h5>
@@ -166,7 +166,7 @@
 </div>
 
 <div class="modal fade" id="show-likes-{{ $comment->id }}" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Likes</h5>
@@ -220,7 +220,7 @@
 {{-- the button for this appears in the main view, but to keep it from being cluttered we will keep the models within this section --}}
 @if (Auth::check() && Auth::user()->isStaff)
     <div class="modal fade" id="show-edits-{{ $comment->id }}" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Edit History</h5>
@@ -280,6 +280,3 @@
         </div>
     </div>
 @endif
-
-{{-- edits modal --}}
-{{-- the button for this appears in the main view, but to keep it from being cluttered we will keep the models within this section --}}

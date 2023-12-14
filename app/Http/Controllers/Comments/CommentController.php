@@ -89,7 +89,7 @@ class CommentController extends Controller {
         }
 
         $comment->commentable()->associate($base);
-        $comment->comment = $request->message;
+        $comment->comment = config('lorekeeper.settings.wysiwyg_comments') ? parse($request->message) : $request->message;
         $comment->approved = !Config::get('comments.approval_required');
         $comment->type = isset($request['type']) && $request['type'] ? $request['type'] : 'User-User';
         $comment->save();
@@ -179,13 +179,13 @@ class CommentController extends Controller {
             'comment_id' => $comment->id,
             'data'       => json_encode([
                 'action'      => 'edit',
-                'old_comment' => $comment->comment,
-                'new_comment' => $request->message,
+                'old_comment' => config('lorekeeper.settings.wysiwyg_comments') ? parse($comment->comment) : $comment->comment,
+                'new_comment' => config('lorekeeper.settings.wysiwyg_comments') ? parse($request->message) : $request->message,
             ]),
         ]);
 
         $comment->update([
-            'comment' => $request->message,
+            'comment' => config('lorekeeper.settings.wysiwyg_comments') ? parse($request->message) : $request->message,
         ]);
 
         return Redirect::to(URL::previous().'#comment-'.$comment->getKey());
@@ -221,7 +221,7 @@ class CommentController extends Controller {
         $reply->commenter()->associate(Auth::user());
         $reply->commentable()->associate($comment->commentable);
         $reply->parent()->associate($comment);
-        $reply->comment = $request->message;
+        $reply->comment = config('lorekeeper.settings.wysiwyg_comments') ? parse($request->message) : $request->message;
         $reply->type = $comment->type;
         $reply->approved = !Config::get('comments.approval_required');
         $reply->save();

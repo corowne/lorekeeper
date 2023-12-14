@@ -315,4 +315,14 @@ return [
     */
     'currency_symbol'                                   => '$',
 
+    /*
+    |--------------------------------------------------------------------------
+    | What You See Is What You Get (WYSIWYG) Comments
+    |--------------------------------------------------------------------------
+    |
+    | Whether or not to use a WYSIWYG editor for comments.
+    | 1: Use WYSIWYG editor. 0: Use markdown / plain text editor.
+    |
+    */
+    'wysiwyg_comments'                                  => 1,
 ];
