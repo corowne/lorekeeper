@@ -65,28 +65,28 @@ class Feature extends Model {
      * Get the rarity of this feature.
      */
     public function rarity() {
-        return $this->belongsTo('App\Models\Rarity');
+        return $this->belongsTo(Rarity::class);
     }
 
     /**
      * Get the species the feature belongs to.
      */
     public function species() {
-        return $this->belongsTo('App\Models\Species\Species');
+        return $this->belongsTo(Species::class);
     }
 
     /**
      * Get the subtype the feature belongs to.
      */
     public function subtype() {
-        return $this->belongsTo('App\Models\Species\Subtype');
+        return $this->belongsTo(Subtype::class);
     }
 
     /**
      * Get the category the feature belongs to.
      */
     public function category() {
-        return $this->belongsTo('App\Models\Feature\FeatureCategory', 'feature_category_id');
+        return $this->belongsTo(FeatureCategory::class, 'feature_category_id');
     }
 
     /**********************************************************************************************

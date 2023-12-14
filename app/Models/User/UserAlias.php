@@ -32,7 +32,7 @@ class UserAlias extends Model {
      * Get the user this set of settings belongs to.
      */
     public function user() {
-        return $this->belongsTo('App\Models\User\User', 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**********************************************************************************************

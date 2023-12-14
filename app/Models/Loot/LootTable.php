@@ -52,7 +52,7 @@ class LootTable extends Model {
      * Get the loot data for this loot table.
      */
     public function loot() {
-        return $this->hasMany('App\Models\Loot\Loot', 'loot_table_id');
+        return $this->hasMany(Loot::class, 'loot_table_id');
     }
 
     /**********************************************************************************************

@@ -46,6 +46,6 @@ class CharacterProfile extends Model {
      * Get the character this profile belongs to.
      */
     public function character() {
-        return $this->belongsTo('App\Models\Character\Character', 'character_id');
+        return $this->belongsTo(Character::class, 'character_id');
     }
 }

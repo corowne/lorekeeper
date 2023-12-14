@@ -65,21 +65,21 @@ class Gallery extends Model {
      * Get the parent gallery.
      */
     public function parent() {
-        return $this->belongsTo('App\Models\Gallery\Gallery', 'parent_id');
+        return $this->belongsTo(self::class, 'parent_id');
     }
 
     /**
      * Get the child galleries of this gallery.
      */
     public function children() {
-        return $this->hasMany('App\Models\Gallery\Gallery', 'parent_id')->sort();
+        return $this->hasMany(self::class, 'parent_id')->sort();
     }
 
     /**
      * Get the submissions made to this gallery.
      */
     public function submissions() {
-        return $this->hasMany('App\Models\Gallery\GallerySubmission', 'gallery_id')->visible()->orderBy('created_at', 'DESC');
+        return $this->hasMany(GallerySubmission::class, 'gallery_id')->visible()->orderBy('created_at', 'DESC');
     }
 
     /**********************************************************************************************

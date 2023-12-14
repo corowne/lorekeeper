@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\User\User;
+
 class AdminLog extends Model {
     /**
      * The attributes that are mass assignable.
@@ -42,6 +44,6 @@ class AdminLog extends Model {
      * Get the staff who preformed the action.
      */
     public function user() {
-        return $this->belongsTo('App\Models\User\User', 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

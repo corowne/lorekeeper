@@ -32,7 +32,7 @@ class ItemTag extends Model {
      * Get the item that this tag is attached to.
      */
     public function item() {
-        return $this->belongsTo('App\Models\Item\Item');
+        return $this->belongsTo(Item::class);
     }
 
     /**********************************************************************************************

@@ -2,6 +2,7 @@
 
 namespace App\Models\User;
 
+use App\Models\Character\Character;
 use App\Models\Model;
 
 class UserCharacterLog extends Model {
@@ -38,21 +39,21 @@ class UserCharacterLog extends Model {
      * Get the user who initiated the logged action.
      */
     public function sender() {
-        return $this->belongsTo('App\Models\User\User', 'sender_id');
+        return $this->belongsTo(User::class, 'sender_id');
     }
 
     /**
      * Get the user who received the logged action.
      */
     public function recipient() {
-        return $this->belongsTo('App\Models\User\User', 'recipient_id');
+        return $this->belongsTo(User::class, 'recipient_id');
     }
 
     /**
      * Get the character that is the target of the action.
      */
     public function character() {
-        return $this->belongsTo('App\Models\Character\Character');
+        return $this->belongsTo(Character::class);
     }
 
     /**********************************************************************************************

@@ -3,6 +3,7 @@
 namespace App\Models\Character;
 
 use App\Models\Model;
+use App\Models\User\User;
 
 class CharacterBookmark extends Model {
     /**
@@ -68,13 +69,13 @@ class CharacterBookmark extends Model {
      * Get the character the record belongs to.
      */
     public function character() {
-        return $this->belongsTo('App\Models\Character\Character');
+        return $this->belongsTo(Character::class);
     }
 
     /**
      * Get the user the record belongs to.
      */
     public function user() {
-        return $this->belongsTo('App\Models\User\User');
+        return $this->belongsTo(User::class);
     }
 }

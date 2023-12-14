@@ -5,10 +5,16 @@ namespace App\Models\User;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterBookmark;
 use App\Models\Character\CharacterImageCreator;
+use App\Models\Comment\CommentLike;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
 use App\Models\Gallery\GalleryCollaborator;
+use App\Models\Gallery\GalleryFavorite;
+use App\Models\Gallery\GallerySubmission;
+use App\Models\Item\Item;
 use App\Models\Item\ItemLog;
+use App\Models\Notification;
+use App\Models\Rank\Rank;
 use App\Models\Rank\RankPower;
 use App\Models\Shop\ShopLog;
 use App\Models\Submission\Submission;
@@ -79,105 +85,108 @@ class User extends Authenticatable implements MustVerifyEmail {
      * Get user settings.
      */
     public function settings() {
-        return $this->hasOne('App\Models\User\UserSettings');
+        return $this->hasOne(UserSettings::class);
     }
 
     /**
      * Get user-editable profile data.
      */
     public function profile() {
-        return $this->hasOne('App\Models\User\UserProfile');
+        return $this->hasOne(UserProfile::class);
     }
 
     /**
      * Gets the account that deactivated this account.
      */
     public function deactivater() {
-        return $this->belongsTo('App\Models\User\User', 'deactivater_id');
+        return $this->belongsTo(self::class, 'deactivater_id');
     }
 
     /**
      * Get the user's aliases.
      */
     public function aliases() {
-        return $this->hasMany('App\Models\User\UserAlias');
+        return $this->hasMany(UserAlias::class);
     }
 
     /**
      * Get the user's primary alias.
      */
     public function primaryAlias() {
-        return $this->hasOne('App\Models\User\UserAlias')->where('is_primary_alias', 1);
+        return $this->hasOne(UserAlias::class)->where('is_primary_alias', 1);
     }
 
     /**
      * Get the user's notifications.
      */
     public function notifications() {
-        return $this->hasMany('App\Models\Notification');
+        return $this->hasMany(Notification::class);
     }
 
     /**
      * Get all the user's characters, regardless of whether they are full characters of myo slots.
      */
     public function allCharacters() {
-        return $this->hasMany('App\Models\Character\Character')->orderBy('sort', 'DESC');
+        return $this->hasMany(Character::class)->orderBy('sort', 'DESC');
     }
 
     /**
      * Get the user's characters.
      */
     public function characters() {
-        return $this->hasMany('App\Models\Character\Character')->where('is_myo_slot', 0)->orderBy('sort', 'DESC');
+        return $this->hasMany(Character::class)->where('is_myo_slot', 0)->orderBy('sort', 'DESC');
     }
 
     /**
      * Get the user's MYO slots.
      */
     public function myoSlots() {
-        return $this->hasMany('App\Models\Character\Character')->where('is_myo_slot', 1)->orderBy('id', 'DESC');
+        return $this->hasMany(Character::class)->where('is_myo_slot', 1)->orderBy('id', 'DESC');
     }
 
     /**
      * Get the user's rank data.
      */
     public function rank() {
-        return $this->belongsTo('App\Models\Rank\Rank');
+        return $this->belongsTo(Rank::class);
     }
 
     /**
      * Get the user's items.
      */
     public function items() {
-        return $this->belongsToMany('App\Models\Item\Item', 'user_items')->withPivot('count', 'data', 'updated_at', 'id')->whereNull('user_items.deleted_at');
+        return $this->belongsToMany(Item::class, 'user_items')->withPivot('count', 'data', 'updated_at', 'id')->whereNull('user_items.deleted_at');
     }
 
     /**
      * Get all of the user's gallery submissions.
      */
     public function gallerySubmissions() {
-        return $this->hasMany('App\Models\Gallery\GallerySubmission')->where('user_id', $this->id)->orWhereIn('id', GalleryCollaborator::where('user_id', $this->id)->where('type', 'Collab')->pluck('gallery_submission_id')->toArray())->visible($this)->accepted()->orderBy('created_at', 'DESC');
+        return $this->hasMany(GallerySubmission::class)
+            ->where('user_id', $this->id)
+            ->orWhereIn('id', GalleryCollaborator::where('user_id', $this->id)->where('type', 'Collab')->pluck('gallery_submission_id')->toArray())
+            ->visible($this)->accepted()->orderBy('created_at', 'DESC');
     }
 
     /**
      * Get all of the user's favorited gallery submissions.
      */
     public function galleryFavorites() {
-        return $this->hasMany('App\Models\Gallery\GalleryFavorite')->where('user_id', $this->id);
+        return $this->hasMany(GalleryFavorite::class)->where('user_id', $this->id);
     }
 
     /**
      * Get all of the user's character bookmarks.
      */
     public function bookmarks() {
-        return $this->hasMany('App\Models\Character\CharacterBookmark')->where('user_id', $this->id);
+        return $this->hasMany(CharacterBookmark::class)->where('user_id', $this->id);
     }
 
     /**
      * Gets all of a user's liked / disliked comments.
      */
     public function commentLikes() {
-        return $this->hasMany('App\Models\Comment\CommentLike');
+        return $this->hasMany(CommentLike::class);
     }
 
     /**********************************************************************************************

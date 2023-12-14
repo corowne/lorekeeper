@@ -3,6 +3,7 @@
 namespace App\Models\Gallery;
 
 use App\Models\Model;
+use App\Models\User\User;
 
 class GalleryFavorite extends Model {
     /**
@@ -25,13 +26,13 @@ class GalleryFavorite extends Model {
      * Get the character being attached to the submission.
      */
     public function user() {
-        return $this->belongsTo('App\Models\User\User', 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
      * Get the submission this is attached to.
      */
     public function submission() {
-        return $this->belongsTo('App\Models\Gallery\GallerySubmission', 'gallery_submission_id');
+        return $this->belongsTo(GallerySubmission::class, 'gallery_submission_id');
     }
 }

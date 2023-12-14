@@ -54,14 +54,14 @@ class Raffle extends Model {
      * Get the raffle tickets attached to this raffle.
      */
     public function tickets() {
-        return $this->hasMany('App\Models\Raffle\RaffleTicket');
+        return $this->hasMany(RaffleTicket::class);
     }
 
     /**
      * Get the group that this raffle belongs to.
      */
     public function group() {
-        return $this->belongsTo('App\Models\Raffle\RaffleGroup', 'group_id');
+        return $this->belongsTo(RaffleGroup::class, 'group_id');
     }
 
     /**********************************************************************************************

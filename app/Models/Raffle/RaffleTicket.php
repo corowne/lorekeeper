@@ -3,6 +3,7 @@
 namespace App\Models\Raffle;
 
 use App\Models\Model;
+use App\Models\User\User;
 
 class RaffleTicket extends Model {
     /**
@@ -48,14 +49,14 @@ class RaffleTicket extends Model {
      * Get the raffle this ticket is for.
      */
     public function raffle() {
-        return $this->belongsTo('App\Models\Raffle\Raffle');
+        return $this->belongsTo(Raffle::class);
     }
 
     /**
      * Get the user who owns the raffle ticket.
      */
     public function user() {
-        return $this->belongsTo('App\Models\User\User');
+        return $this->belongsTo(User::class);
     }
 
     /**********************************************************************************************
