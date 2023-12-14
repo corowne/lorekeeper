@@ -6,7 +6,6 @@ use App\Models\Model;
 use App\Models\Rarity;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 class Feature extends Model {

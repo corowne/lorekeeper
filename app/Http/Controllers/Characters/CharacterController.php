@@ -22,7 +22,6 @@ use App\Services\DesignUpdateManager;
 use App\Services\InventoryManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
 use Route;
 

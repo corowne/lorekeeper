@@ -4,7 +4,6 @@ namespace App\Models\Loot;
 
 use App\Models\Item\Item;
 use App\Models\Model;
-use Illuminate\Support\Facades\Config;
 
 class LootTable extends Model {
     /**

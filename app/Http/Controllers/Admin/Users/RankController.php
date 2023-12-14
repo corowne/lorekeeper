@@ -7,7 +7,6 @@ use App\Models\Rank\Rank;
 use App\Services\RankService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
 
 class RankController extends Controller {
     /**

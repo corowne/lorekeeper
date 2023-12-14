@@ -7,7 +7,6 @@ use App\Models\User\User;
 use App\Models\User\UserAlias;
 use App\Services\LinkService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
 use Laravel\Socialite\Facades\Socialite;
 
 class LoginController extends Controller {

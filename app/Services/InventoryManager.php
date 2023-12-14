@@ -9,7 +9,6 @@ use App\Models\User\User;
 use App\Models\User\UserItem;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 class InventoryManager extends Service {

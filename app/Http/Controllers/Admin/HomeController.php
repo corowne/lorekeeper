@@ -15,7 +15,6 @@ use App\Models\Trade;
 use App\Models\User\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller {

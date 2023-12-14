@@ -3,7 +3,6 @@
 namespace App\Traits;
 
 use App\Models\Comment\Comment;
-use Illuminate\Support\Facades\Config;
 
 /**
  * Add this trait to any model that you want to be able to

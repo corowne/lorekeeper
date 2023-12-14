@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Services\FileManager;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
 
 class FileController extends Controller {
     /**

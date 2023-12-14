@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\User\User;
-use Illuminate\Support\Facades\Config;
 
 class Notification extends Model {
     /**

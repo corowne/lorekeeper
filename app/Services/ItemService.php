@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
 use App\Models\Item\ItemTag;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 class ItemService extends Service {

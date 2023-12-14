@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\User\UserAlias;
 use App\Models\User\UserUpdateLog;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
 

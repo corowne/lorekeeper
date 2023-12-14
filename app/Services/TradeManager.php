@@ -10,7 +10,6 @@ use App\Models\Currency\Currency;
 use App\Models\Trade;
 use App\Models\User\User;
 use App\Models\User\UserItem;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 class TradeManager extends Service {
