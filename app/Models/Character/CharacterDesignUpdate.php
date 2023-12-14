@@ -3,14 +3,12 @@
 namespace App\Models\Character;
 
 use App\Models\Currency\Currency;
-use App\Models\Feature\FeatureCategory;
 use App\Models\Model;
 use App\Models\Rarity;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\DB;
 
 class CharacterDesignUpdate extends Model {
     use SoftDeletes;
@@ -117,11 +115,13 @@ class CharacterDesignUpdate extends Model {
      * Get the features (traits) attached to the design update, ordered by display order.
      */
     public function features() {
-        $ids = FeatureCategory::orderBy('sort', 'DESC')->pluck('id')->toArray();
+        $query = $this
+            ->hasMany(CharacterFeature::class, 'character_image_id')->where('character_features.character_type', 'Update')
+            ->join('features', 'features.id', '=', 'character_features.feature_id')
+            ->leftJoin('feature_categories', 'feature_categories.id', '=', 'features.feature_category_id')
+            ->select(['character_features.*', 'features.*', 'character_features.id AS character_feature_id', 'feature_categories.sort']);
 
-        $query = $this->hasMany(CharacterFeature::class, 'character_image_id')->where('character_features.character_type', 'Update')->join('features', 'features.id', '=', 'character_features.feature_id')->select(['character_features.*', 'features.*', 'character_features.id AS character_feature_id']);
-
-        return count($ids) ? $query->orderByRaw(DB::raw('FIELD(features.feature_category_id, '.implode(',', $ids).')')) : $query;
+        return $query->orderByDesc('sort');
     }
 
     /**
