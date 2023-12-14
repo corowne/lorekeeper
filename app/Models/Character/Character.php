@@ -40,13 +40,6 @@ class Character extends Model {
     protected $table = 'characters';
 
     /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
-
-    /**
      * The attributes that should be cast to native types.
      *
      * @var array
@@ -54,6 +47,13 @@ class Character extends Model {
     protected $casts = [
         'transferrable_at' => 'datetime',
     ];
+
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
 
     /**
      * Accessors to append to the model.

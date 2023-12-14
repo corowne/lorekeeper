@@ -34,13 +34,6 @@ class CharacterDesignUpdate extends Model {
     protected $table = 'design_updates';
 
     /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
-
-    /**
      * The attributes that should be cast to native types.
      *
      * @var array
@@ -48,6 +41,13 @@ class CharacterDesignUpdate extends Model {
     protected $casts = [
         'submitted_at' => 'datetime',
     ];
+
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
 
     /**
      * Validation rules for uploaded images.

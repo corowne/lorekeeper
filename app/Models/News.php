@@ -27,13 +27,6 @@ class News extends Model implements Feedable {
     protected $table = 'news';
 
     /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
-
-    /**
      * The attributes that should be cast to native types.
      *
      * @var array
@@ -41,6 +34,13 @@ class News extends Model implements Feedable {
     protected $casts = [
         'post_at' => 'datetime',
     ];
+
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
 
     /**
      * Validation rules for creation.

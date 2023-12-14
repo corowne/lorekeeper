@@ -31,9 +31,8 @@ class Prompt extends Model {
      */
     protected $casts = [
         'start_at' => 'datetime',
-        'end_at' => 'datetime',
+        'end_at'   => 'datetime',
     ];
-
 
     /**
      * Validation rules for character creation.
