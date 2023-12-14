@@ -40,18 +40,20 @@ class Character extends Model {
     protected $table = 'characters';
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'transferrable_at' => 'datetime',
+    ];
+
+    /**
      * Whether the model contains timestamps to be saved and updated.
      *
      * @var string
      */
     public $timestamps = true;
-
-    /**
-     * Dates on the model to convert to Carbon instances.
-     *
-     * @var array
-     */
-    public $dates = ['transferrable_at'];
 
     /**
      * Accessors to append to the model.

@@ -29,18 +29,21 @@ class Sales extends Model implements Feedable {
     protected $table = 'sales';
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'post_at'          => 'datetime',
+        'comments_open_at' => 'datetime',
+    ];
+
+    /**
      * Whether the model contains timestamps to be saved and updated.
      *
      * @var string
      */
     public $timestamps = true;
-
-    /**
-     * Dates on the model to convert to Carbon instances.
-     *
-     * @var array
-     */
-    public $dates = ['post_at', 'comments_open_at'];
 
     /**
      * Validation rules for creation.

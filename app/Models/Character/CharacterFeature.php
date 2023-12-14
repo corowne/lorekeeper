@@ -21,6 +21,13 @@ class CharacterFeature extends Model {
      */
     protected $table = 'character_features';
 
+    /**
+     * The relationships that should always be loaded.
+     *
+     * @var array
+     */
+    protected $with = ['feature'];
+
     /**********************************************************************************************
 
         RELATIONS

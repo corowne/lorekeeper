@@ -24,12 +24,16 @@ class Gallery extends Model {
      * @var string
      */
     protected $table = 'galleries';
+
     /**
-     * Dates on the model to convert to Carbon instances.
+     * The attributes that should be cast to native types.
      *
      * @var array
      */
-    public $dates = ['start_at', 'end_at'];
+    protected $casts = [
+        'start_at' => 'datetime',
+        'end_at'   => 'datetime',
+    ];
 
     /**
      * Validation rules for character creation.

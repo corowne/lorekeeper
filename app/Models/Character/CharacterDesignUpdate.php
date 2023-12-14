@@ -34,18 +34,20 @@ class CharacterDesignUpdate extends Model {
     protected $table = 'design_updates';
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'submitted_at' => 'datetime',
+    ];
+
+    /**
      * Whether the model contains timestamps to be saved and updated.
      *
      * @var string
      */
     public $timestamps = true;
-
-    /**
-     * Dates on the model to convert to Carbon instances.
-     *
-     * @var array
-     */
-    public $dates = ['submitted_at'];
 
     /**
      * Validation rules for uploaded images.
