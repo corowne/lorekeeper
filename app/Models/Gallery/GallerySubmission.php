@@ -2,12 +2,12 @@
 
 namespace App\Models\Gallery;
 
+use App\Facades\Settings;
 use App\Models\Currency\Currency;
 use App\Models\Model;
 use App\Models\Prompt\Prompt;
 use App\Models\Submission\Submission;
 use App\Traits\Commentable;
-use Settings;
 
 class GallerySubmission extends Model {
     use Commentable;

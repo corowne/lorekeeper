@@ -2,15 +2,15 @@
 
 namespace App\Services;
 
+use App\Facades\Notifications;
 use App\Models\Character\CharacterItem;
 use App\Models\Item\Item;
 use App\Models\User\User;
 use App\Models\User\UserItem;
 use Carbon\Carbon;
-use Config;
-use DB;
 use Illuminate\Support\Arr;
-use Notifications;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 class InventoryManager extends Service {
     /*

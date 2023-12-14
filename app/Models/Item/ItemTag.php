@@ -3,7 +3,7 @@
 namespace App\Models\Item;
 
 use App\Models\Model;
-use Config;
+use Illuminate\Support\Facades\Config;
 
 class ItemTag extends Model {
     /**

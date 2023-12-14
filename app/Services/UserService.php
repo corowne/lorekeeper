@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Facades\Notifications;
+use App\Facades\Settings;
 use App\Models\Character\CharacterDesignUpdate;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Gallery\GallerySubmission;
@@ -11,14 +13,12 @@ use App\Models\Trade;
 use App\Models\User\User;
 use App\Models\User\UserUpdateLog;
 use Carbon\Carbon;
-use DB;
-use File;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Image;
+use Intervention\Image\Facades\Image;
 use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider;
-use Notifications;
-use Settings;
 
 class UserService extends Service {
     /*

@@ -11,9 +11,9 @@ use App\Models\Prompt\PromptCategory;
 use App\Models\Raffle\Raffle;
 use App\Models\Submission\Submission;
 use App\Services\SubmissionManager;
-use Auth;
-use Config;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 
 class SubmissionController extends Controller {
     /**

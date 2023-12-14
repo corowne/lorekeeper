@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Config;
+use Illuminate\Support\Facades\Config;
 
 class Notification extends Model {
     /**

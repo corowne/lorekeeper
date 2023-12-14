@@ -6,7 +6,7 @@ use App\Models\Character\Character;
 use App\Models\Sales\Sales;
 use App\Models\Sales\SalesCharacter;
 use App\Models\User\User;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Validator;
 
 class SalesService extends Service {

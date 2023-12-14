@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
+use App\Facades\Notifications;
+use App\Facades\Settings;
 use App\Models\Prompt\Prompt;
 use App\Models\Report\Report;
-use DB;
-use Notifications;
-use Settings;
+use Illuminate\Support\Facades\DB;
 
 class ReportManager extends Service {
     /*

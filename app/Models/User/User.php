@@ -13,12 +13,12 @@ use App\Models\Rank\RankPower;
 use App\Models\Shop\ShopLog;
 use App\Models\Submission\Submission;
 use App\Traits\Commenter;
-use Auth;
 use Carbon\Carbon;
-use Config;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
 class User extends Authenticatable implements MustVerifyEmail {

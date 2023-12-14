@@ -9,8 +9,8 @@ use App\Models\Rarity;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
 use App\Services\FeatureService;
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FeatureController extends Controller {
     /*

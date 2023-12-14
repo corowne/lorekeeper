@@ -7,8 +7,8 @@ use App\Models\Character\Sublist;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
 use App\Services\SpeciesService;
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SpeciesController extends Controller {
     /*

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\Settings;
 use App\Models\Character\Character;
 use App\Models\Comment\Comment;
 use App\Models\Currency\Currency;
@@ -10,10 +11,9 @@ use App\Models\Gallery\GallerySubmission;
 use App\Models\Prompt\Prompt;
 use App\Models\User\User;
 use App\Services\GalleryManager;
-use Auth;
-use Config;
 use Illuminate\Http\Request;
-use Settings;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use View;
 
 class GalleryController extends Controller {

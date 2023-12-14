@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Characters;
 
+use App\Facades\Settings;
 use App\Http\Controllers\Controller;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterCurrency;
@@ -19,12 +20,11 @@ use App\Services\CharacterManager;
 use App\Services\CurrencyManager;
 use App\Services\DesignUpdateManager;
 use App\Services\InventoryManager;
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
 use Route;
-use Settings;
 
 class CharacterController extends Controller {
     /*

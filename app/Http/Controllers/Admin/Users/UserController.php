@@ -8,10 +8,10 @@ use App\Models\User\User;
 use App\Models\User\UserAlias;
 use App\Models\User\UserUpdateLog;
 use App\Services\UserService;
-use Auth;
 use Carbon\Carbon;
-use Config;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 
 class UserController extends Controller {
     /**

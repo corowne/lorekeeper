@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Users;
 
+use App\Facades\Settings;
 use App\Http\Controllers\Controller;
 use App\Models\Character\Character;
 use App\Models\Currency\Currency;
@@ -13,10 +14,9 @@ use App\Models\Submission\Submission;
 use App\Models\User\User;
 use App\Models\User\UserItem;
 use App\Services\SubmissionManager;
-use Auth;
-use Config;
 use Illuminate\Http\Request;
-use Settings;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 
 class SubmissionController extends Controller {
     /*

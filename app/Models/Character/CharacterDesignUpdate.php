@@ -5,8 +5,8 @@ namespace App\Models\Character;
 use App\Models\Currency\Currency;
 use App\Models\Feature\FeatureCategory;
 use App\Models\Model;
-use DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class CharacterDesignUpdate extends Model {
     use SoftDeletes;

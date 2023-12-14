@@ -6,7 +6,7 @@ use App\Models\Raffle\Raffle;
 use App\Models\Raffle\RaffleTicket;
 use App\Models\User\User;
 use Carbon\Carbon;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class RaffleManager extends Service {
     /*

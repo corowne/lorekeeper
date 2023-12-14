@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Comments;
 
+use App\Facades\Notifications;
+use App\Facades\Settings;
 use App\Models\Comment\Comment;
 use App\Models\Gallery\GallerySubmission;
 use App\Models\News;
@@ -17,8 +19,6 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
-use Notifications;
-use Settings;
 use Spatie\Honeypot\ProtectAgainstSpam;
 
 class CommentController extends Controller {

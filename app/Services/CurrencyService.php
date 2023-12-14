@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Character\CharacterCurrency;
 use App\Models\Currency\Currency;
 use App\Models\User\UserCurrency;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class CurrencyService extends Service {
     /*

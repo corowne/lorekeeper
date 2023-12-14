@@ -3,8 +3,8 @@
 namespace App\Models\Rank;
 
 use App\Models\Model;
-use Config;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Config;
 
 class Rank extends Model {
     /**

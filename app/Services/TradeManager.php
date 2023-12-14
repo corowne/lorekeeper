@@ -2,17 +2,16 @@
 
 namespace App\Services;
 
+use App\Facades\Notifications;
+use App\Facades\Settings;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Currency\Currency;
-use App\Models\Item\Item;
 use App\Models\Trade;
 use App\Models\User\User;
 use App\Models\User\UserItem;
-use Config;
-use DB;
-use Notifications;
-use Settings;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 class TradeManager extends Service {
     /*

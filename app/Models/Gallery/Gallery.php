@@ -2,9 +2,9 @@
 
 namespace App\Models\Gallery;
 
+use App\Facades\Settings;
 use App\Models\Model;
 use Carbon\Carbon;
-use Settings;
 
 class Gallery extends Model {
     /**

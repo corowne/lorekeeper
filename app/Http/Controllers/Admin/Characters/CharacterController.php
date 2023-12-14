@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Characters;
 
+use App\Facades\Settings;
 use App\Http\Controllers\Controller;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterCategory;
@@ -15,10 +16,9 @@ use App\Models\User\User;
 use App\Models\User\UserItem;
 use App\Services\CharacterManager;
 use App\Services\TradeManager;
-use Auth;
-use Config;
 use Illuminate\Http\Request;
-use Settings;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 
 class CharacterController extends Controller {
     /*

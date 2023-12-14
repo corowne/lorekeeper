@@ -2,9 +2,9 @@
 
 namespace App\Models\Gallery;
 
+use App\Facades\Settings;
 use App\Models\Currency\Currency;
 use App\Models\Model;
-use Settings;
 
 class GalleryCollaborator extends Model {
     /**

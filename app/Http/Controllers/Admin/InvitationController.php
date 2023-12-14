@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Invitation;
 use App\Services\InvitationService;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class InvitationController extends Controller {
     /**

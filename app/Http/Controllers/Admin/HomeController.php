@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Facades\Settings;
 use App\Http\Controllers\Controller;
 use App\Models\AdminLog;
 use App\Models\Character\CharacterDesignUpdate;
@@ -12,11 +13,10 @@ use App\Models\Report\Report;
 use App\Models\Submission\Submission;
 use App\Models\Trade;
 use App\Models\User\User;
-use Auth;
-use Config;
-use DB;
 use Illuminate\Http\Request;
-use Settings;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller {
     /**

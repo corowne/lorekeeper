@@ -2,6 +2,7 @@
 
 namespace App\Models\Character;
 
+use App\Facades\Notifications;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
 use App\Models\Item\Item;
@@ -13,7 +14,6 @@ use App\Models\User\User;
 use App\Models\User\UserCharacterLog;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Notifications;
 
 class Character extends Model {
     use SoftDeletes;

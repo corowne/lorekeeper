@@ -10,8 +10,8 @@ use App\Models\Trade;
 use App\Models\User\User;
 use App\Models\User\UserItem;
 use App\Services\TradeManager;
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TradeController extends Controller {
     /*

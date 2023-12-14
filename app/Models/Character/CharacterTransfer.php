@@ -2,8 +2,8 @@
 
 namespace App\Models\Character;
 
+use App\Facades\Settings;
 use App\Models\Model;
-use Settings;
 
 class CharacterTransfer extends Model {
     /**

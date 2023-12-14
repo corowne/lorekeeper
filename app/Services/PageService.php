@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Models\SitePage;
-use Config;
-use DB;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 class PageService extends Service {
     /*

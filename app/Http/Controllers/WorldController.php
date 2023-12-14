@@ -14,9 +14,9 @@ use App\Models\Shop\ShopStock;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
 use App\Models\User\User;
-use Auth;
-use Config;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 
 class WorldController extends Controller {
     /*

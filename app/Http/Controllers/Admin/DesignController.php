@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Character\CharacterCategory;
 use App\Models\Character\CharacterDesignUpdate;
 use App\Services\DesignUpdateManager;
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DesignController extends Controller {
     /**

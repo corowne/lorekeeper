@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Models\Rank\Rank;
 use App\Models\User\User;
-use Config;
-use DB;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 class RankService extends Service {
     /*

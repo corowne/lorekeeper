@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Admin\Users;
 use App\Http\Controllers\Controller;
 use App\Models\Rank\Rank;
 use App\Services\RankService;
-use Auth;
-use Config;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 
 class RankController extends Controller {
     /**

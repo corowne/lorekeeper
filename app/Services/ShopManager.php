@@ -6,8 +6,8 @@ use App\Models\Character\Character;
 use App\Models\Shop\Shop;
 use App\Models\Shop\ShopLog;
 use App\Models\Shop\ShopStock;
-use Config;
-use DB;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 class ShopManager extends Service {
     /*

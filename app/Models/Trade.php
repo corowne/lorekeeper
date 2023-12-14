@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
+use App\Facades\Settings;
 use App\Models\Character\Character;
-use Settings;
 
 class Trade extends Model {
     /**

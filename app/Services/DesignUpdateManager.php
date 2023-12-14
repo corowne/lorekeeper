@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Facades\Notifications;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterDesignUpdate;
 use App\Models\Character\CharacterFeature;
@@ -14,12 +15,11 @@ use App\Models\Species\Subtype;
 use App\Models\User\User;
 use App\Models\User\UserItem;
 use Carbon\Carbon;
-use Config;
-use DB;
-use File;
 use Illuminate\Support\Arr;
-use Image;
-use Notifications;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\Facades\Image;
 
 class DesignUpdateManager extends Service {
     /*
