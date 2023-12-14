@@ -20,12 +20,15 @@ class Raffle extends Model {
      * @var string
      */
     protected $table = 'raffles';
+
     /**
-     * Dates on the model to convert to Carbon instances.
+     * The attributes that should be cast to native types.
      *
      * @var array
      */
-    public $dates = ['rolled_at'];
+    protected $casts = [
+        'rolled_at' => 'datetime',
+    ];
 
     /**
      * Accessors to append to the model.

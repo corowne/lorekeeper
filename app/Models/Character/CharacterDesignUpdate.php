@@ -41,11 +41,13 @@ class CharacterDesignUpdate extends Model {
     public $timestamps = true;
 
     /**
-     * Dates on the model to convert to Carbon instances.
+     * The attributes that should be cast to native types.
      *
      * @var array
      */
-    public $dates = ['submitted_at'];
+    protected $casts = [
+        'submitted_at' => 'datetime',
+    ];
 
     /**
      * Validation rules for uploaded images.

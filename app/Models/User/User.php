@@ -50,14 +50,8 @@ class User extends Authenticatable implements MustVerifyEmail {
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'birthday' => 'datetime',
     ];
-
-    /**
-     * Dates on the model to convert to Carbon instances.
-     *
-     * @var array
-     */
-    protected $dates = ['birthday'];
 
     /**
      * Accessors to append to the model.
