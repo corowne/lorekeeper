@@ -400,7 +400,7 @@ function createRewardsString($array) {
         }
     }
     if (!count($string)) {
-        return;
+        return 'Nothing. :('; // :(
     }
 
     if (count($string) == 1) {
