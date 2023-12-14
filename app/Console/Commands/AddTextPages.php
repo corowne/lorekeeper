@@ -36,7 +36,7 @@ class AddTextPages extends Command {
      */
     public function handle() {
         //
-        $pages = Config::get('lorekeeper.text_pages');
+        $pages = config('lorekeeper.text_pages');
 
         $this->info('******************');
         $this->info('* ADD SITE PAGES *');

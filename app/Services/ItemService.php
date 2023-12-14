@@ -358,7 +358,7 @@ class ItemService extends Service {
      * @return array
      */
     public function getItemTags() {
-        $tags = Config::get('lorekeeper.item_tags');
+        $tags = config('lorekeeper.item_tags');
         $result = [];
         foreach ($tags as $tag => $tagData) {
             $result[$tag] = $tagData['name'];
@@ -538,7 +538,7 @@ class ItemService extends Service {
         if (!isset($data['allow_transfer'])) {
             $data['allow_transfer'] = 0;
         }
-        if (!isset($data['is_released']) && Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields')) {
+        if (!isset($data['is_released']) && config('lorekeeper.extensions.item_entry_expansion.extra_fields')) {
             $data['is_released'] = 0;
         } else {
             $data['is_released'] = 1;

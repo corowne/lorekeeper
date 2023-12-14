@@ -154,7 +154,7 @@ class SalesCharacter extends Model {
         if ($this->type == 'raffle') {
             return null;
         }
-        $symbol = Config::get('lorekeeper.settings.currency_symbol');
+        $symbol = config('lorekeeper.settings.currency_symbol');
 
         switch ($this->type) {
             case 'flatsale':

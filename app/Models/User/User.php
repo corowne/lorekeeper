@@ -363,7 +363,7 @@ class User extends Authenticatable implements MustVerifyEmail {
      * @return url
      */
     public function getAvatarUrlAttribute() {
-        if ($this->avatar == 'default.jpg' && Config::get('lorekeeper.extensions.use_gravatar')) {
+        if ($this->avatar == 'default.jpg' && config('lorekeeper.extensions.use_gravatar')) {
             // check if a gravatar exists
             $hash = md5(strtolower(trim($this->email)));
             $url = 'https://www.gravatar.com/avatar/'.$hash.'??d=mm&s=200';
@@ -587,7 +587,7 @@ class User extends Authenticatable implements MustVerifyEmail {
         foreach ($this->aliases as $alias) {
             // Find all urls from the same site as this alias
             foreach ($urlCharacters as $key=> $character) {
-                preg_match_all(Config::get('lorekeeper.sites.'.$alias->site.'.regex'), $character, $matches[$key]);
+                preg_match_all(config('lorekeeper.sites.'.$alias->site.'.regex'), $character, $matches[$key]);
             }
             // Find all alias matches within those, and update the character's owner
             foreach ($matches as $key=> $match) {
@@ -619,7 +619,7 @@ class User extends Authenticatable implements MustVerifyEmail {
         foreach ($this->aliases as $alias) {
             // Find all urls from the same site as this alias
             foreach ($urlCreators as $key=> $creator) {
-                preg_match_all(Config::get('lorekeeper.sites.'.$alias->site.'.regex'), $creator, $matches[$key]);
+                preg_match_all(config('lorekeeper.sites.'.$alias->site.'.regex'), $creator, $matches[$key]);
             }
             // Find all alias matches within those, and update the relevant CharacterImageCreator
             foreach ($matches as $key=> $match) {

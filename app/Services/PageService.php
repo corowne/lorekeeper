@@ -102,7 +102,7 @@ class PageService extends Service {
 
         try {
             // Specific pages such as the TOS/privacy policy cannot be deleted from the admin panel.
-            if (Config::get('lorekeeper.text_pages.'.$page->key)) {
+            if (config('lorekeeper.text_pages.'.$page->key)) {
                 throw new \Exception('You cannot delete this page.');
             }
 

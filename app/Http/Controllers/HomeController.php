@@ -29,7 +29,7 @@ class HomeController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getIndex() {
-        if (Config::get('lorekeeper.extensions.show_all_recent_submissions.enable')) {
+        if (config('lorekeeper.extensions.show_all_recent_submissions.enable')) {
             $query = GallerySubmission::visible(Auth::check() ? Auth::user() : null)->accepted()->orderBy('created_at', 'DESC');
             $gallerySubmissions = $query->get()->take(8);
         } else {
@@ -167,7 +167,7 @@ class HomeController extends Controller {
     private function checkProvider($provider, $user) {
         // Check if the site can be used for authentication
         $isAllowed = false;
-        foreach (Config::get('lorekeeper.sites') as $key => $site) {
+        foreach (config('lorekeeper.sites') as $key => $site) {
             if ($key == $provider && isset($site['auth'])) {
                 // require a primary alias if the user does not already have one
                 if (!Auth::user()->has_alias && (!isset($site['primary_alias']) || !$site['primary_alias'])) {

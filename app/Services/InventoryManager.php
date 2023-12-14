@@ -420,7 +420,7 @@ class InventoryManager extends Service {
                 if (!isset($stack->item->data['resell'])) {
                     throw new \Exception('This item cannot be sold.');
                 }
-                if (!Config::get('lorekeeper.extensions.item_entry_expansion.resale_function')) {
+                if (!config('lorekeeper.extensions.item_entry_expansion.resale_function')) {
                     throw new \Exception('This function is not currently enabled.');
                 }
 

@@ -37,7 +37,7 @@ class RankService extends Service {
             $powers = null;
             if (isset($data['powers'])) {
                 foreach ($data['powers'] as $power) {
-                    if (!Config::get('lorekeeper.powers.'.$power)) {
+                    if (!config('lorekeeper.powers.'.$power)) {
                         throw new \Exception('Invalid power selected.');
                     }
                 }
@@ -95,7 +95,7 @@ class RankService extends Service {
             $powers = null;
             if (isset($data['powers'])) {
                 foreach ($data['powers'] as $power) {
-                    if (!Config::get('lorekeeper.powers.'.$power)) {
+                    if (!config('lorekeeper.powers.'.$power)) {
                         throw new \Exception('Invalid power selected.');
                     }
                 }

@@ -76,7 +76,7 @@ class ItemTag extends Model {
      * @return string
      */
     public function getDisplayTagAttribute() {
-        $tag = Config::get('lorekeeper.item_tags.'.$this->tag);
+        $tag = config('lorekeeper.item_tags.'.$this->tag);
         if ($tag) {
             return '<span class="badge" style="color: '.$tag['text_color'].';background-color: '.$tag['background_color'].';">'.$tag['name'].'</span>';
         }
@@ -90,7 +90,7 @@ class ItemTag extends Model {
      * @return mixed
      */
     public function getName() {
-        return Config::get('lorekeeper.item_tags.'.$this->tag.'.name');
+        return config('lorekeeper.item_tags.'.$this->tag.'.name');
     }
 
     /**

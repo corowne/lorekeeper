@@ -71,7 +71,7 @@ class SubmissionController extends Controller {
             'rewardsData'      => isset($submission->data['rewards']) ? parseAssetData($submission->data['rewards']) : null,
             'itemsrow'         => Item::all()->keyBy('id'),
             'page'             => 'submission',
-            'expanded_rewards' => Config::get('lorekeeper.extensions.character_reward_expansion.expanded'),
+            'expanded_rewards' => config('lorekeeper.extensions.character_reward_expansion.expanded'),
             'characters'       => Character::visible(Auth::check() ? Auth::user() : null)->myo(0)->orderBy('slug', 'DESC')->get()->pluck('fullName', 'slug')->toArray(),
         ] + ($submission->status == 'Pending' ? [
             'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
@@ -130,7 +130,7 @@ class SubmissionController extends Controller {
             'submission'       => $submission,
             'inventory'        => $inventory,
             'itemsrow'         => Item::all()->keyBy('id'),
-            'expanded_rewards' => Config::get('lorekeeper.extensions.character_reward_expansion.expanded'),
+            'expanded_rewards' => config('lorekeeper.extensions.character_reward_expansion.expanded'),
             'characters'       => Character::visible(Auth::check() ? Auth::user() : null)->myo(0)->orderBy('slug', 'DESC')->get()->pluck('fullName', 'slug')->toArray(),
         ] + ($submission->status == 'Pending' ? [
             'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),

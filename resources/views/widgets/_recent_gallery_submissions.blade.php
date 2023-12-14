@@ -1,4 +1,4 @@
-@if (Config::get('lorekeeper.extensions.show_all_recent_submissions.enable') && Config::get('lorekeeper.extensions.show_all_recent_submissions.section_on_front'))
+@if (config('lorekeeper.extensions.show_all_recent_submissions.enable') && config('lorekeeper.extensions.show_all_recent_submissions.section_on_front'))
     <div class="card my-2 text-center">
         <div class="card-header">
             <h5>Recent Gallery Submissions</h5>

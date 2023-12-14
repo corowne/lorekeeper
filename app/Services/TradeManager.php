@@ -456,7 +456,7 @@ class TradeManager extends Service {
 
             $userAssets = createAssetsArray();
             $assetCount = 0;
-            $assetLimit = Config::get('lorekeeper.settings.trade_asset_limit');
+            $assetLimit = config('lorekeeper.settings.trade_asset_limit');
 
             // Attach items. Technically, the user doesn't lose ownership of the item - we're just adding an additional holding field.
             // Unlike for design updates, we're keeping track of attached items here.

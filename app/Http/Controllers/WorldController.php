@@ -235,7 +235,7 @@ class WorldController extends Controller {
         if (!$species) {
             abort(404);
         }
-        if (!Config::get('lorekeeper.extensions.species_trait_index.enable')) {
+        if (!config('lorekeeper.extensions.species_trait_index.enable')) {
             abort(404);
         }
 
@@ -292,7 +292,7 @@ class WorldController extends Controller {
         if (!$feature) {
             abort(404);
         }
-        if (!Config::get('lorekeeper.extensions.species_trait_index.trait_modals')) {
+        if (!config('lorekeeper.extensions.species_trait_index.trait_modals')) {
             abort(404);
         }
 

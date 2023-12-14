@@ -57,7 +57,7 @@
                 <div class="col-2 col-md-2">
                     <div class="logs-table-cell">Submitted</div>
                 </div>
-                @if (Config::get('lorekeeper.extensions.design_update_voting'))
+                @if (config('lorekeeper.extensions.design_update_voting'))
                     <div class="col-2 col-md-2">
                         <div class="logs-table-cell">Votes</div>
                     </div>
@@ -70,7 +70,7 @@
         <div class="logs-table-body">
             @foreach ($requests as $r)
                 <div class="logs-table-row">
-                    @if (Config::get('lorekeeper.extensions.design_update_voting'))
+                    @if (config('lorekeeper.extensions.design_update_voting'))
                         <?php
                         $rejectSum = 0;
                         $approveSum = 0;
@@ -94,7 +94,7 @@
                         <div class="col-2 col-md-2">
                             <div class="logs-table-cell">{!! $r->submitted_at ? pretty_date($r->submitted_at) : '---' !!}</div>
                         </div>
-                        @if (Config::get('lorekeeper.extensions.design_update_voting'))
+                        @if (config('lorekeeper.extensions.design_update_voting'))
                             <div class="col-2 col-md-2">
                                 <div class="logs-table-cell">
                                     <strong>

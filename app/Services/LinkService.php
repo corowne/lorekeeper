@@ -39,7 +39,7 @@ class LinkService extends Service {
             return redirect()->back();
         }
         if ($login) {
-            $socialite->redirectUrl(str_replace('auth', 'login', url(Config::get('services.'.$provider.'.redirect'))));
+            $socialite->redirectUrl(str_replace('auth', 'login', url(config('services.'.$provider.'.redirect'))));
         }
 
         return $socialite->redirect();

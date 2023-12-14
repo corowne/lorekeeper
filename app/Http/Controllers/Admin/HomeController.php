@@ -85,7 +85,7 @@ class HomeController extends Controller {
      */
     public function getStaffRewardSettings() {
         return view('admin.staff_reward_settings', [
-            'currency' => Currency::find(Config::get('lorekeeper.extensions.staff_rewards.currency_id')),
+            'currency' => Currency::find(config('lorekeeper.extensions.staff_rewards.currency_id')),
             'settings' => DB::table('staff_actions')->orderBy('key')->paginate(20),
         ]);
     }

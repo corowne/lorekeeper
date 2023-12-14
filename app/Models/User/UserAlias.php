@@ -65,11 +65,11 @@ class UserAlias extends Model {
      */
     public function getUrlAttribute() {
         if ($this->site == 'tumblr') {
-            return 'https://'.$this->alias.'.'.Config::get('lorekeeper.sites.tumblr.link');
+            return 'https://'.$this->alias.'.'.config('lorekeeper.sites.tumblr.link');
         } elseif ($this->site == 'discord') {
             return null;
         } else {
-            return 'https://'.Config::get('lorekeeper.sites.'.$this->site.'.link').'/'.$this->alias;
+            return 'https://'.config('lorekeeper.sites.'.$this->site.'.link').'/'.$this->alias;
         }
     }
 
@@ -92,7 +92,7 @@ class UserAlias extends Model {
      * @return string
      */
     public function getConfigAttribute() {
-        return Config::get('lorekeeper.sites.'.$this->site);
+        return config('lorekeeper.sites.'.$this->site);
     }
 
     /**
@@ -101,7 +101,7 @@ class UserAlias extends Model {
      * @return string
      */
     public function getSiteDisplayNameAttribute() {
-        return Config::get('lorekeeper.sites.'.$this->site.'.display_name');
+        return config('lorekeeper.sites.'.$this->site.'.display_name');
     }
 
     /**
@@ -110,6 +110,6 @@ class UserAlias extends Model {
      * @return string
      */
     public function getCanMakePrimaryAttribute() {
-        return Config::get('lorekeeper.sites.'.$this->site.'.primary_alias');
+        return config('lorekeeper.sites.'.$this->site.'.primary_alias');
     }
 }

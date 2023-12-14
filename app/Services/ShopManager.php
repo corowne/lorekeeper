@@ -157,7 +157,7 @@ class ShopManager extends Service {
     }
 
     public function getStockPurchaseLimit($shopStock, $user) {
-        $limit = Config::get('lorekeeper.settings.default_purchase_limit');
+        $limit = config('lorekeeper.settings.default_purchase_limit');
         if ($shopStock->purchase_limit > 0) {
             $user_purchase_limit = $shopStock->purchase_limit - $this->checkUserPurchases($shopStock, $user);
             if ($user_purchase_limit < $limit) {

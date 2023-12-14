@@ -101,7 +101,7 @@ class SubmissionController extends Controller {
             'currencies'          => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
             'inventory'           => $inventory,
             'page'                => 'submission',
-            'expanded_rewards'    => Config::get('lorekeeper.extensions.character_reward_expansion.expanded'),
+            'expanded_rewards'    => config('lorekeeper.extensions.character_reward_expansion.expanded'),
         ]));
     }
 
@@ -134,7 +134,7 @@ class SubmissionController extends Controller {
             'currencies'          => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
             'inventory'           => $inventory,
             'page'                => 'submission',
-            'expanded_rewards'    => Config::get('lorekeeper.extensions.character_reward_expansion.expanded'),
+            'expanded_rewards'    => config('lorekeeper.extensions.character_reward_expansion.expanded'),
             'selectedInventory'   => isset($submission->data['user']) ? parseAssetData($submission->data['user']) : null,
             'count'               => Submission::where('prompt_id', $submission->prompt_id)->where('status', 'Approved')->where('user_id', $submission->user_id)->count(),
         ]));
@@ -364,7 +364,7 @@ class SubmissionController extends Controller {
             'currencies'          => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
             'raffles'             => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
             'page'                => 'submission',
-            'expanded_rewards'    => Config::get('lorekeeper.extensions.character_reward_expansion.expanded'),
+            'expanded_rewards'    => config('lorekeeper.extensions.character_reward_expansion.expanded'),
         ]));
     }
 
@@ -397,7 +397,7 @@ class SubmissionController extends Controller {
             'inventory'             => $inventory,
             'raffles'               => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
             'page'                  => 'submission',
-            'expanded_rewards'      => Config::get('lorekeeper.extensions.character_reward_expansion.expanded'),
+            'expanded_rewards'      => config('lorekeeper.extensions.character_reward_expansion.expanded'),
             'selectedInventory'     => isset($submission->data['user']) ? parseAssetData($submission->data['user']) : null,
         ]));
     }

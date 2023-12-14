@@ -158,7 +158,7 @@ class DesignUpdateManager extends Service {
                     $imageData['use_cropper'] = isset($data['use_cropper']);
                 }
                 if (!$isAdmin && isset($data['image'])) {
-                    $imageData['extension'] = (Config::get('lorekeeper.settings.masterlist_image_format') ? Config::get('lorekeeper.settings.masterlist_image_format') : ($data['extension'] ?? $data['image']->getClientOriginalExtension()));
+                    $imageData['extension'] = (config('lorekeeper.settings.masterlist_image_format') ? config('lorekeeper.settings.masterlist_image_format') : ($data['extension'] ?? $data['image']->getClientOriginalExtension()));
                     $imageData['has_image'] = true;
                 }
                 $request->update($imageData);
@@ -551,7 +551,7 @@ class DesignUpdateManager extends Service {
                 }
             }
 
-            $extension = Config::get('lorekeeper.settings.masterlist_image_format') != null ? Config::get('lorekeeper.settings.masterlist_image_format') : $request->extension;
+            $extension = config('lorekeeper.settings.masterlist_image_format') != null ? config('lorekeeper.settings.masterlist_image_format') : $request->extension;
 
             // Create a new image with the request data
             $image = CharacterImage::create([
@@ -629,12 +629,12 @@ class DesignUpdateManager extends Service {
             }
 
             // Note old image to delete it
-            if (Config::get('lorekeeper.extensions.remove_myo_image') && $request->character->is_myo_slot && $data['remove_myo_image'] == 2) {
+            if (config('lorekeeper.extensions.remove_myo_image') && $request->character->is_myo_slot && $data['remove_myo_image'] == 2) {
                 $oldImage = $request->character->image;
             }
 
             // Hide the MYO placeholder image if desired
-            if (Config::get('lorekeeper.extensions.remove_myo_image') && $request->character->is_myo_slot && $data['remove_myo_image'] == 1) {
+            if (config('lorekeeper.extensions.remove_myo_image') && $request->character->is_myo_slot && $data['remove_myo_image'] == 1) {
                 $request->character->image->is_visible = 0;
                 $request->character->image->save();
             }
@@ -659,7 +659,7 @@ class DesignUpdateManager extends Service {
             // If this is for a MYO, set user's FTO status and the MYO status of the slot
             // and clear the character's name
             if ($request->character->is_myo_slot) {
-                if (Config::get('lorekeeper.settings.clear_myo_slot_name_on_approval')) {
+                if (config('lorekeeper.settings.clear_myo_slot_name_on_approval')) {
                     $request->character->name = null;
                 }
                 $request->character->is_myo_slot = 0;
@@ -667,7 +667,7 @@ class DesignUpdateManager extends Service {
                 $request->user->settings->save();
 
                 // Delete the MYO placeholder image if desired
-                if (Config::get('lorekeeper.extensions.remove_myo_image') && $data['remove_myo_image'] == 2) {
+                if (config('lorekeeper.extensions.remove_myo_image') && $data['remove_myo_image'] == 2) {
                     $characterManager = new CharacterManager;
                     if (!$characterManager->deleteImage($oldImage, $user, true)) {
                         foreach ($characterManager->errors()->getMessages()['error'] as $error) {
@@ -931,7 +931,7 @@ class DesignUpdateManager extends Service {
             if ($request->status != 'Pending') {
                 throw new \Exception('This request cannot be processed.');
             }
-            if (!Config::get('lorekeeper.extensions.design_update_voting')) {
+            if (!config('lorekeeper.extensions.design_update_voting')) {
                 throw new \Exception('This extension is not currently enabled.');
             }
 

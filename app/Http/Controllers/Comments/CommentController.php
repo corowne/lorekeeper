@@ -25,7 +25,7 @@ class CommentController extends Controller {
     public function __construct() {
         $this->middleware('web');
 
-        if (Config::get('comments.guest_commenting') == true) {
+        if (config('comments.guest_commenting') == true) {
             $this->middleware('auth')->except('store');
             $this->middleware(ProtectAgainstSpam::class)->only('store');
         } else {
@@ -42,7 +42,7 @@ class CommentController extends Controller {
     public function store(Request $request, $model, $id) {
         $model = urldecode(base64_decode($model));
 
-        $accepted_models = Config::get('lorekeeper.allowed_comment_models');
+        $accepted_models = config('lorekeeper.allowed_comment_models');
         if (!count($accepted_models)) {
             flash('Invalid Models')->error();
 
@@ -54,7 +54,7 @@ class CommentController extends Controller {
         }
 
         // If guest commenting is turned off, authorize this action.
-        if (Config::get('comments.guest_commenting') == false) {
+        if (config('comments.guest_commenting') == false) {
             Gate::authorize('create-comment', Comment::class);
         }
 
@@ -78,7 +78,7 @@ class CommentController extends Controller {
             return redirect()->back();
         }
 
-        $commentClass = Config::get('comments.model');
+        $commentClass = config('comments.model');
         $comment = new $commentClass;
 
         if (!Auth::check()) {
@@ -90,7 +90,7 @@ class CommentController extends Controller {
 
         $comment->commentable()->associate($base);
         $comment->comment = $request->message;
-        $comment->approved = !Config::get('comments.approval_required');
+        $comment->approved = !config('comments.approval_required');
         $comment->type = isset($request['type']) && $request['type'] ? $request['type'] : 'User-User';
         $comment->save();
 
@@ -197,7 +197,7 @@ class CommentController extends Controller {
     public function destroy(Comment $comment) {
         Gate::authorize('delete-comment', $comment);
 
-        if (Config::get('comments.soft_deletes') == true) {
+        if (config('comments.soft_deletes') == true) {
             $comment->delete();
         } else {
             $comment->forceDelete();
@@ -216,14 +216,14 @@ class CommentController extends Controller {
             'message' => 'required|string',
         ])->validate();
 
-        $commentClass = Config::get('comments.model');
+        $commentClass = config('comments.model');
         $reply = new $commentClass;
         $reply->commenter()->associate(Auth::user());
         $reply->commentable()->associate($comment->commentable);
         $reply->parent()->associate($comment);
         $reply->comment = $request->message;
         $reply->type = $comment->type;
-        $reply->approved = !Config::get('comments.approval_required');
+        $reply->approved = !config('comments.approval_required');
         $reply->save();
 
         // url = url('comments/32')

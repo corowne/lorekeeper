@@ -61,7 +61,7 @@ class LoginController extends Controller {
         // admin suggested the easy fix (to use stateless)
         $socialite = $provider == 'toyhouse' ? Socialite::driver($provider)->stateless() : Socialite::driver($provider);
         // Needs to match for the user call to work
-        $socialite->redirectUrl(str_replace('auth', 'login', url(Config::get('services.'.$provider.'.redirect'))));
+        $socialite->redirectUrl(str_replace('auth', 'login', url(config('services.'.$provider.'.redirect'))));
         $result = $socialite->user();
 
         $user = UserAlias::where('user_snowflake', $result->id)->first();

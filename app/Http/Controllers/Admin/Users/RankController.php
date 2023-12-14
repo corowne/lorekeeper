@@ -30,7 +30,7 @@ class RankController extends Controller {
         return view('admin.users._create_edit_rank', [
             'rank'       => new Rank,
             'rankPowers' => null,
-            'powers'     => Config::get('lorekeeper.powers'),
+            'powers'     => config('lorekeeper.powers'),
             'editable'   => 1,
         ]);
     }
@@ -52,7 +52,7 @@ class RankController extends Controller {
         return view('admin.users._create_edit_rank', [
             'rank'       => $rank,
             'rankPowers' => $rank ? $rank->getPowers() : null,
-            'powers'     => Config::get('lorekeeper.powers'),
+            'powers'     => config('lorekeeper.powers'),
             'editable'   => $editable,
         ]);
     }

@@ -169,7 +169,7 @@ class CharacterController extends Controller {
             'character'   => $this->character,
             'categories'  => CharacterCategory::orderBy('sort')->pluck('name', 'id')->toArray(),
             'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
-            'number'      => format_masterlist_number($this->character->number, Config::get('lorekeeper.settings.character_number_digits')),
+            'number'      => format_masterlist_number($this->character->number, config('lorekeeper.settings.character_number_digits')),
             'isMyo'       => false,
         ]);
     }

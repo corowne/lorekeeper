@@ -38,7 +38,7 @@ class CopyDefaultImages extends Command {
         $this->info('* COPY DEFAULT IMAGES *');
         $this->info('***********************'."\n");
 
-        $images = Config::get('lorekeeper.image_files');
+        $images = config('lorekeeper.image_files');
 
         $sourceDir = base_path().'/data/images/';
         $destDir = public_path().'/images/';

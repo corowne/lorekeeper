@@ -50,7 +50,7 @@
 
         // handle the ones that were already there
         var $existingFeatures = $('#featureBody .feature-block');
-        @if (Config::get('lorekeeper.extensions.organised_traits_dropdown'))
+        @if (config('lorekeeper.extensions.organised_traits_dropdown'))
             $existingFeatures.find('.selectize').selectize({
                 render: {
                     item: featureSelectedRender
@@ -65,7 +65,7 @@
             e.preventDefault();
             var $clone = $featureSelect.clone();
             $featureBody.append($clone);
-            @if (Config::get('lorekeeper.extensions.organised_traits_dropdown'))
+            @if (config('lorekeeper.extensions.organised_traits_dropdown'))
                 $clone.find('.selectize').selectize({
                     render: {
                         item: featureSelectedRender
