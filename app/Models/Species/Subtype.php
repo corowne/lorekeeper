@@ -11,7 +11,7 @@ class Subtype extends Model {
      * @var array
      */
     protected $fillable = [
-        'species_id', 'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_visible',
+        'species_id', 'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_visible', 'hash'
     ];
 
     /**
@@ -57,7 +57,7 @@ class Subtype extends Model {
 
         RELATIONS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Get the species the subtype belongs to.
@@ -70,7 +70,7 @@ class Subtype extends Model {
 
             SCOPES
 
-        **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Scope a query to show only visible subtypes.
@@ -92,7 +92,7 @@ class Subtype extends Model {
 
         ACCESSORS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Displays the subtype's name and species.
@@ -100,7 +100,7 @@ class Subtype extends Model {
      * @return string
      */
     public function getNameWithSpeciesAttribute() {
-        return $this->name.' ['.$this->species->name.' Subtype]';
+        return $this->name . ' [' . $this->species->name . ' Subtype]';
     }
 
     /**
@@ -109,7 +109,7 @@ class Subtype extends Model {
      * @return string
      */
     public function getDisplayNameAttribute() {
-        return '<a href="'.$this->url.'" class="display-subtype">'.$this->name.'</a>';
+        return '<a href="' . $this->url . '" class="display-subtype">' . $this->name . '</a>';
     }
 
     /**
@@ -127,7 +127,7 @@ class Subtype extends Model {
      * @return string
      */
     public function getSubtypeImageFileNameAttribute() {
-        return $this->id.'-image.png';
+        return  $this->hash . $this->id . '-image.png';
     }
 
     /**
@@ -149,7 +149,7 @@ class Subtype extends Model {
             return null;
         }
 
-        return asset($this->imageDirectory.'/'.$this->subtypeImageFileName);
+        return asset($this->imageDirectory . '/' . $this->subtypeImageFileName);
     }
 
     /**
@@ -158,7 +158,7 @@ class Subtype extends Model {
      * @return string
      */
     public function getUrlAttribute() {
-        return url('world/subtypes?name='.$this->name);
+        return url('world/subtypes?name=' . $this->name);
     }
 
     /**
@@ -167,7 +167,7 @@ class Subtype extends Model {
      * @return string
      */
     public function getSearchUrlAttribute() {
-        return url('masterlist?subtype_id='.$this->id);
+        return url('masterlist?subtype_id=' . $this->id);
     }
 
     /**
@@ -176,7 +176,7 @@ class Subtype extends Model {
      * @return string
      */
     public function getAdminUrlAttribute() {
-        return url('admin/data/subtypes/edit/'.$this->id);
+        return url('admin/data/subtypes/edit/' . $this->id);
     }
 
     /**

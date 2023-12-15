@@ -16,7 +16,7 @@ class Feature extends Model {
      * @var array
      */
     protected $fillable = [
-        'feature_category_id', 'species_id', 'subtype_id', 'rarity_id', 'name', 'has_image', 'description', 'parsed_description', 'is_visible',
+        'feature_category_id', 'species_id', 'subtype_id', 'rarity_id', 'name', 'has_image', 'description', 'parsed_description', 'is_visible', 'hash'
     ];
 
     /**
@@ -59,7 +59,7 @@ class Feature extends Model {
 
         RELATIONS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Get the rarity of this feature.
@@ -93,7 +93,7 @@ class Feature extends Model {
 
         SCOPES
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Scope a query to sort features in alphabetical order.
@@ -132,7 +132,7 @@ class Feature extends Model {
     public function scopeSortSpecies($query) {
         $ids = Species::orderBy('sort', 'DESC')->pluck('id')->toArray();
 
-        return count($ids) ? $query->orderByRaw(DB::raw('FIELD(species_id, '.implode(',', $ids).')')) : $query;
+        return count($ids) ? $query->orderByRaw(DB::raw('FIELD(species_id, ' . implode(',', $ids) . ')')) : $query;
     }
 
     /**
@@ -145,7 +145,7 @@ class Feature extends Model {
     public function scopeSortSubtype($query) {
         $ids = Subtype::orderBy('sort', 'DESC')->pluck('id')->toArray();
 
-        return count($ids) ? $query->orderByRaw(DB::raw('FIELD(subtype_id, '.implode(',', $ids).')')) : $query;
+        return count($ids) ? $query->orderByRaw(DB::raw('FIELD(subtype_id, ' . implode(',', $ids) . ')')) : $query;
     }
 
     /**
@@ -159,7 +159,7 @@ class Feature extends Model {
     public function scopeSortRarity($query, $reverse = false) {
         $ids = Rarity::orderBy('sort', $reverse ? 'ASC' : 'DESC')->pluck('id')->toArray();
 
-        return count($ids) ? $query->orderByRaw(DB::raw('FIELD(rarity_id, '.implode(',', $ids).')')) : $query;
+        return count($ids) ? $query->orderByRaw(DB::raw('FIELD(rarity_id, ' . implode(',', $ids) . ')')) : $query;
     }
 
     /**
@@ -204,7 +204,7 @@ class Feature extends Model {
 
         ACCESSORS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Displays the model's name, linked to its encyclopedia page.
@@ -212,7 +212,7 @@ class Feature extends Model {
      * @return string
      */
     public function getDisplayNameAttribute() {
-        return '<a href="'.$this->url.'" class="display-trait">'.$this->name.'</a>'.($this->rarity ? ' ('.$this->rarity->displayName.')' : '');
+        return '<a href="' . $this->url . '" class="display-trait">' . $this->name . '</a>' . ($this->rarity ? ' (' . $this->rarity->displayName . ')' : '');
     }
 
     /**
@@ -230,7 +230,7 @@ class Feature extends Model {
      * @return string
      */
     public function getImageFileNameAttribute() {
-        return $this->id.'-image.png';
+        return  $this->hash . $this->id . '-image.png';
     }
 
     /**
@@ -252,7 +252,7 @@ class Feature extends Model {
             return null;
         }
 
-        return asset($this->imageDirectory.'/'.$this->imageFileName);
+        return asset($this->imageDirectory . '/' . $this->imageFileName);
     }
 
     /**
@@ -261,7 +261,7 @@ class Feature extends Model {
      * @return string
      */
     public function getUrlAttribute() {
-        return url('world/traits?name='.$this->name);
+        return url('world/traits?name=' . $this->name);
     }
 
     /**
@@ -270,7 +270,7 @@ class Feature extends Model {
      * @return string
      */
     public function getSearchUrlAttribute() {
-        return url('masterlist?feature_id[]='.$this->id);
+        return url('masterlist?feature_id[]=' . $this->id);
     }
 
     /**
@@ -279,7 +279,7 @@ class Feature extends Model {
      * @return string
      */
     public function getAdminUrlAttribute() {
-        return url('admin/data/traits/edit/'.$this->id);
+        return url('admin/data/traits/edit/' . $this->id);
     }
 
     /**
@@ -295,7 +295,7 @@ class Feature extends Model {
 
         Other Functions
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     public static function getDropdownItems($withHidden = 0) {
         if (Config::get('lorekeeper.extensions.organised_traits_dropdown')) {

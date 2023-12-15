@@ -11,7 +11,7 @@ class PromptCategory extends Model {
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description',
+        'name', 'sort', 'has_image', 'description', 'parsed_description', 'hash'
     ];
 
     /**
@@ -46,7 +46,7 @@ class PromptCategory extends Model {
 
         ACCESSORS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Displays the model's name, linked to its encyclopedia page.
@@ -54,7 +54,7 @@ class PromptCategory extends Model {
      * @return string
      */
     public function getDisplayNameAttribute() {
-        return '<a href="'.$this->url.'" class="display-category">'.$this->name.'</a>';
+        return '<a href="' . $this->url . '" class="display-category">' . $this->name . '</a>';
     }
 
     /**
@@ -72,7 +72,7 @@ class PromptCategory extends Model {
      * @return string
      */
     public function getCategoryImageFileNameAttribute() {
-        return $this->id.'-image.png';
+        return  $this->hash . $this->id . '-image.png';
     }
 
     /**
@@ -94,7 +94,7 @@ class PromptCategory extends Model {
             return null;
         }
 
-        return asset($this->imageDirectory.'/'.$this->categoryImageFileName);
+        return asset($this->imageDirectory . '/' . $this->categoryImageFileName);
     }
 
     /**
@@ -103,7 +103,7 @@ class PromptCategory extends Model {
      * @return string
      */
     public function getUrlAttribute() {
-        return url('prompts/prompt-categories?name='.$this->name);
+        return url('prompts/prompt-categories?name=' . $this->name);
     }
 
     /**
@@ -112,7 +112,7 @@ class PromptCategory extends Model {
      * @return string
      */
     public function getSearchUrlAttribute() {
-        return url('prompts/prompts?prompt_category_id='.$this->id);
+        return url('prompts/prompts?prompt_category_id=' . $this->id);
     }
 
     /**
@@ -121,7 +121,7 @@ class PromptCategory extends Model {
      * @return string
      */
     public function getAdminUrlAttribute() {
-        return url('admin/data/prompt-categories/edit/'.$this->id);
+        return url('admin/data/prompt-categories/edit/' . $this->id);
     }
 
     /**

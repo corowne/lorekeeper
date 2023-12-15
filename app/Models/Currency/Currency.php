@@ -14,7 +14,7 @@ class Currency extends Model {
         'is_user_owned', 'is_character_owned',
         'name', 'abbreviation', 'description', 'parsed_description', 'sort_user', 'sort_character',
         'is_displayed', 'allow_user_to_user', 'allow_user_to_character', 'allow_character_to_user',
-        'has_icon', 'has_image',
+        'has_icon', 'has_image', 'hash'
     ];
 
     /**
@@ -53,7 +53,7 @@ class Currency extends Model {
 
         ACCESSORS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Displays the currency as an icon with tooltip.
@@ -61,7 +61,7 @@ class Currency extends Model {
      * @return string
      */
     public function getDisplayIconAttribute() {
-        return '<img src="'.$this->currencyIconUrl.'" title="'.$this->name.($this->abbreviation ? ' ('.$this->abbreviation.')' : '').'" data-toggle="tooltip" alt="'.$this->name.'"/>';
+        return '<img src="' . $this->currencyIconUrl . '" title="' . $this->name . ($this->abbreviation ? ' (' . $this->abbreviation . ')' : '') . '" data-toggle="tooltip" alt="' . $this->name . '"/>';
     }
 
     /**
@@ -79,7 +79,7 @@ class Currency extends Model {
      * @return string
      */
     public function getCurrencyImageFileNameAttribute() {
-        return $this->id.'-image.png';
+        return  $this->hash . $this->id . '-image.png';
     }
 
     /**
@@ -88,7 +88,7 @@ class Currency extends Model {
      * @return string
      */
     public function getCurrencyIconFileNameAttribute() {
-        return $this->id.'-icon.png';
+        return  $this->hash . $this->id . '-icon.png';
     }
 
     /**
@@ -119,7 +119,7 @@ class Currency extends Model {
             return null;
         }
 
-        return asset($this->imageDirectory.'/'.$this->currencyImageFileName);
+        return asset($this->imageDirectory . '/' . $this->currencyImageFileName);
     }
 
     /**
@@ -132,14 +132,14 @@ class Currency extends Model {
             return null;
         }
 
-        return asset($this->imageDirectory.'/'.$this->currencyIconFileName);
+        return asset($this->imageDirectory . '/' . $this->currencyIconFileName);
     }
 
     /**********************************************************************************************
 
         ACCESSORS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Displays the model's name, linked to its encyclopedia page.
@@ -147,7 +147,7 @@ class Currency extends Model {
      * @return string
      */
     public function getDisplayNameAttribute() {
-        return '<a href="'.$this->url.'" class="display-currency">'.$this->name.'</a>';
+        return '<a href="' . $this->url . '" class="display-currency">' . $this->name . '</a>';
     }
 
     /**
@@ -156,7 +156,7 @@ class Currency extends Model {
      * @return string
      */
     public function getUrlAttribute() {
-        return url('world/currencies?name='.$this->name);
+        return url('world/currencies?name=' . $this->name);
     }
 
     /**
@@ -174,7 +174,7 @@ class Currency extends Model {
      * @return string
      */
     public function getAdminUrlAttribute() {
-        return url('admin/data/currencies/edit/'.$this->id);
+        return url('admin/data/currencies/edit/' . $this->id);
     }
 
     /**
@@ -190,7 +190,7 @@ class Currency extends Model {
 
         OTHER FUNCTIONS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Displays a given value of the currency with icon, abbreviation or name.
@@ -200,7 +200,7 @@ class Currency extends Model {
      * @return string
      */
     public function display($value) {
-        $ret = '<span class="display-currency">'.$value.' ';
+        $ret = '<span class="display-currency">' . $value . ' ';
         if ($this->has_icon) {
             $ret .= $this->displayIcon;
         } elseif ($this->abbreviation) {
@@ -209,6 +209,6 @@ class Currency extends Model {
             $ret .= $this->name;
         }
 
-        return $ret.'</span>';
+        return $ret . '</span>';
     }
 }

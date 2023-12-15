@@ -11,7 +11,7 @@ class Species extends Model {
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description', 'masterlist_sub_id', 'is_visible',
+        'name', 'sort', 'has_image', 'description', 'parsed_description', 'masterlist_sub_id', 'is_visible', 'hash'
     ];
 
     /**
@@ -46,7 +46,7 @@ class Species extends Model {
 
         RELATIONS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Get the subtypes for this species.
@@ -73,7 +73,7 @@ class Species extends Model {
 
         SCOPES
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Scope a query to show only visible species.
@@ -95,7 +95,7 @@ class Species extends Model {
 
         ACCESSORS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Displays the model's name, linked to its encyclopedia page.
@@ -103,7 +103,7 @@ class Species extends Model {
      * @return string
      */
     public function getDisplayNameAttribute() {
-        return '<a href="'.$this->url.'" class="display-species">'.$this->name.'</a>';
+        return '<a href="' . $this->url . '" class="display-species">' . $this->name . '</a>';
     }
 
     /**
@@ -121,7 +121,7 @@ class Species extends Model {
      * @return string
      */
     public function getSpeciesImageFileNameAttribute() {
-        return $this->id.'-image.png';
+        return  $this->hash . $this->id . '-image.png';
     }
 
     /**
@@ -143,7 +143,7 @@ class Species extends Model {
             return null;
         }
 
-        return asset($this->imageDirectory.'/'.$this->speciesImageFileName);
+        return asset($this->imageDirectory . '/' . $this->speciesImageFileName);
     }
 
     /**
@@ -152,7 +152,7 @@ class Species extends Model {
      * @return string
      */
     public function getUrlAttribute() {
-        return url('world/species?name='.$this->name);
+        return url('world/species?name=' . $this->name);
     }
 
     /**
@@ -162,9 +162,9 @@ class Species extends Model {
      */
     public function getSearchUrlAttribute() {
         if ($this->masterlist_sub_id != 0 && $this->sublist->show_main == 0) {
-            return url('sublist/'.$this->sublist->key.'?species_id='.$this->id);
+            return url('sublist/' . $this->sublist->key . '?species_id=' . $this->id);
         } else {
-            return url('masterlist?species_id='.$this->id);
+            return url('masterlist?species_id=' . $this->id);
         }
     }
 
@@ -174,7 +174,7 @@ class Species extends Model {
      * @return string
      */
     public function getVisualTraitsUrlAttribute() {
-        return url('/world/species/'.$this->id.'/traits');
+        return url('/world/species/' . $this->id . '/traits');
     }
 
     /**
@@ -183,7 +183,7 @@ class Species extends Model {
      * @return string
      */
     public function getAdminUrlAttribute() {
-        return url('admin/data/species/edit/'.$this->id);
+        return url('admin/data/species/edit/' . $this->id);
     }
 
     /**

@@ -9,7 +9,7 @@ class Rarity extends Model {
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'color', 'has_image', 'description', 'parsed_description',
+        'name', 'sort', 'color', 'has_image', 'description', 'parsed_description', 'hash'
     ];
 
     /**
@@ -46,7 +46,7 @@ class Rarity extends Model {
 
         ACCESSORS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Displays the model's name, linked to its encyclopedia page.
@@ -54,7 +54,7 @@ class Rarity extends Model {
      * @return string
      */
     public function getDisplayNameAttribute() {
-        return '<a href="'.$this->url.'" class="display-rarity" '.($this->color ? 'style="color: #'.$this->color.';"' : '').'>'.$this->name.'</a>';
+        return '<a href="' . $this->url . '" class="display-rarity" ' . ($this->color ? 'style="color: #' . $this->color . ';"' : '') . '>' . $this->name . '</a>';
     }
 
     /**
@@ -72,7 +72,7 @@ class Rarity extends Model {
      * @return string
      */
     public function getRarityImageFileNameAttribute() {
-        return $this->id.'-image.png';
+        return $this->hash . $this->id . '-image.png';
     }
 
     /**
@@ -94,7 +94,7 @@ class Rarity extends Model {
             return null;
         }
 
-        return asset($this->imageDirectory.'/'.$this->rarityImageFileName);
+        return asset($this->imageDirectory . '/' . $this->rarityImageFileName);
     }
 
     /**
@@ -103,7 +103,7 @@ class Rarity extends Model {
      * @return string
      */
     public function getUrlAttribute() {
-        return url('world/rarities?name='.$this->name);
+        return url('world/rarities?name=' . $this->name);
     }
 
     /**
@@ -112,7 +112,7 @@ class Rarity extends Model {
      * @return string
      */
     public function getSearchFeaturesUrlAttribute() {
-        return url('world/traits?rarity_id='.$this->id);
+        return url('world/traits?rarity_id=' . $this->id);
     }
 
     /**
@@ -121,7 +121,7 @@ class Rarity extends Model {
      * @return string
      */
     public function getSearchCharactersUrlAttribute() {
-        return url('masterlist?rarity_id='.$this->id);
+        return url('masterlist?rarity_id=' . $this->id);
     }
 
     /**
@@ -130,7 +130,7 @@ class Rarity extends Model {
      * @return string
      */
     public function getAdminUrlAttribute() {
-        return url('admin/data/rarities/edit/'.$this->id);
+        return url('admin/data/rarities/edit/' . $this->id);
     }
 
     /**
