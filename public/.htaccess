@@ -18,4 +18,12 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+    
+    # Deny access to no referrer
+    RewriteCond %{HTTP_REFERER} ^$
+    RewriteRule \.(jpg|jpeg|png|gif)$ [NC,F,L]
+    
+    # Deny access to referrer that is not the host
+    RewriteCond %{HTTP_HOST}@@%{HTTP_REFERER} !^([^@]*)@@https?://\1/.* [NC]
+    RewriteRule \.(jpg|jpeg|png|gif)$ [NC,F,L]
 </IfModule>
