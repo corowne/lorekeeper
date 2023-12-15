@@ -14,7 +14,7 @@ class Prompt extends Model {
     protected $fillable = [
         'prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active',
         'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image', 'prefix',
-        'hide_submissions', 'staff_only', 'hash'
+        'hide_submissions', 'staff_only', 'hash',
     ];
 
     /**
@@ -237,7 +237,7 @@ class Prompt extends Model {
      * @return string
      */
     public function getDisplayNameAttribute() {
-        return '<a href="' . $this->url . '" class="display-prompt">' . $this->name . '</a>';
+        return '<a href="'.$this->url.'" class="display-prompt">'.$this->name.'</a>';
     }
 
     /**
@@ -255,7 +255,7 @@ class Prompt extends Model {
      * @return string
      */
     public function getImageFileNameAttribute() {
-        return  $this->hash . $this->id . '-image.png';
+        return $this->hash.$this->id.'-image.png';
     }
 
     /**
@@ -277,7 +277,7 @@ class Prompt extends Model {
             return null;
         }
 
-        return asset($this->imageDirectory . '/' . $this->imageFileName);
+        return asset($this->imageDirectory.'/'.$this->imageFileName);
     }
 
     /**
@@ -286,7 +286,7 @@ class Prompt extends Model {
      * @return string
      */
     public function getUrlAttribute() {
-        return url('prompts/prompts?name=' . $this->name);
+        return url('prompts/prompts?name='.$this->name);
     }
 
     /**
@@ -304,7 +304,7 @@ class Prompt extends Model {
      * @return string
      */
     public function getAdminUrlAttribute() {
-        return url('admin/data/prompts/edit/' . $this->id);
+        return url('admin/data/prompts/edit/'.$this->id);
     }
 
     /**

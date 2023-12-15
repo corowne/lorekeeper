@@ -15,7 +15,7 @@ class Item extends Model {
      */
     protected $fillable = [
         'item_category_id', 'name', 'has_image', 'description', 'parsed_description', 'allow_transfer',
-        'data', 'reference_url', 'artist_alias', 'artist_url', 'artist_id', 'is_released', 'hash'
+        'data', 'reference_url', 'artist_alias', 'artist_url', 'artist_id', 'is_released', 'hash',
     ];
 
     protected $appends = ['image_url'];
@@ -164,7 +164,7 @@ class Item extends Model {
      * @return string
      */
     public function getDisplayNameAttribute() {
-        return '<a href="' . $this->url . '" class="display-item">' . $this->name . '</a>';
+        return '<a href="'.$this->url.'" class="display-item">'.$this->name.'</a>';
     }
 
     /**
@@ -182,7 +182,7 @@ class Item extends Model {
      * @return string
      */
     public function getImageFileNameAttribute() {
-        return  $this->hash . $this->id . '-image.png';
+        return $this->hash.$this->id.'-image.png';
     }
 
     /**
@@ -204,7 +204,7 @@ class Item extends Model {
             return null;
         }
 
-        return asset($this->imageDirectory . '/' . $this->imageFileName);
+        return asset($this->imageDirectory.'/'.$this->imageFileName);
     }
 
     /**
@@ -213,7 +213,7 @@ class Item extends Model {
      * @return string
      */
     public function getUrlAttribute() {
-        return url('world/items?name=' . $this->name);
+        return url('world/items?name='.$this->name);
     }
 
     /**
@@ -222,7 +222,7 @@ class Item extends Model {
      * @return string
      */
     public function getIdUrlAttribute() {
-        return url('world/items/' . $this->id);
+        return url('world/items/'.$this->id);
     }
 
     /**
@@ -371,7 +371,7 @@ class Item extends Model {
      * @return string
      */
     public function getAdminUrlAttribute() {
-        return url('admin/data/items/edit/' . $this->id);
+        return url('admin/data/items/edit/'.$this->id);
     }
 
     /**

@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\Schema;
 class AddImageHashToImages extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up() {
         Schema::table('subtypes', function (Blueprint $table) {
@@ -51,8 +49,6 @@ class AddImageHashToImages extends Migration {
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down() {
         Schema::table('subtypes', function (Blueprint $table) {

@@ -11,7 +11,7 @@ class Shop extends Model {
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_active', 'hash'
+        'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_active', 'hash',
     ];
 
     /**
@@ -74,7 +74,7 @@ class Shop extends Model {
      * @return string
      */
     public function getDisplayNameAttribute() {
-        return '<a href="' . $this->url . '" class="display-shop">' . $this->name . '</a>';
+        return '<a href="'.$this->url.'" class="display-shop">'.$this->name.'</a>';
     }
 
     /**
@@ -92,7 +92,7 @@ class Shop extends Model {
      * @return string
      */
     public function getShopImageFileNameAttribute() {
-        return  $this->hash . $this->id . '-image.png';
+        return $this->hash.$this->id.'-image.png';
     }
 
     /**
@@ -114,7 +114,7 @@ class Shop extends Model {
             return null;
         }
 
-        return asset($this->imageDirectory . '/' . $this->shopImageFileName);
+        return asset($this->imageDirectory.'/'.$this->shopImageFileName);
     }
 
     /**
@@ -123,7 +123,7 @@ class Shop extends Model {
      * @return string
      */
     public function getUrlAttribute() {
-        return url('shops/' . $this->id);
+        return url('shops/'.$this->id);
     }
 
     /**
@@ -132,7 +132,7 @@ class Shop extends Model {
      * @return string
      */
     public function getAdminUrlAttribute() {
-        return url('admin/data/shops/edit/' . $this->id);
+        return url('admin/data/shops/edit/'.$this->id);
     }
 
     /**

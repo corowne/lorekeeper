@@ -11,7 +11,7 @@ class FeatureCategory extends Model {
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_visible', 'hash'
+        'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_visible', 'hash',
     ];
 
     /**
@@ -77,7 +77,7 @@ class FeatureCategory extends Model {
      * @return string
      */
     public function getDisplayNameAttribute() {
-        return '<a href="' . $this->url . '" class="display-category">' . $this->name . '</a>';
+        return '<a href="'.$this->url.'" class="display-category">'.$this->name.'</a>';
     }
 
     /**
@@ -95,7 +95,7 @@ class FeatureCategory extends Model {
      * @return string
      */
     public function getCategoryImageFileNameAttribute() {
-        return  $this->hash . $this->id . '-image.png';
+        return $this->hash.$this->id.'-image.png';
     }
 
     /**
@@ -117,7 +117,7 @@ class FeatureCategory extends Model {
             return null;
         }
 
-        return asset($this->imageDirectory . '/' . $this->categoryImageFileName);
+        return asset($this->imageDirectory.'/'.$this->categoryImageFileName);
     }
 
     /**
@@ -126,7 +126,7 @@ class FeatureCategory extends Model {
      * @return string
      */
     public function getUrlAttribute() {
-        return url('world/trait-categories?name=' . $this->name);
+        return url('world/trait-categories?name='.$this->name);
     }
 
     /**
@@ -135,7 +135,7 @@ class FeatureCategory extends Model {
      * @return string
      */
     public function getSearchUrlAttribute() {
-        return url('world/traits?feature_category_id=' . $this->id);
+        return url('world/traits?feature_category_id='.$this->id);
     }
 
     /**
@@ -144,7 +144,7 @@ class FeatureCategory extends Model {
      * @return string
      */
     public function getAdminUrlAttribute() {
-        return url('admin/data/trait-categories/edit/' . $this->id);
+        return url('admin/data/trait-categories/edit/'.$this->id);
     }
 
     /**

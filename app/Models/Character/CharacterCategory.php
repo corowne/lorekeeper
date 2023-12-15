@@ -11,7 +11,7 @@ class CharacterCategory extends Model {
      * @var array
      */
     protected $fillable = [
-        'code', 'name', 'sort', 'has_image', 'description', 'parsed_description', 'masterlist_sub_id', 'is_visible', 'hash'
+        'code', 'name', 'sort', 'has_image', 'description', 'parsed_description', 'masterlist_sub_id', 'is_visible', 'hash',
     ];
 
     /**
@@ -92,7 +92,7 @@ class CharacterCategory extends Model {
      * @return string
      */
     public function getDisplayNameAttribute() {
-        return '<a href="' . $this->url . '" class="display-category">' . $this->name . ' (' . $this->code . ')</a>';
+        return '<a href="'.$this->url.'" class="display-category">'.$this->name.' ('.$this->code.')</a>';
     }
 
     /**
@@ -110,7 +110,7 @@ class CharacterCategory extends Model {
      * @return string
      */
     public function getCategoryImageFileNameAttribute() {
-        return  $this->hash . $this->id . '-image.png';
+        return $this->hash.$this->id.'-image.png';
     }
 
     /**
@@ -132,7 +132,7 @@ class CharacterCategory extends Model {
             return null;
         }
 
-        return asset($this->imageDirectory . '/' . $this->categoryImageFileName);
+        return asset($this->imageDirectory.'/'.$this->categoryImageFileName);
     }
 
     /**
@@ -141,7 +141,7 @@ class CharacterCategory extends Model {
      * @return string
      */
     public function getUrlAttribute() {
-        return url('world/character-categories?name=' . $this->name);
+        return url('world/character-categories?name='.$this->name);
     }
 
     /**
@@ -151,9 +151,9 @@ class CharacterCategory extends Model {
      */
     public function getSearchUrlAttribute() {
         if ($this->masterlist_sub_id != 0 && $this->sublist->show_main == 0) {
-            return url('sublist/' . $this->sublist->key . '?character_category_id=' . $this->id);
+            return url('sublist/'.$this->sublist->key.'?character_category_id='.$this->id);
         } else {
-            return url('masterlist?character_category_id=' . $this->id);
+            return url('masterlist?character_category_id='.$this->id);
         }
     }
 
@@ -163,7 +163,7 @@ class CharacterCategory extends Model {
      * @return string
      */
     public function getAdminUrlAttribute() {
-        return url('admin/data/character-categories/edit/' . $this->id);
+        return url('admin/data/character-categories/edit/'.$this->id);
     }
 
     /**
