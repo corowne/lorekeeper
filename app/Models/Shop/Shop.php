@@ -11,7 +11,7 @@ class Shop extends Model {
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_active',
+        'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_active', 'hash',
     ];
 
     /**
@@ -92,7 +92,7 @@ class Shop extends Model {
      * @return string
      */
     public function getShopImageFileNameAttribute() {
-        return $this->id.'-image.png';
+        return $this->hash.$this->id.'-image.png';
     }
 
     /**
