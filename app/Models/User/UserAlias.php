@@ -3,7 +3,6 @@
 namespace App\Models\User;
 
 use App\Models\Model;
-use Illuminate\Support\Facades\Config;
 
 class UserAlias extends Model {
     /**
