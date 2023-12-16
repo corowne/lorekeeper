@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Facades\Settings;
 use App\Http\Controllers\Controller;
 use App\Models\Invitation;
 use App\Models\User\User;
@@ -9,12 +10,11 @@ use App\Models\User\UserAlias;
 use App\Services\InvitationService;
 use App\Services\LinkService;
 use App\Services\UserService;
-use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
-use Settings;
 
 class RegisterController extends Controller {
     /*

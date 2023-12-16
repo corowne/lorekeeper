@@ -72,7 +72,7 @@
 
         // Traits /////////////////////////////////////////////////////////////////////////////////////
 
-        @if (Config::get('lorekeeper.extensions.organised_traits_dropdown'))
+        @if (config('lorekeeper.extensions.organised_traits_dropdown'))
             $('.initial.feature-select').selectize({
                 render: {
                     item: featureSelectedRender
@@ -99,7 +99,7 @@
                 e.preventDefault();
                 removeFeatureRow($(this));
             })
-            @if (Config::get('lorekeeper.extensions.organised_traits_dropdown'))
+            @if (config('lorekeeper.extensions.organised_traits_dropdown'))
                 $clone.find('.feature-select').selectize({
                     render: {
                         item: featureSelectedRender
@@ -120,8 +120,8 @@
 
         // Croppie ////////////////////////////////////////////////////////////////////////////////////
 
-        var thumbnailWidth = {{ Config::get('lorekeeper.settings.masterlist_thumbnails.width') }};
-        var thumbnailHeight = {{ Config::get('lorekeeper.settings.masterlist_thumbnails.height') }};
+        var thumbnailWidth = {{ config('lorekeeper.settings.masterlist_thumbnails.width') }};
+        var thumbnailHeight = {{ config('lorekeeper.settings.masterlist_thumbnails.height') }};
         var $cropper = $('#cropper');
         var c = null;
         var $x0 = $('#cropX0');

@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterImage;
 use App\Models\Rarity;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class RarityService extends Service {
     /*

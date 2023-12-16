@@ -5,10 +5,9 @@ namespace App\Services;
 use App;
 use App\Models\AdminLog;
 use App\Models\Currency\Currency;
-use Auth;
-use Config;
-use DB;
-use File;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\MessageBag;
 
 abstract class Service {
@@ -164,7 +163,7 @@ abstract class Service {
         if ($user->isStaff) {
             // If staff rewards are enabled, check if the action
             // is eligible for a reward, and if so, grant it
-            if (Config::get('lorekeeper.extensions.staff_rewards.enabled')) {
+            if (config('lorekeeper.extensions.staff_rewards.enabled')) {
                 // Ensure that the user only receives rewards for the action once
                 if (!AdminLog::where('user_id', $user->id)->where('action', $action)->where('action_details', $action_details)->exists()) {
                     // Fetch all configured actions
@@ -199,7 +198,7 @@ abstract class Service {
                     // Grant the calculated reward to the user
                     if ($reward) {
                         // Check that the currency exists, first
-                        $currency = Currency::find(Config::get('lorekeeper.extensions.staff_rewards.currency_id'));
+                        $currency = Currency::find(config('lorekeeper.extensions.staff_rewards.currency_id'));
                         if ($currency) {
                             if (!(new CurrencyManager)->creditCurrency(null, $user, 'Staff Reward', $action_details, $currency, $reward)) {
                                 return false;

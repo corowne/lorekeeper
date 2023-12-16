@@ -3,8 +3,7 @@
 namespace App\Services;
 
 use App\Models\SitePage;
-use Config;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class PageService extends Service {
     /*
@@ -102,7 +101,7 @@ class PageService extends Service {
 
         try {
             // Specific pages such as the TOS/privacy policy cannot be deleted from the admin panel.
-            if (Config::get('lorekeeper.text_pages.'.$page->key)) {
+            if (config('lorekeeper.text_pages.'.$page->key)) {
                 throw new \Exception('You cannot delete this page.');
             }
 

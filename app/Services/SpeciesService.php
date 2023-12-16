@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Character\CharacterImage;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class SpeciesService extends Service {
     /*

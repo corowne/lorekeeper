@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterImage;
 use Illuminate\Console\Command;
-use Image;
+use Intervention\Image\Facades\Image;
 
 class WatermarkOldImages extends Command {
     /**

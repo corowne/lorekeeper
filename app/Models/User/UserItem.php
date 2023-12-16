@@ -2,6 +2,7 @@
 
 namespace App\Models\User;
 
+use App\Models\Item\Item;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -41,14 +42,14 @@ class UserItem extends Model {
      * Get the user who owns the stack.
      */
     public function user() {
-        return $this->belongsTo('App\Models\User\User');
+        return $this->belongsTo(User::class);
     }
 
     /**
      * Get the item associated with this item stack.
      */
     public function item() {
-        return $this->belongsTo('App\Models\Item\Item');
+        return $this->belongsTo(Item::class);
     }
 
     /**********************************************************************************************

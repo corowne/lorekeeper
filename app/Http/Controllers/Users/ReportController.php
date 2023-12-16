@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Users;
 
+use App\Facades\Settings;
 use App\Http\Controllers\Controller;
 use App\Models\Report\Report;
 use App\Models\User\User;
 use App\Services\ReportManager;
-use Auth;
 use Illuminate\Http\Request;
-use Settings;
+use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller {
     /**********************************************************************************************

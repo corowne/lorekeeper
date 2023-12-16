@@ -2,15 +2,14 @@
 
 namespace App\Services;
 
+use App\Facades\Notifications;
 use App\Models\Character\CharacterItem;
 use App\Models\Item\Item;
 use App\Models\User\User;
 use App\Models\User\UserItem;
 use Carbon\Carbon;
-use Config;
-use DB;
 use Illuminate\Support\Arr;
-use Notifications;
+use Illuminate\Support\Facades\DB;
 
 class InventoryManager extends Service {
     /*
@@ -420,7 +419,7 @@ class InventoryManager extends Service {
                 if (!isset($stack->item->data['resell'])) {
                     throw new \Exception('This item cannot be sold.');
                 }
-                if (!Config::get('lorekeeper.extensions.item_entry_expansion.resale_function')) {
+                if (!config('lorekeeper.extensions.item_entry_expansion.resale_function')) {
                     throw new \Exception('This function is not currently enabled.');
                 }
 

@@ -7,8 +7,8 @@ use App\Models\Currency\Currency;
 use App\Models\Item\Item;
 use App\Models\Shop\Shop;
 use App\Services\ShopService;
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ShopController extends Controller {
     /*

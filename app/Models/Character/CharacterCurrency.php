@@ -2,6 +2,7 @@
 
 namespace App\Models\Character;
 
+use App\Models\Currency\Currency;
 use App\Models\Model;
 
 class CharacterCurrency extends Model {
@@ -31,14 +32,14 @@ class CharacterCurrency extends Model {
      * Get the character the record belongs to.
      */
     public function character() {
-        return $this->belongsTo('App\Models\Character\Character');
+        return $this->belongsTo(Character::class);
     }
 
     /**
      * Get the currency associated with this record.
      */
     public function currency() {
-        return $this->belongsTo('App\Models\Currency\Currency');
+        return $this->belongsTo(Currency::class);
     }
 
     /**********************************************************************************************

@@ -55,7 +55,7 @@ class CharacterCategory extends Model {
      * Get the sub masterlist for this species.
      */
     public function sublist() {
-        return $this->belongsTo('App\Models\Character\Sublist', 'masterlist_sub_id');
+        return $this->belongsTo(Sublist::class, 'masterlist_sub_id');
     }
 
     /**********************************************************************************************

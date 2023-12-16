@@ -7,7 +7,7 @@
 @section('gallery-content')
     {!! breadcrumbs(['Gallery' => 'gallery']) !!}
     <h1>
-        @if (Config::get('lorekeeper.extensions.show_all_recent_submissions.enable') && Config::get('lorekeeper.extensions.show_all_recent_submissions.links.indexbutton'))
+        @if (config('lorekeeper.extensions.show_all_recent_submissions.enable') && config('lorekeeper.extensions.show_all_recent_submissions.links.indexbutton'))
             <div class="float-right">
                 <a class="btn btn-primary" href="gallery/all">
                     All Recent Submissions

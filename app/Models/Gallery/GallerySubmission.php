@@ -2,12 +2,13 @@
 
 namespace App\Models\Gallery;
 
+use App\Facades\Settings;
 use App\Models\Currency\Currency;
 use App\Models\Model;
 use App\Models\Prompt\Prompt;
 use App\Models\Submission\Submission;
+use App\Models\User\User;
 use App\Traits\Commentable;
-use Settings;
 
 class GallerySubmission extends Model {
     use Commentable;
@@ -73,56 +74,56 @@ class GallerySubmission extends Model {
      * Get the user who made the submission.
      */
     public function user() {
-        return $this->belongsTo('App\Models\User\User', 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
      * Get the staff member who last edited the submission's comments.
      */
     public function staff() {
-        return $this->belongsTo('App\Models\User\User', 'staff_id');
+        return $this->belongsTo(User::class, 'staff_id');
     }
 
     /**
      * Get the collaborating users on the submission.
      */
     public function collaborators() {
-        return $this->hasMany('App\Models\Gallery\GalleryCollaborator', 'gallery_submission_id')->where('type', 'Collab');
+        return $this->hasMany(GalleryCollaborator::class, 'gallery_submission_id')->where('type', 'Collab');
     }
 
     /**
      * Get the user(s) who are related to the submission in some way.
      */
     public function participants() {
-        return $this->hasMany('App\Models\Gallery\GalleryCollaborator', 'gallery_submission_id')->where('type', '!=', 'Collab');
+        return $this->hasMany(GalleryCollaborator::class, 'gallery_submission_id')->where('type', '!=', 'Collab');
     }
 
     /**
      * Get the characters associated with the submission.
      */
     public function characters() {
-        return $this->hasMany('App\Models\Gallery\GalleryCharacter', 'gallery_submission_id');
+        return $this->hasMany(GalleryCharacter::class, 'gallery_submission_id');
     }
 
     /**
      * Get any favorites on the submission.
      */
     public function favorites() {
-        return $this->hasMany('App\Models\Gallery\GalleryFavorite', 'gallery_submission_id');
+        return $this->hasMany(GalleryFavorite::class, 'gallery_submission_id');
     }
 
     /**
      * Get the gallery this submission is in.
      */
     public function gallery() {
-        return $this->belongsTo('App\Models\Gallery\Gallery', 'gallery_id');
+        return $this->belongsTo(Gallery::class, 'gallery_id');
     }
 
     /**
      * Get the prompt this submission is for if relevant.
      */
     public function prompt() {
-        return $this->belongsTo('App\Models\Prompt\Prompt', 'prompt_id');
+        return $this->belongsTo(Prompt::class, 'prompt_id');
     }
 
     /**********************************************************************************************

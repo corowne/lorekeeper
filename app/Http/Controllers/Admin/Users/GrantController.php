@@ -14,8 +14,8 @@ use App\Models\User\User;
 use App\Models\User\UserItem;
 use App\Services\CurrencyManager;
 use App\Services\InventoryManager;
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class GrantController extends Controller {
     /**

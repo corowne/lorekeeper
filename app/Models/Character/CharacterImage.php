@@ -3,6 +3,10 @@
 namespace App\Models\Character;
 
 use App\Models\Model;
+use App\Models\Rarity;
+use App\Models\Species\Species;
+use App\Models\Species\Subtype;
+use App\Models\User\User;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CharacterImage extends Model {
@@ -70,35 +74,35 @@ class CharacterImage extends Model {
      * Get the character associated with the image.
      */
     public function character() {
-        return $this->belongsTo('App\Models\Character\Character', 'character_id');
+        return $this->belongsTo(Character::class, 'character_id');
     }
 
     /**
      * Get the user who owned the character at the time of image creation.
      */
     public function user() {
-        return $this->belongsTo('App\Models\User\User', 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
      * Get the species of the character image.
      */
     public function species() {
-        return $this->belongsTo('App\Models\Species\Species', 'species_id');
+        return $this->belongsTo(Species::class, 'species_id');
     }
 
     /**
      * Get the subtype of the character image.
      */
     public function subtype() {
-        return $this->belongsTo('App\Models\Species\Subtype', 'subtype_id');
+        return $this->belongsTo(Subtype::class, 'subtype_id');
     }
 
     /**
      * Get the rarity of the character image.
      */
     public function rarity() {
-        return $this->belongsTo('App\Models\Rarity', 'rarity_id');
+        return $this->belongsTo(Rarity::class, 'rarity_id');
     }
 
     /**
@@ -106,7 +110,7 @@ class CharacterImage extends Model {
      */
     public function features() {
         $query = $this
-            ->hasMany('App\Models\Character\CharacterFeature', 'character_image_id')->where('character_features.character_type', 'Character')
+            ->hasMany(CharacterFeature::class, 'character_image_id')->where('character_features.character_type', 'Character')
             ->join('features', 'features.id', '=', 'character_features.feature_id')
             ->leftJoin('feature_categories', 'feature_categories.id', '=', 'features.feature_category_id')
             ->select(['character_features.*', 'features.*', 'character_features.id AS character_feature_id', 'feature_categories.sort']);
@@ -118,21 +122,21 @@ class CharacterImage extends Model {
      * Get the designers/artists attached to the character image.
      */
     public function creators() {
-        return $this->hasMany('App\Models\Character\CharacterImageCreator', 'character_image_id');
+        return $this->hasMany(CharacterImageCreator::class, 'character_image_id');
     }
 
     /**
      * Get the designers attached to the character image.
      */
     public function designers() {
-        return $this->hasMany('App\Models\Character\CharacterImageCreator', 'character_image_id')->where('type', 'Designer')->where('character_type', 'Character');
+        return $this->hasMany(CharacterImageCreator::class, 'character_image_id')->where('type', 'Designer')->where('character_type', 'Character');
     }
 
     /**
      * Get the artists attached to the character image.
      */
     public function artists() {
-        return $this->hasMany('App\Models\Character\CharacterImageCreator', 'character_image_id')->where('type', 'Artist')->where('character_type', 'Character');
+        return $this->hasMany(CharacterImageCreator::class, 'character_image_id')->where('type', 'Artist')->where('character_type', 'Character');
     }
 
     /**********************************************************************************************

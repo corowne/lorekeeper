@@ -3,6 +3,7 @@
 namespace App\Models\Sales;
 
 use App\Models\Model;
+use App\Models\User\User;
 use App\Traits\Commentable;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -75,14 +76,14 @@ class Sales extends Model implements Feedable {
      * Get the user who created the Sales post.
      */
     public function user() {
-        return $this->belongsTo('App\Models\User\User');
+        return $this->belongsTo(User::class);
     }
 
     /**
      * Get the characters associated with the sales post.
      */
     public function characters() {
-        return $this->hasMany('App\Models\Sales\SalesCharacter', 'sales_id');
+        return $this->hasMany(SalesCharacter::class, 'sales_id');
     }
 
     /**********************************************************************************************

@@ -2,6 +2,7 @@
 
 namespace App\Models\Character;
 
+use App\Models\Feature\Feature;
 use App\Models\Model;
 
 class CharacterFeature extends Model {
@@ -38,13 +39,13 @@ class CharacterFeature extends Model {
      * Get the image associated with this record.
      */
     public function image() {
-        return $this->belongsTo('App\Models\Character\CharacterImage', 'character_image_id');
+        return $this->belongsTo(CharacterImage::class, 'character_image_id');
     }
 
     /**
      * Get the feature (character trait) associated with this record.
      */
     public function feature() {
-        return $this->belongsTo('App\Models\Feature\Feature', 'feature_id');
+        return $this->belongsTo(Feature::class, 'feature_id');
     }
 }

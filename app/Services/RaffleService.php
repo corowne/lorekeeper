@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Models\Raffle\Raffle;
 use App\Models\Raffle\RaffleGroup;
-use DB;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 class RaffleService extends Service {
     /*

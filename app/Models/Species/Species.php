@@ -2,6 +2,8 @@
 
 namespace App\Models\Species;
 
+use App\Models\Character\Sublist;
+use App\Models\Feature\Feature;
 use App\Models\Model;
 
 class Species extends Model {
@@ -52,21 +54,21 @@ class Species extends Model {
      * Get the subtypes for this species.
      */
     public function subtypes() {
-        return $this->hasMany('App\Models\Species\Subtype');
+        return $this->hasMany(Subtype::class);
     }
 
     /**
      * Get the sub masterlist for this species.
      */
     public function sublist() {
-        return $this->belongsTo('App\Models\Character\Sublist', 'masterlist_sub_id');
+        return $this->belongsTo(Sublist::class, 'masterlist_sub_id');
     }
 
     /**
      * Get the features associated with this species.
      */
     public function features() {
-        return $this->hasMany('App\Models\Feature\Feature');
+        return $this->hasMany(Feature::class);
     }
 
     /**********************************************************************************************
