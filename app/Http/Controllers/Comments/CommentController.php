@@ -88,10 +88,10 @@ class CommentController extends Controller {
         }
 
         $comment->commentable()->associate($base);
-      
+
         $comment->comment = config('lorekeeper.settings.wysiwyg_comments') ? parse($request->message) : $request->message;
         $comment->approved = !config('comments.approval_required');
-      
+
         $comment->type = isset($request['type']) && $request['type'] ? $request['type'] : 'User-User';
         $comment->save();
 
