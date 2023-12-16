@@ -15,7 +15,7 @@ class Feature extends Model {
      * @var array
      */
     protected $fillable = [
-        'feature_category_id', 'species_id', 'subtype_id', 'rarity_id', 'name', 'has_image', 'description', 'parsed_description', 'is_visible',
+        'feature_category_id', 'species_id', 'subtype_id', 'rarity_id', 'name', 'has_image', 'description', 'parsed_description', 'is_visible', 'hash',
     ];
 
     /**
@@ -229,7 +229,7 @@ class Feature extends Model {
      * @return string
      */
     public function getImageFileNameAttribute() {
-        return $this->id.'-image.png';
+        return $this->hash.$this->id.'-image.png';
     }
 
     /**
