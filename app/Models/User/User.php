@@ -331,7 +331,7 @@ class User extends Authenticatable implements MustVerifyEmail {
 
     /**
      * Gets the user's last username change.
-     * 
+     *
      * @return string
      */
     public function getPreviousUsernameAttribute() {
