@@ -34,7 +34,7 @@ class FillExistingFullsizeExtensions extends Command {
                 $image->update(['fullsize_extension' => $image->extension]);
             }
 
-            $this->line('Done!');
+            $this->info('Done!');
         } else {
             $this->line('No images need processing!');
         }

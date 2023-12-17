@@ -38,8 +38,9 @@ class UpdateCommentTypes extends Command {
         if ($comments->count()) {
             $this->line('Updating comment types...');
             $comments->update(['type' => 'Staff-User']);
+            $this->info('Comment types updated!');
         } else {
-            $this->info('No comments to update!');
+            $this->line('No comments need updating!');
         }
 
         return 0;
