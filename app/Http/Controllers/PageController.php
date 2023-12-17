@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SitePage;
 use App\Models\News;
 use App\Models\Prompt\Prompt;
 use App\Models\Sales\Sales;
+use App\Models\SitePage;
 use Illuminate\Support\Facades\DB;
 
 class PageController extends Controller {
