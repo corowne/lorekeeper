@@ -61,7 +61,7 @@
                     <div>
                         <h5>Traits</h5>
                     </div>
-                    @if (Config::get('lorekeeper.extensions.traits_by_category'))
+                    @if (config('lorekeeper.extensions.traits_by_category'))
                         <div>
                             @php
                                 $traitgroup = $image

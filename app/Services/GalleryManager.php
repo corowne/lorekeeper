@@ -844,7 +844,7 @@ class GalleryManager extends Service {
 
         // Process thumbnail
         Image::make($submission->imagePath.'/'.$submission->imageFileName)
-            ->resize(null, Config::get('lorekeeper.settings.masterlist_thumbnails.height'), function ($constraint) {
+            ->resize(null, config('lorekeeper.settings.masterlist_thumbnails.height'), function ($constraint) {
                 $constraint->aspectRatio();
                 $constraint->upsize();
             })

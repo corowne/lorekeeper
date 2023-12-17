@@ -20,12 +20,15 @@ class Raffle extends Model {
      * @var string
      */
     protected $table = 'raffles';
+
     /**
-     * Dates on the model to convert to Carbon instances.
+     * The attributes that should be cast to native types.
      *
      * @var array
      */
-    public $dates = ['rolled_at'];
+    protected $casts = [
+        'rolled_at' => 'datetime',
+    ];
 
     /**
      * Accessors to append to the model.
@@ -51,14 +54,14 @@ class Raffle extends Model {
      * Get the raffle tickets attached to this raffle.
      */
     public function tickets() {
-        return $this->hasMany('App\Models\Raffle\RaffleTicket');
+        return $this->hasMany(RaffleTicket::class);
     }
 
     /**
      * Get the group that this raffle belongs to.
      */
     public function group() {
-        return $this->belongsTo('App\Models\Raffle\RaffleGroup', 'group_id');
+        return $this->belongsTo(RaffleGroup::class, 'group_id');
     }
 
     /**********************************************************************************************

@@ -2,7 +2,7 @@
 
 namespace App\View\Components;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Component;
 
 class AdminEdit extends Component {

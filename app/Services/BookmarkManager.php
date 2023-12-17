@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Character\Character;
 use App\Models\Character\CharacterBookmark;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class BookmarkManager extends Service {
     /*

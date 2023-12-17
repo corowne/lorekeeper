@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin\Data;
 use App\Http\Controllers\Controller;
 use App\Models\Currency\Currency;
 use App\Services\CurrencyService;
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CurrencyController extends Controller {
     /*

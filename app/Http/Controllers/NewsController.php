@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 
 class NewsController extends Controller {

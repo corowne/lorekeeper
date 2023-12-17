@@ -11,7 +11,7 @@ class PromptCategory extends Model {
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description',
+        'name', 'sort', 'has_image', 'description', 'parsed_description', 'hash',
     ];
 
     /**
@@ -72,7 +72,7 @@ class PromptCategory extends Model {
      * @return string
      */
     public function getCategoryImageFileNameAttribute() {
-        return $this->id.'-image.png';
+        return $this->hash.$this->id.'-image.png';
     }
 
     /**

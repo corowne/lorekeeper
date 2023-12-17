@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Shop\Shop;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class ShopService extends Service {
     /*
@@ -38,6 +38,7 @@ class ShopService extends Service {
             $image = null;
             if (isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
+                $data['hash'] = randomString(10);
                 $image = $data['image'];
                 unset($data['image']);
             } else {
@@ -81,6 +82,7 @@ class ShopService extends Service {
             $image = null;
             if (isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
+                $data['hash'] = randomString(10);
                 $image = $data['image'];
                 unset($data['image']);
             }

@@ -31,7 +31,7 @@
                 </div>
                 <div class="col-lg-10 col-md-9 col-8">
                     {!! $user->displayAlias !!}
-                    @if (count($aliases) > 1 && Config::get('lorekeeper.extensions.aliases_on_userpage'))
+                    @if (count($aliases) > 1 && config('lorekeeper.extensions.aliases_on_userpage'))
                         <a class="small collapse-toggle collapsed" href="#otherUserAliases" data-toggle="collapse">&nbsp;</a>
                         <p class="collapse mb-0" id="otherUserAliases">
                             @foreach ($aliases as $alias)

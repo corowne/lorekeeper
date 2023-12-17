@@ -3,7 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\Notification;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class Notifications {
     /*

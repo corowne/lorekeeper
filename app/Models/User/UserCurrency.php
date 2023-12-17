@@ -2,6 +2,7 @@
 
 namespace App\Models\User;
 
+use App\Models\Currency\Currency;
 use App\Models\Model;
 
 class UserCurrency extends Model {
@@ -40,14 +41,14 @@ class UserCurrency extends Model {
      * Get the user who owns the currency.
      */
     public function user() {
-        return $this->belongsTo('App\Models\User\User');
+        return $this->belongsTo(User::class);
     }
 
     /**
      * Get the currency associated with this record.
      */
     public function currency() {
-        return $this->belongsTo('App\Models\Currency\Currency');
+        return $this->belongsTo(Currency::class);
     }
 
     /**********************************************************************************************

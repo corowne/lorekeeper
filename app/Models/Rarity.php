@@ -9,7 +9,7 @@ class Rarity extends Model {
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'color', 'has_image', 'description', 'parsed_description',
+        'name', 'sort', 'color', 'has_image', 'description', 'parsed_description', 'hash',
     ];
 
     /**
@@ -72,7 +72,7 @@ class Rarity extends Model {
      * @return string
      */
     public function getRarityImageFileNameAttribute() {
-        return $this->id.'-image.png';
+        return $this->hash.$this->id.'-image.png';
     }
 
     /**

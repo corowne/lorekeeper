@@ -6,7 +6,7 @@ use App\Models\Feature\Feature;
 use App\Models\Feature\FeatureCategory;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class FeatureService extends Service {
     /*
@@ -41,6 +41,7 @@ class FeatureService extends Service {
             $image = null;
             if (isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
+                $data['hash'] = randomString(10);
                 $image = $data['image'];
                 unset($data['image']);
             } else {
@@ -88,6 +89,7 @@ class FeatureService extends Service {
             $image = null;
             if (isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
+                $data['hash'] = randomString(10);
                 $image = $data['image'];
                 unset($data['image']);
             }
@@ -223,6 +225,7 @@ class FeatureService extends Service {
             $image = null;
             if (isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
+                $data['hash'] = randomString(10);
                 $image = $data['image'];
                 unset($data['image']);
             } else {
@@ -295,6 +298,7 @@ class FeatureService extends Service {
             $image = null;
             if (isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
+                $data['hash'] = randomString(10);
                 $image = $data['image'];
                 unset($data['image']);
             }

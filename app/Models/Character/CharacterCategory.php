@@ -11,7 +11,7 @@ class CharacterCategory extends Model {
      * @var array
      */
     protected $fillable = [
-        'code', 'name', 'sort', 'has_image', 'description', 'parsed_description', 'masterlist_sub_id', 'is_visible',
+        'code', 'name', 'sort', 'has_image', 'description', 'parsed_description', 'masterlist_sub_id', 'is_visible', 'hash',
     ];
 
     /**
@@ -55,7 +55,7 @@ class CharacterCategory extends Model {
      * Get the sub masterlist for this species.
      */
     public function sublist() {
-        return $this->belongsTo('App\Models\Character\Sublist', 'masterlist_sub_id');
+        return $this->belongsTo(Sublist::class, 'masterlist_sub_id');
     }
 
     /**********************************************************************************************
@@ -110,7 +110,7 @@ class CharacterCategory extends Model {
      * @return string
      */
     public function getCategoryImageFileNameAttribute() {
-        return $this->id.'-image.png';
+        return $this->hash.$this->id.'-image.png';
     }
 
     /**

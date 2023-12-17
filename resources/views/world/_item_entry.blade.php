@@ -26,7 +26,7 @@
                     </p>
                 </div>
             @endif
-            @if (Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields'))
+            @if (config('lorekeeper.extensions.item_entry_expansion.extra_fields'))
                 @if (isset($item->rarity) && $item->rarity)
                     <div class="col-md">
                         <p><strong>Rarity:</strong> {!! $item->rarity !!}</p>
@@ -38,7 +38,7 @@
                     </div>
                 @endif
             @endif
-            @if (isset($item->data['resell']) && $item->data['resell'] && App\Models\Currency\Currency::where('id', $item->resell->flip()->pop())->first() && Config::get('lorekeeper.extensions.item_entry_expansion.resale_function'))
+            @if (isset($item->data['resell']) && $item->data['resell'] && App\Models\Currency\Currency::where('id', $item->resell->flip()->pop())->first() && config('lorekeeper.extensions.item_entry_expansion.resale_function'))
                 <div class="col-md">
                     <p><strong>Resale Value:</strong> {!! App\Models\Currency\Currency::find($item->resell->flip()->pop())->display($item->resell->pop()) !!}</p>
                 </div>
@@ -56,7 +56,7 @@
             </div>
         </div>
         <div class="world-entry-text">
-            @if (isset($item->reference) && $item->reference && Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields'))
+            @if (isset($item->reference) && $item->reference && config('lorekeeper.extensions.item_entry_expansion.extra_fields'))
                 <p>
                     <strong>Reference Link:</strong>
                     <a href="{{ $item->reference }}">
@@ -65,7 +65,7 @@
                 </p>
             @endif
             {!! $description !!}
-            @if (((isset($item->uses) && $item->uses) || (isset($item->source) && $item->source) || $shops->count() || (isset($item->data['prompts']) && $item->data['prompts'])) && Config::get('lorekeeper.extensions.item_entry_expansion.extra_fields'))
+            @if (((isset($item->uses) && $item->uses) || (isset($item->source) && $item->source) || $shops->count() || (isset($item->data['prompts']) && $item->data['prompts'])) && config('lorekeeper.extensions.item_entry_expansion.extra_fields'))
                 <div class="text-right">
                     <a data-toggle="collapse" href="#item-{{ $item->id }}" class="text-primary">
                         <strong>Show details...</strong>

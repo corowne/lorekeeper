@@ -3,7 +3,6 @@
 namespace App\Traits;
 
 use App\Models\Comment\Comment;
-use Config;
 
 /**
  * Add this trait to any model that you want to be able to
@@ -31,7 +30,7 @@ trait Commentable {
      */
     protected static function bootCommentable() {
         static::deleted(function ($commentable) {
-            if (Config::get('lorekeeper.comments.soft_deletes') == true) {
+            if (config('lorekeeper.comments.soft_deletes') == true) {
                 Comment::where('commentable_type', get_class($commentable))->where('commentable_id', $commentable->id)->delete();
             } else {
                 Comment::where('commentable_type', get_class($commentable))->where('commentable_id', $commentable->id)->forceDelete();

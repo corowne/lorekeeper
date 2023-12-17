@@ -40,7 +40,7 @@
                         </div>
                         <div class="col-3">
                             <div class="logs-table-cell">
-                                <i class="{{ $alias->config['icon'] }} fa-fw mr-1"></i> {{ Config::get('lorekeeper.sites.' . $alias->site . '.full_name') }}
+                                <i class="{{ $alias->config['icon'] }} fa-fw mr-1"></i> {{ config('lorekeeper.sites.' . $alias->site . '.full_name') }}
                             </div>
                         </div>
                         <div class="col-1">
@@ -56,7 +56,7 @@
                         <div class="col-5 text-right">
                             <div class="logs-table-cell">
                                 @if (!$alias->is_primary_alias || !config('lorekeeper.settings.require_alias'))
-                                    @if (!$alias->is_primary_alias && Config::get('lorekeeper.sites.' . $alias->site . '.primary_alias'))
+                                    @if (!$alias->is_primary_alias && config('lorekeeper.sites.' . $alias->site . '.primary_alias'))
                                         <a href="#" class="btn btn-outline-primary btn-sm make-primary" data-id="{{ $alias->id }}">Make Primary</a>
                                     @endif
                                     <a href="#" class="btn btn-outline-secondary btn-sm hide-alias" data-id="{{ $alias->id }}">{{ $alias->is_visible ? 'Hide' : 'Unhide' }}</a>
@@ -75,7 +75,7 @@
     <p>Click on a button to link a social media account to your {{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} account. You must be logged into the account you want to link to be able to continue.</p>
     <p>Accounts on sites that have the <strong>Primary</strong> label can be used as a primary account, but will not automatically switch your primary account once authenticated. Added accounts are not visible on your profile by default.</p>
 
-    @foreach (Config::get('lorekeeper.sites') as $provider => $site)
+    @foreach (config('lorekeeper.sites') as $provider => $site)
         @if (isset($site['auth']) && $site['auth'])
             <div class="d-flex mb-3">
                 <div class="d-flex justify-content-end align-items-center"><i class="{{ $site['icon'] }} fa-fw mr-3"></i></div>

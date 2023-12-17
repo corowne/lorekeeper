@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Comment\Comment;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class CommentPolicy {
     /**

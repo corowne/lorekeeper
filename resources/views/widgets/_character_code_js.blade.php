@@ -2,7 +2,7 @@
     $(document).ready(function() {
         // Code generation ////////////////////////////////////////////////////////////////////////////
 
-        var codeFormat = "{{ Config::get('lorekeeper.settings.character_codes') }}";
+        var codeFormat = "{{ config('lorekeeper.settings.character_codes') }}";
         var $code = $('#code');
         var $number = $('#number');
         var $category = $('#category');

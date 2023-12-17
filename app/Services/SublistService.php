@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Character\CharacterCategory;
 use App\Models\Character\Sublist;
 use App\Models\Species\Species;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class SublistService extends Service {
     /*

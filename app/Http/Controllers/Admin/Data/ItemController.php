@@ -11,8 +11,8 @@ use App\Models\Shop\Shop;
 use App\Models\Shop\ShopStock;
 use App\Models\User\User;
 use App\Services\ItemService;
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ItemController extends Controller {
     /*

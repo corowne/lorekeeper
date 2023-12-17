@@ -12,7 +12,7 @@
     <div class="alert alert-warning">You can add other accounts after this process has been completed. Please make sure you are logged into the correct account before continuing.</div>
 
     <div class="mx-auto" style="width: 250px;">
-        @foreach (Config::get('lorekeeper.sites') as $provider => $site)
+        @foreach (config('lorekeeper.sites') as $provider => $site)
             @if (isset($site['auth']) && $site['auth'] && isset($site['primary_alias']) && $site['primary_alias'])
                 <div class="d-flex mb-3">
                     <div class="d-flex justify-content-end align-items-center"><i class="{{ $site['icon'] }} fa-fw mr-3"></i></div>
