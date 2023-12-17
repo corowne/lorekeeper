@@ -205,6 +205,25 @@ function addAsset(&$array, $asset, $quantity = 1) {
 }
 
 /**
+ * Removes an asset from the given array, if it exists.
+ *
+ * @param array $array
+ * @param mixed $asset
+ * @param int   $quantity
+ */
+function removeAsset(&$array, $asset, $quantity = 1) {
+    if (!$asset) {
+        return;
+    }
+    if (isset($array[$asset->assetType][$asset->id])) {
+        $array[$asset->assetType][$asset->id]['quantity'] -= $quantity;
+        if ($array[$asset->assetType][$asset->id]['quantity'] == 0) {
+            unset($array[$asset->assetType][$asset->id]);
+        }
+    }
+}
+
+/**
  * Get a clean version of the asset array to store in the database,
  * where each asset is listed in [id => quantity] format.
  * json_encode this and store in the data attribute.
@@ -364,4 +383,29 @@ function fillCharacterAssets($assets, $sender, $recipient, $logType, $data, $sub
     }
 
     return $assets;
+}
+
+/**
+ * Creates a rewards string from an asset array.
+ *
+ * @param array $array
+ *
+ * @return string
+ */
+function createRewardsString($array) {
+    $string = [];
+    foreach ($array as $key => $contents) {
+        foreach ($contents as $asset) {
+            $string[] = $asset['asset']->displayName.' x'.$asset['quantity'];
+        }
+    }
+    if (!count($string)) {
+        return;
+    }
+
+    if (count($string) == 1) {
+        return implode(', ', $string);
+    }
+
+    return implode(', ', array_slice($string, 0, count($string) - 1)).(count($string) > 2 ? ', and ' : ' and ').end($string);
 }

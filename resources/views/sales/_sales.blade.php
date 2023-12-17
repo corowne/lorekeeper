@@ -13,9 +13,19 @@
 
 <div class="row mb-2">
     @foreach ($sales->characters as $character)
-        <div class="col-lg mb-2">
-            @include('sales._character', ['character' => $character, 'loop' => $loop])
-        </div>
+        @if ($character->character->deleted_at)
+            <div class="col-lg mb-2">
+                <div class="card h-100">
+                    <div class="alert alert-warning my-auto mx-2">
+                        <i class="fas fa-exclamation-triangle"></i> This character has been deleted.
+                    </div>
+                </div>
+            </div>
+        @else
+            <div class="col-lg mb-2">
+                @include('sales._character', ['character' => $character, 'loop' => $loop])
+            </div>
+        @endif
         {!! $loop->even ? '<div class="w-100"></div>' : '' !!}
     @endforeach
 </div>
@@ -29,8 +39,8 @@
         </div>
     </div>
 
-    @if ((isset($sales->comments_open_at) && $sales->comments_open_at < Carbon\Carbon::now()) || (Auth::check() && Auth::user()->hasPower('edit_pages')) || !isset($sales->comments_open_at))
-        <?php $commentCount = App\Models\Comment::where('commentable_type', 'App\Models\Sales\Sales')
+    @if ((isset($sales->comments_open_at) && $sales->comments_open_at < Carbon\Carbon::now()) || (Auth::check() && (Auth::user()->hasPower('manage_sales') || Auth::user()->hasPower('comment_on_sales'))) || !isset($sales->comments_open_at))
+        <?php $commentCount = App\Models\Comment\Comment::where('commentable_type', 'App\Models\Sales\Sales')
             ->where('commentable_id', $sales->id)
             ->count(); ?>
         @if (!$page)

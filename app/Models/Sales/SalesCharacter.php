@@ -57,7 +57,7 @@ class SalesCharacter extends Model {
      * Get the character being attached to the sale.
      */
     public function character() {
-        return $this->belongsTo('App\Models\Character\Character', 'character_id');
+        return $this->belongsTo('App\Models\Character\Character', 'character_id')->withTrashed();
     }
 
     /**
@@ -165,16 +165,18 @@ class SalesCharacter extends Model {
                 (isset($this->data['autobuy']) ? '<br/>Autobuy: '.$symbol.$this->data['autobuy'] : '');
                 break;
             case 'ota':
-                return isset($this->data['autobuy']) ? '<br/>Autobuy: '.$symbol.$this->data['autobuy'] : '';
+                return (isset($this->data['autobuy']) ? 'Autobuy: '.$symbol.$this->data['autobuy'].'<br/>' : '').
+                (isset($this->data['minimum']) ? 'Minimum: '.$symbol.$this->data['minimum'].'<br/>' : '');
                 break;
             case 'xta':
-                return isset($this->data['autobuy']) ? '<br/>Autobuy: '.$symbol.$this->data['autobuy'] : '';
+                return (isset($this->data['autobuy']) ? 'Autobuy: '.$symbol.$this->data['autobuy'].'<br/>' : '').
+                (isset($this->data['minimum']) ? 'Minimum: '.$symbol.$this->data['minimum'].'<br/>' : '');
                 break;
             case 'flaffle':
                 return 'Price: '.$symbol.$this->data['price'];
                 break;
             case 'pwyw':
-                return 'Minimum: '.$symbol.$this->data['minimum'];
+                return isset($this->data['minimum']) ? 'Minimum: '.$symbol.$this->data['minimum'].'<br/>' : '';
                 break;
         }
     }

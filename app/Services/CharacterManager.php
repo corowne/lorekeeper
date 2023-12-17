@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Facades\Notifications;
+use App\Facades\Settings;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterBookmark;
 use App\Models\Character\CharacterCategory;
@@ -10,15 +12,14 @@ use App\Models\Character\CharacterDesignUpdate;
 use App\Models\Character\CharacterFeature;
 use App\Models\Character\CharacterImage;
 use App\Models\Character\CharacterTransfer;
+use App\Models\Sales\SalesCharacter;
 use App\Models\Species\Subtype;
 use App\Models\User\User;
 use Carbon\Carbon;
-use Config;
-use DB;
 use Illuminate\Support\Arr;
-use Image;
-use Notifications;
-use Settings;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
+use Intervention\Image\Facades\Image;
 
 class CharacterManager extends Service {
     /*
@@ -185,10 +186,17 @@ class CharacterManager extends Service {
      * @param \App\Models\Character\CharacterImage $characterImage
      */
     public function processImage($characterImage) {
+        $imageProperties = getimagesize($characterImage->imagePath.'/'.$characterImage->imageFileName);
+        if ($imageProperties[0] > 2000 || $imageProperties[1] > 2000) {
+            // For large images (in terms of dimensions),
+            // use imagick instead, as it's better at handling them
+            Config::set('image.driver', 'imagick');
+        }
+
         // Trim transparent parts of image.
         $image = Image::make($characterImage->imagePath.'/'.$characterImage->imageFileName)->trim('transparent');
 
-        if (Config::get('lorekeeper.settings.masterlist_image_automation') == 1) {
+        if (config('lorekeeper.settings.masterlist_image_automation') == 1) {
             // Make the image be square
             $imageWidth = $image->width();
             $imageHeight = $image->height();
@@ -204,12 +212,13 @@ class CharacterManager extends Service {
             }
         }
 
-        if (Config::get('lorekeeper.settings.masterlist_image_format') != 'png' && Config::get('lorekeeper.settings.masterlist_image_format') != null && Config::get('lorekeeper.settings.masterlist_image_background') != null) {
-            $canvas = Image::canvas($image->width(), $image->height(), Config::get('lorekeeper.settings.masterlist_image_background'));
+        // Add background fill if destination format is not transparent
+        if (!in_array(config('lorekeeper.settings.masterlist_image_format'), ['png', 'webp']) && config('lorekeeper.settings.masterlist_image_format') != null && config('lorekeeper.settings.masterlist_image_background') != null) {
+            $canvas = Image::canvas($image->width(), $image->height(), config('lorekeeper.settings.masterlist_image_background'));
             $image = $canvas->insert($image, 'center');
         }
 
-        if (Config::get('lorekeeper.settings.store_masterlist_fullsizes') == 1) {
+        if (config('lorekeeper.settings.store_masterlist_fullsizes') == 1) {
             // Generate fullsize hash if not already generated,
             // then save the full-sized image
             if (!$characterImage->fullsize_hash) {
@@ -217,19 +226,16 @@ class CharacterManager extends Service {
                 $characterImage->save();
             }
 
-            if (Config::get('lorekeeper.settings.masterlist_fullsizes_cap') != 0) {
-                $imageWidth = $image->width();
-                $imageHeight = $image->height();
-
-                if ($imageWidth > $imageHeight) {
+            if (config('lorekeeper.settings.masterlist_fullsizes_cap') != 0) {
+                if ($image->width() > $image->height()) {
                     // Landscape
-                    $image->resize(Config::get('lorekeeper.settings.masterlist_fullsizes_cap'), null, function ($constraint) {
+                    $image->resize(config('lorekeeper.settings.masterlist_fullsizes_cap'), null, function ($constraint) {
                         $constraint->aspectRatio();
                         $constraint->upsize();
                     });
                 } else {
                     // Portrait
-                    $image->resize(null, Config::get('lorekeeper.settings.masterlist_fullsizes_cap'), function ($constraint) {
+                    $image->resize(null, config('lorekeeper.settings.masterlist_fullsizes_cap'), function ($constraint) {
                         $constraint->aspectRatio();
                         $constraint->upsize();
                     });
@@ -237,7 +243,7 @@ class CharacterManager extends Service {
             }
 
             // Save the processed image
-            $image->save($characterImage->imagePath.'/'.$characterImage->fullsizeFileName, 100, Config::get('lorekeeper.settings.masterlist_image_format'));
+            $image->save($characterImage->imagePath.'/'.$characterImage->fullsizeFileName, 100, config('lorekeeper.settings.masterlist_fullsizes_format'));
         } else {
             // Delete fullsize if it was previously created.
             if (isset($characterImage->fullsize_hash) ? file_exists(public_path($characterImage->imageDirectory.'/'.$characterImage->fullsizeFileName)) : false) {
@@ -246,36 +252,47 @@ class CharacterManager extends Service {
         }
 
         // Resize image if desired
-        if (Config::get('lorekeeper.settings.masterlist_image_dimension') != 0) {
-            $imageWidth = $image->width();
-            $imageHeight = $image->height();
-
-            if ($imageWidth > $imageHeight) {
+        if (config('lorekeeper.settings.masterlist_image_dimension') != 0) {
+            if ($image->width() > $image->height()) {
                 // Landscape
-                $image->resize(null, Config::get('lorekeeper.settings.masterlist_image_dimension'), function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                });
+                if (config('lorekeeper.settings.masterlist_image_dimension_target') == 'short') {
+                    $image->resize(null, config('lorekeeper.settings.masterlist_image_dimension'), function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                } else {
+                    $image->resize(config('lorekeeper.settings.masterlist_image_dimension'), null, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                }
             } else {
                 // Portrait
-                $image->resize(Config::get('lorekeeper.settings.masterlist_image_dimension'), null, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                });
+                if (config('lorekeeper.settings.masterlist_image_dimension_target') == 'short') {
+                    $image->resize(config('lorekeeper.settings.masterlist_image_dimension'), null, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                } else {
+                    $image->resize(null, config('lorekeeper.settings.masterlist_image_dimension'), function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                }
             }
         }
         // Watermark the image if desired
-        if (Config::get('lorekeeper.settings.watermark_masterlist_images') == 1) {
+        if (config('lorekeeper.settings.watermark_masterlist_images') == 1) {
             $watermark = Image::make('images/watermark.png');
 
-            if (Config::get('lorekeeper.settings.watermark_resizing') == 1) {
+            if (config('lorekeeper.settings.watermark_resizing') == 1) {
                 $imageWidth = $image->width();
                 $imageHeight = $image->height();
 
                 $wmWidth = $watermark->width();
                 $wmHeight = $watermark->height();
 
-                $wmScale = Config::get('lorekeeper.settings.watermark_percent');
+                $wmScale = config('lorekeeper.settings.watermark_percent');
 
                 //Assume Landscape by Default
                 $maxSize = $imageWidth * $wmScale;
@@ -304,7 +321,7 @@ class CharacterManager extends Service {
         }
 
         // Save the processed image
-        $image->save($characterImage->imagePath.'/'.$characterImage->imageFileName, 100, Config::get('lorekeeper.settings.masterlist_image_format'));
+        $image->save($characterImage->imagePath.'/'.$characterImage->imageFileName, 100, config('lorekeeper.settings.masterlist_image_format'));
     }
 
     /**
@@ -1295,7 +1312,7 @@ class CharacterManager extends Service {
             if ($isAdmin && isset($data['alert_user']) && $character->is_visible && $character->user_id) {
                 Notifications::create('CHARACTER_PROFILE_EDIT', $character->user, [
                     'character_name' => $character->name,
-                    'character_slug' => $character->slug,
+                    'character_slug' => $character->is_myo_slot ? $character->id : $character->slug,
                     'sender_url'     => $user->url,
                     'sender_name'    => $user->name,
                 ]);
@@ -1331,6 +1348,9 @@ class CharacterManager extends Service {
         DB::beginTransaction();
 
         try {
+            if (SalesCharacter::where('character_id', $character->id)->exists()) {
+                throw new \Exception('This character currently exists in a previous sale post and cannot be deleted.');
+            }
             if ($character->user_id) {
                 $character->user->settings->save();
             }
@@ -1883,8 +1903,8 @@ class CharacterManager extends Service {
 
                 // Use default images for MYO slots without an image provided
                 if (!isset($data['image'])) {
-                    $data['image'] = asset('images/myo.png');
-                    $data['thumbnail'] = asset('images/myo-th.png');
+                    $data['image'] = public_path('images/myo.png');
+                    $data['thumbnail'] = public_path('images/myo-th.png');
                     $data['extension'] = 'png';
                     $data['default_image'] = true;
                     unset($data['use_cropper']);
@@ -1902,7 +1922,8 @@ class CharacterManager extends Service {
             $imageData['sort'] = 0;
             $imageData['is_valid'] = isset($data['is_valid']);
             $imageData['is_visible'] = isset($data['is_visible']);
-            $imageData['extension'] = (Config::get('lorekeeper.settings.masterlist_image_format') ? Config::get('lorekeeper.settings.masterlist_image_format') : ($data['extension'] ?? $data['image']->getClientOriginalExtension()));
+            $imageData['extension'] = (Config::get('lorekeeper.settings.masterlist_image_format') ?? ($data['extension'] ?? $data['image']->getClientOriginalExtension()));
+            $imageData['fullsize_extension'] = (Config::get('lorekeeper.settings.masterlist_fullsizes_format') ?? ($data['fullsize_extension'] ?? $data['image']->getClientOriginalExtension()));
             $imageData['character_id'] = $character->id;
 
             $image = CharacterImage::create($imageData);

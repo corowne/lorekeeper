@@ -47,7 +47,7 @@ class GallerySubmission extends Model {
      */
     public static $createRules = [
         'title'       => 'required|between:3,200',
-        'image'       => 'required_without:text|mimes:png,jpeg,jpg,gif|max:3000',
+        'image'       => 'required_without:text|mimes:png,jpeg,jpg,gif,webp|max:3000',
         'text'        => 'required_without:image',
         'description' => 'nullable',
     ];
@@ -60,7 +60,7 @@ class GallerySubmission extends Model {
     public static $updateRules = [
         'title'       => 'required|between:3,200',
         'description' => 'nullable',
-        'image'       => 'mimes:png,jpeg,jpg,gif|max:3000',
+        'image'       => 'mimes:png,jpeg,jpg,gif,webp|max:3000',
     ];
 
     /**********************************************************************************************
@@ -216,6 +216,28 @@ class GallerySubmission extends Model {
         }
 
         return $query->where('status', 'Accepted')->where('is_visible', 1);
+    }
+
+    /**
+     * Scope a query to sort submissions oldest first.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSortOldest($query) {
+        return $query->orderBy('id');
+    }
+
+    /**
+     * Scope a query to sort submissions by newest first.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSortNewest($query) {
+        return $query->orderBy('id', 'DESC');
     }
 
     /**********************************************************************************************

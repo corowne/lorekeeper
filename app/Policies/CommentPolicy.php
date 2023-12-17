@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Comment;
+use App\Models\Comment\Comment;
 use Auth;
 
 class CommentPolicy {

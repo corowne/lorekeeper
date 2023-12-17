@@ -54,6 +54,12 @@ class BrowseController extends Controller {
             case 'alpha-reverse':
                 $query->orderBy('name', 'DESC');
                 break;
+            case 'alias':
+                $query->aliasSort();
+                break;
+            case 'alias-reverse':
+                $query->aliasSort(true);
+                break;
             case 'rank':
                 $query->orderBy('ranks.sort', 'DESC')->orderBy('name');
                 break;

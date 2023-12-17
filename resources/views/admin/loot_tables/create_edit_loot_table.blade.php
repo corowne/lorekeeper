@@ -77,8 +77,8 @@
                             @elseif($loot->rewardable_type == 'ItemCategoryRarity')
                                 <div class="category-rarity-select d-flex">
                                     {!! Form::select('rewardable_id[]', $categories, $loot->rewardable_id, ['class' => 'form-control selectize', 'placeholder' => 'Category']) !!}
-                                    {!! Form::select('criteria[]', ['=' => '=', '<' => '<', '>' => '>', '<=' => '<=', '>=' => '>='], isset($loot->data['criteria']) ? $loot->data['criteria'] : null, ['class' => 'form-control', 'placeholder' => 'Criteria']) !!}
-                                    {!! Form::select('rarity[]', $rarities, isset($loot->data['rarity']) ? $loot->data['rarity'] : null, ['class' => 'form-control', 'placeholder' => 'Rarity']) !!}
+                                    {!! Form::select('criteria[' . $loop->index . ']', ['=' => '=', '<' => '<', '>' => '>', '<=' => '<=', '>=' => '>='], isset($loot->data['criteria']) ? $loot->data['criteria'] : null, ['class' => 'form-control', 'placeholder' => 'Criteria']) !!}
+                                    {!! Form::select('rarity[' . $loop->index . ']', $rarities, isset($loot->data['rarity']) ? $loot->data['rarity'] : null, ['class' => 'form-control', 'placeholder' => 'Rarity']) !!}
                                 </div>
                             @elseif($loot->rewardable_type == 'ItemCategory')
                                 {!! Form::select('rewardable_id[]', $categories, $loot->rewardable_id, ['class' => 'form-control item-select selectize', 'placeholder' => 'Select Item']) !!}
@@ -208,6 +208,11 @@
                 $cell.html('');
                 $cell.append($clone);
                 if (val != 'ItemCategoryRarity' && val != 'ItemRarity') $clone.selectize();
+                else {
+                    var row_num = $(this).parent().parent().index();
+                    $clone.find('[name="rarity[]"]').attr('name', `rarity[${row_num}]`);
+                    $clone.find('[name="criteria[]"]').attr('name', `criteria[${row_num}]`);
+                }
             });
 
             function attachRewardTypeListener(node) {
@@ -227,6 +232,11 @@
                     $cell.html('');
                     $cell.append($clone);
                     if (val != 'ItemCategoryRarity' && val != 'ItemRarity') $clone.selectize();
+                    else {
+                        var row_num = $(this).parent().parent().index();
+                        $clone.find('[name="rarity[]"]').attr('name', `rarity[${row_num}]`);
+                        $clone.find('[name="criteria[]"]').attr('name', `criteria[${row_num}]`);
+                    }
                 });
             }
 

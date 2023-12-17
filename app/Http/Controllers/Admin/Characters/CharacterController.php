@@ -561,9 +561,22 @@ class CharacterController extends Controller {
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getTransferQueue($type) {
+    public function getTransferQueue(Request $request, $type) {
         $transfers = CharacterTransfer::query();
         $user = Auth::user();
+        $data = $request->only(['sort']);
+        if (isset($data['sort'])) {
+            switch ($data['sort']) {
+                case 'newest':
+                    $transfers->sortNewest();
+                    break;
+                case 'oldest':
+                    $transfers->sortOldest();
+                    break;
+            }
+        } else {
+            $transfers->sortOldest();
+        }
 
         if ($type == 'completed') {
             $transfers->completed();
