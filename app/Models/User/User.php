@@ -330,6 +330,21 @@ class User extends Authenticatable implements MustVerifyEmail {
     }
 
     /**
+     * Gets the user's last username change.
+     * 
+     * @return string
+     */
+    public function getPreviousUsernameAttribute() {
+        // get highest id
+        $log = $this->logs()->whereIn('type', ['Username Changed', 'Name/Rank Change'])->orderBy('id', 'DESC')->first();
+        if (!$log) {
+            return null;
+        }
+
+        return $log->data['old_name'];
+    }
+
+    /**
      * Displays the user's name, linked to their profile page.
      *
      * @return string

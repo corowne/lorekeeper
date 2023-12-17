@@ -11,9 +11,11 @@
     <div class="col">
         <!-- Username & optional FTO Badge -->
         <div class="row no-gutters">
+            {{-- make tooltip align to left --}}
             <div class="col h2 text-center text-md-left">
                 {!! $user->displayName !!}
-                <a href="{{ url('reports/new?url=') . $user->url }}"><i class="fas fa-exclamation-triangle fa-xs" data-toggle="tooltip" title="Click here to report this user." style="opacity: 50%; font-size:0.5em;"></i></a>
+                @if ($user->previousUsername) <small>{!! add_help('Previously known as ' . $user->previousUsername) !!}</small> @endif
+                <a href="{{ url('reports/new?url=') . $user->url }}"><i class="fas fa-exclamation-triangle fa-xs text-danger" data-toggle="tooltip" title="Click here to report this user." style="opacity: 50%;"></i></a>
             </div>
 
             @if ($user->settings->is_fto)
