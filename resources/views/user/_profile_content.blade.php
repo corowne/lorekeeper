@@ -11,7 +11,6 @@
     <div class="col">
         <!-- Username & optional FTO Badge -->
         <div class="row no-gutters">
-            {{-- make tooltip align to left --}}
             <div class="col h2 text-center text-md-left">
                 {!! $user->displayName !!}
                 @if ($user->previousUsername)
