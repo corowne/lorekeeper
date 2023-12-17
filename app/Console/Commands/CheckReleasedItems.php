@@ -27,18 +27,16 @@ class CheckReleasedItems extends Command {
      * @return int
      */
     public function handle() {
-        $this->info('*************************');
-        $this->info('* UPDATE RELEASED ITEMS *');
-        $this->info('*************************'."\n");
-
-        $this->line('Searching for released items...');
-
         $userItems = UserItem::pluck('item_id')->unique()->toArray();
         $releasedItems = Item::where('is_released', 0)->whereIn('id', $userItems);
 
-        $this->info('Updating items...');
-        $releasedItems->update(['is_released' => 1]);
-        $this->info('Updated items.');
+        if ($releasedItems->count()) {
+            $this->line('Updating items...');
+            $releasedItems->update(['is_released' => 1]);
+            $this->info('Updated items.');
+        } else {
+            $this->line('No items need updating!');
+        }
 
         return 0;
     }
