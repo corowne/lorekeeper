@@ -14,7 +14,9 @@
             {{-- make tooltip align to left --}}
             <div class="col h2 text-center text-md-left">
                 {!! $user->displayName !!}
-                @if ($user->previousUsername) <small>{!! add_help('Previously known as ' . $user->previousUsername) !!}</small> @endif
+                @if ($user->previousUsername)
+                    <small>{!! add_help('Previously known as ' . $user->previousUsername) !!}</small>
+                @endif
                 <a href="{{ url('reports/new?url=') . $user->url }}"><i class="fas fa-exclamation-triangle fa-xs text-danger" data-toggle="tooltip" title="Click here to report this user." style="opacity: 50%;"></i></a>
             </div>
 
