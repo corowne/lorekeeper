@@ -6,7 +6,6 @@ use App\Models\Model;
 use App\Models\Prompt\Prompt;
 use App\Models\Shop\Shop;
 use App\Models\User\User;
-use App\Models\User\UserItem;
 
 class Item extends Model {
     /**
@@ -16,7 +15,7 @@ class Item extends Model {
      */
     protected $fillable = [
         'item_category_id', 'name', 'has_image', 'description', 'parsed_description', 'allow_transfer',
-        'data', 'reference_url', 'artist_alias', 'artist_url', 'artist_id', 'is_released',
+        'data', 'reference_url', 'artist_alias', 'artist_url', 'artist_id', 'is_released', 'hash',
     ];
 
     protected $appends = ['image_url'];
@@ -70,21 +69,21 @@ class Item extends Model {
      * Get the category the item belongs to.
      */
     public function category() {
-        return $this->belongsTo('App\Models\Item\ItemCategory', 'item_category_id');
+        return $this->belongsTo(ItemCategory::class, 'item_category_id');
     }
 
     /**
      * Get the item's tags.
      */
     public function tags() {
-        return $this->hasMany('App\Models\Item\ItemTag', 'item_id');
+        return $this->hasMany(ItemTag::class, 'item_id');
     }
 
     /**
      * Get the user that drew the item art.
      */
     public function artist() {
-        return $this->belongsTo('App\Models\User\User', 'artist_id');
+        return $this->belongsTo(User::class, 'artist_id');
     }
 
     /**********************************************************************************************
@@ -150,7 +149,7 @@ class Item extends Model {
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeReleased($query) {
-        return $query->whereIn('id', UserItem::pluck('item_id')->toArray())->orWhere('is_released', 1);
+        return $query->where('is_released', 1);
     }
 
     /**********************************************************************************************
@@ -183,7 +182,7 @@ class Item extends Model {
      * @return string
      */
     public function getImageFileNameAttribute() {
-        return $this->id.'-image.png';
+        return $this->hash.$this->id.'-image.png';
     }
 
     /**

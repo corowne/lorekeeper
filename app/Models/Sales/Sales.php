@@ -3,6 +3,7 @@
 namespace App\Models\Sales;
 
 use App\Models\Model;
+use App\Models\User\User;
 use App\Traits\Commentable;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -29,18 +30,21 @@ class Sales extends Model implements Feedable {
     protected $table = 'sales';
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'post_at'          => 'datetime',
+        'comments_open_at' => 'datetime',
+    ];
+
+    /**
      * Whether the model contains timestamps to be saved and updated.
      *
      * @var string
      */
     public $timestamps = true;
-
-    /**
-     * Dates on the model to convert to Carbon instances.
-     *
-     * @var array
-     */
-    public $dates = ['post_at', 'comments_open_at'];
 
     /**
      * Validation rules for creation.
@@ -72,14 +76,14 @@ class Sales extends Model implements Feedable {
      * Get the user who created the Sales post.
      */
     public function user() {
-        return $this->belongsTo('App\Models\User\User');
+        return $this->belongsTo(User::class);
     }
 
     /**
      * Get the characters associated with the sales post.
      */
     public function characters() {
-        return $this->hasMany('App\Models\Sales\SalesCharacter', 'sales_id');
+        return $this->hasMany(SalesCharacter::class, 'sales_id');
     }
 
     /**********************************************************************************************

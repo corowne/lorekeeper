@@ -4,7 +4,7 @@
 </h1>
 
 @if (isset($request->staff_id))
-    @if ($request->staff_comments && ($request->user_id == Auth::user()->id || Auth::user()->hasPower('manage_submissions')))
+    @if ($request->staff_comments && ($request->user_id == Auth::user()->id || Auth::user()->hasPower('manage_characters')))
         <h5 class="text-danger">Staff Comments ({!! $request->staff->displayName !!})</h5>
         <div class="card border-danger mb-3">
             <div class="card-body">{!! nl2br(htmlentities($request->staff_comments)) !!}</div>
@@ -14,7 +14,7 @@
     @endif
 @endif
 
-@if ($request->status != 'Draft' && Auth::user()->hasPower('manage_characters') && Config::get('lorekeeper.extensions.design_update_voting'))
+@if ($request->status != 'Draft' && Auth::user()->hasPower('manage_characters') && config('lorekeeper.extensions.design_update_voting'))
     <?php
     $rejectSum = 0;
     $approveSum = 0;

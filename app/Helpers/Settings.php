@@ -2,7 +2,7 @@
 
 namespace App\Helpers;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class Settings {
     /*

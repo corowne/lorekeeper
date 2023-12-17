@@ -1,12 +1,12 @@
 <ul>
     <li class="sidebar-header"><a href="{{ url('admin') }}" class="card-link">Admin Home</a></li>
 
-    @foreach (Config::get('lorekeeper.admin_sidebar') as $key => $section)
+    @foreach (config('lorekeeper.admin_sidebar') as $key => $section)
         @if (Auth::user()->isAdmin || Auth::user()->hasPower($section['power']))
             <li class="sidebar-section">
                 <div class="sidebar-section-header" data-toggle="collapse" href="#collapse-{!! $key !!}" role="button" aria-expanded="false" aria-controls="collapse-{!! $key !!}">{{ str_replace(' ', '', $key) }} </div>
 
-                <div class="{{ Config::get('lorekeeper.extensions.collapsible_admin_sidebar') ? 'collapse' : '' }} collapse-{!! $key !!}" id="collapse-{!! $key !!}">
+                <div class="{{ config('lorekeeper.extensions.collapsible_admin_sidebar') ? 'collapse' : '' }} collapse-{!! $key !!}" id="collapse-{!! $key !!}">
                     {{-- order by name --}}
                     @php
                         usort($section['links'], function ($a, $b) {
@@ -25,7 +25,7 @@
 
 </ul>
 
-@if (Config::get('lorekeeper.extensions.collapsible_admin_sidebar'))
+@if (config('lorekeeper.extensions.collapsible_admin_sidebar'))
     @section('scripts')
         <script>
             $(document).ready(function() {

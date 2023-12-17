@@ -40,7 +40,7 @@
 
 <script>
     $(document).ready(function() {
-        @if (Config::get('lorekeeper.extensions.organised_traits_dropdown'))
+        @if (config('lorekeeper.extensions.organised_traits_dropdown'))
             $('.original.feature-select').selectize({
                 render: {
                     item: featureSelectedRender
@@ -68,7 +68,7 @@
                 removeFeatureRow($(this));
             })
 
-            @if (Config::get('lorekeeper.extensions.organised_traits_dropdown'))
+            @if (config('lorekeeper.extensions.organised_traits_dropdown'))
                 $clone.find('.feature-select').selectize({
                     render: {
                         item: featureSelectedRender

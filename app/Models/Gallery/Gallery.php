@@ -2,9 +2,9 @@
 
 namespace App\Models\Gallery;
 
+use App\Facades\Settings;
 use App\Models\Model;
 use Carbon\Carbon;
-use Settings;
 
 class Gallery extends Model {
     /**
@@ -24,12 +24,16 @@ class Gallery extends Model {
      * @var string
      */
     protected $table = 'galleries';
+
     /**
-     * Dates on the model to convert to Carbon instances.
+     * The attributes that should be cast to native types.
      *
      * @var array
      */
-    public $dates = ['start_at', 'end_at'];
+    protected $casts = [
+        'start_at' => 'datetime',
+        'end_at'   => 'datetime',
+    ];
 
     /**
      * Validation rules for character creation.
@@ -61,21 +65,21 @@ class Gallery extends Model {
      * Get the parent gallery.
      */
     public function parent() {
-        return $this->belongsTo('App\Models\Gallery\Gallery', 'parent_id');
+        return $this->belongsTo(self::class, 'parent_id');
     }
 
     /**
      * Get the child galleries of this gallery.
      */
     public function children() {
-        return $this->hasMany('App\Models\Gallery\Gallery', 'parent_id')->sort();
+        return $this->hasMany(self::class, 'parent_id')->sort();
     }
 
     /**
      * Get the submissions made to this gallery.
      */
     public function submissions() {
-        return $this->hasMany('App\Models\Gallery\GallerySubmission', 'gallery_id')->visible()->orderBy('created_at', 'DESC');
+        return $this->hasMany(GallerySubmission::class, 'gallery_id')->visible()->orderBy('created_at', 'DESC');
     }
 
     /**********************************************************************************************

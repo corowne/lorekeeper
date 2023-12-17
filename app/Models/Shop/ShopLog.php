@@ -2,7 +2,11 @@
 
 namespace App\Models\Shop;
 
+use App\Models\Character\Character;
+use App\Models\Currency\Currency;
+use App\Models\Item\Item;
 use App\Models\Model;
+use App\Models\User\User;
 
 class ShopLog extends Model {
     /**
@@ -48,35 +52,35 @@ class ShopLog extends Model {
      * Get the user who purchased the item.
      */
     public function user() {
-        return $this->belongsTo('App\Models\User\User');
+        return $this->belongsTo(User::class);
     }
 
     /**
      * Get the character who purchased the item.
      */
     public function character() {
-        return $this->belongsTo('App\Models\Character\Character');
+        return $this->belongsTo(Character::class);
     }
 
     /**
      * Get the purchased item.
      */
     public function item() {
-        return $this->belongsTo('App\Models\Item\Item');
+        return $this->belongsTo(Item::class);
     }
 
     /**
      * Get the shop the item was purchased from.
      */
     public function shop() {
-        return $this->belongsTo('App\Models\Shop\Shop');
+        return $this->belongsTo(Shop::class);
     }
 
     /**
      * Get the currency used to purchase the item.
      */
     public function currency() {
-        return $this->belongsTo('App\Models\Currency\Currency');
+        return $this->belongsTo(Currency::class);
     }
 
     /**********************************************************************************************

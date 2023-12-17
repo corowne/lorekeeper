@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Facades\Settings;
 use Closure;
-use Settings;
 
 class CheckAlias {
     /**

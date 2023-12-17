@@ -17,7 +17,7 @@
                 <i class="fas fa-search"></i>
             </a>
         </h3>
-        @if (count($species->features) && Config::get('lorekeeper.extensions.species_trait_index.enable'))
+        @if (count($species->features) && config('lorekeeper.extensions.species_trait_index.enable'))
             <a href="{{ $species->visualTraitsUrl }}">
                 <strong>Visual Trait Index</strong>
             </a>

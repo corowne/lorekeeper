@@ -238,7 +238,7 @@
                                 <p>Please select options as appropriate for this piece. This will help the staff processing your submission award {!! $currency->displayName !!} for it. You <strong>will not</strong> be able to edit this after creating the
                                     submission.</p>
 
-                                @foreach (Config::get('lorekeeper.group_currency_form') as $key => $field)
+                                @foreach (config('lorekeeper.group_currency_form') as $key => $field)
                                     <div class="form-group">
                                         @if ($field['type'] == 'checkbox')
                                             <input class="form-check-input ml-0 pr-4" name="{{ $key }}" type="checkbox" value="{{ isset($field['value']) ? $field['value'] : 1 }}">

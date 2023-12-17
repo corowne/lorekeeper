@@ -14,9 +14,8 @@ use App\Models\Shop\ShopStock;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
 use App\Models\User\User;
-use Auth;
-use Config;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class WorldController extends Controller {
     /*
@@ -235,7 +234,7 @@ class WorldController extends Controller {
         if (!$species) {
             abort(404);
         }
-        if (!Config::get('lorekeeper.extensions.species_trait_index.enable')) {
+        if (!config('lorekeeper.extensions.species_trait_index.enable')) {
             abort(404);
         }
 
@@ -292,7 +291,7 @@ class WorldController extends Controller {
         if (!$feature) {
             abort(404);
         }
-        if (!Config::get('lorekeeper.extensions.species_trait_index.trait_modals')) {
+        if (!config('lorekeeper.extensions.species_trait_index.trait_modals')) {
             abort(404);
         }
 

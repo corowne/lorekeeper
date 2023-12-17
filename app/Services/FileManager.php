@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use File;
+use Illuminate\Support\Facades\File;
 
 class FileManager extends Service {
     /*

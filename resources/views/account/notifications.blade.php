@@ -28,9 +28,9 @@
                         {!! Form::submit('x clear', ['class' => 'badge btn-primary', 'style' => 'display:inline; border: 0;']) !!}
                         {!! Form::close() !!}
                     </span>
-                    <a class="card-title h5 collapse-title mb-2" href="#{{ str_replace(' ', '_', Config::get('lorekeeper.notifications.' . $type . '.name')) }}" data-toggle="collapse">{{ Config::get('lorekeeper.notifications.' . $type . '.name') }}
+                    <a class="card-title h5 collapse-title mb-2" href="#{{ str_replace(' ', '_', config('lorekeeper.notifications.' . $type . '.name')) }}" data-toggle="collapse">{{ config('lorekeeper.notifications.' . $type . '.name') }}
                     </a>
-                    <div id="{{ str_replace(' ', '_', Config::get('lorekeeper.notifications.' . $type . '.name')) }}" class="collapse {{ $notifications->where('notification_type_id', $type)->count() < 5 ? 'show' : '' }} mt-2">
+                    <div id="{{ str_replace(' ', '_', config('lorekeeper.notifications.' . $type . '.name')) }}" class="collapse {{ $notifications->where('notification_type_id', $type)->count() < 5 ? 'show' : '' }} mt-2">
                         <table class="table notifications-table">
                             <thead>
                                 <tr>

@@ -3,6 +3,7 @@
 namespace App\Models\Comment;
 
 use App\Models\Model;
+use App\Models\User\User;
 
 class CommentEdit extends Model {
     /**
@@ -38,14 +39,14 @@ class CommentEdit extends Model {
      * Get the comment.
      */
     public function comment() {
-        return $this->belongsTo('App\Models\Comment\Comment');
+        return $this->belongsTo(Comment::class);
     }
 
     /**
      * Get the user.
      */
     public function user() {
-        return $this->belongsTo('App\Models\User\User');
+        return $this->belongsTo(User::class);
     }
 
     /**********************************************************************************************

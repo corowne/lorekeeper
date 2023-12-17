@@ -2,17 +2,15 @@
 
 namespace App\Services;
 
+use App\Facades\Notifications;
+use App\Facades\Settings;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Currency\Currency;
-use App\Models\Item\Item;
 use App\Models\Trade;
 use App\Models\User\User;
 use App\Models\User\UserItem;
-use Config;
-use DB;
-use Notifications;
-use Settings;
+use Illuminate\Support\Facades\DB;
 
 class TradeManager extends Service {
     /*
@@ -457,7 +455,7 @@ class TradeManager extends Service {
 
             $userAssets = createAssetsArray();
             $assetCount = 0;
-            $assetLimit = Config::get('lorekeeper.settings.trade_asset_limit');
+            $assetLimit = config('lorekeeper.settings.trade_asset_limit');
 
             // Attach items. Technically, the user doesn't lose ownership of the item - we're just adding an additional holding field.
             // Unlike for design updates, we're keeping track of attached items here.

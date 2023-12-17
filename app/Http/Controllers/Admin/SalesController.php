@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Character\Character;
 use App\Models\Sales\Sales;
 use App\Services\SalesService;
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SalesController extends Controller {
     /**

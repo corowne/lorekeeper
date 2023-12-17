@@ -14,8 +14,8 @@ use App\Models\Species\Subtype;
 use App\Models\User\User;
 use App\Models\User\UserItem;
 use App\Services\DesignUpdateManager;
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DesignController extends Controller {
     /**

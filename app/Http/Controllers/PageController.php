@@ -6,7 +6,7 @@ use App\Models\SitePage;
 use App\Models\News;
 use App\Models\Prompt\Prompt;
 use App\Models\Sales\Sales;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class PageController extends Controller {
     /*

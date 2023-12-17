@@ -2,6 +2,7 @@
 
 namespace App\Models\Submission;
 
+use App\Models\Character\Character;
 use App\Models\Model;
 
 class SubmissionCharacter extends Model {
@@ -31,14 +32,14 @@ class SubmissionCharacter extends Model {
      * Get the submission this is attached to.
      */
     public function submission() {
-        return $this->belongsTo('App\Models\Submission\Submission', 'submission_id');
+        return $this->belongsTo(Submission::class, 'submission_id');
     }
 
     /**
      * Get the character being attached to the submission.
      */
     public function character() {
-        return $this->belongsTo('App\Models\Character\Character', 'character_id');
+        return $this->belongsTo(Character::class, 'character_id');
     }
 
     /**********************************************************************************************

@@ -10,7 +10,7 @@ use App\Models\User\User;
 use App\Services\CharacterManager;
 use App\Services\InventoryManager;
 use App\Services\Service;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class SlotService extends Service {
     /*

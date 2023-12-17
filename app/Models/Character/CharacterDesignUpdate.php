@@ -3,9 +3,11 @@
 namespace App\Models\Character;
 
 use App\Models\Currency\Currency;
-use App\Models\Feature\FeatureCategory;
 use App\Models\Model;
-use DB;
+use App\Models\Rarity;
+use App\Models\Species\Species;
+use App\Models\Species\Subtype;
+use App\Models\User\User;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CharacterDesignUpdate extends Model {
@@ -34,18 +36,20 @@ class CharacterDesignUpdate extends Model {
     protected $table = 'design_updates';
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'submitted_at' => 'datetime',
+    ];
+
+    /**
      * Whether the model contains timestamps to be saved and updated.
      *
      * @var string
      */
     public $timestamps = true;
-
-    /**
-     * Dates on the model to convert to Carbon instances.
-     *
-     * @var array
-     */
-    public $dates = ['submitted_at'];
 
     /**
      * Validation rules for uploaded images.
@@ -69,74 +73,76 @@ class CharacterDesignUpdate extends Model {
      * Get the character associated with the design update.
      */
     public function character() {
-        return $this->belongsTo('App\Models\Character\Character', 'character_id');
+        return $this->belongsTo(Character::class, 'character_id');
     }
 
     /**
      * Get the user who created the design update.
      */
     public function user() {
-        return $this->belongsTo('App\Models\User\User', 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
      * Get the staff who processed the design update.
      */
     public function staff() {
-        return $this->belongsTo('App\Models\User\User', 'staff_id');
+        return $this->belongsTo(User::class, 'staff_id');
     }
 
     /**
      * Get the species of the design update.
      */
     public function species() {
-        return $this->belongsTo('App\Models\Species\Species', 'species_id');
+        return $this->belongsTo(Species::class, 'species_id');
     }
 
     /**
      * Get the subtype of the design update.
      */
     public function subtype() {
-        return $this->belongsTo('App\Models\Species\Subtype', 'subtype_id');
+        return $this->belongsTo(Subtype::class, 'subtype_id');
     }
 
     /**
      * Get the rarity of the design update.
      */
     public function rarity() {
-        return $this->belongsTo('App\Models\Rarity', 'rarity_id');
+        return $this->belongsTo(Rarity::class, 'rarity_id');
     }
 
     /**
      * Get the features (traits) attached to the design update, ordered by display order.
      */
     public function features() {
-        $ids = FeatureCategory::orderBy('sort', 'DESC')->pluck('id')->toArray();
+        $query = $this
+            ->hasMany(CharacterFeature::class, 'character_image_id')->where('character_features.character_type', 'Update')
+            ->join('features', 'features.id', '=', 'character_features.feature_id')
+            ->leftJoin('feature_categories', 'feature_categories.id', '=', 'features.feature_category_id')
+            ->select(['character_features.*', 'features.*', 'character_features.id AS character_feature_id', 'feature_categories.sort']);
 
-        $query = $this->hasMany('App\Models\Character\CharacterFeature', 'character_image_id')->where('character_features.character_type', 'Update')->join('features', 'features.id', '=', 'character_features.feature_id')->select(['character_features.*', 'features.*', 'character_features.id AS character_feature_id']);
-
-        return count($ids) ? $query->orderByRaw(DB::raw('FIELD(features.feature_category_id, '.implode(',', $ids).')')) : $query;
+        return $query->orderByDesc('sort');
     }
 
     /**
      * Get the features (traits) attached to the design update with no extra sorting.
      */
     public function rawFeatures() {
-        return $this->hasMany('App\Models\Character\CharacterFeature', 'character_image_id')->where('character_features.character_type', 'Update');
+        return $this->hasMany(CharacterFeature::class, 'character_image_id')->where('character_features.character_type', 'Update');
     }
 
     /**
      * Get the designers attached to the design update.
      */
     public function designers() {
-        return $this->hasMany('App\Models\Character\CharacterImageCreator', 'character_image_id')->where('type', 'Designer')->where('character_type', 'Update');
+        return $this->hasMany(CharacterImageCreator::class, 'character_image_id')->where('type', 'Designer')->where('character_type', 'Update');
     }
 
     /**
      * Get the artists attached to the design update.
      */
     public function artists() {
-        return $this->hasMany('App\Models\Character\CharacterImageCreator', 'character_image_id')->where('type', 'Artist')->where('character_type', 'Update');
+        return $this->hasMany(CharacterImageCreator::class, 'character_image_id')->where('type', 'Artist')->where('character_type', 'Update');
     }
 
     /**********************************************************************************************

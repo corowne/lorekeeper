@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Character\CharacterCurrency;
 use App\Models\Currency\Currency;
 use App\Models\User\UserCurrency;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class CurrencyService extends Service {
     /*
@@ -47,6 +47,7 @@ class CurrencyService extends Service {
 
             if (isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
+                $data['hash'] = randomString(10);
                 $image = $data['image'];
                 unset($data['image']);
             } else {
@@ -109,6 +110,7 @@ class CurrencyService extends Service {
 
             if (isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
+                $data['hash'] = randomString(10);
                 $image = $data['image'];
                 unset($data['image']);
             }

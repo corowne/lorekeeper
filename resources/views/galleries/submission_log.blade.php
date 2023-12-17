@@ -125,17 +125,17 @@
                                 @foreach ($submission->data['currencyData'] as $key => $data)
                                     <div class="col-md-3 text-center">
                                         @if (isset($data))
-                                            <strong>{{ Config::get('lorekeeper.group_currency_form')[$key]['name'] }}:</strong><br />
-                                            @if (Config::get('lorekeeper.group_currency_form')[$key]['type'] == 'choice')
-                                                @if (isset(Config::get('lorekeeper.group_currency_form')[$key]['multiple']) && Config::get('lorekeeper.group_currency_form')[$key]['multiple'] == 'true')
+                                            <strong>{{ config('lorekeeper.group_currency_form')[$key]['name'] }}:</strong><br />
+                                            @if (config('lorekeeper.group_currency_form')[$key]['type'] == 'choice')
+                                                @if (isset(config('lorekeeper.group_currency_form')[$key]['multiple']) && config('lorekeeper.group_currency_form')[$key]['multiple'] == 'true')
                                                     @foreach ($data as $answer)
-                                                        {{ Config::get('lorekeeper.group_currency_form')[$key]['choices'][$answer] }}<br />
+                                                        {{ config('lorekeeper.group_currency_form')[$key]['choices'][$answer] }}<br />
                                                     @endforeach
                                                 @else
-                                                    {{ Config::get('lorekeeper.group_currency_form')[$key]['choices'][$data] }}
+                                                    {{ config('lorekeeper.group_currency_form')[$key]['choices'][$data] }}
                                                 @endif
                                             @else
-                                                {{ Config::get('lorekeeper.group_currency_form')[$key]['type'] == 'checkbox' ? (Config::get('lorekeeper.group_currency_form')[$key]['value'] == $data ? 'True' : 'False') : $data }}
+                                                {{ config('lorekeeper.group_currency_form')[$key]['type'] == 'checkbox' ? (config('lorekeeper.group_currency_form')[$key]['value'] == $data ? 'True' : 'False') : $data }}
                                             @endif
                                         @endif
                                     </div>

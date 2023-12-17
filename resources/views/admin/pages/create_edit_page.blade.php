@@ -8,7 +8,7 @@
     {!! breadcrumbs(['Admin Panel' => 'admin', 'Pages' => 'admin/pages', ($page->id ? 'Edit' : 'Create') . ' Page' => $page->id ? 'admin/pages/edit/' . $page->id : 'admin/pages/create']) !!}
 
     <h1>{{ $page->id ? 'Edit' : 'Create' }} Page
-        @if ($page->id && !Config::get('lorekeeper.text_pages.' . $page->key))
+        @if ($page->id && !config('lorekeeper.text_pages.' . $page->key))
             <a href="#" class="btn btn-danger float-right delete-page-button">Delete Page</a>
         @endif
         @if ($page->id)

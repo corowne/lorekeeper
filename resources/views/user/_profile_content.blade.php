@@ -5,7 +5,7 @@
 <div class="row mb-3">
     <div class="col-md-2 text-center">
         <!-- User Icon -->
-        <img src="/images/avatars/{{ $user->avatar }}" class="img-fluid rounded-circle" style="max-height: 125px;" alt="{{ $user->name }}'s Avatar">
+        <img src="{{ $user->avatarUrl }}" class="img-fluid rounded-circle" style="max-height: 125px;" alt="{{ $user->name }}'s Avatar">
     </div>
 
     <div class="col">
@@ -13,7 +13,10 @@
         <div class="row no-gutters">
             <div class="col h2 text-center text-md-left">
                 {!! $user->displayName !!}
-                <a href="{{ url('reports/new?url=') . $user->url }}"><i class="fas fa-exclamation-triangle fa-xs" data-toggle="tooltip" title="Click here to report this user." style="opacity: 50%; font-size:0.5em;"></i></a>
+                @if ($user->previousUsername)
+                    <small>{!! add_help('Previously known as ' . $user->previousUsername) !!}</small>
+                @endif
+                <a href="{{ url('reports/new?url=') . $user->url }}"><i class="fas fa-exclamation-triangle fa-xs text-danger" data-toggle="tooltip" title="Click here to report this user." style="opacity: 50%;"></i></a>
             </div>
 
             @if ($user->settings->is_fto)
@@ -31,7 +34,7 @@
                 </div>
                 <div class="col-lg-10 col-md-9 col-8">
                     {!! $user->displayAlias !!}
-                    @if (count($aliases) > 1 && Config::get('lorekeeper.extensions.aliases_on_userpage'))
+                    @if (count($aliases) > 1 && config('lorekeeper.extensions.aliases_on_userpage'))
                         <a class="small collapse-toggle collapsed" href="#otherUserAliases" data-toggle="collapse">&nbsp;</a>
                         <p class="collapse mb-0" id="otherUserAliases">
                             @foreach ($aliases as $alias)
@@ -171,7 +174,7 @@
                 </div>
                 In a comment:
                 <div class="alert alert-secondary">
-                    [![{{ $user->name }}'s Avatar]({{ asset('/images/avatars/' . $user->avatar) }})]({{ $user->url }}) [{{ $user->name }}]({{ $user->url }})
+                    [![{{ $user->name }}'s Avatar]({{ $user->avatarUrl }})]({{ $user->url }}) [{{ $user->name }}]({{ $user->url }})
                 </div>
             </div>
             @if (Auth::check() && Auth::user()->isStaff)
