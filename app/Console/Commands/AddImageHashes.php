@@ -59,23 +59,29 @@ class AddImageHashes extends Command {
         $images = $images->concat(Species::where('has_image', 1)->whereNull('hash')->get());
         $images = $images->concat(Subtype::where('has_image', 1)->whereNull('hash')->get());
 
-        foreach ($images as $image) {
-            $oldName = $image->id.'-image.png';
-            $image->hash = randomString(10);
-            // Any service works, I can't use the abstract one
-            if (
-                File::exists(public_path($image->imageDirectory).'/'.$oldName) &&
-                (new FeatureService)->handleImage(
-                    null,
-                    public_path($image->imageDirectory),
-                    $image->hash.$image->id.'-image.png',
-                    $oldName
-                )
-            ) {
-                $image->save();
-            } else {
-                $this->info('Failed to add hash to '.get_class($image).', id '.$image->id);
+        if ($images->count()) {
+            $this->line('Updating images...');
+            foreach ($images as $image) {
+                $oldName = $image->id.'-image.png';
+                $image->hash = randomString(10);
+                // Any service works, I can't use the abstract one
+                if (
+                    File::exists(public_path($image->imageDirectory).'/'.$oldName) &&
+                    (new FeatureService)->handleImage(
+                        null,
+                        public_path($image->imageDirectory),
+                        $image->hash.$image->id.'-image.png',
+                        $oldName
+                    )
+                ) {
+                    $image->save();
+                } else {
+                    $this->info('Failed to add hash to '.get_class($image).', id '.$image->id);
+                }
             }
+            $this->info('Updated images.');
+        } else {
+            $this->line('No images need updating!');
         }
     }
 }
