@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\SitePage;
+use App\Models\News;
+use App\Models\Prompt\Prompt;
+use App\Models\Sales\Sales;
 use DB;
 
 class PageController extends Controller {
@@ -62,7 +65,7 @@ class PageController extends Controller {
         $end_at = request()->get('end');
 
         // get all prompts within time frame, if hide_before_start is set or hide_after_end is set, filter them out if they are not within the prompt time frame
-        $prompts = \App\Models\Prompt\Prompt::where('is_active', 1)->where('start_at', '>', $start_at)->where('end_at', '<', $end_at)
+        $prompts = Prompt::where('is_active', 1)->where('start_at', '>', $start_at)->where('end_at', '<', $end_at)
             ->where(function ($query) {
                 $query->where('hide_before_start', 0)->orWhere('hide_after_end', 0)
                     ->orWhere(function ($query) {
@@ -73,14 +76,14 @@ class PageController extends Controller {
                     });
             })->sortStart()->get();
         // get all news as long as either created_at is within timeframe, or if post_at is set, if post_at is within timeframe
-        $news = \App\Models\News::visible()->where(function ($query) use ($start_at, $end_at) {
+        $news = News::visible()->where(function ($query) use ($start_at, $end_at) {
             $query->where('created_at', '>', $start_at)->where('created_at', '<', $end_at)
                 ->orWhere(function ($query) use ($start_at, $end_at) {
                     $query->where('post_at', '>', $start_at)->where('post_at', '<', $end_at);
                 });
         })->get();
         // get all sales as long as either created_at is within timeframe, or if post_at is set, if post_at is within timeframe
-        $sales = \App\Models\Sales\Sales::visible()->where(function ($query) use ($start_at, $end_at) {
+        $sales = Sales::visible()->where(function ($query) use ($start_at, $end_at) {
             $query->where('created_at', '>', $start_at)->where('created_at', '<', $end_at)
                 ->orWhere(function ($query) use ($start_at, $end_at) {
                     $query->where('post_at', '>', $start_at)->where('post_at', '<', $end_at);
@@ -95,7 +98,7 @@ class PageController extends Controller {
                 'url'   => $prompt->url,
                 'start' => $prompt->start_at->toW3cString(),
                 'end'   => $prompt->end_at->toW3cString(),
-                'color' => '#4c96d4',
+                'color' => config('lorekeeper.settings.calendar_colours.prompts'),
             ];
         }
         // set start to start of 'post_at' day, if post_at is set, else use created_at
@@ -107,7 +110,7 @@ class PageController extends Controller {
                 'url'    => $news_item->url,
                 'start'  => $news_item->post_at ? $news_item->post_at->startOfDay()->toW3cString() : $news_item->created_at->startOfDay()->toW3cString(),
                 'allDay' => 'true',
-                'color'  => '#ad283e',
+                'color'  => config('lorekeeper.settings.calendar_colours.news'),
             ];
         }
         foreach ($sales as $sale) {
@@ -119,7 +122,7 @@ class PageController extends Controller {
                 // if there is a comment_open_at set, set end to that, else set end to start of next day
                 'end'    => $sale->comments_open_at ? $sale->comments_open_at->endOfDay()->toW3cString() : null,
                 'allDay' => 'true',
-                'color'  => '#f5a623',
+                'color'  => config('lorekeeper.settings.calendar_colours.sales'),
             ];
         }
 

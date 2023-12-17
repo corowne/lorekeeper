@@ -315,4 +315,17 @@ return [
     */
     'currency_symbol'                                   => '$',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Calendar Colours
+    |--------------------------------------------------------------------------
+    |
+    | Colours used for event calendar entries.
+    |
+    */
+    'calendar_colours'                            => [
+        'prompt' => '#4c96d4',
+        'news'   => '#ad283e',
+        'sales'  => '#f5a623',
+    ],
 ];
