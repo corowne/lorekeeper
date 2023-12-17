@@ -190,7 +190,7 @@ function parseUsersAndAvatars($text, &$users) {
             $user = \App\Models\User\User::where('name', $match)->first();
             if ($user) {
                 $users[] = $user;
-                $text = preg_replace('/\B%'.$match.'/', '<a href="'.$user->url.'"><img src="/images/avatars/'.$user->avatar.'" style="width:70px; height:70px; border-radius:50%; " alt="'.$user->name.'\'s Avatar"></a>'.$user->displayName, $text);
+                $text = preg_replace('/\B%'.$match.'/', '<a href="'.$user->url.'"><img src="'.$user->avatarUrl.'" style="width:70px; height:70px; border-radius:50%; " alt="'.$user->name.'\'s Avatar"></a>'.$user->displayName, $text);
             }
         }
     }
@@ -244,7 +244,7 @@ function parseUserIDsForAvatars($text, &$users) {
             $user = \App\Models\User\User::where('id', $match)->first();
             if ($user) {
                 $users[] = $user;
-                $text = preg_replace('/\[userav='.$match.'\]/', '<a href="'.$user->url.'"><img src="/images/avatars/'.$user->avatar.'" style="width:70px; height:70px; border-radius:50%; " alt="'.$user->name.'\'s Avatar"></a>', $text);
+                $text = preg_replace('/\[userav='.$match.'\]/', '<a href="'.$user->url.'"><img src="'.$user->avatarUrl.'" style="width:70px; height:70px; border-radius:50%; " alt="'.$user->name.'\'s Avatar"></a>', $text);
             }
         }
     }

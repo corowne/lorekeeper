@@ -81,6 +81,13 @@ class User extends Authenticatable implements MustVerifyEmail {
      **********************************************************************************************/
 
     /**
+     * Get all of the user's update logs.
+     */
+    public function logs() {
+        return $this->hasMany('App\Models\User\UserUpdateLog');
+    }
+
+    /**
      * Get user settings.
      */
     public function settings() {
@@ -323,6 +330,21 @@ class User extends Authenticatable implements MustVerifyEmail {
     }
 
     /**
+     * Gets the user's last username change.
+     *
+     * @return string
+     */
+    public function getPreviousUsernameAttribute() {
+        // get highest id
+        $log = $this->logs()->whereIn('type', ['Username Changed', 'Name/Rank Change'])->orderBy('id', 'DESC')->first();
+        if (!$log) {
+            return null;
+        }
+
+        return $log->data['old_name'];
+    }
+
+    /**
      * Displays the user's name, linked to their profile page.
      *
      * @return string
@@ -375,7 +397,7 @@ class User extends Authenticatable implements MustVerifyEmail {
             }
         }
 
-        return url('images/avatars/'.$this->avatar);
+        return url('images/avatars/'.$this->avatar.'?v='.filemtime(public_path('images/avatars/'.$this->avatar)));
     }
 
     /**

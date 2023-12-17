@@ -195,7 +195,7 @@
                                 <div class="logs-table-row">
                                     <div class="row flex-wrap">
                                         <div class="col-4 col-md-3">
-                                            <div class="logs-table-cell"><img style="max-height: 2em;" src="/images/avatars/{{ $like->user->avatar }}" /></div>
+                                            <div class="logs-table-cell"><img style="max-height: 2em;" src="{{ $like->user->avatarUrl }}" /></div>
                                         </div>
                                         <div class="col-12 col-md-4">
                                             <div class="logs-table-cell">{!! $like->user->displayName !!}</div>

@@ -98,6 +98,23 @@ class AccountController extends Controller {
     }
 
     /**
+     * Edits the user's username.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postUsername(Request $request, UserService $service) {
+        if ($service->updateUsername($request->get('username'), Auth::user())) {
+            flash('Username updated successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+
+        return redirect()->back();
+    }
+
+    /**
      * Changes the user's password.
      *
      * @param App\Services\UserService $service
