@@ -37,7 +37,7 @@
         <h2>Main Content</h2>
         <p>Upload an image and/or text as the content of your submission. You <strong>can</strong> upload both in the event that you have an image with accompanying text or vice versa.</p>
 
-        <div class="form-group">
+        <div class="form-group" id="imageForm">
             {!! Form::label('Image') !!}
             @if ($submission->id && isset($submission->hash) && $submission->hash)
                 <div class="card mb-2" id="existingImage">
@@ -57,8 +57,8 @@
             </div>
         </div>
 
-        <div class="form-group">
-            {!! Form::label('Text') !!}
+        <div class="form-group" id="writingForm">
+            {!! Form::label('Writing / Text') !!} {!! add_help('If you have a text submission, you can paste it here. You can also use the WYSIWYG editor to format your text. If you have an image submission, you can leave this blank.') !!}
             {!! Form::textarea('text', $submission->text ?? old('text'), ['class' => 'form-control wysiwyg']) !!}
         </div>
 
@@ -416,6 +416,10 @@
                             $('#imageContainer').removeClass('hide');
                         }
                         reader.readAsDataURL(input.files[0]);
+                        // hide text editor if image is uploaded
+                        $('#writingForm').addClass('hide');
+                    } else {
+                        $('#writingForm').removeClass('hide');
                     }
                 }
                 $("#mainImage").change(function() {
