@@ -55,7 +55,9 @@
         <i class="fas fa-eye-slash"></i>
     @endif
     {!! $character->displayName !!}
-    <i data-toggle="tooltip" title="Click to Copy the Character Code" id="copy" style="font-size: 14px; vertical-align: middle;" class="far fa-copy text-small"></i>
+    @if (!$character->is_myo_slot)
+        <i data-toggle="tooltip" title="Click to Copy the Character Code" id="copy" style="font-size: 14px; vertical-align: middle;" class="far fa-copy text-small"></i>
+    @endif
 </h1>
 <div class="mb-3">
     Owned by {!! $character->displayOwner !!}
