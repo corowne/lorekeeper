@@ -19,6 +19,15 @@
         </li>
     @endif
 
+    @if ($galleryPage && $sideGallery->parent && $sideGallery->parent->children->count())
+        <li class="sidebar-section">
+            <div class="sidebar-section-header">{{ $sideGallery->parent->name }}: Sub-Galleries</div>
+            @foreach ($sideGallery->parent->children()->visible()->get() as $child)
+                <div class="sidebar-item"><a href="{{ url('gallery/' . $child->id) }}" class="{{ set_active('gallery/' . $child->id) }}">{{ $child->name }}</a></div>
+            @endforeach
+        </li>
+    @endif
+
     <li class="sidebar-section">
         <div class="sidebar-section-header">Galleries</div>
         @foreach($sidebarGalleries as $gallery)
