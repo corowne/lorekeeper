@@ -67,7 +67,7 @@ class CharacterDesignUpdate extends Model {
 
         RELATIONS
 
-     **********************************************************************************************/
+    **********************************************************************************************/
 
     /**
      * Get the character associated with the design update.
@@ -149,7 +149,7 @@ class CharacterDesignUpdate extends Model {
 
         SCOPES
 
-     **********************************************************************************************/
+    **********************************************************************************************/
 
     /**
      * Scope a query to only include active (Open or Pending) update requests.
@@ -210,7 +210,7 @@ class CharacterDesignUpdate extends Model {
 
         ACCESSORS
 
-     **********************************************************************************************/
+    **********************************************************************************************/
 
     /**
      * Get the data attribute as an associative array.
@@ -345,7 +345,7 @@ class CharacterDesignUpdate extends Model {
 
         OTHER FUNCTIONS
 
-     **********************************************************************************************/
+    **********************************************************************************************/
 
     /**
      * Get the available currencies that the user can attach to this update request.
@@ -365,7 +365,7 @@ class CharacterDesignUpdate extends Model {
         }
         $ids = array_keys($currencies);
         $result = Currency::whereIn('id', $ids)->get();
-        foreach ($result as $i => $currency) {
+        foreach ($result as $i=> $currency) {
             $currency->quantity = $currencies[$currency->id];
         }
 
