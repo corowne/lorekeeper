@@ -266,7 +266,7 @@ class CharacterDesignUpdate extends Model {
      * @return string
      */
     public function getImageDirectoryAttribute() {
-        return 'images/character-updates/' . floor($this->id / 1000);
+        return 'images/character-updates/'.floor($this->id / 1000);
     }
 
     /**
@@ -275,7 +275,7 @@ class CharacterDesignUpdate extends Model {
      * @return string
      */
     public function getImageFileNameAttribute() {
-        return $this->id . '_' . $this->hash . '.' . $this->extension;
+        return $this->id.'_'.$this->hash.'.'.$this->extension;
     }
 
     /**
@@ -293,7 +293,7 @@ class CharacterDesignUpdate extends Model {
      * @return string
      */
     public function getImageUrlAttribute() {
-        return asset($this->imageDirectory . '/' . $this->imageFileName);
+        return asset($this->imageDirectory.'/'.$this->imageFileName);
     }
 
     /**
@@ -302,7 +302,7 @@ class CharacterDesignUpdate extends Model {
      * @return string
      */
     public function getThumbnailFileNameAttribute() {
-        return $this->id . '_' . $this->hash . '_th.' . $this->extension;
+        return $this->id.'_'.$this->hash.'_th.'.$this->extension;
     }
 
     /**
@@ -320,7 +320,7 @@ class CharacterDesignUpdate extends Model {
      * @return string
      */
     public function getThumbnailUrlAttribute() {
-        return asset($this->imageDirectory . '/' . $this->thumbnailFileName);
+        return asset($this->imageDirectory.'/'.$this->thumbnailFileName);
     }
 
     /**
@@ -329,7 +329,7 @@ class CharacterDesignUpdate extends Model {
      * @return string
      */
     public function getUrlAttribute() {
-        return url('designs/' . $this->id);
+        return url('designs/'.$this->id);
     }
 
     /**
