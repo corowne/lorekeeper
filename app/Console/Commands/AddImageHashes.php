@@ -79,20 +79,20 @@ class AddImageHashes extends Command {
 
             // Just for currency icons
             if ($image instanceof Currency) {
-              $oldName = $image->id . '-icon.png';
-              if (
-                File::exists(public_path($image->imageDirectory) . '/' . $oldName) &&
-                (new FeatureService)->handleImage(
-                  null,
-                  public_path($image->imageDirectory),
-                  $image->hash . $image->id . '-icon.png',
-                  $oldName
-                )
-              ) {
-                $image->save();
-              } else {
-                $this->info('Didn\'t add hash to currency icon image, this could be expected or an error, id ' . $image->id);
-              }
+                $oldName = $image->id.'-icon.png';
+                if (
+                    File::exists(public_path($image->imageDirectory).'/'.$oldName) &&
+                    (new FeatureService)->handleImage(
+                        null,
+                        public_path($image->imageDirectory),
+                        $image->hash.$image->id.'-icon.png',
+                        $oldName
+                    )
+                ) {
+                    $image->save();
+                } else {
+                    $this->info('Didn\'t add hash to currency icon image, this could be expected or an error, id '.$image->id);
+                }
             }
         }
     }
