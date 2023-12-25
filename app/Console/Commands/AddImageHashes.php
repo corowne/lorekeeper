@@ -97,6 +97,7 @@ class AddImageHashes extends Command {
                     }
                 }
             }
+            $this->info('Updated images.');
         } else {
             $this->line('No images need updating!');
         }
