@@ -38,7 +38,7 @@ class UpdateExtensionTracker extends Command {
         $this->info('****************************');
 
         $extendos = [];
-        foreach (glob('config\lorekeeper\ext-tracker\*.php') as $extension) {
+        foreach (glob('config/lorekeeper/ext-tracker/*.php') as $extension) {
             $extendos[basename($extension, '.php')] = include $extension;
         }
 
