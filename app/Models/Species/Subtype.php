@@ -63,7 +63,7 @@ class Subtype extends Model {
      * Get the species the subtype belongs to.
      */
     public function species() {
-        return $this->belongsTo('App\Models\Species\Species', 'species_id');
+        return $this->belongsTo(Species::class, 'species_id');
     }
 
     /**********************************************************************************************

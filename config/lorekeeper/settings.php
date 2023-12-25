@@ -317,6 +317,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | User Username Changes
+    |--------------------------------------------------------------------------
+    |
+    | allow_username_changes: Whether or not users can change their usernames.
+    | Set to 0 to disable.
+    |
+    | username_change_cooldown: Cooldown period, in days, before a user can change their username again.
+    | Set to 0 / null to disable.
+    |
+    */
+
+    'allow_username_changes'                            => 0,
+    'username_change_cooldown'                          => 30,
+
+    /*
+    |--------------------------------------------------------------------------
     | What You See Is What You Get (WYSIWYG) Comments
     |--------------------------------------------------------------------------
     |

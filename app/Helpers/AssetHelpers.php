@@ -350,7 +350,7 @@ function fillUserAssets($assets, $sender, $recipient, $logType, $data) {
  * @return array
  */
 function fillCharacterAssets($assets, $sender, $recipient, $logType, $data, $submitter = null) {
-    if (!Config::get('lorekeeper.extensions.character_reward_expansion.default_recipient') && $recipient->user) {
+    if (!config('lorekeeper.extensions.character_reward_expansion.default_recipient') && $recipient->user) {
         $item_recipient = $recipient->user;
     } else {
         $item_recipient = $submitter;

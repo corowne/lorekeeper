@@ -2,18 +2,21 @@
 
 namespace App\Models\Character;
 
+use App\Facades\Notifications;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
+use App\Models\Gallery\GalleryCharacter;
 use App\Models\Item\Item;
 use App\Models\Item\ItemLog;
 use App\Models\Model;
+use App\Models\Rarity;
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
+use App\Models\Trade;
 use App\Models\User\User;
 use App\Models\User\UserCharacterLog;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Notifications;
 
 class Character extends Model {
     use SoftDeletes;
@@ -120,21 +123,21 @@ class Character extends Model {
      * Get the user who owns the character.
      */
     public function user() {
-        return $this->belongsTo('App\Models\User\User', 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
      * Get the category the character belongs to.
      */
     public function category() {
-        return $this->belongsTo('App\Models\Character\CharacterCategory', 'character_category_id');
+        return $this->belongsTo(CharacterCategory::class, 'character_category_id');
     }
 
     /**
      * Get the masterlist image of the character.
      */
     public function image() {
-        return $this->belongsTo('App\Models\Character\CharacterImage', 'character_image_id');
+        return $this->belongsTo(CharacterImage::class, 'character_image_id');
     }
 
     /**
@@ -143,49 +146,49 @@ class Character extends Model {
      * @param mixed|null $user
      */
     public function images($user = null) {
-        return $this->hasMany('App\Models\Character\CharacterImage', 'character_id')->images($user);
+        return $this->hasMany(CharacterImage::class, 'character_id')->images($user);
     }
 
     /**
      * Get the user-editable profile data of the character.
      */
     public function profile() {
-        return $this->hasOne('App\Models\Character\CharacterProfile', 'character_id');
+        return $this->hasOne(CharacterProfile::class, 'character_id');
     }
 
     /**
      * Get the character's active design update.
      */
     public function designUpdate() {
-        return $this->hasMany('App\Models\Character\CharacterDesignUpdate', 'character_id');
+        return $this->hasMany(CharacterDesignUpdate::class, 'character_id');
     }
 
     /**
      * Get the trade this character is attached to.
      */
     public function trade() {
-        return $this->belongsTo('App\Models\Trade', 'trade_id');
+        return $this->belongsTo(Trade::class, 'trade_id');
     }
 
     /**
      * Get the rarity of this character.
      */
     public function rarity() {
-        return $this->belongsTo('App\Models\Rarity', 'rarity_id');
+        return $this->belongsTo(Rarity::class, 'rarity_id');
     }
 
     /**
      * Get the character's associated gallery submissions.
      */
     public function gallerySubmissions() {
-        return $this->hasMany('App\Models\Gallery\GalleryCharacter', 'character_id');
+        return $this->hasMany(GalleryCharacter::class, 'character_id');
     }
 
     /**
      * Get the character's items.
      */
     public function items() {
-        return $this->belongsToMany('App\Models\Item\Item', 'character_items')->withPivot('count', 'data', 'updated_at', 'id')->whereNull('character_items.deleted_at');
+        return $this->belongsToMany(Item::class, 'character_items')->withPivot('count', 'data', 'updated_at', 'id')->whereNull('character_items.deleted_at');
     }
 
     /**********************************************************************************************

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
+use App\Facades\Settings;
 use App\Models\Character\Character;
-use Settings;
+use App\Models\User\User;
 
 class Trade extends Model {
     /**
@@ -40,21 +41,21 @@ class Trade extends Model {
      * Get the user who initiated the trade.
      */
     public function sender() {
-        return $this->belongsTo('App\Models\User\User', 'sender_id');
+        return $this->belongsTo(User::class, 'sender_id');
     }
 
     /**
      * Get the user who received the trade.
      */
     public function recipient() {
-        return $this->belongsTo('App\Models\User\User', 'recipient_id');
+        return $this->belongsTo(User::class, 'recipient_id');
     }
 
     /**
      * Get the staff member who approved the character transfer.
      */
     public function staff() {
-        return $this->belongsTo('App\Models\User\User', 'staff_id');
+        return $this->belongsTo(User::class, 'staff_id');
     }
 
     /**********************************************************************************************

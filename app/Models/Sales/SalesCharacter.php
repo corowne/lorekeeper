@@ -2,9 +2,9 @@
 
 namespace App\Models\Sales;
 
+use App\Models\Character\Character;
 use App\Models\Character\CharacterImage;
 use App\Models\Model;
-use Config;
 
 class SalesCharacter extends Model {
     /**
@@ -50,21 +50,21 @@ class SalesCharacter extends Model {
      * Get the sale this is attached to.
      */
     public function sales() {
-        return $this->belongsTo('App\Models\Sales\Sales', 'sales_id');
+        return $this->belongsTo(Sales::class, 'sales_id');
     }
 
     /**
      * Get the character being attached to the sale.
      */
     public function character() {
-        return $this->belongsTo('App\Models\Character\Character', 'character_id')->withTrashed();
+        return $this->belongsTo(Character::class, 'character_id')->withTrashed();
     }
 
     /**
      * Get the image being attached to the sale.
      */
     public function image() {
-        return $this->belongsTo('App\Models\Character\CharacterImage', 'image_id');
+        return $this->belongsTo(CharacterImage::class, 'image_id');
     }
 
     /**********************************************************************************************
@@ -153,7 +153,7 @@ class SalesCharacter extends Model {
         if ($this->type == 'raffle') {
             return null;
         }
-        $symbol = Config::get('lorekeeper.settings.currency_symbol');
+        $symbol = config('lorekeeper.settings.currency_symbol');
 
         switch ($this->type) {
             case 'flatsale':

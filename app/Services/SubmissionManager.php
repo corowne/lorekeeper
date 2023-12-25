@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Facades\Notifications;
+use App\Facades\Settings;
 use App\Models\Character\Character;
 use App\Models\Currency\Currency;
 use App\Models\Item\Item;
@@ -13,10 +15,8 @@ use App\Models\Submission\SubmissionCharacter;
 use App\Models\User\User;
 use App\Models\User\UserItem;
 use Carbon\Carbon;
-use DB;
 use Illuminate\Support\Arr;
-use Notifications;
-use Settings;
+use Illuminate\Support\Facades\DB;
 
 class SubmissionManager extends Service {
     /*

@@ -6,7 +6,7 @@ use App\Models\Feature\Feature;
 use App\Models\Feature\FeatureCategory;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class FeatureService extends Service {
     /*

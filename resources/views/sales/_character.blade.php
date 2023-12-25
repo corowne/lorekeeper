@@ -16,7 +16,7 @@
 
                     @if ($loop->count == 1)
                         <div class="mb-2">
-                            @if (Config::get('lorekeeper.extensions.traits_by_category'))
+                            @if (config('lorekeeper.extensions.traits_by_category'))
                                 <div>
                                     @php
                                         $traitgroup = $character->image

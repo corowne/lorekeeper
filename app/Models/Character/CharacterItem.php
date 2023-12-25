@@ -2,6 +2,7 @@
 
 namespace App\Models\Character;
 
+use App\Models\Item\Item;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -41,14 +42,14 @@ class CharacterItem extends Model {
      * Get the character who owns the stack.
      */
     public function character() {
-        return $this->belongsTo('App\Models\Character\Character');
+        return $this->belongsTo(Character::class);
     }
 
     /**
      * Get the item associated with this item stack.
      */
     public function item() {
-        return $this->belongsTo('App\Models\Item\Item');
+        return $this->belongsTo(Item::class);
     }
 
     /**********************************************************************************************

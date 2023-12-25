@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Gallery\Gallery;
 use App\Models\Gallery\GallerySubmission;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class GalleryService extends Service {
     /*

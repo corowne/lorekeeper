@@ -12,7 +12,7 @@
     </h1>
 
     <p>
-        Edit the contents of this trade freely. Your trade partner will only be notified once you have confirmed your offer. Note that each person may only add up to <strong>{{ Config::get('lorekeeper.settings.trade_asset_limit') }} things to one trade
+        Edit the contents of this trade freely. Your trade partner will only be notified once you have confirmed your offer. Note that each person may only add up to <strong>{{ config('lorekeeper.settings.trade_asset_limit') }} things to one trade
             - if necessary, please create a new trade to add more.</strong>
     </p>
 

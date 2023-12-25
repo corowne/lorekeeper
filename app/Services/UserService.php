@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Facades\Notifications;
+use App\Facades\Settings;
 use App\Models\Character\CharacterDesignUpdate;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Gallery\GallerySubmission;
@@ -11,14 +13,12 @@ use App\Models\Trade;
 use App\Models\User\User;
 use App\Models\User\UserUpdateLog;
 use Carbon\Carbon;
-use DB;
-use File;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Image;
+use Intervention\Image\Facades\Image;
 use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider;
-use Notifications;
-use Settings;
 
 class UserService extends Service {
     /*
@@ -270,7 +270,7 @@ class UserService extends Service {
             }
             $filename = $user->id.'.'.$avatar->getClientOriginalExtension();
 
-            if ($user->avatar !== 'default.jpg') {
+            if ($user->avatar != 'default.jpg') {
                 $file = 'images/avatars/'.$user->avatar;
                 //$destinationPath = 'uploads/' . $id . '/';
 
@@ -296,6 +296,67 @@ class UserService extends Service {
             $user->save();
 
             return $this->commitReturn($avatar);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Updates a user's username.
+     *
+     * @param string                $username
+     * @param \App\Models\User\User $user
+     *
+     * @return bool
+     */
+    public function updateUsername($username, $user) {
+        DB::beginTransaction();
+
+        try {
+            if (!config('lorekeeper.settings.allow_username_changes')) {
+                throw new \Exception('Username changes are currently disabled.');
+            }
+            if (!$username) {
+                throw new \Exception('Please enter a username.');
+            }
+            if (strlen($username) < 3 || strlen($username) > 25) {
+                throw new \Exception('Username must be between 3 and 25 characters.');
+            }
+            if (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
+                throw new \Exception('Username must only contain letters, numbers, and underscores.');
+            }
+            if ($username == $user->name) {
+                throw new \Exception('Username cannot be the same as your current username.');
+            }
+            if (User::where('name', $username)->where('id', '!=', $user->id)->first()) {
+                throw new \Exception('Username already taken.');
+            }
+            // check if there is a cooldown
+            if (config('lorekeeper.settings.username_change_cooldown')) {
+                // these logs are different to the ones in the admin panel
+                // different type
+                $last_change = UserUpdateLog::where('user_id', $user->id)->where('type', 'Username Change')->orderBy('created_at', 'desc')->first();
+                if ($last_change && $last_change->created_at->diffInDays(Carbon::now()) < config('lorekeeper.settings.username_change_cooldown')) {
+                    throw new \Exception('You must wait '
+                        .config('lorekeeper.settings.username_change_cooldown') - $last_change->created_at->diffInDays(Carbon::now()).
+                    ' days before changing your username again.');
+                }
+            }
+
+            // create log
+            UserUpdateLog::create([
+                'staff_id' => null,
+                'user_id'  => $user->id,
+                'data'     => json_encode(['old_name' => $user->name, 'new_name' => $username]),
+                'type'     => 'Username Change',
+            ]);
+
+            $user->name = $username;
+            $user->save();
+
+            return $this->commitReturn(true);
         } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }

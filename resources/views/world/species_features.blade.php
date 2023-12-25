@@ -43,7 +43,7 @@
 @endsection
 
 @section('scripts')
-    @if (Config::get('lorekeeper.extensions.species_trait_index.trait_modals'))
+    @if (config('lorekeeper.extensions.species_trait_index.trait_modals'))
         <script>
             $(document).ready(function() {
                 $('.inventory-item').on('click', function(e) {

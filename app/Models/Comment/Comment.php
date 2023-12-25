@@ -80,28 +80,28 @@ class Comment extends Model {
      * Returns all comments that this comment is the parent of.
      */
     public function children() {
-        return $this->hasMany('App\Models\Comment\Comment', 'child_id')->withTrashed();
+        return $this->hasMany(self::class, 'child_id')->withTrashed();
     }
 
     /**
      * Returns the comment to which this comment belongs to.
      */
     public function parent() {
-        return $this->belongsTo('App\Models\Comment\Comment', 'child_id')->withTrashed();
+        return $this->belongsTo(self::class, 'child_id')->withTrashed();
     }
 
     /**
      * Gets the likes for this comment.
      */
     public function likes() {
-        return $this->hasMany('App\Models\Comment\CommentLike');
+        return $this->hasMany(CommentLike::class);
     }
 
     /**
      * Get the edit history of the comment.
      */
     public function edits() {
-        return $this->hasMany('App\Models\Comment\CommentEdit')->orderBy('created_at', 'desc');
+        return $this->hasMany(CommentEdit::class)->orderBy('created_at', 'desc');
     }
 
     /**********************************************************************************************

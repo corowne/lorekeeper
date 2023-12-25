@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Prompt\Prompt;
 use App\Models\Prompt\PromptCategory;
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PromptsController extends Controller {
     /*

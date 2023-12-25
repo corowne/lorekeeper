@@ -46,6 +46,6 @@ class UserSettings extends Model {
      * Get the user this set of settings belongs to.
      */
     public function user() {
-        return $this->belongsTo('App\Models\User\User');
+        return $this->belongsTo(User::class);
     }
 }

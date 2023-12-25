@@ -3,7 +3,7 @@
     {!! Form::label('Character Image') !!} {!! add_help('This is the full masterlist image. Note that the image is not protected in any way, so take precautions to avoid art/design theft.') !!}
     <div>{!! Form::file('image', ['id' => 'mainImage']) !!}</div>
 </div>
-@if (Config::get('lorekeeper.settings.masterlist_image_automation') === 1)
+@if (config('lorekeeper.settings.masterlist_image_automation') === 1)
     <div class="form-group">
         {!! Form::checkbox('use_cropper', 1, 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'useCropper']) !!}
         {!! Form::label('use_cropper', 'Use Thumbnail Automation', ['class' => 'form-check-label ml-3']) !!} {!! add_help('A thumbnail is required for the upload (used for the masterlist). You can use the Thumbnail Automation, or upload a custom thumbnail.') !!}
@@ -37,7 +37,7 @@
     <div class="card-body">
         {!! Form::label('Thumbnail Image') !!} {!! add_help('This image is shown on the masterlist page.') !!}
         <div>{!! Form::file('thumbnail') !!}</div>
-        <div class="text-muted">Recommended size: {{ Config::get('lorekeeper.settings.masterlist_thumbnails.width') }}px x {{ Config::get('lorekeeper.settings.masterlist_thumbnails.height') }}px</div>
+        <div class="text-muted">Recommended size: {{ config('lorekeeper.settings.masterlist_thumbnails.width') }}px x {{ config('lorekeeper.settings.masterlist_thumbnails.height') }}px</div>
     </div>
 </div>
 
@@ -78,8 +78,8 @@
 
         // Croppie ////////////////////////////////////////////////////////////////////////////////////
 
-        var thumbnailWidth = {{ Config::get('lorekeeper.settings.masterlist_thumbnails.width') }};
-        var thumbnailHeight = {{ Config::get('lorekeeper.settings.masterlist_thumbnails.height') }};
+        var thumbnailWidth = {{ config('lorekeeper.settings.masterlist_thumbnails.width') }};
+        var thumbnailHeight = {{ config('lorekeeper.settings.masterlist_thumbnails.height') }};
         var $cropper = $('#cropper');
         var c = null;
         var $x0 = $('#cropX0');

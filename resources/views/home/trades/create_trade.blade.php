@@ -13,7 +13,7 @@
 
     <p>
         Create a new trade. You can modify the trade attachments after trade creation - this only sets up the trade, so you don't have to worry about having everything in place at the start. The recipient will be notified of the new trade and will be
-        able to edit their attachments as well. Note that each person may only add up to <strong>{{ Config::get('lorekeeper.settings.trade_asset_limit') }} things to one trade - if necessary, please create a new trade to add more.</strong>
+        able to edit their attachments as well. Note that each person may only add up to <strong>{{ config('lorekeeper.settings.trade_asset_limit') }} things to one trade - if necessary, please create a new trade to add more.</strong>
     </p>
 
     {!! Form::open(['url' => 'trades/create']) !!}

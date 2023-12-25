@@ -2,6 +2,7 @@
 
 namespace App\Models\Gallery;
 
+use App\Models\Character\Character;
 use App\Models\Model;
 
 class GalleryCharacter extends Model {
@@ -25,13 +26,13 @@ class GalleryCharacter extends Model {
      * Get the submission this is attached to.
      */
     public function submission() {
-        return $this->belongsTo('App\Models\Gallery\GallerySubmission', 'gallery_submission_id');
+        return $this->belongsTo(GallerySubmission::class, 'gallery_submission_id');
     }
 
     /**
      * Get the character being attached to the submission.
      */
     public function character() {
-        return $this->belongsTo('App\Models\Character\Character', 'character_id');
+        return $this->belongsTo(Character::class, 'character_id');
     }
 }

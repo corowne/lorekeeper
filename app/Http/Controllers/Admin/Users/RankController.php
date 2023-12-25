@@ -5,9 +5,8 @@ namespace App\Http\Controllers\Admin\Users;
 use App\Http\Controllers\Controller;
 use App\Models\Rank\Rank;
 use App\Services\RankService;
-use Auth;
-use Config;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RankController extends Controller {
     /**
@@ -30,7 +29,7 @@ class RankController extends Controller {
         return view('admin.users._create_edit_rank', [
             'rank'       => new Rank,
             'rankPowers' => null,
-            'powers'     => Config::get('lorekeeper.powers'),
+            'powers'     => config('lorekeeper.powers'),
             'editable'   => 1,
         ]);
     }
@@ -52,7 +51,7 @@ class RankController extends Controller {
         return view('admin.users._create_edit_rank', [
             'rank'       => $rank,
             'rankPowers' => $rank ? $rank->getPowers() : null,
-            'powers'     => Config::get('lorekeeper.powers'),
+            'powers'     => config('lorekeeper.powers'),
             'editable'   => $editable,
         ]);
     }

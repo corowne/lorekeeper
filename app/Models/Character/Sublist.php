@@ -3,6 +3,7 @@
 namespace App\Models\Character;
 
 use App\Models\Model;
+use App\Models\Species\Species;
 
 class Sublist extends Model {
     /**
@@ -50,14 +51,14 @@ class Sublist extends Model {
      * Get all character categories associated with the sub list.
      */
     public function categories() {
-        return $this->hasMany('App\Models\Character\CharacterCategory', 'masterlist_sub_id');
+        return $this->hasMany(CharacterCategory::class, 'masterlist_sub_id');
     }
 
     /**
      * Get all character categories associated with the sub list.
      */
     public function species() {
-        return $this->hasMany('App\Models\Species\Species', 'masterlist_sub_id');
+        return $this->hasMany(Species::class, 'masterlist_sub_id');
     }
 
     /**********************************************************************************************

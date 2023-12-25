@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\Settings;
 use App\Models\Character\Character;
 use App\Models\Comment\Comment;
 use App\Models\Currency\Currency;
@@ -10,10 +11,8 @@ use App\Models\Gallery\GallerySubmission;
 use App\Models\Prompt\Prompt;
 use App\Models\User\User;
 use App\Services\GalleryManager;
-use Auth;
-use Config;
 use Illuminate\Http\Request;
-use Settings;
+use Illuminate\Support\Facades\Auth;
 use View;
 
 class GalleryController extends Controller {
@@ -113,7 +112,7 @@ class GalleryController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getAll(Request $request) {
-        if (!Config::get('lorekeeper.extensions.show_all_recent_submissions.enable')) {
+        if (!config('lorekeeper.extensions.show_all_recent_submissions.enable')) {
             abort(404);
         }
 
@@ -370,7 +369,7 @@ class GalleryController extends Controller {
         $data = $request->only(['image', 'text', 'title', 'description', 'slug', 'collaborator_id', 'collaborator_data', 'participant_id', 'participant_type', 'gallery_id', 'alert_user', 'prompt_id', 'content_warning']);
 
         if (!$id && Settings::get('gallery_submissions_reward_currency')) {
-            $currencyFormData = $request->only(collect(Config::get('lorekeeper.group_currency_form'))->keys()->toArray());
+            $currencyFormData = $request->only(collect(config('lorekeeper.group_currency_form'))->keys()->toArray());
         } else {
             $currencyFormData = null;
         }

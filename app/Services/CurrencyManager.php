@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
+use App\Facades\Notifications;
 use App\Models\Character\CharacterCurrency;
 use App\Models\Currency\Currency;
 use App\Models\User\User;
 use App\Models\User\UserCurrency;
 use Carbon\Carbon;
-use DB;
-use Notifications;
+use Illuminate\Support\Facades\DB;
 
 class CurrencyManager extends Service {
     /*

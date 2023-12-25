@@ -5,8 +5,8 @@ namespace App\Services;
 use App\Models\Loot\Loot;
 use App\Models\Loot\LootTable;
 use App\Models\Prompt\PromptReward;
-use DB;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 class LootService extends Service {
     /*

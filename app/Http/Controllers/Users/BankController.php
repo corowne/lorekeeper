@@ -7,8 +7,8 @@ use App\Models\Currency\Currency;
 use App\Models\User\User;
 use App\Models\User\UserCurrency;
 use App\Services\CurrencyManager;
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BankController extends Controller {
     /*

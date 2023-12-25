@@ -3,9 +3,8 @@
 namespace App\Console\Commands;
 
 use Carbon\Carbon;
-use Config;
-use DB;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class AddTextPages extends Command {
     /**
@@ -36,7 +35,7 @@ class AddTextPages extends Command {
      */
     public function handle() {
         //
-        $pages = Config::get('lorekeeper.text_pages');
+        $pages = config('lorekeeper.text_pages');
 
         $this->info('******************');
         $this->info('* ADD SITE PAGES *');

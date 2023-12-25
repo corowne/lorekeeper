@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Config;
+use App\Models\User\User;
 
 class Notification extends Model {
     /**
@@ -38,7 +38,7 @@ class Notification extends Model {
      * Get the user who owns notification.
      */
     public function user() {
-        return $this->belongsTo('App\Models\User\User');
+        return $this->belongsTo(User::class);
     }
 
     /**********************************************************************************************
@@ -62,7 +62,7 @@ class Notification extends Model {
      * @return array
      */
     public function getMessageAttribute() {
-        $notification = Config::get('lorekeeper.notifications.'.$this->notification_type_id);
+        $notification = config('lorekeeper.notifications.'.$this->notification_type_id);
 
         $message = $notification['message'];
 

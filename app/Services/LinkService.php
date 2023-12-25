@@ -4,8 +4,7 @@ namespace App\Services;
 
 use App\Models\User\UserAlias;
 use App\Models\User\UserUpdateLog;
-use DB;
-use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
 
 class LinkService extends Service {
@@ -39,7 +38,7 @@ class LinkService extends Service {
             return redirect()->back();
         }
         if ($login) {
-            $socialite->redirectUrl(str_replace('auth', 'login', url(Config::get('services.'.$provider.'.redirect'))));
+            $socialite->redirectUrl(str_replace('auth', 'login', url(config('services.'.$provider.'.redirect'))));
         }
 
         return $socialite->redirect();

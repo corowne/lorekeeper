@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\News;
 use App\Models\User\User;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class NewsService extends Service {
     /*

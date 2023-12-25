@@ -6,8 +6,8 @@ use App\Models\Character\Character;
 use App\Models\Character\CharacterCurrency;
 use App\Models\Character\CharacterFeature;
 use App\Models\Character\CharacterImage;
-use DB;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class ClearDeletedCharacterAttachments extends Command {
     /**

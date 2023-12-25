@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Shop\Shop;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class ShopService extends Service {
     /*

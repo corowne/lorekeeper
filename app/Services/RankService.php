@@ -4,8 +4,7 @@ namespace App\Services;
 
 use App\Models\Rank\Rank;
 use App\Models\User\User;
-use Config;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class RankService extends Service {
     /*
@@ -37,7 +36,7 @@ class RankService extends Service {
             $powers = null;
             if (isset($data['powers'])) {
                 foreach ($data['powers'] as $power) {
-                    if (!Config::get('lorekeeper.powers.'.$power)) {
+                    if (!config('lorekeeper.powers.'.$power)) {
                         throw new \Exception('Invalid power selected.');
                     }
                 }
@@ -95,7 +94,7 @@ class RankService extends Service {
             $powers = null;
             if (isset($data['powers'])) {
                 foreach ($data['powers'] as $power) {
-                    if (!Config::get('lorekeeper.powers.'.$power)) {
+                    if (!config('lorekeeper.powers.'.$power)) {
                         throw new \Exception('Invalid power selected.');
                     }
                 }

@@ -69,21 +69,21 @@ class Item extends Model {
      * Get the category the item belongs to.
      */
     public function category() {
-        return $this->belongsTo('App\Models\Item\ItemCategory', 'item_category_id');
+        return $this->belongsTo(ItemCategory::class, 'item_category_id');
     }
 
     /**
      * Get the item's tags.
      */
     public function tags() {
-        return $this->hasMany('App\Models\Item\ItemTag', 'item_id');
+        return $this->hasMany(ItemTag::class, 'item_id');
     }
 
     /**
      * Get the user that drew the item art.
      */
     public function artist() {
-        return $this->belongsTo('App\Models\User\User', 'artist_id');
+        return $this->belongsTo(User::class, 'artist_id');
     }
 
     /**********************************************************************************************

@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Notification;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class ExtensionService extends Service {
     /*
