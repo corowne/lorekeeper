@@ -33,7 +33,7 @@
             @endforeach
         </li>
     @endif
-	
+
     @if ($galleryPage && $sideGallery->avunculi() && $sideGallery->avunculi->count())
         <li class="sidebar-section">
             <div class="sidebar-section-header">{{ $sideGallery->parent->parent->name }}: Sub-Galleries</div>
