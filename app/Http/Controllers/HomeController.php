@@ -128,10 +128,8 @@ class HomeController extends Controller {
         $service = new UserService;
         // Make birthday into format we can store
         $data = $request->input('dob');
-        $date = $data['day'].'-'.$data['month'].'-'.$data['year'];
-        $formatDate = Carbon::parse($date);
 
-        if ($service->updateBirthday($formatDate, Auth::user())) {
+        if ($service->updateBirthday($data, Auth::user())) {
             flash('Birthday added successfully!');
 
             return redirect()->to('/');

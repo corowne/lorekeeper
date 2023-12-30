@@ -26,6 +26,12 @@ class CreateNewUser implements CreatesNewUsers {
             'password' => Hash::make($input['password']),
             'rank_id'  => 2,
         ]);
+        $user->settings()->create([
+            'user_id' => $user->id,
+        ]);
+        $user->profile()->create([
+            'user_id' => $user->id,
+        ]);
 
         if (isset($input['code'])) {
             if (!(new InvitationService)->useInvitation(Invitation::where('code', $input['code'])->whereNull('recipient_id')->first(), $user)) {
