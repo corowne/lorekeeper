@@ -182,7 +182,6 @@ class UserService extends Service {
         DB::beginTransaction();
 
         try {
-            
             $user->birthday = $data;
             $user->save();
 
@@ -204,10 +203,9 @@ class UserService extends Service {
         DB::beginTransaction();
 
         try {
-
             $user->settings->birthday_setting = $data;
             $user->settings->save();
-            
+
             return $this->commitReturn(true);
         } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
