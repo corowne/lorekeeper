@@ -10,8 +10,11 @@
                 ? "altField: '." .
                     $dtinline .
                     "',
-            		altFieldTimeOnly: false"
+                    altFieldTimeOnly: false,"
                 : null !!}
         });
+        @if(isset($dtvalue))
+            $( ".datepicker" ).datetimepicker( "setDate", "{!! Carbon\Carbon::parse($dtvalue) !!} {!! Carbon\Carbon::now()->utcOffset() !!}}" );
+        @endif
     });
 </script>

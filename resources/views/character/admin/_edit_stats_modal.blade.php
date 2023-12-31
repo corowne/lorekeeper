@@ -66,7 +66,7 @@
 </div>
 {!! Form::close() !!}
 
-@include('widgets._datetimepicker_js', ['dtinline' => 'datepickeralt'])
+@include('widgets._datetimepicker_js', ['dtinline' => 'datepickeralt', 'dtvalue' => $character->transferrable_at])
 
 <script>
     $(document).ready(function() {
