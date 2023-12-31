@@ -6,9 +6,12 @@
             changeMonth: true,
             changeYear: true,
             timezone: '{!! Carbon\Carbon::now()->utcOffset() !!}',
-		{!! isset($dtinline) ?
-		"altField: '.".$dtinline."',
-		altFieldTimeOnly: false" : NULL !!}
+            {!! isset($dtinline)
+                ? "altField: '." .
+                    $dtinline .
+                    "',
+            		altFieldTimeOnly: false"
+                : null !!}
         });
     });
 </script>
