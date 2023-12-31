@@ -5,6 +5,7 @@
             timeFormat: 'HH:mm:ss',
             changeMonth: true,
             changeYear: true,
+			timezone: '{!! Carbon\Carbon::now()->utcOffset() !!}',
         });
     });
 </script>
