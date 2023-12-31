@@ -63,13 +63,13 @@
         <div class="col-md-6">
             <div class="form-group">
                 {!! Form::label('start_at', 'Start Time (Optional)') !!} {!! add_help('Prompts cannot be submitted to the queue before the starting time.') !!}
-                {!! Form::text('start_at', $prompt->start_at, ['class' => 'form-control datepicker']) !!}
+                {!! Form::text('start_at', $prompt->start_at, ['class' => 'form-control', 'id' => 'datepicker']) !!}
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 {!! Form::label('end_at', 'End Time (Optional)') !!} {!! add_help('Prompts cannot be submitted to the queue after the ending time.') !!}
-                {!! Form::text('end_at', $prompt->end_at, ['class' => 'form-control datepicker']) !!}
+                {!! Form::text('end_at', $prompt->end_at, ['class' => 'form-control', 'id' => 'datepicker']) !!}
             </div>
         </div>
     </div>
@@ -132,16 +132,12 @@
 @section('scripts')
     @parent
     @include('js._loot_js', ['showLootTables' => true, 'showRaffles' => true])
+    @include('widgets._datetimepicker_js')
     <script>
         $(document).ready(function() {
             $('.delete-prompt-button').on('click', function(e) {
                 e.preventDefault();
                 loadModal("{{ url('admin/data/prompts/delete') }}/{{ $prompt->id }}", 'Delete Prompt');
-            });
-
-            $(".datepicker").datetimepicker({
-                dateFormat: "yy-mm-dd",
-                timeFormat: 'HH:mm:ss',
             });
         });
     </script>

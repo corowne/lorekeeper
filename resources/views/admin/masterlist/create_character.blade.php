@@ -266,6 +266,7 @@
     @parent
     @include('widgets._character_create_options_js')
     @include('widgets._image_upload_js')
+    @include('widgets._datetimepicker_js')
     @if (!$isMyo)
         @include('widgets._character_code_js')
     @endif

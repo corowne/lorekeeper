@@ -87,3 +87,4 @@
 
 @include('widgets._character_create_options_js')
 @include('widgets._character_code_js')
+@include('widgets._datetimepicker_js')

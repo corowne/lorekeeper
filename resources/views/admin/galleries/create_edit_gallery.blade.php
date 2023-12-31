@@ -85,13 +85,13 @@
         <div class="col-md">
             <div class="form-group">
                 {!! Form::label('start_at', 'Start Time (Optional)') !!} {!! add_help('Pieces cannot be submitted to the gallery before the starting time.') !!}
-                {!! Form::text('start_at', $gallery->start_at, ['class' => 'form-control datepicker']) !!}
+                {!! Form::text('start_at', $gallery->start_at, ['class' => 'form-control', 'id' => 'datepicker']) !!}
             </div>
         </div>
         <div class="col-md">
             <div class="form-group">
                 {!! Form::label('end_at', 'End Time (Optional)') !!} {!! add_help('Pieces cannot be submitted to the gallery after the ending time.') !!}
-                {!! Form::text('end_at', $gallery->end_at, ['class' => 'form-control datepicker']) !!}
+                {!! Form::text('end_at', $gallery->end_at, ['class' => 'form-control', 'id' => 'datepicker']) !!}
             </div>
         </div>
     </div>
@@ -105,6 +105,7 @@
 
 @section('scripts')
     @parent
+    @include('widgets._datetimepicker_js')
     <script>
         $(document).ready(function() {
             $('.delete-gallery-button').on('click', function(e) {
@@ -112,10 +113,6 @@
                 loadModal("{{ url('admin/data/galleries/delete') }}/{{ $gallery->id }}", 'Delete Gallery');
             });
 
-            $(".datepicker").datetimepicker({
-                dateFormat: "yy-mm-dd",
-                timeFormat: 'HH:mm:ss',
-            });
         });
     </script>
 @endsection

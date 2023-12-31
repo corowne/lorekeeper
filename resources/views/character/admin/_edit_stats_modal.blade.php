@@ -61,11 +61,8 @@
 {!! Form::close() !!}
 
 <script>
+    @include('widgets._datetimepicker_js')
     $(document).ready(function() {
-        $("#datepicker").datetimepicker({
-            dateFormat: "yy-mm-dd",
-            timeFormat: 'HH:mm:ss',
-        });
 
         //$('[data-toggle=toggle]').bootstrapToggle();
 

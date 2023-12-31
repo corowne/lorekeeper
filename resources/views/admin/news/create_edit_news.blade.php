@@ -64,15 +64,12 @@
 
 @section('scripts')
     @parent
+    @include('widgets._datetimepicker_js')
     <script>
         $(document).ready(function() {
             $('.delete-news-button').on('click', function(e) {
                 e.preventDefault();
                 loadModal("{{ url('admin/news/delete') }}/{{ $news->id }}", 'Delete Post');
-            });
-            $("#datepicker").datetimepicker({
-                dateFormat: "yy-mm-dd",
-                timeFormat: 'HH:mm:ss',
             });
         });
     </script>

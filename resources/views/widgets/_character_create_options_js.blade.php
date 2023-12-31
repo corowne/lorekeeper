@@ -1,10 +1,6 @@
 <script>
     $(document).ready(function() {
         $('#userSelect').selectize();
-        $("#datepicker").datetimepicker({
-            dateFormat: "yy-mm-dd",
-            timeFormat: 'HH:mm:ss',
-        });
         // Resell options /////////////////////////////////////////////////////////////////////////////
 
         var $resellable = $('#resellable');
