@@ -60,7 +60,7 @@
 </div>
 <div class="form-group">
     {!! Form::label('On Transfer Cooldown Until (Optional)') !!}
-    {!! Form::text('transferrable_at', $request->character->transferrable_at, ['class' => 'form-control', 'id' => 'datepicker']) !!}
+    {!! Form::text('transferrable_at', $request->character->transferrable_at, ['class' => 'form-control datepicker']) !!}
 </div>
 
 <h3>Image Settings</h3>

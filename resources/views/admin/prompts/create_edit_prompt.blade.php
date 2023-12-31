@@ -63,13 +63,13 @@
         <div class="col-md-6">
             <div class="form-group">
                 {!! Form::label('start_at', 'Start Time (Optional)') !!} {!! add_help('Prompts cannot be submitted to the queue before the starting time.') !!}
-                {!! Form::text('start_at', $prompt->start_at, ['class' => 'form-control', 'id' => 'datepicker']) !!}
+                {!! Form::text('start_at', $prompt->start_at, ['class' => 'form-control datepicker']) !!}
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 {!! Form::label('end_at', 'End Time (Optional)') !!} {!! add_help('Prompts cannot be submitted to the queue after the ending time.') !!}
-                {!! Form::text('end_at', $prompt->end_at, ['class' => 'form-control', 'id' => 'datepicker']) !!}
+                {!! Form::text('end_at', $prompt->end_at, ['class' => 'form-control datepicker']) !!}
             </div>
         </div>
     </div>

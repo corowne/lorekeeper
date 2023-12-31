@@ -28,7 +28,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 {!! Form::label('Post Time (Optional)') !!} {!! add_help('This is the time that the sales post should be posted. Make sure the Is Viewable switch is off.') !!}
-                {!! Form::text('post_at', $sales->post_at, ['class' => 'form-control', 'id' => 'datepicker']) !!}
+                {!! Form::text('post_at', $sales->post_at, ['class' => 'form-control datepicker']) !!}
             </div>
         </div>
     </div>
@@ -62,7 +62,7 @@
         <div class="col-md">
             <div class="form-group">
                 {!! Form::label('comments_open_at', 'Comments Open At (Optional)') !!} {!! add_help('The time at which comments open to members. Staff can post comments before this time.') !!}
-                {!! Form::text('comments_open_at', $sales->comments_open_at, ['class' => 'form-control', 'id' => 'datepicker']) !!}
+                {!! Form::text('comments_open_at', $sales->comments_open_at, ['class' => 'form-control datepicker']) !!}
             </div>
         </div>
     </div>

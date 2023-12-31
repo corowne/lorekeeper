@@ -28,7 +28,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 {!! Form::label('Post Time (Optional)') !!} {!! add_help('This is the time that the news post should be posted. Make sure the Is Viewable switch is off.') !!}
-                {!! Form::text('post_at', $news->post_at, ['class' => 'form-control', 'id' => 'datepicker']) !!}
+                {!! Form::text('post_at', $news->post_at, ['class' => 'form-control datepicker']) !!}
             </div>
         </div>
     </div>
