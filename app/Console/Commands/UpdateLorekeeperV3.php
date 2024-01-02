@@ -62,9 +62,6 @@ class UpdateLorekeeperV3 extends Command {
 
             $this->line("\n".'Updating comments...');
             $this->call('update-comment-types');
-
-            $this->line("\n".'Updating data images...');
-            $this->call('add-image-hashes');
         } else {
             $this->line('Aborting! Please run composer update and then run this command again.');
         }
