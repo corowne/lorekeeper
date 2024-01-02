@@ -21,7 +21,9 @@
 
             @if ($user->settings->is_fto)
                 <div class="col-md-1 text-center">
-                    <span class="badge badge-success float-md-right" data-toggle="tooltip" title="This user has not owned any characters from this world before.">FTO</span>
+                    <h2>
+                        <span class="badge badge-success float-md-right" data-toggle="tooltip" title="This user has not owned any characters from this world before.">FTO</span>
+                    </h2>
                 </div>
             @endif
         </div>
