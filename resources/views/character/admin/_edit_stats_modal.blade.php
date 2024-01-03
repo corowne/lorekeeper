@@ -44,11 +44,9 @@
         {!! Form::checkbox('is_sellable', 1, $character->is_sellable, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'resellable']) !!}
         {!! Form::label('is_sellable', 'Is Resellable', ['class' => 'form-check-label ml-3']) !!}
     </div>
-    <div class="card mb-3" id="resellOptions">
-        <div class="card-body">
-            {!! Form::label('Resale Value') !!} {!! add_help('This value is publicly displayed on the character\'s page.') !!}
-            {!! Form::text('sale_value', $character->sale_value, ['class' => 'form-control']) !!}
-        </div>
+    <div class="form-group">
+        {!! Form::label('Resale Value') !!} {!! add_help('This value is publicly displayed on the character\'s page. It's hidden if zero or lower.') !!}
+        {!! Form::text('sale_value', $character->sale_value, ['class' => 'form-control']) !!}
     </div>
     <div class="form-group">
         {!! Form::label('On Transfer Cooldown Until (Optional)') !!} 
@@ -66,27 +64,5 @@
             dateFormat: "yy-mm-dd",
             timeFormat: 'HH:mm:ss',
         });
-
-        //$('[data-toggle=toggle]').bootstrapToggle();
-
-        // Resell options /////////////////////////////////////////////////////////////////////////////
-
-        var $resellable = $('#resellable');
-        var $resellOptions = $('#resellOptions');
-
-        var resellable = $resellable.is(':checked');
-
-        updateOptions();
-
-        $resellable.on('change', function(e) {
-            resellable = $resellable.is(':checked');
-
-            updateOptions();
-        });
-
-        function updateOptions() {
-            if(resellable) $resellOptions.removeClass('hide');
-            else $resellOptions.addClass('hide');
-        }
     });
 </script>
