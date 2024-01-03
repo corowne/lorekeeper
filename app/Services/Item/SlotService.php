@@ -1,23 +1,18 @@
-<?php namespace App\Services\Item;
+<?php
 
-use App\Services\Service;
-use Illuminate\Http\Request;
-
-use DB;
-
-use App\Services\InventoryManager;
-use App\Services\CharacterManager;
+namespace App\Services\Item;
 
 use App\Models\Item\Item;
-use App\Models\User\User;
-use App\Models\User\UserItem;
-use App\Models\Character\Character;
+use App\Models\Rarity;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
-use App\Models\Rarity;
+use App\Models\User\User;
+use App\Services\CharacterManager;
+use App\Services\InventoryManager;
+use App\Services\Service;
+use Illuminate\Support\Facades\DB;
 
-class SlotService extends Service
-{
+class SlotService extends Service {
     /*
     |--------------------------------------------------------------------------
     | Slot Service
@@ -32,37 +27,52 @@ class SlotService extends Service
      *
      * @return array
      */
-    public function getEditData()
-    {
+    public function getEditData() {
         return [
-            'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'rarities'  => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes' => ['0' => 'Select Subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'isMyo' => true
+            'subtypes'  => ['0' => 'Select Subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'isMyo'     => true,
         ];
     }
 
     /**
      * Processes the data attribute of the tag and returns it in the preferred format for edits.
      *
-     * @param  string  $tag
+     * @param object $tag
+     *
      * @return mixed
      */
-    public function getTagData($tag)
-    {
+    public function getTagData($tag) {
         //fetch data from DB, if there is no data then set to NULL instead
-        $characterData['name'] = isset($tag->data['name']) ? $tag->data['name'] : null;
+        $characterData['name'] = $tag->data['name'] ?? null;
         $characterData['species_id'] = isset($tag->data['species_id']) && $tag->data['species_id'] ? $tag->data['species_id'] : null;
         $characterData['subtype_id'] = isset($tag->data['subtype_id']) && $tag->data['subtype_id'] ? $tag->data['subtype_id'] : null;
         $characterData['rarity_id'] = isset($tag->data['rarity_id']) && $tag->data['rarity_id'] ? $tag->data['rarity_id'] : null;
         $characterData['description'] = isset($tag->data['description']) && $tag->data['description'] ? $tag->data['description'] : null;
         $characterData['parsed_description'] = parse($characterData['description']);
-        $characterData['sale_value'] = isset($tag->data['sale_value']) ? $tag->data['sale_value'] : 0;
+        $characterData['sale_value'] = $tag->data['sale_value'] ?? 0;
         //the switches hate true/false, need to convert boolean to binary
-        if( isset($tag->data['is_sellable']) && $tag->data['is_sellable'] == "true") { $characterData['is_sellable'] = 1; } else $characterData['is_sellable'] = 0;
-        if( isset($tag->data['is_tradeable']) && $tag->data['is_tradeable'] == "true") { $characterData['is_tradeable'] = 1; } else $characterData['is_tradeable'] = 0;
-        if( isset($tag->data['is_giftable']) && $tag->data['is_giftable'] == "true") { $characterData['is_giftable'] = 1; } else $characterData['is_giftable'] = 0;
-        if( isset($tag->data['is_visible']) && $tag->data['is_visible'] == "true") { $characterData['is_visible'] = 1; } else $characterData['is_visible'] = 0;
+        if (isset($tag->data['is_sellable']) && $tag->data['is_sellable'] == 'true') {
+            $characterData['is_sellable'] = 1;
+        } else {
+            $characterData['is_sellable'] = 0;
+        }
+        if (isset($tag->data['is_tradeable']) && $tag->data['is_tradeable'] == 'true') {
+            $characterData['is_tradeable'] = 1;
+        } else {
+            $characterData['is_tradeable'] = 0;
+        }
+        if (isset($tag->data['is_giftable']) && $tag->data['is_giftable'] == 'true') {
+            $characterData['is_giftable'] = 1;
+        } else {
+            $characterData['is_giftable'] = 0;
+        }
+        if (isset($tag->data['is_visible']) && $tag->data['is_visible'] == 'true') {
+            $characterData['is_visible'] = 1;
+        } else {
+            $characterData['is_visible'] = 0;
+        }
 
         return $characterData;
     }
@@ -70,20 +80,20 @@ class SlotService extends Service
     /**
      * Processes the data attribute of the tag and returns it in the preferred format for DB storage.
      *
-     * @param  string  $tag
-     * @param  array   $data
+     * @param object $tag
+     * @param array  $data
+     *
      * @return bool
      */
-    public function updateData($tag, $data)
-    {
+    public function updateData($tag, $data) {
         //put inputs into an array to transfer to the DB
-        $characterData['name'] = isset($data['name']) ? $data['name'] : null;
+        $characterData['name'] = $data['name'] ?? null;
         $characterData['species_id'] = isset($data['species_id']) && $data['species_id'] ? $data['species_id'] : null;
         $characterData['subtype_id'] = isset($data['subtype_id']) && $data['subtype_id'] ? $data['subtype_id'] : null;
         $characterData['rarity_id'] = isset($data['rarity_id']) && $data['rarity_id'] ? $data['rarity_id'] : null;
         $characterData['description'] = isset($data['description']) && $data['description'] ? $data['description'] : null;
         $characterData['parsed_description'] = parse($characterData['description']);
-        $characterData['sale_value'] = isset($data['sale_value']) ? $data['sale_value'] : 0;
+        $characterData['sale_value'] = $data['sale_value'] ?? 0;
         //if the switch was toggled, set true, if null, set false
         $characterData['is_sellable'] = isset($data['is_sellable']);
         $characterData['is_tradeable'] = isset($data['is_tradeable']);
@@ -97,40 +107,42 @@ class SlotService extends Service
             $tag->update(['data' => json_encode($characterData)]);
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
+
         return $this->rollbackReturn(false);
     }
 
     /**
      * Acts upon the item when used from the inventory.
      *
-     * @param  \App\Models\User\UserItem  $stacks
-     * @param  \App\Models\User\User      $user
-     * @param  array                      $data
+     * @param \App\Models\User\UserItem $stacks
+     * @param \App\Models\User\User     $user
+     * @param array                     $data
+     *
      * @return bool
      */
-    public function act($stacks, $user, $data)
-    {
+    public function act($stacks, $user, $data) {
         DB::beginTransaction();
 
         try {
-            foreach($stacks as $key=>$stack) {
+            foreach ($stacks as $key=> $stack) {
                 // We don't want to let anyone who isn't the owner of the slot to use it,
                 // so do some validation...
-                if($stack->user_id != $user->id) throw new \Exception("This item does not belong to you.");
+                if ($stack->user_id != $user->id) {
+                    throw new \Exception('This item does not belong to you.');
+                }
 
                 // Next, try to delete the tag item. If successful, we can start distributing rewards.
-                if((new InventoryManager)->debitStack($stack->user, 'Slot Used', ['data' => ''], $stack, $data['quantities'][$key])) {
-
-                    for($q=0; $q<$data['quantities'][$key]; $q++) {
+                if ((new InventoryManager)->debitStack($stack->user, 'Slot Used', ['data' => ''], $stack, $data['quantities'][$key])) {
+                    for ($q = 0; $q < $data['quantities'][$key]; $q++) {
                         //fill an array with the DB contents
                         $characterData = $stack->item->tag('slot')->data;
                         //set user who is opening the item
                         $characterData['user_id'] = $user->id;
                         //other vital data that is default
-                        $characterData['name'] = isset($characterData['name']) ? $characterData['name'] : "Slot";
+                        $characterData['name'] ??= 'Slot';
                         $characterData['transferrable_at'] = null;
                         $characterData['is_myo_slot'] = 1;
                         //this uses your default MYO slot image from the CharacterManager
@@ -150,26 +162,43 @@ class SlotService extends Service
                         $characterData['feature_data'][0] = null;
 
                         //DB has 'true' and 'false' as strings, so need to set them to true/null
-                        if( $stack->item->tag('slot')->data['is_sellable'] == "true") { $characterData['is_sellable'] = true; } else $characterData['is_sellable'] = null;
-                        if( $stack->item->tag('slot')->data['is_tradeable'] == "true") { $characterData['is_tradeable'] = true; } else $characterData['is_tradeable'] = null;
-                        if( $stack->item->tag('slot')->data['is_giftable'] == "true") { $characterData['is_giftable'] = true; } else $characterData['is_giftable'] = null;
-                        if( $stack->item->tag('slot')->data['is_visible'] == "true") { $characterData['is_visible'] = true; } else $characterData['is_visible'] = null;
+                        if ($stack->item->tag('slot')->data['is_sellable'] == 'true') {
+                            $characterData['is_sellable'] = true;
+                        } else {
+                            $characterData['is_sellable'] = null;
+                        }
+                        if ($stack->item->tag('slot')->data['is_tradeable'] == 'true') {
+                            $characterData['is_tradeable'] = true;
+                        } else {
+                            $characterData['is_tradeable'] = null;
+                        }
+                        if ($stack->item->tag('slot')->data['is_giftable'] == 'true') {
+                            $characterData['is_giftable'] = true;
+                        } else {
+                            $characterData['is_giftable'] = null;
+                        }
+                        if ($stack->item->tag('slot')->data['is_visible'] == 'true') {
+                            $characterData['is_visible'] = true;
+                        } else {
+                            $characterData['is_visible'] = null;
+                        }
 
                         // Distribute user rewards
                         $charService = new CharacterManager;
                         if ($character = $charService->createCharacter($characterData, $user, true)) {
-                            flash('<a href="' . $character->url . '">MYO slot</a> created successfully.')->success();
-                        }
-                        else {
-                            throw new \Exception("Failed to use slot.");
+                            flash('<a href="'.$character->url.'">MYO slot</a> created successfully.')->success();
+                        } else {
+                            throw new \Exception('Failed to use slot.');
                         }
                     }
                 }
             }
+
             return $this->commitReturn(true);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
+
         return $this->rollbackReturn(false);
     }
 }

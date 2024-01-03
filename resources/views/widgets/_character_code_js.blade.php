@@ -2,7 +2,7 @@
     $(document).ready(function() {
         // Code generation ////////////////////////////////////////////////////////////////////////////
 
-        var codeFormat = "{{ Config::get('lorekeeper.settings.character_codes') }}";
+        var codeFormat = "{{ config('lorekeeper.settings.character_codes') }}";
         var $code = $('#code');
         var $number = $('#number');
         var $category = $('#category');
@@ -18,6 +18,7 @@
             var str = codeFormat;
             str = str.replace('{category}', $category.find(':selected').data('code'));
             str = str.replace('{number}', $number.val());
+            str = str.replace('{year}', (new Date()).getFullYear());
             $code.val(str);
         }
 
@@ -27,8 +28,8 @@
         $pullNumber.on('click', function(e) {
             e.preventDefault();
             $pullNumber.prop('disabled', true);
-            $.get( "{{ url('admin/masterlist/get-number') }}?category=" + $category.val(), function( data ) {
-                $number.val( data );
+            $.get("{{ url('admin/masterlist/get-number') }}?category=" + $category.val(), function(data) {
+                $number.val(data);
                 $pullNumber.prop('disabled', false);
                 updateCode();
             });

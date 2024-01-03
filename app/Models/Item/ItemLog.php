@@ -2,21 +2,21 @@
 
 namespace App\Models\Item;
 
-use Config;
+use App\Models\Character\Character;
 use App\Models\Model;
+use App\Models\User\User;
 
-class ItemLog extends Model
-{
+class ItemLog extends Model {
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'sender_id', 'recipient_id', 
+        'sender_id', 'recipient_id',
         'log', 'log_type', 'data',
         'item_id', 'quantity', 'stack_id',
-        'sender_type', 'recipient_type'
+        'sender_type', 'recipient_type',
     ];
 
     /**
@@ -25,7 +25,6 @@ class ItemLog extends Model
      * @var string
      */
     protected $table = 'items_log';
-
     /**
      * Whether the model contains timestamps to be saved and updated.
      *
@@ -34,7 +33,7 @@ class ItemLog extends Model
     public $timestamps = true;
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -42,26 +41,29 @@ class ItemLog extends Model
     /**
      * Get the user who initiated the logged action.
      */
-    public function sender() 
-    {
-        if($this->sender_type == 'User') return $this->belongsTo('App\Models\User\User', 'sender_id');
-        return $this->belongsTo('App\Models\Character\Character', 'sender_id');
+    public function sender() {
+        if ($this->sender_type == 'User') {
+            return $this->belongsTo(User::class, 'sender_id');
+        }
+
+        return $this->belongsTo(Character::class, 'sender_id');
     }
 
     /**
      * Get the user who received the logged action.
      */
-    public function recipient() 
-    {
-        if($this->recipient_type == 'User') return $this->belongsTo('App\Models\User\User', 'recipient_id');
-        return $this->belongsTo('App\Models\Character\Character', 'recipient_id');
+    public function recipient() {
+        if ($this->recipient_type == 'User') {
+            return $this->belongsTo(User::class, 'recipient_id');
+        }
+
+        return $this->belongsTo(Character::class, 'recipient_id');
     }
 
     /**
      * Get the item that is the target of the action.
      */
-    public function item() 
-    {
-        return $this->belongsTo('App\Models\Item\Item');
+    public function item() {
+        return $this->belongsTo(Item::class);
     }
 }

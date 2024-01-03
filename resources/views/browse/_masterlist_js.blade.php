@@ -20,25 +20,22 @@
             setView('list');
         });
 
-        function initView()
-        {
+        function initView() {
             view = window.localStorage.getItem('lorekeeper_masterlist_view');
-            if(!view) view = 'grid';
+            if (!view) view = 'grid';
             setView(view);
         }
 
-        function setView(status)
-        {
+        function setView(status) {
             view = status;
 
-            if(view == 'grid') {
+            if (view == 'grid') {
                 $gridView.removeClass('hide');
                 $gridButton.addClass('active');
                 $listView.addClass('hide');
                 $listButton.removeClass('active');
                 window.localStorage.setItem('lorekeeper_masterlist_view', 'grid');
-            }
-            else if (view == 'list') {
+            } else if (view == 'list') {
                 $listView.removeClass('hide');
                 $listButton.addClass('active');
                 $gridView.addClass('hide');
@@ -53,19 +50,38 @@
 
         // handle the ones that were already there
         var $existingFeatures = $('#featureBody .feature-block');
-        $existingFeatures.find('.selectize').selectize();
+        @if (config('lorekeeper.extensions.organised_traits_dropdown'))
+            $existingFeatures.find('.selectize').selectize({
+                render: {
+                    item: featureSelectedRender
+                }
+            });
+        @else
+            $existingFeatures.find('.selectize').selectize();
+        @endif
         addRemoveListener($existingFeatures);
 
         $addFeatureButton.on('click', function(e) {
             e.preventDefault();
             var $clone = $featureSelect.clone();
             $featureBody.append($clone);
-            $clone.find('.selectize').selectize();
+            @if (config('lorekeeper.extensions.organised_traits_dropdown'))
+                $clone.find('.selectize').selectize({
+                    render: {
+                        item: featureSelectedRender
+                    }
+                });
+            @else
+                $clone.find('.selectize').selectize();
+            @endif
             addRemoveListener($clone);
         });
 
-        function addRemoveListener($node)
-        {
+        function featureSelectedRender(item, escape) {
+            return '<div><span>' + escape(item["text"].trim()) + ' (' + escape(item["optgroup"].trim()) + ')' + '</span></div>';
+        }
+
+        function addRemoveListener($node) {
             $node.find('.feature-remove').on('click', function(e) {
                 e.preventDefault();
                 $(this).parent().parent().parent().remove();

@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Gallery\GallerySubmission;
 use App\Models\SitePage;
 use App\Services\LinkService;
 use App\Services\UserService;
-use Auth;
-use Carbon\Carbon;
-use Config;
-use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
 
-class HomeController extends Controller
-{
+class HomeController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | Home Controller
@@ -28,10 +26,17 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex()
-    {
+    public function getIndex() {
+        if (config('lorekeeper.extensions.show_all_recent_submissions.enable')) {
+            $query = GallerySubmission::visible(Auth::check() ? Auth::user() : null)->accepted()->orderBy('created_at', 'DESC');
+            $gallerySubmissions = $query->get()->take(8);
+        } else {
+            $gallerySubmissions = [];
+        }
+
         return view('welcome', [
-            'about' => SitePage::where('key', 'about')->first(),
+            'about'               => SitePage::where('key', 'about')->first(),
+            'gallerySubmissions'  => $gallerySubmissions,
         ]);
     }
 
@@ -40,8 +45,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getLink(Request $request)
-    {
+    public function getLink(Request $request) {
         // If the user already has a username associated with their account, redirect them
         if (Auth::check() && Auth::user()->hasAlias) {
             redirect()->to('home');
@@ -56,8 +60,7 @@ class HomeController extends Controller
      *
      * @param string $provider
      */
-    public function getAuthRedirect(LinkService $service, $provider)
-    {
+    public function getAuthRedirect(LinkService $service, $provider) {
         if (!$this->checkProvider($provider, Auth::user())) {
             flash($this->error)->error();
 
@@ -73,8 +76,7 @@ class HomeController extends Controller
      *
      * @param string $provider
      */
-    public function getAuthCallback(LinkService $service, $provider)
-    {
+    public function getAuthCallback(LinkService $service, $provider) {
         if (!$this->checkProvider($provider, Auth::user())) {
             flash($this->error)->error();
 
@@ -106,8 +108,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getBirthday(Request $request)
-    {
+    public function getBirthday(Request $request) {
         // If the user already has a username associated with their account, redirect them
         if (Auth::check() && Auth::user()->birthday) {
             return redirect()->to('/');
@@ -122,15 +123,12 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function postBirthday(Request $request)
-    {
+    public function postBirthday(Request $request) {
         $service = new UserService;
         // Make birthday into format we can store
         $data = $request->input('dob');
-        $date = $data['day'].'-'.$data['month'].'-'.$data['year'];
-        $formatDate = Carbon::parse($date);
 
-        if ($service->updateBirthday($formatDate, Auth::user())) {
+        if ($service->updateBirthday($data, Auth::user())) {
             flash('Birthday added successfully!');
 
             return redirect()->to('/');
@@ -148,8 +146,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getBirthdayBlocked(Request $request)
-    {
+    public function getBirthdayBlocked(Request $request) {
         // If the user already has a username associated with their account, redirect them
         if (Auth::check() && Auth::user()->checkBirthday) {
             return redirect()->to('/');
@@ -163,11 +160,10 @@ class HomeController extends Controller
         return view('auth.blocked');
     }
 
-    private function checkProvider($provider, $user)
-    {
+    private function checkProvider($provider, $user) {
         // Check if the site can be used for authentication
         $isAllowed = false;
-        foreach (Config::get('lorekeeper.sites') as $key => $site) {
+        foreach (config('lorekeeper.sites') as $key => $site) {
             if ($key == $provider && isset($site['auth'])) {
                 // require a primary alias if the user does not already have one
                 if (!Auth::user()->has_alias && (!isset($site['primary_alias']) || !$site['primary_alias'])) {

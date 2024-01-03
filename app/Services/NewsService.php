@@ -1,15 +1,12 @@
-<?php namespace App\Services;
+<?php
 
-use App\Services\Service;
+namespace App\Services;
 
-use DB;
-use Config;
-
-use App\Models\User\User;
 use App\Models\News;
+use App\Models\User\User;
+use Illuminate\Support\Facades\DB;
 
-class NewsService extends Service
-{
+class NewsService extends Service {
     /*
     |--------------------------------------------------------------------------
     | News Service
@@ -22,74 +19,85 @@ class NewsService extends Service
     /**
      * Creates a news post.
      *
-     * @param  array                  $data
-     * @param  \App\Models\User\User  $user
-     * @return bool|\App\Models\News
+     * @param array                 $data
+     * @param \App\Models\User\User $user
+     *
+     * @return \App\Models\News|bool
      */
-    public function createNews($data, $user)
-    {
+    public function createNews($data, $user) {
         DB::beginTransaction();
 
         try {
             $data['parsed_text'] = parse($data['text']);
             $data['user_id'] = $user->id;
-            if(!isset($data['is_visible'])) $data['is_visible'] = 0;
+            if (!isset($data['is_visible'])) {
+                $data['is_visible'] = 0;
+            }
 
             $news = News::create($data);
 
-            if($news->is_visible) $this->alertUsers();
+            if ($news->is_visible) {
+                $this->alertUsers();
+            }
 
             return $this->commitReturn($news);
-        } catch(\Exception $e) { 
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
+
         return $this->rollbackReturn(false);
     }
 
     /**
      * Updates a news post.
      *
-     * @param  \App\Models\News       $news
-     * @param  array                  $data 
-     * @param  \App\Models\User\User  $user
-     * @return bool|\App\Models\News
+     * @param \App\Models\News      $news
+     * @param array                 $data
+     * @param \App\Models\User\User $user
+     *
+     * @return \App\Models\News|bool
      */
-    public function updateNews($news, $data, $user)
-    {
+    public function updateNews($news, $data, $user) {
         DB::beginTransaction();
 
         try {
             $data['parsed_text'] = parse($data['text']);
             $data['user_id'] = $user->id;
-            if(!isset($data['is_visible'])) $data['is_visible'] = 0;
-            if(isset($data['bump']) && $data['is_visible'] == 1 && $data['bump'] == 1) $this->alertUsers();
+            if (!isset($data['is_visible'])) {
+                $data['is_visible'] = 0;
+            }
+            if (isset($data['bump']) && $data['is_visible'] == 1 && $data['bump'] == 1) {
+                $this->alertUsers();
+            }
 
             $news->update($data);
 
             return $this->commitReturn($news);
-        } catch(\Exception $e) { 
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
+
         return $this->rollbackReturn(false);
     }
 
     /**
      * Deletes a news post.
      *
-     * @param  \App\Models\News  $news
+     * @param \App\Models\News $news
+     *
      * @return bool
      */
-    public function deleteNews($news)
-    {
+    public function deleteNews($news) {
         DB::beginTransaction();
 
         try {
             $news->delete();
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
+
         return $this->rollbackReturn(false);
     }
 
@@ -99,10 +107,9 @@ class NewsService extends Service
      *
      * @return bool
      */
-    public function updateQueue()
-    {
+    public function updateQueue() {
         $count = News::shouldBeVisible()->count();
-        if($count) {
+        if ($count) {
             DB::beginTransaction();
 
             try {
@@ -110,9 +117,10 @@ class NewsService extends Service
                 $this->alertUsers();
 
                 return $this->commitReturn(true);
-            } catch(\Exception $e) { 
+            } catch (\Exception $e) {
                 $this->setError('error', $e->getMessage());
             }
+
             return $this->rollbackReturn(false);
         }
     }
@@ -123,9 +131,9 @@ class NewsService extends Service
      *
      * @return bool
      */
-    private function alertUsers()
-    {
+    private function alertUsers() {
         User::query()->update(['is_news_unread' => 1]);
+
         return true;
     }
 }

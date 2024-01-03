@@ -2,19 +2,17 @@
 
 namespace App\Models\Item;
 
-use Config;
-use DB;
 use App\Models\Model;
+use Illuminate\Support\Facades\Config;
 
-class ItemTag extends Model
-{
+class ItemTag extends Model {
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'item_id', 'tag', 'data', 'is_active'
+        'item_id', 'tag', 'data', 'is_active',
     ];
 
     /**
@@ -25,7 +23,7 @@ class ItemTag extends Model
     protected $table = 'item_tags';
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -33,13 +31,12 @@ class ItemTag extends Model
     /**
      * Get the item that this tag is attached to.
      */
-    public function item() 
-    {
-        return $this->belongsTo('App\Models\Item\Item');
+    public function item() {
+        return $this->belongsTo(Item::class);
     }
 
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -47,41 +44,43 @@ class ItemTag extends Model
     /**
      * Scope a query to retrieve only active tags.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeActive($query)
-    {
+    public function scopeActive($query) {
         return $query->where('is_active', 1);
     }
 
     /**
      * Scope a query to retrieve only a certain tag.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string                                 $tag
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string                                $tag
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeType($query, $tag)
-    {
+    public function scopeType($query, $tag) {
         return $query->where('tag', $tag);
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
-    
+
     /**
      * Displays the tag name formatted according to its colours as defined in the config file.
      *
      * @return string
      */
-    public function getDisplayTagAttribute()
-    {
-        $tag = Config::get('lorekeeper.item_tags.' . $this->tag);
-        if($tag) return '<span class="badge" style="color: '.$tag['text_color'].';background-color: '.$tag['background_color'].';">'.$tag['name'].'</span>';
+    public function getDisplayTagAttribute() {
+        $tag = config('lorekeeper.item_tags.'.$this->tag);
+        if ($tag) {
+            return '<span class="badge" style="color: '.$tag['text_color'].';background-color: '.$tag['background_color'].';">'.$tag['name'].'</span>';
+        }
+
         return null;
     }
 
@@ -90,9 +89,8 @@ class ItemTag extends Model
      *
      * @return mixed
      */
-    public function getName()
-    {
-        return Config::get('lorekeeper.item_tags.' . $this->tag.'.name');
+    public function getName() {
+        return config('lorekeeper.item_tags.'.$this->tag.'.name');
     }
 
     /**
@@ -100,8 +98,7 @@ class ItemTag extends Model
      *
      * @return string
      */
-    public function getAdminUrlAttribute()
-    {
+    public function getAdminUrlAttribute() {
         return url('admin/data/items/tag/'.$this->item_id.'/'.$this->tag);
     }
 
@@ -110,8 +107,7 @@ class ItemTag extends Model
      *
      * @return array
      */
-    public function getDataAttribute()
-    {
+    public function getDataAttribute() {
         return json_decode($this->attributes['data'], true);
     }
 
@@ -120,14 +116,14 @@ class ItemTag extends Model
      *
      * @return mixed
      */
-    public function getServiceAttribute()
-    {
+    public function getServiceAttribute() {
         $class = 'App\Services\Item\\'.str_replace(' ', '', ucwords(str_replace('_', ' ', $this->tag))).'Service';
-        return (new $class());
+
+        return new $class();
     }
 
     /**********************************************************************************************
-    
+
         OTHER FUNCTIONS
 
     **********************************************************************************************/
@@ -137,8 +133,7 @@ class ItemTag extends Model
      *
      * @return mixed
      */
-    public function getEditData()
-    {
+    public function getEditData() {
         return $this->service->getEditData();
     }
 
@@ -147,8 +142,7 @@ class ItemTag extends Model
      *
      * @return mixed
      */
-    public function getData()
-    {
+    public function getData() {
         return $this->service->getTagData($this);
     }
 }

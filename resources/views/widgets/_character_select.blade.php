@@ -1,3 +1,13 @@
+@php
+    $characters = \App\Models\Character\Character::visible(Auth::check() ? Auth::user() : null)
+        ->myo(0)
+        ->orderBy('slug', 'DESC')
+        ->get()
+        ->pluck('fullName', 'slug')
+        ->toArray();
+    $tables = \App\Models\Loot\LootTable::orderBy('name')->pluck('name', 'id');
+@endphp
+
 <div id="characterComponents" class="hide">
     <div class="submission-character mb-3 card">
         <div class="card-body">
@@ -13,14 +23,14 @@
                     <a href="#" class="float-right fas fa-close"></a>
                     <div class="form-group">
                         {!! Form::label('slug[]', 'Character Code') !!}
-                        {!! Form::text('slug[]', null, ['class' => 'form-control character-code']) !!}
+                        {!! Form::select('slug[]', $characters, null, ['class' => 'form-control character-code', 'placeholder' => 'Select Character']) !!}
                     </div>
                     <div class="character-rewards hide">
                         <h4>Character Rewards</h4>
                         <table class="table table-sm">
                             <thead>
                                 <tr>
-                                    @if($expanded_rewards)
+                                    @if ($expanded_rewards)
                                         <th width="35%">Reward Type</th>
                                         <th width="35%">Reward</th>
                                     @else
@@ -43,14 +53,19 @@
     <table>
         <tr class="character-reward-row">
 
-            @if($expanded_rewards)
+            @if ($expanded_rewards)
                 <td>
-                    {!! Form::select('character_rewardable_type[]', ['Item' => 'Item', 'Currency' => 'Currency'] + (isset($showLootTables) && $showLootTables ? ['LootTable' => 'Loot Table'] : []), null, ['class' => 'form-control character-rewardable-type', 'placeholder' => 'Select Reward Type']) !!}
+                    {!! Form::select('character_rewardable_type[]', ['Item' => 'Item', 'Currency' => 'Currency'] + (isset($showLootTables) && $showLootTables ? ['LootTable' => 'Loot Table'] : []), null, [
+                        'class' => 'form-control character-rewardable-type',
+                        'placeholder' => 'Select Reward Type',
+                    ]) !!}
                 </td>
                 <td class="lootDivs">
                     <div class="character-currencies hide">{!! Form::select('character_currency_id[]', $characterCurrencies, 0, ['class' => 'form-control character-currency-id', 'placeholder' => 'Select Currency']) !!}</div>
                     <div class="character-items hide">{!! Form::select('character_item_id[]', $items, 0, ['class' => 'form-control character-item-id', 'placeholder' => 'Select Item']) !!}</div>
-                    @if(isset($showLootTables) && $showLootTables) <div class="character-loots hide">{!! Form::select('character_rewardable_id[]', $tables, 0, ['class' => 'form-control character-rtable-id', 'placeholder' => 'Select Loot Table']) !!}</div> @endif
+                    @if (isset($showLootTables) && $showLootTables)
+                        <div class="character-loots hide">{!! Form::select('character_rewardable_id[]', $tables, 0, ['class' => 'form-control character-rtable-id', 'placeholder' => 'Select Loot Table']) !!}</div>
+                    @endif
                 </td>
             @else
                 <td class="lootDivs">
@@ -60,7 +75,7 @@
             @endif
 
             <td class="d-flex align-items-center">
-                {!! Form::text('character_quantity[]', 0, ['class' => 'form-control mr-2  character-rewardable-quantity']) !!}
+                {!! Form::number('character_rewardable_quantity[]', 1, ['class' => 'form-control mr-2 character-rewardable-quantity']) !!}
                 <a href="#" class="remove-reward d-block"><i class="fas fa-times text-muted"></i></a>
             </td>
         </tr>

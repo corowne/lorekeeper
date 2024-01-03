@@ -2,17 +2,14 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-
-use DB;
-
 use App\Models\Character\Character;
 use App\Models\Character\CharacterCurrency;
 use App\Models\Character\CharacterFeature;
 use App\Models\Character\CharacterImage;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
-class ClearDeletedCharacterAttachments extends Command
-{
+class ClearDeletedCharacterAttachments extends Command {
     /**
      * The name and signature of the console command.
      *
@@ -29,11 +26,8 @@ class ClearDeletedCharacterAttachments extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
     }
 
@@ -42,8 +36,7 @@ class ClearDeletedCharacterAttachments extends Command
      *
      * @return mixed
      */
-    public function handle()
-    {
+    public function handle() {
         // Get deleted character IDs
         $deletedCharacterIds = DB::table('characters')->whereNotNull('deleted_at')->pluck('id');
 

@@ -30,61 +30,61 @@ return [
     // Each of these has a key, 'label', which corresponds to the form's label as displayed.
 
     // For convenience, this first field has all the possible options/keys, with each commented on!
-    'piece_type' => [
+    'piece_type'  => [
         // This is the name as will be displayed on submissions, not the form itself.
-        'name' => 'Type of Piece',
+        'name'     => 'Type of Piece',
         // This is the label as will be displayed on the form itself, so provide any instruction for the user filling out the form here.
-        'label' => 'Piece Type (Select as many as apply)',
+        'label'    => 'Piece Type (Select as many as apply)',
         // The type of form. In this case, since the user is picking from several options, it's "choice"!
-        'type' => 'choice',
+        'type'     => 'choice',
         // These are the choices themselves. The key is what the form outputs, and the value is the text shown to the user.
-        'choices' => ['art' => 'Digital or Traditional Art', 'lit' => 'Writing and Poetry', 'craft' => 'Craft or Other Physical Item'],
+        'choices'  => ['art' => 'Digital or Traditional Art', 'lit' => 'Writing and Poetry', 'craft' => 'Craft or Other Physical Item'],
         // This makes this field required!
-        'rules' => 'required',
+        'rules'    => 'required',
         // This allows the user to select multiple options! You don't need to set it at all unless you want it to be true,
         // since it will otherwise assume false.
         'multiple' => true,
         // For checkboxes/toggles, this is what the toggle outputs when "on".
-        'value' => null,
-    ], 
-    'art_finish' => [
-        'name' => 'Level of Finish',
-        'label' => 'Level of Finish (For Digital/Traditional Artwork)',
-        'type' => 'choice',
+        'value'    => null,
+    ],
+    'art_finish'  => [
+        'name'    => 'Level of Finish',
+        'label'   => 'Level of Finish (For Digital/Traditional Artwork)',
+        'type'    => 'choice',
         'choices' => ['0.5' => 'Sketch', '1' => 'Clean Lines/Lineless', '3' => 'Painted'],
-    ], 
-    'art_type' => [
-        'name' => 'Art Type',
-        'label' => 'Art Type (For Digital/Traditional Artwork)',
-        'type' => 'choice',
+    ],
+    'art_type'    => [
+        'name'    => 'Art Type',
+        'label'   => 'Art Type (For Digital/Traditional Artwork)',
+        'type'    => 'choice',
         'choices' => ['0' => 'Headshot', '1' => 'Bust', '2' => 'Full Body Chibi', '3' => 'Full Body'],
-    ], 
-    'art_bonus' => [
-        'name' => 'Art Bonuses',
-        'type' => 'choice',
-        'label' => 'Bonus Options (Select as many as apply)',
+    ],
+    'art_bonus'   => [
+        'name'     => 'Art Bonuses',
+        'type'     => 'choice',
+        'label'    => 'Bonus Options (Select as many as apply)',
         // If you wish to have options with all the same value, in this case 1, give them a .1 difference,
         // which can easily be rounded out, but allows for the computer to distinguish between them.
-        'choices' => ['1' => 'Colored', '1.1' => 'Shading', '1.2' => 'Background'],
+        'choices'  => ['1' => 'Colored', '1.1' => 'Shading', '1.2' => 'Background'],
         'multiple' => true,
-    ], 
-    'base' => [
-        'name' => 'On Base/YCH',
+    ],
+    'base'        => [
+        'name'  => 'On Base/YCH',
         'label' => 'Base (P2U/F2U) or YCH',
         // This makes the option a toggle!
-        'type' => 'checkbox',
+        'type'  => 'checkbox',
         'value' => 1,
-    ], 
+    ],
     'frame_count' => [
-        'name' => 'Frame Count',
+        'name'  => 'Frame Count',
         'label' => 'Frame Count (For Animations)',
         // This makes a field the user can enter a number in!
-        'type' => 'number',
-    ], 
-    'word_count' => [
-        'name' => 'Word Count',
+        'type'  => 'number',
+    ],
+    'word_count'  => [
+        'name'  => 'Word Count',
         'label' => 'Word Count (For Writing or Poetry)',
-        'type' => 'number',
+        'type'  => 'number',
     ],
 
 ];

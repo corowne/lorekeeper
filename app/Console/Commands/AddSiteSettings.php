@@ -3,11 +3,9 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
-use DB;
-
-class AddSiteSettings extends Command
-{
+class AddSiteSettings extends Command {
     /**
      * The name and signature of the console command.
      *
@@ -24,36 +22,9 @@ class AddSiteSettings extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
-    }
-
-    /**
-     * Add a site setting.
-     * 
-     * Example usage:
-     * $this->addSiteSetting("site_setting_key", 1, "0: does nothing. 1: does something.");
-     * 
-     * @param  string  $key
-     * @param  int     $value
-     * @param  string  $description
-     */
-    private function addSiteSetting($key, $value, $description) {
-        if(!DB::table('site_settings')->where('key', $key)->exists()) {
-            DB::table('site_settings')->insert([
-                [
-                    'key'         => $key,
-                    'value'       => $value,
-                    'description' => $description,
-                ],
-            ]);
-            $this->info( "Added:   ".$key." / Default: ".$value);
-        }
-        else $this->line("Skipped: ".$key);
     }
 
     /**
@@ -61,8 +32,7 @@ class AddSiteSettings extends Command
      *
      * @return mixed
      */
-    public function handle()
-    {
+    public function handle() {
         $this->info('*********************');
         $this->info('* ADD SITE SETTINGS *');
         $this->info('*********************'."\n");
@@ -103,7 +73,41 @@ class AddSiteSettings extends Command
 
         $this->addSiteSetting('group_currency', 1, 'ID of the group currency to award from gallery submissions (if enabled).');
 
-        $this->line("\nSite settings up to date!");
+        $this->addSiteSetting('is_maintenance_mode', 0, '0: Site is normal, 1: Users without the Has Maintenance Access power will be redirected to the home page.');
 
+        $this->addSiteSetting('deactivated_privacy', 0, 'Who can view the deactivated list? 0: Admin only, 1: Staff only, 2: Members only, 3: Public.');
+
+        $this->addSiteSetting('deactivated_link', 0, '0: No link to the deactivated list is displayed anywhere, 1: Link to the deactivated list is shown on the user list.');
+
+        $this->addSiteSetting('deactivated_key', 0, 'Optional key to view the deactivated list. Enter "0" to not require one.');
+
+        $this->addSiteSetting('comment_dislikes_enabled', 0, '0: Dislikes disabled, 1: Dislikes enabled.');
+
+        $this->line("\nSite settings up to date!");
+    }
+
+    /**
+     * Add a site setting.
+     *
+     * Example usage:
+     * $this->addSiteSetting("site_setting_key", 1, "0: does nothing. 1: does something.");
+     *
+     * @param string $key
+     * @param int    $value
+     * @param string $description
+     */
+    private function addSiteSetting($key, $value, $description) {
+        if (!DB::table('site_settings')->where('key', $key)->exists()) {
+            DB::table('site_settings')->insert([
+                [
+                    'key'         => $key,
+                    'value'       => $value,
+                    'description' => $description,
+                ],
+            ]);
+            $this->info('Added:   '.$key.' / Default: '.$value);
+        } else {
+            $this->line('Skipped: '.$key);
+        }
     }
 }
