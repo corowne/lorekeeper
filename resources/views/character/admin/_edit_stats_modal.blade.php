@@ -45,7 +45,7 @@
         {!! Form::label('is_sellable', 'Is Resellable', ['class' => 'form-check-label ml-3']) !!}
     </div>
     <div class="form-group">
-        {!! Form::label('Resale Value') !!} {!! add_help('This value is publicly displayed on the character\'s page. It's hidden if zero or lower.') !!}
+        {!! Form::label('Resale Value') !!} {!! add_help('This value is publicly displayed on the character\'s page. It\'s hidden if zero or lower.') !!}
         {!! Form::text('sale_value', $character->sale_value, ['class' => 'form-control']) !!}
     </div>
     <div class="form-group">
