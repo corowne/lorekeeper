@@ -1905,8 +1905,8 @@ class CharacterManager extends Service {
                 if (!isset($data['image'])) {
                     $data['image'] = public_path('images/myo.png');
                     $data['thumbnail'] = public_path('images/myo-th.png');
-                    $data['extension'] = Config::get('lorekeeper.settings.masterlist_image_format');
-                    $data['fullsize_extension'] = Config::get('lorekeeper.settings.masterlist_fullsizes_format') ?? $data['extension'];
+                    $data['extension'] = config('lorekeeper.settings.masterlist_image_format', 'png');
+                    $data['fullsize_extension'] = config('lorekeeper.settings.masterlist_fullsizes_format') ?? $data['extension'];
                     $data['default_image'] = true;
                     unset($data['use_cropper']);
                 }
