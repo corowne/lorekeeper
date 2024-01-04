@@ -9,8 +9,7 @@
             {!! isset($dtinline)
                 ? "altField: '." .
                     $dtinline .
-                    "',
-                                                        altFieldTimeOnly: false,"
+                    "', altFieldTimeOnly: false,"
                 : null !!}
         });
         @if (isset($dtvalue))
