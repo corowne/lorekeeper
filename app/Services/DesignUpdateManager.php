@@ -915,7 +915,7 @@ class DesignUpdateManager extends Service {
     }
 
     /**
-     * Votes on a a character design update request.
+     * Votes on a character design update request.
      *
      * @param string                                      $action
      * @param \App\Models\Character\CharacterDesignUpdate $request

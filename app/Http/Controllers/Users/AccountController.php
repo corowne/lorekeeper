@@ -173,7 +173,7 @@ class AccountController extends Controller {
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postBirthday(Request $request, UserService $service) {
-        if ($service->updateDOB($request->input('birthday_setting'), Auth::user())) {
+        if ($service->updateBirthdayVisibilitySetting($request->input('birthday_setting'), Auth::user())) {
             flash('Setting updated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
