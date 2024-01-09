@@ -111,8 +111,8 @@ class RankService extends Service {
             $data['icon'] ??= 'fas fa-user';
 
             $rank->update($data);
+            $rank->powers()->delete();
             if ($powers) {
-                $rank->powers()->delete();
                 foreach ($powers as $power) {
                     DB::table('rank_powers')->insert(['rank_id' => $rank->id, 'power' => $power]);
                 }
