@@ -5,6 +5,12 @@
 @endsection
 
 @section('content')
+    @if (isset($status) || isset($errors))
+        <div class="alert alert-success mb-4">
+            Form submitted successfully. If this email address is registered to an account, you will receive a password reset email.
+        </div>
+    @endif
+
     <h1>Forgot Password</h1>
 
     <p>Please enter the email address associated with your account. An email will be sent to this address to reset your password.</p>
