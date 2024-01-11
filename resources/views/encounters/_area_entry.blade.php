@@ -10,9 +10,7 @@
         </div>
     @endif
     <div class="shop-name mt-1">
-        <a href="{{ $area->url }}" class="h5 mb-0">
-            {{ $area->name }}
-        </a>
+        {{ $area->name }}
     </div>
     <div class="shop-text mt-1">
         {!! $area->parsed_description !!}
@@ -27,4 +25,16 @@
         echo implode(', ', $limits);
         ?>)</div>
     @endif
+    <div class="mt-3">
+        <a href="#" class="btn btn-outline-info btn-sm initiate-explore" data-id="{{ $area->url }}"> Explore</a>
+    </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('.initiate-explore').on('click', function(e) {
+            e.preventDefault();
+            loadModal($(this).data('id'), 'Explore');
+        });
+    });
+</script>

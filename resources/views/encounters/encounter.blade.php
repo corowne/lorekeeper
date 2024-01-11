@@ -1,11 +1,4 @@
-@extends('encounters.layout')
 
-@section('title')
-    {{ $area->name }} Encounter
-@endsection
-
-@section('content')
-    {!! breadcrumbs(['Encounters' => 'encounter-areas', $area->name => 'encounter-areas/' . $area->id]) !!}
     <div>
         @if (Auth::check() && Auth::user()->hasPower('edit_data'))
         <a data-toggle="tooltip" title="[ADMIN] Edit Encounter"
@@ -28,7 +21,7 @@
             <h5> what do you do?</h5>
             <div class="row col-12 mb-2">
                 <div class="col-md-10">
-                    {!! Form::open(['url' => 'encounter-areas/' . $area->id . '/act']) !!}
+                {!! Form::open(['url' => 'encounter-areas/' . $area->id . '/act']) !!}
                     {!! Form::hidden('area_id', $area->id) !!}
                     {!! Form::hidden('encounter_id', $encounter->id) !!}
                     {!! Form::select('action', $action_options, null, ['class' => 'form-control', 'placeholder' => 'Select Action']) !!}
@@ -40,4 +33,3 @@
             </div>
         </div>
     </div>
-@endsection

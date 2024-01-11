@@ -9,10 +9,6 @@
     @include('encounters._sidebar')
 @endsection
 
-@section('content')
-    @yield('encounters-content')
-@endsection
-
 @section('scripts')
 @parent
 @endsection
