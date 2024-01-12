@@ -111,8 +111,8 @@ Traits
 </div>
 
 <div class="form-group" id="subtypes">
-    {!! Form::label('Subtype (Optional)') !!}
-    {!! Form::select('subtype_id', $subtypes, old('subtype_id') ? : $character->image->subtype_id, ['class' => 'form-control', 'id' => 'subtype']) !!}
+    {!! Form::label('Subtypes (Optional)') !!}
+    {!! Form::select('subtype_ids[]', $subtypes, old('subtype_ids') ? : $character->image->subtypes()?->pluck('subtype_id')->toArray(), ['class' => 'form-control', 'id' => 'subtype', 'multiple']) !!}
 </div>
 
 <div class="form-group">
@@ -286,13 +286,15 @@ $( document ).ready(function() {
 
 
 $( "#species" ).change(function() {
-  var species = $('#species').val();
-  var id = '<?php echo($character->image->id); ?>';
-  $.ajax({
-    type: "GET", url: "{{ url('admin/character/image/subtype') }}?species="+species+"&id="+id, dataType: "text"
-  }).done(function (res) { $("#subtypes").html(res); }).fail(function (jqXHR, textStatus, errorThrown) { alert("AJAX call failed: " + textStatus + ", " + errorThrown); });
-
+    var species = $('#species').val();
+    var id = '<?php echo($character->image->id); ?>';
+    $.ajax({
+        type: "GET", url: "{{ url('admin/character/image/subtype') }}?species="+species+"&id="+id, dataType: "text"
+    }).done(function (res) { $("#subtypes").html(res); }).fail(function (jqXHR, textStatus, errorThrown) { alert("AJAX call failed: " + textStatus + ", " + errorThrown); });
 });
 
+$('#subtype').selectize({
+    maxItems: 10,
+});
 </script>
 @endsection

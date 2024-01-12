@@ -27,7 +27,7 @@ class BoxService extends Service
      *
      * @return array
      */
-    public function getEditData()
+    public function getEditData($tag)
     {
         return [
             'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),

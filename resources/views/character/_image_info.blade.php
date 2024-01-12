@@ -35,10 +35,14 @@
                     <div class="col-lg-4 col-md-6 col-4"><h5>Species</h5></div>
                     <div class="col-lg-8 col-md-6 col-8">{!! $image->species_id ? $image->species->displayName : 'None' !!}</div>
                 </div>
-                @if($image->subtype_id)
+                @if(count($image->subtypes))
                     <div class="row">
-                        <div class="col-lg-4 col-md-6 col-4"><h5>Subtype</h5></div>
-                        <div class="col-lg-8 col-md-6 col-8">{!! $image->subtype_id ? $image->subtype->displayName : 'None' !!}</div>
+                        <div class="col-lg-4 col-md-6 col-4">
+                            <h5>Subtype{{ count($image->subtypes) > 1 ? 's' : '' }}</h5>
+                        </div>
+                        <div class="col-lg-8 col-md-6 col-8">
+                            {!! $image->displaySubtypes() !!}
+                        </div>
                     </div>
                 @endif
                 <div class="row">

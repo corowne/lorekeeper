@@ -7,6 +7,7 @@ use DB;
 use App\Models\Model;
 use App\Models\Feature\FeatureCategory;
 use App\Models\Character\CharacterCategory;
+use App\Models\Character\CharacterImageSubtype;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CharacterImage extends Model
@@ -98,9 +99,9 @@ class CharacterImage extends Model
     /**
      * Get the subtype of the character image.
      */
-    public function subtype()
+    public function subtypes()
     {
-        return $this->belongsTo('App\Models\Species\Subtype', 'subtype_id');
+        return $this->hasMany(CharacterImageSubtype::class, 'character_image_id');
     }
 
     /**
@@ -272,5 +273,26 @@ class CharacterImage extends Model
     public function getThumbnailUrlAttribute()
     {
         return asset($this->imageDirectory . '/' . $this->thumbnailFileName);
+    }
+
+    /**********************************************************************************************
+
+        OTHER FUNCTIONS
+
+    **********************************************************************************************/
+
+    /**
+     * Displays the image's subtypes as an imploded string.
+     */
+    public function displaySubtypes()
+    {
+        if (!count($this->subtypes)) {
+            return 'None';
+        }
+        $subtypes = [];
+        foreach ($this->subtypes as $subtype) {
+            $subtypes[] = $subtype->subtype->displayName;
+        }
+        return implode(', ', $subtypes);
     }
 }

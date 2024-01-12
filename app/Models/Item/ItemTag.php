@@ -139,7 +139,7 @@ class ItemTag extends Model
      */
     public function getEditData()
     {
-        return $this->service->getEditData();
+        return $this->service->getEditData($this);
     }
 
     /**

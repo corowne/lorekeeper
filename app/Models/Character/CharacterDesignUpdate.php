@@ -5,6 +5,7 @@ namespace App\Models\Character;
 use Config;
 use DB;
 use App\Models\Model;
+use App\Models\Species\Subtype;
 use App\Models\Currency\Currency;
 use App\Models\Feature\FeatureCategory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -97,14 +98,6 @@ class CharacterDesignUpdate extends Model
     public function species()
     {
         return $this->belongsTo('App\Models\Species\Species', 'species_id');
-    }
-
-    /**
-     * Get the subtype of the design update.
-     */
-    public function subtype()
-    {
-        return $this->belongsTo('App\Models\Species\Subtype', 'subtype_id');
     }
 
     /**
@@ -363,5 +356,27 @@ class CharacterDesignUpdate extends Model
             $currency->quantity = $currencies[$currency->id];
         }
         return $result;
+    }
+
+    /**
+     * Get the subtypes of the design update.
+     */
+    public function subtypes()
+    {
+        return isset($this->subtype_ids) ? json_decode($this->subtype_ids, true) : [];
+    }
+
+    /**
+     * Get the subtypes of the design update.
+     */
+    public function displaySubtypes()
+    {
+        $subtypes = $this->subtypes();
+        $result = [];
+        foreach($subtypes as $subtype)
+        {
+            $result[] = Subtype::find($subtype)->displayName;
+        }
+        return implode(', ', $result);
     }
 }
