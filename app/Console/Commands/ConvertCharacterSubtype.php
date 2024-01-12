@@ -10,6 +10,7 @@ use Illuminate\Database\Migrations\Migration;
 
 use App\Models\Character\CharacterImage;
 use App\Models\Character\CharacterImageSubtype;
+use App\Models\Character\CharacterDesignUpdate;
 
 class ConvertCharacterSubtype extends Command
 {
@@ -44,7 +45,7 @@ class ConvertCharacterSubtype extends Command
      */
     public function handle()
     {
-        if (Schema::hasTable('character_image_subtypes')) {
+        if (!Schema::hasTable('character_image_subtypes')) {
             $check = $this->confirm("Do you have the second subtype extension installed?", true);
             if ($check) {
                 $this->info('This command will need minor modifications to run correctly with this extension. Please see the comments in the file.');
@@ -57,12 +58,22 @@ class ConvertCharacterSubtype extends Command
             });
 
             // for design update requests
+            // has to be two for the renameColumn to work
             Schema::table('design_updates', function (Blueprint $table) {
                 // rename the column
                 $table->renameColumn('subtype_id', 'subtype_ids');
+            });
+            Schema::table('design_updates', function (Blueprint $table) {
                 // make it a string type instead of an integer
                 $table->string('subtype_ids')->nullable()->default(null)->change();
             });
+            $updates = DB::table('design_updates')->where('subtype_ids', '!=', null)->get();
+            // make the string into an array
+            foreach ($updates as $update) {
+                $update->update([
+                    'subtype_ids' => json_encode([$update->subtype_ids])
+                ]);
+            }
 
             $characterImages = CharacterImage::whereNotNull('subtype_id')->get();
 
