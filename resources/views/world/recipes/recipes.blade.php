@@ -12,12 +12,16 @@
             <div class="form-group ml-3 mb-3">
                 {!! Form::text('name', Request::get('name'), ['class' => 'form-control', 'placeholder' => 'Name']) !!}
             </div>
+            <div class="form-group ml-3 mb-3">
+                {!! Form::select('recipe_category_id', $categories, Request::get('recipe_category_id'), ['class' => 'form-control']) !!}
+            </div>
         </div>
         <div class="form-inline justify-content-end">
             <div class="form-group ml-3 mb-3">
                 {!! Form::select('sort', [
                     'alpha'          => 'Sort Alphabetically (A-Z)',
                     'alpha-reverse'  => 'Sort Alphabetically (Z-A)',
+                    'category'       => 'Sort by Category',
                     'newest'         => 'Newest First',
                     'oldest'         => 'Oldest First',
                     'locked'         => 'Needs to be Unlocked'
@@ -34,7 +38,6 @@
 @foreach($recipes as $recipe)
     <div class="card mb-3">
         <div class="card-body">
-       
         @include('world.recipes._recipe_entry', ['recipe' => $recipe, 'imageUrl' => $recipe->imageUrl, 'name' => $recipe->displayName, 'description' => $recipe->parsed_description])
         </div>
     </div>

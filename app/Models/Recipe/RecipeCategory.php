@@ -4,6 +4,7 @@ namespace App\Models\Recipe;
 
 use Config;
 use App\Models\Model;
+use App\Models\Recipe\Recipe;
 
 class RecipeCategory extends Model
 {
