@@ -14,10 +14,31 @@
 
 <h3>Free Recipes</h3>
 @if($default->count())
-    <div class="row mx-0">
-        @foreach($default as $recipe)
+<div class="card character-bio">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+            @foreach($default as $categoryId=>$categoryrecipes)
+                <li class="nav-item">
+                    <a class="nav-link {{ $loop->first ? 'active' : '' }}" id="categoryTab-{{ isset($categories[$categoryId]) ? $categoryId : 'misc'}}" data-toggle="tab" href="#recipetestdefault-{{ isset($categories[$categoryId]) ? $categoryId : 'misc'}}" role="tab">
+                        {!! isset($categories[$categoryId]) ? $categories[$categoryId]->name : 'Miscellaneous' !!}
+                    </a>
+                </li>
+            @endforeach
+        </ul>
+    </div>
+    <div class="card-body tab-content">
+    @foreach($default as $categoryId=>$categoryrecipes)
+    <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="recipetestdefault-{{ isset($categories[$categoryId]) ? $categoryId : 'misc'}}">
+                    @foreach($categoryrecipes->chunk(4) as $default)
+                <div class="row mb-3">
+                    @foreach($default as $recipe)
             @include('home.crafting._smaller_recipe_card', ['recipe' => $recipe])
-        @endforeach
+                    @endforeach
+                </div>
+            @endforeach
+       </div>
+@endforeach
+            </div>
     </div>
 @else
     There are no free recipes.
