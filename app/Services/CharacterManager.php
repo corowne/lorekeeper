@@ -332,6 +332,13 @@ class CharacterManager extends Service {
      * @param mixed                                $isMyo
      */
     public function cropThumbnail($points, $characterImage, $isMyo = false) {
+        $imageProperties = getimagesize($characterImage->imagePath.'/'.$characterImage->imageFileName);
+        if ($imageProperties[0] > 2000 || $imageProperties[1] > 2000) {
+            // For large images (in terms of dimensions),
+            // use imagick instead, as it's better at handling them
+            Config::set('image.driver', 'imagick');
+        }
+
         $image = Image::make($characterImage->imagePath.'/'.$characterImage->imageFileName);
 
         if (config('lorekeeper.settings.masterlist_image_format') != 'png' && config('lorekeeper.settings.masterlist_image_format') != null && config('lorekeeper.settings.masterlist_image_background') != null) {
