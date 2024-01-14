@@ -291,18 +291,17 @@ class FeatureController extends Controller {
     }
 
     /**
-     * Shows the edit subtype portion of the modal
+     * Shows the edit subtype portion of the modal.
      *
-     * @param  Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
-     
     public function getCreateEditFeatureSubtype(Request $request) {
-      $species = $request->input('species');
-	  $subtype_id = $request->input('subtype_id');
-      return view('admin.features._create_edit_feature_subtype', [
-          'subtypes'   => ['0' => 'Select Subtype'] + Subtype::where('species_id','=',$species)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-		  'subtype_id' => $subtype_id,
-      ]);
-	}
+        $species = $request->input('species');
+        $subtype_id = $request->input('subtype_id');
+
+        return view('admin.features._create_edit_feature_subtype', [
+            'subtypes'   => ['0' => 'Select Subtype'] + Subtype::where('species_id', '=', $species)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtype_id' => $subtype_id,
+        ]);
+    }
 }
