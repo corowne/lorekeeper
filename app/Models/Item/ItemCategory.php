@@ -16,6 +16,8 @@ class ItemCategory extends Model
         'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_character_owned', 'character_limit', 'can_name'
     ];
 
+    protected $appends = ['image_url'];
+
     /**
      * The table associated with the model.
      *

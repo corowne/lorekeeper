@@ -290,6 +290,22 @@ class UserController extends Controller
     }
 
     /**
+     * Shows a user's recipe logs.
+     *
+     * @param  string  $name
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserRecipeLogs($name)
+    {
+        $user = $this->user;
+        return view('user.recipe_logs', [
+            'user' => $this->user,
+            'logs' => $this->user->getRecipeLogs(0),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
+        ]);
+    }
+
+    /**
      * Shows a user's gallery submissions.
      *
      * @param  string  $name
