@@ -304,5 +304,5 @@ class FeatureController extends Controller {
           'subtypes'   => ['0' => 'Select Subtype'] + Subtype::where('species_id','=',$species)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
 		  'subtype_id' => $subtype_id,
       ]);
-    }
+	}
 }
