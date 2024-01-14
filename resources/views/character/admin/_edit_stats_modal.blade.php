@@ -50,7 +50,13 @@
 </div>
 <div class="form-group">
     {!! Form::label('On Transfer Cooldown Until (Optional)') !!}
-    {!! Form::text('transferrable_at', $character->transferrable_at, ['class' => 'form-control', 'id' => 'datepicker']) !!}
+    <div class="input-group">
+        {!! Form::text('transferrable_at', $character->transferrable_at, ['class' => 'form-control datepickeralt']) !!}
+        <div class="input-group-append">
+            <a class="btn btn-info collapsed" href="#collapsedt" data-toggle="collapse"><i class="fas fa-calendar-alt"></i></a>
+        </div>
+    </div>
+    <div class="collapse datepicker" id="collapsedt"></div>
 </div>
 
 <div class="text-right">
@@ -58,11 +64,4 @@
 </div>
 {!! Form::close() !!}
 
-<script>
-    $(document).ready(function() {
-        $("#datepicker").datetimepicker({
-            dateFormat: "yy-mm-dd",
-            timeFormat: 'HH:mm:ss',
-        });
-    });
-</script>
+@include('widgets._datetimepicker_js', ['dtinline' => 'datepickeralt', 'dtvalue' => $character->transferrable_at])

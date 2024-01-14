@@ -105,6 +105,7 @@
 
 @section('scripts')
     @parent
+    @include('widgets._datetimepicker_js')
     <script>
         $(document).ready(function() {
             $('.delete-gallery-button').on('click', function(e) {
@@ -112,10 +113,6 @@
                 loadModal("{{ url('admin/data/galleries/delete') }}/{{ $gallery->id }}", 'Delete Gallery');
             });
 
-            $(".datepicker").datetimepicker({
-                dateFormat: "yy-mm-dd",
-                timeFormat: 'HH:mm:ss',
-            });
         });
     </script>
 @endsection

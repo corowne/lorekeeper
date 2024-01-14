@@ -6,6 +6,12 @@
 
 @section('content')
     @if ($userCount)
+        @if (session('status'))
+            <div class="alert alert-success mb-4">
+                {{ session('status') }}
+            </div>
+        @endif
+
         <div class="row">
             <div class="col-md-6 offset-md-4">
                 <h1>Log In</h1>

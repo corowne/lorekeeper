@@ -103,6 +103,7 @@
     @parent
 
     @include('admin.sales._character_select_js')
+    @include('widgets._datetimepicker_js')
 
     <script>
         $(document).ready(function() {
@@ -111,10 +112,6 @@
                 loadModal("{{ url('admin/sales/delete') }}/{{ $sales->id }}", 'Delete Post');
             });
 
-            $(".datepicker").datetimepicker({
-                dateFormat: "yy-mm-dd",
-                timeFormat: 'HH:mm:ss',
-            });
         });
     </script>
 @endsection
