@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Models\Recipe;
-use App\Models\RecipeCategory;
 
 use Config;
 use DB;
