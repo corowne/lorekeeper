@@ -27,7 +27,7 @@ return [
         'enable'       => 0,
         'trait_modals' => 0, // Enables modals when you click on a trait for more info instead of linking to the traits page - Moif
     ],
-	
+
     // Universal Trait Index - CHERVB
     'universal_trait_index'                => [
         'enable'       => 0,

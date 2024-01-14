@@ -93,8 +93,7 @@ class Feature extends Model {
      *
      * @return string
      */
-    public function getVisualTraitsUrlAttribute()
-    {
+    public function getVisualTraitsUrlAttribute() {
         return url('/world/universaltraits');
     }
 

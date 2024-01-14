@@ -300,14 +300,12 @@ class WorldController extends Controller {
         ]);
     }
 
-     /**
+    /**
      * Shows a universal visual trait list.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUniversalFeatures(Request $request)
-    {
+    public function getUniversalFeatures(Request $request) {
         $categories = FeatureCategory::orderBy('sort', 'DESC')->get();
         $rarities = Rarity::orderBy('sort', 'ASC')->get();
 
@@ -317,20 +315,20 @@ class WorldController extends Controller {
 
         $features = count($categories) ?
         $query = Feature::whereNull('species_id')
-                ->visible()
-                ->orderByRaw('FIELD(feature_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
-                ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
-                ->orderBy('has_image', 'DESC')
-                ->orderBy('name')
-                ->get()
-                ->groupBy(['feature_category_id', 'id']) :
+            ->visible()
+            ->orderByRaw('FIELD(feature_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
+            ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
+            ->orderBy('has_image', 'DESC')
+            ->orderBy('name')
+            ->get()
+            ->groupBy(['feature_category_id', 'id']) :
         $query = Feature::whereNull('species_id')
-                ->visible()
-                ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
-                ->orderBy('has_image', 'DESC')
-                ->orderBy('name')
-                ->get()
-                ->groupBy(['feature_category_id', 'id']);
+            ->visible()
+            ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
+            ->orderBy('has_image', 'DESC')
+            ->orderBy('name')
+            ->get()
+            ->groupBy(['feature_category_id', 'id']);
 
         return view('world.universal_features', [
             'categories' => $categories->keyBy('id'),
