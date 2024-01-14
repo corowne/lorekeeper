@@ -18,5 +18,6 @@
     <li class="sidebar-section">
         <div class="sidebar-section-header">Recipes</div>
         <div class="sidebar-item"><a href="{{ url('world/recipes') }}" class="{{ set_active('world/recipes*') }}">All Recipes</a></div>
+        <div class="sidebar-item"><a href="{{ url('world/recipe-categories') }}" class="{{ set_active('world/recipe-categories*') }}">Recipe Categories</a></div>
     </li>
 </ul>

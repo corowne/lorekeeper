@@ -158,6 +158,15 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('recipes/create', 'RecipeController@postCreateEditRecipe');
     Route::post('recipes/edit/{id?}', 'RecipeController@postCreateEditRecipe');
     Route::post('recipes/delete/{id}', 'RecipeController@postDeleteRecipe');
+
+    Route::get('recipe-categories', 'RecipeController@getIndex');
+    Route::get('recipe-categories/create', 'RecipeController@getCreateRecipeCategory');
+    Route::get('recipe-categories/edit/{id}', 'RecipeController@getEditRecipeCategory');
+    Route::get('recipe-categories/delete/{id}', 'RecipeController@getDeleteRecipeCategory');
+    Route::post('recipe-categories/create', 'RecipeController@postCreateEditRecipeCategory');
+    Route::post('recipe-categories/edit/{id?}', 'RecipeController@postCreateEditRecipeCategory');
+    Route::post('recipe-categories/delete/{id}', 'RecipeController@postDeleteRecipeCategory');
+    Route::post('recipe-categories/sort', 'RecipeController@postSortRecipeCategory');
     
     # SHOPS
     Route::get('shops', 'ShopController@getIndex');
