@@ -99,7 +99,7 @@
                 loadModal("{{ url('admin/data/traits/delete') }}/{{ $feature->id }}", 'Delete Trait');
             });
             refreshSubtype();
-		});
+        });
 
         $("#species").change(function() {
             refreshSubtype();
@@ -112,9 +112,9 @@
                 type: "GET",
                 url: "{{ url('admin/data/traits/check-subtype') }}?species=" + species + "&subtype_id=" + subtype_id,
                 dataType: "text"
-            }).done(function (res) {
+            }).done(function(res) {
                 $("#subtypes").html(res);
-            }).fail(function (jqXHR, textStatus, errorThrown) {
+            }).fail(function(jqXHR, textStatus, errorThrown) {
                 alert("AJAX call failed: " + textStatus + ", " + errorThrown);
             });
         };
