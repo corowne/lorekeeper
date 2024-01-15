@@ -338,6 +338,28 @@ class WorldController extends Controller {
     }
 
     /**
+     * Provides a single trait's description html for use in a modal. (Universal Trait Index)
+     *
+     * @param mixed $id
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUniversalFeatureDetail($id) {
+        $feature = Feature::where('id', $id)->first();
+
+        if (!$feature) {
+            abort(404);
+        }
+        if (!config('lorekeeper.extensions.universal_trait_index.trait_modals')) {
+            abort(404);
+        }
+
+        return view('world._feature_entry', [
+            'feature' => $feature,
+        ]);
+    }
+
+    /**
      * Shows the items page.
      *
      * @return \Illuminate\Contracts\Support\Renderable

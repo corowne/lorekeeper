@@ -45,8 +45,7 @@
             $(document).ready(function() {
                 $('.modal-image').on('click', function(e) {
                     e.preventDefault();
-
-                    loadModal("{{ url('world/species/' . $species->id . '/trait') }}/" + $(this).data('id'), 'Trait Detail');
+                    loadModal("{{ url('world/universaltraits/trait') }}/" + $(this).data('id'), 'Trait Detail');
                 });
             })
         </script>
