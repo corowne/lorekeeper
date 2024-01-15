@@ -338,7 +338,7 @@ class WorldController extends Controller {
     }
 
     /**
-     * Provides a single trait's description html for use in a modal. (Universal Trait Index)
+     * Provides a single trait's description html for use in a modal. (Universal Trait Index).
      *
      * @param mixed $id
      *
