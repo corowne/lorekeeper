@@ -215,7 +215,7 @@ class DesignUpdateManager extends Service {
 
             // Save thumbnail, if we have an image set
             if ((!$isAdmin) || ($isAdmin && isset($data['modify_thumbnail']))) {
-                if (isset($data['use_cropper']) && isset($data['image'])) {
+                if (isset($data['use_cropper']) && (isset($data['image']) || ($isAdmin && isset($data['modify_thumbnail'])))) {
                     (new CharacterManager)->cropThumbnail(Arr::only($data, ['x0', 'x1', 'y0', 'y1']), $request);
                 } elseif (isset($data['thumbnail'])) {
                     $this->handleImage($data['thumbnail'], $request->imageDirectory, $request->thumbnailFileName);
