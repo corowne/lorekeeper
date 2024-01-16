@@ -341,7 +341,7 @@ class CharacterManager extends Service {
 
         $image = Image::make($characterImage->imagePath.'/'.$characterImage->imageFileName);
 
-        if (config('lorekeeper.settings.masterlist_image_format') != 'png' && config('lorekeeper.settings.masterlist_image_format') != null && config('lorekeeper.settings.masterlist_image_background') != null) {
+        if (!in_array(config('lorekeeper.settings.masterlist_image_format'), ['png', 'webp']) && config('lorekeeper.settings.masterlist_image_format') != null && config('lorekeeper.settings.masterlist_image_background') != null) {
             $canvas = Image::canvas($image->width(), $image->height(), config('lorekeeper.settings.masterlist_image_background'));
             $image = $canvas->insert($image, 'center');
             $trimColor = true;
@@ -353,10 +353,7 @@ class CharacterManager extends Service {
 
             if (config('lorekeeper.settings.masterlist_image_automation') == 1) {
                 // Make the image be square
-                $imageWidth = $image->width();
-                $imageHeight = $image->height();
-
-                if ($imageWidth > $imageHeight) {
+                if ($image->width() > $image->height()) {
                     // Landscape
                     $canvas = Image::canvas($image->width(), $image->width());
                     $image = $canvas->insert($image, 'center');
@@ -379,10 +376,7 @@ class CharacterManager extends Service {
             if (config('lorekeeper.settings.watermark_masterlist_images') == 1) {
                 // Resize image if desired, so that the watermark is applied to the correct size of image
                 if (config('lorekeeper.settings.masterlist_image_dimension') != 0) {
-                    $imageWidth = $image->width();
-                    $imageHeight = $image->height();
-
-                    if ($imageWidth > $imageHeight) {
+                    if ($image->width() > $image->height()) {
                         // Landscape
                         $image->resize(null, config('lorekeeper.settings.masterlist_image_dimension'), function ($constraint) {
                             $constraint->aspectRatio();
@@ -1912,7 +1906,7 @@ class CharacterManager extends Service {
                 if (!isset($data['image'])) {
                     $data['image'] = public_path('images/myo.png');
                     $data['thumbnail'] = public_path('images/myo-th.png');
-                    $data['extension'] = config('lorekeeper.settings.masterlist_image_format', 'png');
+                    $data['extension'] = config('lorekeeper.settings.masterlist_image_format') ?? 'png';
                     $data['fullsize_extension'] = config('lorekeeper.settings.masterlist_fullsizes_format') ?? $data['extension'];
                     $data['default_image'] = true;
                     unset($data['use_cropper']);
