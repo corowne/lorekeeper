@@ -294,7 +294,7 @@ $( "#species" ).change(function() {
 });
 
 $('#subtype').selectize({
-    maxItems: 10,
+    maxItems: config('lorekeeper.extensions.multiple_subtype_limit'),
 });
 </script>
 @endsection

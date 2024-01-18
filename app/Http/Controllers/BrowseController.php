@@ -163,7 +163,17 @@ class BrowseController extends Controller
 
         // Searching on image properties
         if($request->get('species_id')) $imageQuery->where('species_id', $request->get('species_id'));
-        if($request->get('subtype_id')) $imageQuery->where('subtype_id', $request->get('subtype_id'));
+        if($request->get('subtype_ids')) {
+            $imageQuery->whereHas('subtypes', function($query) use ($request) {
+                if (config('lorekeeper.extensions.exclusionary_search')) {
+                    // If exclusionary search is enabled, we need to make sure that the character has all of the subtypes specified.
+                    $query->whereIn('character_image_subtypes.subtype_id', $request->get('subtype_ids'))->havingRaw('COUNT(*) = ?', [count($request->get('subtype_ids'))]);
+                } else {
+                    // If exclusionary search is not enabled, any of the subtypes is acceptable.
+                    $query->whereIn('character_image_subtypes.subtype_id', $request->get('subtype_ids'));
+                }
+            });
+        }
         if($request->get('feature_id')) {
             $featureIds = $request->get('feature_id');
             foreach($featureIds as $featureId) {

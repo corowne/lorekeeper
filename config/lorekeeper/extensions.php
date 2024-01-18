@@ -54,4 +54,7 @@ return [
         'default_recipient' => 0, // 0 to default to the character's owner (if a user), 1 to default to the submission user.
     ],
 
+    // Multiple Subtypes - Newt
+    'exclusionary_search' => 0, // If enabled, searching for multiple subtypes will only return results that have all of the subtypes specified. If disabled, it will return results that have any of the subtypes specified.
+    'multiple_subtype_limit' => 10, // The maximum number of subtypes a character can have. (frontend validation)
 ];

@@ -78,13 +78,13 @@
         }).done(function (res) { 
             $("#subtypes").html(res); 
             $( "#subtype" ).selectize({
-                maxItems: 10
+                maxItems: config('lorekeeper.extensions.multiple_subtype_limit'),
             });
         }).fail(function (jqXHR, textStatus, errorThrown) { alert("AJAX call failed: " + textStatus + ", " + errorThrown); });
     });
 
     $('#subtype').selectize({
-        maxItems: 10,
+        maxItems: config('lorekeeper.extensions.multiple_subtype_limit'),
     });
 </script>
 @endsection
