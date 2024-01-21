@@ -1,7 +1,7 @@
 @extends('world.layout')
 
 @section('title')
-    Traits
+    Universal Trait Index
 @endsection
 
 @section('content')
