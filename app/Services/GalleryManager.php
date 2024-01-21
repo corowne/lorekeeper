@@ -30,9 +30,9 @@ class GalleryManager extends Service {
     /**
      * Creates a new gallery submission.
      *
-     * @param array                 $data
-     * @param array                 $currencyFormData
-     * @param \App\Models\User\User $user
+     * @param array $data
+     * @param array $currencyFormData
+     * @param User  $user
      *
      * @return \App\Models\Gallery\GallerySubmission|bool
      */
@@ -174,9 +174,9 @@ class GalleryManager extends Service {
     /**
      * Updates a gallery submission.
      *
-     * @param \App\Models\Gallery\GallerySubmission $submission
-     * @param array                                 $data
-     * @param \App\Models\User\User                 $user
+     * @param GallerySubmission $submission
+     * @param array             $data
+     * @param User              $user
      *
      * @return \App\Models\Gallery\GallerySubmission|bool
      */
@@ -338,9 +338,9 @@ class GalleryManager extends Service {
     /**
      * Processes collaborator edits/approvals on a submission.
      *
-     * @param \App\Models\Gallery\GallerySubmission $submission
-     * @param \App\Models\User\User                 $user
-     * @param mixed                                 $data
+     * @param GallerySubmission $submission
+     * @param User              $user
+     * @param mixed             $data
      *
      * @return \App\Models\Gallery\GalleryFavorite|bool
      */
@@ -393,9 +393,9 @@ class GalleryManager extends Service {
     /**
      * Votes on a gallery submission.
      *
-     * @param string                                $action
-     * @param \App\Models\Gallery\GallerySubmission $submission
-     * @param \App\Models\User\User                 $user
+     * @param string            $action
+     * @param GallerySubmission $submission
+     * @param User              $user
      *
      * @return bool
      */
@@ -466,9 +466,9 @@ class GalleryManager extends Service {
     /**
      * Processes staff comments for a submission.
      *
-     * @param \App\Models\User\User $user
-     * @param mixed                 $id
-     * @param mixed                 $data
+     * @param User  $user
+     * @param mixed $id
+     * @param mixed $data
      *
      * @return \App\Models\Gallery\GalleryFavorite|bool
      */
@@ -516,8 +516,8 @@ class GalleryManager extends Service {
     /**
      * Archives a submission.
      *
-     * @param \App\Models\Gallery\GallerySubmission $submission
-     * @param mixed                                 $user
+     * @param GallerySubmission $submission
+     * @param mixed             $user
      *
      * @return bool
      */
@@ -555,9 +555,9 @@ class GalleryManager extends Service {
     /**
      * Processes group currency evaluation for a submission.
      *
-     * @param \App\Models\User\User $user
-     * @param mixed                 $id
-     * @param mixed                 $data
+     * @param User  $user
+     * @param mixed $id
+     * @param mixed $data
      *
      * @return \App\Models\Gallery\GalleryFavorite|bool
      */
@@ -689,8 +689,8 @@ class GalleryManager extends Service {
     /**
      * Toggles favorite status on a submission for a user.
      *
-     * @param \App\Models\Gallery\GallerySubmission $submission
-     * @param \App\Models\User\User                 $user
+     * @param GallerySubmission $submission
+     * @param User              $user
      *
      * @return \App\Models\Gallery\GalleryFavorite|bool
      */
@@ -737,8 +737,8 @@ class GalleryManager extends Service {
     /**
      * Processes rejection for a submission.
      *
-     * @param \App\Models\Gallery\GallerySubmission $submission
-     * @param mixed                                 $user
+     * @param GallerySubmission $submission
+     * @param mixed             $user
      *
      * @return \App\Models\Gallery\GallerySubmission|bool
      */
@@ -795,8 +795,8 @@ class GalleryManager extends Service {
     /**
      * Processes gallery submission images.
      *
-     * @param array                                 $data
-     * @param \App\Models\Gallery\GallerySubmission $submission
+     * @param array             $data
+     * @param GallerySubmission $submission
      *
      * @return array
      */
@@ -856,7 +856,7 @@ class GalleryManager extends Service {
     /**
      * Processes acceptance for a submission.
      *
-     * @param \App\Models\Gallery\GallerySubmission $submission
+     * @param GallerySubmission $submission
      *
      * @return \App\Models\Gallery\GallerySubmission|bool
      */

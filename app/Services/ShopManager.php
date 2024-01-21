@@ -130,8 +130,8 @@ class ShopManager extends Service {
     /**
      * Checks if the purchase limit for an item from a shop has been reached.
      *
-     * @param \App\Models\Shop\ShopStock $shopStock
-     * @param \App\Models\User\User      $user
+     * @param ShopStock             $shopStock
+     * @param \App\Models\User\User $user
      *
      * @return bool
      */
@@ -146,8 +146,8 @@ class ShopManager extends Service {
     /**
      * Checks how many times a user has purchased a shop item.
      *
-     * @param \App\Models\Shop\ShopStock $shopStock
-     * @param \App\Models\User\User      $user
+     * @param ShopStock             $shopStock
+     * @param \App\Models\User\User $user
      *
      * @return int
      */

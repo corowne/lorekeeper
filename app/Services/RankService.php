@@ -19,8 +19,8 @@ class RankService extends Service {
     /**
      * Creates a user rank.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
+     * @param array $data
+     * @param User  $user
      *
      * @return bool
      */
@@ -76,9 +76,9 @@ class RankService extends Service {
     /**
      * Updates a user rank.
      *
-     * @param \App\Models\Rank\Rank $rank
-     * @param array                 $data
-     * @param \App\Models\User\User $user
+     * @param Rank  $rank
+     * @param array $data
+     * @param User  $user
      *
      * @return bool
      */
@@ -129,8 +129,8 @@ class RankService extends Service {
     /**
      * Deletes a user rank.
      *
-     * @param \App\Models\Rank\Rank $rank
-     * @param \App\Models\User\User $user
+     * @param Rank $rank
+     * @param User $user
      *
      * @return bool
      */
@@ -157,8 +157,8 @@ class RankService extends Service {
     /**
      * Sorts user ranks.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
+     * @param array $data
+     * @param User  $user
      *
      * @return bool
      */

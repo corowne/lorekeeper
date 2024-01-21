@@ -194,7 +194,7 @@ class Submission extends Model {
     /**
      * Gets the currencies of the given user for selection.
      *
-     * @param \App\Models\User\User $user
+     * @param User $user
      *
      * @return array
      */

@@ -61,9 +61,9 @@ class CharacterCategoryService extends Service {
     /**
      * Update a category.
      *
-     * @param \App\Models\Character\CharacterCategory $category
-     * @param array                                   $data
-     * @param mixed                                   $user
+     * @param CharacterCategory $category
+     * @param array             $data
+     * @param mixed             $user
      *
      * @return \App\Models\Character\CharacterCategory|bool
      */
@@ -109,8 +109,8 @@ class CharacterCategoryService extends Service {
     /**
      * Delete a category.
      *
-     * @param \App\Models\Character\CharacterCategory $category
-     * @param mixed                                   $user
+     * @param CharacterCategory $category
+     * @param mixed             $user
      *
      * @return bool
      */

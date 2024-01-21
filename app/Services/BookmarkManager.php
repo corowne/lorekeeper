@@ -132,7 +132,7 @@ class BookmarkManager extends Service {
      * Deletes bookmarks associated with a character.
      * For use when a character is deleted.
      *
-     * @param \App\Models\Character\Character $character
+     * @param Character $character
      *
      * @return bool
      */

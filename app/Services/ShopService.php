@@ -62,7 +62,7 @@ class ShopService extends Service {
     /**
      * Updates a shop.
      *
-     * @param \App\Models\Shop\Shop $shop
+     * @param Shop                  $shop
      * @param array                 $data
      * @param \App\Models\User\User $user
      *
@@ -104,7 +104,7 @@ class ShopService extends Service {
     /**
      * Updates shop stock.
      *
-     * @param \App\Models\Shop\Shop $shop
+     * @param Shop                  $shop
      * @param array                 $data
      * @param \App\Models\User\User $user
      *
@@ -156,7 +156,7 @@ class ShopService extends Service {
     /**
      * Deletes a shop.
      *
-     * @param \App\Models\Shop\Shop $shop
+     * @param Shop $shop
      *
      * @return bool
      */
@@ -209,8 +209,8 @@ class ShopService extends Service {
     /**
      * Processes user input for creating/updating a shop.
      *
-     * @param array                 $data
-     * @param \App\Models\Shop\Shop $shop
+     * @param array $data
+     * @param Shop  $shop
      *
      * @return array
      */
