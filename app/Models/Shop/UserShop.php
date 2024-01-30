@@ -195,4 +195,13 @@ class UserShop extends Model
         if($limit) return $query->take($limit)->get();
         else return $query->paginate(30);
     }
+
+        /**
+     * Gets the URL to edit shop
+     *
+     * @return string
+     */
+    public function getEditUrlAttribute() {
+        return url('/user-shops/edit/'.$this->id);
+    }
 }

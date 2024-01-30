@@ -412,6 +412,6 @@ return [
     1104 => [
         'name' => 'Shop Item Sold',
         'message' => 'You have sold a {item_name} from <a href="{url}">{shop_name}</a> and have been credited {currency_quantity} {currency_name}.',
-        'url' => 'usershops/shop/{shop_id}'
+        'url' => 'user-shops/shop/{shop_id}'
     ],
 ];

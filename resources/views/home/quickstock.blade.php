@@ -34,7 +34,7 @@
         {!! Form::close() !!}
     @else
         <div class="alert alert-warning text-center">
-            You can't stock a shop if you <a href="{{ url('usershops/create') }}">don't have one...</a>
+            You can't stock a shop if you <a href="{{ url('user-shops/create') }}">don't have one...</a>
         </div>
     @endif
 @endsection
