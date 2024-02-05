@@ -28,7 +28,7 @@
                                     @endif
                                     <p>
                                         @if (!$feature->first()->is_visible)
-                                             <i class="fas fa-eye-slash mr-1"></i>
+                                            <i class="fas fa-eye-slash mr-1"></i>
                                         @endif
                                         {!! $feature->first()->displayName !!}
                                         @if ($feature->first()->subtype)
