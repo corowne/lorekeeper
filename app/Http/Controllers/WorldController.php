@@ -307,7 +307,7 @@ class WorldController extends Controller {
      */
     public function getItems(Request $request) {
         $query = Item::with('category');
-        
+
         if (!Auth::check() || !Auth::user()->isStaff) {
             $query->released();
         }
@@ -371,7 +371,7 @@ class WorldController extends Controller {
      */
     public function getItem($id) {
         $categories = ItemCategory::orderBy('sort', 'DESC')->get();
-        
+
         if (!Auth::check() || !Auth::user()->isStaff) {
             $item = Item::where('id', $id)->released()->first();
         } else {
