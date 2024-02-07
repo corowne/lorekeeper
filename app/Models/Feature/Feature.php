@@ -187,7 +187,7 @@ class Feature extends Model {
      * Scope a query to show only visible features.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param bool                                  $withHidden
+     * @param mixed|null                            $user
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
