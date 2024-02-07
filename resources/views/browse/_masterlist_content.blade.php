@@ -18,11 +18,11 @@
             @if (!$isMyo)
                 <div class="masterlist-search-field">
                     {!! Form::label('character_category_id', 'Category: ') !!}
-                    {!! Form::select('character_category_id', $categories, Request::get('character_category_id'), ['class' => 'form-control', 'style' => 'width: 250px']) !!}
+                    {!! Form::select('character_category_id', $categories, Request::get('character_category_id'), ['class' => 'form-control mr-2', 'style' => 'width: 250px']) !!}
                 </div>
                 <div class="masterlist-search-field">
                     {!! Form::label('subtype_id', 'Species Subtype: ') !!}
-                    {!! Form::select('subtype_id', $subtypes, Request::get('subtype_id'), ['class' => 'form-control', 'style' => 'width: 250px']) !!}
+                    {!! Form::select('subtype_id', $subtypes, Request::get('subtype_id'), ['class' => 'form-control mr-2', 'style' => 'width: 250px']) !!}
                 </div>
                 <hr />
             @endif
@@ -54,11 +54,11 @@
             <hr />
             <div class="masterlist-search-field">
                 {!! Form::label('sale_value_min', 'Resale Minimum ($): ') !!}
-                {!! Form::text('sale_value_min', Request::get('sale_value_min'), ['class' => 'form-control', 'style' => 'width: 250px']) !!}
+                {!! Form::text('sale_value_min', Request::get('sale_value_min'), ['class' => 'form-control mr-2', 'style' => 'width: 250px']) !!}
             </div>
             <div class="masterlist-search-field">
                 {!! Form::label('sale_value_max', 'Resale Maximum ($): ') !!}
-                {!! Form::text('sale_value_max', Request::get('sale_value_max'), ['class' => 'form-control', 'style' => 'width: 250px']) !!}
+                {!! Form::text('sale_value_max', Request::get('sale_value_max'), ['class' => 'form-control mr-2', 'style' => 'width: 250px']) !!}
             </div>
             @if (!$isMyo)
                 <div class="masterlist-search-field">
@@ -115,12 +115,16 @@
     <div class="form-inline justify-content-end mb-3">
         <div class="form-group mr-3">
             {!! Form::label('sort', 'Sort: ', ['class' => 'mr-2']) !!}
-            {!! Form::select(
-                'sort',
-                ['number_desc' => 'Number Descending', 'number_asc' => 'Number Ascending', 'id_desc' => 'Newest First', 'id_asc' => 'Oldest First', 'sale_value_desc' => 'Highest Sale Value', 'sale_value_asc' => 'Lowest Sale Value'],
-                Request::get('sort'),
-                ['class' => 'form-control'],
-            ) !!}
+            @if (!$isMyo)
+                {!! Form::select(
+                    'sort',
+                    ['number_desc' => 'Number Descending', 'number_asc' => 'Number Ascending', 'id_desc' => 'Newest First', 'id_asc' => 'Oldest First', 'sale_value_desc' => 'Highest Sale Value', 'sale_value_asc' => 'Lowest Sale Value'],
+                    Request::get('sort'),
+                    ['class' => 'form-control'],
+                ) !!}
+            @else
+                {!! Form::select('sort', ['id_desc' => 'Newest First', 'id_asc' => 'Oldest First', 'sale_value_desc' => 'Highest Sale Value', 'sale_value_asc' => 'Lowest Sale Value'], Request::get('sort'), ['class' => 'form-control']) !!}
+            @endif
         </div>
         {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
     </div>
