@@ -140,7 +140,7 @@
             </div>
         </div>
     @endif
-        
+
     <div class="text-right">
         {!! Form::submit($currency->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
     </div>

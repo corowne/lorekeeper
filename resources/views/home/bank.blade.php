@@ -45,20 +45,20 @@
     <h3>Convert Currency</h3>
     <p>Converting currency is a way to exchange one currency for another. The conversion rates are set by the site administrators and may change over time.</p>
     {!! Form::open(['url' => 'bank/convert']) !!}
-        <div class="form-group">
-            <div class="row">
-                <div class="col-md-6">
-                    {!! Form::label('currency_id', 'Currency to Convert:') !!}
-                    {!! Form::select('currency_id', $convertOptions, null, ['class' => 'form-control', 'placeholder' => 'Select Currency', 'id' => 'convert-currency']) !!}
-                </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-6">
+                {!! Form::label('currency_id', 'Currency to Convert:') !!}
+                {!! Form::select('currency_id', $convertOptions, null, ['class' => 'form-control', 'placeholder' => 'Select Currency', 'id' => 'convert-currency']) !!}
             </div>
         </div>
-        <div class="form-group" id="convert-currency-form">
-        </div>
+    </div>
+    <div class="form-group" id="convert-currency-form">
+    </div>
 
-        <div class="text-right">
-            {!! Form::submit('Convert', ['class' => 'btn btn-primary']) !!}
-        </div>
+    <div class="text-right">
+        {!! Form::submit('Convert', ['class' => 'btn btn-primary']) !!}
+    </div>
 
     {!! Form::close() !!}
 
