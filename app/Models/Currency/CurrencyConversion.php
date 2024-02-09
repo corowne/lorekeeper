@@ -3,19 +3,17 @@
 namespace App\Models\Currency;
 
 use App\Models\Model;
-use App\Models\Currency\CurrencyConversion;
+use App\Models\Currency\Currency;
 
-class Currency extends Model {
+class CurrencyConversion extends Model {
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'is_user_owned', 'is_character_owned',
-        'name', 'abbreviation', 'description', 'parsed_description', 'sort_user', 'sort_character',
-        'is_displayed', 'allow_user_to_user', 'allow_user_to_character', 'allow_character_to_user',
-        'has_icon', 'has_image', 'hash',
+        'currency_id', 'conversion_id', 'rate',
     ];
 
     /**
@@ -23,18 +21,16 @@ class Currency extends Model {
      *
      * @var string
      */
-    protected $table = 'currencies';
+    protected $table = 'currency_conversions';
     /**
      * Validation rules for creation.
      *
      * @var array
      */
     public static $createRules = [
-        'name'         => 'required|unique:currencies|between:3,100',
-        'abbreviation' => 'nullable|unique:currencies|between:1,25',
-        'description'  => 'nullable',
-        'icon'         => 'mimes:png',
-        'image'        => 'mimes:png',
+        'currency_id'         => 'required|exists:currencies,id',
+        'conversion_id'       => 'required|exists:currencies,id',
+        'rate'                => 'required|numeric',
     ];
 
     /**
@@ -43,11 +39,9 @@ class Currency extends Model {
      * @var array
      */
     public static $updateRules = [
-        'name'         => 'required|between:3,100',
-        'abbreviation' => 'nullable|between:1,25',
-        'description'  => 'nullable',
-        'icon'         => 'mimes:png',
-        'image'        => 'mimes:png',
+        'currency_id'         => 'required|exists:currencies,id',
+        'conversion_id'       => 'required|exists:currencies,id',
+        'rate'                => 'required|numeric',
     ];
 
     /**********************************************************************************************
@@ -57,10 +51,17 @@ class Currency extends Model {
     **********************************************************************************************/
 
     /**
-     * Get the conversion options for the currency.
+     * Get the currency that the conversion is for.
      */
-    public function conversions() {
-        return $this->hasMany(CurrencyConversion::class, 'currency_id');
+    public function currency() {
+        return $this->belongsTo(Currency::class, 'currency_id');
+    }
+
+    /**
+     * Get the currency that is converted to.
+     */
+    public function convert() {
+        return $this->belongsTo(Currency::class, 'conversion_id');
     }
 
     /**********************************************************************************************
@@ -224,5 +225,30 @@ class Currency extends Model {
         }
 
         return $ret.'</span>';
+    }
+
+    /**
+     * Gets the ratio based on the decimal conversion rate.
+     */
+    public function ratio($return = false) {
+        $numerator = $this->rate * 100; // Convert rate to avoid floating point issues
+        $denominator = 100;
+        $divisor = $this->gcd($numerator, $denominator); // Find GCD to simplify ratio
+
+        // Simplify the ratio
+        $numerator /= $divisor;
+        $denominator /= $divisor;
+
+        if ($return) {
+            return [$numerator, $denominator];
+        }
+        return $numerator . ":" . $denominator;
+    }
+
+    /**
+     * Gets the greatest common divisor of two numbers.
+     */
+    private function gcd($a, $b) {
+        return $b ? $this->gcd($b, $a % $b) : $a;
     }
 }

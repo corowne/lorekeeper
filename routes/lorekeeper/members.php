@@ -78,6 +78,9 @@ Route::group(['prefix' => 'characters', 'namespace' => 'Users'], function () {
 Route::group(['prefix' => 'bank', 'namespace' => 'Users'], function () {
     Route::get('/', 'BankController@getIndex');
     Route::post('transfer', 'BankController@postTransfer');
+    Route::get('convert/{id}', 'BankController@getConvertCurrency');
+    Route::get('convert/{currency_id}/rate/{conversion_id}', 'BankController@getConvertCurrencyRate');
+    Route::post('convert', 'BankController@postConvertCurrency');
 });
 
 Route::group(['prefix' => 'trades', 'namespace' => 'Users'], function () {
