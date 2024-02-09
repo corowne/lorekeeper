@@ -56,8 +56,6 @@ class CurrencyService extends Service {
 
             $currency = Currency::create($data);
 
-            $this->populateConversions($currency, $data);
-
             if (!$this->logAdminAction($user, 'Created Currency', 'Created '.$currency->displayName)) {
                 throw new \Exception('Failed to log admin action.');
             }
@@ -282,14 +280,14 @@ class CurrencyService extends Service {
 
     /**
      * Processes user input for creating/updating a currency's conversions.
-     * 
+     *
      * @param Currency $currency
      * @param array    $data
      */
     private function populateConversions($currency, $data) {
         $currency->conversions()->delete();
         if (isset($data['conversion_id']) && $data['conversion_id']) {
-            foreach($data['conversion_id'] as $key => $conversion_id) {
+            foreach ($data['conversion_id'] as $key => $conversion_id) {
                 $conversion = Currency::find($conversion_id);
                 if (!$conversion) {
                     continue;

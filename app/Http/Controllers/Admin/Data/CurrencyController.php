@@ -54,7 +54,7 @@ class CurrencyController extends Controller {
         }
 
         return view('admin.currencies.create_edit_currency', [
-            'currency' => $currency,
+            'currency'   => $currency,
             'currencies' => Currency::where('id', '!=', $id)->get()->sortBy('name')->pluck('name', 'id'),
         ]);
     }

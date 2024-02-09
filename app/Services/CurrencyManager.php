@@ -368,7 +368,7 @@ class CurrencyManager extends Service {
      * @param Currency $conversion
      * @param int      $quantity
      * @param User     $user
-     * 
+     *
      * @return bool
      */
     public function convertCurrency($currency, $conversion, $quantity, $user) {
@@ -427,7 +427,6 @@ class CurrencyManager extends Service {
 
         return $this->rollbackReturn(false);
     }
-
 
     /**
      * Creates a currency log.

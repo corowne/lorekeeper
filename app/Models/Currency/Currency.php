@@ -3,7 +3,6 @@
 namespace App\Models\Currency;
 
 use App\Models\Model;
-use App\Models\Currency\CurrencyConversion;
 
 class Currency extends Model {
     /**

@@ -23,7 +23,7 @@ abstract class Service {
     /**
      * Errors.
      *
-     * @var Illuminate\Support\MessageBag
+     * @var App\Services\Illuminate\Support\MessageBag
      */
     protected $errors = null;
     protected $cache = [];
@@ -61,7 +61,7 @@ abstract class Service {
     /**
      * Return errors.
      *
-     * @return Illuminate\Support\MessageBag
+     * @return App\Services\Illuminate\Support\MessageBag
      */
     public function errors() {
         return $this->errors;
@@ -81,7 +81,7 @@ abstract class Service {
      *
      * @param mixed $key
      *
-     * @return Illuminate\Support\MessageBag
+     * @return App\Services\Illuminate\Support\MessageBag
      */
     public function getError($key) {
         return $this->errors->get($key);
@@ -200,7 +200,7 @@ abstract class Service {
                         // Check that the currency exists, first
                         $currency = Currency::find(config('lorekeeper.extensions.staff_rewards.currency_id'));
                         if ($currency) {
-                            if (!(new CurrencyManager)->creditCurrency(null, $user, 'Staff Reward', $action_details, $currency, $reward)) {
+                            if (!(new App\Services\CurrencyManager)->creditCurrency(null, $user, 'Staff Reward', $action_details, $currency, $reward)) {
                                 return false;
                             }
                         }
@@ -250,7 +250,7 @@ abstract class Service {
     /**
      * Add multiple errors to the message bag.
      *
-     * @param Illuminate\Support\MessageBag $errors
+     * @param App\Services\Illuminate\Support\MessageBag $errors
      */
     protected function setErrors($errors) {
         $this->errors->merge($errors);

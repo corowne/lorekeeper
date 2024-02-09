@@ -3,10 +3,8 @@
 namespace App\Models\Currency;
 
 use App\Models\Model;
-use App\Models\Currency\Currency;
 
 class CurrencyConversion extends Model {
-
     /**
      * The attributes that are mass assignable.
      *
@@ -72,6 +70,8 @@ class CurrencyConversion extends Model {
 
     /**
      * Gets the ratio based on the decimal conversion rate.
+     *
+     * @param mixed $return
      */
     public function ratio($return = false) {
         $numerator = $this->rate * 100; // Convert rate to avoid floating point issues
@@ -85,11 +85,15 @@ class CurrencyConversion extends Model {
         if ($return) {
             return [$numerator, $denominator];
         }
-        return $numerator . ":" . $denominator;
+
+        return $numerator.':'.$denominator;
     }
 
     /**
      * Gets the greatest common divisor of two numbers.
+     *
+     * @param mixed $a
+     * @param mixed $b
      */
     private function gcd($a, $b) {
         return $b ? $this->gcd($b, $a % $b) : $a;

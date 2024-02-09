@@ -56,22 +56,24 @@ class BankController extends Controller {
     /**
      * Gets the currency conversion form for the user.
      *
-     * @param App\Services\CurrencyManager $service
+     * @param mixed $id
      *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function getConvertCurrency($id) {
         $currency = Currency::where('is_user_owned', 1)->where('id', $id)->first();
         $convertOptions = Currency::whereIn('id', $currency->conversions->pluck('conversion_id')->toArray())->orderBy('sort_user', 'DESC')->pluck('name', 'id')->toArray();
+
         return view('home._bank_convert', [
-            'convertOptions' => $convertOptions, 
+            'convertOptions' => $convertOptions,
         ]);
     }
 
     /**
      * Gets the currency conversion rate for the user.
      *
-     * @param App\Services\CurrencyManager $service
+     * @param mixed $currency_id
+     * @param mixed $conversion_id
      *
      * @return \Illuminate\Http\RedirectResponse
      */
