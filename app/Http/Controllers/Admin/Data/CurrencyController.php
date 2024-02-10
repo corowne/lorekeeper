@@ -54,7 +54,8 @@ class CurrencyController extends Controller {
         }
 
         return view('admin.currencies.create_edit_currency', [
-            'currency' => $currency,
+            'currency'   => $currency,
+            'currencies' => Currency::where('id', '!=', $id)->get()->sortBy('name')->pluck('name', 'id'),
         ]);
     }
 
@@ -73,6 +74,7 @@ class CurrencyController extends Controller {
             'name', 'abbreviation', 'description',
             'is_displayed', 'allow_user_to_user', 'allow_user_to_character', 'allow_character_to_user',
             'icon', 'image', 'remove_icon', 'remove_image',
+            'conversion_id', 'rate',
         ]);
         if ($id && $service->updateCurrency(Currency::find($id), $data, Auth::user())) {
             flash('Currency updated successfully.')->success();
