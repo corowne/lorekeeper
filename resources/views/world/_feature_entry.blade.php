@@ -9,6 +9,9 @@
     <div class="{{ $feature->has_image ? 'col-md-9' : 'col-12' }}">
         <x-admin-edit title="Trait" :object="$feature" />
         <h3>
+            @if (!$feature->is_visible)
+                <i class="fas fa-eye-slash mr-1"></i>
+            @endif
             {!! $feature->displayName !!}
             <a href="{{ $feature->searchUrl }}" class="world-entry-search text-muted">
                 <i class="fas fa-search"></i>
