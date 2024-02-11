@@ -33,7 +33,7 @@ class ShopManager extends Service
         DB::beginTransaction();
 
         try {
-            $quantity = $data['quantity'];
+            $quantity = ceil($data['quantity']);
             if(!$quantity || $quantity == 0) throw new \Exception("Invalid quantity selected.");
 
             // Check that the shop exists and is open
