@@ -184,4 +184,22 @@ class News extends Model implements Feedable {
             'authorName' => $this->user->name,
         ]);
     }
+
+    /**
+     * Returns news in a JSON format for the calendar.
+     *
+     * @return array
+     */
+    public static function getCalendarEvents() {
+        $events = [];
+        foreach (self::visible()->get() as $news) {
+            $events[] = [
+                'title' => $news->title,
+                'start' => $news->post_at->toDateString(),
+                'url'   => $news->url,
+            ];
+        }
+
+        return $events;
+    }
 }

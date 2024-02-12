@@ -54,6 +54,10 @@
                             Activity
                         </a>
                         <div class="dropdown-menu" aria-labelledby="queueDropdown">
+                            <a class="dropdown-item" href="{{ url('calendar') }}">
+                                Calendar
+                            </a>
+                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{{ url('submissions') }}">
                                 Prompt Submissions
                             </a>

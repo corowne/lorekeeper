@@ -133,6 +133,8 @@ Route::group(['prefix' => 'shops'], function () {
 **************************************************************************************************/
 Route::get('credits', 'PageController@getCreditsPage');
 Route::get('info/{key}', 'PageController@getPage');
+Route::get('calendar', 'PageController@getCalendarPage');
+Route::get('calendar/events', 'PageController@getCalendarEvents');
 
 /**************************************************************************************************
     Raffles
