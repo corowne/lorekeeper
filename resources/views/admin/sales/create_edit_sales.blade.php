@@ -74,8 +74,7 @@
 
     <div id="characters" class="mb-3">
         @if ($sales->id)
-            @if (count(
-                    $sales->characters()->whereRelation('character', 'deleted_at', null)->get()) != count($sales->characters))
+            @if (count($sales->characters()->whereRelation('character', 'deleted_at', null)->get()) != count($sales->characters))
                 <div class="alert alert-warning">
                     <strong>Warning!</strong> Some characters have been deleted since they were added to this post. Editing this post will remove those characters permanently from the post.
                 </div>

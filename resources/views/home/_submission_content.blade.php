@@ -98,8 +98,7 @@
 <div class="card mb-3">
     <div class="card-header h2">Characters</div>
     <div class="card-body">
-        @if (count(
-                $submission->characters()->whereRelation('character', 'deleted_at', null)->get()) != count($submission->characters()->get()))
+        @if (count($submission->characters()->whereRelation('character', 'deleted_at', null)->get()) != count($submission->characters()->get()))
             <div class="alert alert-warning">
                 Some characters have been deleted since this submission was created.
             </div>
