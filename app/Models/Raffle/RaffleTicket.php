@@ -23,11 +23,14 @@ class RaffleTicket extends Model {
     protected $table = 'raffle_tickets';
 
     /**
-     * Dates on the model to convert to Carbon instances.
+     * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $dates = ['created_at'];
+    protected $casts = [
+        'created_at' => 'datetime',
+    ];
+
     /**
      * Validation rules for creation.
      *
