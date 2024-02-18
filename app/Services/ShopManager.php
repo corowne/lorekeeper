@@ -50,6 +50,8 @@ class ShopManager extends Service
             // Check if the user can only buy a limited number of this item, and if it does, check that the user hasn't hit the limit
             if($shopStock->purchase_limit && $this->checkPurchaseLimitReached($shopStock, $user)) throw new \Exception("You have already purchased the maximum amount of this item you can buy.");
 
+            if($shopStock->purchase_limit && $quantity > $shopStock->purchase_limit) throw new \Exception("The quantity specified exceeds the amount of this item you can buy.");
+
             $total_cost = $shopStock->cost * $quantity;
 
             $character = null;
@@ -76,7 +78,7 @@ class ShopManager extends Service
             }
 
             // If the item has a limited quantity, decrease the quantity
-            if($shopStock->is_limited_stock) 
+            if($shopStock->is_limited_stock)
             {
                 $shopStock->quantity -= $quantity;
                 $shopStock->save();
@@ -84,23 +86,23 @@ class ShopManager extends Service
 
             // Add a purchase log
             $shopLog = ShopLog::create([
-                'shop_id' => $shop->id, 
-                'character_id' => $character ? $character->id : null, 
-                'user_id' => $user->id, 
-                'currency_id' => $shopStock->currency->id, 
-                'cost' => $total_cost, 
-                'item_id' => $shopStock->item_id, 
+                'shop_id' => $shop->id,
+                'character_id' => $character ? $character->id : null,
+                'user_id' => $user->id,
+                'currency_id' => $shopStock->currency->id,
+                'cost' => $total_cost,
+                'item_id' => $shopStock->item_id,
                 'quantity' => $quantity
             ]);
-            
+
             // Give the user the item, noting down 1. whose currency was used (user or character) 2. who purchased it 3. which shop it was purchased from
             if(!(new InventoryManager)->creditItem(null, $user, 'Shop Purchase', [
-                'data' => $shopLog->itemData, 
+                'data' => $shopLog->itemData,
                 'notes' => 'Purchased ' . format_date($shopLog->created_at)
             ], $shopStock->item, $quantity)) throw new \Exception("Failed to purchase item.");
 
             return $this->commitReturn($shop);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
