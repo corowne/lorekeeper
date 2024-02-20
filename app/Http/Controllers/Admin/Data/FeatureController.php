@@ -164,7 +164,7 @@ class FeatureController extends Controller {
      */
     public function getFeatureIndex(Request $request) {
         $query = Feature::query();
-        $data = $request->only(['rarity_id', 'feature_category_id', 'species_id', 'subtype_id', 'name']);
+        $data = $request->only(['rarity_id', 'feature_category_id', 'species_id', 'subtype_id', 'name', 'sort']);
         if (isset($data['rarity_id']) && $data['rarity_id'] != 'none') {
             $query->where('rarity_id', $data['rarity_id']);
         }
@@ -179,6 +179,40 @@ class FeatureController extends Controller {
         }
         if (isset($data['name'])) {
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
+        }
+
+        if (isset($data['sort'])) {
+            switch ($data['sort']) {
+                case 'alpha':
+                    $query->sortAlphabetical();
+                    break;
+                case 'alpha-reverse':
+                    $query->sortAlphabetical(true);
+                    break;
+                case 'category':
+                    $query->sortCategory();
+                    break;
+                case 'rarity':
+                    $query->sortRarity();
+                    break;
+                case 'rarity-reverse':
+                    $query->sortRarity(true);
+                    break;
+                case 'species':
+                    $query->sortSpecies();
+                    break;
+                case 'subtypes':
+                    $query->sortSubtype();
+                    break;
+                case 'newest':
+                    $query->sortNewest();
+                    break;
+                case 'oldest':
+                    $query->sortOldest();
+                    break;
+            }
+        } else {
+            $query->sortOldest();
         }
 
         return view('admin.features.features', [
