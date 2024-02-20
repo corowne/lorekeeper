@@ -122,7 +122,7 @@
         </div>
         <div class="form-group">
             {!! Form::label('On Transfer Cooldown Until (Optional)') !!}
-            {!! Form::text('transferrable_at', old('transferrable_at'), ['class' => 'form-control', 'id' => 'datepicker']) !!}
+            {!! Form::text('transferrable_at', old('transferrable_at'), ['class' => 'form-control datepicker']) !!}
         </div>
 
         <h3>Image Upload</h3>
@@ -266,6 +266,7 @@
     @parent
     @include('widgets._character_create_options_js')
     @include('widgets._image_upload_js')
+    @include('widgets._datetimepicker_js')
     @if (!$isMyo)
         @include('widgets._character_code_js')
     @endif

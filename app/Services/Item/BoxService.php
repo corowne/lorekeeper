@@ -29,7 +29,7 @@ class BoxService extends Service {
     /**
      * Processes the data attribute of the tag and returns it in the preferred format.
      *
-     * @param string $tag
+     * @param object $tag
      *
      * @return mixed
      */
@@ -55,7 +55,7 @@ class BoxService extends Service {
     /**
      * Processes the data attribute of the tag and returns it in the preferred format.
      *
-     * @param string $tag
+     * @param object $tag
      * @param array  $data
      *
      * @return bool

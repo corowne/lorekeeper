@@ -21,10 +21,10 @@
     </li>
     <li class="sidebar-section">
         <div class="sidebar-section-header">History</div>
-        <div class="sidebar-item"><a href="{{ $user->url . '/ownership' }}" class="{{ set_active($user->url . '/ownership*') }}">Ownership History</a></div>
-        <div class="sidebar-item"><a href="{{ $user->url . '/item-logs' }}" class="{{ set_active($user->url . '/currency-logs*') }}">Item Logs</a></div>
-        <div class="sidebar-item"><a href="{{ $user->url . '/currency-logs' }}" class="{{ set_active($user->url . '/currency-logs*') }}">Currency Logs</a></div>
-        <div class="sidebar-item"><a href="{{ $user->url . '/submissions' }}" class="{{ set_active($user->url . '/submissions*') }}">Submissions</a></div>
+        <div class="sidebar-item"><a href="{{ $user->url . '/ownership' }}" class="{{ set_active('user/' . $user->name . '/ownership*') }}">Ownership History</a></div>
+        <div class="sidebar-item"><a href="{{ $user->url . '/item-logs' }}" class="{{ set_active('user/' . $user->name . '/item-logs*') }}">Item Logs</a></div>
+        <div class="sidebar-item"><a href="{{ $user->url . '/currency-logs' }}" class="{{ set_active('user/' . $user->name . '/currency-logs*') }}">Currency Logs</a></div>
+        <div class="sidebar-item"><a href="{{ $user->url . '/submissions' }}" class="{{ set_active('user/' . $user->name . '/submissions*') }}">Submissions</a></div>
     </li>
 
     @if (Auth::check() && Auth::user()->hasPower('edit_user_info'))

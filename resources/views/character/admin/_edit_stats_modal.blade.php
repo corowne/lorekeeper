@@ -44,15 +44,19 @@
     {!! Form::checkbox('is_sellable', 1, $character->is_sellable, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'resellable']) !!}
     {!! Form::label('is_sellable', 'Is Resellable', ['class' => 'form-check-label ml-3']) !!}
 </div>
-<div class="card mb-3" id="resellOptions">
-    <div class="card-body">
-        {!! Form::label('Resale Value') !!} {!! add_help('This value is publicly displayed on the character\'s page.') !!}
-        {!! Form::text('sale_value', $character->sale_value, ['class' => 'form-control']) !!}
-    </div>
+<div class="form-group">
+    {!! Form::label('Resale Value') !!} {!! add_help('This value is publicly displayed on the character\'s page. It\'s hidden if zero or lower.') !!}
+    {!! Form::text('sale_value', $character->sale_value, ['class' => 'form-control']) !!}
 </div>
 <div class="form-group">
     {!! Form::label('On Transfer Cooldown Until (Optional)') !!}
-    {!! Form::text('transferrable_at', $character->transferrable_at, ['class' => 'form-control', 'id' => 'datepicker']) !!}
+    <div class="input-group">
+        {!! Form::text('transferrable_at', $character->transferrable_at, ['class' => 'form-control datepickeralt']) !!}
+        <div class="input-group-append">
+            <a class="btn btn-info collapsed" href="#collapsedt" data-toggle="collapse"><i class="fas fa-calendar-alt"></i></a>
+        </div>
+    </div>
+    <div class="collapse datepicker" id="collapsedt"></div>
 </div>
 
 <div class="text-right">
@@ -60,33 +64,4 @@
 </div>
 {!! Form::close() !!}
 
-<script>
-    $(document).ready(function() {
-        $("#datepicker").datetimepicker({
-            dateFormat: "yy-mm-dd",
-            timeFormat: 'HH:mm:ss',
-        });
-
-        //$('[data-toggle=toggle]').bootstrapToggle();
-
-        // Resell options /////////////////////////////////////////////////////////////////////////////
-
-        var $resellable = $('#resellable');
-        var $resellOptions = $('#resellOptions');
-
-        var resellable = $resellable.is(':checked');
-
-        updateOptions();
-
-        $resellable.on('change', function(e) {
-            resellable = $resellable.is(':checked');
-
-            updateOptions();
-        });
-
-        function updateOptions() {
-            if (resellable) $resellOptions.removeClass('hide');
-            else $resellOptions.addClass('hide');
-        }
-    });
-</script>
+@include('widgets._datetimepicker_js', ['dtinline' => 'datepickeralt', 'dtvalue' => $character->transferrable_at])

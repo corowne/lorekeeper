@@ -76,6 +76,28 @@ class Gallery extends Model {
     }
 
     /**
+     * Get the sibling galleries of this gallery.
+     */
+    public function siblings() {
+        if ($this->parent) {
+            return $this->parent->hasMany(self::class, 'parent_id')->sort();
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the avunculi galleries of this gallery.
+     */
+    public function avunculi() {
+        if ($this->parent && $this->parent->siblings()) {
+            return $this->parent->siblings()->sort();
+        }
+
+        return null;
+    }
+
+    /**
      * Get the submissions made to this gallery.
      */
     public function submissions() {

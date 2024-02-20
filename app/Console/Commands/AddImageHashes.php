@@ -47,7 +47,7 @@ class AddImageHashes extends Command {
      */
     public function handle() {
         $images = CharacterCategory::where('has_image', 1)->whereNull('hash')->get();
-        $images = $images->concat(Currency::where('has_image', 1)->whereNull('hash')->get());
+        $images = $images->concat(Currency::where('has_image', 1)->whereNull('hash')->orWhere('has_icon', 1)->whereNull('hash')->get());
         $images = $images->concat(Feature::where('has_image', 1)->whereNull('hash')->get());
         $images = $images->concat(FeatureCategory::where('has_image', 1)->whereNull('hash')->get());
         $images = $images->concat(Item::where('has_image', 1)->whereNull('hash')->get());
@@ -76,7 +76,25 @@ class AddImageHashes extends Command {
                 ) {
                     $image->save();
                 } else {
-                    $this->info('Failed to add hash to '.get_class($image).', id '.$image->id);
+                    $this->info('Didn\'t add hash to '.get_class($image).', this could be expected or an error, id '.$image->id);
+                }
+
+                // Just for currency icons
+                if ($image instanceof Currency) {
+                    $oldName = $image->id.'-icon.png';
+                    if (
+                        File::exists(public_path($image->imageDirectory).'/'.$oldName) &&
+                        (new FeatureService)->handleImage(
+                            null,
+                            public_path($image->imageDirectory),
+                            $image->hash.$image->id.'-icon.png',
+                            $oldName
+                        )
+                    ) {
+                        $image->save();
+                    } else {
+                        $this->info('Didn\'t add hash to currency icon image, this could be expected or an error, id '.$image->id);
+                    }
                 }
             }
             $this->info('Updated images.');

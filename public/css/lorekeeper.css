@@ -84,6 +84,8 @@ body {
 main {
     flex-grow: 1;
     display: flex;
+    flex-direction: column;
+    word-wrap: break-word;
 }
 
 main > .row {
@@ -296,6 +298,10 @@ main > .row {
 
 .mce-content-body {
     padding: 20px;
+}
+
+.ui-datepicker-inline {
+    position: fixed;
 }
 
 /**************************************************************************************************

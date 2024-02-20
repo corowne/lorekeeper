@@ -25,6 +25,13 @@ class CreateNewUser implements CreatesNewUsers {
             'email'    => $input['email'],
             'password' => Hash::make($input['password']),
             'rank_id'  => 2,
+            'birthday' => $input['dob'],
+        ]);
+        $user->settings()->create([
+            'user_id' => $user->id,
+        ]);
+        $user->profile()->create([
+            'user_id' => $user->id,
         ]);
 
         if (isset($input['code'])) {

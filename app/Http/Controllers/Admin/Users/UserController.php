@@ -194,8 +194,7 @@ class UserController extends Controller {
 
         $service = new UserService;
         // Make birthday into format we can store
-        $data = $request->input('dob');
-        $date = $data['day'].'-'.$data['month'].'-'.$data['year'];
+        $date = $request->input('dob');
 
         $formatDate = Carbon::parse($date);
         $logData = ['old_date' => $user->birthday ? $user->birthday->isoFormat('DD-MM-YYYY') : Carbon::now()->isoFormat('DD-MM-YYYY')] + ['new_date' => $date];

@@ -221,7 +221,6 @@ class UserController extends Controller {
             'userOptions' => User::where('id', '!=', $this->user->id)->orderBy('name')->pluck('name', 'id')->toArray(),
             'user'        => $this->user,
             'logs'        => $this->user->getItemLogs(),
-            'sublists'    => Sublist::orderBy('sort', 'DESC')->get(),
         ]);
     }
 
