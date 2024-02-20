@@ -1,0 +1,24 @@
+name: Lint
+
+on:
+  pull_request:
+    branches:
+      - '**'
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+
+jobs:
+  pint:
+    uses: itinerare/github-actions/.github/workflows/pint.yml@main
+    with:
+      php-version: '8.1'
+    concurrency:
+      group: ci-${{ github.head_ref }}
+
+  blade-formatter:
+    uses: itinerare/github-actions/.github/workflows/blade_formatter.yml@main
+    concurrency:
+      group: ci-${{ github.head_ref }}
