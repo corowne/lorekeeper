@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('admin-title')
-    Species
+    {{ $species->id ? 'Edit' : 'Create' }} Species
 @endsection
 
 @section('admin-content')

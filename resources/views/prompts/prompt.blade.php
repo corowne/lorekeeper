@@ -1,7 +1,7 @@
 @extends('prompts.layout')
 
 @section('title')
-    Prompts:: {{ $prompt->name }}
+    {{ $prompt->name }}
 @endsection
 
 @section('content')

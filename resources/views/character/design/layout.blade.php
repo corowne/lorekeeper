@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
+    Design Approvals ::
     @yield('design-title')
 @endsection
 

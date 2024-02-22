@@ -1,6 +1,8 @@
 @extends('admin.layout')
 
-@section('admin-title') User Index @stop
+@section('admin-title')
+    User Index
+@endsection
 
 @section('admin-content')
     {!! breadcrumbs(['Admin Panel' => 'admin', 'User Index' => 'admin/users']) !!}

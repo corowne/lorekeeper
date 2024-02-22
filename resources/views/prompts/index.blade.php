@@ -1,7 +1,7 @@
 @extends('prompts.layout')
 
-@section('title')
-    Prompts
+@section('prompts-title')
+    Home
 @endsection
 
 @section('content')

@@ -1,11 +1,11 @@
 @extends('character.design.layout')
 
 @section('design-title')
-    Design Approval Request (#{{ $request->id }}) :: Comments
+    Request (#{{ $request->id }}) :: Add-ons
 @endsection
 
 @section('design-content')
-    {!! breadcrumbs(['Design Approvals' => 'designs', 'Request (#' . $request->id . ')' => 'designs/' . $request->id, 'Comments' => 'designs/' . $request->id . '/comments']) !!}
+    {!! breadcrumbs(['Design Approvals' => 'designs', 'Request (#' . $request->id . ')' => 'designs/' . $request->id, 'Add-ons' => 'designs/' . $request->id . '/addons']) !!}
 
     @include('character.design._header', ['request' => $request])
 

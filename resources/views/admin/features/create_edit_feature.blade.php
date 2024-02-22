@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('admin-title')
-    Traits
+    {{ $feature->id ? 'Edit' : 'Create' }} Trait
 @endsection
 
 @section('admin-content')

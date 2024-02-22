@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('admin-title')
-    Prompt Categories
+    {{ $category->id ? 'Edit' : 'Create' }} Prompt Category
 @endsection
 
 @section('admin-content')
@@ -11,7 +11,7 @@
         ($category->id ? 'Edit' : 'Create') . ' Category' => $category->id ? 'admin/data/prompt-categories/edit/' . $category->id : 'admin/data/prompt-categories/create',
     ]) !!}
 
-    <h1>{{ $category->id ? 'Edit' : 'Create' }} Category
+    <h1>{{ $category->id ? 'Edit' : 'Create' }} Prompt Category
         @if ($category->id)
             <a href="#" class="btn btn-danger float-right delete-category-button">Delete Category</a>
         @endif
