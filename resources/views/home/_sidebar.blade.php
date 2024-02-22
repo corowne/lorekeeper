@@ -18,6 +18,5 @@
     <li class="sidebar-section">
         <div class="sidebar-section-header">Reports</div>
         <div class="sidebar-item"><a href="{{ url('reports') }}" class="{{ set_active('reports*') }}">Reports</a></div>
-        <div class="sidebar-item"><a href="{{ url('reports/bug-reports') }}" class="{{ set_active('reports/bug-reports*') }}">Bug Reports</a></div>
     </li>
 </ul>
