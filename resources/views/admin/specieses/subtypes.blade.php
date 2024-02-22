@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('admin-title')
-    Species
+    Subtypes
 @endsection
 
 @section('admin-content')

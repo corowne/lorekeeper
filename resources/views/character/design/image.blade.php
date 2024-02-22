@@ -1,7 +1,7 @@
 @extends('character.design.layout')
 
 @section('design-title')
-    Design Approval Request (#{{ $request->id }}) :: Image
+    Request (#{{ $request->id }}) :: Image
 @endsection
 
 @section('design-content')

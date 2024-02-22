@@ -1,13 +1,13 @@
 @extends('admin.layout')
 
 @section('admin-title')
-    Sales
+    {{ $sales->id ? 'Edit' : 'Create' }} Sales Post
 @endsection
 
 @section('admin-content')
     {!! breadcrumbs(['Admin Panel' => 'admin', 'Sales' => 'admin/sales', ($sales->id ? 'Edit' : 'Create') . ' Post' => $sales->id ? 'admin/sales/edit/' . $sales->id : 'admin/sales/create']) !!}
 
-    <h1>{{ $sales->id ? 'Edit' : 'Create' }} Post
+    <h1>{{ $sales->id ? 'Edit' : 'Create' }} Sales Post
         @if ($sales->id)
             <a href="#" class="btn btn-danger float-right delete-sales-button">Delete Post</a>
         @endif

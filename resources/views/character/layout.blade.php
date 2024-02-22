@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('title')
-    Character ::@yield('profile-title')
+    Character ::
+    @yield('profile-title')
 @endsection
 
 @section('sidebar')

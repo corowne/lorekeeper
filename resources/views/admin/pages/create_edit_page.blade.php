@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('admin-title')
-    Pages
+    {{ $page->id ? 'Edit' : 'Create' }} Page
 @endsection
 
 @section('admin-content')
