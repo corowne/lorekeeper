@@ -6,6 +6,7 @@ use App\Facades\Settings;
 use App\Http\Controllers\Controller;
 use App\Models\Character\Character;
 use App\Models\Currency\Currency;
+use App\Models\Gallery\GallerySubmission;
 use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
 use App\Models\Prompt\Prompt;
@@ -86,6 +87,16 @@ class SubmissionController extends Controller {
         $closed = !Settings::get('is_prompts_open');
         $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get();
 
+        if (config('lorekeeper.settings.allow_gallery_submissions_on_prompts')) {
+            $gallerySubmissions = GallerySubmission::where('user_id', Auth::user()->id)->where('status', 'Accepted')->orderBy('id', 'DESC')->get()->pluck('title', 'id');
+            // add "" around title and by "user" to differentiate from prompt submissions
+            $gallerySubmissions = $gallerySubmissions->map(function ($item, $key) {
+                return '"'.$item.'" by ' . Auth::user()->name;
+            });
+        } else {
+            $gallerySubmissions = [];
+        }
+
         return view('home.create_submission', [
             'closed'  => $closed,
             'isClaim' => false,
@@ -101,6 +112,7 @@ class SubmissionController extends Controller {
             'inventory'           => $inventory,
             'page'                => 'submission',
             'expanded_rewards'    => config('lorekeeper.extensions.character_reward_expansion.expanded'),
+            'userGallerySubmissions' => $gallerySubmissions,
         ]));
     }
 
@@ -117,6 +129,16 @@ class SubmissionController extends Controller {
         $submission = Submission::where('id', $id)->where('status', 'Draft')->where('user_id', Auth::user()->id)->first();
         if (!$submission) {
             abort(404);
+        }
+
+        if (config('lorekeeper.settings.allow_gallery_submissions_on_prompts')) {
+            $gallerySubmissions = GallerySubmission::where('user_id', Auth::user()->id)->where('status', 'Accepted')->orderBy('id', 'DESC')->get()->pluck('title', 'id');
+            // add "" around title and by "user" to differentiate from prompt submissions
+            $gallerySubmissions = $gallerySubmissions->map(function ($item, $key) {
+                return '"'.$item.'" by ' . Auth::user()->name;
+            });
+        } else {
+            $gallerySubmissions = [];
         }
 
         return view('home.edit_submission', [
@@ -136,6 +158,7 @@ class SubmissionController extends Controller {
             'expanded_rewards'    => config('lorekeeper.extensions.character_reward_expansion.expanded'),
             'selectedInventory'   => isset($submission->data['user']) ? parseAssetData($submission->data['user']) : null,
             'count'               => Submission::where('prompt_id', $submission->prompt_id)->where('status', 'Approved')->where('user_id', $submission->user_id)->count(),
+            'userGallerySubmissions' => $gallerySubmissions,
         ]));
     }
 
@@ -183,7 +206,12 @@ class SubmissionController extends Controller {
      */
     public function postNewSubmission(Request $request, SubmissionManager $service, $draft = false) {
         $request->validate(Submission::$createRules);
-        if ($submission = $service->createSubmission($request->only(['url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity']), Auth::user(), false, $draft)) {
+        if ($submission = $service->createSubmission(
+            $request->only([
+                'url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity',
+                'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity',
+                'gallery_submission_id'
+            ]), Auth::user(), false, $draft)) {
             if ($submission->status == 'Draft') {
                 flash('Draft created successfully.')->success();
 
@@ -220,9 +248,17 @@ class SubmissionController extends Controller {
         }
 
         $request->validate(Submission::$updateRules);
-        if ($submit && $service->editSubmission($submission, $request->only(['url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity']), Auth::user(), false, $submit)) {
+        if ($submit && $service->editSubmission($submission, $request->only([
+            'url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity',
+            'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity',
+            'gallery_submission_id'
+        ]), Auth::user(), false, $submit)) {
             flash('Draft submitted successfully.')->success();
-        } elseif ($service->editSubmission($submission, $request->only(['url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity']), Auth::user())) {
+        } elseif ($service->editSubmission($submission, $request->only([
+            'url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity',
+            'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity',
+            'gallery_submission_id'
+        ]), Auth::user())) {
             flash('Draft saved successfully.')->success();
 
             return redirect()->back();

@@ -86,7 +86,7 @@ class SubmissionManager extends Service {
                 'data' => json_encode([
                     'user'    => Arr::only(getDataReadyAssets($userAssets), ['user_items', 'currencies']),
                     'rewards' => getDataReadyAssets($promptRewards),
-                ]), // list of rewards and addons
+                ] + (config('lorekeeper.settings.allow_gallery_submissions_on_prompts') ? ['gallery_submission_id' => $data['gallery_submission_id'] ?? null] : []))
             ]);
 
             // Set characters that have been attached.
@@ -158,7 +158,7 @@ class SubmissionManager extends Service {
                 'data'          => json_encode([
                     'user'          => Arr::only(getDataReadyAssets($userAssets), ['user_items', 'currencies']),
                     'rewards'       => getDataReadyAssets($promptRewards),
-                ]), // list of rewards and addons
+                ] + (config('lorekeeper.settings.allow_gallery_submissions_on_prompts') ? ['gallery_submission_id' => $data['gallery_submission_id'] ?? null] : []))
             ] + ($isClaim ? [] : ['prompt_id' => $prompt->id]));
 
             return $this->commitReturn($submission);
@@ -218,6 +218,7 @@ class SubmissionManager extends Service {
                     'data'                  => json_encode([
                         'user'      => $userAssets,
                         'rewards'   => getDataReadyAssets($promptRewards),
+                        'gallery_submission_id' => $submission->data['gallery_submission_id'] ?? null,
                     ]), // list of rewards and addons
                 ]);
 
@@ -234,6 +235,7 @@ class SubmissionManager extends Service {
                     'data'       => json_encode([
                         'user'      => $userAssets,
                         'rewards'   => getDataReadyAssets($promptRewards),
+                        'gallery_submission_id' => $submission->data['gallery_submission_id'] ?? null,
                     ]), // list of rewards and addons
                 ]);
             }
@@ -483,6 +485,7 @@ class SubmissionManager extends Service {
                 'data'                  => json_encode([
                     'user'    => $addonData,
                     'rewards' => getDataReadyAssets($rewards),
+                    'gallery_submission_id' => $submission->data['gallery_submission_id'] ?? null,
                 ]), // list of rewards
             ]);
 
