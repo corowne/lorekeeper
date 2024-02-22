@@ -347,7 +347,7 @@ return [
     | Allow Gallery Submissions on Prompts
     |--------------------------------------------------------------------------
     |
-    | Whether or not to allow gallery submissions on prompts. 
+    | Whether or not to allow gallery submissions on prompts.
     |
     */
     'allow_gallery_submissions_on_prompts'              => 1,
