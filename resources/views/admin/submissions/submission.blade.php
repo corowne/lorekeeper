@@ -1,10 +1,10 @@
-@extends('home.layout')
+@extends('admin.layout')
 
-@section('home-title')
+@section('admin-title')
     {{ $submission->prompt_id ? 'Submission' : 'Claim' }} (#{{ $submission->id }})
 @endsection
 
-@section('home-content')
+@section('admin-content')
     @if ($submission->prompt_id)
         {!! breadcrumbs(['Admin Panel' => 'admin', 'Prompt Queue' => 'admin/submissions/pending', 'Submission (#' . $submission->id . ')' => $submission->viewUrl]) !!}
     @else

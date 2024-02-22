@@ -1,10 +1,10 @@
-@extends('user.layout')
+@extends('home.layout')
 
-@section('profile-title')
+@section('home-title')
     {{ $submission->prompt_id ? 'Submission' : 'Claim' }} (#{{ $submission->id }})
 @endsection
 
-@section('profile-content')
+@section('home-content')
     {!! breadcrumbs(['Users' => 'users', $user->name => $user->url, $submission->prompt_id ? 'Submission' : 'Claim (#' . $submission->id . ')' => $submission->viewUrl]) !!}
 
     @include('home._submission_content', ['submission' => $submission, 'isClaim' => $isClaim])
