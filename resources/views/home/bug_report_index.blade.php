@@ -1,10 +1,10 @@
-@extends('layouts.app')
+@extends('home.layout')
 
-@section('title')
+@section('home-title')
     Bug Reports
 @endsection
 
-@section('content')
+@section('home-content')
     {!! breadcrumbs(['Reports' => 'reports']) !!}
     <h1>
         Bug Reports
