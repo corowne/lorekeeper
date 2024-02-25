@@ -39,7 +39,7 @@ class Submission extends Model {
      * @var array
      */
     public static $createRules = [
-        'url' => 'nullable',
+        'url' => 'nullable|url',
     ];
 
     /**
@@ -48,7 +48,7 @@ class Submission extends Model {
      * @var array
      */
     public static $updateRules = [
-        'url' => 'nullable',
+        'url' => 'nullable|url',
     ];
 
     /**********************************************************************************************

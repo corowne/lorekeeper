@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Character\Character;
 use App\Models\Currency\Currency;
 use App\Models\Gallery\GallerySubmission;
+use App\Models\Gallery\GallerySubmissionCollaborator;
 use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
 use App\Models\Prompt\Prompt;
@@ -88,7 +89,10 @@ class SubmissionController extends Controller {
         $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get();
 
         if (config('lorekeeper.settings.allow_gallery_submissions_on_prompts')) {
-            $gallerySubmissions = GallerySubmission::where('user_id', Auth::user()->id)->where('status', 'Accepted')->orderBy('id', 'DESC')->get()->pluck('title', 'id');
+            $collaboratorIds = GallerySubmissionCollaborator::where('user_id', Auth::user()->id)->where('has_approved', 1)->pluck('gallery_submission_id')->toArray();
+
+            $gallerySubmissions = GallerySubmission::where('user_id', Auth::user()->id)->orWhereIn('id', $collaboratorIds)->orderBy('id', 'DESC')->get()->pluck('title', 'id');
+
             $gallerySubmissions = $gallerySubmissions->map(function ($item, $key) {
                 return '"'.$item.'" by '.Auth::user()->name;
             });
