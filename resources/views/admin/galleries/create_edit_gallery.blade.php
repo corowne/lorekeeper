@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('admin-title')
-    Galleries
+    {{ $gallery->id ? 'Edit' : 'Create' }} Gallery
 @endsection
 
 @section('admin-content')

@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('admin-title')
-    Prompts
+    {{ $prompt->id ? 'Edit' : 'Create' }} Prompts
 @endsection
 
 @section('admin-content')

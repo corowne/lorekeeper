@@ -1,7 +1,7 @@
 @extends('character.design.layout')
 
 @section('design-title')
-    Design Approval Request (#{{ $request->id }}) :: Comments
+    Request (#{{ $request->id }}) :: Traits
 @endsection
 
 @section('design-content')

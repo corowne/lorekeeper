@@ -1,7 +1,7 @@
 @extends('character.design.layout')
 
 @section('design-title')
-    Design Approvals
+    Index
 @endsection
 
 @section('design-content')

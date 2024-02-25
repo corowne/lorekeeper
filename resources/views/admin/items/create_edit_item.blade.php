@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('admin-title')
-    Items
+    {{ $item->id ? 'Edit' : 'Create' }} Item
 @endsection
 
 @section('admin-content')

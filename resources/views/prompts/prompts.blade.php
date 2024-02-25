@@ -1,6 +1,6 @@
 @extends('prompts.layout')
 
-@section('title')
+@section('prompts-title')
     All Prompts
 @endsection
 

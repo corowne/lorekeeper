@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('admin-title')
-    Currencies
+    {{ $currency->id ? 'Edit' : 'Create' }} Currency
 @endsection
 
 @section('admin-content')

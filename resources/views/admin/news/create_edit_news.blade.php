@@ -1,13 +1,13 @@
 @extends('admin.layout')
 
 @section('admin-title')
-    News
+    {{ $news->id ? 'Edit' : 'Create' }} News Post
 @endsection
 
 @section('admin-content')
     {!! breadcrumbs(['Admin Panel' => 'admin', 'News' => 'admin/news', ($news->id ? 'Edit' : 'Create') . ' Post' => $news->id ? 'admin/news/edit/' . $news->id : 'admin/news/create']) !!}
 
-    <h1>{{ $news->id ? 'Edit' : 'Create' }} Post
+    <h1>{{ $news->id ? 'Edit' : 'Create' }} News Post
         @if ($news->id)
             <a href="#" class="btn btn-danger float-right delete-news-button">Delete Post</a>
         @endif

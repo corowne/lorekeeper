@@ -1,6 +1,6 @@
 @extends('world.layout')
 
-@section('title')
+@section('world-title')
     Item Categories
 @endsection
 
