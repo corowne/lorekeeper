@@ -4252,9 +4252,9 @@ safe-buffer@5.2.1, safe-buffer@^5.2.0, safe-buffer@^5.2.1:
   version "2.1.2"
   resolved "https://registry.npmjs.org/safer-buffer/-/safer-buffer-2.1.2.tgz"
 
-sass-loader@^14.1.0:
-  version "14.1.0"
-  resolved "https://registry.npmjs.org/sass-loader/-/sass-loader-14.1.0.tgz"
+sass-loader@^14.1.1:
+  version "14.1.1"
+  resolved "https://registry.yarnpkg.com/sass-loader/-/sass-loader-14.1.1.tgz#2c9d2277c5b1c5fe789cd0570c046d8ad23cb7ca"
   dependencies:
     neo-async "^2.6.2"
 
