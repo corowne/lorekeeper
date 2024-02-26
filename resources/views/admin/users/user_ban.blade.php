@@ -43,7 +43,6 @@
             <a href="#" class="btn btn-outline-danger unban-button">Unban</a>
         </div>
     @endif
-
 @endsection
 
 @section('scripts')

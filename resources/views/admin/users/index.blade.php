@@ -83,5 +83,4 @@
     {!! $users->render() !!}
 
     <div class="text-center mt-4 small text-muted">{{ $count }} user{{ $count == 1 ? '' : 's' }} found.</div>
-
 @endsection
