@@ -56,5 +56,4 @@
         </tbody>
     </table>
     {!! $logs->render() !!}
-
 @endsection

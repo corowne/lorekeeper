@@ -43,7 +43,6 @@
             <a href="#" class="btn btn-outline-danger reactivate-button">Reactivate</a>
         </div>
     @endif
-
 @endsection
 
 @section('scripts')
