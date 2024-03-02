@@ -91,7 +91,7 @@ class SubmissionController extends Controller {
         if (config('lorekeeper.settings.allow_gallery_submissions_on_prompts')) {
             $collaboratorIds = GallerySubmissionCollaborator::where('user_id', Auth::user()->id)->where('has_approved', 1)->pluck('gallery_submission_id')->toArray();
 
-            $gallerySubmissions = GallerySubmission::where('user_id', Auth::user()->id)->orWhereIn('id', $collaboratorIds)->orderBy('id', 'DESC')->get()->pluck('title', 'id');
+            $gallerySubmissions = GallerySubmission::where('is_visible', true)->where('user_id', Auth::user()->id)->orWhereIn('id', $collaboratorIds)->orderBy('id', 'DESC')->get()->pluck('title', 'id');
 
             $gallerySubmissions = $gallerySubmissions->map(function ($item, $key) {
                 return '"'.$item.'" by '.Auth::user()->name;
