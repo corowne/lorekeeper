@@ -75,7 +75,7 @@
         @endif
 
         @if (($report->status == 'Assigned' && $report->user_id == Auth::user()->id) || Auth::user()->hasPower('manage_reports'))
-            @comments(['model' => $report, 'perPage' => 5])
+            @comments([ 'type' => 'Staff-User', 'model' => $report, 'perPage' => 5 ])
         @endif
 
         {!! Form::open(['url' => url()->current(), 'id' => 'reportForm']) !!}
@@ -133,48 +133,37 @@
 
 @endsection
 
-@section('scripts')
+@if ($report->status !== 'Closed')
     @parent
-    @if ($report->status !== 'Closed')
+	@section('scripts')
         <script>
             $(document).ready(function() {
-                var $confirmationModal = $('#confirmationModal');
-                var $reportForm = $('#reportForm');
-
-                var $closalButton = $('#closalButton');
-                var $closalContent = $('#closalContent');
-                var $closalSubmit = $('#closalSubmit');
-
-                var $assignButton = $('#assignButton');
-                var $assignContent = $('#assignContent');
-                var $assignSubmit = $('#assignSubmit');
-
-                $closalButton.on('click', function(e) {
+                $('#closalButton').on('click', function(e) {
                     e.preventDefault();
-                    $closalContent.removeClass('hide');
-                    $assignContent.addClass('hide');
-                    $confirmationModal.modal('show');
+                    $('#closalContent').removeClass('hide');
+                    $('#assignContent').addClass('hide');
+                    $('#confirmationModal').modal('show');
                 });
 
-                $assignButton.on('click', function(e) {
+                $('#assignButton').on('click', function(e) {
                     e.preventDefault();
-                    $assignContent.removeClass('hide');
-                    $closalContent.addClass('hide');
-                    $confirmationModal.modal('show');
+                    $('#assignContent').removeClass('hide');
+                    $('#closalContent').addClass('hide');
+                    $('#confirmationModal').modal('show');
                 });
 
-                $closalSubmit.on('click', function(e) {
+                $('#closalSubmit').on('click', function(e) {
                     e.preventDefault();
-                    $reportForm.attr('action', '{{ url()->current() }}/close');
-                    $reportForm.submit();
+                    $('#reportForm').attr('action', '{{ url()->current() }}/close');
+                    $('#reportForm').submit();
                 });
 
-                $assignSubmit.on('click', function(e) {
+                $('#assignSubmit').on('click', function(e) {
                     e.preventDefault();
-                    $reportForm.attr('action', '{{ url()->current() }}/assign');
-                    $reportForm.submit();
+                    $('#reportForm').attr('action', '{{ url()->current() }}/assign');
+                    $('#reportForm').submit();
                 });
             });
         </script>
-    @endif
-@endsection
+	@endsection
+@endif
