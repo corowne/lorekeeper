@@ -1690,29 +1690,29 @@
         },
         {
             "name": "josiasmontag/laravel-recaptchav3",
-            "version": "1.0.2",
+            "version": "1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/josiasmontag/laravel-recaptchav3.git",
-                "reference": "3ded05660dd9827eef065a44510f5efecc2e68da"
+                "reference": "f17459ff8a38f4a25aa813940d84901084042b64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/josiasmontag/laravel-recaptchav3/zipball/3ded05660dd9827eef065a44510f5efecc2e68da",
-                "reference": "3ded05660dd9827eef065a44510f5efecc2e68da",
+                "url": "https://api.github.com/repos/josiasmontag/laravel-recaptchav3/zipball/f17459ff8a38f4a25aa813940d84901084042b64",
+                "reference": "f17459ff8a38f4a25aa813940d84901084042b64",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^6.2|^7.0",
-                "illuminate/container": "~5.7.0|~5.8.0|^6.0|^7.0|^8.0|^9.0|^10.0",
-                "illuminate/http": "~5.7.0|~5.8.0|^6.0|^7.0|^8.0|^9.0|^10.0",
-                "illuminate/support": "~5.7.0|~5.8.0|^6.0|^7.0|^8.0|^9.0|^10.0",
+                "illuminate/container": "~5.7.0|~5.8.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
+                "illuminate/http": "~5.7.0|~5.8.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
+                "illuminate/support": "~5.7.0|~5.8.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
                 "php": ">=7.1.0"
             },
             "require-dev": {
                 "mockery/mockery": "^1.2",
-                "orchestra/testbench": "~3.7.0|~3.8.0|^4.0|^5.0|^6.0|^7.0|^8.0",
-                "phpunit/phpunit": "6.2|^7.0|^8.0|^9.5.10"
+                "orchestra/testbench": "~3.7.0|~3.8.0|^4.0|^5.0|^6.0|^7.0|^8.0|^9.0",
+                "phpunit/phpunit": "6.2|^7.0|^8.0|^9.5.10|^10.5"
             },
             "type": "library",
             "extra": {
@@ -1750,9 +1750,9 @@
             ],
             "support": {
                 "issues": "https://github.com/josiasmontag/laravel-recaptchav3/issues",
-                "source": "https://github.com/josiasmontag/laravel-recaptchav3/tree/1.0.2"
+                "source": "https://github.com/josiasmontag/laravel-recaptchav3/tree/1.0.3"
             },
-            "time": "2023-02-02T14:22:25+00:00"
+            "time": "2024-03-04T08:33:25+00:00"
         },
         {
             "name": "laracasts/flash",
