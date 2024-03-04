@@ -1756,25 +1756,25 @@
         },
         {
             "name": "laracasts/flash",
-            "version": "3.2.2",
+            "version": "3.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laracasts/flash.git",
-                "reference": "6330bc3c027d3c03188b41c58133016f8226b8fb"
+                "reference": "c2c4be1132f1bec3a689e84417a1c5787e6c71fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laracasts/flash/zipball/6330bc3c027d3c03188b41c58133016f8226b8fb",
-                "reference": "6330bc3c027d3c03188b41c58133016f8226b8fb",
+                "url": "https://api.github.com/repos/laracasts/flash/zipball/c2c4be1132f1bec3a689e84417a1c5787e6c71fd",
+                "reference": "c2c4be1132f1bec3a689e84417a1c5787e6c71fd",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "~5.0|^6.0|^7.0|^8.0|^9.0|^10.0",
+                "illuminate/support": "~5.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
                 "php": ">=5.4.0"
             },
             "require-dev": {
                 "mockery/mockery": "dev-master",
-                "phpunit/phpunit": "^6.1|^9.5.10"
+                "phpunit/phpunit": "^6.1|^9.5.10|^10.5"
             },
             "type": "library",
             "extra": {
@@ -1807,9 +1807,9 @@
             ],
             "description": "Easy flash notifications",
             "support": {
-                "source": "https://github.com/laracasts/flash/tree/3.2.2"
+                "source": "https://github.com/laracasts/flash/tree/3.2.3"
             },
-            "time": "2023-01-30T20:31:40+00:00"
+            "time": "2024-03-03T16:51:25+00:00"
         },
         {
             "name": "laravel/fortify",
