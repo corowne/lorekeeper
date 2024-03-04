@@ -26,13 +26,13 @@
         ?>)</div>
     @endif
     <div class="mt-3">
-        <a href="#" class="btn btn-outline-info btn-sm initiate-explore" data-id="{{ $area->url }}"> Explore</a>
+        <a href="#" class="btn btn-outline-info btn-sm initiate-explore-{{ $area->id }}" data-id="{{ $area->url }}"> Explore</a>
     </div>
 </div>
 
 <script>
     $(document).ready(function() {
-        $('.initiate-explore').on('click', function(e) {
+        $('.initiate-explore-{{$area->id}}').on('click', function(e) {
             e.preventDefault();
             loadModal($(this).data('id'), 'Explore');
         });
