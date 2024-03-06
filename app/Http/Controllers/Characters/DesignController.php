@@ -223,7 +223,7 @@ class DesignController extends Controller {
         return view('character.design.features', [
             'request'   => $r,
             'specieses' => ['0' => 'Select Species'] + Species::visible()->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes'  => Subtype::where('species_id','=',$r->species_id)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes'  => Subtype::visible()->where('species_id', '=', $r->species_id)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities'  => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features'  => Feature::getDropdownItems(),
         ]);
@@ -239,7 +239,7 @@ class DesignController extends Controller {
         $id = $request->input('id');
 
         return view('character.design._features_subtype', [
-            'subtypes' => Subtype::where('species_id','=',$species)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => Subtype::visible()->where('species_id','=',$species)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'subtype'  => $id,
         ]);
     }
