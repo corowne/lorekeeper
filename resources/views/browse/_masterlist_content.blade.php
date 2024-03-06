@@ -16,13 +16,20 @@
     <div class="card bg-light mb-3 collapse" id="advancedSearch">
         <div class="card-body masterlist-advanced-search">
             @if (!$isMyo)
-                <div class="masterlist-search-field">
-                    {!! Form::label('character_category_id', 'Category: ') !!}
-                    {!! Form::select('character_category_id', $categories, Request::get('character_category_id'), ['class' => 'form-control mr-2', 'style' => 'width: 250px']) !!}
-                </div>
-                <div class="masterlist-search-field">
-                    {!! Form::label('subtype_id', 'Species Subtype: ') !!}
-                    {!! Form::select('subtype_id', $subtypes, Request::get('subtype_id'), ['class' => 'form-control mr-2', 'style' => 'width: 250px']) !!}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!! Form::label('character_category_id', 'Category: ') !!}
+                            {!! Form::select('character_category_id', $categories, Request::get('character_category_id'), ['class' => 'form-control']) !!}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!! Form::label('subtype_ids[]', 'Species Subtype: ') !!}
+                            {!! add_help('Search for characters that have <strong>' . (config('lorekeeper.extensions.exclusionary_search') ? 'all' : 'any' ) .'</strong> of the selected subtypes.') !!}
+                            {!! Form::select('subtype_ids[]', $subtypes, Request::get('subtype_ids'), ['class' => 'form-control userselectize', 'multiple']) !!}
+                        </div>
+                    </div>
                 </div>
                 <hr />
             @endif

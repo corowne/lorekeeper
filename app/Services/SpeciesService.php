@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Character\CharacterImage;
+use App\Models\Character\CharacterImageSubtype;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
 use Illuminate\Support\Facades\DB;
@@ -239,8 +240,8 @@ class SpeciesService extends Service {
 
         try {
             // Check first if characters with this subtype exists
-            if (CharacterImage::where('subtype_id', $subtype->id)->exists()) {
-                throw new \Exception('A character image with this subtype exists. Please change or remove its subtype first.');
+            if (CharacterImageSubtype::where('subtype_id', $subtype->id)->exists()) {
+                throw new \Exception("A character image with this subtype exists. Please change or remove its subtype first.");
             }
 
             if ($subtype->has_image) {

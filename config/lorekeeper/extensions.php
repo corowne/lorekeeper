@@ -106,4 +106,8 @@ return [
     // Use ReCaptcha to check new user registrations - Mercury
     // Requires site key and secret be set in your .env file!
     'use_recaptcha' => 0,
+
+    // Multiple Subtypes - Newt
+    'exclusionary_search' => 0, // If enabled, searching for multiple subtypes will only return results that have all of the subtypes specified. If disabled, it will return results that have any of the subtypes specified.
+    'multiple_subtype_limit' => 10, // The maximum number of subtypes a character can have. (frontend validation)
 ];

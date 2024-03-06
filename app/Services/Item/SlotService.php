@@ -27,12 +27,12 @@ class SlotService extends Service {
      *
      * @return array
      */
-    public function getEditData() {
+    public function getEditData($tag) {
         return [
             'rarities'  => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes'  => ['0' => 'Select Subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'isMyo'     => true,
+            'subtypes'  => Subtype::orderBy('sort', 'DESC')->where('species_id', $this->getTagData($tag)['species_id'])->pluck('name', 'id')->toArray(),
+            'isMyo'     => true
         ];
     }
 
@@ -47,7 +47,7 @@ class SlotService extends Service {
         //fetch data from DB, if there is no data then set to NULL instead
         $characterData['name'] = $tag->data['name'] ?? null;
         $characterData['species_id'] = isset($tag->data['species_id']) && $tag->data['species_id'] ? $tag->data['species_id'] : null;
-        $characterData['subtype_id'] = isset($tag->data['subtype_id']) && $tag->data['subtype_id'] ? $tag->data['subtype_id'] : null;
+        $characterData['subtype_ids'] = isset($tag->data['subtype_ids']) && $tag->data['subtype_ids'] ? $tag->data['subtype_ids'] : null;
         $characterData['rarity_id'] = isset($tag->data['rarity_id']) && $tag->data['rarity_id'] ? $tag->data['rarity_id'] : null;
         $characterData['description'] = isset($tag->data['description']) && $tag->data['description'] ? $tag->data['description'] : null;
         $characterData['parsed_description'] = parse($characterData['description']);
@@ -89,7 +89,7 @@ class SlotService extends Service {
         //put inputs into an array to transfer to the DB
         $characterData['name'] = $data['name'] ?? null;
         $characterData['species_id'] = isset($data['species_id']) && $data['species_id'] ? $data['species_id'] : null;
-        $characterData['subtype_id'] = isset($data['subtype_id']) && $data['subtype_id'] ? $data['subtype_id'] : null;
+        $characterData['subtype_ids'] = isset($data['subtype_ids']) && $data['subtype_ids'] ? $data['subtype_ids'] : null;
         $characterData['rarity_id'] = isset($data['rarity_id']) && $data['rarity_id'] ? $data['rarity_id'] : null;
         $characterData['description'] = isset($data['description']) && $data['description'] ? $data['description'] : null;
         $characterData['parsed_description'] = parse($characterData['description']);
@@ -186,9 +186,13 @@ class SlotService extends Service {
                         // Distribute user rewards
                         $charService = new CharacterManager;
                         if ($character = $charService->createCharacter($characterData, $user, true)) {
-                            flash('<a href="'.$character->url.'">MYO slot</a> created successfully.')->success();
-                        } else {
-                            throw new \Exception('Failed to use slot.');
+                            flash('<a href="' . $character->url . '">MYO slot</a> created successfully.')->success();
+                        }
+                        else {
+                            foreach($charService->errors()->getMessages()['error'] as $error) {
+                                flash($error)->error();
+                            }
+                            throw new \Exception("Failed to use slot.");
                         }
                     }
                 }
