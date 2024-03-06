@@ -301,6 +301,65 @@ class WorldController extends Controller {
     }
 
     /**
+     * Shows a universal visual trait list.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUniversalFeatures(Request $request) {
+        $categories = FeatureCategory::orderBy('sort', 'DESC')->get();
+        $rarities = Rarity::orderBy('sort', 'ASC')->get();
+
+        if (!config('lorekeeper.extensions.universal_trait_index.enable')) {
+            abort(404);
+        }
+
+        $features = count($categories) ?
+        $query = Feature::whereNull('species_id')
+            ->visible()
+            ->orderByRaw('FIELD(feature_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
+            ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
+            ->orderBy('has_image', 'DESC')
+            ->orderBy('name')
+            ->get()
+            ->groupBy(['feature_category_id', 'id']) :
+        $query = Feature::whereNull('species_id')
+            ->visible()
+            ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
+            ->orderBy('has_image', 'DESC')
+            ->orderBy('name')
+            ->get()
+            ->groupBy(['feature_category_id', 'id']);
+
+        return view('world.universal_features', [
+            'categories' => $categories->keyBy('id'),
+            'rarities'   => $rarities->keyBy('id'),
+            'features'   => $features,
+        ]);
+    }
+
+    /**
+     * Provides a single trait's description html for use in a modal. (Universal Trait Index).
+     *
+     * @param mixed $id
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUniversalFeatureDetail($id) {
+        $feature = Feature::where('id', $id)->first();
+
+        if (!$feature) {
+            abort(404);
+        }
+        if (!config('lorekeeper.extensions.universal_trait_index.trait_modals')) {
+            abort(404);
+        }
+
+        return view('world._feature_entry', [
+            'feature' => $feature,
+        ]);
+    }
+
+    /**
      * Shows the items page.
      *
      * @return \Illuminate\Contracts\Support\Renderable

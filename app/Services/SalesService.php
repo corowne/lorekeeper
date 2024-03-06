@@ -22,8 +22,8 @@ class SalesService extends Service {
     /**
      * Creates a Sales post.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
+     * @param array $data
+     * @param User  $user
      *
      * @return \App\Models\Sales\Sales|bool
      */
@@ -73,9 +73,9 @@ class SalesService extends Service {
     /**
      * Updates a Sales post.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
-     * @param mixed                 $sales
+     * @param array $data
+     * @param User  $user
+     * @param mixed $sales
      *
      * @return \App\Models\Sales\Sales|bool
      */

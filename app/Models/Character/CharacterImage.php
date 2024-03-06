@@ -227,7 +227,7 @@ class CharacterImage extends Model {
     /**
      * Gets the file name of the model's fullsize image.
      *
-     * @param  user
+     * @param  User
      * @param mixed|null $user
      *
      * @return string

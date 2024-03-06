@@ -118,7 +118,7 @@ class SlotService extends Service {
      * Acts upon the item when used from the inventory.
      *
      * @param \App\Models\User\UserItem $stacks
-     * @param \App\Models\User\User     $user
+     * @param User                      $user
      * @param array                     $data
      *
      * @return bool

@@ -70,7 +70,7 @@ class InvitationService extends Service {
     /**
      * Deletes an unused invitation code.
      *
-     * @param \App\Models\Invitation $invitation
+     * @param Invitation $invitation
      *
      * @return bool
      */

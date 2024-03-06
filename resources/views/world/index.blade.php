@@ -21,6 +21,9 @@
                     <li class="list-group-item"><a href="{{ url('world/rarities') }}">Rarities</a></li>
                     <li class="list-group-item"><a href="{{ url('world/trait-categories') }}">Trait Categories</a></li>
                     <li class="list-group-item"><a href="{{ url('world/traits') }}">All Traits</a></li>
+                    @if (config('lorekeeper.extensions.universal_trait_index.enable'))
+                        <li class="list-group-item"><a href="{{ url('world/universaltraits') }}">Universal Trait Index</a></li>
+                    @endif
                     <li class="list-group-item"><a href="{{ url('world/character-categories') }}">Character Categories</a></li>
                 </ul>
             </div>

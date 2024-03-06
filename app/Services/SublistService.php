@@ -56,9 +56,9 @@ class SublistService extends Service {
     /**
      * Update a sublist.
      *
-     * @param \App\Models\Character\Sublist $sublist
-     * @param array                         $data
-     * @param array                         $contents
+     * @param Sublist $sublist
+     * @param array   $data
+     * @param array   $contents
      *
      * @return \App\Models\Character\Sublist|bool
      */
@@ -95,7 +95,7 @@ class SublistService extends Service {
     /**
      * Delete a sublist.
      *
-     * @param \App\Models\Character\Sublist $sublist
+     * @param Sublist $sublist
      *
      * @return bool
      */
