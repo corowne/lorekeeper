@@ -11,9 +11,12 @@
     <p>This is a visual index of all universal traits. Click a trait to view more info on it!</p>
 
     @foreach ($features as $categoryId => $categoryFeatures)
-        @if (!isset($categories[$categoryId]) || $categories[$categoryId]->is_visible)
+        @if (!isset($categories[$categoryId]) || (Auth::check() && Auth::user()->hasPower('edit_data')) || $categories[$categoryId]->is_visible)
             <div class="card mb-3 inventory-category">
                 <h5 class="card-header inventory-header">
+                    @if (isset($categories[$categoryId]) && !$categories[$categoryId]->is_visible)
+                        <i class="fas fa-eye-slash mr-1"></i>
+                    @endif
                     {!! isset($categories[$categoryId]) ? '<a href="' . $categories[$categoryId]->searchUrl . '">' . $categories[$categoryId]->name . '</a>' : 'Miscellaneous' !!}
                 </h5>
                 <div class="card-body inventory-body">
