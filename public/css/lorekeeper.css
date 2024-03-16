@@ -753,3 +753,12 @@ tr.accountbound {
 @media only screen and (max-width: 600px) {
     .comment_replies { padding-left:1rem;}
 }
+
+.content-warning {
+    filter: blur(2px) grayscale(60%);
+    transition: filter 0.25s ease;
+}
+
+.content-warning:hover {
+    filter: none;
+}

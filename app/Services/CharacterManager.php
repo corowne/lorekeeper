@@ -1306,9 +1306,6 @@ class CharacterManager extends Service {
             }
             $character->profile->save();
 
-            if(!$character->is_myo_slot) $character->character_warning = $data['character_warning'];
-            $character->save();
-
             $character->profile->text = $data['text'];
             $character->profile->parsed_text = parse($data['text']);
             $character->profile->save();
@@ -1917,7 +1914,7 @@ class CharacterManager extends Service {
             }
             $imageData = Arr::only($data, [
                 'species_id', 'subtype_id', 'rarity_id', 'use_cropper',
-                'x0', 'x1', 'y0', 'y1',
+                'x0', 'x1', 'y0', 'y1', 'content_warnings'
             ]);
             $imageData['use_cropper'] = isset($data['use_cropper']);
             $imageData['description'] = $data['image_description'] ?? null;
@@ -1930,6 +1927,7 @@ class CharacterManager extends Service {
             $imageData['extension'] = (config('lorekeeper.settings.masterlist_image_format') ?? ($data['extension'] ?? $data['image']->getClientOriginalExtension()));
             $imageData['fullsize_extension'] = (config('lorekeeper.settings.masterlist_fullsizes_format') ?? ($data['fullsize_extension'] ?? $data['image']->getClientOriginalExtension()));
             $imageData['character_id'] = $character->id;
+            $imageData['content_warnings'] = json_encode($data['content_warnings']) ?? null;
 
             $image = CharacterImage::create($imageData);
 

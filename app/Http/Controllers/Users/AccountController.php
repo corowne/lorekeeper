@@ -283,7 +283,7 @@ class AccountController extends Controller {
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postWarningVisibility(Request $request, UserService $service) {
-        if ($service->updateWarningVisibility($request->input('warning_visibility'), Auth::user())) {
+        if ($service->updateContentWarningVisibility($request->input('content_warning_visibility'), Auth::user())) {
             flash('Setting updated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) flash($error)->error();
