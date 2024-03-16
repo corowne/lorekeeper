@@ -32,7 +32,7 @@ class Character extends Model {
         'is_sellable', 'is_tradeable', 'is_giftable',
         'sale_value', 'transferrable_at', 'is_visible',
         'is_gift_art_allowed', 'is_gift_writing_allowed', 'is_trading', 'sort',
-        'is_myo_slot', 'name', 'trade_id', 'owner_url', 'character_warning',
+        'is_myo_slot', 'name', 'trade_id', 'owner_url',
     ];
 
     /**
@@ -320,6 +320,16 @@ class Character extends Model {
         } else {
             return $this->slug.($this->name ? ': '.$this->name : '');
         }
+    }
+
+    /**
+     * Gets the character's warnings, if they exist.
+     */
+    public function getWarningsAttribute() {
+        if (config('lorekeeper.settings.enable_character_content_warnings')) {
+            return $this->image->content_warnings ? '<i class="fa fa-exclamation-triangle text-danger" data-toggle="tooltip" title="'.implode(", ", $this->image->content_warnings).'"></i> ' : '';
+        }
+        return null;
     }
 
     /**

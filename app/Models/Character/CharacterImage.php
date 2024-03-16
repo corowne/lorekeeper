@@ -22,7 +22,7 @@ class CharacterImage extends Model {
         'extension', 'use_cropper', 'hash', 'fullsize_hash', 'fullsize_extension', 'sort',
         'x0', 'x1', 'y0', 'y1',
         'description', 'parsed_description',
-        'is_valid',
+        'is_valid', 'content_warnings',
     ];
 
     /**
@@ -263,5 +263,25 @@ class CharacterImage extends Model {
      */
     public function getThumbnailUrlAttribute() {
         return asset($this->imageDirectory.'/'.$this->thumbnailFileName);
+    }
+
+    /**
+     * Get the data attribute as an associative array.
+     *
+     * @return array
+     */
+    public function getContentWarningsAttribute() {
+        return json_decode($this->attributes['content_warnings'], true);
+    }
+
+    /**
+     * Determines if the character has content warning display.
+     */
+    public function showContentWarnings($user = null) {
+        if ($user) {
+            return $user->settings->content_warning_visibility < 2 && $this->content_warnings;
+        } else {
+            return true;
+        }
     }
 }

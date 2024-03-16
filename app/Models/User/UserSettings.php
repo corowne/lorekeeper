@@ -12,7 +12,7 @@ class UserSettings extends Model {
      */
     protected $fillable = [
         'is_fto', 'submission_count', 'banned_at', 'ban_reason', 'birthday_setting',
-        'deactivate_reason', 'deactivated_at', 'warning_visibility',
+        'deactivate_reason', 'deactivated_at', 'content_warning_visibility',
     ];
 
     /**

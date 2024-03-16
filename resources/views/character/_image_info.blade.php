@@ -1,5 +1,24 @@
 {{-- Image Data --}}
 <div class="col-md-5 d-flex">
+    <div class="w-100">
+    @if(Auth::check() && (Auth::user()->settings->content_warning_visibility < 2) && isset($image->content_warnings) || isset($image->content_warnings) && !Auth::check())
+        <div class="alert alert-danger text-center">
+            <span class="float-right">
+                <a href="#" data-dismiss="alert" class="close">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </a>
+            </span>
+            <img src="{{ asset('images/content-warning.png') }}"  class="mb-1" alt="Content Warning" style="height: 10vh;" />
+            <h5>
+                <i class="fa fa-exclamation-triangle mr-2"></i>Character Warnings<i class="fa fa-exclamation-triangle ml-2"></i>
+            </h5>
+            <ul class="text-left">
+                @foreach ($image->content_warnings as $warning)
+                    <li>{{ $warning }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <div class="card character-bio w-100">
         <div class="card-header">
             <ul class="nav nav-tabs card-header-tabs">
@@ -218,5 +237,5 @@
             @endif
         </div>
     </div>
-
+    </div>
 </div>

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddCharacterWarningToCharacterProfile extends Migration
+class AddCharacterWarningToCharacterImages extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class AddCharacterWarningToCharacterProfile extends Migration
      */
     public function up()
     {
-        Schema::table('characters', function (Blueprint $table) {
+        Schema::table('character_images', function (Blueprint $table) {
             //
-            $table->string('character_warning', 255)->nullable();
+            $table->json('content_warnings')->nullable()->default(null);
         });
 
         Schema::table('user_settings', function(Blueprint $table) {
-            $table->tinyInteger('warning_visibility')->default(0);
+            $table->tinyInteger('content_warning_visibility')->default(0);
         });
     }
 
@@ -30,13 +30,13 @@ class AddCharacterWarningToCharacterProfile extends Migration
      */
     public function down()
     {
-        Schema::table('characters', function (Blueprint $table) {
+        Schema::table('character_images', function (Blueprint $table) {
             //
-            $table->dropColumn('character_warning');
+            $table->dropColumn('content_warnings');
         });
 
         Schema::table('user_settings', function(Blueprint $table) {
-            $table->dropcolumn('warning_visibility');
+            $table->dropcolumn('content_warning_visibility');
         });
     }
 }

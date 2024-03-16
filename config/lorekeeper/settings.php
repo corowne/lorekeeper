@@ -351,4 +351,14 @@ return [
     |
     */
     'allow_gallery_submissions_on_prompts'              => 1,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enable Character Content Warnings
+    |--------------------------------------------------------------------------
+    |
+    | Allows characters to have content warnings.
+    |
+    */
+    'enable_character_content_warnings'                 => 1,
 ];

@@ -69,10 +69,23 @@
                     </div>
                 </div>
             </div>
-
-            <div class="form-group">
-                {!! Form::label('Character Code') !!} {!! add_help('This code identifies the character itself. You don\'t have to use the automatically generated code, but this must be unique among all characters (as it\'s used to generate the character\'s page URL).') !!}
-                {!! Form::text('slug', old('slug'), ['class' => 'form-control', 'id' => 'code']) !!}
+            <div class="row">
+                <div class="col-md-{{ config('lorekeeper.settings.enable_character_content_warnings' ) ? 6 : 12 }}">
+                    <div class="form-group">
+                        {!! Form::label('Character Code') !!} {!! add_help('This code identifies the character itself. You don\'t have to use the automatically generated code, but this must be unique among all characters (as it\'s used to generate the character\'s page URL).') !!}
+                        {!! Form::text('slug', old('slug'), ['class' => 'form-control', 'id' => 'code']) !!}
+                    </div>
+                </div>
+                @if (config('lorekeeper.settings.enable_character_content_warnings'))
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!! Form::label('Content Warnings') !!} {!! add_help('These warnings will be displayed on the character\'s page. They are not required, but are recommended if the character contains sensitive content.') !!}
+                            <div id="warningList">
+                            </div>
+                            <div><a href="#" class="btn btn-primary mb-2" id="add-warning">Add Warning</a></div>
+                        </div>
+                    </div>
+                @endif
             </div>
         @endif
 
@@ -258,6 +271,18 @@
             {!! Form::submit('Create Character', ['class' => 'btn btn-primary']) !!}
         </div>
         {!! Form::close() !!}
+
+        <div class="d-flex warning-row original hide mb-2">
+            {!! Form::text('content_warnings[]', null, ['class' => 'form-control mr-2', 'list' => 'warnings-list', 'placeholder' => 'Enter Warning or Select']) !!}
+            <datalist>
+                @if (isset($warnings) && $warnings)
+                    @foreach($warnings as $value => $label)
+                        <option value="{{ $label }}"></option>
+                    @endforeach
+                @endif
+            </datalist>
+            <a href="#" class="remove-warning btn btn-danger mb-2">×</a>
+        </div>
     @endif
 
 @endsection
@@ -284,6 +309,13 @@
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 alert("AJAX call failed: " + textStatus + ", " + errorThrown);
             });
+        });
+
+        // get the warning-row with "original" class
+        let $warningRow = $('.warning-row.original').clone();
+        $('#add-warning').click(function(e) {
+            e.preventDefault();
+            $warningRow.clone().removeClass('original hide').appendTo('#warningList');
         });
     </script>
 @endsection
