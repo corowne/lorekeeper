@@ -30,7 +30,7 @@ class AddCharacterWarningToCharacterProfile extends Migration
      */
     public function down()
     {
-        Schema::table('character_warning', function (Blueprint $table) {
+        Schema::table('characters', function (Blueprint $table) {
             //
             $table->dropColumn('character_warning');
         });
