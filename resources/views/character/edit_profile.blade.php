@@ -33,6 +33,10 @@
             {!! Form::label('name', 'Name') !!}
             {!! Form::text('name', $character->name, ['class' => 'form-control']) !!}
         </div>
+        <div class="form-group">
+            {!! Form::label('character_warning', 'Character Warning') !!} {!! add_help('Provide a succinct content warning for the design if necessary. The design will be displayed in full on its page, however. If an admin has put a warning on your character, do not remove it.') !!}
+            {!! Form::text('character_warning', $character->character_warning, ['class' => 'form-control']) !!}
+        </div>
         @if (config('lorekeeper.extensions.character_TH_profile_link'))
             <div class="form-group">
                 {!! Form::label('link', 'Profile Link') !!}

@@ -95,6 +95,22 @@
     </div>
 
     <div class="card p-3 mb-2">
+        <h3>Character Warning Visibility</h3>
+        <p>Change how you wish characters with content warnings to appear.</p>
+        {!! Form::open(['url' => 'account/warning']) !!}
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Setting</label>
+                <div class="col-md-10">
+                    {!! Form::select('warning_visibility', ['0' => '0: Pop-up warnings and censored icons', '1' => '1: Pop-up warnings only', '2' => '2: No warnings'] ,Auth::user()->settings->warning_visibility, ['class' => 'form-control']) !!}
+                </div>
+            </div>
+            <div class="text-right">
+                {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
+            </div>
+        {!! Form::close() !!}
+    </div>
+
+    <div class="card p-3 mb-2">
         <h3>Email Address</h3>
         <p>Changing your email address will require you to re-verify your email address.</p>
         {!! Form::open(['url' => 'account/email']) !!}

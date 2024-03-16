@@ -1306,6 +1306,9 @@ class CharacterManager extends Service {
             }
             $character->profile->save();
 
+            if(!$character->is_myo_slot) $character->character_warning = $data['character_warning'];
+            $character->save();
+
             $character->profile->text = $data['text'];
             $character->profile->parsed_text = parse($data['text']);
             $character->profile->save();
