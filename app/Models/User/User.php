@@ -443,25 +443,7 @@ class User extends Authenticatable implements MustVerifyEmail {
     }
     
     /**
-     * Get's user character warning visibility setting
-     */
-    public function getWarningVisibility()
-    {
-        switch($this->settings->warning_visibility) {
-            case 0:
-                return null;
-            break;
-            case 1:
-                return null;
-            break;
-            case 2:
-                return null;
-            break;
-        }
-    }
-
-    /**
-     * Check if user is of age.
+     * Check if user is of age
      */
     public function getcheckBirthdayAttribute() {
         $bday = $this->birthday;
