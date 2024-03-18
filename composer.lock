@@ -4825,16 +4825,16 @@
         },
         {
             "name": "spatie/laravel-honeypot",
-            "version": "4.5.0",
+            "version": "4.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-honeypot.git",
-                "reference": "c5f5b5bdb5765d6b97ac9cc60a2b78546b5fa37b"
+                "reference": "eaffd65f20faaa47cc87f9348e5920bc47ed7c42"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-honeypot/zipball/c5f5b5bdb5765d6b97ac9cc60a2b78546b5fa37b",
-                "reference": "c5f5b5bdb5765d6b97ac9cc60a2b78546b5fa37b",
+                "url": "https://api.github.com/repos/spatie/laravel-honeypot/zipball/eaffd65f20faaa47cc87f9348e5920bc47ed7c42",
+                "reference": "eaffd65f20faaa47cc87f9348e5920bc47ed7c42",
                 "shasum": ""
             },
             "require": {
@@ -4843,7 +4843,7 @@
                 "illuminate/http": "^8.0|^9.0|^10.0|^11.0",
                 "illuminate/support": "^8.0|^9.0|^10.0|^11.0",
                 "illuminate/validation": "^8.0|^9.0|^10.0|^11.0",
-                "nesbot/carbon": "^2.0",
+                "nesbot/carbon": "^2.0|^3.0",
                 "php": "^8.0",
                 "spatie/laravel-package-tools": "^1.9",
                 "symfony/http-foundation": "^5.1.2|^6.0|^7.0"
@@ -4889,7 +4889,7 @@
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/laravel-honeypot/tree/4.5.0"
+                "source": "https://github.com/spatie/laravel-honeypot/tree/4.5.1"
             },
             "funding": [
                 {
@@ -4897,7 +4897,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2024-02-29T08:20:51+00:00"
+            "time": "2024-03-14T12:57:40+00:00"
         },
         {
             "name": "spatie/laravel-html",
@@ -4979,16 +4979,16 @@
         },
         {
             "name": "spatie/laravel-package-tools",
-            "version": "1.16.2",
+            "version": "1.16.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-package-tools.git",
-                "reference": "e62eeb1fe8a8a0b2e83227a6c279c8c59f7d3a15"
+                "reference": "59db18c2e20d49a0b6d447bb1c654f6c123beb9e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/e62eeb1fe8a8a0b2e83227a6c279c8c59f7d3a15",
-                "reference": "e62eeb1fe8a8a0b2e83227a6c279c8c59f7d3a15",
+                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/59db18c2e20d49a0b6d447bb1c654f6c123beb9e",
+                "reference": "59db18c2e20d49a0b6d447bb1c654f6c123beb9e",
                 "shasum": ""
             },
             "require": {
@@ -5027,7 +5027,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-package-tools/issues",
-                "source": "https://github.com/spatie/laravel-package-tools/tree/1.16.2"
+                "source": "https://github.com/spatie/laravel-package-tools/tree/1.16.3"
             },
             "funding": [
                 {
@@ -5035,7 +5035,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-01-11T08:43:00+00:00"
+            "time": "2024-03-07T07:35:57+00:00"
         },
         {
             "name": "symfony/console",
