@@ -11,7 +11,7 @@
     <p>This is a visual index of all {!! $species->displayName !!}-specific traits. Click a trait to view more info on it!</p>
 
     @foreach ($features as $categoryId => $categoryFeatures)
-        @if (!isset($categories[$categoryId]) || (Auth::check() && Auth::user()->hasPower('edit_data')) || $categories[$categoryId]->is_visible )
+        @if (!isset($categories[$categoryId]) || (Auth::check() && Auth::user()->hasPower('edit_data')) || $categories[$categoryId]->is_visible)
             <div class="card mb-3 inventory-category">
                 <h5 class="card-header inventory-header">
                     @if (isset($categories[$categoryId]) && !$categories[$categoryId]->is_visible)
