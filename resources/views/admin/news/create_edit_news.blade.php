@@ -1,13 +1,13 @@
 @extends('admin.layout')
 
 @section('admin-title')
-    News
+    {{ $news->id ? 'Edit' : 'Create' }} News Post
 @endsection
 
 @section('admin-content')
     {!! breadcrumbs(['Admin Panel' => 'admin', 'News' => 'admin/news', ($news->id ? 'Edit' : 'Create') . ' Post' => $news->id ? 'admin/news/edit/' . $news->id : 'admin/news/create']) !!}
 
-    <h1>{{ $news->id ? 'Edit' : 'Create' }} Post
+    <h1>{{ $news->id ? 'Edit' : 'Create' }} News Post
         @if ($news->id)
             <a href="#" class="btn btn-danger float-right delete-news-button">Delete Post</a>
         @endif
@@ -28,7 +28,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 {!! Form::label('Post Time (Optional)') !!} {!! add_help('This is the time that the news post should be posted. Make sure the Is Viewable switch is off.') !!}
-                {!! Form::text('post_at', $news->post_at, ['class' => 'form-control', 'id' => 'datepicker']) !!}
+                {!! Form::text('post_at', $news->post_at, ['class' => 'form-control datepicker']) !!}
             </div>
         </div>
     </div>
@@ -64,15 +64,12 @@
 
 @section('scripts')
     @parent
+    @include('widgets._datetimepicker_js')
     <script>
         $(document).ready(function() {
             $('.delete-news-button').on('click', function(e) {
                 e.preventDefault();
                 loadModal("{{ url('admin/news/delete') }}/{{ $news->id }}", 'Delete Post');
-            });
-            $("#datepicker").datetimepicker({
-                dateFormat: "yy-mm-dd",
-                timeFormat: 'HH:mm:ss',
             });
         });
     </script>

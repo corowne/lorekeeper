@@ -4,6 +4,12 @@
     {{ $shop->name }}
 @endsection
 
+@if ($shop->has_image)
+    @section('meta-img')
+        {{ $shop->shopImageUrl }}
+    @endsection
+@endif
+
 @section('shops-content')
     <x-admin-edit title="Shop" :object="$shop" />
     {!! breadcrumbs(['Shops' => 'shops', $shop->name => $shop->url]) !!}

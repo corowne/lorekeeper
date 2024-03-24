@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('admin-title')
-    Shops
+    {{ $shop->id ? 'Edit' : 'Create' }} Shop
 @endsection
 
 @section('admin-content')

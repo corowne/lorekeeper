@@ -11,8 +11,8 @@
         "format": "./node_modules/.bin/blade-formatter --progress --write '**/*.blade.php'"
     },
     "devDependencies": {
-        "axios": "^1.6.2",
-        "blade-formatter": "^1.38.6",
+        "axios": "^1.6.8",
+        "blade-formatter": "^1.41.1",
         "bootstrap": "^4.6",
         "cross-env": "^7.0",
         "jquery": "^3.7",
@@ -20,8 +20,8 @@
         "lodash": "^4.17.21",
         "popper.js": "^1.16",
         "resolve-url-loader": "^5.0.0",
-        "sass": "^1.69.5",
-        "sass-loader": "^13.3.2",
-        "vue": "^3.3.12"
+        "sass": "^1.72.0",
+        "sass-loader": "^14.1.1",
+        "vue": "^3.4.21"
     }
 }

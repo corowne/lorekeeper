@@ -1,10 +1,10 @@
-@extends('user.layout')
+@extends('home.layout')
 
-@section('profile-title')
+@section('home-title')
     Report (#{{ $report->id }})
 @endsection
 
-@section('profile-content')
+@section('home-content')
     {!! breadcrumbs(['Users' => 'users', $user->name => $user->url, 'Report (#' . $report->id . ')' => $report->viewUrl]) !!}
 
     @if (Auth::user()->id == $report->user->id || Auth::user()->hasPower('manage_reports') || ($report->is_br == 1 && ($report->status == 'Closed' || $report->error_type != 'exploit')))

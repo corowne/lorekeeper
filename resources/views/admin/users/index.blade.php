@@ -1,6 +1,8 @@
 @extends('admin.layout')
 
-@section('admin-title') User Index @stop
+@section('admin-title')
+    User Index
+@endsection
 
 @section('admin-content')
     {!! breadcrumbs(['Admin Panel' => 'admin', 'User Index' => 'admin/users']) !!}
@@ -81,5 +83,4 @@
     {!! $users->render() !!}
 
     <div class="text-center mt-4 small text-muted">{{ $count }} user{{ $count == 1 ? '' : 's' }} found.</div>
-
 @endsection

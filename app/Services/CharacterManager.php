@@ -71,9 +71,9 @@ class CharacterManager extends Service {
     /**
      * Creates a new character or MYO slot.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
-     * @param bool                  $isMyo
+     * @param array $data
+     * @param User  $user
+     * @param bool  $isMyo
      *
      * @return \App\Models\Character\Character|bool
      */
@@ -183,7 +183,7 @@ class CharacterManager extends Service {
     /**
      * Trims and optionally resizes and watermarks an image.
      *
-     * @param \App\Models\Character\CharacterImage $characterImage
+     * @param CharacterImage $characterImage
      */
     public function processImage($characterImage) {
         $imageProperties = getimagesize($characterImage->imagePath.'/'.$characterImage->imageFileName);
@@ -327,14 +327,21 @@ class CharacterManager extends Service {
     /**
      * Crops a thumbnail for the given image.
      *
-     * @param array                                $points
-     * @param \App\Models\Character\CharacterImage $characterImage
-     * @param mixed                                $isMyo
+     * @param array          $points
+     * @param CharacterImage $characterImage
+     * @param mixed          $isMyo
      */
     public function cropThumbnail($points, $characterImage, $isMyo = false) {
+        $imageProperties = getimagesize($characterImage->imagePath.'/'.$characterImage->imageFileName);
+        if ($imageProperties[0] > 2000 || $imageProperties[1] > 2000) {
+            // For large images (in terms of dimensions),
+            // use imagick instead, as it's better at handling them
+            Config::set('image.driver', 'imagick');
+        }
+
         $image = Image::make($characterImage->imagePath.'/'.$characterImage->imageFileName);
 
-        if (config('lorekeeper.settings.masterlist_image_format') != 'png' && config('lorekeeper.settings.masterlist_image_format') != null && config('lorekeeper.settings.masterlist_image_background') != null) {
+        if (!in_array(config('lorekeeper.settings.masterlist_image_format'), ['png', 'webp']) && config('lorekeeper.settings.masterlist_image_format') != null && config('lorekeeper.settings.masterlist_image_background') != null) {
             $canvas = Image::canvas($image->width(), $image->height(), config('lorekeeper.settings.masterlist_image_background'));
             $image = $canvas->insert($image, 'center');
             $trimColor = true;
@@ -346,10 +353,7 @@ class CharacterManager extends Service {
 
             if (config('lorekeeper.settings.masterlist_image_automation') == 1) {
                 // Make the image be square
-                $imageWidth = $image->width();
-                $imageHeight = $image->height();
-
-                if ($imageWidth > $imageHeight) {
+                if ($image->width() > $image->height()) {
                     // Landscape
                     $canvas = Image::canvas($image->width(), $image->width());
                     $image = $canvas->insert($image, 'center');
@@ -372,10 +376,7 @@ class CharacterManager extends Service {
             if (config('lorekeeper.settings.watermark_masterlist_images') == 1) {
                 // Resize image if desired, so that the watermark is applied to the correct size of image
                 if (config('lorekeeper.settings.masterlist_image_dimension') != 0) {
-                    $imageWidth = $image->width();
-                    $imageHeight = $image->height();
-
-                    if ($imageWidth > $imageHeight) {
+                    if ($image->width() > $image->height()) {
                         // Landscape
                         $image->resize(null, config('lorekeeper.settings.masterlist_image_dimension'), function ($constraint) {
                             $constraint->aspectRatio();
@@ -528,9 +529,9 @@ class CharacterManager extends Service {
     /**
      * Creates a character image.
      *
-     * @param array                           $data
-     * @param \App\Models\Character\Character $character
-     * @param \App\Models\User\User           $user
+     * @param array     $data
+     * @param Character $character
+     * @param User      $user
      *
      * @return \App\Models\Character\Character|bool
      */
@@ -603,9 +604,9 @@ class CharacterManager extends Service {
     /**
      * Updates a character image.
      *
-     * @param array                                $data
-     * @param \App\Models\Character\CharacterImage $image
-     * @param \App\Models\User\User                $user
+     * @param array          $data
+     * @param CharacterImage $image
+     * @param User           $user
      *
      * @return bool
      */
@@ -676,9 +677,9 @@ class CharacterManager extends Service {
     /**
      * Updates image data.
      *
-     * @param array                                $data
-     * @param \App\Models\Character\CharacterImage $image
-     * @param \App\Models\User\User                $user
+     * @param array          $data
+     * @param CharacterImage $image
+     * @param User           $user
      *
      * @return bool
      */
@@ -712,9 +713,9 @@ class CharacterManager extends Service {
     /**
      * Updates image credits.
      *
-     * @param array                                $data
-     * @param \App\Models\Character\CharacterImage $image
-     * @param \App\Models\User\User                $user
+     * @param array          $data
+     * @param CharacterImage $image
+     * @param User           $user
      *
      * @return bool
      */
@@ -804,9 +805,9 @@ class CharacterManager extends Service {
     /**
      * Reuploads an image.
      *
-     * @param array                                $data
-     * @param \App\Models\Character\CharacterImage $image
-     * @param \App\Models\User\User                $user
+     * @param array          $data
+     * @param CharacterImage $image
+     * @param User           $user
      *
      * @return bool
      */
@@ -872,9 +873,9 @@ class CharacterManager extends Service {
     /**
      * Deletes an image.
      *
-     * @param \App\Models\Character\CharacterImage $image
-     * @param \App\Models\User\User                $user
-     * @param bool                                 $forceDelete
+     * @param CharacterImage $image
+     * @param User           $user
+     * @param bool           $forceDelete
      *
      * @return bool
      */
@@ -922,9 +923,9 @@ class CharacterManager extends Service {
     /**
      * Updates image settings.
      *
-     * @param array                                $data
-     * @param \App\Models\Character\CharacterImage $image
-     * @param \App\Models\User\User                $user
+     * @param array          $data
+     * @param CharacterImage $image
+     * @param User           $user
      *
      * @return bool
      */
@@ -959,8 +960,8 @@ class CharacterManager extends Service {
     /**
      * Updates a character's active image.
      *
-     * @param \App\Models\Character\CharacterImage $image
-     * @param \App\Models\User\User                $user
+     * @param CharacterImage $image
+     * @param User           $user
      *
      * @return bool
      */
@@ -997,9 +998,9 @@ class CharacterManager extends Service {
     /**
      * Sorts a character's images.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
-     * @param mixed                 $character
+     * @param array $data
+     * @param User  $user
+     * @param mixed $character
      *
      * @return bool
      */
@@ -1008,7 +1009,7 @@ class CharacterManager extends Service {
 
         try {
             $ids = explode(',', $data['sort']);
-            $images = CharacterImage::whereIn('id', $ids)->where('character_id', $character->id)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $ids).')'))->get();
+            $images = CharacterImage::whereIn('id', $ids)->where('character_id', $character->id)->orderBy(DB::raw('FIELD(id, '.implode(',', $ids).')'))->get();
 
             if (count($images) != count($ids)) {
                 throw new \Exception('Invalid image included in sorting order.');
@@ -1045,8 +1046,8 @@ class CharacterManager extends Service {
     /**
      * Sorts a user's characters.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
+     * @param array $data
+     * @param User  $user
      *
      * @return bool
      */
@@ -1055,7 +1056,7 @@ class CharacterManager extends Service {
 
         try {
             $ids = array_reverse(explode(',', $data['sort']));
-            $characters = Character::myo(0)->whereIn('id', $ids)->where('user_id', $user->id)->where('is_visible', 1)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $ids).')'))->get();
+            $characters = Character::myo(0)->whereIn('id', $ids)->where('user_id', $user->id)->where('is_visible', 1)->orderBy(DB::raw('FIELD(id, '.implode(',', $ids).')'))->get();
 
             if (count($characters) != count($ids)) {
                 throw new \Exception('Invalid character included in sorting order.');
@@ -1079,9 +1080,9 @@ class CharacterManager extends Service {
     /**
      * Updates a character's stats.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
-     * @param mixed                 $character
+     * @param array $data
+     * @param User  $user
+     * @param mixed $character
      *
      * @return bool
      */
@@ -1182,9 +1183,9 @@ class CharacterManager extends Service {
     /**
      * Updates a character's description.
      *
-     * @param array                           $data
-     * @param \App\Models\Character\Character $character
-     * @param \App\Models\User\User           $user
+     * @param array     $data
+     * @param Character $character
+     * @param User      $user
      *
      * @return bool
      */
@@ -1218,9 +1219,9 @@ class CharacterManager extends Service {
     /**
      * Updates a character's settings.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
-     * @param mixed                 $character
+     * @param array $data
+     * @param User  $user
+     * @param mixed $character
      *
      * @return bool
      */
@@ -1252,10 +1253,10 @@ class CharacterManager extends Service {
     /**
      * Updates a character's profile.
      *
-     * @param array                           $data
-     * @param \App\Models\Character\Character $character
-     * @param \App\Models\User\User           $user
-     * @param bool                            $isAdmin
+     * @param array     $data
+     * @param Character $character
+     * @param User      $user
+     * @param bool      $isAdmin
      *
      * @return bool
      */
@@ -1339,8 +1340,8 @@ class CharacterManager extends Service {
     /**
      * Deletes a character.
      *
-     * @param \App\Models\Character\Character $character
-     * @param \App\Models\User\User           $user
+     * @param Character $character
+     * @param User      $user
      *
      * @return bool
      */
@@ -1391,9 +1392,9 @@ class CharacterManager extends Service {
     /**
      * Creates a character transfer.
      *
-     * @param array                           $data
-     * @param \App\Models\Character\Character $character
-     * @param \App\Models\User\User           $user
+     * @param array     $data
+     * @param Character $character
+     * @param User      $user
      *
      * @return bool
      */
@@ -1467,9 +1468,9 @@ class CharacterManager extends Service {
     /**
      * Forces an admin transfer of a character.
      *
-     * @param array                           $data
-     * @param \App\Models\Character\Character $character
-     * @param \App\Models\User\User           $user
+     * @param array     $data
+     * @param Character $character
+     * @param User      $user
      *
      * @return bool
      */
@@ -1549,8 +1550,8 @@ class CharacterManager extends Service {
     /**
      * Processes a character transfer.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
+     * @param array $data
+     * @param User  $user
      *
      * @return bool
      */
@@ -1617,8 +1618,8 @@ class CharacterManager extends Service {
     /**
      * Cancels a character transfer.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
+     * @param array $data
+     * @param User  $user
      *
      * @return bool
      */
@@ -1653,8 +1654,8 @@ class CharacterManager extends Service {
     /**
      * Processes a character transfer in the approvals queue.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
+     * @param array $data
+     * @param User  $user
      *
      * @return bool
      */
@@ -1749,11 +1750,11 @@ class CharacterManager extends Service {
     /**
      * Moves a character from one user to another.
      *
-     * @param \App\Models\Character\Character $character
-     * @param \App\Models\User\User           $recipient
-     * @param string                          $data
-     * @param int                             $cooldown
-     * @param string                          $logType
+     * @param Character $character
+     * @param User      $recipient
+     * @param string    $data
+     * @param int       $cooldown
+     * @param string    $logType
      */
     public function moveCharacter($character, $recipient, $data, $cooldown = -1, $logType = null) {
         $sender = $character->user;
@@ -1891,7 +1892,7 @@ class CharacterManager extends Service {
      * @param bool  $isMyo
      * @param mixed $character
      *
-     * @return \App\Models\Character\Character           $character
+     * @return Character                                 $character
      * @return \App\Models\Character\CharacterImage|bool
      */
     private function handleCharacterImage($data, $character, $isMyo = false) {
@@ -1905,7 +1906,8 @@ class CharacterManager extends Service {
                 if (!isset($data['image'])) {
                     $data['image'] = public_path('images/myo.png');
                     $data['thumbnail'] = public_path('images/myo-th.png');
-                    $data['extension'] = 'png';
+                    $data['extension'] = config('lorekeeper.settings.masterlist_image_format') ?? 'png';
+                    $data['fullsize_extension'] = config('lorekeeper.settings.masterlist_fullsizes_format') ?? $data['extension'];
                     $data['default_image'] = true;
                     unset($data['use_cropper']);
                 }
@@ -2018,7 +2020,7 @@ class CharacterManager extends Service {
     /**
      * Generates a list of features for displaying.
      *
-     * @param \App\Models\Character\CharacterImage $image
+     * @param CharacterImage $image
      *
      * @return string
      */
@@ -2034,7 +2036,7 @@ class CharacterManager extends Service {
     /**
      * Generates a list of image credits for displaying.
      *
-     * @param \App\Models\Character\CharacterImage $image
+     * @param CharacterImage $image
      *
      * @return string
      */

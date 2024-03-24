@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('admin-title')
-    Rarities
+    {{ $rarity->id ? 'Edit' : 'Create' }} Rarity
 @endsection
 
 @section('admin-content')

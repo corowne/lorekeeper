@@ -1,6 +1,8 @@
 @extends('admin.layout')
 
-@section('admin-title') User Index @stop
+@section('admin-title')
+    User Index
+@endsection
 
 @section('admin-content')
     {!! breadcrumbs(['Admin Panel' => 'admin', 'User Index' => 'admin/users', $user->name => 'admin/users/' . $user->name . '/edit']) !!}
@@ -86,6 +88,7 @@
     <div class="card p-3 mb-2">
         <h3>Birthdate</h3>
         @if ($user->birthday)
+            <p>This user's birthday is set to {{ format_date($user->birthday, false) }}.</p>
             @if (!$user->checkBirthday)
                 <p class="text-danger">This user is currently set to an underage DOB.</p>
             @endif
@@ -94,11 +97,9 @@
         @endif
         {!! Form::open(['url' => 'admin/users/' . $user->name . '/birthday']) !!}
         <div class="form-group row">
-            <label class="col-md-2 col-form-label">Birthday</label>
+            <label class="col-md-2 col-form-label">Date of Birth</label>
             <div class="col-md-10 row">
-                {{ Form::selectRange('dob[day]', 1, 31, $user->birthday ? intval($user->birthday->format('d')) : null, ['class' => 'form-control col-2 mr-1']) }}
-                {{ Form::selectMonth('dob[month]', $user->birthday ? intval($user->birthday->format('m')) : null, ['class' => 'form-control col-2 mr-1']) }}
-                {{ Form::selectYear('dob[year]', date('Y'), date('Y') - 70, $user->birthday ? intval($user->birthday->format('Y')) : null, ['class' => 'form-control col-2']) }}
+                {!! Form::date('dob', null, ['class' => 'form-control']) !!}
             </div>
         </div>
         <div class="text-right">

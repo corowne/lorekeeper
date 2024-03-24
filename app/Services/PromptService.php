@@ -66,9 +66,9 @@ class PromptService extends Service {
     /**
      * Update a category.
      *
-     * @param \App\Models\Prompt\PromptCategory $category
-     * @param array                             $data
-     * @param \App\Models\User\User             $user
+     * @param PromptCategory        $category
+     * @param array                 $data
+     * @param \App\Models\User\User $user
      *
      * @return \App\Models\Prompt\PromptCategory|bool
      */
@@ -108,7 +108,7 @@ class PromptService extends Service {
     /**
      * Delete a category.
      *
-     * @param \App\Models\Prompt\PromptCategory $category
+     * @param PromptCategory $category
      *
      * @return bool
      */
@@ -202,7 +202,7 @@ class PromptService extends Service {
                 $data['hide_submissions'] = 0;
             }
 
-            $prompt = Prompt::create(Arr::only($data, ['prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active', 'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image', 'prefix', 'hide_submissions', 'staff_only']));
+            $prompt = Prompt::create(Arr::only($data, ['prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active', 'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image', 'prefix', 'hide_submissions', 'staff_only', 'hash']));
 
             if ($image) {
                 $this->handleImage($image, $prompt->imagePath, $prompt->imageFileName);
@@ -221,9 +221,9 @@ class PromptService extends Service {
     /**
      * Updates a prompt.
      *
-     * @param \App\Models\Prompt\Prompt $prompt
-     * @param array                     $data
-     * @param \App\Models\User\User     $user
+     * @param Prompt                $prompt
+     * @param array                 $data
+     * @param \App\Models\User\User $user
      *
      * @return \App\Models\Prompt\Prompt|bool
      */
@@ -260,7 +260,7 @@ class PromptService extends Service {
                 $data['hide_submissions'] = 0;
             }
 
-            $prompt->update(Arr::only($data, ['prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active', 'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image', 'prefix', 'hide_submissions', 'staff_only']));
+            $prompt->update(Arr::only($data, ['prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active', 'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image', 'prefix', 'hide_submissions', 'staff_only', 'hash']));
 
             if ($prompt) {
                 $this->handleImage($image, $prompt->imagePath, $prompt->imageFileName);
@@ -279,7 +279,7 @@ class PromptService extends Service {
     /**
      * Deletes a prompt.
      *
-     * @param \App\Models\Prompt\Prompt $prompt
+     * @param Prompt $prompt
      *
      * @return bool
      */
@@ -335,8 +335,8 @@ class PromptService extends Service {
     /**
      * Processes user input for creating/updating a prompt.
      *
-     * @param array                     $data
-     * @param \App\Models\Prompt\Prompt $prompt
+     * @param array  $data
+     * @param Prompt $prompt
      *
      * @return array
      */
@@ -372,8 +372,8 @@ class PromptService extends Service {
     /**
      * Processes user input for creating/updating prompt rewards.
      *
-     * @param array                     $data
-     * @param \App\Models\Prompt\Prompt $prompt
+     * @param array  $data
+     * @param Prompt $prompt
      */
     private function populateRewards($data, $prompt) {
         // Clear the old rewards...

@@ -1,11 +1,11 @@
 @extends('character.design.layout')
 
 @section('design-title')
-    Design Approval Request (#{{ $request->id }}) :: Comments
+    Request (#{{ $request->id }}) :: Add-ons
 @endsection
 
 @section('design-content')
-    {!! breadcrumbs(['Design Approvals' => 'designs', 'Request (#' . $request->id . ')' => 'designs/' . $request->id, 'Comments' => 'designs/' . $request->id . '/comments']) !!}
+    {!! breadcrumbs(['Design Approvals' => 'designs', 'Request (#' . $request->id . ')' => 'designs/' . $request->id, 'Add-ons' => 'designs/' . $request->id . '/addons']) !!}
 
     @include('character.design._header', ['request' => $request])
 
@@ -45,11 +45,11 @@
                             @foreach ($inventory['user_items'] as $itemRow)
                                 <tr class="d-flex">
                                     <td class="col-2">
-                                        @if (isset($items[$itemRow['asset']->item_id]->image_url))
+                                        @if (isset($itemRow['asset']) && isset($items[$itemRow['asset']->item_id]->image_url))
                                             <img class="small-icon" src="{{ $items[$itemRow['asset']->item_id]->image_url }}" alt=" {{ $items[$itemRow['asset']->item_id]->name }} ">
-                                        @endif {!! $items[$itemRow['asset']->item_id]->name !!}
-                                    <td class="col-4">{!! array_key_exists('data', $itemRow['asset']->data) ? ($itemRow['asset']->data['data'] ? $itemRow['asset']->data['data'] : 'N/A') : 'N/A' !!}</td>
-                                    <td class="col-4">{!! array_key_exists('notes', $itemRow['asset']->data) ? ($itemRow['asset']->data['notes'] ? $itemRow['asset']->data['notes'] : 'N/A') : 'N/A' !!}</td>
+                                        @endif {!! isset($itemRow['asset']) ? $items[$itemRow['asset']->item_id]->name : '<i>Deleted User Item</i>' !!}
+                                    <td class="col-4">{!! isset($itemRow['asset']) && array_key_exists('data', $itemRow['asset']->data) ? ($itemRow['asset']->data['data'] ? $itemRow['asset']->data['data'] : 'N/A') : 'N/A' !!}</td>
+                                    <td class="col-4">{!! isset($itemRow['asset']) && array_key_exists('notes', $itemRow['asset']->data) ? ($itemRow['asset']->data['notes'] ? $itemRow['asset']->data['notes'] : 'N/A') : 'N/A' !!}</td>
                                     <td class="col-2">{!! $itemRow['quantity'] !!}
                                 </tr>
                             @endforeach

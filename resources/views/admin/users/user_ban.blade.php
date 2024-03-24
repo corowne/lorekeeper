@@ -1,6 +1,8 @@
 @extends('admin.layout')
 
-@section('admin-title') User: {{ $user->name }} @stop
+@section('admin-title')
+    User: {{ $user->name }}
+@endsection
 
 @section('admin-content')
     {!! breadcrumbs(['Admin Panel' => 'admin', 'User Index' => 'admin/users', $user->name => 'admin/users/' . $user->name . '/edit', 'Account Updates' => 'admin/users/' . $user->name . '/updates']) !!}
@@ -41,7 +43,6 @@
             <a href="#" class="btn btn-outline-danger unban-button">Unban</a>
         </div>
     @endif
-
 @endsection
 
 @section('scripts')

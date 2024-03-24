@@ -138,6 +138,10 @@
         <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Submission_Drafts"><strong>Submission Drafts</strong></a> by <a href="https://github.com/preimpression/">Preimpression</a>
         </p>
+        <p class="mb-0 col-md-4">
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Universal_Trait_Index"><strong>Universal Trait Index</strong></a> by <a href="https://github.com/CH3RVB">CH3RVB</a>
+            ({{ config('lorekeeper.extensions.universal_trait_index.enable') ? 'Enabled' : 'Disabled' }})
+        </p>
     </div>
 
     <hr />

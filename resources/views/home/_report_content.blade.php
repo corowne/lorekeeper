@@ -43,9 +43,9 @@
 <div class="card mb-3">
     <div class="card-body">{!! nl2br(htmlentities($report->comments)) !!}</div>
 </div>
-@if ((Auth::check() && $report->status == 'Assigned' && $report->user == Auth::user()) || Auth::user()->hasPower('manage_reports'))
+@if ((Auth::check() && $report->status == 'Assigned' && $report->user_id == Auth::user()->id) || Auth::user()->hasPower('manage_reports'))
     <div class="alert alert-danger">Admins will be alerted by new comments, however to keep the conversation organised we ask that you please reply to the admin comment.</div>
-    @comments(['model' => $report, 'perPage' => 5])
+    @comments(['type' => 'Staff-User', 'model' => $report, 'perPage' => 5])
 @elseif($report->status == 'Closed')
     <div class="alert alert-danger"> You cannot comment on a closed ticket. </div>
 @else

@@ -405,7 +405,7 @@ class Item extends Model {
      *
      * @param mixed $tag
      *
-     * @return \App\Models\Item\ItemTag
+     * @return ItemTag
      */
     public function tag($tag) {
         return $this->tags()->where('tag', $tag)->where('is_active', 1)->first();

@@ -30,7 +30,7 @@ class ShopManager extends Service {
         DB::beginTransaction();
 
         try {
-            $quantity = $data['quantity'];
+            $quantity = ceil($data['quantity']);
             if (!$quantity || $quantity == 0) {
                 throw new \Exception('Invalid quantity selected.');
             }
@@ -55,6 +55,10 @@ class ShopManager extends Service {
             // Check if the user can only buy a limited number of this item, and if it does, check that the user hasn't hit the limit
             if ($shopStock->purchase_limit && $this->checkPurchaseLimitReached($shopStock, $user)) {
                 throw new \Exception('You have already purchased the maximum amount of this item you can buy.');
+            }
+
+            if ($shopStock->purchase_limit && $quantity > $shopStock->purchase_limit) {
+                throw new \Exception('The quantity specified exceeds the amount of this item you can buy.');
             }
 
             $total_cost = $shopStock->cost * $quantity;
@@ -130,8 +134,8 @@ class ShopManager extends Service {
     /**
      * Checks if the purchase limit for an item from a shop has been reached.
      *
-     * @param \App\Models\Shop\ShopStock $shopStock
-     * @param \App\Models\User\User      $user
+     * @param ShopStock             $shopStock
+     * @param \App\Models\User\User $user
      *
      * @return bool
      */
@@ -146,8 +150,8 @@ class ShopManager extends Service {
     /**
      * Checks how many times a user has purchased a shop item.
      *
-     * @param \App\Models\Shop\ShopStock $shopStock
-     * @param \App\Models\User\User      $user
+     * @param ShopStock             $shopStock
+     * @param \App\Models\User\User $user
      *
      * @return int
      */

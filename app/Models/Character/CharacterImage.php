@@ -209,7 +209,8 @@ class CharacterImage extends Model {
      * @return string
      */
     public function getFullsizeFileNameAttribute() {
-        return $this->id.'_'.$this->hash.'_'.$this->fullsize_hash.'_full.'.$this->fullsize_extension;
+        // Backwards compatibility pre v3
+        return $this->id.'_'.$this->hash.'_'.$this->fullsize_hash.'_full.'.($this->fullsize_extension ?? $this->extension);
     }
 
     /**
@@ -224,7 +225,7 @@ class CharacterImage extends Model {
     /**
      * Gets the file name of the model's fullsize image.
      *
-     * @param  user
+     * @param  User
      * @param mixed|null $user
      *
      * @return string

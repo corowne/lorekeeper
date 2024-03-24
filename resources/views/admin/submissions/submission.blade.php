@@ -1,10 +1,10 @@
-@extends('home.layout')
+@extends('admin.layout')
 
-@section('home-title')
+@section('admin-title')
     {{ $submission->prompt_id ? 'Submission' : 'Claim' }} (#{{ $submission->id }})
 @endsection
 
-@section('home-content')
+@section('admin-content')
     @if ($submission->prompt_id)
         {!! breadcrumbs(['Admin Panel' => 'admin', 'Prompt Queue' => 'admin/submissions/pending', 'Submission (#' . $submission->id . ')' => $submission->viewUrl]) !!}
     @else
@@ -47,6 +47,14 @@
                 </div>
                 <div class="col-md-10 col-8"><a href="{{ $submission->url }}">{{ $submission->url }}</a></div>
             </div>
+            @if (config('lorekeeper.settings.allow_gallery_submissions_on_prompts') && $submission->data['gallery_submission_id'])
+                <div class="row mb-2 no-gutters">
+                    <div class="col-md-2">
+                        <h5 class="mb-0">Gallery Submission</h5>
+                    </div>
+                    <div class="col-md-10"><a href="{{ $submission->gallerySubmission->url }}">{{ $submission->gallerySubmission->title }}</a></div>
+                </div>
+            @endif
             <div class="row">
                 <div class="col-md-2 col-4">
                     <h5>Submitted</h5>
@@ -83,13 +91,12 @@
 
         <h2>Characters</h2>
         <div id="characters" class="mb-3">
-            @if (count(
-                    $submission->characters()->whereRelation('character', 'deleted_at', null)->get()) != count($submission->characters()->get()))
+            @if (count($submission->characters()->whereRelation('character', 'deleted_at', null)->get()) != count($submission->characters()->get()))
                 <div class="alert alert-warning">
                     Some characters have been deleted since this submission was created.
                 </div>
             @endif
-            @foreach ($submission->characters()->whereRelation('character', 'deleted_at', null) as $character)
+            @foreach ($submission->characters()->whereRelation('character', 'deleted_at', null)->get() as $character)
                 @include('widgets._character_select_entry', ['characterCurrencies' => $characterCurrencies, 'items' => $items, 'tables' => $tables, 'character' => $character, 'expanded_rewards' => $expanded_rewards])
             @endforeach
         </div>

@@ -147,7 +147,7 @@ class WorldController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getFeatures(Request $request) {
-        $query = Feature::visible()->with('category')->with('rarity')->with('species');
+        $query = Feature::visible(Auth::check() ? Auth::user() : null)->with('category')->with('rarity')->with('species');
         $data = $request->only(['rarity_id', 'feature_category_id', 'species_id', 'subtype_id', 'name', 'sort']);
         if (isset($data['rarity_id']) && $data['rarity_id'] != 'none') {
             $query->where('rarity_id', $data['rarity_id']);
@@ -240,7 +240,7 @@ class WorldController extends Controller {
 
         $features = count($categories) ?
             $species->features()
-                ->visible()
+                ->visible(Auth::check() ? Auth::user() : null)
                 ->orderByRaw('FIELD(feature_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
                 ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
                 ->orderBy('has_image', 'DESC')
@@ -255,7 +255,7 @@ class WorldController extends Controller {
                 })
                 ->groupBy(['feature_category_id', 'id']) :
             $species->features()
-                ->visible()
+                ->visible(Auth::check() ? Auth::user() : null)
                 ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
                 ->orderBy('has_image', 'DESC')
                 ->orderBy('name')
@@ -301,12 +301,75 @@ class WorldController extends Controller {
     }
 
     /**
+     * Shows a universal visual trait list.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUniversalFeatures(Request $request) {
+        $categories = FeatureCategory::orderBy('sort', 'DESC')->get();
+        $rarities = Rarity::orderBy('sort', 'ASC')->get();
+
+        if (!config('lorekeeper.extensions.universal_trait_index.enable')) {
+            abort(404);
+        }
+
+        $features = count($categories) ?
+        $query = Feature::whereNull('species_id')
+            ->visible()
+            ->orderByRaw('FIELD(feature_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
+            ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
+            ->orderBy('has_image', 'DESC')
+            ->orderBy('name')
+            ->get()
+            ->groupBy(['feature_category_id', 'id']) :
+        $query = Feature::whereNull('species_id')
+            ->visible()
+            ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
+            ->orderBy('has_image', 'DESC')
+            ->orderBy('name')
+            ->get()
+            ->groupBy(['feature_category_id', 'id']);
+
+        return view('world.universal_features', [
+            'categories' => $categories->keyBy('id'),
+            'rarities'   => $rarities->keyBy('id'),
+            'features'   => $features,
+        ]);
+    }
+
+    /**
+     * Provides a single trait's description html for use in a modal. (Universal Trait Index).
+     *
+     * @param mixed $id
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUniversalFeatureDetail($id) {
+        $feature = Feature::where('id', $id)->first();
+
+        if (!$feature) {
+            abort(404);
+        }
+        if (!config('lorekeeper.extensions.universal_trait_index.trait_modals')) {
+            abort(404);
+        }
+
+        return view('world._feature_entry', [
+            'feature' => $feature,
+        ]);
+    }
+
+    /**
      * Shows the items page.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getItems(Request $request) {
-        $query = Item::with('category')->released();
+        $query = Item::with('category');
+
+        if (!Auth::check() || !Auth::user()->isStaff) {
+            $query->released();
+        }
 
         $categoryVisibleCheck = ItemCategory::visible(Auth::check() ? Auth::user() : null)->pluck('id', 'name')->toArray();
         // query where category is visible, or, no category and released
@@ -367,7 +430,12 @@ class WorldController extends Controller {
      */
     public function getItem($id) {
         $categories = ItemCategory::orderBy('sort', 'DESC')->get();
-        $item = Item::where('id', $id)->released()->first();
+
+        if (!Auth::check() || !Auth::user()->isStaff) {
+            $item = Item::where('id', $id)->released()->first();
+        } else {
+            $item = Item::where('id', $id)->first();
+        }
         if (!$item) {
             abort(404);
         }

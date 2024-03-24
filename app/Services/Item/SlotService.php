@@ -39,7 +39,7 @@ class SlotService extends Service {
     /**
      * Processes the data attribute of the tag and returns it in the preferred format for edits.
      *
-     * @param string $tag
+     * @param object $tag
      *
      * @return mixed
      */
@@ -80,7 +80,7 @@ class SlotService extends Service {
     /**
      * Processes the data attribute of the tag and returns it in the preferred format for DB storage.
      *
-     * @param string $tag
+     * @param object $tag
      * @param array  $data
      *
      * @return bool
@@ -118,7 +118,7 @@ class SlotService extends Service {
      * Acts upon the item when used from the inventory.
      *
      * @param \App\Models\User\UserItem $stacks
-     * @param \App\Models\User\User     $user
+     * @param User                      $user
      * @param array                     $data
      *
      * @return bool

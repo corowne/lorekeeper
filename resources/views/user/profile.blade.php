@@ -11,7 +11,7 @@
 @section('profile-content')
     {!! breadcrumbs(['Users' => 'users', $user->name => $user->url]) !!}
 
-    @if ($user->name != $name)
+    @if (mb_strtolower($user->name) != mb_strtolower($name))
         <div class="alert alert-info">This user has changed their name to <strong>{{ $user->name }}</strong>.</div>
     @endif
 

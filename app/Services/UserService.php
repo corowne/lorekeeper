@@ -7,6 +7,7 @@ use App\Facades\Settings;
 use App\Models\Character\CharacterDesignUpdate;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Gallery\GallerySubmission;
+use App\Models\Invitation;
 use App\Models\Rank\Rank;
 use App\Models\Submission\Submission;
 use App\Models\Trade;
@@ -35,7 +36,7 @@ class UserService extends Service {
      *
      * @param array $data
      *
-     * @return \App\Models\User\User
+     * @return User
      */
     public function createUser($data) {
         // If the rank is not given, create a user with the lowest existing rank.
@@ -110,7 +111,7 @@ class UserService extends Service {
      *
      * @param array $data
      *
-     * @return \App\Models\User\User
+     * @return User
      */
     public function updateUser($data) {
         $user = User::find($data['id']);
@@ -127,8 +128,8 @@ class UserService extends Service {
     /**
      * Updates the user's password.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
+     * @param array $data
+     * @param User  $user
      *
      * @return bool
      */
@@ -157,8 +158,8 @@ class UserService extends Service {
     /**
      * Updates the user's email and resends a verification email.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
+     * @param array $data
+     * @param User  $user
      *
      * @return bool
      */
@@ -179,8 +180,18 @@ class UserService extends Service {
      * @param mixed $user
      */
     public function updateBirthday($data, $user) {
-        $user->birthday = $data;
-        $user->save();
+        DB::beginTransaction();
+
+        try {
+            $user->birthday = $data;
+            $user->save();
+
+            return $this->commitReturn(true);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return $this->rollbackReturn(false);
     }
 
     /**
@@ -189,9 +200,19 @@ class UserService extends Service {
      * @param mixed $data
      * @param mixed $user
      */
-    public function updateDOB($data, $user) {
-        $user->settings->birthday_setting = $data;
-        $user->settings->save();
+    public function updateBirthdayVisibilitySetting($data, $user) {
+        DB::beginTransaction();
+
+        try {
+            $user->settings->birthday_setting = $data;
+            $user->settings->save();
+
+            return $this->commitReturn(true);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return $this->rollbackReturn(false);
     }
 
     /**
@@ -256,8 +277,8 @@ class UserService extends Service {
     /**
      * Updates the user's avatar.
      *
-     * @param \App\Models\User\User $user
-     * @param mixed                 $avatar
+     * @param User  $user
+     * @param mixed $avatar
      *
      * @return bool
      */
@@ -306,8 +327,8 @@ class UserService extends Service {
     /**
      * Updates a user's username.
      *
-     * @param string                $username
-     * @param \App\Models\User\User $user
+     * @param string $username
+     * @param User   $user
      *
      * @return bool
      */
@@ -367,9 +388,9 @@ class UserService extends Service {
     /**
      * Bans a user.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
-     * @param \App\Models\User\User $staff
+     * @param array $data
+     * @param User  $user
+     * @param User  $staff
      *
      * @return bool
      */
@@ -455,8 +476,8 @@ class UserService extends Service {
     /**
      * Unbans a user.
      *
-     * @param \App\Models\User\User $user
-     * @param \App\Models\User\User $staff
+     * @param User $user
+     * @param User $staff
      *
      * @return bool
      */
@@ -489,9 +510,9 @@ class UserService extends Service {
     /**
      * Deactivates a user.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
-     * @param \App\Models\User\User $staff
+     * @param array $data
+     * @param User  $user
+     * @param User  $staff
      *
      * @return bool
      */
@@ -518,15 +539,15 @@ class UserService extends Service {
                 $submissionManager = new SubmissionManager;
                 $submissions = Submission::where('user_id', $user->id)->where('status', 'Pending')->get();
                 foreach ($submissions as $submission) {
-                    $submissionManager->rejectSubmission(['submission' => $submission, 'staff_comments' => 'User\'s account was deactivated.']);
+                    $submissionManager->rejectSubmission(['submission' => $submission, 'staff_comments' => 'User\'s account was deactivated.'], $staff);
                 }
 
                 // 3. Gallery Submissions
                 $galleryManager = new GalleryManager;
                 $gallerySubmissions = GallerySubmission::where('user_id', $user->id)->where('status', 'Pending')->get();
                 foreach ($gallerySubmissions as $submission) {
-                    $galleryManager->rejectSubmission($submission);
-                    $galleryManager->postStaffComments($submission->id, ['staff_comments' => 'User\'s account was deactivated.'], ($staff ? $staff : $user));
+                    $galleryManager->rejectSubmission($submission, $staff);
+                    $galleryManager->postStaffComments($submission->id, ['staff_comments' => 'User\'s account was deactivated.'], $staff);
                 }
                 $gallerySubmissions = GallerySubmission::where('user_id', $user->id)->where('status', 'Accepted')->get();
                 foreach ($gallerySubmissions as $submission) {
@@ -538,7 +559,7 @@ class UserService extends Service {
                     $query->where('status', 'Pending')->orWhere('status', 'Draft');
                 })->get();
                 foreach ($requests as $request) {
-                    $characterManager->rejectRequest(['staff_comments' => 'User\'s account was deactivated.'], $request, ($staff ? $staff : $user), true);
+                    (new DesignUpdateManager)->rejectRequest(['staff_comments' => 'User\'s account was deactivated.'], $request, $staff, true);
                 }
 
                 // 5. Trades
@@ -549,15 +570,15 @@ class UserService extends Service {
                     $query->where('sender_id', $user->id)->where('recipient_id', $user->id);
                 })->get();
                 foreach ($trades as $trade) {
-                    $tradeManager->rejectTrade(['trade' => $trade, 'reason' => 'User\'s account was deactivated.'], ($staff ? $staff : $user));
+                    $tradeManager->rejectTrade(['trade' => $trade, 'reason' => 'User\'s account was deactivated.'], $staff);
                 }
 
-                UserUpdateLog::create(['staff_id' => $staff ? $staff->id : $user->id, 'user_id' => $user->id, 'data' => json_encode(['is_deactivated' => 'Yes', 'deactivate_reason' => $data['deactivate_reason'] ?? null]), 'type' => 'Deactivation']);
+                UserUpdateLog::create(['staff_id' => $staff->id, 'user_id' => $user->id, 'data' => json_encode(['is_deactivated' => 'Yes', 'deactivate_reason' => $data['deactivate_reason'] ?? null]), 'type' => 'Deactivation']);
 
                 $user->settings->deactivated_at = Carbon::now();
 
                 $user->is_deactivated = 1;
-                $user->deactivater_id = $staff ? $staff->id : $user->id;
+                $user->deactivater_id = $staff->id;
                 $user->rank_id = Rank::orderBy('sort')->first()->id;
                 $user->save();
 
@@ -568,7 +589,7 @@ class UserService extends Service {
                     'staff_name' => $staff->name,
                 ]);
             } else {
-                UserUpdateLog::create(['staff_id' => $staff ? $staff->id : $user->id, 'user_id' => $user->id, 'data' => json_encode(['deactivate_reason' => $data['deactivate_reason'] ?? null]), 'type' => 'Deactivation Update']);
+                UserUpdateLog::create(['staff_id' => $staff->id, 'user_id' => $user->id, 'data' => json_encode(['deactivate_reason' => $data['deactivate_reason'] ?? null]), 'type' => 'Deactivation Update']);
             }
 
             $user->settings->deactivate_reason = isset($data['deactivate_reason']) && $data['deactivate_reason'] ? $data['deactivate_reason'] : null;
@@ -585,8 +606,8 @@ class UserService extends Service {
     /**
      * Reactivates a user account.
      *
-     * @param \App\Models\User\User $user
-     * @param \App\Models\User\User $staff
+     * @param User $user
+     * @param User $staff
      *
      * @return bool
      */

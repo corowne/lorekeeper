@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('admin-title')
-    Loot Tables
+    {{ $table->id ? 'Edit' : 'Create' }} Loot Table
 @endsection
 
 @section('admin-content')
