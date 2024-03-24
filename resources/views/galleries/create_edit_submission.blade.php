@@ -59,7 +59,9 @@
 
         <div class="form-group">
             {!! Form::label('Writing / Text', ['class' => 'h5']) !!} {!! add_help('If you have a text submission, you can paste it here. You can also use the WYSIWYG editor to format your text. If you have an image submission, you can leave this blank or add a text to supplement your image submission.') !!}
-            <a href="#writingForm" id="writingFormCollapseBtn" class="mx-2 btn btn-sm btn-primary" data-toggle="collapse" aria-expanded="false">Hide Textarea</a>
+            @if (config('lorekeeper.settings.hide_textarea_on_gallery_submissions.enable'))
+				<a href="#writingForm" id="writingFormCollapseBtn" class="mx-2 btn btn-sm btn-primary" data-toggle="collapse" aria-expanded="false">Hide Textarea</a>
+			@endif
             <div id="writingForm" class="collapse show">
                 {!! Form::textarea('text', $submission->text ?? old('text'), ['class' => 'form-control wysiwyg']) !!}
             </div>
@@ -419,21 +421,29 @@
                             $('#imageContainer').removeClass('hide');
                         }
                         reader.readAsDataURL(input.files[0]);
-                        // hide text editor if image is uploaded
-                        $('#writingForm').collapse('hide')
+						@if (config('lorekeeper.settings.hide_textarea_on_gallery_submissions.enable') && config('lorekeeper.settings.hide_textarea_on_gallery_submissions.on_image'))
+							// hide text editor if image is uploaded
+							$('#writingForm').collapse('hide')
+						@endif
                     } else {
-                        $('#writingForm').collapse('show')
+						@if (config('lorekeeper.settings.hide_textarea_on_gallery_submissions.enable') && config('lorekeeper.settings.hide_textarea_on_gallery_submissions.on_image'))
+							$('#writingForm').collapse('show')
+						@else
+							// Just a comment if autohide is disabled
+						@endif
                     }
                 }
                 $("#mainImage").change(function() {
                     readURL(this);
                 });
-                $('#writingForm').on('hide.bs.collapse', function () {
-                    $('#writingFormCollapseBtn').text("Show Textarea");
-                })
-                $('#writingForm').on('show.bs.collapse', function () {
-                    $('#writingFormCollapseBtn').text("Hide Textarea");
-                })
+					@if (config('lorekeeper.settings.hide_textarea_on_gallery_submissions.enable'))
+					$('#writingForm').on('hide.bs.collapse', function () {
+						$('#writingFormCollapseBtn').text("Show Textarea");
+					})
+					$('#writingForm').on('show.bs.collapse', function () {
+						$('#writingFormCollapseBtn').text("Hide Textarea");
+					})
+				@endif
 
                 $('.original.gallery-select').selectize();
             });
