@@ -38,7 +38,7 @@
         <p>Upload an image and/or text as the content of your submission. You <strong>can</strong> upload both in the event that you have an image with accompanying text or vice versa.</p>
 
         <div class="form-group" id="imageForm">
-            {!! Form::label('Image') !!}
+            {!! Form::label('Image Upload', ['class' => 'h5']) !!}
             @if ($submission->id && isset($submission->hash) && $submission->hash)
                 <div class="card mb-2" id="existingImage">
                     <div class="card-body text-center">
@@ -60,23 +60,24 @@
         <div class="form-group" id="writingForm">
             {!! Form::label('Writing / Text') !!} {!! add_help('If you have a text submission, you can paste it here. You can also use the WYSIWYG editor to format your text. If you have an image submission, you can leave this blank.') !!}
             {!! Form::textarea('text', $submission->text ?? old('text'), ['class' => 'form-control wysiwyg']) !!}
+			{!! Form::label('Writing / Text', ['class' => 'h5']) !!} {!! add_help('If you have a text submission, you can paste it here. You can also use the WYSIWYG editor to format your text. If you have an image submission, you can leave this blank or add a text to supplement your image submission.') !!}
         </div>
 
         <div class="row">
             <div class="col-md">
                 <h3>Basic Information</h3>
                 <div class="form-group">
-                    {!! Form::label('Title') !!} {!! add_help('You <strong>do not</strong> need to indicate that a piece is a trade, gift, for a prompt etc. as this will be automatically added based on your input elsewhere in this form.') !!}
+                    {!! Form::label('Title', ['class' => 'h5']) !!} {!! add_help('You <strong>do not</strong> need to indicate that a piece is a trade, gift, for a prompt etc. as this will be automatically added based on your input elsewhere in this form.') !!}
                     {!! Form::text('title', $submission->title ?? old('title'), ['class' => 'form-control']) !!}
                 </div>
 
                 <div class="form-group">
-                    {!! Form::label('Description (Optional)') !!}
+                    {!! Form::label('Description (Optional)', ['class' => 'h5']) !!}
                     {!! Form::textarea('description', $submission->description ?? old('description'), ['class' => 'form-control wysiwyg']) !!}
                 </div>
 
                 <div class="form-group">
-                    {!! Form::label('Content Warning (Optional)') !!} {!! add_help(
+                    {!! Form::label('Content Warning (Optional)', ['class' => 'h5']) !!} {!! add_help(
                         'Provide a succinct content warning for the piece if necessary. If a content warning is provided, the thumbnail will be replaced with a generic image and the warning displayed under it. The piece will be displayed in full on its page, however.',
                     ) !!}
                     {!! Form::text('content_warning', $submission->content_warning ?? old('content_warning'), ['class' => 'form-control']) !!}
