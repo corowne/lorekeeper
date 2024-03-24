@@ -57,10 +57,12 @@
             </div>
         </div>
 
-        <div class="form-group" id="writingForm">
-            {!! Form::label('Writing / Text') !!} {!! add_help('If you have a text submission, you can paste it here. You can also use the WYSIWYG editor to format your text. If you have an image submission, you can leave this blank.') !!}
-            {!! Form::textarea('text', $submission->text ?? old('text'), ['class' => 'form-control wysiwyg']) !!}
-			{!! Form::label('Writing / Text', ['class' => 'h5']) !!} {!! add_help('If you have a text submission, you can paste it here. You can also use the WYSIWYG editor to format your text. If you have an image submission, you can leave this blank or add a text to supplement your image submission.') !!}
+        <div class="form-group">
+            {!! Form::label('Writing / Text', ['class' => 'h5']) !!} {!! add_help('If you have a text submission, you can paste it here. You can also use the WYSIWYG editor to format your text. If you have an image submission, you can leave this blank or add a text to supplement your image submission.') !!}
+            <a href="#writingForm" id="writingFormCollapseBtn" class="mx-2 btn btn-sm btn-primary" data-toggle="collapse" aria-expanded="false">Hide Textarea</a>
+            <div id="writingForm" class="collapse show">
+                {!! Form::textarea('text', $submission->text ?? old('text'), ['class' => 'form-control wysiwyg']) !!}
+            </div>
         </div>
 
         <div class="row">
@@ -418,14 +420,20 @@
                         }
                         reader.readAsDataURL(input.files[0]);
                         // hide text editor if image is uploaded
-                        $('#writingForm').addClass('hide');
+                        $('#writingForm').collapse('hide')
                     } else {
-                        $('#writingForm').removeClass('hide');
+                        $('#writingForm').collapse('show')
                     }
                 }
                 $("#mainImage").change(function() {
                     readURL(this);
                 });
+                $('#writingForm').on('hide.bs.collapse', function () {
+                    $('#writingFormCollapseBtn').text("Show Textarea");
+                })
+                $('#writingForm').on('show.bs.collapse', function () {
+                    $('#writingFormCollapseBtn').text("Hide Textarea");
+                })
 
                 $('.original.gallery-select').selectize();
             });
