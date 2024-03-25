@@ -36,7 +36,7 @@
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Extended_Mentions"><strong>Extended Mentions</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
         </p>
         <p class="mb-0 col-md-4">
-            <strong>Extension Tracker</strong> by <a href="https://github.com/preimpression">Preimpression</a> (This page/the section below!)
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Extension_Tracker"><strong>Extension Tracker</strong></a> by <a href="https://github.com/preimpression">Preimpression</a> (This page/the section below!)
         </p>
         <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Galleries"><strong>Galleries</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
@@ -79,10 +79,10 @@
             ({{ config('lorekeeper.extensions.aliases_on_userpage') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
-            <strong>Auto-populate New Image Traits</strong> by <a href="https://github.com/itinerare">itinerare</a> ({{ config('lorekeeper.extensions.autopopulate_image_features') ? 'Enabled' : 'Disabled' }})
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Autopopulate_New_Image_Traits"><strong>Auto-populate New Image Traits</strong></a> by <a href="https://github.com/itinerare">itinerare</a> ({{ config('lorekeeper.extensions.autopopulate_image_features') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
-            <strong>Character Rewards</strong> by <a href="https://github.com/preimpression">Preimpression</a>
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Character_Rewards"><strong>Character Rewards</strong></a> by <a href="https://github.com/preimpression">Preimpression</a>
             ({{ config('lorekeeper.extensions.character_reward_expansion.expanded') ? 'Enabled' : 'Disabled' }}/{{ config('lorekeeper.extensions.character_reward_expansion.default_recipient') ? 'Submitter' : 'Character Owner' }})
         </p>
         <p class="mb-0 col-md-4">
@@ -94,17 +94,17 @@
             ({{ config('lorekeeper.extensions.character_TH_profile_link') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
-            <strong>Collapsible Admin Sidebar</strong> by <a href="https://github.com/ne-wt/">Newt</a> ({{ config('lorekeeper.extensions.collapsible_admin_sidebar') ? 'Enabled' : 'Disabled' }})
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Collapsible_Admin_Sidebar"><strong>Collapsible Admin Sidebar</strong></a> by <a href="https://github.com/ne-wt/">Newt</a> ({{ config('lorekeeper.extensions.collapsible_admin_sidebar') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Design_Update_Voting"><strong>Design Update Voting</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
             ({{ config('lorekeeper.extensions.design_update_voting') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
-            <strong>Gravatar</strong> by <a href="https://github.com/ne-wt/">Newt</a> ({{ config('lorekeeper.extensions.use_gravatar') ? 'Enabled' : 'Disabled' }})
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Gravatar"><strong>Gravatar</strong></a> by <a href="https://github.com/ne-wt/">Newt</a> ({{ config('lorekeeper.extensions.use_gravatar') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
-            <strong>Group Traits by Category</strong> by <a href="https://github.com/preimpression">Preimpression</a> ({{ config('lorekeeper.extensions.traits_by_category') ? 'Enabled' : 'Disabled' }})
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Group_Traits_by_Category"><strong>Group Traits by Category</strong></a> by <a href="https://github.com/preimpression">Preimpression</a> ({{ config('lorekeeper.extensions.traits_by_category') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Item_Entry_Expansion"><strong>Item Entry Expansion</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
