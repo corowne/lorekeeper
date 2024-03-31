@@ -411,15 +411,16 @@ function prettyProfileLink($url) {
             $site = $siteName;
             $name = $matches[1][0];
             $link = $matches[0][0];
+            $icon = isset($siteInfo['icon']) ? $siteInfo['icon'] : "fas fa-globe";
             break;
         }
     }
 
     // Return formatted link if possible; failing that, an unformatted link
     if (isset($name) && isset($site) && isset($link)) {
-        return '<a href="https://'.$link.'">'.$name.'@'.(config('lorekeeper.sites.'.$site.'.display_name') != null ? config('lorekeeper.sites.'.$site.'.display_name') : $site).'</a>';
+        return '<a href="https://'.$link.'"><i class="'.$icon.' mr-1" style="opacity: 50%;"></i>'.$name.'@'.(config('lorekeeper.sites.'.$site.'.display_name') != null ? config('lorekeeper.sites.'.$site.'.display_name') : $site).'</a>';
     } else {
-        return '<a href="'.$url.'">'.$url.'</a>';
+        return '<a href="'.$url.'"><i class="fas fa-globe mr-1" style="opacity: 50%;"></i>'.$url.'</a>';
     }
 }
 
