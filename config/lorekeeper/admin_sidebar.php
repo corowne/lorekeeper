@@ -45,18 +45,18 @@ return [
         'links' => [
             [
                 'name' => 'News',
-                'url' => 'admin/news'
+                'url'  => 'admin/news',
             ],
-        ]
+        ],
     ],
     'Sales' => [
         'power' => 'manage_sales',
         'links' => [
             [
                 'name' => 'Sales',
-                'url' => 'admin/sales'
+                'url'  => 'admin/sales',
             ],
-        ]
+        ],
     ],
     'Pages'       => [
         'power' => 'edit_pages',
