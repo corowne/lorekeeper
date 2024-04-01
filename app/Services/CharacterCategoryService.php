@@ -22,7 +22,7 @@ class CharacterCategoryService extends Service {
      * @param array $data
      * @param mixed $user
      *
-     * @return \App\Models\Character\CharacterCategory|bool
+     * @return bool|CharacterCategory
      */
     public function createCharacterCategory($data, $user) {
         DB::beginTransaction();
@@ -65,7 +65,7 @@ class CharacterCategoryService extends Service {
      * @param array             $data
      * @param mixed             $user
      *
-     * @return \App\Models\Character\CharacterCategory|bool
+     * @return bool|CharacterCategory
      */
     public function updateCharacterCategory($category, $data, $user) {
         DB::beginTransaction();
@@ -169,8 +169,8 @@ class CharacterCategoryService extends Service {
     /**
      * Handle category data.
      *
-     * @param array                                        $data
-     * @param \App\Models\Character\CharacterCategory|null $category
+     * @param array                  $data
+     * @param CharacterCategory|null $category
      *
      * @return array
      */

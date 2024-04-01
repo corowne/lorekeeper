@@ -22,7 +22,7 @@ class NewsService extends Service {
      * @param array $data
      * @param User  $user
      *
-     * @return \App\Models\News|bool
+     * @return bool|News
      */
     public function createNews($data, $user) {
         DB::beginTransaction();
@@ -55,7 +55,7 @@ class NewsService extends Service {
      * @param array $data
      * @param User  $user
      *
-     * @return \App\Models\News|bool
+     * @return bool|News
      */
     public function updateNews($news, $data, $user) {
         DB::beginTransaction();

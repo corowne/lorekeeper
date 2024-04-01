@@ -20,7 +20,7 @@ class InvitationService extends Service {
      *
      * @param \App\Models\User\User $user
      *
-     * @return \App\Models\Invitation|bool
+     * @return bool|Invitation
      */
     public function generateInvitation($user) {
         DB::beginTransaction();
@@ -45,7 +45,7 @@ class InvitationService extends Service {
      * @param \App\Models\User\User $user
      * @param mixed                 $invitation
      *
-     * @return \App\Models\Invitation|bool
+     * @return bool|Invitation
      */
     public function useInvitation($invitation, $user) {
         DB::beginTransaction();

@@ -29,7 +29,7 @@ class SublistService extends Service {
      * @param array $data
      * @param array $contents
      *
-     * @return \App\Models\Character\Sublist|bool
+     * @return bool|Sublist
      */
     public function createSublist($data, $contents) {
         DB::beginTransaction();
@@ -60,7 +60,7 @@ class SublistService extends Service {
      * @param array   $data
      * @param array   $contents
      *
-     * @return \App\Models\Character\Sublist|bool
+     * @return bool|Sublist
      */
     public function updateSublist($sublist, $data, $contents) {
         DB::beginTransaction();

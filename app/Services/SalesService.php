@@ -25,7 +25,7 @@ class SalesService extends Service {
      * @param array $data
      * @param User  $user
      *
-     * @return \App\Models\Sales\Sales|bool
+     * @return bool|Sales
      */
     public function createSales($data, $user) {
         DB::beginTransaction();
@@ -77,7 +77,7 @@ class SalesService extends Service {
      * @param User  $user
      * @param mixed $sales
      *
-     * @return \App\Models\Sales\Sales|bool
+     * @return bool|Sales
      */
     public function updateSales($sales, $data, $user) {
         DB::beginTransaction();

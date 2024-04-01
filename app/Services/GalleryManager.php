@@ -34,7 +34,7 @@ class GalleryManager extends Service {
      * @param array $currencyFormData
      * @param User  $user
      *
-     * @return \App\Models\Gallery\GallerySubmission|bool
+     * @return bool|GallerySubmission
      */
     public function createSubmission($data, $currencyFormData, $user) {
         DB::beginTransaction();
@@ -178,7 +178,7 @@ class GalleryManager extends Service {
      * @param array             $data
      * @param User              $user
      *
-     * @return \App\Models\Gallery\GallerySubmission|bool
+     * @return bool|GallerySubmission
      */
     public function updateSubmission($submission, $data, $user) {
         DB::beginTransaction();
@@ -342,7 +342,7 @@ class GalleryManager extends Service {
      * @param User              $user
      * @param mixed             $data
      *
-     * @return \App\Models\Gallery\GalleryFavorite|bool
+     * @return bool|GalleryFavorite
      */
     public function editCollaborator($submission, $data, $user) {
         DB::beginTransaction();
@@ -470,7 +470,7 @@ class GalleryManager extends Service {
      * @param mixed $id
      * @param mixed $data
      *
-     * @return \App\Models\Gallery\GalleryFavorite|bool
+     * @return bool|GalleryFavorite
      */
     public function postStaffComments($id, $data, $user) {
         DB::beginTransaction();
@@ -559,7 +559,7 @@ class GalleryManager extends Service {
      * @param mixed $id
      * @param mixed $data
      *
-     * @return \App\Models\Gallery\GalleryFavorite|bool
+     * @return bool|GalleryFavorite
      */
     public function postValueSubmission($id, $data, $user) {
         DB::beginTransaction();
@@ -692,7 +692,7 @@ class GalleryManager extends Service {
      * @param GallerySubmission $submission
      * @param User              $user
      *
-     * @return \App\Models\Gallery\GalleryFavorite|bool
+     * @return bool|GalleryFavorite
      */
     public function favoriteSubmission($submission, $user) {
         DB::beginTransaction();
@@ -740,7 +740,7 @@ class GalleryManager extends Service {
      * @param GallerySubmission $submission
      * @param mixed             $user
      *
-     * @return \App\Models\Gallery\GallerySubmission|bool
+     * @return bool|GallerySubmission
      */
     public function rejectSubmission($submission, $user) {
         DB::beginTransaction();
@@ -858,7 +858,7 @@ class GalleryManager extends Service {
      *
      * @param GallerySubmission $submission
      *
-     * @return \App\Models\Gallery\GallerySubmission|bool
+     * @return bool|GallerySubmission
      */
     private function acceptSubmission($submission) {
         DB::beginTransaction();
