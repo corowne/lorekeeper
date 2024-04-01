@@ -29,7 +29,7 @@ class ItemService extends Service {
      * @param array                 $data
      * @param \App\Models\User\User $user
      *
-     * @return \App\Models\Item\ItemCategory|bool
+     * @return bool|ItemCategory
      */
     public function createItemCategory($data, $user) {
         DB::beginTransaction();
@@ -72,7 +72,7 @@ class ItemService extends Service {
      * @param array                 $data
      * @param \App\Models\User\User $user
      *
-     * @return \App\Models\Item\ItemCategory|bool
+     * @return bool|ItemCategory
      */
     public function updateItemCategory($category, $data, $user) {
         DB::beginTransaction();
@@ -182,7 +182,7 @@ class ItemService extends Service {
      * @param array                 $data
      * @param \App\Models\User\User $user
      *
-     * @return \App\Models\Item\Item|bool
+     * @return bool|Item
      */
     public function createItem($data, $user) {
         DB::beginTransaction();
@@ -243,7 +243,7 @@ class ItemService extends Service {
      * @param array                 $data
      * @param \App\Models\User\User $user
      *
-     * @return \App\Models\Item\Item|bool
+     * @return bool|Item
      */
     public function updateItem($item, $data, $user) {
         DB::beginTransaction();
@@ -492,8 +492,8 @@ class ItemService extends Service {
     /**
      * Handle category data.
      *
-     * @param array                              $data
-     * @param \App\Models\Item\ItemCategory|null $category
+     * @param array             $data
+     * @param ItemCategory|null $category
      *
      * @return array
      */

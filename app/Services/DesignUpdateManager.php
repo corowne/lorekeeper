@@ -36,7 +36,7 @@ class DesignUpdateManager extends Service {
      * @param Character $character
      * @param User      $user
      *
-     * @return \App\Models\Character\CharacterDesignUpdate|bool
+     * @return bool|CharacterDesignUpdate
      */
     public function createDesignUpdateRequest($character, $user) {
         DB::beginTransaction();

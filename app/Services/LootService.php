@@ -23,7 +23,7 @@ class LootService extends Service {
      *
      * @param array $data
      *
-     * @return \App\Models\Loot\LootTable|bool
+     * @return bool|LootTable
      */
     public function createLootTable($data) {
         DB::beginTransaction();
@@ -71,7 +71,7 @@ class LootService extends Service {
      * @param LootTable $table
      * @param array     $data
      *
-     * @return \App\Models\Loot\LootTable|bool
+     * @return bool|LootTable
      */
     public function updateLootTable($table, $data) {
         DB::beginTransaction();

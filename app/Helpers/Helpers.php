@@ -357,7 +357,7 @@ function randomString($characters) {
  * @param string $url
  * @param bool   $failOnError
  *
- * @return \App\Models\User\User|string
+ * @return App\Models\User\User|string
  */
 function checkAlias($url, $failOnError = true) {
     if ($url) {
