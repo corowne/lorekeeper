@@ -165,7 +165,7 @@ class ItemController extends Controller {
      */
     public function getItemIndex(Request $request) {
         $query = Item::query();
-        $data = $request->only(['item_category_id', 'name', 'sort', 'visibility']);
+        $data = $request->only(['item_category_id', 'name', 'sort', 'artist', 'visibility']);
         if (isset($data['item_category_id']) && $data['item_category_id'] != 'none') {
             $query->where('item_category_id', $data['item_category_id']);
         }
