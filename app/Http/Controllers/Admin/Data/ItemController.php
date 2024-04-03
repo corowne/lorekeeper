@@ -172,6 +172,9 @@ class ItemController extends Controller {
         if (isset($data['name'])) {
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
         }
+        if (isset($data['artist']) && $data['artist'] != 'none') {
+            $query->where('artist_id', $data['artist']);
+        }
         if (isset($data['visibility']) && $data['visibility'] != 'none') {
             if ($data['visibility'] == 'visibleOnly') {
                 $query->where('is_released', '=', 1);
@@ -179,6 +182,7 @@ class ItemController extends Controller {
                 $query->where('is_released', '=', 0);
             }
         }
+
         if (isset($data['sort'])) {
             switch ($data['sort']) {
                 case 'alpha':
