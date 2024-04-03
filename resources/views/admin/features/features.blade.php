@@ -38,6 +38,18 @@
         <div class="form-inline justify-content-end">
             <div class="form-group ml-3 mb-3">
                 {!! Form::select(
+                    'visibility',
+                    [
+                        'none' => 'Any Visibility',
+                        'visibleOnly' => 'Visible Only',
+                        'hiddenOnly' => 'Hidden Only',
+                    ],
+                    Request::get('visibility') ?: 'none',
+                    ['class' => 'form-control'],
+                ) !!}
+            </div>
+            <div class="form-group ml-3 mb-3">
+                {!! Form::select(
                     'sort',
                     [
                         'alpha' => 'Sort Alphabetically (A-Z)',
