@@ -165,12 +165,40 @@ class ItemController extends Controller {
      */
     public function getItemIndex(Request $request) {
         $query = Item::query();
-        $data = $request->only(['item_category_id', 'name']);
+        $data = $request->only(['item_category_id', 'name', 'sort', 'visibility']);
         if (isset($data['item_category_id']) && $data['item_category_id'] != 'none') {
             $query->where('item_category_id', $data['item_category_id']);
         }
         if (isset($data['name'])) {
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
+        }
+        if (isset($data['visibility']) && $data['visibility'] != 'none') {
+            if ($data['visibility'] == 'visibleOnly') {
+                $query->where('is_released', '=', 1);
+            } else {
+                $query->where('is_released', '=', 0);
+            }
+        }
+        if (isset($data['sort'])) {
+            switch ($data['sort']) {
+                case 'alpha':
+                    $query->sortAlphabetical();
+                    break;
+                case 'alpha-reverse':
+                    $query->sortAlphabetical(true);
+                    break;
+                case 'category':
+                    $query->sortCategory();
+                    break;
+                case 'newest':
+                    $query->sortNewest();
+                    break;
+                case 'oldest':
+                    $query->sortOldest();
+                    break;
+            }
+        } else {
+            $query->sortOldest();
         }
 
         return view('admin.items.items', [
