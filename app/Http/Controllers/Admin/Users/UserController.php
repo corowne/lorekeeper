@@ -171,6 +171,7 @@ class UserController extends Controller {
         } elseif (!Auth::user()->canEditRank($user->rank)) {
             flash('You cannot edit the information of a user that has a higher rank than yourself.')->error();
         } elseif ($user->settings->update(['is_fto' => $request->get('is_fto') ?: 0])) {
+            if (!$user->update(['email' => $request->get('email')])) flash('Failed to update user\'s account information.')->error();
             if (!(new UserService)->logAdminAction(Auth::user(), 'Edited User', 'Edited '.$user->displayname)) {
                 flash('Failed to log admin action.')->error();
 
