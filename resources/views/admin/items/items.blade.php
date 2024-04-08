@@ -21,7 +21,7 @@
     </div>
 
     <div>
-    {!! Form::open(['method' => 'GET', 'class' => '']) !!}
+        {!! Form::open(['method' => 'GET', 'class' => '']) !!}
         <div class="form-inline justify-content-end">
             <div class="form-group ml-3 mb-3">
                 {!! Form::text('name', Request::get('name'), ['class' => 'form-control', 'placeholder' => 'Name']) !!}
