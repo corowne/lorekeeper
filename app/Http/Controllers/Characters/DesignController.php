@@ -171,7 +171,7 @@ class DesignController extends Controller {
 
         return view('character.design.addons', [
             'request'     => $r,
-            'categories'  => ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->get(),
+            'categories'  => ItemCategory::visible(Auth::user() ?? null)->orderBy('sort', 'DESC')->get(),
             'inventory'   => $inventory,
             'items'       => Item::all()->keyBy('id'),
             'item_filter' => Item::orderBy('name')->get()->keyBy('id'),

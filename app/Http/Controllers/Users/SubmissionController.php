@@ -107,7 +107,7 @@ class SubmissionController extends Controller {
             'submission'             => new Submission,
             'prompts'                => Prompt::active()->sortAlphabetical()->pluck('name', 'id')->toArray(),
             'characterCurrencies'    => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
-            'categories'             => ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->get(),
+            'categories'             => ItemCategory::visible(Auth::user() ?? null)->orderBy('sort', 'DESC')->get(),
             'item_filter'            => Item::orderBy('name')->released()->get()->keyBy('id'),
             'items'                  => Item::orderBy('name')->released()->pluck('name', 'id'),
             'character_items'        => Item::whereIn('item_category_id', ItemCategory::where('is_character_owned', 1)->pluck('id')->toArray())->orderBy('name')->released()->pluck('name', 'id'),
@@ -398,7 +398,7 @@ class SubmissionController extends Controller {
         ] + ($closed ? [] : [
             'submission'          => new Submission,
             'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
-            'categories'          => ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->get(),
+            'categories'          => ItemCategory::visible(Auth::user() ?? null)->orderBy('sort', 'DESC')->get(),
             'inventory'           => $inventory,
             'item_filter'         => Item::orderBy('name')->released()->get()->keyBy('id'),
             'items'               => Item::orderBy('name')->released()->pluck('name', 'id'),
