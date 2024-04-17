@@ -100,12 +100,12 @@ class TradeController extends Controller {
             ->sortBy('item.name');
 
         return view('home.trades.create_trade', [
-            'categories'          => ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->get(),
+            'categories'          => ItemCategory::visible(Auth::user() ?? null)->orderBy('sort', 'DESC')->get(),
             'item_filter'         => Item::orderBy('name')->get()->keyBy('id'),
             'inventory'           => $inventory,
             'userOptions'         => User::visible()->where('id', '!=', Auth::user()->id)->orderBy('name')->pluck('name', 'id')->toArray(),
             'characters'          => Auth::user()->allCharacters()->visible()->tradable()->with('designUpdate')->get(),
-            'characterCategories' => CharacterCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->get(),
+            'characterCategories' => CharacterCategory::visible(Auth::user() ?? null)->orderBy('sort', 'DESC')->get(),
             'page'                => 'trade',
         ]);
     }
@@ -136,12 +136,12 @@ class TradeController extends Controller {
         return view('home.trades.edit_trade', [
             'trade'               => $trade,
             'partner'             => (Auth::user()->id == $trade->sender_id) ? $trade->recipient : $trade->sender,
-            'categories'          => ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->get(),
+            'categories'          => ItemCategory::visible(Auth::user() ?? null)->orderBy('sort', 'DESC')->get(),
             'item_filter'         => Item::orderBy('name')->get()->keyBy('id'),
             'inventory'           => $inventory,
             'userOptions'         => User::visible()->orderBy('name')->pluck('name', 'id')->toArray(),
             'characters'          => Auth::user()->allCharacters()->visible()->with('designUpdate')->get(),
-            'characterCategories' => CharacterCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->get(),
+            'characterCategories' => CharacterCategory::visible(Auth::user() ?? null)->orderBy('sort', 'DESC')->get(),
             'page'                => 'trade',
         ]);
     }

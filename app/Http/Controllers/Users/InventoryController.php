@@ -32,7 +32,7 @@ class InventoryController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getIndex() {
-        $categories = ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->get();
+        $categories = ItemCategory::visible(Auth::user() ?? null)->orderBy('sort', 'DESC')->get();
         $items = count($categories) ?
             Auth::user()->items()
                 ->where('count', '>', 0)
@@ -214,7 +214,7 @@ class InventoryController extends Controller {
         }
 
         // Set up Categories
-        $categories = ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->get();
+        $categories = ItemCategory::visible(Auth::user() ?? null)->orderBy('sort', 'DESC')->get();
 
         if (count($categories)) {
             $items =
