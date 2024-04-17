@@ -50,7 +50,7 @@ class WorldController extends Controller {
         }
 
         return view('world.currencies', [
-            'currencies' => $query->orderBy('name')->paginate(20)->appends($request->query()),
+            'currencies' => $query->orderBy('name')->orderBy('id')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -67,7 +67,7 @@ class WorldController extends Controller {
         }
 
         return view('world.rarities', [
-            'rarities' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
+            'rarities' => $query->orderBy('sort', 'DESC')->orderBy('id')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -86,7 +86,7 @@ class WorldController extends Controller {
         return view('world.specieses', [
             'specieses' => $query->with(['subtypes' => function ($query) {
                 $query->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC');
-            }])->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
+            }])->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->orderBy('id')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -103,7 +103,7 @@ class WorldController extends Controller {
         }
 
         return view('world.subtypes', [
-            'subtypes' => $query->with('species')->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
+            'subtypes' => $query->with('species')->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->orderBy('id')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -120,7 +120,7 @@ class WorldController extends Controller {
         }
 
         return view('world.item_categories', [
-            'categories' => $query->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
+            'categories' => $query->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->orderBy('id')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -137,7 +137,7 @@ class WorldController extends Controller {
         }
 
         return view('world.feature_categories', [
-            'categories' => $query->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
+            'categories' => $query->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->orderBy('id')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -409,7 +409,7 @@ class WorldController extends Controller {
         }
 
         return view('world.character_categories', [
-            'categories' => $query->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
+            'categories' => $query->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->orderBy('id')->paginate(20)->appends($request->query()),
         ]);
     }
 }
