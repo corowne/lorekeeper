@@ -212,7 +212,7 @@ class WorldController extends Controller {
         }
 
         return view('world.features', [
-            'features'   => $query->paginate(20)->appends($request->query()),
+            'features'   => $query->orderBy('id')->paginate(20)->appends($request->query()),
             'rarities'   => ['none' => 'Any Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses'  => ['none' => 'Any Species'] + ['withoutOption' => 'Without Species'] + Species::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'subtypes'   => ['none' => 'Any Subtype'] + ['withoutOption' => 'Without Subtype'] + Subtype::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
@@ -355,7 +355,7 @@ class WorldController extends Controller {
         }
 
         return view('world.items', [
-            'items'      => $query->paginate(20)->appends($request->query()),
+            'items'      => $query->orderBy('id')->paginate(20)->appends($request->query()),
             'categories' => ['none' => 'Any Category'] + ['withoutOption' => 'Without Category'] + ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'shops'      => Shop::orderBy('sort', 'DESC')->get(),
             'artists'    => ['none' => 'Any Artist'] + User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray(),
