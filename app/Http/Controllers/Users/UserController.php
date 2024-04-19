@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\Controller;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterImage;
+use App\Models\Character\CharacterImageCreator;
 use App\Models\Character\Sublist;
 use App\Models\Currency\Currency;
 use App\Models\Gallery\Gallery;
@@ -314,6 +315,56 @@ class UserController extends Controller {
         return view('user.gallery', [
             'user'        => $this->user,
             'submissions' => $this->user->gallerySubmissions()->paginate(20)->appends($request->query()),
+        ]);
+    }
+
+    /**
+     * Shows a user's character art.
+     *
+     * @param string $name
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserCharacterArt(Request $request, $name) {
+
+        $characters = Character::whereHas('image', function ($query) {
+            $query->whereHas('artists', function ($query) {
+                $query->where('user_id', $this->user->id);
+            });
+        });
+
+        if (!Auth::check() || !(Auth::check() && Auth::user()->hasPower('manage_characters'))) {
+            $characters->visible();
+        }
+
+        return view('user.character_arts', [
+            'user'        => $this->user,
+            'designs'      => $characters->get(),
+        ]);
+    }
+
+    /**
+     * Shows a user's character designs.
+     *
+     * @param string $name
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserCharacterDesigns(Request $request, $name) {
+
+        $characters = Character::whereHas('image', function ($query) {
+            $query->whereHas('designers', function ($query) {
+                $query->where('user_id', $this->user->id);
+            });
+        });
+
+        if (!Auth::check() || !(Auth::check() && Auth::user()->hasPower('manage_characters'))) {
+            $characters->visible();
+        }
+
+        return view('user.character_designs', [
+            'user'        => $this->user,
+            'designs'      => $characters->get(),
         ]);
     }
 
