@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\Controller;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterImage;
-use App\Models\Character\CharacterImageCreator;
 use App\Models\Character\Sublist;
 use App\Models\Currency\Currency;
 use App\Models\Gallery\Gallery;
@@ -337,9 +336,10 @@ class UserController extends Controller {
             $characters->visible();
         }
 
-        return view('user.character_arts', [
+        return view('user.character_designs', [
             'user'        => $this->user,
-            'designs'      => $characters->get(),
+            'characters'  => $characters->get(),
+            'isDesign'    => false,
         ]);
     }
 
@@ -364,7 +364,8 @@ class UserController extends Controller {
 
         return view('user.character_designs', [
             'user'        => $this->user,
-            'designs'      => $characters->get(),
+            'characters'  => $characters->get(),
+            'isDesign'    => true,
         ]);
     }
 

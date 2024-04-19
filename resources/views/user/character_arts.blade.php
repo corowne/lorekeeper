@@ -1,7 +1,7 @@
 @extends('user.layout')
 
 @section('profile-title')
-    {{ $user->name }}'s Favorites
+    {{ $user->name }}'s Character Art
 @endsection
 
 @section('profile-content')

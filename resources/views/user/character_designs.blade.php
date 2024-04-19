@@ -1,18 +1,30 @@
 @extends('user.layout')
 
 @section('profile-title')
-    {{ $user->name }}'s Favorites
+    @if ($isDesign)
+        {{ $user->name }}'s Character Designs
+    @else
+        {{ $user->name }}'s Character Art
+    @endif
 @endsection
 
 @section('profile-content')
-{!! breadcrumbs(['Users' => 'users', $user->name => $user->url, 'Character Designs' => $user->url . '/designs']) !!}
+    @if ($isDesign)
+        {!! breadcrumbs(['Users' => 'users', $user->name => $user->url, 'Character Designs' => $user->url . '/designs']) !!}
+    @else
+        {!! breadcrumbs(['Users' => 'users', $user->name => $user->url, 'Character Art' => $user->url . '/designs']) !!}
+    @endif
 
     <h1>
-        Designs
+    @if ($isDesign)
+        Character Designs
+    @else
+        Character Art
+    @endif
     </h1>
 
     <div class="row">
-        @foreach ($designs as $character)
+        @foreach ($characters as $character)
             <div class="col-md-3 col-6 text-center">
                 <div>
                     <a href="{{ $character->url }}"><img src="{{ $character->image->thumbnailUrl }}" class="img-thumbnail" alt="Thumbnail for {{ $character->fullName }}" /></a>
