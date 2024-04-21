@@ -103,7 +103,7 @@
                         @if (Settings::get('is_maintenance_mode'))
                             <div class="alert alert-secondary">
                                 The site is currently in maintenance mode!
-                                @if (!Auth::user()->hasPower('maintenance_access'))
+                                @if (!Auth::check() || !Auth::user()->hasPower('maintenance_access'))
                                     You can browse public content, but cannot make any submissions.
                                 @endif
                             </div>
