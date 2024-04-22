@@ -325,7 +325,6 @@ class UserController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getUserCharacterArt(Request $request, $name) {
-
         $characters = Character::whereHas('image', function ($query) {
             $query->whereHas('artists', function ($query) {
                 $query->where('user_id', $this->user->id);
@@ -351,7 +350,6 @@ class UserController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getUserCharacterDesigns(Request $request, $name) {
-
         $characters = Character::whereHas('image', function ($query) {
             $query->whereHas('designers', function ($query) {
                 $query->where('user_id', $this->user->id);
