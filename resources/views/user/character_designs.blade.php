@@ -16,11 +16,11 @@
     @endif
 
     <h1>
-    @if ($isDesign)
-        Character Designs
-    @else
-        Character Art
-    @endif
+        @if ($isDesign)
+            Character Designs
+        @else
+            Character Art
+        @endif
     </h1>
 
     <div class="row">
