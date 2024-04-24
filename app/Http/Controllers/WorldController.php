@@ -306,11 +306,7 @@ class WorldController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getItems(Request $request) {
-        $query = Item::with('category');
-
-        if (!Auth::check() || !Auth::user()->isStaff) {
-            $query->released();
-        }
+        $query = Item::with('category')->released(Auth::user() ?? null);
 
         $categoryVisibleCheck = ItemCategory::visible(Auth::check() ? Auth::user() : null)->pluck('id', 'name')->toArray();
         // query where category is visible, or, no category and released
@@ -372,11 +368,8 @@ class WorldController extends Controller {
     public function getItem($id) {
         $categories = ItemCategory::orderBy('sort', 'DESC')->get();
 
-        if (!Auth::check() || !Auth::user()->isStaff) {
-            $item = Item::where('id', $id)->released()->first();
-        } else {
-            $item = Item::where('id', $id)->first();
-        }
+        $item = Item::where('id', $id)->released(Auth::user() ?? null)->first();
+
         if (!$item) {
             abort(404);
         }
