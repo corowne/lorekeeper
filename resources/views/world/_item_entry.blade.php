@@ -1,6 +1,6 @@
 <div class="row world-entry">
     @if ($imageUrl)
-        <div class="col-md-3 world-entry-image"><a href="{{ $imageUrl }}" data-lightbox="entry" data-title="{{ $name }}"><img src="{{ $imageUrl }}" class="world-entry-image" alt="{{ $name }}" /></a></div>
+        <div class="col-md-3 world-entry-image"><a href="{{ $imageUrl }}" data-lightbox="entry" data-title="{{ $name }}"><img src="{{ $imageUrl }}" class="world-entry-image {{checkItemBlock($item, Auth::user()) ? 'silhouette' : ''}}" alt="{{ $name }}" /></a></div>
     @endif
     <div class="{{ $imageUrl ? 'col-md-9' : 'col-12' }}">
         <x-admin-edit title="Item" :object="$item" />
@@ -13,6 +13,9 @@
                 <a href="{{ $idUrl }}" class="world-entry-search text-muted">
                     <i class="fas fa-search"></i>
                 </a>
+            @endif
+             @if(Auth::check())
+                @include('widgets._item_block', ['item' => $item])
             @endif
         </h3>
         <div class="row">
