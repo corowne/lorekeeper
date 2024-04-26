@@ -148,7 +148,11 @@ class Item extends Model {
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeReleased($query) {
+    public function scopeReleased($query, $user = null) {
+        if ($user && $user->hasPower('edit_data')) {
+            return $query;
+        }
+
         return $query->where('is_released', 1);
     }
 
