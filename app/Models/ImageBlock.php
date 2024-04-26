@@ -35,8 +35,9 @@ class ImageBlock extends Model
      */
     public function item()
     {
-        return $this->belongsTo($item_type::find($this->item_id));
+        return $this->belongsTo($this->item_type::find($this->item_id));
     }
+    
     /**
      * Get the user who blocked the image.
      */

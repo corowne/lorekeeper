@@ -3,5 +3,5 @@
      $model = get_class($item);
  @endphp
  <input type="hidden" name="item_type" value="{{ $model }}" />
- {!! Form::submit(checkItemBlock($item, Auth::user()) ? 'Unblock' : 'Block', ['class' => 'btn btn-success btn-sm']) !!}
+ {!! Form::submit(checkItemBlock($item, Auth::user()) ? 'Unblock' : 'Block', ['class' => 'btn btn-success btn-sm '.(isset($float) && $float ? 'float-right' : '')]) !!}
  {!! Form::close() !!}
