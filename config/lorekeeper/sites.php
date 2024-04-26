@@ -142,6 +142,6 @@ return [
         'display_name' => 'FA',
         'regex'        => '/furaffinity\.net\/user\/([A-Za-z0-9_-]+)/',
         'icon'         => 'fas fa-paw',
-        'link'         => 'furaffinity.net'
+        'link'         => 'furaffinity.net',
     ],
 ];

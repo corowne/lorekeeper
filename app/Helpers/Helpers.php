@@ -411,7 +411,7 @@ function prettyProfileLink($url) {
             $site = $siteName;
             $name = $matches[1][0];
             $link = $matches[0][0];
-            $icon = isset($siteInfo['icon']) ? $siteInfo['icon'] : "fas fa-globe";
+            $icon = $siteInfo['icon'] ?? 'fas fa-globe';
             break;
         }
     }

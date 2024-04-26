@@ -145,6 +145,7 @@ class Item extends Model {
      * Scope a query to show only released or "released" (at least one user-owned stack has ever existed) items.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed|null                            $user
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
