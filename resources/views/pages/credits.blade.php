@@ -144,6 +144,9 @@
         <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Submission_Drafts"><strong>Submission Drafts</strong></a> by <a href="https://github.com/preimpression/">Preimpression</a>
         </p>
+        <p class="mb-0 col-md-4">
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Admin_Edit_Button"><strong>Admin Edit Buttons</strong></a> by <a href="https://github.com/preimpression/">Preimpression</a>
+        </p>
     </div>
 
     <hr />
