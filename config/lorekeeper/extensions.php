@@ -112,4 +112,8 @@ return [
     // Use ReCaptcha to check new user registrations - Mercury
     // Requires site key and secret be set in your .env file!
     'use_recaptcha' => 0,
+
+    // Show Small Badges on the User's Characters/MYO Slots Page
+    // Indicating Trading Status (and Gift Art & Gift Writing Status)
+    'badges_on_user_character_page' => 1,
 ];
