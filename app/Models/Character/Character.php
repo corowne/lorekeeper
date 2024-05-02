@@ -362,7 +362,7 @@ class Character extends Model {
     public function getMiniBadgeAttribute() {
         $tradingCode = $this->is_trading ? 'badge-success' : 'badge-danger';
         $tradingSection = "<span class='badge ".$tradingCode."'><i class='fas fa-comments-dollar'></i></span>";
-        $nonMyoSection = "";
+        $nonMyoSection = '';
 
         if (!$this->is_myo_slot) {
             $artCode = $this->is_gift_art_allowed == 1 ? 'badge-success' : ($this->is_gift_art_allowed == 2 ? 'badge-warning text-light' : 'badge-danger');
