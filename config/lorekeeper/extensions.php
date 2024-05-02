@@ -115,5 +115,5 @@ return [
 
     // Show Small Badges on the User's Characters/MYO Slots Page
     // Indicating Trading Status (and Gift Art & Gift Writing Status)
-    'badges_on_user_character_page' => 1,
+    'badges_on_user_character_page' => 0,
 ];
