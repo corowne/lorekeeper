@@ -1,8 +1,6 @@
 <div class="col-md-3 col-6 mb-3 text-center ">
     @if (Auth::check() && Auth::user()->hasPower('edit_data'))
-        <a data-toggle="tooltip" title="[ADMIN] Edit Area"
-            href="{{ url('admin/data/encounters/areas/edit/') . '/' . $area->id }}" class="mb-2 float-right"><i
-                class="fas fa-crown"></i></a>
+        <a data-toggle="tooltip" title="[ADMIN] Edit Area" href="{{ url('admin/data/encounters/areas/edit/') . '/' . $area->id }}" class="mb-2 float-right"><i class="fas fa-crown"></i></a>
     @endif
     @if ($area->has_thumbnail)
         <div class="shop-image">
@@ -26,15 +24,23 @@
         ?>)</div>
     @endif
     <div class="mt-3">
-        <a href="#" class="btn btn-outline-info btn-sm initiate-explore-{{ $area->id }}" data-id="{{ $area->url }}"> Explore</a>
+        <a href="#" class="btn btn-outline-info btn-sm initiate-explore-{{ $area->id }}"> Explore</a>
     </div>
 </div>
 
+
 <script>
-    $(document).ready(function() {
-        $('.initiate-explore-{{$area->id}}').on('click', function(e) {
-            e.preventDefault();
-            loadModal($(this).data('id'), 'Explore');
+    $(document).on('click', '.initiate-explore-{{ $area->id }}', function() {
+        $.ajax({
+            type: "GET",
+            url: "{{ url('encounter-areas/' . $area->id) }}",
+        }).done(function(res) {
+            $("#encounter-area").fadeOut(500, function() {
+                $("#encounter-area").html(res);
+                $("#encounter-area").fadeIn(500);
+            });
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            alert("AJAX call failed: " + textStatus + ", " + errorThrown);
         });
     });
 </script>

@@ -78,4 +78,7 @@
             @endforeach
         </div>
     @endif
+
+    <div id="encounter-area">
+    </div>
 @endsection

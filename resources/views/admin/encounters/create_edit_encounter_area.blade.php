@@ -8,9 +8,7 @@
     {!! breadcrumbs([
         'Admin Panel' => 'admin',
         'Encounter Areas' => 'admin/data/encounters/areas/',
-        ($area->id ? 'Edit' : 'Create') . ' Area' => $area->id
-            ? 'admin/data/encounters/areas/edit/' . $area->id
-            : 'admin/data/encounters/areas/create',
+        ($area->id ? 'Edit' : 'Create') . ' Area' => $area->id ? 'admin/data/encounters/areas/edit/' . $area->id : 'admin/data/encounters/areas/create',
     ]) !!}
 
     <h1>
@@ -93,9 +91,7 @@
             'class' => 'form-check-input',
             'data-toggle' => 'toggle',
         ]) !!}
-        {!! Form::label('is_active', 'Is Active', ['class' => 'form-check-label ml-3']) !!} {!! add_help(
-            'Areas that are not active will be hidden from the area list. They also cannot be automatically set as the next active area.',
-        ) !!}
+        {!! Form::label('is_active', 'Is Active', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Areas that are not active will be hidden from the area list. They also cannot be automatically set as the next active area.') !!}
     </div>
 
     <div class="row">
@@ -127,9 +123,7 @@
         <thead>
             <tr>
                 <th width="40%">Encounter</th>
-                <th width="30%">Weight {!! add_help(
-                    'A higher weight means a reward is more likely to be rolled. Weights have to be integers above 0 (round positive number, no decimals) and do not have to add up to be a particular number.',
-                ) !!}</th>
+                <th width="30%">Weight {!! add_help('A higher weight means a reward is more likely to be rolled. Weights have to be integers above 0 (round positive number, no decimals) and do not have to add up to be a particular number.') !!}</th>
                 <th width="20%">Chance</th>
                 <th width="10%"></th>
             </tr>
@@ -269,11 +263,11 @@
         </div>
 
         <h3>Preview</h3>
-        <div class="card mb-3">
-            <div class="card-body">
-                @include('encounters._area_entry')
-            </div>
-        </div>
+        @include('encounters._area_entry')
+
+        <div id="encounter-area">
+    </div>
+
     @endif
 
 @endsection
@@ -281,6 +275,20 @@
 @section('scripts')
     @parent
     <script>
+    $(document).on('click', '.initiate-explore-{{ $area->id }}', function() {
+        $.ajax({
+            type: "GET",
+            url: "{{ url('encounter-areas/' . $area->id) }}",
+            data:{"admin":true}
+        }).done(function(res) {
+            $("#encounter-area").fadeOut(500, function() {
+                $("#encounter-area").html(res);
+                $("#encounter-area").fadeIn(500);
+            });
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            alert("AJAX call failed: " + textStatus + ", " + errorThrown);
+        });
+    });
         $(document).ready(function() {
             $('.delete-area-button').on('click', function(e) {
                 e.preventDefault();
