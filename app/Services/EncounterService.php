@@ -1,28 +1,26 @@
 <?php namespace App\Services;
 
-use App\Services\Service;
-
-use DB;
-use Config;
-
-use Illuminate\Support\Arr;
+use App\Models\Character\Character;
+use App\Models\Currency\Currency;
+use App\Models\Encounter\AreaEncounters;
+use App\Models\Encounter\AreaLimit;
 use App\Models\Encounter\Encounter;
 use App\Models\Encounter\EncounterArea;
-use App\Models\Encounter\EncounterReward;
-use App\Models\Encounter\AreaEncounters;
 use App\Models\Encounter\EncounterPrompt;
-use App\Models\Encounter\AreaLimit;
-use App\Models\Character\Character;
+use App\Models\User\User;
 use App\Services\CurrencyManager;
-use App\Models\Currency\Currency;
+use App\Services\Service;
+use Config;
+use DB;
+use Illuminate\Support\Arr;
 
 class EncounterService extends Service
 {
     /**********************************************************************************************
 
-        ENCOUNTER AREAS
+    ENCOUNTER AREAS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Create a area.
@@ -102,8 +100,8 @@ class EncounterService extends Service
             // More specific validation
             if (
                 EncounterArea::where('name', $data['name'])
-                    ->where('id', '!=', $area->id)
-                    ->exists()
+                ->where('id', '!=', $area->id)
+                ->exists()
             ) {
                 throw new \Exception('The name has already been taken.');
             }
@@ -267,9 +265,9 @@ class EncounterService extends Service
 
     /**********************************************************************************************
 
-        ENCOUNTERS
+    ENCOUNTERS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Creates a new encounter.
@@ -412,9 +410,9 @@ class EncounterService extends Service
 
     /**********************************************************************************************
 
-        ENCOUNTER EXPLORATION
+    ENCOUNTER EXPLORATION
 
-    **********************************************************************************************/
+     **********************************************************************************************/
     /**
      * Creates a new prompt for a encounter
      */
@@ -559,9 +557,9 @@ class EncounterService extends Service
 
     /**********************************************************************************************
 
-        ENCOUNTER EXPLORATION
+    ENCOUNTER EXPLORATION
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Explore area
@@ -574,6 +572,11 @@ class EncounterService extends Service
         DB::beginTransaction();
 
         try {
+            if (!$data['action']) {
+                header('HTTP/1.1 500 You have no energy or an error has occurred.');
+                header('Content-Type: application/json; charset=UTF-8');
+                die(json_encode(array('message' => 'ERROR', 'code' => 500)));
+            }
             $area = EncounterArea::active()->find($data['area_id']);
             if (!$area) {
                 abort(404);
@@ -608,94 +611,16 @@ class EncounterService extends Service
             }
 
             $use_energy = Config::get('lorekeeper.encounters.use_energy');
+            $use_characters = Config::get('lorekeeper.encounters.use_characters');
 
-            if (Config::get('lorekeeper.encounters.use_characters')) {
-                $character = $user->settings->encounterCharacter;
-                //if it alters the energy, then alter it
-                if ($action->extras != null && $action->extras['math_type'] != null && $action->extras['energy_value'] != null) {
-                    //use energy
-                    if($use_energy){
-                        // map to map subtract, add etc to ops
-                            $operators = [
-                                'add' => '+',
-                                'subtract' => '-',
-                            ];
-
-                        $quantity = eval('return ' . $character->encounter_energy . $operators[$action->extras['math_type']] . $action->extras['energy_value'] . ';');
-
-                        $character->encounter_energy = $quantity;
-                        $character->save();
-
-                        //if would become negative set to 0
-                        if($character->encounter_energy < 0){
-                            $character->encounter_energy = 0;
-                            $character->save();
-                        }
-                    }else{
-                        //use currency
-                         if($action->extras['math_type'] == 'subtract'){
-                            if (!(new CurrencyManager())->debitCurrency($character, null, 'Encounter Removal', 'Lost energy in ' . $area->name.'...', Currency::find(Config::get('lorekeeper.encounters.energy_replacement_id')), $action->extras['energy_value'])) {
-                                flash('Could not debit currency.')->error();
-                                return redirect()->back();
-                            }
-                         }else{
-                            if (!(new CurrencyManager())->creditCurrency(null, $character, 'Encounter Grant', 'Gained energy in ' . $area->name.'!', Currency::find(Config::get('lorekeeper.encounters.energy_replacement_id')), $action->extras['energy_value'])) {
-                                flash('Could not grant currency.')->error();
-                                return redirect()->back();
-                            }
-                         }
-                    }
-                    
-
-                    if ($action->extras['math_type'] == 'subtract') {
-                        flash($character->fullName.' lost ' . $action->extras['energy_value'] . ' energy...')->error();
-                    } elseif ($action->extras['math_type'] == 'add') {
-                        flash($character->fullName.' regained ' . $action->extras['energy_value'] . ' energy!')->success();
-                    }
+            //if it alters the energy, then alter it
+            if ($action->extras != null && $action->extras['math_type'] != null && $action->extras['energy_value'] != null) {
+                if ($use_characters) {
+                    $this->grantRemoveEnergy($action, $user, true, $area, $user->settings->encounterCharacter);
+                } else {
+                    $this->grantRemoveEnergy($action, $user, false, $area);
                 }
-            } else {
-                //if it alters the energy, then alter it
-                if ($action->extras != null && $action->extras['math_type'] != null && $action->extras['energy_value'] != null) {
-                    //use energy
-                    if($use_energy){
-                        // map to map subtract, add etc to ops
-                            $operators = [
-                                'add' => '+',
-                                'subtract' => '-',
-                            ];
 
-                        $quantity = eval('return ' . $user->settings->encounter_energy . $operators[$action->extras['math_type']] . $action->extras['energy_value'] . ';');
-
-                        $user->settings->encounter_energy = $quantity;
-                        $user->settings->save();
-
-                        //if would become negative set to 0
-                        if($user->settings->encounter_energy < 0){
-                            $user->settings->encounter_energy = 0;
-                            $user->settings->save();
-                        }
-                    }else{
-                        //use currency
-                         if($action->extras['math_type'] == 'subtract'){
-                            if (!(new CurrencyManager())->debitCurrency($user, null, 'Encounter Removal', 'Lost energy in ' . $area->name.'...', Currency::find(Config::get('lorekeeper.encounters.energy_replacement_id')), $action->extras['energy_value'])) {
-                                flash('Could not debit currency.')->error();
-                                return redirect()->back();
-                            }
-                         }else{
-                            if (!(new CurrencyManager())->creditCurrency(null, $user, 'Encounter Grant', 'Gained energy in ' . $area->name.'!', Currency::find(Config::get('lorekeeper.encounters.energy_replacement_id')), $action->extras['energy_value'])) {
-                                flash('Could not grant currency.')->error();
-                                return redirect()->back();
-                            }
-                         }
-                    }
-                    
-
-                    if ($action->extras['math_type'] == 'subtract') {
-                        flash('You lost ' . $action->extras['energy_value'] . ' energy...')->error();
-                    } elseif ($action->extras['math_type'] == 'add') {
-                        flash('You regained ' . $action->extras['energy_value'] . ' energy!')->success();
-                    }
-                }
             }
 
             return $this->commitReturn(true);
@@ -713,16 +638,7 @@ class EncounterService extends Service
      */
     private function getRewardsString($rewards)
     {
-        $results = 'You have received: ';
-        $result_elements = [];
-        foreach ($rewards as $assetType) {
-            if (isset($assetType)) {
-                foreach ($assetType as $asset) {
-                    array_push($result_elements, $asset['asset']->name . (class_basename($asset['asset']) == 'Raffle' ? ' (Raffle Ticket)' : '') . ' x' . $asset['quantity']);
-                }
-            }
-        }
-        return $results . implode(', ', $result_elements);
+        return 'You have received: ' . createRewardsString($rewards);
     }
 
     /**
@@ -753,5 +669,143 @@ class EncounterService extends Service
         }
 
         return $this->rollbackReturn(false);
+    }
+
+    /**
+     * grant energy to user or character
+     *
+     * @param array $data
+     * @param User  $staff
+     *
+     * @return bool
+     */
+    public function grantEncounterEnergy($data, $staff)
+    {
+        DB::beginTransaction();
+
+        try {
+            $use_energy = Config::get('lorekeeper.encounters.use_energy');
+            //abort if currency is selected
+            //no point in using this page if so lmao.
+            if (!$use_energy) {
+                abort(404);
+            }
+            $use_characters = Config::get('lorekeeper.encounters.use_characters');
+
+            $users = null;
+            $characters = null;
+
+            // ignore the opposite data depending on setting
+            if ($use_characters) {
+                if (isset($data['character_names'])) {
+                    $characters = Character::find($data['character_names']);
+                    if (count($characters) != count($data['character_names'])) {
+                        throw new \Exception('An invalid character was selected.');
+                    }
+                }
+            } else {
+                if (isset($data['names'])) {
+                    $users = User::find($data['names']);
+                    if (count($users) != count($data['names'])) {
+                        throw new \Exception('An invalid user was selected.');
+                    }
+                }
+            }
+
+            if ($data['quantity'] == 0) {
+                throw new \Exception("Please enter a non-zero quantity.");
+            }
+
+            foreach ([$users, $characters] as $targets) {
+                if (!$targets) {
+                    continue;
+                }
+
+                $quantity = $data['quantity'];
+
+                foreach ($targets as $target) {
+                    //path to debit or grant
+                    if ($use_characters) {
+                        $path = $target;
+                    } else {
+                        $path = $target->settings;
+                    }
+
+                    if ($quantity < 0) {
+                        $path->encounter_energy -= -$quantity;
+                        $path->save();
+                    } else {
+                        $path->encounter_energy += $quantity;
+                        $path->save();
+                    }
+
+                }
+
+            }
+
+            return $this->commitReturn(true);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return $this->rollbackReturn(false);
+    }
+
+    public function grantRemoveEnergy($action, $user, $use_characters, $area, $character = null)
+    {
+        //let's try and compact some of these checks
+
+        $use_energy = Config::get('lorekeeper.encounters.use_energy');
+        $use_characters = Config::get('lorekeeper.encounters.use_characters');
+
+        //get paths to grant or debit
+        if ($use_characters) {
+            $recipient = $character;
+            $currencyrecipient = $character;
+        } else {
+            $recipient = $user->settings;
+            $currencyrecipient = $user;
+        }
+
+        //if set to use energy
+        if ($use_energy) {
+
+            //math.
+            $operators = [
+                'add' => '+',
+                'subtract' => '-',
+            ];
+
+            $quantity = eval('return ' . $recipient->encounter_energy . $operators[$action->extras['math_type']] . $action->extras['energy_value'] . ';');
+
+            $recipient->encounter_energy = $quantity;
+            $recipient->save();
+
+            //if would become negative set to 0
+            if ($recipient->encounter_energy < 0) {
+                $recipient->encounter_energy = 0;
+                $recipient->save();
+            }
+        } else {
+            //use currency
+            if ($action->extras['math_type'] == 'subtract') {
+                if (!(new CurrencyManager())->debitCurrency($currencyrecipient, null, 'Encounter Removal', 'Lost energy in ' . $area->name . '...', Currency::find(Config::get('lorekeeper.encounters.energy_replacement_id')), $action->extras['energy_value'])) {
+                    flash('Could not debit currency.')->error();
+                    return redirect()->back();
+                }
+            } else {
+                if (!(new CurrencyManager())->creditCurrency(null, $currencyrecipient, 'Encounter Grant', 'Gained energy in ' . $area->name . '!', Currency::find(Config::get('lorekeeper.encounters.energy_replacement_id')), $action->extras['energy_value'])) {
+                    flash('Could not grant currency.')->error();
+                    return redirect()->back();
+                }
+            }
+
+        }
+        if ($action->extras['math_type'] == 'subtract') {
+            flash(($currencyrecipient->logType == 'User' ? 'You' : $character->fullName) . ' lost ' . $action->extras['energy_value'] . ' energy...')->error();
+        } elseif ($action->extras['math_type'] == 'add') {
+            flash(($currencyrecipient->logType == 'User' ? 'You' : $character->fullName) . ' regained ' . $action->extras['energy_value'] . ' energy!')->success();
+        }
+        
     }
 }

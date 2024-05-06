@@ -94,6 +94,10 @@ return [
                 'name' => 'Item Grants',
                 'url' => 'admin/grants/items'
             ],
+            [
+                'name' => 'Encounter Energy Grants',
+                'url' => 'admin/grants/encounter-energy'
+            ],
         ]
     ],
     'Masterlist' => [

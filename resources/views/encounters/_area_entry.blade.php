@@ -24,10 +24,9 @@
         ?>)</div>
     @endif
     <div class="mt-3">
-        <a href="#" class="btn btn-outline-info btn-sm initiate-explore-{{ $area->id }}"> Explore</a>
+        <a class="btn btn-outline-info btn-sm initiate-explore-{{ $area->id }}"> Explore</a>
     </div>
 </div>
-
 
 <script>
     $(document).on('click', '.initiate-explore-{{ $area->id }}', function() {
