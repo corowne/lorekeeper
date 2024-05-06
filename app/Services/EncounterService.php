@@ -7,6 +7,7 @@ use App\Models\Encounter\AreaLimit;
 use App\Models\Encounter\Encounter;
 use App\Models\Encounter\EncounterArea;
 use App\Models\Encounter\EncounterPrompt;
+use App\Models\Encounter\PromptLimit;
 use App\Models\User\User;
 use App\Services\CurrencyManager;
 use App\Services\Service;
@@ -454,6 +455,7 @@ class EncounterService extends Service
             ]);
 
             $prompt->output = $this->populateRewards($data);
+            $this->populatePromptLimits($data, $prompt->id);
             $prompt->save();
 
             return $this->commitReturn(true);
@@ -503,6 +505,7 @@ class EncounterService extends Service
             ]);
 
             $prompt->output = $this->populateRewards($data);
+            $this->populatePromptLimits($data, $prompt->id);
             $prompt->save();
 
             if (isset($data['delete']) && $data['delete']) {
@@ -555,6 +558,49 @@ class EncounterService extends Service
         return null;
     }
 
+    /**
+     * Restrict an area behind items
+     *
+     * @param  \App\Models\Encounter\Encounter  $season
+     * @param  array                       $data
+     */
+    public function populatePromptLimits($data, $id)
+    {
+        DB::beginTransaction();
+
+        try {
+            if (isset($data['item_type'])) {
+                foreach ($data['item_type'] as $key => $type) {
+                    if (!$type) {
+                        throw new \Exception('Please select a limit type.');
+                    }
+                    if (!$data['item_id'][$key]) {
+                        throw new \Exception('Please select a limit');
+                    }
+                }
+            }
+
+            $prompt = EncounterPrompt::find($id);
+
+            $prompt->limits()->delete();
+
+            if (isset($data['item_type'])) {
+                foreach ($data['item_type'] as $key => $type) {
+                    PromptLimit::create([
+                        'encounter_prompt_id' => $prompt->id,
+                        'item_type' => $type,
+                        'item_id' => $data['item_id'][$key],
+                    ]);
+                }
+            }
+
+            return $this->commitReturn(true);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
     /**********************************************************************************************
 
     ENCOUNTER EXPLORATION
@@ -573,9 +619,7 @@ class EncounterService extends Service
 
         try {
             if (!$data['action']) {
-                header('HTTP/1.1 500 You have no energy or an error has occurred.');
-                header('Content-Type: application/json; charset=UTF-8');
-                die(json_encode(array('message' => 'ERROR', 'code' => 500)));
+                abort(404);
             }
             $area = EncounterArea::active()->find($data['area_id']);
             if (!$area) {
@@ -806,6 +850,6 @@ class EncounterService extends Service
         } elseif ($action->extras['math_type'] == 'add') {
             flash(($currencyrecipient->logType == 'User' ? 'You' : $character->fullName) . ' regained ' . $action->extras['energy_value'] . ' energy!')->success();
         }
-        
+
     }
 }

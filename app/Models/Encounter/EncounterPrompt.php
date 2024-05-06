@@ -57,6 +57,14 @@ class EncounterPrompt extends Model
         return $this->belongsTo('App\Models\Encounter\Encounter', 'encounter_id');
     }
 
+        /**
+     * Get the required items / assets to perform the prompt.
+     */
+    public function limits()
+    {
+        return $this->hasMany('App\Models\Encounter\PromptLimit');
+    }
+
      /**
      * Gets the decoded output json
      *

@@ -362,7 +362,7 @@ class EncounterController extends Controller
     public function postCreateEditPrompt(Request $request, EncounterService $service, $encounter_id, $id = null)
     {
         $id ? $request->validate(EncounterPrompt::$updateRules) : $request->validate(EncounterPrompt::$createRules);
-        $data = $request->only(['encounter_id', 'name', 'result','rewardable_type', 'rewardable_id', 'quantity','math_type','energy_value','result_type','delete', ]);
+        $data = $request->only(['encounter_id', 'name', 'result','rewardable_type', 'rewardable_id', 'quantity','math_type','energy_value','result_type','delete', 'item_id', 'item_type' ]);
         if ($id && $service->editPrompt(EncounterPrompt::findOrFail($id), $data)) {
             // we dont flash in case we are deleting the prompt
         } elseif (!$id && $service->createPrompt(Encounter::find($encounter_id), $data)) {

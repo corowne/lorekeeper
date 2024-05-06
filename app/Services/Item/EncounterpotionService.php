@@ -7,6 +7,8 @@ namespace App\Services\Item;
 use App\Services\InventoryManager;
 use App\Services\Service;
 use DB;
+use Config;
+use App\Models\Character\Character;
 
 class EncounterpotionService extends Service {
     /*
@@ -78,21 +80,32 @@ class EncounterpotionService extends Service {
 
         try {
 
+            $use_characters = Config::get('lorekeeper.encounters.use_characters');
+
+            if($use_characters){
+                if (!$data['energy_recipient']) {
+                    throw new \Exception('No character selected.');
+                }
+                $recipient = Character::find($data['energy_recipient']);
+            }else{
+                $recipient = $user->settings;
+            }
+
             foreach ($stacks as $key=> $stack) {
-                // We don't want to let anyone who isn't the owner of the slot to use it,
+                // We don't want to let anyone who isn't the owner of the potion to use it,
                 // so do some validation...
                 if ($stack->user_id != $user->id) {
                     throw new \Exception('This item does not belong to you.');
                 }
 
-                // Next, try to delete the tag item. If successful, we can start applying potion effects.
+                // Next, try to delete the tag item. If successful, we can start applying effects.
                 if ((new InventoryManager)->debitStack($stack->user, 'Encounter Potion Used', ['data' => ''], $stack, $data['quantities'][$key])) {
                     for ($q = 0; $q < $data['quantities'][$key]; $q++) {
 
                         $quantity = $stack->item->tag($data['tag'])->getData()['value'];
 
-                        $user->settings->encounter_energy += $quantity;
-                        $user->settings->save();
+                        $recipient->encounter_energy += $quantity;
+                        $recipient->save();
 
                     }
                 }

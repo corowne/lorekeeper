@@ -18,6 +18,6 @@ return [
             'CH3RVB' => 'https://github.com/CH3RVB/',
             'LostInProgres' => 'https://github.com/LostInProgres',
         ]),
-        'version' => '1.0.1',
+        'version' => '2.0.0',
     ],
 ];
