@@ -70,7 +70,7 @@ class EncounterController extends Controller
             'use_energy' => $use_energy,
             'use_characters' => $use_characters,
             'energy' => $energy ?? null,
-            'character' => $character,
+            'character' => $character ?? null,
         ]);
     }
 
