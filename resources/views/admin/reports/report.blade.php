@@ -134,8 +134,8 @@
 @endsection
 
 @if ($report->status !== 'Closed')
-    @parent
     @section('scripts')
+        @parent
         <script>
             $(document).ready(function() {
                 $('#closalButton').on('click', function(e) {

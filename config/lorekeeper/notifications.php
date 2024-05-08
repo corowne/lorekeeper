@@ -386,7 +386,7 @@ return [
     508 => [
         'name'    => 'Gallery Submission Rejected',
         'message' => 'Your submission <strong>{submission_title}</strong> (#{submission_id}) was rejected. (<a href="{url}">View Submission</a>)',
-        'url'     => 'submissions/queue/{submission_id}',
+        'url'     => 'gallery/queue/{submission_id}',
     ],
 
     // GALLERY_SUBMISSION_VALUED
