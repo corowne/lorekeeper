@@ -216,7 +216,11 @@ class Character extends Model {
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeVisible($query) {
+    public function scopeVisible($query, $user = null) {
+        if ($user && $user->hasPower('manage_characters')) {
+            return $query;
+        }
+        
         return $query->where('is_visible', 1);
     }
 
