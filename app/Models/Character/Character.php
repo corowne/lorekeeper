@@ -213,6 +213,7 @@ class Character extends Model {
      * Scope a query to only include visible characters.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed|null                            $user
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
@@ -220,7 +221,7 @@ class Character extends Model {
         if ($user && $user->hasPower('manage_characters')) {
             return $query;
         }
-        
+
         return $query->where('is_visible', 1);
     }
 
