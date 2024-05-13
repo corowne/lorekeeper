@@ -547,7 +547,7 @@ class ItemService extends Service {
             $data['is_released'] = 1;
         }
         if (!isset($data['is_deletable'])) {
-            $data['is_deletable'] = 1;
+            $data['is_deletable'] = 0;
         }
 
         if (isset($data['remove_image'])) {
