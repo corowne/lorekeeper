@@ -102,7 +102,7 @@
         @endif
         <div class="col-md form-group">
             {!! Form::checkbox('is_deletable', 1, $item->id ? $item->is_deletable : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-            {!! Form::label('is_deletable', 'Can Be Deleted', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is off, users will not be able to delete the item from the user or character inventory.') !!}
+            {!! Form::label('is_deletable', 'Can Be Deleted', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is off, users will not be able to delete this item from user or character inventories.') !!}
         </div>
     </div>
 
