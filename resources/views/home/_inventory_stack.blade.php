@@ -119,22 +119,24 @@
                         </div>
                     </li>
                 @endif
-                <li class="list-group-item">
-                    <a class="card-title h5 collapse-title" data-toggle="collapse" href="#transferForm">
-                        @if ($stack->first()->user_id != $user->id)
-                            [ADMIN]
-                        @endif Transfer Item
-                    </a>
-                    <div id="transferForm" class="collapse">
-                        <div class="form-group">
-                            {!! Form::label('user_id', 'Recipient') !!} {!! add_help('You can only transfer items to verified users.') !!}
-                            {!! Form::select('user_id', $userOptions, null, ['class' => 'form-control']) !!}
+                @if ($canTransfer || $user->hasPower('edit_inventories'))
+                    <li class="list-group-item">
+                        <a class="card-title h5 collapse-title" data-toggle="collapse" href="#transferForm">
+                            @if ($stack->first()->user_id != $user->id || !$canTransfer)
+                                [ADMIN]
+                            @endif Transfer Item
+                        </a>
+                        <div id="transferForm" class="collapse">
+                            <div class="form-group">
+                                {!! Form::label('user_id', 'Recipient') !!} {!! add_help('You can only transfer items to verified users.') !!}
+                                {!! Form::select('user_id', $userOptions, null, ['class' => 'form-control']) !!}
+                            </div>
+                            <div class="text-right">
+                                {!! Form::button('Transfer', ['class' => 'btn btn-primary', 'name' => 'action', 'value' => 'transfer', 'type' => 'submit']) !!}
+                            </div>
                         </div>
-                        <div class="text-right">
-                            {!! Form::button('Transfer', ['class' => 'btn btn-primary', 'name' => 'action', 'value' => 'transfer', 'type' => 'submit']) !!}
-                        </div>
-                    </div>
-                </li>
+                    </li>
+                @endif
                 @if ($item->is_deletable || $user->hasPower('edit_inventories'))
                     <li class="list-group-item">
                         <a class="card-title h5 collapse-title" data-toggle="collapse" href="#deleteForm">
