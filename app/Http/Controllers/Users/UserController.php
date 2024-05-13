@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Users;
 
-use App\Facades\Settings;
 use App\Http\Controllers\Controller;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterImage;
