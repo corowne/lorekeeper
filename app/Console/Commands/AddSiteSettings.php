@@ -83,9 +83,9 @@ class AddSiteSettings extends Command {
 
         $this->addSiteSetting('comment_dislikes_enabled', 0, '0: Dislikes disabled, 1: Dislikes enabled.');
         
-        $this->addSiteSetting('can_transfer_currency_directly', 1, 'Can users directly transfer currency to other users without trading? 0: No, they cannot, 1: Yes, they can.');
+        $this->addSiteSetting('can_transfer_currency_directly', 1, 'Whether or not users can directly transfer currency to other users without trading. 0: Users cannot directly transfer currency. 1: Direct currency transfers are allowed.');
         
-        $this->addSiteSetting('can_transfer_items_directly', 1, 'Can users directly transfer items to other users without trading? 0: No, they cannot, 1: Yes, they can.');
+        $this->addSiteSetting('can_transfer_items_directly', 1, 'Whether or not users can directly transfer items to other users without trading. 0: Users cannot directly transfer items. 1: Direct item transfers are allowed.');
 
         $this->line("\nSite settings up to date!");
     }
