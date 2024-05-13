@@ -263,7 +263,7 @@ class ItemController extends Controller {
         $data = $request->only([
             'name', 'allow_transfer', 'item_category_id', 'description', 'image', 'remove_image', 'rarity',
             'reference_url', 'artist_id', 'artist_url', 'uses', 'shops', 'prompts', 'release', 'currency_id', 'currency_quantity',
-            'is_released',
+            'is_released', 'is_deletable',
         ]);
         if ($id && $service->updateItem(Item::find($id), $data, Auth::user())) {
             flash('Item updated successfully.')->success();
