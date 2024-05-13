@@ -138,7 +138,7 @@
                 @if ($item->is_deletable || $user->hasPower('edit_inventories'))
                     <li class="list-group-item">
                         <a class="card-title h5 collapse-title" data-toggle="collapse" href="#deleteForm">
-                            @if ($stack->first()->user_id != $user->id)
+                            @if ($stack->first()->user_id != $user->id || !$item->is_deletable)
                                 [ADMIN]
                             @endif Delete Item
                         </a>
