@@ -82,6 +82,10 @@ class AddSiteSettings extends Command {
         $this->addSiteSetting('deactivated_key', 0, 'Optional key to view the deactivated list. Enter "0" to not require one.');
 
         $this->addSiteSetting('comment_dislikes_enabled', 0, '0: Dislikes disabled, 1: Dislikes enabled.');
+        
+        $this->addSiteSetting('can_transfer_currency_directly', 1, 'Can users directly transfer currency to other users without trading? 0: No, they cannot, 1: Yes, they can.');
+        
+        $this->addSiteSetting('can_transfer_items_directly', 1, 'Can users directly transfer items to other users without trading? 0: No, they cannot, 1: Yes, they can.');
 
         $this->line("\nSite settings up to date!");
     }

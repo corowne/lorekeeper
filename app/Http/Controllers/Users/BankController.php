@@ -31,6 +31,7 @@ class BankController extends Controller {
             'userOptions'     => User::visible()->where('id', '!=', Auth::user()->id)->orderBy('name')->pluck('name', 'id')->toArray(),
             // only get currency with currency_conversions relationship
             'convertOptions'  => Currency::where('is_user_owned', 1)->whereHas('conversions')->orderBy('sort_user', 'DESC')->pluck('name', 'id')->toArray(),
+            'canTransfer'     => Settings::get('can_transfer_currency_directly'),
         ]);
     }
 

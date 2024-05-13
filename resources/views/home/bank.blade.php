@@ -66,29 +66,31 @@
         <hr />
     @endif
 
-    <h3>Transfer Currency</h3>
-    <p>If you are transferring currency as part of a trade for on-site resources (items, currency, characters), using the <a href="{{ url('trades/open') }}">trade system</a> is recommended instead to protect yourself from being scammed.</p>
-    {!! Form::open(['url' => 'bank/transfer']) !!}
-    <div class="form-group">
-        {!! Form::label('user_id', 'Recipient') !!}
-        {!! Form::select('user_id', $userOptions, null, ['class' => 'form-control']) !!}
-    </div>
-    <div class="form-group">
-        <div class="row">
-            <div class="col-md-6">
-                {!! Form::label('quantity', 'Quantity') !!}
-                {!! Form::text('quantity', null, ['class' => 'form-control']) !!}
-            </div>
-            <div class="col-md-6">
-                {!! Form::label('currency_id', 'Currency') !!}
-                {!! Form::select('currency_id', $currencyOptions, null, ['class' => 'form-control', 'placeholder' => 'Select Currency']) !!}
+    @if ($canTransfer || (Auth::check() && Auth::user()->hasPower('edit_inventories')))
+        <h3>{!! !$canTransfer ? '[ADMIN] ' : '' !!} Transfer Currency</h3>
+        <p>If you are transferring currency as part of a trade for on-site resources (items, currency, characters), using the <a href="{{ url('trades/open') }}">trade system</a> is recommended instead to protect yourself from being scammed.</p>
+        {!! Form::open(['url' => 'bank/transfer']) !!}
+        <div class="form-group">
+            {!! Form::label('user_id', 'Recipient') !!}
+            {!! Form::select('user_id', $userOptions, null, ['class' => 'form-control']) !!}
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-6">
+                    {!! Form::label('quantity', 'Quantity') !!}
+                    {!! Form::text('quantity', null, ['class' => 'form-control']) !!}
+                </div>
+                <div class="col-md-6">
+                    {!! Form::label('currency_id', 'Currency') !!}
+                    {!! Form::select('currency_id', $currencyOptions, null, ['class' => 'form-control', 'placeholder' => 'Select Currency']) !!}
+                </div>
             </div>
         </div>
-    </div>
-    <div class="text-right">
-        {!! Form::submit('Transfer', ['class' => 'btn btn-primary']) !!}
-    </div>
-    {!! Form::close() !!}
+        <div class="text-right">
+            {!! Form::submit('Transfer', ['class' => 'btn btn-primary']) !!}
+        </div>
+        {!! Form::close() !!}
+    @endif
 @endsection
 @section('scripts')
     <script>
