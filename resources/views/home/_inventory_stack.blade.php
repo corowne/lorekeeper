@@ -66,7 +66,7 @@
                         @endif
                         <td class="col-1">
                             @if (!$itemRow->isTransferrable)
-                                <i class="fas fa-lock" data-toggle="tooltip" title="Account-bound items cannot be transferred{!! $item->is_deletable ? 'but can be deleted.' : '.'!!}"></i>
+                                <i class="fas fa-lock" data-toggle="tooltip" title="Account-bound items cannot be transferred{!! $item->is_deletable ? ', but can be deleted.' : '.'!!}"></i>
                             @endif
                         </td>
                     </tr>
