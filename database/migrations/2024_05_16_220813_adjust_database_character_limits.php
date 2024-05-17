@@ -35,12 +35,11 @@ class AdjustDatabaseCharacterLimits extends Migration {
         Schema::table('user_items', function (Blueprint $table) {
             $table->text('data')->nullable()->change();
         });
-        
+
         Schema::table('user_update_log', function (Blueprint $table) {
             $table->text('data')->change();
         });
     }
-
 
     /**
      * Reverse the migrations.
@@ -72,7 +71,7 @@ class AdjustDatabaseCharacterLimits extends Migration {
         Schema::table('user_items', function (Blueprint $table) {
             $table->string('data', 1024)->nullable()->change();
         });
-        
+
         Schema::table('user_update_log', function (Blueprint $table) {
             $table->string('data', 512)->change();
         });
