@@ -52,8 +52,8 @@ class DesignController extends Controller {
         }
 
         return view('character.design.request', [
-            'request' => $r,
-            'canCancel' => config('lorekeeper.extensions.design_return_to_draft')
+            'request'   => $r,
+            'canCancel' => config('lorekeeper.extensions.design_return_to_draft'),
         ]);
     }
 
