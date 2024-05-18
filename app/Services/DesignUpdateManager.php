@@ -802,7 +802,7 @@ class DesignUpdateManager extends Service {
      *
      * @return bool
      */
-    public function cancelRequest($data, $request, $user) {
+    public function cancelRequest($data, $request, $user, $self = null) {
         DB::beginTransaction();
 
         try {
@@ -819,21 +819,28 @@ class DesignUpdateManager extends Service {
             // to add a comment to it. Status is returned to Draft status.
             // Use when rejecting a request that just requires minor modifications to approve.
 
-            // Set staff comment and status
-            $request->staff_id = $user->id;
-            $request->staff_comments = $data['staff_comments'] ?? null;
+            if($self == null){
+                // Set staff comment if this is not a self-cancel
+                $request->staff_id = $user->id;
+                $request->staff_comments = $data['staff_comments'] ?? null;
+                if (!isset($data['preserve_queue'])) {
+                    $request->submitted_at = null;
+                }
+            } else $request->submitted_at = null;
+
+            // Set status
             $request->status = 'Draft';
-            if (!isset($data['preserve_queue'])) {
-                $request->submitted_at = null;
-            }
             $request->save();
 
-            // Notify the user
-            Notifications::create('DESIGN_CANCELED', $request->user, [
-                'design_url'    => $request->url,
-                'character_url' => $request->character->url,
-                'name'          => $request->character->fullName,
-            ]);
+            if($self == null){
+                // Notify the user if it is not being canceled by the user themself.
+                // Note that an admin canceling their own will also not result in a notification
+                Notifications::create('DESIGN_CANCELED', $request->user, [
+                    'design_url'    => $request->url,
+                    'character_url' => $request->character->url,
+                    'name'          => $request->character->fullName,
+                ]);
+            }
 
             return $this->commitReturn(true);
         } catch (\Exception $e) {
