@@ -205,6 +205,9 @@ Route::group(['prefix' => 'designs', 'namespace' => 'Characters'], function () {
 
     Route::get('{id}/delete', 'DesignController@getDelete');
     Route::post('{id}/delete', 'DesignController@postDelete');
+
+    Route::get('{id}/cancel', 'DesignController@getCancel');
+    Route::post('{id}/cancel', 'DesignController@postCancel');
 });
 
 /**************************************************************************************************
