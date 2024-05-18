@@ -799,11 +799,11 @@ class DesignUpdateManager extends Service {
      * @param array                 $data
      * @param CharacterDesignUpdate $request
      * @param User                  $user
-     * @param mixed|null            $self
+     * @param boolean               $self
      *
      * @return bool
      */
-    public function cancelRequest($data, $request, $user, $self = null) {
+    public function cancelRequest($data, $request, $user, $self = 0) {
         DB::beginTransaction();
 
         try {
@@ -820,7 +820,7 @@ class DesignUpdateManager extends Service {
             // to add a comment to it. Status is returned to Draft status.
             // Use when rejecting a request that just requires minor modifications to approve.
 
-            if ($self == null) {
+            if (!$self) {
                 // Set staff comment if this is not a self-cancel
                 $request->staff_id = $user->id;
                 $request->staff_comments = $data['staff_comments'] ?? null;
@@ -835,7 +835,7 @@ class DesignUpdateManager extends Service {
             $request->status = 'Draft';
             $request->save();
 
-            if ($self == null) {
+            if (!$self) {
                 // Notify the user if it is not being canceled by the user themself.
                 // Note that an admin canceling their own will also not result in a notification
                 Notifications::create('DESIGN_CANCELED', $request->user, [
