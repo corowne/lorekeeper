@@ -37,7 +37,7 @@
             This request is in the approval queue.
             @if (!Auth::user()->hasPower('manage_characters'))
                 Please wait for it to be processed{{ isset($canCancel) && $canCancel ? ' or cancel it below.' : '.' }}
-                @if(isset($canCancel) && $canCancel)
+                @if (isset($canCancel) && $canCancel)
                     <div class="card mb-3">
                         <div class="card-body">
                             <a href="#" class="btn btn-outline-secondary cancel-button btn-sm float-right" data-action="cancel">Cancel</a>
