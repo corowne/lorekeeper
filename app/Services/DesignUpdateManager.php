@@ -799,7 +799,7 @@ class DesignUpdateManager extends Service {
      * @param array                 $data
      * @param CharacterDesignUpdate $request
      * @param User                  $user
-     * @param boolean               $self
+     * @param bool                  $self
      *
      * @return bool
      */
