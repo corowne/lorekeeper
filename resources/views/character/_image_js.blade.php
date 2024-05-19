@@ -32,10 +32,6 @@
             e.preventDefault();
             loadModal("{{ url('admin/character/image') }}/" + $(this).data('id') + "/credits", 'Edit Image Credits');
         });
-        $('.edit-credits').on('click', function(e) {
-            e.preventDefault();
-            loadModal("{{ url('admin/character/image') }}/" + $(this).data('id') + "/credits", 'Edit Image Credits');
-        });
         $('.reupload-image').on('click', function(e) {
             e.preventDefault();
             loadModal("{{ url('admin/character/image') }}/" + $(this).data('id') + "/reupload", 'Reupload Image');
