@@ -5028,10 +5028,10 @@
   dependencies:
     "neo-async" "^2.6.2"
 
-"sass@^1.3.0", "sass@^1.77.1":
-  "integrity" "sha512-OMEyfirt9XEfyvocduUIOlUSkWOXS/LAt6oblR/ISXCTukyavjex+zQNm51pPCOiFKY1QpWvEH1EeCkgyV3I6w=="
-  "resolved" "https://registry.npmjs.org/sass/-/sass-1.77.1.tgz"
-  "version" "1.77.1"
+"sass@^1.3.0", "sass@^1.77.2":
+  "integrity" "sha512-eb4GZt1C3avsX3heBNlrc7I09nyT00IUuo4eFhAbeXWU2fvA7oXI53SxODVAA+zgZCk9aunAZgO+losjR3fAwA=="
+  "resolved" "https://registry.npmjs.org/sass/-/sass-1.77.2.tgz"
+  "version" "1.77.2"
   dependencies:
     "chokidar" ">=3.0.0 <4.0.0"
     "immutable" "^4.0.0"
