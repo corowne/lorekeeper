@@ -35,42 +35,32 @@
     </div>
 
     <div class="row">
-        <div class="col-md">
-            <div class="form-group">
-                {!! Form::label('Item Category (Optional)') !!}
-                {!! Form::select('item_category_id', $categories, $item->item_category_id, ['class' => 'form-control']) !!}
-            </div>
+        <div class="col-md form-group">
+            {!! Form::label('Item Category (Optional)') !!}
+            {!! Form::select('item_category_id', $categories, $item->item_category_id, ['class' => 'form-control']) !!}
         </div>
         @if (config('lorekeeper.extensions.item_entry_expansion.extra_fields'))
-            <div class="col-md">
-                <div class="form-group">
-                    {!! Form::label('Item Rarity (Optional)') !!} {!! add_help('This should be a number.') !!}
-                    {!! Form::number('rarity', $item && $item->rarity ? $item->rarity : '', ['class' => 'form-control']) !!}
-                </div>
+            <div class="col-md form-group">
+                {!! Form::label('Item Rarity (Optional)') !!} {!! add_help('This should be a number.') !!}
+                {!! Form::number('rarity', $item && $item->rarity ? $item->rarity : '', ['class' => 'form-control']) !!}
             </div>
         @endif
     </div>
 
     @if (config('lorekeeper.extensions.item_entry_expansion.extra_fields'))
         <div class="row">
-            <div class="col-md">
-                <div class="form-group">
+            <div class="col-md form-group">
                     {!! Form::label('Reference Link (Optional)') !!} {!! add_help('An optional link to an additional reference') !!}
                     {!! Form::text('reference_url', $item->reference_url, ['class' => 'form-control']) !!}
-                </div>
             </div>
             <div class="col-md">
                 {!! Form::label('Item Artist (Optional)') !!} {!! add_help('Provide the artist\'s username if they are on site or, failing that, a link.') !!}
                 <div class="row">
-                    <div class="col-md">
-                        <div class="form-group">
-                            {!! Form::select('artist_id', $userOptions, $item && $item->artist_id ? $item->artist_id : null, ['class' => 'form-control mr-2 selectize', 'placeholder' => 'Select a User']) !!}
-                        </div>
+                    <div class="col-md form-group">
+                        {!! Form::select('artist_id', $userOptions, $item && $item->artist_id ? $item->artist_id : null, ['class' => 'form-control mr-2 selectize', 'placeholder' => 'Select a User']) !!}
                     </div>
-                    <div class="col-md">
-                        <div class="form-group">
-                            {!! Form::text('artist_url', $item && $item->artist_url ? $item->artist_url : '', ['class' => 'form-control mr-2', 'placeholder' => 'Artist URL']) !!}
-                        </div>
+                    <div class="col-md form-group">
+                        {!! Form::text('artist_url', $item && $item->artist_url ? $item->artist_url : '', ['class' => 'form-control mr-2', 'placeholder' => 'Artist URL']) !!}
                     </div>
                 </div>
             </div>
@@ -109,17 +99,13 @@
     @if (config('lorekeeper.extensions.item_entry_expansion.extra_fields'))
         <h3>Availability Information</h3>
         <div class="row">
-            <div class="col-md">
-                <div class="form-group">
-                    {!! Form::label('release', 'Source (Optional)') !!} {!! add_help('The original and/or general source of the item. Should be brief.') !!}
-                    {!! Form::text('release', $item && $item->source ? $item->source : '', ['class' => 'form-control']) !!}
-                </div>
+            <div class="col-md form-group">
+                {!! Form::label('release', 'Source (Optional)') !!} {!! add_help('The original and/or general source of the item. Should be brief.') !!}
+                {!! Form::text('release', $item && $item->source ? $item->source : '', ['class' => 'form-control']) !!}
             </div>
-            <div class="col-md">
-                <div class="form-group">
-                    {!! Form::label('prompts[]', 'Drop Location(s) (Optional)') !!} {!! add_help('You can select up to 10 prompts at once.') !!}
-                    {!! Form::select('prompts[]', $prompts, $item && isset($item->data['prompts']) ? $item->data['prompts'] : '', ['id' => 'promptsList', 'class' => 'form-control', 'multiple']) !!}
-                </div>
+            <div class="col-md form-group">
+                {!! Form::label('prompts[]', 'Drop Location(s) (Optional)') !!} {!! add_help('You can select up to 10 prompts at once.') !!}
+                {!! Form::select('prompts[]', $prompts, $item && isset($item->data['prompts']) ? $item->data['prompts'] : '', ['id' => 'promptsList', 'class' => 'form-control', 'multiple']) !!}
             </div>
         </div>
     @endif
@@ -128,17 +114,13 @@
         <h3>Resale Information</h3>
         <p>The currency and amount users will be able to sell this item from their inventory for. If quantity is not set, the item will be unable to be sold.</p>
         <div class="row">
-            <div class="col-md">
-                <div class="form-group">
-                    {!! Form::label('currency_id', 'Currency') !!}
-                    {!! Form::select('currency_id', $userCurrencies, isset($item->data['resell']) && App\Models\Currency\Currency::where('id', $item->resell->flip()->pop())->first() ? $item->resell->flip()->pop() : null, ['class' => 'form-control']) !!}
-                </div>
+            <div class="col-md form-group">
+                {!! Form::label('currency_id', 'Currency') !!}
+                {!! Form::select('currency_id', $userCurrencies, isset($item->data['resell']) && App\Models\Currency\Currency::where('id', $item->resell->flip()->pop())->first() ? $item->resell->flip()->pop() : null, ['class' => 'form-control']) !!}
             </div>
-            <div class="col-md">
-                <div class="form-group">
-                    {!! Form::label('currency_quantity', 'Quantity') !!}
-                    {!! Form::text('currency_quantity', isset($item->data['resell']) ? $item->resell->pop() : null, ['class' => 'form-control']) !!}
-                </div>
+            <div class="col-md form-group">
+                {!! Form::label('currency_quantity', 'Quantity') !!}
+                {!! Form::text('currency_quantity', isset($item->data['resell']) ? $item->resell->pop() : null, ['class' => 'form-control']) !!}
             </div>
         </div>
     @endif

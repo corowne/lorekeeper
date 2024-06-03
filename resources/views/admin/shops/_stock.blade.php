@@ -18,17 +18,13 @@
         </div>
 
         <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    {!! Form::checkbox('use_user_bank[' . $key . ']', 1, $stock ? $stock->use_user_bank : 1, ['class' => 'form-check-input stock-toggle stock-field', 'data-name' => 'use_user_bank']) !!}
-                    {!! Form::label('use_user_bank[' . $key . ']', 'Use User Bank', ['class' => 'form-check-label ml-3']) !!} {!! add_help('This will allow users to purchase the item using the currency in their accounts, provided that users can own that currency.') !!}
-                </div>
+            <div class="col-md-6 form-group">
+                {!! Form::checkbox('use_user_bank[' . $key . ']', 1, $stock ? $stock->use_user_bank : 1, ['class' => 'form-check-input stock-toggle stock-field', 'data-name' => 'use_user_bank']) !!}
+                {!! Form::label('use_user_bank[' . $key . ']', 'Use User Bank', ['class' => 'form-check-label ml-3']) !!} {!! add_help('This will allow users to purchase the item using the currency in their accounts, provided that users can own that currency.') !!}
             </div>
-            <div class="col-md-6">
-                <div class="form-group mb-0">
-                    {!! Form::checkbox('use_character_bank[' . $key . ']', 1, $stock ? $stock->use_character_bank : 1, ['class' => 'form-check-input stock-toggle stock-field', 'data-name' => 'use_character_bank']) !!}
-                    {!! Form::label('use_character_bank[' . $key . ']', 'Use Character Bank', ['class' => 'form-check-label ml-3']) !!} {!! add_help('This will allow users to purchase the item using the currency belonging to characters they own, provided that characters can own that currency.') !!}
-                </div>
+            <div class="col-md-6 form-group mb-0">
+                {!! Form::checkbox('use_character_bank[' . $key . ']', 1, $stock ? $stock->use_character_bank : 1, ['class' => 'form-check-input stock-toggle stock-field', 'data-name' => 'use_character_bank']) !!}
+                {!! Form::label('use_character_bank[' . $key . ']', 'Use Character Bank', ['class' => 'form-check-label ml-3']) !!} {!! add_help('This will allow users to purchase the item using the currency belonging to characters they own, provided that characters can own that currency.') !!}
             </div>
         </div>
         <div class="form-group">
