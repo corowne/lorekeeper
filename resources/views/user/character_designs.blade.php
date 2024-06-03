@@ -12,7 +12,7 @@
     @if ($isDesign)
         {!! breadcrumbs(['Users' => 'users', $user->name => $user->url, 'Character Designs' => $user->url . '/designs']) !!}
     @else
-        {!! breadcrumbs(['Users' => 'users', $user->name => $user->url, 'Character Art' => $user->url . '/designs']) !!}
+        {!! breadcrumbs(['Users' => 'users', $user->name => $user->url, 'Character Art' => $user->url . '/art']) !!}
     @endif
 
     <h1>
