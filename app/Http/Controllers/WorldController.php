@@ -234,7 +234,7 @@ class WorldController extends Controller {
         if (!$species) {
             abort(404);
         }
-        if (!config('lorekeeper.extensions.species_trait_index.enable')) {
+        if (!config('lorekeeper.extensions.visual_trait_index.enable_species_index')) {
             abort(404);
         }
 
@@ -278,29 +278,6 @@ class WorldController extends Controller {
     }
 
     /**
-     * Provides a single trait's description html for use in a modal.
-     *
-     * @param mixed $speciesId
-     * @param mixed $id
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function getSpeciesFeatureDetail($speciesId, $id) {
-        $feature = Feature::where('id', $id)->first();
-
-        if (!$feature) {
-            abort(404);
-        }
-        if (!config('lorekeeper.extensions.species_trait_index.trait_modals')) {
-            abort(404);
-        }
-
-        return view('world._feature_entry', [
-            'feature' => $feature,
-        ]);
-    }
-
-    /**
      * Shows a universal visual trait list.
      *
      * @return \Illuminate\Contracts\Support\Renderable
@@ -309,7 +286,7 @@ class WorldController extends Controller {
         $categories = FeatureCategory::orderBy('sort', 'DESC')->get();
         $rarities = Rarity::orderBy('sort', 'ASC')->get();
 
-        if (!config('lorekeeper.extensions.universal_trait_index.enable')) {
+        if (!config('lorekeeper.extensions.visual_trait_index.enable_universal_index')) {
             abort(404);
         }
 
@@ -336,21 +313,18 @@ class WorldController extends Controller {
             'features'   => $features,
         ]);
     }
-
+    
     /**
-     * Provides a single trait's description html for use in a modal. (Universal Trait Index).
+     * Provides a single trait's description html for use in a modal.
      *
      * @param mixed $id
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUniversalFeatureDetail($id) {
-        $feature = Feature::where('id', $id)->first();
+    public function getFeatureDetail($id) {
+        $feature = Feature::visible(Auth::user() ?? null)->where('id', $id)->first();
 
         if (!$feature) {
-            abort(404);
-        }
-        if (!config('lorekeeper.extensions.universal_trait_index.trait_modals')) {
             abort(404);
         }
 

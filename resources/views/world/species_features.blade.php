@@ -49,13 +49,12 @@
 @endsection
 
 @section('scripts')
-    @if (config('lorekeeper.extensions.species_trait_index.trait_modals'))
+    @if (config('lorekeeper.extensions.visual_trait_index.trait_modals'))
         <script>
             $(document).ready(function() {
                 $('.modal-image').on('click', function(e) {
                     e.preventDefault();
-
-                    loadModal("{{ url('world/species/' . $species->id . '/trait') }}/" + $(this).data('id'), 'Trait Detail');
+                    loadModal("{{ url('world/traits/modal') }}/" + $(this).data('id'), 'Trait Detail');
                 });
             })
         </script>
