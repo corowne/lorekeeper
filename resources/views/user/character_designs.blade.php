@@ -17,9 +17,9 @@
 
     <h1>
         @if ($isDesign)
-            Character Designs
+            {!! $user->displayName !!}'s Character Designs
         @else
-            Character Art
+            {!! $user->displayName !!}'s Character Art
         @endif
     </h1>
 
