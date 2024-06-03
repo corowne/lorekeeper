@@ -50,8 +50,8 @@
     @if (config('lorekeeper.extensions.item_entry_expansion.extra_fields'))
         <div class="row">
             <div class="col-md form-group">
-                    {!! Form::label('Reference Link (Optional)') !!} {!! add_help('An optional link to an additional reference') !!}
-                    {!! Form::text('reference_url', $item->reference_url, ['class' => 'form-control']) !!}
+                {!! Form::label('Reference Link (Optional)') !!} {!! add_help('An optional link to an additional reference') !!}
+                {!! Form::text('reference_url', $item->reference_url, ['class' => 'form-control']) !!}
             </div>
             <div class="col-md">
                 {!! Form::label('Item Artist (Optional)') !!} {!! add_help('Provide the artist\'s username if they are on site or, failing that, a link.') !!}
