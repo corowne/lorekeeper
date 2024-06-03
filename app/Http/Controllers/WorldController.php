@@ -313,7 +313,7 @@ class WorldController extends Controller {
             'features'   => $features,
         ]);
     }
-    
+
     /**
      * Provides a single trait's description html for use in a modal.
      *

@@ -22,7 +22,7 @@ return [
     // Navbar News Notif - Juni
     'navbar_news_notif'                    => 0,
 
-    /*  Visual Trait Indexes 
+    /*  Visual Trait Indexes
      *
      *  Species Trait Index - Mercury
      *  Universal Trait Index - CHERVB
