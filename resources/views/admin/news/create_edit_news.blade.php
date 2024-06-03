@@ -18,18 +18,14 @@
     <h3>Basic Information</h3>
 
     <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                {!! Form::label('Title') !!}
-                {!! Form::text('title', $news->title, ['class' => 'form-control']) !!}
-            </div>
+        <div class="col-md-6 form-group">
+            {!! Form::label('Title') !!}
+            {!! Form::text('title', $news->title, ['class' => 'form-control']) !!}
         </div>
 
-        <div class="col-md-6">
-            <div class="form-group">
-                {!! Form::label('Post Time (Optional)') !!} {!! add_help('This is the time that the news post should be posted. Make sure the Is Viewable switch is off.') !!}
-                {!! Form::text('post_at', $news->post_at, ['class' => 'form-control datepicker']) !!}
-            </div>
+        <div class="col-md-6 form-group">
+            {!! Form::label('Post Time (Optional)') !!} {!! add_help('This is the time that the news post should be posted. Make sure the Is Viewable switch is off.') !!}
+            {!! Form::text('post_at', $news->post_at, ['class' => 'form-control datepicker']) !!}
         </div>
     </div>
 
@@ -39,18 +35,14 @@
     </div>
 
     <div class="row">
-        <div class="col-md">
-            <div class="form-group">
-                {!! Form::checkbox('is_visible', 1, $news->id ? $news->is_visible : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-                {!! Form::label('is_visible', 'Is Viewable', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is turned off, the post will not be visible. If the post time is set, it will automatically become visible at/after the given post time, so make sure the post time is empty if you want it to be completely hidden.') !!}
-            </div>
+        <div class="col-md form-group">
+            {!! Form::checkbox('is_visible', 1, $news->id ? $news->is_visible : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+            {!! Form::label('is_visible', 'Is Viewable', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is turned off, the post will not be visible. If the post time is set, it will automatically become visible at/after the given post time, so make sure the post time is empty if you want it to be completely hidden.') !!}
         </div>
         @if ($news->id && $news->is_visible)
-            <div class="col-md">
-                <div class="form-group">
-                    {!! Form::checkbox('bump', 1, null, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-                    {!! Form::label('bump', 'Bump News', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If toggled on, this will alert users that there is new news. Best in conjunction with a clear notification of changes!') !!}
-                </div>
+            <div class="col-md form-group">
+                {!! Form::checkbox('bump', 1, null, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+                {!! Form::label('bump', 'Bump News', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If toggled on, this will alert users that there is new news. Best in conjunction with a clear notification of changes!') !!}
             </div>
         @endif
     </div>
