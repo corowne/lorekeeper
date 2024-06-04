@@ -9,7 +9,7 @@
     <h1>{{ $subtype->name }} ({!! $subtype->species->name !!} Subtype) Traits</h1>
 
     <p>This is a visual index of all {!! $subtype->displayName !!} ({!! $subtype->species->displayName !!} Subtype)-specific traits. Click a trait to view more info on it!</p>
-    
+
     <div>
         {!! Form::open(['method' => 'GET', 'class' => '']) !!}
         <div class="form-inline justify-content-end">
