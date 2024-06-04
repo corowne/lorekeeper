@@ -315,7 +315,7 @@ class WorldController extends Controller {
                     ->groupBy(['feature_category_id', 'id']);
         } else {
             $species = Species::visible(Auth::user() ?? null)->where('id', $subtype->species->id)->first();
-            
+
             $features = count($categories) ?
                 $species->features()
                     ->visible(Auth::user() ?? null)
