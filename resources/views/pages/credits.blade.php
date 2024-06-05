@@ -141,7 +141,11 @@
         </p>
         <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Species_Trait_Index"><strong>Species Trait Index</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
-            ({{ config('lorekeeper.extensions.species_trait_index.enable') ? 'Enabled' : 'Disabled' }})
+            ({{ config('lorekeeper.extensions.visual_trait_index.enable_species_index') ? 'Enabled' : 'Disabled' }})
+        </p>
+        <p class="mb-0 col-md-4">
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Subtype_Trait_Index"><strong>Subtype Trait Index</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
+            ({{ config('lorekeeper.extensions.visual_trait_index.enable_subtype_index') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Staff_Rewards"><strong>Staff Rewards</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
@@ -149,11 +153,15 @@
         </p>
         <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Universal_Trait_Index"><strong>Universal Trait Index</strong></a> by <a href="https://github.com/CH3RVB">CH3RVB</a>
-            ({{ config('lorekeeper.extensions.universal_trait_index.enable') ? 'Enabled' : 'Disabled' }})
+            ({{ config('lorekeeper.extensions.visual_trait_index.enable_universal_index') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:User_Character_Minibadges"><strong>User Character Minibadges</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a>
             ({{ config('lorekeeper.extensions.badges_on_user_character_page') ? 'Enabled' : 'Disabled' }})
+        </p>
+        <p class="mb-0 col-md-4">
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:VTI_Trait_Modals"><strong>Visual Trait Indexes Trait Modals</strong></a> by <a href="https://github.com/AW0005">Moif</a>
+            ({{ config('lorekeeper.extensions.visual_trait_index.trait_modals') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Watermarking"><strong>Watermarking</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
