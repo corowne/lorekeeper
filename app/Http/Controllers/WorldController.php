@@ -238,39 +238,68 @@ class WorldController extends Controller {
             abort(404);
         }
 
+        $features = $species->features()->visible(Auth::user() ?? null);
         $features = count($categories) ?
-            $species->features()
-                ->visible(Auth::user() ?? null)
-                ->orderByRaw('FIELD(feature_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
-                ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
-                ->orderBy('has_image', 'DESC')
-                ->orderBy('name')
-                ->get()
-                ->filter(function ($feature) {
-                    if ($feature->subtype) {
-                        return $feature->subtype->is_visible;
-                    }
-
-                    return true;
-                })
-                ->groupBy(['feature_category_id', 'id']) :
-            $species->features()
-                ->visible(Auth::user() ?? null)
-                ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
-                ->orderBy('has_image', 'DESC')
-                ->orderBy('name')
-                ->get()
-                ->filter(function ($feature) {
-                    if ($feature->subtype) {
-                        return $feature->subtype->is_visible;
-                    }
-
-                    return true;
-                })
-                ->groupBy(['feature_category_id', 'id']);
+            $features->orderByRaw('FIELD(feature_category_id,'.implode(',', $categories->pluck('id')->toArray()).')') :
+            $features;
+        $features = $features->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
+            ->orderBy('has_image', 'DESC')
+            ->orderBy('name')
+            ->get()->filter(function ($feature) {
+                return $feature->subtype?->is_visible !== 0;
+            })
+            ->groupBy(['feature_category_id', 'id']);
 
         return view('world.species_features', [
             'species'    => $species,
+            'categories' => $categories->keyBy('id'),
+            'rarities'   => $rarities->keyBy('id'),
+            'features'   => $features,
+        ]);
+    }
+
+    /**
+     * Shows a subtype's visual trait list.
+     *
+     * @param mixed $id
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getSubtypeFeatures($id, Request $request) {
+        $categories = FeatureCategory::orderBy('sort', 'DESC')->get();
+        $rarities = Rarity::orderBy('sort', 'ASC')->get();
+        $speciesBasics = $request->get('add_basics');
+        $subtype = Subtype::visible(Auth::user() ?? null)->where('id', $id)->first();
+        $species = Species::visible(Auth::user() ?? null)->where('id', $subtype->species->id)->first();
+        if (!$subtype) {
+            abort(404);
+        }
+        if (!config('lorekeeper.extensions.visual_trait_index.enable_subtype_index')) {
+            abort(404);
+        }
+
+        $features = $speciesBasics ? $species : $subtype;
+        $features = $features->features()->visible(Auth::user() ?? null);
+        $features = count($categories) ?
+            $features->orderByRaw('FIELD(feature_category_id,'.implode(',', $categories->pluck('id')->toArray()).')') :
+            $features;
+        $features = $features->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
+            ->orderBy('has_image', 'DESC')
+            ->orderBy('name')
+            ->get();
+
+        if (!$speciesBasics) {
+            $features = $features->groupBy(['feature_category_id', 'id']);
+        } else {
+            $features = $features
+                ->filter(function ($feature) use ($subtype) {
+                    return !($feature->subtype && $feature->subtype->id != $subtype->id);
+                })
+                ->groupBy(['feature_category_id', 'id']);
+        }
+
+        return view('world.subtype_features', [
+            'subtype'    => $subtype,
             'categories' => $categories->keyBy('id'),
             'rarities'   => $rarities->keyBy('id'),
             'features'   => $features,
@@ -290,22 +319,15 @@ class WorldController extends Controller {
             abort(404);
         }
 
+        $features = Feature::whereNull('species_id')
+            ->visible(Auth::user() ?? null);
         $features = count($categories) ?
-        $query = Feature::whereNull('species_id')
-            ->visible()
-            ->orderByRaw('FIELD(feature_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
-            ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
+            $features->orderByRaw('FIELD(feature_category_id,'.implode(',', $categories->pluck('id')->toArray()).')') :
+            $features;
+        $features = $features->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
             ->orderBy('has_image', 'DESC')
             ->orderBy('name')
-            ->get()
-            ->groupBy(['feature_category_id', 'id']) :
-        $query = Feature::whereNull('species_id')
-            ->visible()
-            ->orderByRaw('FIELD(rarity_id,'.implode(',', $rarities->pluck('id')->toArray()).')')
-            ->orderBy('has_image', 'DESC')
-            ->orderBy('name')
-            ->get()
-            ->groupBy(['feature_category_id', 'id']);
+            ->get()->groupBy(['feature_category_id', 'id']);
 
         return view('world.universal_features', [
             'categories' => $categories->keyBy('id'),
