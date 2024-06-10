@@ -182,9 +182,9 @@
                         [{{ $character->fullName }}]({{ $character->url }})
                     </div>
                     <hr>
-                <div class="my-2">
-                    <strong>For Thumbnails:</strong>
-                </div>
+                    <div class="my-2">
+                        <strong>For Thumbnails:</strong>
+                    </div>
                     In the rich text editor:
                     <div class="alert alert-secondary">
                         [charthumb={{ $character->slug }}]
