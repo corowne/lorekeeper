@@ -173,27 +173,25 @@
             @if (isset($showMention) && $showMention)
                 {{-- Mention This tab --}}
                 <div class="tab-pane fade" id="mention-{{ $image->id }}">
-                    <div class="imagenoteseditingparse">
-                        In the rich text editor:
-                        <div class="alert alert-secondary">
-                            [character={{ $character->slug }}]
-                        </div>
-                        In a comment:
-                        <div class="alert alert-secondary">
-                            [{{ $character->fullName }}]({{ $character->url }})
-                        </div>
+                    In the rich text editor:
+                    <div class="alert alert-secondary">
+                        [character={{ $character->slug }}]
+                    </div>
+                    In a comment:
+                    <div class="alert alert-secondary">
+                        [{{ $character->fullName }}]({{ $character->url }})
                     </div>
                     <hr>
-                    <div class="my-2"><strong>For Thumbnails:</strong></div>
-                    <div class="imagenoteseditingparse">
-                        In the rich text editor:
-                        <div class="alert alert-secondary">
-                            [charthumb={{ $character->slug }}]
-                        </div>
-                        In a comment:
-                        <div class="alert alert-secondary">
-                            [![Thumbnail of {{ $character->fullName }}]({{ $character->image->thumbnailUrl }})]({{ $character->url }})
-                        </div>
+                    <div class="my-2">
+                        <strong>For Thumbnails:</strong>
+                    </div>
+                    In the rich text editor:
+                    <div class="alert alert-secondary">
+                        [charthumb={{ $character->slug }}]
+                    </div>
+                    In a comment:
+                    <div class="alert alert-secondary">
+                        [![Thumbnail of {{ $character->fullName }}]({{ $character->image->thumbnailUrl }})]({{ $character->url }})
                     </div>
                 </div>
             @endif
