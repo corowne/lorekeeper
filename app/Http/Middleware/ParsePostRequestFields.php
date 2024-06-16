@@ -23,6 +23,10 @@ class ParsePostRequestFields {
                 if (is_array($value)) {
                     $parsedFields[$key] = $this->parseArray($value, $strippedFields);
                 } else {
+                    if (is_numeric($value)) {
+                        continue;
+                    }
+
                     if (in_array($key, $strippedFields)) { // we strip these since parse() doesn't remove HTML tags
                         $parsedFields[$key] = parse(strip_tags($value));
                     } else {
@@ -42,6 +46,10 @@ class ParsePostRequestFields {
      */
     private function parseArray(array $array, array $strippedFields): array {
         foreach ($array as $key => $value) {
+            if (is_numeric($value)) {
+                continue;
+            }
+
             if (is_array($value)) {
                 $array[$key] = $this->parseArray($value, $strippedFields);
             } else {
