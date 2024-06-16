@@ -22,7 +22,7 @@ class ParsePostRequestFields
             $parsedFields = [];
             foreach ($request->except($excludedFields) as $key => $value) {
                 if (is_array($value)) {
-                    $parsedFields[$key] = parseArray($value, $strippedFields);
+                    $parsedFields[$key] = $this->parseArray($value, $strippedFields);
                 } else {
                     if (in_array($key, $strippedFields)) { // we strip these since parse() doesn't remove HTML tags
                         $parsedFields[$key] = parse(strip_tags($value));
@@ -48,7 +48,7 @@ class ParsePostRequestFields
     private function parseArray(array $array, array $strippedFields) : array {
         foreach ($array as $key => $value) {
             if (is_array($value)) {
-                $array[$key] = parseArray($value, $strippedFields);
+                $array[$key] = $this->parseArray($value, $strippedFields);
             } else {
                 if (in_array($key, $strippedFields)) {
                     $array[$key] = parse(strip_tags($value));
