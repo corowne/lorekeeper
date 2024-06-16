@@ -14,25 +14,50 @@ class ParsePostRequestFields
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next)
-    {
+    public function handle(Request $request, Closure $next) {
         if ($request->isMethod('post')) {
             $excludedFields = ['_token', 'password', 'email', 'description', 'text'];
             $strippedFields = ['name', 'title'];
-            
+
             $parsedFields = [];
             foreach ($request->except($excludedFields) as $key => $value) {
-                if (in_array($key, $strippedFields)) { // we strip these since parse() doesn't remove HTML tags
-                    $parsedFields[$key] = parse(strip_tags($value));
+                if (is_array($value)) {
+                    $parsedFields[$key] = parseArray($value, $strippedFields);
                 } else {
-                    $parsedFields[$key] = parse($value);
+                    if (in_array($key, $strippedFields)) { // we strip these since parse() doesn't remove HTML tags
+                        $parsedFields[$key] = parse(strip_tags($value));
+                    } else {
+                        $parsedFields[$key] = parse($value);
+                    }
                 }
-                
             }
 
             $request->merge($parsedFields);
         }
 
         return $next($request);
+    }
+
+    /**
+     * Recursively parse array values.
+     *
+     * @param  array  $array
+     * @param  array  $strippedFields
+     * @return array
+     */
+    private function parseArray(array $array, array $strippedFields) : array {
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $array[$key] = parseArray($value, $strippedFields);
+            } else {
+                if (in_array($key, $strippedFields)) {
+                    $array[$key] = parse(strip_tags($value));
+                } else {
+                    $array[$key] = parse($value);
+                }
+            }
+        }
+
+        return $array;
     }
 }
