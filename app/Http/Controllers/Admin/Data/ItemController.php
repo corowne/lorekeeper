@@ -380,7 +380,7 @@ class ItemController extends Controller {
         return view('admin.items.edit_tag', [
             'item' => $item,
             'tag'  => $tag,
-        ] + $tag->getEditData());
+        ] + $tag->getEditData($tag));
     }
 
     /**

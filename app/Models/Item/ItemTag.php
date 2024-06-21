@@ -134,7 +134,7 @@ class ItemTag extends Model {
      * @return mixed
      */
     public function getEditData() {
-        return $this->service->getEditData();
+        return $this->service->getEditData($this);
     }
 
     /**

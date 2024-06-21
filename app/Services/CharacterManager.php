@@ -11,6 +11,7 @@ use App\Models\Character\CharacterCurrency;
 use App\Models\Character\CharacterDesignUpdate;
 use App\Models\Character\CharacterFeature;
 use App\Models\Character\CharacterImage;
+use App\Models\Character\CharacterImageSubtype;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Sales\SalesCharacter;
 use App\Models\Species\Subtype;
@@ -96,16 +97,23 @@ class CharacterManager extends Service {
                     throw new \Exception('Characters require a rarity.');
                 }
             }
-            if (isset($data['subtype_id']) && $data['subtype_id']) {
-                $subtype = Subtype::find($data['subtype_id']);
+            if (isset($data['subtype_ids']) && $data['subtype_ids']) {
+                if (count($data['subtype_ids']) > config('lorekeeper.extensions.multiple_subtype_limit')) {
+                    throw new \Exception('Too many subtypes selected.');
+                }
+
                 if (!(isset($data['species_id']) && $data['species_id'])) {
                     throw new \Exception('Species must be selected to select a subtype.');
                 }
-                if (!$subtype || $subtype->species_id != $data['species_id']) {
-                    throw new \Exception('Selected subtype invalid or does not match species.');
+
+                foreach ($data['subtype_ids'] as $subtypeId) {
+                    $subtype = Subtype::find($subtypeId);
+                    if (!$subtype || $subtype->species_id != $data['species_id']) {
+                        throw new \Exception('Selected subtype invalid or does not match species.');
+                    }
                 }
             } else {
-                $data['subtype_id'] = null;
+                $data['subtype_ids'] = null;
             }
 
             // Get owner info
@@ -547,16 +555,21 @@ class CharacterManager extends Service {
                     throw new \Exception('Characters require a rarity.');
                 }
             }
-            if (isset($data['subtype_id']) && $data['subtype_id']) {
-                $subtype = Subtype::find($data['subtype_id']);
+            if (isset($data['subtype_ids']) && $data['subtype_ids']) {
+                if (count($data['subtype_ids']) > config('lorekeeper.extensions.multiple_subtype_limit')) {
+                    throw new \Exception('Too many subtypes selected.');
+                }
                 if (!(isset($data['species_id']) && $data['species_id'])) {
                     throw new \Exception('Species must be selected to select a subtype.');
                 }
-                if (!$subtype || $subtype->species_id != $data['species_id']) {
-                    throw new \Exception('Selected subtype invalid or does not match species.');
+                foreach ($data['subtype_ids'] as $subtypeId) {
+                    $subtype = Subtype::find($subtypeId);
+                    if (!$subtype || $subtype->species_id != $data['species_id']) {
+                        throw new \Exception('Selected subtype invalid or does not match species.');
+                    }
                 }
             } else {
-                $data['subtype_id'] = null;
+                $data['subtype_ids'] = null;
             }
 
             $data['is_visible'] = 1;
@@ -615,13 +628,22 @@ class CharacterManager extends Service {
 
         try {
             // Check that the subtype matches
-            if (isset($data['subtype_id']) && $data['subtype_id']) {
-                $subtype = Subtype::find($data['subtype_id']);
+            if (isset($data['subtype_ids']) && $data['subtype_ids']) {
+                if (count($data['subtype_ids']) > config('lorekeeper.extensions.multiple_subtype_limit')) {
+                    throw new \Exception('Too many subtypes selected.');
+                }
+
                 if (!(isset($data['species_id']) && $data['species_id'])) {
                     throw new \Exception('Species must be selected to select a subtype.');
                 }
-                if (!$subtype || $subtype->species_id != $data['species_id']) {
-                    throw new \Exception('Selected subtype invalid or does not match species.');
+
+                $species_id = $data['species_id'] != $image->species_id ? $data['species_id'] : $image->species_id;
+
+                foreach ($data['subtype_ids'] as $subtypeId) {
+                    $subtype = Subtype::find($subtypeId);
+                    if (!$subtype || $subtype->species_id != $species_id) {
+                        throw new \Exception('Selected subtype invalid or does not match species.');
+                    }
                 }
             }
 
@@ -633,7 +655,7 @@ class CharacterManager extends Service {
             $old = [];
             $old['features'] = $this->generateFeatureList($image);
             $old['species'] = $image->species_id ? $image->species->displayName : null;
-            $old['subtype'] = $image->subtype_id ? $image->subtype->displayName : null;
+            $old['subtypes'] = count($image->subtypes) ? $image->displaySubtypes() : null;
             $old['rarity'] = $image->rarity_id ? $image->rarity->displayName : null;
 
             // Clear old features
@@ -648,14 +670,26 @@ class CharacterManager extends Service {
 
             // Update other stats
             $image->species_id = $data['species_id'];
-            $image->subtype_id = $data['subtype_id'] ?: null;
+            // SUBTYPES
+            $image->subtypes()->delete();
+            if (isset($data['subtype_ids']) && $data['subtype_ids']) {
+                if (count($data['subtype_ids']) > config('lorekeeper.extensions.multiple_subtype_limit')) {
+                    throw new \Exception('Too many subtypes selected.');
+                }
+                foreach ($data['subtype_ids'] as $subtypeId) {
+                    CharacterImageSubtype::create([
+                        'character_image_id' => $image->id,
+                        'subtype_id'         => $subtypeId,
+                    ]);
+                }
+            }
             $image->rarity_id = $data['rarity_id'];
             $image->save();
 
             $new = [];
             $new['features'] = $this->generateFeatureList($image);
             $new['species'] = $image->species_id ? $image->species->displayName : null;
-            $new['subtype'] = $image->subtype_id ? $image->subtype->displayName : null;
+            $new['subtypes'] = count($image->subtypes) ? $image->displaySubtypes() : null;
             $new['rarity'] = $image->rarity_id ? $image->rarity->displayName : null;
 
             // Character also keeps track of these features
@@ -1847,7 +1881,7 @@ class CharacterManager extends Service {
                 $data['number'] = null;
                 $data['slug'] = null;
                 $data['species_id'] = isset($data['species_id']) && $data['species_id'] ? $data['species_id'] : null;
-                $data['subtype_id'] = isset($data['subtype_id']) && $data['subtype_id'] ? $data['subtype_id'] : null;
+                $data['subtype_ids'] = isset($data['subtype_ids']) && $data['subtype_ids'] ? $data['subtype_ids'] : null;
                 $data['rarity_id'] = isset($data['rarity_id']) && $data['rarity_id'] ? $data['rarity_id'] : null;
             }
 
@@ -1913,7 +1947,7 @@ class CharacterManager extends Service {
                 }
             }
             $imageData = Arr::only($data, [
-                'species_id', 'subtype_id', 'rarity_id', 'use_cropper',
+                'species_id', 'subtype_ids', 'rarity_id', 'use_cropper',
                 'x0', 'x1', 'y0', 'y1',
             ]);
             $imageData['use_cropper'] = isset($data['use_cropper']);
@@ -1929,6 +1963,16 @@ class CharacterManager extends Service {
             $imageData['character_id'] = $character->id;
 
             $image = CharacterImage::create($imageData);
+
+            // create subtype relations
+            if (isset($data['subtype_ids']) && $data['subtype_ids']) {
+                foreach ($data['subtype_ids'] as $subtypeId) {
+                    CharacterImageSubtype::create([
+                        'character_image_id' => $image->id,
+                        'subtype_id'         => $subtypeId,
+                    ]);
+                }
+            }
 
             // Check if entered url(s) have aliases associated with any on-site users
             $designers = array_filter($data['designer_url']); // filter null values
