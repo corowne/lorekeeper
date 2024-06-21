@@ -13,7 +13,10 @@
                     </a>
                 </div>
                 <div class="small">
-                    {!! $character->image->species_id ? $character->image->species->displayName : 'No Species' !!} ・ {!! $character->image->rarity_id ? $character->image->rarity->displayName : 'No Rarity' !!}
+                    {!! $character->image->species_id ? $character->image->species->displayName : 'No Species' !!} ・ {!! $character->image->rarity_id ? $character->image->rarity->displayName : 'No Rarity' !!}{!! !$owner ? '・ ' . $character->displayOwner : null !!}{!! config('lorekeeper.extensions.badges_on_user_character_page') ? $character->miniBadge : '' !!}
+                    @if ($userpage_exts)
+                        {{-- Add potential extra extension data in here that applies only to the character if owned by the user. --}}
+                    @endif
                 </div>
             </div>
         @endforeach

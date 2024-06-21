@@ -44,7 +44,7 @@
             <div class="form-group">
                 {!! Form::label('gallery_submission_id', 'Gallery URL (Optional)') !!}
                 {!! add_help('Select the gallery submission this prompt is for.') !!}
-                {!! Form::select('gallery_submission_id', $userGallerySubmissions, isset($submission->data['gallery_submission_id']) ? $submission->data['gallery_submission_id'] : old('gallery_submission_id') ?? Request::get('gallery_submission_id'), [
+                {!! Form::select('gallery_submission_id', $userGallerySubmissions, $submission->data['gallery_submission_id'] ?? (old('gallery_submission_id') ?? Request::get('gallery_submission_id')), [
                     'class' => 'form-control selectize',
                     'id' => 'gallery_submission_id',
                     'placeholder' => 'Select Your Gallery Submission',

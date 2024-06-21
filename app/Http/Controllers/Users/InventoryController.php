@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Users;
 
+use App\Facades\Settings;
 use App\Http\Controllers\Controller;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterDesignUpdate;
@@ -32,7 +33,7 @@ class InventoryController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getIndex() {
-        $categories = ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->get();
+        $categories = ItemCategory::visible(Auth::user() ?? null)->orderBy('sort', 'DESC')->get();
         $items = count($categories) ?
             Auth::user()->items()
                 ->where('count', '>', 0)
@@ -76,6 +77,7 @@ class InventoryController extends Controller {
             'userOptions'      => ['' => 'Select User'] + User::visible()->where('id', '!=', $first_instance ? $first_instance->user_id : 0)->orderBy('name')->get()->pluck('verified_name', 'id')->toArray(),
             'readOnly'         => $readOnly,
             'characterOptions' => Character::visible()->myo(0)->where('user_id', optional(Auth::user())->id)->orderBy('sort', 'DESC')->get()->pluck('fullName', 'id')->toArray(),
+            'canTransfer'      => Settings::get('can_transfer_items_directly'),
         ]);
     }
 
@@ -214,7 +216,7 @@ class InventoryController extends Controller {
         }
 
         // Set up Categories
-        $categories = ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->get();
+        $categories = ItemCategory::visible(Auth::user() ?? null)->orderBy('sort', 'DESC')->get();
 
         if (count($categories)) {
             $items =

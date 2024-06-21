@@ -30,7 +30,7 @@ class FeatureService extends Service {
      * @param array                 $data
      * @param \App\Models\User\User $user
      *
-     * @return \App\Models\Feature\FeatureCategory|bool
+     * @return bool|FeatureCategory
      */
     public function createFeatureCategory($data, $user) {
         DB::beginTransaction();
@@ -73,7 +73,7 @@ class FeatureService extends Service {
      * @param array                 $data
      * @param \App\Models\User\User $user
      *
-     * @return \App\Models\Feature\FeatureCategory|bool
+     * @return bool|FeatureCategory
      */
     public function updateFeatureCategory($category, $data, $user) {
         DB::beginTransaction();
@@ -188,7 +188,7 @@ class FeatureService extends Service {
      * @param array                 $data
      * @param \App\Models\User\User $user
      *
-     * @return \App\Models\Feature\Feature|bool
+     * @return bool|Feature
      */
     public function createFeature($data, $user) {
         DB::beginTransaction();
@@ -257,7 +257,7 @@ class FeatureService extends Service {
      * @param array                 $data
      * @param \App\Models\User\User $user
      *
-     * @return \App\Models\Feature\Feature|bool
+     * @return bool|Feature
      */
     public function updateFeature($feature, $data, $user) {
         DB::beginTransaction();
@@ -358,8 +358,8 @@ class FeatureService extends Service {
     /**
      * Handle category data.
      *
-     * @param array                                    $data
-     * @param \App\Models\Feature\FeatureCategory|null $category
+     * @param array                $data
+     * @param FeatureCategory|null $category
      *
      * @return array
      */

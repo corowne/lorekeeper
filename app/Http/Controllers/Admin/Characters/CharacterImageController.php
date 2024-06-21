@@ -54,13 +54,13 @@ class CharacterImageController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getNewImageSubtype(Request $request) {
-      $species = $request->input('species');
-      $id = $request->input('id');
+        $species = $request->input('species');
+        $id = $request->input('id');
 
-      return view('character.admin._upload_image_subtype', [
-          'subtypes' => Subtype::where('species_id','=',$species)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-          'image' => CharacterImage::find($id),
-      ]);
+        return view('character.admin._upload_image_subtype', [
+            'subtypes' => Subtype::where('species_id', '=', $species)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'image'    => CharacterImage::find($id),
+        ]);
     }
 
     /**

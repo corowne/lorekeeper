@@ -25,6 +25,8 @@ class SlotService extends Service {
     /**
      * Retrieves any data that should be used in the item tag editing form.
      *
+     * @param mixed $tag
+     *
      * @return array
      */
     public function getEditData($tag) {
@@ -32,7 +34,7 @@ class SlotService extends Service {
             'rarities'  => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'subtypes'  => Subtype::orderBy('sort', 'DESC')->where('species_id', $this->getTagData($tag)['species_id'])->pluck('name', 'id')->toArray(),
-            'isMyo'     => true
+            'isMyo'     => true,
         ];
     }
 
@@ -186,13 +188,12 @@ class SlotService extends Service {
                         // Distribute user rewards
                         $charService = new CharacterManager;
                         if ($character = $charService->createCharacter($characterData, $user, true)) {
-                            flash('<a href="' . $character->url . '">MYO slot</a> created successfully.')->success();
-                        }
-                        else {
-                            foreach($charService->errors()->getMessages()['error'] as $error) {
+                            flash('<a href="'.$character->url.'">MYO slot</a> created successfully.')->success();
+                        } else {
+                            foreach ($charService->errors()->getMessages()['error'] as $error) {
                                 flash($error)->error();
                             }
-                            throw new \Exception("Failed to use slot.");
+                            throw new \Exception('Failed to use slot.');
                         }
                     }
                 }

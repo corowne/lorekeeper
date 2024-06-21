@@ -106,7 +106,7 @@ class UserController extends Controller {
      */
     public function getUserCharacters($name) {
         $query = Character::myo(0)->where('user_id', $this->user->id);
-        $imageQuery = CharacterImage::images(Auth::check() ? Auth::user() : null)->with('features')->with('rarity')->with('species')->with('features');
+        $imageQuery = CharacterImage::images(Auth::user() ?? null)->with('features')->with('rarity')->with('species')->with('features');
 
         if ($sublists = Sublist::where('show_main', 0)->get()) {
             $subCategories = [];
@@ -142,7 +142,7 @@ class UserController extends Controller {
      */
     public function getUserSublist($name, $key) {
         $query = Character::myo(0)->where('user_id', $this->user->id);
-        $imageQuery = CharacterImage::images(Auth::check() ? Auth::user() : null)->with('features')->with('rarity')->with('species')->with('features');
+        $imageQuery = CharacterImage::images(Auth::user() ?? null)->with('features')->with('rarity')->with('species')->with('features');
 
         $sublist = Sublist::where('key', $key)->first();
         if (!$sublist) {
@@ -198,7 +198,7 @@ class UserController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getUserInventory($name) {
-        $categories = ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->get();
+        $categories = ItemCategory::visible(Auth::user() ?? null)->orderBy('sort', 'DESC')->get();
         $items = count($categories) ?
             $this->user->items()
                 ->where('count', '>', 0)
@@ -299,7 +299,7 @@ class UserController extends Controller {
     public function getUserSubmissions($name) {
         return view('user.submission_logs', [
             'user' => $this->user,
-            'logs' => $this->user->getSubmissions(Auth::check() ? Auth::user() : null),
+            'logs' => $this->user->getSubmissions(Auth::user() ?? null),
         ]);
     }
 
@@ -318,6 +318,56 @@ class UserController extends Controller {
     }
 
     /**
+     * Shows a user's character art.
+     *
+     * @param string $name
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserCharacterArt(Request $request, $name) {
+        $characters = Character::whereHas('image', function ($query) {
+            $query->whereHas('artists', function ($query) {
+                $query->where('user_id', $this->user->id);
+            });
+        });
+
+        if (!Auth::check() || !(Auth::check() && Auth::user()->hasPower('manage_characters'))) {
+            $characters->visible();
+        }
+
+        return view('user.character_designs', [
+            'user'        => $this->user,
+            'characters'  => $characters->get(),
+            'isDesign'    => false,
+        ]);
+    }
+
+    /**
+     * Shows a user's character designs.
+     *
+     * @param string $name
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getUserCharacterDesigns(Request $request, $name) {
+        $characters = Character::whereHas('image', function ($query) {
+            $query->whereHas('designers', function ($query) {
+                $query->where('user_id', $this->user->id);
+            });
+        });
+
+        if (!Auth::check() || !(Auth::check() && Auth::user()->hasPower('manage_characters'))) {
+            $characters->visible();
+        }
+
+        return view('user.character_designs', [
+            'user'        => $this->user,
+            'characters'  => $characters->get(),
+            'isDesign'    => true,
+        ]);
+    }
+
+    /**
      * Shows a user's gallery submission favorites.
      *
      * @param string $name
@@ -328,7 +378,7 @@ class UserController extends Controller {
         return view('user.favorites', [
             'user'       => $this->user,
             'characters' => false,
-            'favorites'  => GallerySubmission::whereIn('id', $this->user->galleryFavorites()->pluck('gallery_submission_id')->toArray())->visible(Auth::check() ? Auth::user() : null)->accepted()->orderBy('created_at', 'DESC')->paginate(20)->appends($request->query()),
+            'favorites'  => GallerySubmission::whereIn('id', $this->user->galleryFavorites()->pluck('gallery_submission_id')->toArray())->visible(Auth::user() ?? null)->accepted()->orderBy('created_at', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -347,7 +397,7 @@ class UserController extends Controller {
         return view('user.favorites', [
             'user'       => $this->user,
             'characters' => true,
-            'favorites'  => $this->user->characters->count() ? GallerySubmission::whereIn('id', $userFavorites)->whereIn('id', GalleryCharacter::whereIn('character_id', $userCharacters)->pluck('gallery_submission_id')->toArray())->visible(Auth::check() ? Auth::user() : null)->accepted()->orderBy('created_at', 'DESC')->paginate(20)->appends($request->query()) : null,
+            'favorites'  => $this->user->characters->count() ? GallerySubmission::whereIn('id', $userFavorites)->whereIn('id', GalleryCharacter::whereIn('character_id', $userCharacters)->pluck('gallery_submission_id')->toArray())->visible(Auth::user() ?? null)->accepted()->orderBy('created_at', 'DESC')->paginate(20)->appends($request->query()) : null,
         ]);
     }
 }

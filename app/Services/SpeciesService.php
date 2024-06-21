@@ -24,7 +24,7 @@ class SpeciesService extends Service {
      * @param array                 $data
      * @param \App\Models\User\User $user
      *
-     * @return \App\Models\Species\Species|bool
+     * @return bool|Species
      */
     public function createSpecies($data, $user) {
         DB::beginTransaction();
@@ -63,7 +63,7 @@ class SpeciesService extends Service {
      * @param array                 $data
      * @param \App\Models\User\User $user
      *
-     * @return \App\Models\Species\Species|bool
+     * @return bool|Species
      */
     public function updateSpecies($species, $data, $user) {
         DB::beginTransaction();
@@ -159,7 +159,7 @@ class SpeciesService extends Service {
      * @param array                 $data
      * @param \App\Models\User\User $user
      *
-     * @return \App\Models\Species\Subtype|bool
+     * @return bool|Subtype
      */
     public function createSubtype($data, $user) {
         DB::beginTransaction();
@@ -198,7 +198,7 @@ class SpeciesService extends Service {
      * @param array                 $data
      * @param \App\Models\User\User $user
      *
-     * @return \App\Models\Species\Subtype|bool
+     * @return bool|Subtype
      */
     public function updateSubtype($subtype, $data, $user) {
         DB::beginTransaction();
@@ -241,7 +241,7 @@ class SpeciesService extends Service {
         try {
             // Check first if characters with this subtype exists
             if (CharacterImageSubtype::where('subtype_id', $subtype->id)->exists()) {
-                throw new \Exception("A character image with this subtype exists. Please change or remove its subtype first.");
+                throw new \Exception('A character image with this subtype exists. Please change or remove its subtype first.');
             }
 
             if ($subtype->has_image) {

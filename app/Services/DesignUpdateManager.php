@@ -37,7 +37,7 @@ class DesignUpdateManager extends Service {
      * @param Character $character
      * @param User      $user
      *
-     * @return \App\Models\Character\CharacterDesignUpdate|bool
+     * @return bool|CharacterDesignUpdate
      */
     public function createDesignUpdateRequest($character, $user) {
         DB::beginTransaction();
@@ -368,12 +368,19 @@ class DesignUpdateManager extends Service {
             if (($request->character->is_myo_slot && count($request->character->image->subtypes))) {
                 $subtypes = $request->character->image->subtypes()->pluck('subtype_id')->toArray();
             } else {
-                if(isset($data['subtype_ids']) && $data['subtype_ids']) {
+                if (isset($data['subtype_ids']) && $data['subtype_ids']) {
+                    if (count($data['subtype_ids']) > config('lorekeeper.extensions.multiple_subtype_limit')) {
+                        throw new \Exception('Too many subtypes selected.');
+                    }
                     $subtypes = $data['subtype_ids'];
-                    foreach($data['subtype_ids'] as $subtypeId) {
+                    foreach ($data['subtype_ids'] as $subtypeId) {
                         $subtype = Subtype::find($subtypeId);
-                        if(!$subtype) throw new \Exception("Invalid subtype selected.");
-                        if($subtype && $subtype->species_id != $species->id) throw new \Exception("Subtype does not match the species.");
+                        if (!$subtype) {
+                            throw new \Exception('Invalid subtype selected.');
+                        }
+                        if ($subtype && $subtype->species_id != $species->id) {
+                            throw new \Exception('Subtype does not match the species.');
+                        }
                     }
                 }
             }
@@ -416,7 +423,7 @@ class DesignUpdateManager extends Service {
             // Update other stats
             $request->species_id = $species->id;
             $request->rarity_id = $rarity->id;
-            $request->subtype_ids = isset($subtypes) ? $subtypes : null;
+            $request->subtype_ids = $subtypes ?? null;
             $request->has_features = 1;
             $request->save();
 
@@ -584,14 +591,14 @@ class DesignUpdateManager extends Service {
                 foreach ($request->character->image->subtypes as $subtype) {
                     CharacterImageSubtype::create([
                         'character_image_id' => $image->id,
-                        'subtype_id' => $subtype->subtype_id
+                        'subtype_id'         => $subtype->subtype_id,
                     ]);
                 }
-            } else if($request->subtype_ids) {
-                foreach($request->subtypes() as $subtypeId) {
+            } elseif ($request->subtype_ids) {
+                foreach ($request->subtypes() as $subtypeId) {
                     CharacterImageSubtype::create([
                         'character_image_id' => $image->id,
-                        'subtype_id' => $subtypeId
+                        'subtype_id'         => $subtypeId,
                     ]);
                 }
             }
@@ -825,10 +832,11 @@ class DesignUpdateManager extends Service {
      * @param array                 $data
      * @param CharacterDesignUpdate $request
      * @param User                  $user
+     * @param bool                  $self
      *
      * @return bool
      */
-    public function cancelRequest($data, $request, $user) {
+    public function cancelRequest($data, $request, $user, $self = 0) {
         DB::beginTransaction();
 
         try {
@@ -845,21 +853,30 @@ class DesignUpdateManager extends Service {
             // to add a comment to it. Status is returned to Draft status.
             // Use when rejecting a request that just requires minor modifications to approve.
 
-            // Set staff comment and status
-            $request->staff_id = $user->id;
-            $request->staff_comments = $data['staff_comments'] ?? null;
-            $request->status = 'Draft';
-            if (!isset($data['preserve_queue'])) {
+            if (!$self) {
+                // Set staff comment if this is not a self-cancel
+                $request->staff_id = $user->id;
+                $request->staff_comments = $data['staff_comments'] ?? null;
+                if (!isset($data['preserve_queue'])) {
+                    $request->submitted_at = null;
+                }
+            } else {
                 $request->submitted_at = null;
             }
+
+            // Set status
+            $request->status = 'Draft';
             $request->save();
 
-            // Notify the user
-            Notifications::create('DESIGN_CANCELED', $request->user, [
-                'design_url'    => $request->url,
-                'character_url' => $request->character->url,
-                'name'          => $request->character->fullName,
-            ]);
+            if (!$self) {
+                // Notify the user if it is not being canceled by the user themself.
+                // Note that an admin canceling their own will also not result in a notification
+                Notifications::create('DESIGN_CANCELED', $request->user, [
+                    'design_url'    => $request->url,
+                    'character_url' => $request->character->url,
+                    'name'          => $request->character->fullName,
+                ]);
+            }
 
             return $this->commitReturn(true);
         } catch (\Exception $e) {

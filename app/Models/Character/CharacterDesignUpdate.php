@@ -42,6 +42,7 @@ class CharacterDesignUpdate extends Model {
      */
     protected $casts = [
         'submitted_at' => 'datetime',
+        'subtype_ids'  => 'array',
     ];
 
     /**
@@ -368,22 +369,20 @@ class CharacterDesignUpdate extends Model {
     /**
      * Get the subtypes of the design update.
      */
-    public function subtypes()
-    {
-        return isset($this->subtype_ids) ? json_decode($this->subtype_ids, true) : [];
+    public function subtypes() {
+        return $this->subtype_ids;
     }
 
     /**
      * Get the subtypes of the design update.
      */
-    public function displaySubtypes()
-    {
+    public function displaySubtypes() {
         $subtypes = $this->subtypes();
         $result = [];
-        foreach($subtypes as $subtype)
-        {
+        foreach ($subtypes as $subtype) {
             $result[] = Subtype::find($subtype)->displayName;
         }
+
         return implode(', ', $result);
     }
 }

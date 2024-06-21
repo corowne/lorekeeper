@@ -7,7 +7,6 @@ use App\Models\Rarity;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
 use App\Models\User\User;
-use App\Models\Character\CharacterImageSubtype;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CharacterImage extends Model {
@@ -95,8 +94,7 @@ class CharacterImage extends Model {
     /**
      * Get the subtype of the character image.
      */
-    public function subtypes()
-    {
+    public function subtypes() {
         return $this->hasMany(CharacterImageSubtype::class, 'character_image_id');
     }
 
@@ -276,8 +274,7 @@ class CharacterImage extends Model {
     /**
      * Displays the image's subtypes as an imploded string.
      */
-    public function displaySubtypes()
-    {
+    public function displaySubtypes() {
         if (!count($this->subtypes)) {
             return 'None';
         }
@@ -285,6 +282,7 @@ class CharacterImage extends Model {
         foreach ($this->subtypes as $subtype) {
             $subtypes[] = $subtype->subtype->displayName;
         }
+
         return implode(', ', $subtypes);
     }
 }

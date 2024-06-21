@@ -2,23 +2,17 @@
 
 namespace App\Models\Character;
 
-use Config;
-use DB;
 use App\Models\Model;
-use App\Models\User\User;
 use App\Models\Species\Subtype;
-use App\Models\Character\CharacterCategory;
 
-class CharacterImageSubtype extends Model
-{
-
+class CharacterImageSubtype extends Model {
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'character_image_id', 'subtype_id'
+        'character_image_id', 'subtype_id',
     ];
 
     /**
@@ -34,26 +28,24 @@ class CharacterImageSubtype extends Model
      * @var string
      */
     public $timestamps = false;
-    
+
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the image associated with this record.
      */
-    public function image() 
-    {
+    public function image() {
         return $this->belongsTo('App\Models\Character\CharacterImage', 'character_image_id');
     }
 
     /**
      * Get the subtype associated with this record.
      */
-    public function subtype()
-    {
+    public function subtype() {
         return $this->belongsTo(Subtype::class, 'subtype_id');
     }
 }
