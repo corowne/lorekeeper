@@ -102,7 +102,7 @@
             dataType: "text"
         }).done(function(res) {
             $("#subtypes").html(res);
-            $( "#subtype" ).selectize({
+            $("#subtype").selectize({
                 maxItems: {{ config('lorekeeper.extensions.multiple_subtype_limit') }},
             });
         }).fail(function(jqXHR, textStatus, errorThrown) {
@@ -110,7 +110,7 @@
         });
     };
 
-    $( "#subtype" ).selectize({
+    $("#subtype").selectize({
         maxItems: {{ config('lorekeeper.extensions.multiple_subtype_limit') }},
     });
 </script>

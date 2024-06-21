@@ -59,7 +59,9 @@
 </div>
 
 <div class="form-group" id="subtypes">
-    {!! Form::label('Subtypes (Optional)') !!} {!! add_help('This will lock the slot into a particular subtype. Leave it blank if you would like to give the user a choice, or not select a subtype. The subtype must match the species selected above, and if no species is specified, the subtype will not be applied.') !!}
+    {!! Form::label('Subtypes (Optional)') !!} {!! add_help(
+        'This will lock the slot into a particular subtype. Leave it blank if you would like to give the user a choice, or not select a subtype. The subtype must match the species selected above, and if no species is specified, the subtype will not be applied.',
+    ) !!}
     {!! Form::select('subtype_ids[]', $subtypes, $tag->getData()['species_id'] ? $tag->getData()['subtype_ids'] : null, ['class' => 'form-control', 'placeholder' => 'Select Species First', 'id' => 'subtype', 'multiple']) !!}
 </div>
 
@@ -73,17 +75,21 @@
     @include('widgets._character_create_options_js')
 
     <script>
-        $( "#species" ).change(function() {
+        $("#species").change(function() {
             var species = $('#species').val();
-            var myo = '<?php echo($isMyo); ?>';
+            var myo = '<?php echo $isMyo; ?>';
             $.ajax({
-                type: "GET", url: "{{ url('admin/masterlist/check-subtype') }}?species="+species+"&myo="+myo, dataType: "text"
-            }).done(function (res) {
+                type: "GET",
+                url: "{{ url('admin/masterlist/check-subtype') }}?species=" + species + "&myo=" + myo,
+                dataType: "text"
+            }).done(function(res) {
                 $("#subtypes").html(res);
-                $( "#subtype" ).selectize({
+                $("#subtype").selectize({
                     maxItems: {{ config('lorekeeper.extensions.multiple_subtype_limit') }},
                 });
-            }).fail(function (jqXHR, textStatus, errorThrown) { alert("AJAX call failed: " + textStatus + ", " + errorThrown); });
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                alert("AJAX call failed: " + textStatus + ", " + errorThrown);
+            });
         });
 
         $('#subtype').selectize({

@@ -114,7 +114,7 @@
 
     <div class="form-group" id="subtypes">
         {!! Form::label('Subtypes (Optional)') !!}
-        {!! Form::select('subtype_ids[]', $subtypes, old('subtype_ids') ? : $character->image->subtypes()?->pluck('subtype_id')->toArray(), ['class' => 'form-control', 'id' => 'subtype', 'multiple']) !!}
+        {!! Form::select('subtype_ids[]', $subtypes, old('subtype_ids') ?: $character->image->subtypes()?->pluck('subtype_id')->toArray(), ['class' => 'form-control', 'id' => 'subtype', 'multiple']) !!}
     </div>
 
     <div class="form-group">
