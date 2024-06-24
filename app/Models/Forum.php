@@ -7,6 +7,8 @@ use Config;
 use App\Models\Model;
 use App\Traits\Commentable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Comment\Comment;
+use App\Models\Rank\Rank;
 
 class Forum extends Model
 {
@@ -47,7 +49,7 @@ class Forum extends Model
      */
     public function parent()
     {
-        return $this->belongsTo('App\Models\Forum');
+        return $this->belongsTo(self::class);
     }
 
 
@@ -56,14 +58,14 @@ class Forum extends Model
      */
     public function children()
     {
-        return $this->hasMany('App\Models\Forum', 'parent_id');
+        return $this->hasMany(self::class, 'parent_id');
     }
     /**
      * Get the children of this forum.
      */
     public function role()
     {
-        return $this->belongsTo('App\Models\Rank\Rank', 'role_limit');
+        return $this->belongsTo(Rank::class, 'role_limit');
     }
 
 

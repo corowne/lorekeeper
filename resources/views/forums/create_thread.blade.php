@@ -6,39 +6,45 @@
 {!! breadcrumbs(['Forum' => 'forum' , $forum->name => 'forum/'.$forum->id, 'Create New Thread' => 'forum/'.$forum->id.'/new' ]) !!}
 <h1>Create Thread in {!! $forum->displayName !!}</h1>
 
-<div class="card">
-    <div class="card-body">
-        @if($errors->has('commentable_type'))
-            <div class="alert alert-danger" role="alert">
-                {{ $errors->first('commentable_type') }}
-            </div>
-        @endif
-        @if($errors->has('commentable_id'))
-            <div class="alert alert-danger" role="alert">
-                {{ $errors->first('commentable_id') }}
-            </div>
-        @endif
-        <form method="POST" action="{{ route('comments.store') }}">
-            @csrf
-            @honeypot
-            <input type="hidden" name="commentable_type" value="\App\Models\Forum" />
-            <input type="hidden" name="commentable_id" value="{{ $forum->id }}" />
-            <input type="hidden" name="type" value="{{ isset($type) ? $type : null }}" />
+@php
+$model = $forum;
+@endphp
 
-            <div class="form-group">
-                {!! Form::label('title', 'Title') !!} {!! add_help('Enter a title relevant to your thread.') !!}
-                {!! Form::text('title',  Request::get('title'), ['class' => 'form-control', 'required']) !!}
-            </div>
-            <div class="form-group">
-                {!! Form::label('message', 'Message') !!}
-                {!! Form::textarea('message',  Request::get('message'), ['class' => 'form-control ', 'required']) !!}
-            </div>
-            <small class="form-text text-muted mb-2">Thread starter posts use HTML.</small>
-            <button type="submit" class="btn btn-sm btn-outline-success text-uppercase">Submit</button>
-        </form>
+@auth
+    @include('comments._form')
+@else
+    <div class="card mt-3">
+        <div class="card-body">
+            <h5 class="card-title">Authentication required</h5>
+            <p class="card-text">You must log in to post a comment.</p>
+            <a href="{{ route('login') }}" class="btn btn-primary">Log in</a>
+        </div>
     </div>
-</div>
+@endauth
+@endsection
 
-
-
+@section('scripts')
+    @parent
+    <script>
+        $(document).ready(function() {
+            tinymce.init({
+                selector: '.comment-wysiwyg',
+                height: 250,
+                menubar: false,
+                convert_urls: false,
+                plugins: [
+                    'advlist autolink lists link image charmap print preview anchor',
+                    'searchreplace visualblocks code fullscreen spoiler',
+                    'insertdatetime media table paste code help wordcount'
+                ],
+                toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | spoiler-add spoiler-remove | removeformat | code',
+                content_css: [
+                    '{{ asset('css/app.css') }}',
+                    '{{ asset('css/lorekeeper.css') }}'
+                ],
+                spoiler_caption: 'Toggle Spoiler',
+                target_list: false
+            });
+        });
+    </script>
 @endsection

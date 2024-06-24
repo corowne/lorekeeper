@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Comment\Comment;
 use Illuminate\Support\Facades\Auth;
-use Auth;
 use Config;
 
 class CommentPolicy {

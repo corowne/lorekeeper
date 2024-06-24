@@ -10,8 +10,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 use App\Models\User\User;
-use App\Models\Comment;
+use App\Models\Comment\Comment;
 use App\Models\Forum;
+use Log;
 
 use App\Services\ForumService;
 
@@ -26,6 +27,8 @@ class ForumController extends Controller
     {
         $forums = Forum::with('children')->has('children')->visible()->category()->orderBy('sort', 'DESC')->staff()->get();
         $customforums = collect();
+
+        Log::info($forums);
 
         foreach($forums as $key => $forum)
         {

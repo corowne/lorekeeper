@@ -6,6 +6,7 @@ use App\Models\Comment\Comment;
 use App\Models\Gallery\GallerySubmission;
 use App\Models\Report\Report;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Forum;
 
 class PermalinkController extends Controller {
     /**
