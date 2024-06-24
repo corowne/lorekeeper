@@ -1,5 +1,5 @@
-@if($forum)
-    {!! Form::open(['url' => 'admin/forums/delete/'.$forum->id]) !!}
+@if ($forum)
+    {!! Form::open(['url' => 'admin/forums/delete/' . $forum->id]) !!}
 
     <p>You are about to delete the forum <strong>{{ $forum->name }}</strong>. This is not reversible.</p>
     <p>This will not delete any of the threads or posts within.</p>

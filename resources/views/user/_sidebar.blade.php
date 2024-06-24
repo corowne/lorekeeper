@@ -26,7 +26,7 @@
         <div class="sidebar-item"><a href="{{ $user->url . '/currency-logs' }}" class="{{ set_active('user/' . $user->name . '/currency-logs*') }}">Currency Logs</a></div>
         <div class="sidebar-item"><a href="{{ $user->url . '/submissions' }}" class="{{ set_active('user/' . $user->name . '/submissions*') }}">Submissions</a></div>
         @auth
-            <div class="sidebar-item"><a href="{{ $user->url.'/forum' }}" class="{{ $user->url.'/forum*' }}">Forum Posts</a></div>
+            <div class="sidebar-item"><a href="{{ $user->url . '/forum' }}" class="{{ $user->url . '/forum*' }}">Forum Posts</a></div>
         @endauth
     </li>
 
