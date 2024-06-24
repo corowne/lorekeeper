@@ -194,7 +194,11 @@ return [
                 'name' => 'Items',
                 'url'  => 'admin/data/items',
             ],
-        ],
+            [
+                'name' => 'Forums',
+                'url' => 'admin/forums'
+            ],
+        ]
     ],
     'Raffles'    => [
         'power' => 'manage_raffles',

@@ -11,7 +11,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
 
-class HomeController extends Controller {
+use App\Models\Comment\Comment;
+use App\Models\Forum;
+
+class HomeController extends Controller
+{
     /*
     |--------------------------------------------------------------------------
     | Home Controller

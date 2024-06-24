@@ -224,4 +224,19 @@ Route::group(['prefix' => 'comments', 'namespace' => 'Comments'], function () {
     Route::post('/{id}/feature', 'CommentController@feature')->name('comments.feature');
     Route::post('/{id}/like/{action}', 'CommentController@like')->name('comments.like');
     Route::get('/liked', 'CommentController@getLikedComments');
+    Route::post('/{id}/lock', 'CommentController@lock')->name('comments.lock');
+});
+
+
+/**************************************************************************************************
+    Forums
+**************************************************************************************************/
+Route::group(['prefix' => 'forum'], function() {
+    Route::get('{id}/new', 'ForumController@getCreateThread');
+    Route::get('{id}/~{thread_id}/edit', 'ForumController@getEditThread');
+});
+
+
+Route::group(['prefix' => 'user', 'namespace' => 'Users'], function() {
+    Route::get('{name}/forum', 'UserController@getUserForumPosts'); // Placed here so I don't have to mess with
 });

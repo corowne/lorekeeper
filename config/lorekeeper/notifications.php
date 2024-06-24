@@ -318,6 +318,13 @@ return [
         'message' => 'Your claim (#{submission_id}) was cancelled and sent back to drafts by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Claim</a>)',
         'url'     => 'claims/view/{submission_id}',
     ],
+    // THREAD_REPLY
+    110 => [
+        'name' => 'Thread Reply',
+        'message' => '<a href="{sender_url}">{sender}</a> has made a <a href="comment/{comment_url}">reply</a> to <a href="forum/{forum_url}/~{thread_url}">{thread_title}</a> in <a href="forum/{forum_url}">{forum_name}</a>',
+        'url' => ''
+    ],
+
 
     // REPORT_ASSIGNED
     220 => [

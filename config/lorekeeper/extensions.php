@@ -106,4 +106,7 @@ return [
     // Use ReCaptcha to check new user registrations - Mercury
     // Requires site key and secret be set in your .env file!
     'use_recaptcha' => 0,
+    //Forum Posts Editable by Author - Wych
+    'forum_author_edit' => 0,
+
 ];
