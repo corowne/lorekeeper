@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterImage;
 use App\Models\Character\Sublist;
+use App\Models\Comment;
 use App\Models\Currency\Currency;
+use App\Models\Forum;
 use App\Models\Gallery\Gallery;
 use App\Models\Gallery\GalleryCharacter;
 use App\Models\Gallery\GallerySubmission;
@@ -19,13 +21,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Route;
-use App\Models\Gallery\GalleryFavorite;
-use App\Models\Item\ItemLog;
-
-use App\Models\Character\CharacterCategory;
-
-use App\Models\Comment;
-use App\Models\Forum;
 
 class UserController extends Controller {
     /*
@@ -361,27 +356,28 @@ class UserController extends Controller {
     /**
      * Shows a user's gallery submission favorites that contain characters they own.
      *
-     * @param  string  $name
+     * @param string $name
+     *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getUserForumPosts($name)
-    {
+    public function getUserForumPosts($name) {
         $user = $this->user;
 
         $forums = Forum::all();
         $public = [];
         $posts = collect();
 
-        foreach($forums as $key => $forum)
-        {
-            if(Auth::user()->canVisitForum($forum->id) && ($forum->parent ? (Auth::user()->canVisitForum($forum->parent->id) && ($forum->parent->parent ? Auth::user()->canVisitForum($forum->parent->parent->id) : true) ) : true)) $public[] = $forum->id;
+        foreach ($forums as $key => $forum) {
+            if (Auth::user()->canVisitForum($forum->id) && ($forum->parent ? (Auth::user()->canVisitForum($forum->parent->id) && ($forum->parent->parent ? Auth::user()->canVisitForum($forum->parent->parent->id) : true)) : true)) {
+                $public[] = $forum->id;
+            }
         }
-        $posts = Comment::with('parent')->where('commentable_type','App\Models\Forum')->where('commenter_id',$user->id)->orderBy('created_at', 'DESC')->get()->whereIn('commentable_id',$public);
+        $posts = Comment::with('parent')->where('commentable_type', 'App\Models\Forum')->where('commenter_id', $user->id)->orderBy('created_at', 'DESC')->get()->whereIn('commentable_id', $public);
 
         return view('user.forum_posts', [
-            'user' => $this->user,
+            'user'     => $this->user,
             'sublists' => Sublist::orderBy('sort', 'DESC')->get(),
-            'posts' => $posts->paginate(20)
+            'posts'    => $posts->paginate(20),
         ]);
     }
 }

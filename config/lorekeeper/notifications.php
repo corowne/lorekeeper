@@ -320,11 +320,10 @@ return [
     ],
     // THREAD_REPLY
     110 => [
-        'name' => 'Thread Reply',
+        'name'    => 'Thread Reply',
         'message' => '<a href="{sender_url}">{sender}</a> has made a <a href="comment/{comment_url}">reply</a> to <a href="forum/{forum_url}/~{thread_url}">{thread_title}</a> in <a href="forum/{forum_url}">{forum_name}</a>',
-        'url' => ''
+        'url'     => '',
     ],
-
 
     // REPORT_ASSIGNED
     220 => [

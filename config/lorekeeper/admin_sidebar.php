@@ -196,9 +196,9 @@ return [
             ],
             [
                 'name' => 'Forums',
-                'url' => 'admin/forums'
+                'url'  => 'admin/forums',
             ],
-        ]
+        ],
     ],
     'Raffles'    => [
         'power' => 'manage_raffles',

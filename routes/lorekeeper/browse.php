@@ -176,11 +176,8 @@ Route::group(['prefix' => 'reports', 'namespace' => 'Users'], function () {
 /**************************************************************************************************
     Forums
 **************************************************************************************************/
-Route::group(['prefix' => 'forum'], function() {
+Route::group(['prefix' => 'forum'], function () {
     Route::get('/', 'ForumController@getIndex');
     Route::get('{board_id}/~{id}', 'ForumController@getThread');
     Route::get('{id}', 'ForumController@getForum');
 });
-
-
-

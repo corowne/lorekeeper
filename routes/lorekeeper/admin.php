@@ -443,10 +443,8 @@ Route::group(['prefix' => 'designs', 'middleware' => 'power:manage_characters'],
 });
 Route::get('{type}/{status}', 'DesignController@getDesignIndex')->where('type', 'myo-approvals|design-approvals')->where('status', 'pending|approved|rejected');
 
-
-# FORUMS
-Route::group(['prefix' => 'forums', 'middleware' => 'power:edit_data'], function() {
-
+// FORUMS
+Route::group(['prefix' => 'forums', 'middleware' => 'power:edit_data'], function () {
     Route::get('/', 'ForumController@getIndex');
     Route::get('create', 'ForumController@getCreateForum');
     Route::get('edit/{id}', 'ForumController@getEditForum');
