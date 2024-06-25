@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterImage;
 use App\Models\Character\Sublist;
-use App\Models\Comment;
+use App\Models\Comment\Comment;
 use App\Models\Currency\Currency;
 use App\Models\Forum;
 use App\Models\Gallery\Gallery;
