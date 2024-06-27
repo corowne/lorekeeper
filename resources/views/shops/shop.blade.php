@@ -22,7 +22,7 @@
     @foreach ($items as $categoryId => $categoryItems)
         @php
             $visible = '';
-            if (!$categories[$categoryId]->is_visible) {
+            if ($categoryId && !$categories[$categoryId]->is_visible) {
                 $visible = '<i class="fas fa-eye-slash mr-1"></i>';
             }
         @endphp
