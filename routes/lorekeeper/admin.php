@@ -226,6 +226,13 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('prompts/create', 'PromptController@postCreateEditPrompt');
     Route::post('prompts/edit/{id?}', 'PromptController@postCreateEditPrompt');
     Route::post('prompts/delete/{id}', 'PromptController@postDeletePrompt');
+
+    Route::get('event-icon', 'EventIconController@getIndex');
+    Route::post('event-icon/create', 'EventIconController@postUploadEventIcon');
+    Route::get('event-icon/update/{id}', 'EventIconController@getUpdateEventIcon');
+    Route::post('event-icon/update/{id}', 'EventIconController@postUpdateEventIcon');
+    Route::get('event-icon/delete/{id}', 'EventIconController@getDeleteEventIcon');
+    Route::post('event-icon/delete/{id}', 'EventIconController@postDeleteEventIcon');
 });
 
 

@@ -46,7 +46,11 @@ return [
             [
                 'name' => 'Pages',
                 'url' => 'admin/pages'
-            ]
+            ],
+            [
+                'name' => 'EventIcon',
+                'url' => 'admin/data/event-icon'
+            ],
         ]
     ],
     'Users' => [

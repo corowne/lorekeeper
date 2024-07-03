@@ -5,6 +5,11 @@
     </div>
 </div>
 <div class="row">
+    <div class="col-md-12">
+            @include('widgets._event_icon')
+        </div>
+    </div>
+<div class="row">
     <div class="col-md-6">
         <div class="card mb-4">
             <div class="card-body text-center">
