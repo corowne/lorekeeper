@@ -3,18 +3,17 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
+use Symfony\Component\HttpFoundation\Response;
 
-class PostRequestThrottleMiddleware
-{
+class PostRequestThrottleMiddleware {
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response) $next
      */
     public function handle(Request $request, Closure $next): Response {
         if ($request->isMethod('get')) {
@@ -26,11 +25,11 @@ class PostRequestThrottleMiddleware
         $decaySeconds = 10;
 
         if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
-            flash("Too many requests. This action has been logged and sent to site administrators.")->error();
+            flash('Too many requests. This action has been logged and sent to site administrators.')->error();
 
             if ($request->user() && config('lorekeeper.settings.site_logging_webhook')) {
                 $webhookCooldown = 120;
-                $cacheKey = 'webhook_sent_' . $key;
+                $cacheKey = 'webhook_sent_'.$key;
                 if (!Cache::has($cacheKey)) {
                     Cache::put($cacheKey, true, $webhookCooldown);
                     $this->sendThrottleLogWebhook($request);
@@ -66,7 +65,7 @@ class PostRequestThrottleMiddleware
             'color'       => 6208428,
             'author'      => $author_data ?? null,
             'title'       => 'Rate Limited User',
-            'description' => ''
+            'description' => '',
         ]];
 
         $ch = curl_init($webhook);
@@ -79,6 +78,5 @@ class PostRequestThrottleMiddleware
         $response = curl_exec($ch);
         curl_close($ch);
 
-        return;
     }
 }
