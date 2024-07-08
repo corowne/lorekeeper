@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Log;
+
+class PostRequestThrottleMiddleware
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
+    public function handle(Request $request, Closure $next): Response {
+        $key = $request->user()?->id ?: $request->ip();
+        $maxAttempts = 1;
+        $decaySeconds = 10;
+
+        if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
+            flash("Too many requests. This action has been logged and sent to site administrators.")->error();
+
+            if ($request->user() && config('lorekeeper.settings.site_logging_webhook')) {
+                $webhookCooldown = 120;
+                $cacheKey = 'webhook_sent_' . $key;
+                if (!Cache::has($cacheKey)) {
+                    Cache::put($cacheKey, true, $webhookCooldown);
+                    $this->sendThrottleLogWebhook($request);
+                }
+            } else {
+                Log::channel('throttle')->info('Rate limited user', ['url' => $request->fullUrl(), 'user' => $request->user()?->name ?: $request->ip()]);
+            }
+
+            return redirect()->back();
+        }
+
+        RateLimiter::hit($key, $decaySeconds);
+
+        return $next($request);
+    }
+
+    /**
+     * Sends a log to the site administrators that a user has been rate limited.
+     */
+    private function sendThrottleLogWebhook(Request $request): void {
+        $webhook = config('lorekeeper.settings.site_logging_webhook');
+        $data = [];
+
+        $author_data = [
+            'name'     => $request->user()->name,
+            'url'      => $request->user()->url,
+            'icon_url' => $request->user()->avatarUrl,
+        ];
+        $data['username'] = config('lorekeeper.settings.site_name', 'Lorekeeper');
+        $data['avatar_url'] = url('favicon.ico');
+        $data['content'] = 'A user has been rate limited, url: '.$request->fullUrl();
+        $data['embeds'] = [[
+            'color'       => 6208428,
+            'author'      => $author_data ?? null,
+            'title'       => 'Rate Limited User',
+            'description' => ''
+        ]];
+
+        $ch = curl_init($webhook);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-type: application/json']);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        return;
+    }
+}
