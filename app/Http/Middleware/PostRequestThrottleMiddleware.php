@@ -26,7 +26,7 @@ class PostRequestThrottleMiddleware {
 
         if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
             flash('Too many requests - please try again later.')->error()->important();
-            flash('Your initial action has likely been preformed successfully. Please check to ensure this is the case before trying again.')->success()->important();
+            flash('Your initial action has likely been performed successfully. Please check to ensure this is the case before trying again.')->success()->important();
 
             if ($request->user() && config('lorekeeper.settings.site_logging_webhook')) {
                 $webhookCooldown = 120;
