@@ -17,6 +17,10 @@ class PostRequestThrottleMiddleware
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response {
+        if ($request->isMethod('get')) {
+            return $next($request);
+        }
+
         $key = $request->user()?->id ?: $request->ip();
         $maxAttempts = 1;
         $decaySeconds = 10;
