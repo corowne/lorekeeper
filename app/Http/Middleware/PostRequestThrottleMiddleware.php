@@ -25,7 +25,8 @@ class PostRequestThrottleMiddleware {
         $decaySeconds = 10;
 
         if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
-            flash('Too many requests. This action has been logged and sent to site administrators.')->error();
+            flash('Too many requests. This action has been logged and sent to site administrators - please try again later.')->error()->important();
+            flash('Your initial action has likely been preformed successfully. Please check to ensure this is the case before trying again.')->success()->important();
 
             if ($request->user() && config('lorekeeper.settings.site_logging_webhook')) {
                 $webhookCooldown = 120;
