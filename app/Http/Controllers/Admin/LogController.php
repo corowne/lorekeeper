@@ -85,23 +85,28 @@ class LogController extends Controller
 
     /**
      * Parse laravel logs to build collapsible stacktraces in the view.
+     * This probably won't work with custom formatted logs.
      */
     private function parseLaravelLog($log){
         $index = 0;
         $logLines = [];
         $stacktrace = [];
         foreach($log as $line){
+            $line = trim($line);
             if(str_contains($line, '{main}')) {
                 if(count($stacktrace) > 0) {
                     $logLines[$index]['stacktrace'] = $stacktrace;
                     $stacktrace = [];
                     $index += 1;
-                } 
+                }
+            } elseif (str_ends_with($line, '"}') && strlen($line) > 2){
+                $logLines[$index]['line'] = $line;
+                $index += 1;
             } elseif (str_starts_with($line, '#')) {
                 $stacktrace[] = $line;
             } else {
                 // some log lines are sorta useless we cut them out.
-                if(!str_contains($line, '[stacktrace]') && !str_contains($line, '"}')) $logLines[$index]['line'] = $line;
+                if(!str_contains($line, '[stacktrace]') && !str_contains($line, 'Stack trace') && strlen($line) > 2) $logLines[$index]['line'] = $line;
             }
         }
         return $logLines;
@@ -109,6 +114,7 @@ class LogController extends Controller
 
     /**
      * Simply parse all lines without creating stacktraces for collapse views.
+     * Should work for any logs.
      */
     private function parseLog($log){
         $index = 0;
