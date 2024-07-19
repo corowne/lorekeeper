@@ -5,9 +5,11 @@ namespace App\Models\User;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterBookmark;
 use App\Models\Character\CharacterImageCreator;
+use App\Models\Comment\Comment;
 use App\Models\Comment\CommentLike;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
+use App\Models\Forum;
 use App\Models\Gallery\GalleryCollaborator;
 use App\Models\Gallery\GalleryFavorite;
 use App\Models\Gallery\GallerySubmission;
@@ -410,6 +412,15 @@ class User extends Authenticatable implements MustVerifyEmail {
     }
 
     /**
+     * Gets the user's forum post count.
+     *
+     * @return string
+     */
+    public function getForumCountAttribute() {
+        return Comment::where('commentable_type', 'App\Models\Forum')->where('commenter_id', $this->id)->count();
+    }
+
+    /**
      * Get's user birthday setting.
      */
     public function getBirthdayDisplayAttribute() {
@@ -468,6 +479,26 @@ class User extends Authenticatable implements MustVerifyEmail {
      */
     public function canEditRank($rank) {
         return $this->rank->canEditRank($rank);
+    }
+
+    /**
+     * Checks if the user can see and visit a certain forum.
+     *
+     * @param mixed $id
+     *
+     * @return bool
+     */
+    public function canVisitForum($id) {
+        $forum = Forum::find($id);
+        if ($this->isStaff) {
+            return true;
+        } elseif (isset($forum->role_limit) && $this->rank_id == $forum->role_limit) {
+            return true;
+        } elseif (!isset($forum->role_limit) && !$forum->staff_only) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

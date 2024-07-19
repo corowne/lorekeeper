@@ -26,7 +26,7 @@ class Comment extends Model {
      * @var array
      */
     protected $fillable = [
-        'comment', 'approved', 'guest_name', 'guest_email', 'is_featured', 'type',
+        'comment', 'approved', 'guest_name', 'guest_email', 'is_featured', 'type', 'title', 'is_locked',
     ];
 
     /**
@@ -80,14 +80,14 @@ class Comment extends Model {
      * Returns all comments that this comment is the parent of.
      */
     public function children() {
-        return $this->hasMany(self::class, 'child_id')->withTrashed();
+        return $this->hasMany(self::class, 'child_id')->withTrashed()->with('children');
     }
 
     /**
      * Returns the comment to which this comment belongs to.
      */
     public function parent() {
-        return $this->belongsTo(self::class, 'child_id')->withTrashed();
+        return $this->belongsTo(self::class, 'child_id')->withTrashed()->with('children');
     }
 
     /**
@@ -115,6 +115,31 @@ class Comment extends Model {
      *
      * @return string
      */
+    public function getThreadUrlAttribute() {
+        return url('forum/'.$this->commentable_id.'/~'.$this->topComment->id);
+    }
+
+    /**
+     * Gets and Returns a display name for the comment.
+     * If this is the start of a forum topic, uses the Title attribute and leads to a forum.
+     */
+    public function getDisplayNameAttribute() {
+        if ($this->commentable_type == 'App\Models\Forum') {
+            if (isset($this->title)) {
+                return '<a href="'.$this->threadUrl.'">'.$this->title.'</a>';
+            } else {
+                return '<a href="'.$this->threadUrl.'">Re: '.$this->topComment->title.'</a>';
+            }
+        } else {
+            return '<a href="'.$this->url.'">Comment</a> by '.$this->commenter->displayName;
+        }
+    }
+
+    /**
+     * Gets / Creates permalink for comments - allows user to go directly to comment.
+     *
+     * @return string
+     */
     public function getUrlAttribute() {
         return url('comment/'.$this->id);
     }
@@ -130,5 +155,36 @@ class Comment extends Model {
         } else {
             return $this->parent->topComment;
         }
+    }
+
+    /**
+     * Gets top comment.
+     *
+     * @return string
+     */
+    public function getLatestReplyAttribute() {
+        return self::where('child_id', $this->id)->latest()->first();
+    }
+
+    public function getLatestReplyTimeAttribute() {
+        if ($this->latestReply) {
+            return $this->latestReply->created_at;
+        } else {
+            return $this->created_at;
+        }
+    }
+
+    /**
+     * Returns all children of this comment, not just direct.
+     */
+    public function getAllChildren() {
+        $sections = collect();
+
+        foreach ($this->children as $section) {
+            $sections->push($section);
+            $sections = $sections->merge($section->getAllChildren());
+        }
+
+        return $sections;
     }
 }

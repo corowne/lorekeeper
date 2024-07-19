@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Comment\Comment;
+use Config;
 use Illuminate\Support\Facades\Auth;
 
 class CommentPolicy {
@@ -34,7 +35,18 @@ class CommentPolicy {
      * @param mixed $user
      */
     public function update($user, Comment $comment): bool {
-        return $user->getKey() == $comment->commenter_id;
+        $canEdit = Config::Get('lorekeeper.extensions.forum_author_edit');
+        if ($comment->topComment->is_locked || $comment->commentable_type == 'App\Models\Forum' && $comment->commentable->canUsersPost()) {
+            if ($user->isStaff) {
+                return $user->getKey() == $comment->commenter_id;
+            } elseif ($comment->commentable_type == 'App\Models\Forum' && $canEdit) {
+                return $user->getKey() == $comment->commenter_id;
+            } else {
+                return false;
+            }
+        } else {
+            return $user->getKey() == $comment->commenter_id;
+        }
     }
 
     /**
@@ -43,6 +55,14 @@ class CommentPolicy {
      * @param mixed $user
      */
     public function reply($user, Comment $comment): bool {
-        return $user->getKey();
+        if ($comment->topComment->is_locked || $comment->commentable_type == 'App\Models\Forum' && !$comment->commentable->canUsersPost()) {
+            if ($user->isStaff) {
+                return $user->getKey() == $user->getKey();
+            } else {
+                return false;
+            }
+        } else {
+            return $user->getKey();
+        }
     }
 }

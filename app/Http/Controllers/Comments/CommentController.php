@@ -93,6 +93,7 @@ class CommentController extends Controller {
         $comment->approved = !config('comments.approval_required');
 
         $comment->type = isset($request['type']) && $request['type'] ? $request['type'] : 'User-User';
+        $comment->title = isset($request['title']) && $request['title'] ? $request['title'] : null;
         $comment->save();
 
         $recipient = null;
@@ -147,6 +148,11 @@ class CommentController extends Controller {
                 $post = (($type != 'User-User') ? 'your gallery submission\'s staff comments' : 'your gallery submission');
                 $link = (($type != 'User-User') ? $submission->queueUrl.'/#comment-'.$comment->getKey() : $submission->url.'/#comment-'.$comment->getKey());
                 break;
+            case 'App\Models\Forum':
+                flash('Thread created successfully.')->success();
+
+                return redirect('/forum/'.$comment->commentable_id.'/~'.$comment->id);
+                break;
             default:
                 throw new \Exception('Comment type not supported.');
                 break;
@@ -172,6 +178,7 @@ class CommentController extends Controller {
 
         Validator::make($request->all(), [
             'message' => 'required|string',
+            'title'   => 'nullable|string',
         ])->validate();
 
         // add history
@@ -187,6 +194,7 @@ class CommentController extends Controller {
 
         $comment->update([
             'comment' => config('lorekeeper.settings.wysiwyg_comments') ? parse($request->message) : $request->message,
+            'title'   => $request->title ?? null,
         ]);
 
         return Redirect::to(URL::previous().'#comment-'.$comment->getKey());
@@ -198,13 +206,40 @@ class CommentController extends Controller {
     public function destroy(Comment $comment) {
         Gate::authorize('delete-comment', $comment);
 
+        $forum = null;
+        if ($comment->commentable_type == 'App\Models\Forum' && $comment->children) {
+            if (isset($comment->child_id)) {
+                foreach ($comment->children as $child) {
+                    $child->child_id = $comment->child_id;
+                    $child->save();
+                }
+            } else {
+                foreach ($comment->children as $child) {
+                    $child->delete();
+                }
+            }
+        } // You may want to remove the inner if statement and move the isset into the container if statement if you don't want comments deleted when their threads are deleted.
+
+        if ($comment->commentable_type == 'App\Models\Forum') {
+            if ($comment->parent) {
+                $forum = $comment->parent->threadUrl;
+                flash('Reply deleted successfully.')->success();
+            } else {
+                $forum = $comment->commentable->url;
+                flash('Thread deleted successfully.')->success();
+            }
+        }
+
         if (config('comments.soft_deletes') == true) {
             $comment->delete();
         } else {
             $comment->forceDelete();
         }
-
-        return Redirect::back();
+        if (isset($forum)) {
+            return redirect($forum);
+        } else {
+            return redirect()->back();
+        }
     }
 
     /**
@@ -232,8 +267,19 @@ class CommentController extends Controller {
         $sender = User::find($reply->commenter_id);
         $recipient = User::find($comment->commenter_id);
 
-        // if($sender == $recipient)
-        if ($recipient != $sender) {
+        if ($reply->commentable_type == 'App\Models\Forum' && $recipient != $sender) {
+            Notifications::create('THREAD_REPLY', $recipient, [
+                'sender_url'   => $sender->url,
+                'sender'       => $sender->name,
+                'comment_url'  => $reply->id,
+                'thread_url'   => $comment->topComment->id,
+                'thread_title' => $comment->topComment->title,
+                'forum_url'    => $comment->commentable_id,
+                'forum_name'   => $comment->commentable->name,
+            ]);
+
+            return redirect(URL::previous().'#comment-'.$reply->getKey());
+        } elseif ($recipient != $sender) {
             Notifications::create('COMMENT_REPLY', $recipient, [
                 'sender_url'  => $sender->url,
                 'sender'      => $sender->name,
@@ -256,6 +302,25 @@ class CommentController extends Controller {
         } else {
             $comment->update(['is_featured' => 0]);
         }
+        $comment->timestamps = true;
+
+        return Redirect::to(URL::previous().'#comment-'.$comment->getKey());
+    }
+
+    /**
+     * Is featured for comments.
+     *
+     * @param mixed $id
+     */
+    public function lock($id) {
+        $comment = Comment::find($id);
+        $comment->timestamps = false;
+        if ($comment->is_locked == 0) {
+            $comment->update(['is_locked' => 1]);
+        } else {
+            $comment->update(['is_locked' => 0]);
+        }
+        $comment->timestamps = true;
 
         return Redirect::to(URL::previous().'#comment-'.$comment->getKey());
     }
