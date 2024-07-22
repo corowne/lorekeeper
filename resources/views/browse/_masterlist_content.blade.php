@@ -85,21 +85,9 @@
                 {!! Form::checkbox('is_giftable', 1, Request::get('is_giftable'), ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'data-on' => 'Can Be Gifted', 'data-off' => 'Any Giftable Status', 'data-width' => '202', 'data-height' => '46']) !!}
             </div>
             <hr />
-            <a href="#" class="float-right btn btn-sm btn-outline-primary add-feature-button">Add Trait</a>
-            {!! Form::label('Has Traits: ') !!} {!! add_help('This will narrow the search to characters that have ALL of the selected traits at the same time.') !!}
-            <div id="featureBody" class="row w-100">
-                @if (Request::get('feature_id'))
-                    @foreach (Request::get('feature_id') as $featureId)
-                        <div class="feature-block col-md-4 col-sm-6 mt-3 p-1">
-                            <div class="card">
-                                <div class="card-body d-flex">
-                                    {!! Form::select('feature_id[]', $features, $featureId, ['class' => 'form-control feature-select selectize', 'placeholder' => 'Select Trait']) !!}
-                                    <a href="#" class="btn feature-remove ml-2"><i class="fas fa-times"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                @endif
+            <div class="form-group">
+                {!! Form::label('Has Traits: ') !!} {!! add_help('This will narrow the search to characters that have ALL of the selected traits at the same time.') !!}
+                {!! Form::select('feature_ids[]', $features, Request::get('feature_ids'), ['class' => 'form-control feature-select userselectize', 'placeholder' => 'Select Traits', 'multiple']) !!}
             </div>
             <hr />
             <div class="masterlist-search-field">
@@ -129,16 +117,6 @@
         {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
     </div>
     {!! Form::close() !!}
-</div>
-<div class="hide" id="featureContent">
-    <div class="feature-block col-md-4 col-sm-6 mt-3 p-1">
-        <div class="card">
-            <div class="card-body d-flex">
-                {!! Form::select('feature_id[]', $features, null, ['class' => 'form-control feature-select selectize', 'placeholder' => 'Select Trait']) !!}
-                <a href="#" class="btn feature-remove ml-2"><i class="fas fa-times"></i></a>
-            </div>
-        </div>
-    </div>
 </div>
 <div class="text-right mb-3">
     <div class="btn-group">

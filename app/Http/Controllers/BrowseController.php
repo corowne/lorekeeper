@@ -219,8 +219,8 @@ class BrowseController extends Controller {
         if ($request->get('subtype_id')) {
             $imageQuery->where('subtype_id', $request->get('subtype_id'));
         }
-        if ($request->get('feature_id')) {
-            $featureIds = $request->get('feature_id');
+        if ($request->get('feature_ids')) {
+            $featureIds = $request->get('feature_ids');
             foreach ($featureIds as $featureId) {
                 $imageQuery->whereHas('features', function ($query) use ($featureId) {
                     $query->where('feature_id', $featureId);
@@ -407,8 +407,8 @@ class BrowseController extends Controller {
                 $query->where('url', 'LIKE', '%'.$designerUrl.'%');
             });
         }
-        if ($request->get('feature_id')) {
-            $featureIds = $request->get('feature_id');
+        if ($request->get('feature_ids')) {
+            $featureIds = $request->get('feature_ids');
             foreach ($featureIds as $featureId) {
                 $imageQuery->whereHas('features', function ($query) use ($featureId) {
                     $query->where('feature_id', $featureId);
@@ -559,8 +559,8 @@ class BrowseController extends Controller {
         if ($request->get('subtype_id')) {
             $imageQuery->where('subtype_id', $request->get('subtype_id'));
         }
-        if ($request->get('feature_id')) {
-            $featureIds = $request->get('feature_id');
+        if ($request->get('feature_ids')) {
+            $featureIds = $request->get('feature_ids');
             foreach ($featureIds as $featureId) {
                 $imageQuery->whereHas('features', function ($query) use ($featureId) {
                     $query->where('feature_id', $featureId);
