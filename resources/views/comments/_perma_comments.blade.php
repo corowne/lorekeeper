@@ -27,10 +27,7 @@
             <div
                 class="comment border p-3 rounded {{ $limit == 0 ? 'shadow-sm border-info' : '' }} {{ $comment->is_featured && $limit != 0 ? 'border-success' : '' }} {{ $comment->likes()->where('is_like', 1)->count() -$comment->likes()->where('is_like', 0)->count() <0? 'bg-light bg-gradient': '' }}">
                 <p>
-                    {!! config('lorekeeper.settings.wysiwyg_comments') ? $comment->comment : '<p>' . nl2br($markdown->line(strip_tags($comment->comment))) . '</p>' !!}
-                </p>
-                <p>
-                    {!! $comment->commentable_type == 'App\Models\Forum' && $comment->id == $comment->topComment->id ? nl2br($comment->comment) : nl2br($markdown->line($comment->comment)) !!}
+                    {!! config('lorekeeper.settings.wysiwyg_comments') ? $comment->commentable_type == 'App\Models\Forum' && $comment->id == $comment->topComment->id ? nl2br($comment->comment) : nl2br($markdown->line($comment->comment)) !!}
                 </p>
                 <p class="border-top pt-1 text-right mb-0">
                     <small class="text-muted">{!! $comment->created_at !!}
