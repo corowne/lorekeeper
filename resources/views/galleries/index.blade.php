@@ -51,15 +51,15 @@
                     @endif
                 </div>
                 <div class="card-body">
-                    @if ($gallery->submissions->where('status', 'Accepted')->count())
+                    @if ($gallery->submissions()->where('status', 'Accepted')->count())
                         <div class="row">
-                            @foreach ($gallery->submissions->where('is_visible', 1)->where('status', 'Accepted')->take(4) as $submission)
+                            @foreach ($gallery->submissions()->where('is_visible', 1)->where('status', 'Accepted')->take(4)->get() as $submission)
                                 <div class="col-md-3 text-center align-self-center">
                                     @include('galleries._thumb', ['submission' => $submission, 'gallery' => true])
                                 </div>
                             @endforeach
                         </div>
-                        @if ($gallery->submissions->where('status', 'Accepted')->count() > 4)
+                        @if ($gallery->submissions()->where('status', 'Accepted')->count() > 4)
                             <div class="text-right"><a href="{{ url('gallery/' . $gallery->id) }}">See More...</a></div>
                         @endif
                     @elseif(
