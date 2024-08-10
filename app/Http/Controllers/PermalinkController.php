@@ -61,6 +61,7 @@ class PermalinkController extends Controller {
                         }
                         break;
                 }
+                break;
             case 'Staff-Staff':
                 if (!Auth::check()) {
                     abort(404);
