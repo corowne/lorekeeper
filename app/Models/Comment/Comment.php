@@ -133,14 +133,15 @@ class Comment extends Model {
     }
 
     /**
-     * Returns the comment contents but with links in clickable format
-     * 
+     * Returns the comment contents but with links in clickable format.
+     *
      * @return string
      */
     public function getCommentAttribute() {
         if (config('lorekeeper.settings.wysiwyg_comments')) {
             return preg_replace('/(https?:\/\/[^\s]+)/', '<a href="$1" target="_blank">link</a>', $this->attributes['comment']);
         }
+
         return preg_replace('/(https?:\/\/[^\s]+)/', '[link]($1)', $this->attributes['comment']);
     }
 }
