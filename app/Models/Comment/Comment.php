@@ -145,11 +145,11 @@ class Comment extends Model {
                     $url = $matches[1];
                     $parsedUrl = parse_url($url);
                     $domain = $parsedUrl['host'];
-            
-                    return '<a href="' . $url . '" target="_blank">' . $domain . '</a>';
+
+                    return '<a href="'.$url.'" target="_blank">'.$domain.'</a>';
                 },
                 $this->attributes['comment']
-            );            
+            );
         }
 
         return preg_replace_callback(
@@ -158,8 +158,8 @@ class Comment extends Model {
                 $url = $matches[1];
                 $parsedUrl = parse_url($url);
                 $domain = $parsedUrl['host'];
-        
-                return '[' . $domain . '](' . $url . ')';
+
+                return '['.$domain.']('.$url.')';
             },
             $this->attributes['comment']
         );
