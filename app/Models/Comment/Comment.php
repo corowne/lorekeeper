@@ -139,9 +139,9 @@ class Comment extends Model {
      */
     public function getCommentAttribute() {
         if (config('lorekeeper.settings.wysiwyg_comments')) {
-            return preg_replace('/(https?:\/\/[^\s]+)/', '<a href="$1" target="_blank">link</a>', $this->attributes['comment']);
+            return preg_replace('/(?<!\()(https?:\/\/[^\s]+)/', '<a href="$1" target="_blank">link</a>', $this->attributes['comment']);
         }
 
-        return preg_replace('/(https?:\/\/[^\s]+)/', '[link]($1)', $this->attributes['comment']);
+        return preg_replace('/(?<!\()(https?:\/\/[^\s]+)/', '<a href="$1" target="_blank">link</a>', $this->attributes['comment']);
     }
 }
