@@ -98,7 +98,7 @@
             function sortComments(fade = true) {
                 if (fade) $('#comments').fadeOut();
                 $.ajax({
-                    url: "{{ url('sort-comments/'.base64_encode(urlencode(get_class($model))) . '/' . $model->getKey()) }}",
+                    url: "{{ url('sort-comments/' . base64_encode(urlencode(get_class($model))) . '/' . $model->getKey()) }}",
                     type: 'GET',
                     data: {
                         allow_dislikes: '{{ isset($allow_dislikes) ? $allow_dislikes : false }}',

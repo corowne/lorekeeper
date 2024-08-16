@@ -1,7 +1,7 @@
 <div id="comments">
     <div class="d-flex mw-100 row mx-0" style="overflow:hidden;">
         @php
-            $comments = (isset($sort) && $sort == 'oldest') ? $comments->sortBy('created_at') : $comments->sortByDesc('created_at');
+            $comments = isset($sort) && $sort == 'oldest' ? $comments->sortBy('created_at') : $comments->sortByDesc('created_at');
 
             if (isset($perPage)) {
                 $page = request()->query('page', 1) - 1;
