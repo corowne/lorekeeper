@@ -41,14 +41,7 @@ class CommentController extends Controller {
     public function store(Request $request, $model, $id) {
         $model = urldecode(base64_decode($model));
 
-        $accepted_models = config('lorekeeper.allowed_comment_models');
-        if (!count($accepted_models)) {
-            flash('Invalid Models')->error();
-
-            return redirect()->back();
-        }
-
-        if (!in_array($model, $accepted_models)) {
+        if (!count(config('lorekeeper.allowed_comment_models')) || !in_array($model, config('lorekeeper.allowed_comment_models'))) {
             abort(404);
         }
 
@@ -301,6 +294,46 @@ class CommentController extends Controller {
     public function getLikedComments(Request $request) {
         return view('home.liked_comments', [
             'user' => Auth::user(),
+        ]);
+    }
+
+    /**
+     * Sorts comments based on the user's preference.
+     * 
+     * @param Request $request
+     */
+    public function getSortedComments(Request $request, $model, $id) {
+        $sort = $request->input('sort');
+        $perPage = $request->input('perPage');
+
+        $approved = $request->input('approved');
+        $type = $request->input('type');
+
+        $model = urldecode(base64_decode($model));
+        if (!count(config('lorekeeper.allowed_comment_models')) || !in_array($model, config('lorekeeper.allowed_comment_models'))) {
+            abort(404);
+        }
+        $model = $model::findOrFail($id);
+
+        if (isset($approved) && $approved) {
+            if (isset($type)) {
+                $comments = $model->approvedComments->where('type', $type);
+            } else {
+                $comments = $model->approvedComments->where('type', 'User-User');
+            }
+        } else {
+            if (isset($type)) {
+                $comments = $model->commentz->where('type', $type);
+            } else {
+                $comments = $model->commentz->where('type', 'User-User');
+            }
+        }
+
+        return view('comments._comments', [
+            'comments' => $comments,
+            'sort'     => $sort,
+            'perPage'  => $perPage,
+            'allow_dislikes' => $request->input('allow_dislikes'),
         ]);
     }
 }

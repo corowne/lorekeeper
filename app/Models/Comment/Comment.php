@@ -131,4 +131,17 @@ class Comment extends Model {
             return $this->parent->topComment;
         }
     }
+
+    /**
+     * Gets the end of a comment's thread.
+     * 
+     * @return Comment
+     */
+    public function getEndOfThreadAttribute() {
+        if ($this->children->count() > 0) {
+            return $this->children->sortByDesc('created_at')->first()->endOfThread;
+        } else {
+            return $this;
+        }
+    }
 }

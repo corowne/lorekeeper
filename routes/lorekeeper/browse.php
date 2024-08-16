@@ -158,6 +158,7 @@ Route::group(['prefix' => 'claims', 'namespace' => 'Users'], function () {
     Comments
 **************************************************************************************************/
 Route::get('comment/{id}', 'PermalinkController@getComment');
+Route::get('sort-comments/{model}/{id}', 'Comments\CommentController@getSortedComments');
 
 /**************************************************************************************************
     Galleries
