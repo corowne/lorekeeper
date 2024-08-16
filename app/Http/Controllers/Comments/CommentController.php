@@ -299,8 +299,9 @@ class CommentController extends Controller {
 
     /**
      * Sorts comments based on the user's preference.
-     * 
-     * @param Request $request
+     *
+     * @param mixed $model
+     * @param mixed $id
      */
     public function getSortedComments(Request $request, $model, $id) {
         $sort = $request->input('sort');
@@ -330,9 +331,9 @@ class CommentController extends Controller {
         }
 
         return view('comments._comments', [
-            'comments' => $comments,
-            'sort'     => $sort,
-            'perPage'  => $perPage,
+            'comments'       => $comments,
+            'sort'           => $sort,
+            'perPage'        => $perPage,
             'allow_dislikes' => $request->input('allow_dislikes'),
         ]);
     }

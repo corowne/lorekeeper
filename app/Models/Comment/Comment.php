@@ -134,7 +134,7 @@ class Comment extends Model {
 
     /**
      * Gets the end of a comment's thread.
-     * 
+     *
      * @return Comment
      */
     public function getEndOfThreadAttribute() {
@@ -144,7 +144,7 @@ class Comment extends Model {
             return $this;
         }
     }
-  
+
     /**
      * Returns the comment contents but with links in clickable format.
      *
