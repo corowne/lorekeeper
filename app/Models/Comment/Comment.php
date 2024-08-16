@@ -158,7 +158,7 @@ class Comment extends Model {
                     $url = $matches[1];
                     $parsedUrl = parse_url($url);
                     $domain = $parsedUrl['host'];
-            
+
                     return '<a href="'.$url.'" target="_blank">'.$domain.'</a>';
                 },
                 $this->attributes['comment']
