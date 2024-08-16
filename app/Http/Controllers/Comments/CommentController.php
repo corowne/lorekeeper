@@ -335,6 +335,8 @@ class CommentController extends Controller {
             'sort'           => $sort,
             'perPage'        => $perPage,
             'allow_dislikes' => $request->input('allow_dislikes'),
+            'url'            => $request->input('url'),
+            'page'           => $request->input('page'),
         ]);
     }
 }

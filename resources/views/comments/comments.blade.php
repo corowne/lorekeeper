@@ -52,12 +52,9 @@
     </div>
 @endif
 <div id="comments">
-    @include('comments._comments', [
-        'comments' => $comments,
-        'allow_dislikes' => isset($allow_dislikes) ? $allow_dislikes : false,
-        'approved' => isset($approved) ? $approved : false,
-        'type' => isset($type) ? $type : null,
-    ])
+    <div class="justify-content-center text-center mb-2">
+        <i class="fas fa-spinner fa-spin fa-2x"></i>
+    </div>
 </div>
 
 @auth
@@ -95,17 +92,19 @@
                 target_list: false
             });
 
-            function sortComments(fade = true) {
-                if (fade) $('#comments').fadeOut();
+            function sortComments() {
+                $('#comments').fadeOut();
                 $.ajax({
                     url: "{{ url('sort-comments/' . base64_encode(urlencode(get_class($model))) . '/' . $model->getKey()) }}",
                     type: 'GET',
                     data: {
+                        url: '{{ url()->current() }}',
                         allow_dislikes: '{{ isset($allow_dislikes) ? $allow_dislikes : false }}',
                         approved: '{{ isset($approved) ? $approved : false }}',
                         type: '{{ isset($type) ? $type : null }}',
                         sort: $('#sort').val(),
                         perPage: $('#perPage').val(),
+                        page: '{{ request()->query('page') }}',
                     },
                     success: function(data) {
                         $('#comments').html(data);
@@ -115,12 +114,9 @@
                         url.searchParams.set('perPage', $('#perPage').val());
 
                         window.history.pushState({}, '', url);
+                        $('#comments').fadeIn();
                     }
                 });
-                if (fade) $('#comments').fadeIn();
-            }
-            if (window.location.search.includes('sort') || window.location.search.includes('perPage')) {
-                sortComments(false); // initial sort
             }
 
             $('#sort').change(function() {
@@ -130,6 +126,8 @@
             $('#perPage').change(function() {
                 sortComments();
             });
+
+            sortComments(); // initial sort
         });
     </script>
 @endsection

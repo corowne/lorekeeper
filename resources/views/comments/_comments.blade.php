@@ -16,8 +16,18 @@
 
                 // Remove parent Comments from comments.
                 $comments = $comments->where('child_id', '!=', null);
-                $grouped_comments = new \Illuminate\Pagination\LengthAwarePaginator($slicedParentComments->merge($comments)->groupBy('child_id'), $parentComments->count(), $perPage);
-                $grouped_comments->withPath(request()->url());
+
+                $page = request()->query('page', 1);
+                $grouped_comments = new \Illuminate\Pagination\LengthAwarePaginator(
+                    $slicedParentComments->merge($comments)->groupBy('child_id'),
+                    $parentComments->count(),
+                    $perPage,
+                    $page,
+                    ['path' => isset($url) ? $url : request()->url(), 'query' => [
+                        'sort' => isset($sort) ? $sort : 'newest',
+                        'perPage' => $perPage,
+                    ]]
+                );
             } else {
                 $grouped_comments = $comments->groupBy('child_id');
             }
