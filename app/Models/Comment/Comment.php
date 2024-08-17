@@ -133,6 +133,19 @@ class Comment extends Model {
     }
 
     /**
+     * Gets the end of a comment's thread.
+     *
+     * @return Comment
+     */
+    public function getEndOfThreadAttribute() {
+        if ($this->children->count() > 0) {
+            return $this->children->sortByDesc('created_at')->first()->endOfThread;
+        } else {
+            return $this;
+        }
+    }
+
+    /**
      * Returns the comment contents but with links in clickable format.
      *
      * @return string
@@ -140,7 +153,7 @@ class Comment extends Model {
     public function getCommentAttribute() {
         if (config('lorekeeper.settings.wysiwyg_comments')) {
             return preg_replace_callback(
-                '/(?<!\()(https?:\/\/[^\s]+)/',
+                '/(?<!href=")(?<!\()(https?:\/\/[^\s]+)/',
                 function ($matches) {
                     $url = $matches[1];
                     $parsedUrl = parse_url($url);
