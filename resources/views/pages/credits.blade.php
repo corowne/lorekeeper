@@ -45,6 +45,9 @@
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Galleries"><strong>Galleries</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
         </p>
         <p class="mb-0 col-md-4">
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Log_Viewer"><strong>Log Viewer</strong></a> by <a href="https://github.com/Cylunny">Cylunny</a>
+        </p>
+        <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Masterlist_Sublists"><strong>Masterlist Sublists</strong></a> by <a href="https://github.com/junijwi">Junijwi</a>
         </p>
         <p class="mb-0 col-md-4">
