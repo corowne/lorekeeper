@@ -77,7 +77,7 @@ Route::group(['prefix' => 'files', 'middleware' => 'power:edit_site_settings'], 
 });
 
 // LOG VIEWER
-Route::group(['prefix' => 'logs', 'middleware' => 'power:edit_site_settings'], function() {
+Route::group(['prefix' => 'logs', 'middleware' => 'power:edit_site_settings'], function () {
     Route::get('/', 'LogController@getIndex');
     Route::get('/{name}', 'LogController@getLog');
     Route::post('/delete', 'LogController@postDeleteLog');

@@ -222,7 +222,7 @@ return [
             ],
             [
                 'name' => 'Log Viewer',
-                'url' => 'admin/logs'
+                'url'  => 'admin/logs',
             ],
         ],
     ],
