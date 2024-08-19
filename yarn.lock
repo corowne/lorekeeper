@@ -1302,85 +1302,85 @@
   dependencies:
     "@types/node" "*"
 
-"@vue/compiler-core@3.4.37":
-  "integrity" "sha512-ZDDT/KiLKuCRXyzWecNzC5vTcubGz4LECAtfGPENpo0nrmqJHwuWtRLxk/Sb9RAKtR9iFflFycbkjkY+W/PZUQ=="
-  "resolved" "https://registry.npmjs.org/@vue/compiler-core/-/compiler-core-3.4.37.tgz"
-  "version" "3.4.37"
+"@vue/compiler-core@3.4.38":
+  "integrity" "sha512-8IQOTCWnLFqfHzOGm9+P8OPSEDukgg3Huc92qSG49if/xI2SAwLHQO2qaPQbjCWPBcQoO1WYfXfTACUrWV3c5A=="
+  "resolved" "https://registry.npmjs.org/@vue/compiler-core/-/compiler-core-3.4.38.tgz"
+  "version" "3.4.38"
   dependencies:
     "@babel/parser" "^7.24.7"
-    "@vue/shared" "3.4.37"
-    "entities" "^5.0.0"
+    "@vue/shared" "3.4.38"
+    "entities" "^4.5.0"
     "estree-walker" "^2.0.2"
     "source-map-js" "^1.2.0"
 
-"@vue/compiler-dom@3.4.37":
-  "integrity" "sha512-rIiSmL3YrntvgYV84rekAtU/xfogMUJIclUMeIKEtVBFngOL3IeZHhsH3UaFEgB5iFGpj6IW+8YuM/2Up+vVag=="
-  "resolved" "https://registry.npmjs.org/@vue/compiler-dom/-/compiler-dom-3.4.37.tgz"
-  "version" "3.4.37"
+"@vue/compiler-dom@3.4.38":
+  "integrity" "sha512-Osc/c7ABsHXTsETLgykcOwIxFktHfGSUDkb05V61rocEfsFDcjDLH/IHJSNJP+/Sv9KeN2Lx1V6McZzlSb9EhQ=="
+  "resolved" "https://registry.npmjs.org/@vue/compiler-dom/-/compiler-dom-3.4.38.tgz"
+  "version" "3.4.38"
   dependencies:
-    "@vue/compiler-core" "3.4.37"
-    "@vue/shared" "3.4.37"
+    "@vue/compiler-core" "3.4.38"
+    "@vue/shared" "3.4.38"
 
-"@vue/compiler-sfc@3.4.37":
-  "integrity" "sha512-vCfetdas40Wk9aK/WWf8XcVESffsbNkBQwS5t13Y/PcfqKfIwJX2gF+82th6dOpnpbptNMlMjAny80li7TaCIg=="
-  "resolved" "https://registry.npmjs.org/@vue/compiler-sfc/-/compiler-sfc-3.4.37.tgz"
-  "version" "3.4.37"
+"@vue/compiler-sfc@3.4.38":
+  "integrity" "sha512-s5QfZ+9PzPh3T5H4hsQDJtI8x7zdJaew/dCGgqZ2630XdzaZ3AD8xGZfBqpT8oaD/p2eedd+pL8tD5vvt5ZYJQ=="
+  "resolved" "https://registry.npmjs.org/@vue/compiler-sfc/-/compiler-sfc-3.4.38.tgz"
+  "version" "3.4.38"
   dependencies:
     "@babel/parser" "^7.24.7"
-    "@vue/compiler-core" "3.4.37"
-    "@vue/compiler-dom" "3.4.37"
-    "@vue/compiler-ssr" "3.4.37"
-    "@vue/shared" "3.4.37"
+    "@vue/compiler-core" "3.4.38"
+    "@vue/compiler-dom" "3.4.38"
+    "@vue/compiler-ssr" "3.4.38"
+    "@vue/shared" "3.4.38"
     "estree-walker" "^2.0.2"
     "magic-string" "^0.30.10"
     "postcss" "^8.4.40"
     "source-map-js" "^1.2.0"
 
-"@vue/compiler-ssr@3.4.37":
-  "integrity" "sha512-TyAgYBWrHlFrt4qpdACh8e9Ms6C/AZQ6A6xLJaWrCL8GCX5DxMzxyeFAEMfU/VFr4tylHm+a2NpfJpcd7+20XA=="
-  "resolved" "https://registry.npmjs.org/@vue/compiler-ssr/-/compiler-ssr-3.4.37.tgz"
-  "version" "3.4.37"
+"@vue/compiler-ssr@3.4.38":
+  "integrity" "sha512-YXznKFQ8dxYpAz9zLuVvfcXhc31FSPFDcqr0kyujbOwNhlmaNvL2QfIy+RZeJgSn5Fk54CWoEUeW+NVBAogGaw=="
+  "resolved" "https://registry.npmjs.org/@vue/compiler-ssr/-/compiler-ssr-3.4.38.tgz"
+  "version" "3.4.38"
   dependencies:
-    "@vue/compiler-dom" "3.4.37"
-    "@vue/shared" "3.4.37"
+    "@vue/compiler-dom" "3.4.38"
+    "@vue/shared" "3.4.38"
 
-"@vue/reactivity@3.4.37":
-  "integrity" "sha512-UmdKXGx0BZ5kkxPqQr3PK3tElz6adTey4307NzZ3whZu19i5VavYal7u2FfOmAzlcDVgE8+X0HZ2LxLb/jgbYw=="
-  "resolved" "https://registry.npmjs.org/@vue/reactivity/-/reactivity-3.4.37.tgz"
-  "version" "3.4.37"
+"@vue/reactivity@3.4.38":
+  "integrity" "sha512-4vl4wMMVniLsSYYeldAKzbk72+D3hUnkw9z8lDeJacTxAkXeDAP1uE9xr2+aKIN0ipOL8EG2GPouVTH6yF7Gnw=="
+  "resolved" "https://registry.npmjs.org/@vue/reactivity/-/reactivity-3.4.38.tgz"
+  "version" "3.4.38"
   dependencies:
-    "@vue/shared" "3.4.37"
+    "@vue/shared" "3.4.38"
 
-"@vue/runtime-core@3.4.37":
-  "integrity" "sha512-MNjrVoLV/sirHZoD7QAilU1Ifs7m/KJv4/84QVbE6nyAZGQNVOa1HGxaOzp9YqCG+GpLt1hNDC4RbH+KtanV7w=="
-  "resolved" "https://registry.npmjs.org/@vue/runtime-core/-/runtime-core-3.4.37.tgz"
-  "version" "3.4.37"
+"@vue/runtime-core@3.4.38":
+  "integrity" "sha512-21z3wA99EABtuf+O3IhdxP0iHgkBs1vuoCAsCKLVJPEjpVqvblwBnTj42vzHRlWDCyxu9ptDm7sI2ZMcWrQqlA=="
+  "resolved" "https://registry.npmjs.org/@vue/runtime-core/-/runtime-core-3.4.38.tgz"
+  "version" "3.4.38"
   dependencies:
-    "@vue/reactivity" "3.4.37"
-    "@vue/shared" "3.4.37"
+    "@vue/reactivity" "3.4.38"
+    "@vue/shared" "3.4.38"
 
-"@vue/runtime-dom@3.4.37":
-  "integrity" "sha512-Mg2EwgGZqtwKrqdL/FKMF2NEaOHuH+Ks9TQn3DHKyX//hQTYOun+7Tqp1eo0P4Ds+SjltZshOSRq6VsU0baaNg=="
-  "resolved" "https://registry.npmjs.org/@vue/runtime-dom/-/runtime-dom-3.4.37.tgz"
-  "version" "3.4.37"
+"@vue/runtime-dom@3.4.38":
+  "integrity" "sha512-afZzmUreU7vKwKsV17H1NDThEEmdYI+GCAK/KY1U957Ig2NATPVjCROv61R19fjZNzMmiU03n79OMnXyJVN0UA=="
+  "resolved" "https://registry.npmjs.org/@vue/runtime-dom/-/runtime-dom-3.4.38.tgz"
+  "version" "3.4.38"
   dependencies:
-    "@vue/reactivity" "3.4.37"
-    "@vue/runtime-core" "3.4.37"
-    "@vue/shared" "3.4.37"
+    "@vue/reactivity" "3.4.38"
+    "@vue/runtime-core" "3.4.38"
+    "@vue/shared" "3.4.38"
     "csstype" "^3.1.3"
 
-"@vue/server-renderer@3.4.37":
-  "integrity" "sha512-jZ5FAHDR2KBq2FsRUJW6GKDOAG9lUTX8aBEGq4Vf6B/35I9fPce66BornuwmqmKgfiSlecwuOb6oeoamYMohkg=="
-  "resolved" "https://registry.npmjs.org/@vue/server-renderer/-/server-renderer-3.4.37.tgz"
-  "version" "3.4.37"
+"@vue/server-renderer@3.4.38":
+  "integrity" "sha512-NggOTr82FbPEkkUvBm4fTGcwUY8UuTsnWC/L2YZBmvaQ4C4Jl/Ao4HHTB+l7WnFCt5M/dN3l0XLuyjzswGYVCA=="
+  "resolved" "https://registry.npmjs.org/@vue/server-renderer/-/server-renderer-3.4.38.tgz"
+  "version" "3.4.38"
   dependencies:
-    "@vue/compiler-ssr" "3.4.37"
-    "@vue/shared" "3.4.37"
+    "@vue/compiler-ssr" "3.4.38"
+    "@vue/shared" "3.4.38"
 
-"@vue/shared@3.4.37":
-  "integrity" "sha512-nIh8P2fc3DflG8+5Uw8PT/1i17ccFn0xxN/5oE9RfV5SVnd7G0XEFRwakrnNFE/jlS95fpGXDVG5zDETS26nmg=="
-  "resolved" "https://registry.npmjs.org/@vue/shared/-/shared-3.4.37.tgz"
-  "version" "3.4.37"
+"@vue/shared@3.4.38":
+  "integrity" "sha512-q0xCiLkuWWQLzVrecPb0RMsNWyxICOjPrcrwxTUEHb1fsnvni4dcuyG7RT/Ie7VPTvnjzIaWzRMUBsrqNj/hhw=="
+  "resolved" "https://registry.npmjs.org/@vue/shared/-/shared-3.4.38.tgz"
+  "version" "3.4.38"
 
 "@webassemblyjs/ast@^1.11.5", "@webassemblyjs/ast@1.11.6":
   "integrity" "sha512-IN1xI7PwOvLPgjcf180gC1bqn3q/QaOCwYUahIOhbYUu8KA/3tw2RT/T0Gidi1l7Hhj5D/INhJxiICObqpMu4Q=="
@@ -2774,10 +2774,10 @@
   "resolved" "https://registry.npmjs.org/entities/-/entities-2.2.0.tgz"
   "version" "2.2.0"
 
-"entities@^5.0.0":
-  "integrity" "sha512-BeJFvFRJddxobhvEdm5GqHzRV/X+ACeuw0/BuuxsCh1EUZcAIz8+kYmBp/LrQuloy6K1f3a0M7+IhmZ7QnkISA=="
-  "resolved" "https://registry.npmjs.org/entities/-/entities-5.0.0.tgz"
-  "version" "5.0.0"
+"entities@^4.5.0":
+  "integrity" "sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw=="
+  "resolved" "https://registry.npmjs.org/entities/-/entities-4.5.0.tgz"
+  "version" "4.5.0"
 
 "envinfo@^7.7.3":
   "integrity" "sha512-ZtUjZO6l5mwTHvc1L9+1q5p/R3wTopcfqMW8r5t8SJSKqeVI/LtajORwRFEKpEFuekjD0VBjwu1HMxL4UalIRw=="
@@ -5705,16 +5705,16 @@
     "hash-sum" "^1.0.2"
     "loader-utils" "^1.0.2"
 
-"vue@^3.4.37", "vue@3.4.37":
-  "integrity" "sha512-3vXvNfkKTBsSJ7JP+LyR7GBuwQuckbWvuwAid3xbqK9ppsKt/DUvfqgZ48fgOLEfpy1IacL5f8QhUVl77RaI7A=="
-  "resolved" "https://registry.npmjs.org/vue/-/vue-3.4.37.tgz"
-  "version" "3.4.37"
+"vue@^3.4.38", "vue@3.4.38":
+  "integrity" "sha512-f0ZgN+mZ5KFgVv9wz0f4OgVKukoXtS3nwET4c2vLBGQR50aI8G0cqbFtLlX9Yiyg3LFGBitruPHt2PxwTduJEw=="
+  "resolved" "https://registry.npmjs.org/vue/-/vue-3.4.38.tgz"
+  "version" "3.4.38"
   dependencies:
-    "@vue/compiler-dom" "3.4.37"
-    "@vue/compiler-sfc" "3.4.37"
-    "@vue/runtime-dom" "3.4.37"
-    "@vue/server-renderer" "3.4.37"
-    "@vue/shared" "3.4.37"
+    "@vue/compiler-dom" "3.4.38"
+    "@vue/compiler-sfc" "3.4.38"
+    "@vue/runtime-dom" "3.4.38"
+    "@vue/server-renderer" "3.4.38"
+    "@vue/shared" "3.4.38"
 
 "watchpack@^2.4.0":
   "integrity" "sha512-Lcvm7MGST/4fup+ifyKi2hjyIAwcdI4HRgtvTpIUxBRhB+RFtUh8XtDOxUfctVCnhVi+QQj49i91OyvzkJl6cg=="
