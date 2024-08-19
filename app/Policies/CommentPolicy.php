@@ -2,61 +2,47 @@
 
 namespace App\Policies;
 
-use Auth;
-use App\Models\Comment;
+use App\Models\Comment\Comment;
+use Illuminate\Support\Facades\Auth;
 
-class CommentPolicy
-{
+class CommentPolicy {
     /**
-     * Can user create the comment
+     * Can user create the comment.
      *
-     * @param $user
-     * @return bool
+     * @param mixed $user
      */
-    public function create($user) : bool
-    {
+    public function create($user): bool {
         return true;
     }
 
     /**
-     * Can user delete the comment
+     * Can user delete the comment.
      *
-     * @param $user
-     * @param Comment $comment
-     * @return bool
+     * @param mixed $user
      */
-    public function delete($user, Comment $comment) : bool
-    {
-            if(Auth::user()->isStaff) {
-                return true;
-            }
-            else {
-                return false;
-            }
+    public function delete($user, Comment $comment): bool {
+        if (Auth::user()->isStaff) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
-     * Can user update the comment
+     * Can user update the comment.
      *
-     * @param $user
-     * @param Comment $comment
-     * @return bool
+     * @param mixed $user
      */
-    public function update($user, Comment $comment) : bool
-    {
+    public function update($user, Comment $comment): bool {
         return $user->getKey() == $comment->commenter_id;
     }
 
     /**
-     * Can user reply to the comment
+     * Can user reply to the comment.
      *
-     * @param $user
-     * @param Comment $comment
-     * @return bool
+     * @param mixed $user
      */
-    public function reply($user, Comment $comment) : bool
-    {
+    public function reply($user, Comment $comment): bool {
         return $user->getKey();
     }
 }
-

@@ -2,17 +2,16 @@
 
 namespace App\Models;
 
-use App\Models\Model;
+use App\Models\User\User;
 
-class Invitation extends Model
-{
+class Invitation extends Model {
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'code', 'user_id', 'recipient_id'
+        'code', 'user_id', 'recipient_id',
     ];
 
     /**
@@ -21,7 +20,6 @@ class Invitation extends Model
      * @var string
      */
     protected $table = 'invitations';
-
     /**
      * Whether the model contains timestamps to be saved and updated.
      *
@@ -29,26 +27,23 @@ class Invitation extends Model
      */
     public $timestamps = true;
 
-
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the user who generated the invitation code.
      */
-    public function user() 
-    {
-        return $this->belongsTo('App\Models\User\User');
+    public function user() {
+        return $this->belongsTo(User::class);
     }
 
     /**
      * Get the user who created their account using the invitation code.
      */
-    public function recipient() 
-    {
-        return $this->belongsTo('App\Models\User\User', 'recipient_id');
+    public function recipient() {
+        return $this->belongsTo(User::class, 'recipient_id');
     }
 }

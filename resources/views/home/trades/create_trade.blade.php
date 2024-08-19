@@ -1,19 +1,22 @@
 @extends('home.layout')
 
-@section('home-title') Trades @endsection
+@section('home-title')
+    Trades
+@endsection
 
 @section('home-content')
-{!! breadcrumbs(['Trades' => 'trades/open', 'New Trade' => 'trades/create']) !!}
+    {!! breadcrumbs(['Trades' => 'trades/open', 'New Trade' => 'trades/create']) !!}
 
-<h1>
-    New Trade
-</h1>
+    <h1>
+        New Trade
+    </h1>
 
-<p>
-    Create a new trade. You can modify the trade attachments after trade creation - this only sets up the trade, so you don't have to worry about having everything in place at the start. The recipient will be notified of the new trade and will be able to edit their attachments as well. Note that each person may only add up to <strong>{{ Config::get('lorekeeper.settings.trade_asset_limit') }} things to one trade - if necessary, please create a new trade to add more.</strong>
-</p>
+    <p>
+        Create a new trade. You can modify the trade attachments after trade creation - this only sets up the trade, so you don't have to worry about having everything in place at the start. The recipient will be notified of the new trade and will be
+        able to edit their attachments as well. Note that each person may only add up to <strong>{{ config('lorekeeper.settings.trade_asset_limit') }} things to one trade - if necessary, please create a new trade to add more.</strong>
+    </p>
 
-{!! Form::open(['url' => 'trades/create']) !!}
+    {!! Form::open(['url' => 'trades/create']) !!}
 
     <div class="form-group">
         {!! Form::label('recipient_id', 'Recipient') !!}
@@ -27,8 +30,7 @@
     @include('widgets._my_character_select', ['readOnly' => true, 'categories' => $characterCategories])
     @include('widgets._bank_select', ['owner' => Auth::user(), 'selected' => null, 'isTransferrable' => true])
     <div class="text-right">{!! Form::submit('Create Trade', ['class' => 'btn btn-primary']) !!}</div>
-{!! Form::close() !!}
-
+    {!! Form::close() !!}
 @endsection
 @section('scripts')
     @parent

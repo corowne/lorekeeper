@@ -1,18 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class AddSubMasterlist extends Migration
-{
+class AddSubMasterlist extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::table('character_categories', function (Blueprint $table) {
             //adds a setting on character categories which moves those characters to a second masterlist
             //this allows for an NPC masterlist, or a PET masterlist, or a MNT (mount) masterlist
@@ -40,16 +36,13 @@ class AddSubMasterlist extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::table('character_categories', function (Blueprint $table) {
             //
             $table->dropColumn('masterlist_sub_id');
         });
-        
+
         Schema::table('specieses', function (Blueprint $table) {
             //
             $table->dropColumn('masterlist_sub_id');

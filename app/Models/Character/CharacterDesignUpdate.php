@@ -2,15 +2,15 @@
 
 namespace App\Models\Character;
 
-use Config;
-use DB;
-use App\Models\Model;
 use App\Models\Currency\Currency;
-use App\Models\Feature\FeatureCategory;
+use App\Models\Model;
+use App\Models\Rarity;
+use App\Models\Species\Species;
+use App\Models\Species\Subtype;
+use App\Models\User\User;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class CharacterDesignUpdate extends Model
-{
+class CharacterDesignUpdate extends Model {
     use SoftDeletes;
 
     /**
@@ -24,8 +24,8 @@ class CharacterDesignUpdate extends Model
         'use_cropper', 'x0', 'x1', 'y0', 'y1',
         'hash', 'species_id', 'subtype_id', 'rarity_id',
         'has_comments', 'has_image', 'has_addons', 'has_features',
-        'submitted_at', 'update_type', 'fullsize_hash', 
-        'approval_votes', 'rejection_votes'
+        'submitted_at', 'update_type', 'fullsize_hash',
+        'approval_votes', 'rejection_votes',
     ];
 
     /**
@@ -36,6 +36,15 @@ class CharacterDesignUpdate extends Model
     protected $table = 'design_updates';
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'submitted_at' => 'datetime',
+    ];
+
+    /**
      * Whether the model contains timestamps to be saved and updated.
      *
      * @var string
@@ -43,22 +52,15 @@ class CharacterDesignUpdate extends Model
     public $timestamps = true;
 
     /**
-     * Dates on the model to convert to Carbon instances.
-     *
-     * @var array
-     */
-    public $dates = ['submitted_at'];
-
-    /**
      * Validation rules for uploaded images.
      *
      * @var array
      */
     public static $imageRules = [
-        'image' => 'nullable|mimes:jpeg,gif,png',
-        'thumbnail' => 'nullable|mimes:jpeg,gif,png',
-        'artist_url.*' => 'nullable|url',
-        'designer_url.*' => 'nullable|url'
+        'image'          => 'nullable|mimes:jpeg,gif,png',
+        'thumbnail'      => 'nullable|mimes:jpeg,gif,png',
+        'artist_url.*'   => 'nullable|url',
+        'designer_url.*' => 'nullable|url',
     ];
 
     /**********************************************************************************************
@@ -70,85 +72,77 @@ class CharacterDesignUpdate extends Model
     /**
      * Get the character associated with the design update.
      */
-    public function character()
-    {
-        return $this->belongsTo('App\Models\Character\Character', 'character_id');
+    public function character() {
+        return $this->belongsTo(Character::class, 'character_id');
     }
 
     /**
      * Get the user who created the design update.
      */
-    public function user()
-    {
-        return $this->belongsTo('App\Models\User\User', 'user_id');
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
      * Get the staff who processed the design update.
      */
-    public function staff()
-    {
-        return $this->belongsTo('App\Models\User\User', 'staff_id');
+    public function staff() {
+        return $this->belongsTo(User::class, 'staff_id');
     }
 
     /**
      * Get the species of the design update.
      */
-    public function species()
-    {
-        return $this->belongsTo('App\Models\Species\Species', 'species_id');
+    public function species() {
+        return $this->belongsTo(Species::class, 'species_id');
     }
 
     /**
      * Get the subtype of the design update.
      */
-    public function subtype()
-    {
-        return $this->belongsTo('App\Models\Species\Subtype', 'subtype_id');
+    public function subtype() {
+        return $this->belongsTo(Subtype::class, 'subtype_id');
     }
 
     /**
      * Get the rarity of the design update.
      */
-    public function rarity()
-    {
-        return $this->belongsTo('App\Models\Rarity', 'rarity_id');
+    public function rarity() {
+        return $this->belongsTo(Rarity::class, 'rarity_id');
     }
 
     /**
      * Get the features (traits) attached to the design update, ordered by display order.
      */
-    public function features()
-    {
-        $ids = FeatureCategory::orderBy('sort', 'DESC')->pluck('id')->toArray();
+    public function features() {
+        $query = $this
+            ->hasMany(CharacterFeature::class, 'character_image_id')->where('character_features.character_type', 'Update')
+            ->join('features', 'features.id', '=', 'character_features.feature_id')
+            ->leftJoin('feature_categories', 'feature_categories.id', '=', 'features.feature_category_id')
+            ->select(['character_features.*', 'features.*', 'character_features.id AS character_feature_id', 'feature_categories.sort']);
 
-        $query = $this->hasMany('App\Models\Character\CharacterFeature', 'character_image_id')->where('character_features.character_type', 'Update')->join('features', 'features.id', '=', 'character_features.feature_id')->select(['character_features.*', 'features.*', 'character_features.id AS character_feature_id']);
-
-        return count($ids) ? $query->orderByRaw(DB::raw('FIELD(features.feature_category_id, '.implode(',', $ids).')')) : $query;
+        return $query->orderByDesc('sort');
     }
 
     /**
      * Get the features (traits) attached to the design update with no extra sorting.
      */
-    public function rawFeatures()
-    {
-        return $this->hasMany('App\Models\Character\CharacterFeature', 'character_image_id')->where('character_features.character_type', 'Update');
+    public function rawFeatures() {
+        return $this->hasMany(CharacterFeature::class, 'character_image_id')->where('character_features.character_type', 'Update');
     }
 
     /**
      * Get the designers attached to the design update.
      */
-    public function designers()
-    {
-        return $this->hasMany('App\Models\Character\CharacterImageCreator', 'character_image_id')->where('type', 'Designer')->where('character_type', 'Update');
+    public function designers() {
+        return $this->hasMany(CharacterImageCreator::class, 'character_image_id')->where('type', 'Designer')->where('character_type', 'Update');
     }
 
     /**
      * Get the artists attached to the design update.
      */
-    public function artists()
-    {
-        return $this->hasMany('App\Models\Character\CharacterImageCreator', 'character_image_id')->where('type', 'Artist')->where('character_type', 'Update');
+    public function artists() {
+        return $this->hasMany(CharacterImageCreator::class, 'character_image_id')->where('type', 'Artist')->where('character_type', 'Update');
     }
 
     /**********************************************************************************************
@@ -160,34 +154,56 @@ class CharacterDesignUpdate extends Model
     /**
      * Scope a query to only include active (Open or Pending) update requests.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeActive($query)
-    {
+    public function scopeActive($query) {
         return $query->where('status', '!=', 'Approved')->where('status', '!=', 'Rejected');
     }
 
     /**
      * Scope a query to only include MYO slot approval requests.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeMyos($query)
-    {
+    public function scopeMyos($query) {
         $query->select('design_updates.*')->where('update_type', 'MYO');
     }
 
     /**
      * Scope a query to only include character design update requests.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeCharacters($query)
-    {
+    public function scopeCharacters($query) {
         $query->select('design_updates.*')->where('update_type', 'Character');
+    }
+
+    /**
+     * Scope a query to sort updates by oldest first.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSortOldest($query) {
+        return $query->orderBy('id');
+    }
+
+    /**
+     * Scope a query to sort updates by newest first.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSortNewest($query) {
+        return $query->orderBy('id', 'DESC');
     }
 
     /**********************************************************************************************
@@ -201,8 +217,7 @@ class CharacterDesignUpdate extends Model
      *
      * @return array
      */
-    public function getDataAttribute()
-    {
+    public function getDataAttribute() {
         return json_decode($this->attributes['data'], true);
     }
 
@@ -211,8 +226,7 @@ class CharacterDesignUpdate extends Model
      *
      * @return array
      */
-    public function getInventoryAttribute()
-    {
+    public function getInventoryAttribute() {
         // This is for showing the addons page
         // just need to retrieve a list of stack IDs to tell which ones to check
 
@@ -224,8 +238,7 @@ class CharacterDesignUpdate extends Model
      *
      * @return array
      */
-    public function getUserBankAttribute()
-    {
+    public function getUserBankAttribute() {
         return $this->data && isset($this->data['user']['currencies']) ? $this->data['user']['currencies'] : [];
     }
 
@@ -234,8 +247,7 @@ class CharacterDesignUpdate extends Model
      *
      * @return array
      */
-    public function getCharacterBankAttribute()
-    {
+    public function getCharacterBankAttribute() {
         return $this->data && isset($this->data['character']['currencies']) ? $this->data['character']['currencies'] : [];
     }
 
@@ -244,9 +256,8 @@ class CharacterDesignUpdate extends Model
      *
      * @return bool
      */
-    public function getIsCompleteAttribute()
-    {
-        return ($this->has_comments && $this->has_image && $this->has_addons && $this->has_features);
+    public function getIsCompleteAttribute() {
+        return $this->has_comments && $this->has_image && $this->has_addons && $this->has_features;
     }
 
     /**
@@ -254,8 +265,7 @@ class CharacterDesignUpdate extends Model
      *
      * @return string
      */
-    public function getImageDirectoryAttribute()
-    {
+    public function getImageDirectoryAttribute() {
         return 'images/character-updates/'.floor($this->id / 1000);
     }
 
@@ -264,9 +274,8 @@ class CharacterDesignUpdate extends Model
      *
      * @return string
      */
-    public function getImageFileNameAttribute()
-    {
-        return $this->id . '_'.$this->hash.'.'.$this->extension;
+    public function getImageFileNameAttribute() {
+        return $this->id.'_'.$this->hash.'.'.$this->extension;
     }
 
     /**
@@ -274,8 +283,7 @@ class CharacterDesignUpdate extends Model
      *
      * @return string
      */
-    public function getImagePathAttribute()
-    {
+    public function getImagePathAttribute() {
         return public_path($this->imageDirectory);
     }
 
@@ -284,9 +292,8 @@ class CharacterDesignUpdate extends Model
      *
      * @return string
      */
-    public function getImageUrlAttribute()
-    {
-        return asset($this->imageDirectory . '/' . $this->imageFileName);
+    public function getImageUrlAttribute() {
+        return asset($this->imageDirectory.'/'.$this->imageFileName);
     }
 
     /**
@@ -294,9 +301,8 @@ class CharacterDesignUpdate extends Model
      *
      * @return string
      */
-    public function getThumbnailFileNameAttribute()
-    {
-        return $this->id . '_'.$this->hash.'_th.'.$this->extension;
+    public function getThumbnailFileNameAttribute() {
+        return $this->id.'_'.$this->hash.'_th.'.$this->extension;
     }
 
     /**
@@ -304,8 +310,7 @@ class CharacterDesignUpdate extends Model
      *
      * @return string
      */
-    public function getThumbnailPathAttribute()
-    {
+    public function getThumbnailPathAttribute() {
         return $this->imagePath;
     }
 
@@ -314,9 +319,8 @@ class CharacterDesignUpdate extends Model
      *
      * @return string
      */
-    public function getThumbnailUrlAttribute()
-    {
-        return asset($this->imageDirectory . '/' . $this->thumbnailFileName);
+    public function getThumbnailUrlAttribute() {
+        return asset($this->imageDirectory.'/'.$this->thumbnailFileName);
     }
 
     /**
@@ -324,8 +328,7 @@ class CharacterDesignUpdate extends Model
      *
      * @return string
      */
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return url('designs/'.$this->id);
     }
 
@@ -334,8 +337,7 @@ class CharacterDesignUpdate extends Model
      *
      * @return string
      */
-    public function getVoteDataAttribute()
-    {
+    public function getVoteDataAttribute() {
         return collect(json_decode($this->attributes['vote_data'], true));
     }
 
@@ -348,20 +350,25 @@ class CharacterDesignUpdate extends Model
     /**
      * Get the available currencies that the user can attach to this update request.
      *
-     * @param  string  $type
+     * @param string $type
+     *
      * @return array
      */
-    public function getBank($type)
-    {
-        if($type == 'user') $currencies = $this->userBank;
-        else $currencies = $this->characterBank;
-        if(!count($currencies)) return [];
+    public function getBank($type) {
+        if ($type == 'user') {
+            $currencies = $this->userBank;
+        } else {
+            $currencies = $this->characterBank;
+        }
+        if (!count($currencies)) {
+            return [];
+        }
         $ids = array_keys($currencies);
         $result = Currency::whereIn('id', $ids)->get();
-        foreach($result as $i=>$currency)
-        {
+        foreach ($result as $i=> $currency) {
             $currency->quantity = $currencies[$currency->id];
         }
+
         return $result;
     }
 }

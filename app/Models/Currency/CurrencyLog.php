@@ -2,11 +2,11 @@
 
 namespace App\Models\Currency;
 
-use Config;
+use App\Models\Character\Character;
 use App\Models\Model;
+use App\Models\User\User;
 
-class CurrencyLog extends Model
-{
+class CurrencyLog extends Model {
     /**
      * The attributes that are mass assignable.
      *
@@ -16,7 +16,7 @@ class CurrencyLog extends Model
         'sender_id', 'sender_type',
         'recipient_id', 'recipient_type',
         'log', 'log_type', 'data',
-        'currency_id', 'quantity'
+        'currency_id', 'quantity',
     ];
 
     /**
@@ -25,7 +25,6 @@ class CurrencyLog extends Model
      * @var string
      */
     protected $table = 'currencies_log';
-
     /**
      * Whether the model contains timestamps to be saved and updated.
      *
@@ -34,7 +33,7 @@ class CurrencyLog extends Model
     public $timestamps = true;
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -42,27 +41,29 @@ class CurrencyLog extends Model
     /**
      * Get the user who initiated the logged action.
      */
-    public function sender() 
-    {
-        if($this->sender_type == 'User') return $this->belongsTo('App\Models\User\User', 'sender_id');
-        return $this->belongsTo('App\Models\Character\Character', 'sender_id');
+    public function sender() {
+        if ($this->sender_type == 'User') {
+            return $this->belongsTo(User::class, 'sender_id');
+        }
+
+        return $this->belongsTo(Character::class, 'sender_id');
     }
 
     /**
      * Get the user who received the logged action.
      */
-    public function recipient() 
-    {
-        if($this->recipient_type == 'User') return $this->belongsTo('App\Models\User\User', 'recipient_id');
-        return $this->belongsTo('App\Models\Character\Character', 'recipient_id');
+    public function recipient() {
+        if ($this->recipient_type == 'User') {
+            return $this->belongsTo(User::class, 'recipient_id');
+        }
+
+        return $this->belongsTo(Character::class, 'recipient_id');
     }
 
     /**
      * Get the currency that is the target of the action.
      */
-    public function currency() 
-    {
-        return $this->belongsTo('App\Models\Currency\Currency');
+    public function currency() {
+        return $this->belongsTo(Currency::class);
     }
-
 }

@@ -1,3 +1,12 @@
+@php
+    $characters = \App\Models\Character\Character::visible(Auth::user() ?? null)
+        ->myo(0)
+        ->orderBy('slug', 'DESC')
+        ->get()
+        ->pluck('fullName', 'slug')
+        ->toArray();
+@endphp
+
 <div id="characterComponents" class="hide">
     <div class="submission-character mb-3">
         <div class="row">
@@ -8,10 +17,9 @@
                 </div>
             </div>
             <div class="col-md-7">
-                <a href="#" class="float-right fas fa-close"></a>
-                    <div class="form-group">
-                        {!! Form::text('slug[]', null, ['class' => 'form-control character-code', 'placeholder' => 'Character Code (EX-001, for example)']) !!}
-                    </div>
+                <div class="form-group">
+                    {!! Form::select('slug[]', $characters, null, ['class' => 'form-control character-code', 'placeholder' => 'Character Code (EX-001, for example)']) !!}
+                </div>
             </div>
             <div class="col-md-1 text-right">
                 <a href="#" class="remove-character text-muted"><i class="fas fa-times"></i></a>

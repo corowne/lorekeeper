@@ -1,18 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class AddSales extends Migration
-{
+class AddSales extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
-    {
+    public function up() {
         //
         Schema::create('sales', function (Blueprint $table) {
             $table->engine = 'InnoDB';
@@ -37,11 +33,8 @@ class AddSales extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
-    {
+    public function down() {
         //
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('is_sales_unread');

@@ -2,21 +2,16 @@
 
 namespace App\Models\Character;
 
-use Config;
-use DB;
 use App\Models\Model;
-use App\Models\Character\CharacterCategory;
 
-class CharacterProfile extends Model
-{
-
+class CharacterProfile extends Model {
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'character_id', 'text', 'parsed_text', 'link'
+        'character_id', 'text', 'parsed_text', 'link',
     ];
 
     /**
@@ -25,7 +20,6 @@ class CharacterProfile extends Model
      * @var string
      */
     protected $table = 'character_profiles';
-
     /**
      * The primary key of the model.
      *
@@ -39,7 +33,7 @@ class CharacterProfile extends Model
      * @var array
      */
     public static $rules = [
-        'link' => 'url|nullable'
+        'link' => 'url|nullable',
     ];
 
     /**********************************************************************************************
@@ -51,8 +45,7 @@ class CharacterProfile extends Model
     /**
      * Get the character this profile belongs to.
      */
-    public function character()
-    {
-        return $this->belongsTo('App\Models\Character\Character', 'character_id');
+    public function character() {
+        return $this->belongsTo(Character::class, 'character_id');
     }
 }

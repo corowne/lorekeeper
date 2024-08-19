@@ -2,18 +2,18 @@
 
 namespace App\Models\Species;
 
-use Config;
+use App\Models\Character\Sublist;
+use App\Models\Feature\Feature;
 use App\Models\Model;
 
-class Species extends Model
-{
+class Species extends Model {
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description', 'masterlist_sub_id'
+        'name', 'sort', 'has_image', 'description', 'parsed_description', 'masterlist_sub_id', 'is_visible', 'hash',
     ];
 
     /**
@@ -22,33 +22,30 @@ class Species extends Model
      * @var string
      */
     protected $table = 'specieses';
-    
-    
     /**
      * Validation rules for creation.
      *
      * @var array
      */
     public static $createRules = [
-        'name' => 'required|unique:specieses|between:3,100',
+        'name'        => 'required|unique:specieses|between:3,100',
         'description' => 'nullable',
-        'image' => 'mimes:png',
+        'image'       => 'mimes:png',
     ];
-    
-    
+
     /**
      * Validation rules for updating.
      *
      * @var array
      */
     public static $updateRules = [
-        'name' => 'required|between:3,100',
+        'name'        => 'required|between:3,100',
         'description' => 'nullable',
-        'image' => 'mimes:png',
+        'image'       => 'mimes:png',
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -56,40 +53,58 @@ class Species extends Model
     /**
      * Get the subtypes for this species.
      */
-    public function subtypes() 
-    {
-        return $this->hasMany('App\Models\Species\Subtype');
+    public function subtypes() {
+        return $this->hasMany(Subtype::class);
     }
 
     /**
      * Get the sub masterlist for this species.
      */
-    public function sublist() 
-    {
-        return $this->belongsTo('App\Models\Character\Sublist', 'masterlist_sub_id');
+    public function sublist() {
+        return $this->belongsTo(Sublist::class, 'masterlist_sub_id');
     }
-    
+
     /**
      * Get the features associated with this species.
      */
-    public function features() 
-    {
-        return $this->hasMany('App\Models\Feature\Feature');
+    public function features() {
+        return $this->hasMany(Feature::class);
     }
 
     /**********************************************************************************************
-    
+
+        SCOPES
+
+    **********************************************************************************************/
+
+    /**
+     * Scope a query to show only visible species.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed|null                            $user
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeVisible($query, $user = null) {
+        if ($user && $user->hasPower('edit_data')) {
+            return $query;
+        }
+
+        return $query->where('is_visible', 1);
+    }
+
+    /**********************************************************************************************
+
         ACCESSORS
 
     **********************************************************************************************/
-    
+
     /**
      * Displays the model's name, linked to its encyclopedia page.
      *
      * @return string
      */
-    public function getDisplayNameAttribute()
-    {
+    public function getDisplayNameAttribute() {
         return '<a href="'.$this->url.'" class="display-species">'.$this->name.'</a>';
     }
 
@@ -98,8 +113,7 @@ class Species extends Model
      *
      * @return string
      */
-    public function getImageDirectoryAttribute()
-    {
+    public function getImageDirectoryAttribute() {
         return 'images/data/species';
     }
 
@@ -108,9 +122,8 @@ class Species extends Model
      *
      * @return string
      */
-    public function getSpeciesImageFileNameAttribute()
-    {
-        return $this->id . '-image.png';
+    public function getSpeciesImageFileNameAttribute() {
+        return $this->hash.$this->id.'-image.png';
     }
 
     /**
@@ -118,20 +131,21 @@ class Species extends Model
      *
      * @return string
      */
-    public function getSpeciesImagePathAttribute()
-    {
+    public function getSpeciesImagePathAttribute() {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
      * @return string
      */
-    public function getSpeciesImageUrlAttribute()
-    {
-        if (!$this->has_image) return null;
-        return asset($this->imageDirectory . '/' . $this->speciesImageFileName);
+    public function getSpeciesImageUrlAttribute() {
+        if (!$this->has_image) {
+            return null;
+        }
+
+        return asset($this->imageDirectory.'/'.$this->speciesImageFileName);
     }
 
     /**
@@ -139,8 +153,7 @@ class Species extends Model
      *
      * @return string
      */
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return url('world/species?name='.$this->name);
     }
 
@@ -149,12 +162,12 @@ class Species extends Model
      *
      * @return string
      */
-    public function getSearchUrlAttribute()
-    {
-        if($this->masterlist_sub_id != 0 && $this->sublist->show_main == 0)
-        return url('sublist/'.$this->sublist->key.'?species_id='.$this->id);
-        else
-        return url('masterlist?species_id='.$this->id);
+    public function getSearchUrlAttribute() {
+        if ($this->masterlist_sub_id != 0 && $this->sublist->show_main == 0) {
+            return url('sublist/'.$this->sublist->key.'?species_id='.$this->id);
+        } else {
+            return url('masterlist?species_id='.$this->id);
+        }
     }
 
     /**
@@ -162,8 +175,25 @@ class Species extends Model
      *
      * @return string
      */
-    public function getVisualTraitsUrlAttribute()
-    {
+    public function getVisualTraitsUrlAttribute() {
         return url('/world/species/'.$this->id.'/traits');
+    }
+
+    /**
+     * Gets the admin edit URL.
+     *
+     * @return string
+     */
+    public function getAdminUrlAttribute() {
+        return url('admin/data/species/edit/'.$this->id);
+    }
+
+    /**
+     * Gets the power required to edit this model.
+     *
+     * @return string
+     */
+    public function getAdminPowerAttribute() {
+        return 'edit_data';
     }
 }

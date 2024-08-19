@@ -5,14 +5,13 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-class ParsePostRequestFields
-{
+class ParsePostRequestFields {
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     * @param \Closure(\Illuminate\Http\Request): (\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response) $next
+     *
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
      */
     public function handle(Request $request, Closure $next) {
         if ($request->isMethod('post')) {
@@ -44,12 +43,8 @@ class ParsePostRequestFields
 
     /**
      * Recursively parse array values.
-     *
-     * @param  array  $array
-     * @param  array  $strippedFields
-     * @return array
      */
-    private function parseArray(array $array, array $strippedFields) : array {
+    private function parseArray(array $array, array $strippedFields): array {
         foreach ($array as $key => $value) {
             if (is_numeric($value)) {
                 continue;

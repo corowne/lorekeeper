@@ -1,18 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class ItemEntryExtension extends Migration
-{
+class ItemEntryExtension extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
-    {
+    public function up() {
         // Add columns for rarity, reference link, artist alias/URL, availability, use(s)
         Schema::table('items', function (Blueprint $table) {
             $table->string('data', 1024)->nullable(); // includes rarity and availability information.
@@ -24,11 +20,8 @@ class ItemEntryExtension extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::table('items', function (Blueprint $table) {
             //
             $table->dropColumn('data');

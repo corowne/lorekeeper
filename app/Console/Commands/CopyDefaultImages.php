@@ -2,11 +2,9 @@
 
 namespace App\Console\Commands;
 
-use Config;
 use Illuminate\Console\Command;
 
-class CopyDefaultImages extends Command
-{
+class CopyDefaultImages extends Command {
     /**
      * The name and signature of the console command.
      *
@@ -23,11 +21,8 @@ class CopyDefaultImages extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
     }
 
@@ -36,22 +31,20 @@ class CopyDefaultImages extends Command
      *
      * @return mixed
      */
-    public function handle()
-    {
+    public function handle() {
         //
         $this->info('***********************');
         $this->info('* COPY DEFAULT IMAGES *');
         $this->info('***********************'."\n");
 
-        $images = Config::get('lorekeeper.image_files');
+        $images = config('lorekeeper.image_files');
 
-        $sourceDir = base_path() . '/data/images/';
-        $destDir = public_path() . '/images/';
+        $sourceDir = base_path().'/data/images/';
+        $destDir = public_path().'/images/';
 
-        foreach($images as $image)
-        {
-            $this->line("Copying image: ".$image['filename'] . "\n");
-            copy($sourceDir . $image['filename'], $destDir . $image['filename']);
+        foreach ($images as $image) {
+            $this->line('Copying image: '.$image['filename']."\n");
+            copy($sourceDir.$image['filename'], $destDir.$image['filename']);
         }
         $this->line('Done!');
     }

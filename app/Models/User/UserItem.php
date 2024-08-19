@@ -2,11 +2,11 @@
 
 namespace App\Models\User;
 
+use App\Models\Item\Item;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class UserItem extends Model
-{
+class UserItem extends Model {
     use SoftDeletes;
 
     /**
@@ -15,15 +15,8 @@ class UserItem extends Model
      * @var array
      */
     protected $fillable = [
-        'data', 'item_id', 'user_id'
+        'data', 'item_id', 'user_id',
     ];
-
-    /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
 
     /**
      * The table associated with the model.
@@ -32,8 +25,15 @@ class UserItem extends Model
      */
     protected $table = 'user_items';
 
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
+
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -41,21 +41,19 @@ class UserItem extends Model
     /**
      * Get the user who owns the stack.
      */
-    public function user() 
-    {
-        return $this->belongsTo('App\Models\User\User');
+    public function user() {
+        return $this->belongsTo(User::class);
     }
 
     /**
      * Get the item associated with this item stack.
      */
-    public function item() 
-    {
-        return $this->belongsTo('App\Models\Item\Item');
+    public function item() {
+        return $this->belongsTo(Item::class);
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -65,19 +63,20 @@ class UserItem extends Model
      *
      * @return array
      */
-    public function getDataAttribute() 
-    {
+    public function getDataAttribute() {
         return json_decode($this->attributes['data'], true);
     }
-    
+
     /**
      * Checks if the stack is transferrable.
      *
      * @return array
      */
-    public function getIsTransferrableAttribute()
-    {
-        if(!isset($this->data['disallow_transfer']) && $this->item->allow_transfer) return true;
+    public function getIsTransferrableAttribute() {
+        if (!isset($this->data['disallow_transfer']) && $this->item->allow_transfer) {
+            return true;
+        }
+
         return false;
     }
 
@@ -86,9 +85,8 @@ class UserItem extends Model
      *
      * @return int
      */
-    public function getAvailableQuantityAttribute()
-    {
-        return ($this->count - $this->trade_count - $this->update_count- $this->submission_count);
+    public function getAvailableQuantityAttribute() {
+        return $this->count - $this->trade_count - $this->update_count - $this->submission_count;
     }
 
     /**
@@ -96,43 +94,58 @@ class UserItem extends Model
      *
      * @return string
      */
-    public function getAssetTypeAttribute()
-    {
+    public function getAssetTypeAttribute() {
         return 'user_items';
     }
 
     /**
-     * Returns string stating amount held elsewhere
+     * Returns string stating amount held elsewhere.
+     *
+     * @param mixed $tradeCount
+     * @param mixed $updateCount
+     * @param mixed $submissionCount
      *
      * @return string
      */
-    public function getOthers($tradeCount = 0, $updateCount = 0, $submissionCount = 0)
-    {
+    public function getOthers($tradeCount = 0, $updateCount = 0, $submissionCount = 0) {
         return $this->getHeldString($this->trade_count - $tradeCount, $this->update_count - $updateCount, $this->submission_count - $submissionCount);
     }
 
     /**
-     * Gets the available quantity based on input context (either trade count or update count)
+     * Gets the available quantity based on input context (either trade count or update count).
+     *
+     * @param mixed $count
      *
      * @return int
      */
-    public function getAvailableContextQuantity($count)
-    {
-        return ($this->getAvailableQuantityAttribute() + $count);
+    public function getAvailableContextQuantity($count) {
+        return $this->getAvailableQuantityAttribute() + $count;
     }
 
     /**
-     * Construct string stating held items
-     * 
+     * Construct string stating held items.
+     *
+     * @param mixed $tradeCount
+     * @param mixed $updateCount
+     * @param mixed $submissionCount
+     *
      * @return string
      */
-    private function getHeldString($tradeCount, $updateCount, $submissionCount)
-    {
-        if(!$tradeCount && !$updateCount && !$submissionCount) return null;
+    private function getHeldString($tradeCount, $updateCount, $submissionCount) {
+        if (!$tradeCount && !$updateCount && !$submissionCount) {
+            return null;
+        }
         $held = [];
-        if($tradeCount) array_push($held, $tradeCount.' held in Trades');
-        if($updateCount) array_push($held, $updateCount.' held in Design Updates');
-        if($submissionCount) array_push($held, $submissionCount.' held in Submissions');
-        return ('('.implode(', ',$held).')');
+        if ($tradeCount) {
+            array_push($held, $tradeCount.' held in Trades');
+        }
+        if ($updateCount) {
+            array_push($held, $updateCount.' held in Design Updates');
+        }
+        if ($submissionCount) {
+            array_push($held, $submissionCount.' held in Submissions');
+        }
+
+        return '('.implode(', ', $held).')';
     }
 }
