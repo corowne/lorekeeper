@@ -63,7 +63,6 @@
         {!! $saleses->render() !!}
 
         <div class="text-center mt-4 small text-muted">{{ $saleses->total() }} result{{ $saleses->total() == 1 ? '' : 's' }} found.</div>
-                                  
     @endif
 
 @endsection
