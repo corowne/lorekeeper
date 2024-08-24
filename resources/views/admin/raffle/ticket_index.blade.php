@@ -78,95 +78,95 @@
                     <div class="col-6 col-md-3">
                         <div class="logs-table-cell">User</div>
                     </div>
-                @if ($raffle->is_active < 2)
-                    <div class="col-6 col-md-3">
-                        <div class="logs-table-cell">User</div>
-                    </div>
-                @endif
-            </div>
-            <div class="logs-table-body">
-                @foreach ($tickets as $count => $ticket)
-                    <div class="logs-table-row">
-                        <div class="row flex-wrap">
-                            <div class="col-6 col-md-3">
-                                <div class="logs-table-cell text-center">{{ $page * 200 + $count + 1 }}</div>
-                            <div class="col-6 col-md-3">
-                                <div class="logs-table-cell">{!! $ticket->displayHolderName !!}</div>
-                            </div>
-                            @if ($raffle->is_active < 2)
+                    @if ($raffle->is_active < 2)
+                        <div class="col-6 col-md-3">
+                            <div class="logs-table-cell">User</div>
+                        </div>
+                    @endif
+                </div>
+                <div class="logs-table-body">
+                    @foreach ($tickets as $count => $ticket)
+                        <div class="logs-table-row">
+                            <div class="row flex-wrap">
                                 <div class="col-6 col-md-3">
-                                    <div class="logs-table-cell text-right">{!! Form::open(['url' => 'admin/raffles/view/ticket/delete/' . $ticket->id]) !!}{!! Form::submit('Delete', ['class' => 'btn btn-danger btn-sm']) !!}{!! Form::close() !!}</div>
+                                    <div class="logs-table-cell text-center">{{ $page * 200 + $count + 1 }}</div>
+                                    <div class="col-6 col-md-3">
+                                        <div class="logs-table-cell">{!! $ticket->displayHolderName !!}</div>
+                                    </div>
+                                    @if ($raffle->is_active < 2)
+                                        <div class="col-6 col-md-3">
+                                            <div class="logs-table-cell text-right">{!! Form::open(['url' => 'admin/raffles/view/ticket/delete/' . $ticket->id]) !!}{!! Form::submit('Delete', ['class' => 'btn btn-danger btn-sm']) !!}{!! Form::close() !!}</div>
+                                        </div>
+                                    @endif
                                 </div>
-                            @endif
+                            </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        <div class="text-right">{!! $tickets->render() !!}</div>
+
+        <div class="modal fade" id="raffle-modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <span class="modal-title h5 mb-0">Add Tickets</span>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Select an on-site user or enter an off-site username, as well as the number of tickets to create for them. Any created tickets are in addition to any pre-existing tickets for the user(s).</p>
+                        {!! Form::open(['url' => 'admin/raffles/view/ticket/' . $raffle->id]) !!}
+                        <div id="ticketList">
+                        </div>
+                        <div><a href="#" class="btn btn-primary" id="add-ticket">Add Ticket</a></div>
+                        <div class="text-right">
+                            {!! Form::submit('Add', ['class' => 'btn btn-primary']) !!}
+                        </div>
+                        {!! Form::close() !!}
+                        <div class="ticket-row hide mb-2">
+                            {!! Form::select('user_id[]', $users, null, ['class' => 'form-control mr-2 user-select', 'placeholder' => 'Select User']) !!}
+                            {!! Form::text('alias[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'OR Enter Alias']) !!}
+                            {!! Form::number('ticket_count[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Ticket Count']) !!}
+                            <a href="#" class="remove-ticket btn btn-danger mb-2">×</a>
                         </div>
                     </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
-    <div class="text-right">{!! $tickets->render() !!}</div>
-
-    <div class="modal fade" id="raffle-modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <span class="modal-title h5 mb-0">Add Tickets</span>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <p>Select an on-site user or enter an off-site username, as well as the number of tickets to create for them. Any created tickets are in addition to any pre-existing tickets for the user(s).</p>
-                    {!! Form::open(['url' => 'admin/raffles/view/ticket/' . $raffle->id]) !!}
-                    <div id="ticketList">
-                    </div>
-                    <div><a href="#" class="btn btn-primary" id="add-ticket">Add Ticket</a></div>
-                    <div class="text-right">
-                        {!! Form::submit('Add', ['class' => 'btn btn-primary']) !!}
-                    </div>
-                    {!! Form::close() !!}
-                    <div class="ticket-row hide mb-2">
-                        {!! Form::select('user_id[]', $users, null, ['class' => 'form-control mr-2 user-select', 'placeholder' => 'Select User']) !!}
-                        {!! Form::text('alias[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'OR Enter Alias']) !!}
-                        {!! Form::number('ticket_count[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Ticket Count']) !!}
-                        <a href="#" class="remove-ticket btn btn-danger mb-2">×</a>
-                    </div>
                 </div>
             </div>
         </div>
-    </div>
-@endsection
-@section('scripts')
-    @parent
-    <script>
-        $('.edit-tickets').on('click', function(e) {
-            e.preventDefault();
-            $('#raffle-modal').modal('show');
-        });
-
-        $(document).ready(function() {
-            $('#add-ticket').on('click', function(e) {
+    @endsection
+    @section('scripts')
+        @parent
+        <script>
+            $('.edit-tickets').on('click', function(e) {
                 e.preventDefault();
-                addTicketRow();
+                $('#raffle-modal').modal('show');
             });
-            $('.remove-ticket').on('click', function(e) {
-                e.preventDefault();
-                removeTicketRow($(this));
-            })
 
-            function addTicketRow() {
-                var $clone = $('.ticket-row').clone();
-                $('#ticketList').append($clone);
-                $clone.removeClass('hide ticket-row');
-                $clone.addClass('d-flex');
-                $clone.find('.remove-ticket').on('click', function(e) {
+            $(document).ready(function() {
+                $('#add-ticket').on('click', function(e) {
+                    e.preventDefault();
+                    addTicketRow();
+                });
+                $('.remove-ticket').on('click', function(e) {
                     e.preventDefault();
                     removeTicketRow($(this));
                 })
-                $clone.find('.user-select').selectize();
-            }
 
-            function removeTicketRow($trigger) {
-                $trigger.parent().remove();
-            }
-        });
-    </script>
-@endsection
+                function addTicketRow() {
+                    var $clone = $('.ticket-row').clone();
+                    $('#ticketList').append($clone);
+                    $clone.removeClass('hide ticket-row');
+                    $clone.addClass('d-flex');
+                    $clone.find('.remove-ticket').on('click', function(e) {
+                        e.preventDefault();
+                        removeTicketRow($(this));
+                    })
+                    $clone.find('.user-select').selectize();
+                }
+
+                function removeTicketRow($trigger) {
+                    $trigger.parent().remove();
+                }
+            });
+        </script>
+    @endsection
