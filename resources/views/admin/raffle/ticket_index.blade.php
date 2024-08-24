@@ -38,10 +38,10 @@
                 <div class="mb-4 logs-table mb-0">
                     <div class="logs-table-header">
                         <div class="row">
-                            <div class="col-xs-1" style="max-width:100px;">
+                            <div class="col-1">
                                 <div class="logs-table-cell text-center">#</div>
                             </div>
-                            <div class="col-6 col-md-3">
+                            <div class="col-11">
                                 <div class="logs-table-cell text-left">User</div>
                             </div>
                         </div>
@@ -50,10 +50,10 @@
                         @foreach ($raffle->tickets()->winners()->get() as $winner)
                             <div class="logs-table-row">
                                 <div class="row flex-wrap">
-                                    <div class="col-xs-1" style="max-width:100px;">
+                                    <div class="col-1">
                                         <div class="logs-table-cell text-center">{{ $winner->position }}</div>
                                     </div>
-                                    <div class="col-6 col-md-3">
+                                    <div class="col-11">
                                         <div class="logs-table-cell text-left">{!! $winner->displayHolderName !!}</div>
                                     </div>
                                 </div>
@@ -72,15 +72,15 @@
         <div class="mb-4 logs-table">
             <div class="logs-table-header">
                 <div class="row">
-                    <div class="col-xs-1 text-center" style="width:100px;">
-                        <div class="logs-table-cell">#</div>
+                    <div class="col-1">
+                        <div class="logs-table-cell text-center">#</div>
                     </div>
-                    <div class="col-6 col-md-3">
-                        <div class="logs-table-cell">User</div>
+                    <div class="col-8 col-md-3">
+                        <div class="logs-table-cell text-left">User</div>
                     </div>
                     @if ($raffle->is_active < 2)
-                        <div class="col-6 col-md-3">
-                            <div class="logs-table-cell">User</div>
+                        <div class="col-3">
+                            <div class="logs-table-cell"></div>
                         </div>
                     @endif
                 </div>
@@ -88,18 +88,19 @@
                     @foreach ($tickets as $count => $ticket)
                         <div class="logs-table-row">
                             <div class="row flex-wrap">
-                                <div class="col-6 col-md-3">
+                                <div class="col-1">
                                     <div class="logs-table-cell text-center">{{ $page * 200 + $count + 1 }}</div>
-                                    <div class="col-6 col-md-3">
-                                        <div class="logs-table-cell">{!! $ticket->displayHolderName !!}</div>
-                                    </div>
-                                    @if ($raffle->is_active < 2)
-                                        <div class="col-6 col-md-3">
-                                            <div class="logs-table-cell text-right">{!! Form::open(['url' => 'admin/raffles/view/ticket/delete/' . $ticket->id]) !!}{!! Form::submit('Delete', ['class' => 'btn btn-danger btn-sm']) !!}{!! Form::close() !!}</div>
-                                        </div>
-                                    @endif
                                 </div>
+                                <div class="col-8 col-md-3">
+                                    <div class="logs-table-cell text-left">{!! $ticket->displayHolderName !!}</div>
+                                </div>
+                                @if ($raffle->is_active < 2)
+                                    <div class="col-3">
+                                        <div class="logs-table-cell text-right">{!! Form::open(['url' => 'admin/raffles/view/ticket/delete/' . $ticket->id]) !!}{!! Form::submit('Delete', ['class' => 'btn btn-danger btn-sm']) !!}{!! Form::close() !!}</div>
+                                    </div>
+                                @endif
                             </div>
+                        </div>
                     @endforeach
                 </div>
             </div>

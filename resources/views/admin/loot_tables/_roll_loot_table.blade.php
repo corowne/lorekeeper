@@ -2,7 +2,7 @@
 <div class="mb-4 logs-table table-striped">
     <div class="logs-table-header">
         <div class="row">
-            <div class="col-xs-1" style="width:100px;">
+            <div class="col-1">
                 <div class="logs-table-cell text-center">#</div>
             </div>
             <div class="col-6 col-md-3">
@@ -21,13 +21,13 @@
                     @foreach ($type as $t)
                         <div class="logs-table-row">
                             <div class="row flex-wrap">
-                                <div class="col-xs-1" style="width:100px;">
+                                <div class="col-1">
                                     <div class="logs-table-cell text-center">{{ $count++ }}</div>
                                 </div>
                                 <div class="col-6 col-md-3">
                                     <div class="logs-table-cell">{!! $t['asset']->displayName !!}</div>
                                 </div>
-                                <div class="col-6 col-md-3">
+                                <div class="col-5 col-md-3">
                                     <div class="logs-table-cell">{{ $t['quantity'] }}</div>
                                 </div>
                             </div>
