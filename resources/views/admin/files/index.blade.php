@@ -36,10 +36,10 @@
     <div class="mb-4 logs-table">
         <div class="logs-table-header">
             <div class="row">
-                <div class="col-6 col-md-3">
+                <div class="col-6 col-md-7">
                     <div class="logs-table-cell">Files</div>
                 </div>
-                <div class="col-6 col-md-3">
+                <div class="col-6 col-md-5">
                     <div class="logs-table-cell"></div>
                 </div>
             </div>
@@ -48,10 +48,10 @@
             @foreach ($files as $file)
                 <div class="logs-table-row">
                     <div class="row flex-wrap">
-                        <div class="col-6 col-md-3">
+                        <div class="col-6 col-md-7">
                             <div class="logs-table-cell"><a href="{{ asset('files/' . ($folder ? $folder . '/' : '') . $file) }}">{{ $file }}</a></div>
                         </div>
-                        <div class="col-6 col-md-3">
+                        <div class="col-6 col-md-5">
                             <div class="logs-table-cell text-right">
                                 <a href="#" class="btn btn-outline-primary btn-sm move-file" data-name="{{ $file }}" data-folder="{{ $folder }}">Move</a>
                                 <a href="#" class="btn btn-outline-primary btn-sm rename-file" data-name="{{ $file }}" data-folder="{{ $folder }}">Rename</a>
