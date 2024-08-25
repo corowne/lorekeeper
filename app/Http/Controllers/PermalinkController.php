@@ -16,7 +16,7 @@ class PermalinkController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getComment($id) {
-        $comments = Comment::withTrashed()->get();
+        $comments = Comment::withTrashed();
         //$comments = $comments->sortByDesc('created_at');
         $comment = $comments->find($id);
 
