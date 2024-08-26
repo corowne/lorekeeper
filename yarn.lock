@@ -5022,10 +5022,10 @@
   "resolved" "https://registry.npmjs.org/safer-buffer/-/safer-buffer-2.1.2.tgz"
   "version" "2.1.2"
 
-"sass-loader@^16.0.0":
-  "integrity" "sha512-n13Z+3rU9A177dk4888czcVFiC8CL9dii4qpXWUg3YIIgZEvi9TCFKjOQcbK0kJM7DJu9VucrZFddvNfYCPwtw=="
-  "resolved" "https://registry.npmjs.org/sass-loader/-/sass-loader-16.0.0.tgz"
-  "version" "16.0.0"
+"sass-loader@^16.0.1":
+  "integrity" "sha512-xACl1ToTsKnL9Ce5yYpRxrLj9QUDCnwZNhzpC7tKiFyA8zXsd3Ap+HGVnbCgkdQcm43E+i6oKAWBsvGA6ZoiMw=="
+  "resolved" "https://registry.npmjs.org/sass-loader/-/sass-loader-16.0.1.tgz"
+  "version" "16.0.1"
   dependencies:
     "neo-async" "^2.6.2"
 
