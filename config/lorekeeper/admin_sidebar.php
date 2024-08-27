@@ -220,6 +220,10 @@ return [
                 'name' => 'File Manager',
                 'url'  => 'admin/files',
             ],
+            [
+                'name' => 'Log Viewer',
+                'url'  => 'admin/logs',
+            ],
         ],
     ],
 ];
