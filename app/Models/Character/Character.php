@@ -111,8 +111,8 @@ class Character extends Model {
         'description' => 'nullable',
         'sale_value'  => 'nullable',
         'name'        => 'required',
-        'image'       => 'nullable|mimes:jpeg,gif,png|max:2048',
-        'thumbnail'   => 'nullable|mimes:jpeg,gif,png|max:2048',
+        'image'       => 'nullable|mimes:jpeg,gif,png|max:2mb',
+        'thumbnail'   => 'nullable|mimes:jpeg,gif,png|max:2mb',
     ];
 
     /**********************************************************************************************
