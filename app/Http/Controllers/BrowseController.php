@@ -223,15 +223,25 @@ class BrowseController extends Controller {
                     $query->havingRaw('COUNT(*) > '.(in_array('hybrid', $request->get('subtype_ids')) ? 1 : 0));
                 });
             } else {
-                $imageQuery->whereHas('subtypes', function ($query) use ($request) {
-                    if (config('lorekeeper.extensions.exclusionary_search')) {
-                        // If exclusionary search is enabled, we need to make sure that the character has all of the subtypes specified.
-                        $query->whereIn('character_image_subtypes.subtype_id', $request->get('subtype_ids'))->havingRaw('COUNT(*) = ?', [count($request->get('subtype_ids'))]);
-                    } else {
-                        // If exclusionary search is not enabled, any of the subtypes is acceptable.
+                if (config('lorekeeper.extensions.exclusionary_search')) {
+                    $imageQuery->whereHas('subtypes', function ($query) use ($request) {
+                        $subtypeIds = $request->get('subtype_ids');
+        
+                        // Filter to ensure the character has all the specified subtypes
+                        $query->whereIn('character_image_subtypes.subtype_id', $subtypeIds)
+                            ->groupBy('character_image_subtypes.character_image_id')
+                            ->havingRaw('COUNT(character_image_subtypes.subtype_id) = ?', [count($subtypeIds)]);
+                    })->whereDoesntHave('subtypes', function ($query) use ($request) {
+                        $subtypeIds = $request->get('subtype_ids');
+        
+                        // Ensure that no additional subtypes are present
+                        $query->whereNotIn('character_image_subtypes.subtype_id', $subtypeIds);
+                    });
+                } else {
+                    $imageQuery->whereHas('subtypes', function ($query) use ($request) {
                         $query->whereIn('character_image_subtypes.subtype_id', $request->get('subtype_ids'));
-                    }
-                });
+                    });
+                }
             }
         }
         if ($request->get('feature_ids')) {

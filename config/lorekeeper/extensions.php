@@ -124,5 +124,5 @@ return [
 
     // Multiple Subtypes - Newt
     'exclusionary_search'    => 0, // If enabled, searching for multiple subtypes will only return results that have all of the subtypes specified. If disabled, it will return results that have any of the subtypes specified.
-    'multiple_subtype_limit' => 10, // The maximum number of subtypes a character can have. (frontend validation)
+    'multiple_subtype_limit' => 10, // The maximum number of subtypes a character can have.
 ];
