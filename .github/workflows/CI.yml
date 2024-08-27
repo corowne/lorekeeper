@@ -1,4 +1,4 @@
-name: Lint
+name: Lint & Build Mix Assets
 
 on:
   push:
@@ -14,14 +14,14 @@ on:
       - reopened
 
 jobs:
-  pint:
-    uses: itinerare/github-actions/.github/workflows/pint.yml@main
+  lint:
+    uses: itinerare/github-actions/.github/workflows/lint.yml@main
     with:
       php-version: '8.1'
     concurrency:
       group: ci-${{ github.head_ref || github.ref_name }}
 
-  blade-formatter:
-    uses: itinerare/github-actions/.github/workflows/blade_formatter.yml@main
+  rebuild-mix-assets:
+    uses: itinerare/github-actions/.github/workflows/mix_build.yml@main
     concurrency:
-      group: ci-${{ github.head_ref || github.ref_name }}
+      group: ci-${{ github.head_ref }}
