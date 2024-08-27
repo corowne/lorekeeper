@@ -436,11 +436,11 @@
                 $("#mainImage").change(function() {
                     readURL(this);
                 });
-                    @if (config('lorekeeper.settings.hide_textarea_on_gallery_submissions.enable'))
-                    $('#writingForm').on('hide.bs.collapse', function () {
+                @if (config('lorekeeper.settings.hide_textarea_on_gallery_submissions.enable'))
+                    $('#writingForm').on('hide.bs.collapse', function() {
                         $('#writingFormCollapseBtn').text("Show Textarea");
                     })
-                    $('#writingForm').on('show.bs.collapse', function () {
+                    $('#writingForm').on('show.bs.collapse', function() {
                         $('#writingFormCollapseBtn').text("Hide Textarea");
                     })
                 @endif
