@@ -78,8 +78,8 @@ class Character extends Model {
         'slug'                  => 'required|alpha_dash',
         'description'           => 'nullable',
         'sale_value'            => 'nullable',
-        'image'                 => 'required|mimes:jpeg,jpg,gif,png|max:2048',
-        'thumbnail'             => 'nullable|mimes:jpeg,jpg,gif,png|max:2048',
+        'image'                 => 'required|mimes:jpeg,jpg,gif,png|max:2mb',
+        'thumbnail'             => 'nullable|mimes:jpeg,jpg,gif,png|max:2mb',
         'owner_url'             => 'url|nullable',
     ];
 
@@ -94,6 +94,8 @@ class Character extends Model {
         'slug'                  => 'required',
         'description'           => 'nullable',
         'sale_value'            => 'nullable',
+        'image'                 => 'nullable|mimes:jpeg,jpg,gif,png|max:2mb',
+        'thumbnail'             => 'nullable|mimes:jpeg,jpg,gif,png|max:2mb',
     ];
 
     /**
