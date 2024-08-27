@@ -226,14 +226,14 @@ class BrowseController extends Controller {
                 if (config('lorekeeper.extensions.exclusionary_search')) {
                     $imageQuery->whereHas('subtypes', function ($query) use ($request) {
                         $subtypeIds = $request->get('subtype_ids');
-        
+
                         // Filter to ensure the character has all the specified subtypes
                         $query->whereIn('character_image_subtypes.subtype_id', $subtypeIds)
                             ->groupBy('character_image_subtypes.character_image_id')
                             ->havingRaw('COUNT(character_image_subtypes.subtype_id) = ?', [count($subtypeIds)]);
                     })->whereDoesntHave('subtypes', function ($query) use ($request) {
                         $subtypeIds = $request->get('subtype_ids');
-        
+
                         // Ensure that no additional subtypes are present
                         $query->whereNotIn('character_image_subtypes.subtype_id', $subtypeIds);
                     });
