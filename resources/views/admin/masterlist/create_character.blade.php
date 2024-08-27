@@ -30,42 +30,34 @@
         </div>
 
         <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    {!! Form::label('Owner') !!}
-                    {!! Form::select('user_id', $userOptions, old('user_id'), ['class' => 'form-control', 'placeholder' => 'Select User', 'id' => 'userSelect']) !!}
-                </div>
+            <div class="col-md-6 form-group">
+                {!! Form::label('Owner') !!}
+                {!! Form::select('user_id', $userOptions, old('user_id'), ['class' => 'form-control', 'placeholder' => 'Select User', 'id' => 'userSelect']) !!}
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    {!! Form::label('Owner URL (Optional)') !!}
-                    {!! Form::text('owner_url', old('owner_url'), ['class' => 'form-control']) !!}
-                </div>
+            <div class="col-md-6 form-group">
+                {!! Form::label('Owner URL (Optional)') !!}
+                {!! Form::text('owner_url', old('owner_url'), ['class' => 'form-control']) !!}
             </div>
         </div>
 
         @if (!$isMyo)
             <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        {!! Form::label('Character Category') !!}
-                        <select name="character_category_id" id="category" class="form-control" placeholder="Select Category">
-                            <option value="" data-code="">Select Category</option>
-                            @foreach ($categories as $category)
-                                <option value="{{ $category->id }}" data-code="{{ $category->code }}" {{ old('character_category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }} ({{ $category->code }})</option>
-                            @endforeach
-                        </select>
-                    </div>
+                <div class="col-md-6 form-group">
+                    {!! Form::label('Character Category') !!}
+                    <select name="character_category_id" id="category" class="form-control" placeholder="Select Category">
+                        <option value="" data-code="">Select Category</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}" data-code="{{ $category->code }}" {{ old('character_category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }} ({{ $category->code }})</option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        {!! Form::label('Number') !!} {!! add_help('This number helps to identify the character and should preferably be unique either within the category, or among all characters.') !!}
-                        <div class="d-flex">
-                            {!! Form::text('number', old('number'), ['class' => 'form-control mr-2', 'id' => 'number']) !!}
-                            <a href="#" id="pull-number" class="btn btn-primary" data-toggle="tooltip"
-                                title="This will find the highest number assigned to a character currently and add 1 to it. It can be adjusted to pull the highest number in the category or the highest overall number - this setting is in the code.">Pull
-                                Next Number</a>
-                        </div>
+                <div class="col-md-6 form-group">
+                    {!! Form::label('Number') !!} {!! add_help('This number helps to identify the character and should preferably be unique either within the category, or among all characters.') !!}
+                    <div class="d-flex">
+                        {!! Form::text('number', old('number'), ['class' => 'form-control mr-2', 'id' => 'number']) !!}
+                        <a href="#" id="pull-number" class="btn btn-primary" data-toggle="tooltip"
+                            title="This will find the highest number assigned to a character currently and add 1 to it. It can be adjusted to pull the highest number in the category or the highest overall number - this setting is in the code.">Pull
+                            Next Number</a>
                     </div>
                 </div>
             </div>

@@ -2,6 +2,7 @@
 
 namespace App\Models\Species;
 
+use App\Models\Feature\Feature;
 use App\Models\Model;
 
 class Subtype extends Model {
@@ -64,6 +65,13 @@ class Subtype extends Model {
      */
     public function species() {
         return $this->belongsTo(Species::class, 'species_id');
+    }
+
+    /**
+     * Get the features associated with this subtype.
+     */
+    public function features() {
+        return $this->hasMany(Feature::class);
     }
 
     /**********************************************************************************************
@@ -168,6 +176,15 @@ class Subtype extends Model {
      */
     public function getSearchUrlAttribute() {
         return url('masterlist?subtype_id='.$this->id);
+    }
+
+    /**
+     * Gets the URL the visual index of this subtype's traits.
+     *
+     * @return string
+     */
+    public function getVisualTraitsUrlAttribute() {
+        return url('/world/subtypes/'.$this->id.'/traits');
     }
 
     /**

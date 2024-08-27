@@ -22,16 +22,18 @@ return [
     // Navbar News Notif - Juni
     'navbar_news_notif'                    => 0,
 
-    // Species Trait Index - Mercury
-    'species_trait_index'                  => [
-        'enable'       => 0,
-        'trait_modals' => 0, // Enables modals when you click on a trait for more info instead of linking to the traits page - Moif
-    ],
-
-    // Universal Trait Index - CHERVB
-    'universal_trait_index'                => [
-        'enable'       => 0,
-        'trait_modals' => 0, // Enables modals when you click on a trait for more info instead of linking to the traits page, like the Species Trait Index
+    /*  Visual Trait Indexes
+     *
+     *  Species Trait Index - Mercury
+     *  Subtype Trait Index - Speedy
+     *  Universal Trait Index - CHERVB
+     *  Trait Modals addition - Moif
+     */
+    'visual_trait_index'                  => [
+        'enable_species_index'   => 0, // Enables the Species Trait Index
+        'enable_subtype_index'   => 0, // Enables the Subtype Trait Index
+        'enable_universal_index' => 0, // Enables the Universal Trait Index
+        'trait_modals'           => 0, // Enables modals when you click on a trait for more info instead of linking to the traits page
     ],
 
     // Character Status Badges - Juni
@@ -112,4 +114,11 @@ return [
     // Use ReCaptcha to check new user registrations - Mercury
     // Requires site key and secret be set in your .env file!
     'use_recaptcha' => 0,
+
+    // Show Small Badges on the User's Characters/MYO Slots Page
+    // Indicating Trading Status (and Gift Art & Gift Writing Status)
+    'badges_on_user_character_page' => 0,
+
+    // Allow users to return a pending design update to drafts, for instance if they make a mistake. - Uri
+    'design_return_to_draft' => 1,
 ];

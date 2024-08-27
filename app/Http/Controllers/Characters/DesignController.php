@@ -52,7 +52,8 @@ class DesignController extends Controller {
         }
 
         return view('character.design.request', [
-            'request' => $r,
+            'request'   => $r,
+            'canCancel' => config('lorekeeper.extensions.design_return_to_draft') ?? 0,
         ]);
     }
 
@@ -171,7 +172,7 @@ class DesignController extends Controller {
 
         return view('character.design.addons', [
             'request'     => $r,
-            'categories'  => ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->get(),
+            'categories'  => ItemCategory::visible(Auth::user() ?? null)->orderBy('sort', 'DESC')->get(),
             'inventory'   => $inventory,
             'items'       => Item::all()->keyBy('id'),
             'item_filter' => Item::orderBy('name')->get()->keyBy('id'),
@@ -362,5 +363,51 @@ class DesignController extends Controller {
         }
 
         return redirect()->to('designs');
+    }
+
+    /**
+     * Shows the design update request cancellation confirmation modal for a user.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCancel($id) {
+        $r = CharacterDesignUpdate::find($id);
+        if (!$r || ($r->user_id != Auth::user()->id && !Auth::user()->hasPower('manage_characters'))) {
+            abort(404);
+        }
+
+        return view('character.design._cancel_modal', [
+            'request' => $r,
+        ]);
+    }
+
+    /**
+     * Cancels a design update request and returns it to drafts.
+     *
+     * @param App\Services\DesignUpdateManager $service
+     * @param int                              $id
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postCancel(DesignUpdateManager $service, $id) {
+        $r = CharacterDesignUpdate::find($id);
+        if (!$r) {
+            abort(404);
+        }
+        if ($r->user_id != Auth::user()->id) {
+            abort(404);
+        }
+
+        if ($service->cancelRequest(null, $r, Auth::user(), true)) {
+            flash('Request canceled successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+
+        return redirect()->back();
     }
 }

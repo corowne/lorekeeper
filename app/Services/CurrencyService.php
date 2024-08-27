@@ -23,7 +23,7 @@ class CurrencyService extends Service {
      * @param array                 $data
      * @param \App\Models\User\User $user
      *
-     * @return \App\Models\Currency\Currency|bool
+     * @return bool|Currency
      */
     public function createCurrency($data, $user) {
         DB::beginTransaction();
@@ -82,7 +82,7 @@ class CurrencyService extends Service {
      * @param array                 $data
      * @param \App\Models\User\User $user
      *
-     * @return \App\Models\Currency\Currency|bool
+     * @return bool|Currency
      */
     public function updateCurrency($currency, $data, $user) {
         DB::beginTransaction();
