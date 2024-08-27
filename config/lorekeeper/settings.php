@@ -351,7 +351,7 @@ return [
     |
     */
     'allow_gallery_submissions_on_prompts'              => 1,
-    
+
     /*
     |--------------------------------------------------------------------------
     | Hideable Textarea on Gallery Submissions
@@ -366,7 +366,7 @@ return [
     |
     */
     'hide_textarea_on_gallery_submissions'              => [
-        'enable'  => 0,
+        'enable'   => 0,
         'on_image' => 0,
     ],
 
