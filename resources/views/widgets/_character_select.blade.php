@@ -1,5 +1,5 @@
 @php
-    $characters = \App\Models\Character\Character::visible(Auth::check() ? Auth::user() : null)
+    $characters = \App\Models\Character\Character::visible(Auth::user() ?? null)
         ->myo(0)
         ->orderBy('slug', 'DESC')
         ->get()
@@ -20,7 +20,6 @@
                     </div>
                 </div>
                 <div class="col-md-10">
-                    <a href="#" class="float-right fas fa-close"></a>
                     <div class="form-group">
                         {!! Form::label('slug[]', 'Character Code') !!}
                         {!! Form::select('slug[]', $characters, null, ['class' => 'form-control character-code', 'placeholder' => 'Select Character']) !!}

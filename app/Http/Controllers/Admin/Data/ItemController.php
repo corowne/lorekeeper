@@ -165,17 +165,50 @@ class ItemController extends Controller {
      */
     public function getItemIndex(Request $request) {
         $query = Item::query();
-        $data = $request->only(['item_category_id', 'name']);
+        $data = $request->only(['item_category_id', 'name', 'sort', 'artist', 'visibility']);
         if (isset($data['item_category_id']) && $data['item_category_id'] != 'none') {
             $query->where('item_category_id', $data['item_category_id']);
         }
         if (isset($data['name'])) {
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
         }
+        if (isset($data['artist']) && $data['artist'] != 'none') {
+            $query->where('artist_id', $data['artist']);
+        }
+        if (isset($data['visibility']) && $data['visibility'] != 'none') {
+            if ($data['visibility'] == 'visibleOnly') {
+                $query->where('is_released', '=', 1);
+            } else {
+                $query->where('is_released', '=', 0);
+            }
+        }
+
+        if (isset($data['sort'])) {
+            switch ($data['sort']) {
+                case 'alpha':
+                    $query->sortAlphabetical();
+                    break;
+                case 'alpha-reverse':
+                    $query->sortAlphabetical(true);
+                    break;
+                case 'category':
+                    $query->sortCategory();
+                    break;
+                case 'newest':
+                    $query->sortNewest();
+                    break;
+                case 'oldest':
+                    $query->sortOldest();
+                    break;
+            }
+        } else {
+            $query->sortOldest();
+        }
 
         return view('admin.items.items', [
             'items'      => $query->paginate(20)->appends($request->query()),
             'categories' => ['none' => 'Any Category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'artists'    => ['none' => 'Any Artist'] + User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray(),
         ]);
     }
 
@@ -230,7 +263,7 @@ class ItemController extends Controller {
         $data = $request->only([
             'name', 'allow_transfer', 'item_category_id', 'description', 'image', 'remove_image', 'rarity',
             'reference_url', 'artist_id', 'artist_url', 'uses', 'shops', 'prompts', 'release', 'currency_id', 'currency_quantity',
-            'is_released',
+            'is_released', 'is_deletable',
         ]);
         if ($id && $service->updateItem(Item::find($id), $data, Auth::user())) {
             flash('Item updated successfully.')->success();

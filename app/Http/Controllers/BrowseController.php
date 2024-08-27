@@ -148,7 +148,7 @@ class BrowseController extends Controller {
      */
     public function getCharacters(Request $request) {
         $query = Character::with('user.rank')->with('image.features')->with('rarity')->with('image.species')->myo(0);
-        $imageQuery = CharacterImage::images(Auth::check() ? Auth::user() : null)->with('features')->with('rarity')->with('species')->with('features');
+        $imageQuery = CharacterImage::images(Auth::user() ?? null)->with('features')->with('rarity')->with('species')->with('features');
 
         if ($sublists = Sublist::where('show_main', 0)->get()) {
             $subCategories = [];
@@ -219,8 +219,8 @@ class BrowseController extends Controller {
         if ($request->get('subtype_id')) {
             $imageQuery->where('subtype_id', $request->get('subtype_id'));
         }
-        if ($request->get('feature_id')) {
-            $featureIds = $request->get('feature_id');
+        if ($request->get('feature_ids')) {
+            $featureIds = $request->get('feature_ids');
             foreach ($featureIds as $featureId) {
                 $imageQuery->whereHas('features', function ($query) use ($featureId) {
                     $query->where('feature_id', $featureId);
@@ -312,9 +312,9 @@ class BrowseController extends Controller {
         return view('browse.masterlist', [
             'isMyo'       => false,
             'characters'  => $query->paginate(24)->appends($request->query()),
-            'categories'  => [0 => 'Any Category'] + CharacterCategory::whereNotIn('id', $subCategories)->visible(Auth::check() ? Auth::user() : null)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'specieses'   => [0 => 'Any Species'] + Species::whereNotIn('id', $subSpecies)->visible(Auth::check() ? Auth::user() : null)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes'    => [0 => 'Any Subtype'] + Subtype::visible(Auth::check() ? Auth::user() : null)->orderBy('subtypes.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'categories'  => [0 => 'Any Category'] + CharacterCategory::whereNotIn('id', $subCategories)->visible(Auth::user() ?? null)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'specieses'   => [0 => 'Any Species'] + Species::whereNotIn('id', $subSpecies)->visible(Auth::user() ?? null)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes'    => [0 => 'Any Subtype'] + Subtype::visible(Auth::user() ?? null)->orderBy('subtypes.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities'    => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features'    => Feature::getDropdownItems(),
             'sublists'    => Sublist::orderBy('sort', 'DESC')->get(),
@@ -330,7 +330,7 @@ class BrowseController extends Controller {
     public function getMyos(Request $request) {
         $query = Character::with('user.rank')->with('image.features')->with('rarity')->with('image.species')->myo(1);
 
-        $imageQuery = CharacterImage::images(Auth::check() ? Auth::user() : null)->with('features')->with('rarity')->with('species')->with('features');
+        $imageQuery = CharacterImage::images(Auth::user() ?? null)->with('features')->with('rarity')->with('species')->with('features');
 
         if ($request->get('name')) {
             $query->where(function ($query) use ($request) {
@@ -407,8 +407,8 @@ class BrowseController extends Controller {
                 $query->where('url', 'LIKE', '%'.$designerUrl.'%');
             });
         }
-        if ($request->get('feature_id')) {
-            $featureIds = $request->get('feature_id');
+        if ($request->get('feature_ids')) {
+            $featureIds = $request->get('feature_ids');
             foreach ($featureIds as $featureId) {
                 $imageQuery->whereHas('features', function ($query) use ($featureId) {
                     $query->where('feature_id', $featureId);
@@ -443,7 +443,7 @@ class BrowseController extends Controller {
         return view('browse.myo_masterlist', [
             'isMyo'       => true,
             'slots'       => $query->paginate(30)->appends($request->query()),
-            'specieses'   => [0 => 'Any Species'] + Species::visible(Auth::check() ? Auth::user() : null)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'specieses'   => [0 => 'Any Species'] + Species::visible(Auth::user() ?? null)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities'    => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features'    => Feature::getDropdownItems(),
             'sublists'    => Sublist::orderBy('sort', 'DESC')->get(),
@@ -559,8 +559,8 @@ class BrowseController extends Controller {
         if ($request->get('subtype_id')) {
             $imageQuery->where('subtype_id', $request->get('subtype_id'));
         }
-        if ($request->get('feature_id')) {
-            $featureIds = $request->get('feature_id');
+        if ($request->get('feature_ids')) {
+            $featureIds = $request->get('feature_ids');
             foreach ($featureIds as $featureId) {
                 $imageQuery->whereHas('features', function ($query) use ($featureId) {
                     $query->where('feature_id', $featureId);
@@ -624,11 +624,11 @@ class BrowseController extends Controller {
 
         $subCategory = CharacterCategory::where('masterlist_sub_id', $sublist->id)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray();
         if (!$subCategory) {
-            $subCategory = CharacterCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray();
+            $subCategory = CharacterCategory::visible(Auth::user() ?? null)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray();
         }
         $subSpecies = Species::where('masterlist_sub_id', $sublist->id)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray();
         if (!$subSpecies) {
-            $subSpecies = Species::visible(Auth::check() ? Auth::user() : null)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray();
+            $subSpecies = Species::visible(Auth::user() ?? null)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray();
         }
 
         return view('browse.sub_masterlist', [
@@ -636,7 +636,7 @@ class BrowseController extends Controller {
             'characters'  => $query->paginate(24)->appends($request->query()),
             'categories'  => [0 => 'Any Category'] + $subCategory,
             'specieses'   => [0 => 'Any Species'] + $subSpecies,
-            'subtypes'    => [0 => 'Any Subtype'] + Subtype::visible(Auth::check() ? Auth::user() : null)->orderBy('subtypes.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes'    => [0 => 'Any Subtype'] + Subtype::visible(Auth::user() ?? null)->orderBy('subtypes.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities'    => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features'    => Feature::getDropdownItems(),
             'sublist'     => $sublist,

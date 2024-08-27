@@ -369,4 +369,18 @@ return [
         'enable'  => 0,
         'on_image' => 0,
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Site Logging Webhook
+    |--------------------------------------------------------------------------
+    |
+    | This is the webhook URL for site actions logging.
+    | This is used to send a webhook to the site administrators alerting them
+    | of any actions that may be considered suspicious or harmful.
+    | This is intended to be a Discord webhook, but can be used with other services with minor modifications.
+    |
+    */
+    'site_logging_webhook'                              => env('SITE_LOGGING_WEBHOOK', null),
+
 ];
