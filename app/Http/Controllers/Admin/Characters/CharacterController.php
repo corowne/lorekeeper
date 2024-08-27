@@ -48,7 +48,7 @@ class CharacterController extends Controller {
      */
     public function getCreateCharacter() {
         $warnings = CharacterImage::whereNotNull('content_warnings')->pluck('content_warnings')->map(function($item) {
-            return json_decode(strtolower($item));
+            return strtolower(implode(',', $item));
         })->flatten()->unique()->sort()->values()->toArray();
 
         return view('admin.masterlist.create_character', [

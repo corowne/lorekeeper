@@ -40,6 +40,15 @@ class CharacterImage extends Model {
     public $timestamps = true;
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'content_warnings' => 'array',
+    ];
+
+    /**
      * Validation rules for image creation.
      *
      * @var array
@@ -266,22 +275,17 @@ class CharacterImage extends Model {
     }
 
     /**
-     * Get the data attribute as an associative array.
-     *
-     * @return array
-     */
-    public function getContentWarningsAttribute() {
-        return json_decode($this->attributes['content_warnings'], true);
-    }
-
-    /**
      * Determines if the character has content warning display.
+     * 
+     * @param  User
+     * 
+     * @return bool
      */
     public function showContentWarnings($user = null) {
         if ($user) {
             return $user->settings->content_warning_visibility < 2 && $this->content_warnings;
-        } else {
-            return true;
         }
+
+        return count($this->content_warnings ?? []) > 0;
     }
 }

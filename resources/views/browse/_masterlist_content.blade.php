@@ -162,13 +162,13 @@
                         <a href="{{ $character->url }}" class="h5 mb-0">
                             @if (!$character->is_visible)
                                 <i class="fas fa-eye-slash"></i>
-                            @endif {{ Illuminate\Support\Str::limit($character->fullName, 20, $end = '...') }}
+                            @endif {!! $character->warnings !!} {{ Illuminate\Support\Str::limit($character->fullName, 20, $end = '...') }}
                         </a>
                     </div>
                     <div class="small">
                         {!! $character->image->species_id ? $character->image->species->displayName : 'No Species' !!} ・ {!! $character->image->rarity_id ? $character->image->rarity->displayName : 'No Rarity' !!} ・ {!! $character->displayOwner !!}
-                        @if(Auth::check() && (Auth::user()->settings->content_warning_visibility < 2) && isset($character->character_warning) || isset($character->character_warning) && !Auth::check())
-                            <p><span class="text-danger"><strong>Character Warning:</strong></span> {!! nl2br(htmlentities($character->character_warning)) !!}</p>
+                        @if (count($character->image->content_warnings ?? []) && (!Auth::check() || (Auth::check() && Auth::user()->settings->content_warning_visibility < 2)))
+                            <p><span class="text-danger mr-1"><strong>Character Warning:</strong></span> {{ implode(', ', $character->image->content_warnings) }}</p>
                         @endif
                     </div>
                 </div>

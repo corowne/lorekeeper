@@ -1927,7 +1927,7 @@ class CharacterManager extends Service {
             $imageData['extension'] = (config('lorekeeper.settings.masterlist_image_format') ?? ($data['extension'] ?? $data['image']->getClientOriginalExtension()));
             $imageData['fullsize_extension'] = (config('lorekeeper.settings.masterlist_fullsizes_format') ?? ($data['fullsize_extension'] ?? $data['image']->getClientOriginalExtension()));
             $imageData['character_id'] = $character->id;
-            $imageData['content_warnings'] = json_encode($data['content_warnings']) ?? null;
+            $imageData['content_warnings'] = $data['content_warnings'] ?? null;
 
             $image = CharacterImage::create($imageData);
 
