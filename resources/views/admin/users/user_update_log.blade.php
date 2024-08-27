@@ -27,33 +27,49 @@
     <p>This is a list of changes that have been made to this account's information, whether by the user or by a staff member.</p>
 
     {!! $logs->render() !!}
-    <table class="table table-sm">
-        <thead>
-            <tr>
-                <th>Staff Member</th>
-                <th>Type</th>
-                <th>Data</th>
-                <th>Date</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="mb-4 logs-table">
+        <div class="logs-table-header">
+            <div class="row">
+                <div class="col-6 col-md-3">
+                    <div class="logs-table-cell">Staff Member</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="logs-table-cell">Type</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="logs-table-cell">Data</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="logs-table-cell">Date</div>
+                </div>
+            </div>
+        </div>
+        <div class="logs-table-body">
             @foreach ($logs as $log)
-                <tr>
-                    <td>{!! $log->staff_id ? $log->staff->displayName : '---' !!}</td>
-                    <td>{{ $log->type }}</td>
-                    <td>
-                        @foreach ($log->data as $key => $value)
-                            <div>
-                                @if (is_string($value))
-                                    <strong>{{ ucfirst(str_replace('_', ' ', $key)) }}: </strong>{{ $value }}
-                                @endif
-                            </div>
-                        @endforeach
-                    </td>
-                    <td>{!! format_date($log->created_at) !!}</td>
-                </tr>
+                <div class="row">
+                    <div class="col-6 col-md-3">
+                        <div class="logs-table-cell">{!! $log->staff_id ? $log->staff->displayName : '---' !!}</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="logs-table-cell">{{ $log->type }}</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="logs-table-cell">
+                            @foreach ($log->data as $key => $value)
+                                <div>
+                                    @if (is_string($value))
+                                        <strong>{{ ucfirst(str_replace('_', ' ', $key)) }}: </strong>{{ $value }}
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="logs-table-cell">{!! format_date($log->created_at) !!}</div>
+                    </div>
+                </div>
             @endforeach
-        </tbody>
-    </table>
+        </div>
+    </div>
     {!! $logs->render() !!}
 @endsection

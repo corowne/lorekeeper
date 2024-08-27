@@ -22,35 +22,46 @@
         <p>No settings found.</p>
     @else
         {!! $settings->render() !!}
-        <table class="table table-sm setting-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Value</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
+        <div class="mb-4 logs-table setting-table">
+            <div class="logs-table-header">
+                <div class="row">
+                    <div class="col-6 col-md-3">
+                        <div class="logs-table-cell">Name</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="logs-table-cell">Description</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="logs-table-cell">Value</div>
+                    </div>
+                </div>
+            </div>
+            <div class="logs-table-body">
                 @foreach ($settings as $setting)
-                    <tr>
-                        <td>{{ $setting->name }}</td>
-                        <td>{{ $setting->description }}</td>
-                        <td>
-                            {!! Form::open(['url' => 'admin/staff-reward-settings/' . $setting->key, 'class' => 'd-flex justify-content-end']) !!}
-                            <div class="form-group mr-3 mb-3">
-                                {!! Form::text('value', $setting->value, ['class' => 'form-control']) !!}
+                    <div class="row">
+                        <div class="col-6 col-md-3">
+                            <div class="logs-table-cell">{{ $setting->name }}</div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="logs-table-cell">{{ $setting->description }}</div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="logs-table-cell">
+                                {!! Form::open(['url' => 'admin/staff-reward-settings/' . $setting->key, 'class' => 'd-flex justify-content-end']) !!}
+                                <div class="form-group mr-3 mb-3">
+                                    {!! Form::text('value', $setting->value, ['class' => 'form-control']) !!}
+                                </div>
+                                <div class="form-group mb-3">
+                                    {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
+                                </div>
+                                {!! Form::close() !!}
                             </div>
-                            <div class="form-group mb-3">
-                                {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
-                            </div>
-                            {!! Form::close() !!}
-                        </td>
-                    </tr>
+                        </div>
+                    </div>
                 @endforeach
-            </tbody>
+            </div>
 
-        </table>
+        </div>
         {!! $settings->render() !!}
     @endif
 
