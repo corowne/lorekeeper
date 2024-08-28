@@ -30,10 +30,10 @@
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Character_Items"><strong>Character Items</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
         </p>
         <p class="mb-0 col-md-4">
-            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Character_Warnings"><strong>Character Warnings</strong></a> by <a href="https://github.com/redcr0wz">Lexi</a>
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Character_Warnings"><strong>Character Warnings</strong></a> by <a href="https://github.com/redcr0wz">Lexi</a>, <a href="https://github.com/SpeedyD">Speedy</a> & <a href="https://github.com/ScuffedNewt">ScuffedNewt</a>
         </p>
         <p class="mb-0 col-md-4">
-            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Comments"><strong>Comments</strong></a> by <a href="https://github.com/preimpression">Preimpression</a> & <a href="https://github.com/Ne-wt">Ne-wt</a>
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Comments"><strong>Comments</strong></a> by <a href="https://github.com/preimpression">Preimpression</a> & <a href="https://github.com/ScuffedNewt">ScuffedNewt</a>
         </p>
         <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Deactivate_Account"><strong>Deactivate Account</strong></a> by <a href="https://github.com/preimpression">Preimpression</a>
@@ -60,7 +60,7 @@
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Pagination_Page_Select"><strong>Pagination Page Selector</strong></a> by <a href="https://github.com/SpeedyD">Speedy</a> and <a href="https://github.com/AW0005">Moif</a>
         </p>
         <p class="mb-0 col-md-4">
-            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Reports"><strong>Reports</strong></a> by <a href="https://github.com/Ne-wt">Ne-wt</a>
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Reports"><strong>Reports</strong></a> by <a href="https://github.com/ScuffedNewt">ScuffedNewt</a>
         </p>
         <p class="mb-0 col-md-4">
             <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Separate_Prompts"><strong>Separate Prompts</strong></a> by <a href="https://github.com/itinerare">itinerare</a>
@@ -106,7 +106,7 @@
             ({{ config('lorekeeper.extensions.character_TH_profile_link') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
-            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Collapsible_Admin_Sidebar"><strong>Collapsible Admin Sidebar</strong></a> by <a href="https://github.com/ne-wt/">Newt</a>
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Collapsible_Admin_Sidebar"><strong>Collapsible Admin Sidebar</strong></a> by <a href="https://github.com/ScuffedNewt">Newt</a>
             ({{ config('lorekeeper.extensions.collapsible_admin_sidebar') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
@@ -114,7 +114,7 @@
             ({{ config('lorekeeper.extensions.design_update_voting') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
-            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Gravatar"><strong>Gravatar</strong></a> by <a href="https://github.com/ne-wt/">Newt</a>
+            <a href="http://wiki.lorekeeper.me/index.php?title=Extensions:Gravatar"><strong>Gravatar</strong></a> by <a href="https://github.com/ScuffedNewt">Newt</a>
             ({{ config('lorekeeper.extensions.use_gravatar') ? 'Enabled' : 'Disabled' }})
         </p>
         <p class="mb-0 col-md-4">
