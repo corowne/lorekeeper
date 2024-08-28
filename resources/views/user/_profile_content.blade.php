@@ -129,8 +129,8 @@
         @foreach ($chunk as $character)
             <div class="col-md-3 col-6 text-center">
                 <div>
-                    @if(Auth::check() && (Auth::user()->settings->content_warning_visibility == 0) && isset($character->character_warning) || isset($character->character_warning) && !Auth::check())
-                        <a href="{{ $character->url }}"><img src="{{ asset('/images/content_warning.png') }}" class="img-thumbnail" alt="Content Warning - {{ $character->fullName }}"/></a>
+                    @if ((Auth::check() && Auth::user()->settings->content_warning_visibility == 0 && isset($character->character_warning)) || (isset($character->character_warning) && !Auth::check()))
+                        <a href="{{ $character->url }}"><img src="{{ asset('/images/content_warning.png') }}" class="img-thumbnail" alt="Content Warning - {{ $character->fullName }}" /></a>
                     @else
                         <a href="{{ $character->url }}"><img src="{{ $character->image->thumbnailUrl }}" class="img-thumbnail" alt="{{ $character->fullName }}" /></a>
                     @endif
@@ -142,7 +142,7 @@
                         @endif {{ Illuminate\Support\Str::limit($character->fullName, 20, $end = '...') }}
                     </a>
                 </div>
-                @if(Auth::check() && (Auth::user()->settings->content_warning_visibility < 2) && isset($character->character_warning) || isset($character->character_warning) && !Auth::check())
+                @if ((Auth::check() && Auth::user()->settings->content_warning_visibility < 2 && isset($character->character_warning)) || (isset($character->character_warning) && !Auth::check()))
                     <div class="small">
                         <p><span class="text-danger"><strong>Character Warning:</strong></span> {!! nl2br(htmlentities($character->character_warning)) !!}</p>
                     </div>

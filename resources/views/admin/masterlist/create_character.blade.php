@@ -62,7 +62,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-{{ config('lorekeeper.settings.enable_character_content_warnings' ) ? 6 : 12 }}">
+                <div class="col-md-{{ config('lorekeeper.settings.enable_character_content_warnings') ? 6 : 12 }}">
                     <div class="form-group">
                         {!! Form::label('Character Code') !!} {!! add_help('This code identifies the character itself. You don\'t have to use the automatically generated code, but this must be unique among all characters (as it\'s used to generate the character\'s page URL).') !!}
                         {!! Form::text('slug', old('slug'), ['class' => 'form-control', 'id' => 'code']) !!}
