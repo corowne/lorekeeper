@@ -25,8 +25,8 @@
                         <div class="text-center">
                             <a href="{{ $image->canViewFull(Auth::user() ?? null) && file_exists(public_path($image->imageDirectory . '/' . $image->fullsizeFileName)) ? $image->fullsizeUrl : $image->imageUrl }}" data-lightbox="entry"
                                 data-title="{{ $character->fullName }} [#{{ $image->id }}] {{ $image->canViewFull(Auth::user() ?? null) && file_exists(public_path($image->imageDirectory . '/' . $image->fullsizeFileName)) ? ' : Full-size Image' : '' }}">
-                                <img src="{{ $image->canViewFull(Auth::user() ?? null) && file_exists(public_path($image->imageDirectory . '/' . $image->fullsizeFileName)) ? $image->fullsizeUrl : $image->imageUrl }}" class="image {{ $character->image->showContentWarnings(Auth::user() ?? null) ? 'content-warning' : '' }}"
-                                    alt="{{ $image->character->fullName }}" />
+                                <img src="{{ $image->canViewFull(Auth::user() ?? null) && file_exists(public_path($image->imageDirectory . '/' . $image->fullsizeFileName)) ? $image->fullsizeUrl : $image->imageUrl }}"
+                                    class="image {{ $character->image->showContentWarnings(Auth::user() ?? null) ? 'content-warning' : '' }}" alt="{{ $image->character->fullName }}" />
                             </a>
                         </div>
                         @if ($image->canViewFull(Auth::user() ?? null) && file_exists(public_path($image->imageDirectory . '/' . $image->fullsizeFileName)))
