@@ -63,7 +63,6 @@ Add basic site data:
 $ php artisan add-site-settings
 $ php artisan add-text-pages
 $ php artisan copy-default-images
-$ php artisan convert-character-subtype
 ```
 
 Finally, set up the admin account for logging in:
