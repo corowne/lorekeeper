@@ -72,7 +72,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             {!! Form::label('Content Warnings') !!} {!! add_help('These warnings will be displayed on the character\'s page. They are not required, but are recommended if the character contains sensitive content.') !!}
-                            {!! Form::select('content_warnings[]', $contentWarnings, old('content_warnings'), ['class' => 'form-control', 'id' => 'warningList', 'multiple' => 'multiple']) !!}
+                            {!! Form::text('content_warnings', old('content_warnings'), ['class' => 'form-control', 'id' => 'warningList']) !!}
                         </div>
                     </div>
                 @endif
@@ -270,20 +270,12 @@
     @include('widgets._character_create_options_js')
     @include('widgets._image_upload_js')
     @include('widgets._datetimepicker_js')
+    @include('widgets._character_warning_js')
     @if (!$isMyo)
         @include('widgets._character_code_js')
     @endif
 
     <script>
-        $(document).ready(function() {
-            $('#warningList').select2({
-                tags: true,
-                placeholder: "Select or add warnings",
-                allowClear: true,
-                width: '100%'
-            });
-        });
-
         $("#species").change(function() {
             var species = $('#species').val();
             var myo = '<?php echo $isMyo; ?>';

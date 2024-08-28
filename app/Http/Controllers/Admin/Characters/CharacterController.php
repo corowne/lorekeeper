@@ -47,23 +47,14 @@ class CharacterController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCreateCharacter() {
-        $contentWarnings = CharacterImage::whereNotNull('content_warnings')->pluck('content_warnings')->flatten()->map(function ($warnings) {
-            return collect($warnings)->mapWithKeys(function ($warning) {
-                $lower = strtolower(trim($warning));
-
-                return [$lower => ucwords($lower)];
-            });
-        })->collapse()->unique()->sort()->toArray();
-
         return view('admin.masterlist.create_character', [
-            'categories'      => CharacterCategory::orderBy('sort')->get(),
-            'userOptions'     => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
-            'rarities'        => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'specieses'       => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes'        => ['0' => 'Pick a Species First'],
-            'features'        => Feature::getDropdownItems(1),
-            'isMyo'           => false,
-            'contentWarnings' => $contentWarnings,
+            'categories'  => CharacterCategory::orderBy('sort')->get(),
+            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
+            'rarities'    => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'specieses'   => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes'    => ['0' => 'Pick a Species First'],
+            'features'    => Feature::getDropdownItems(1),
+            'isMyo'       => false,
         ]);
     }
 
@@ -766,5 +757,22 @@ class CharacterController extends Controller {
         return view('admin.masterlist.myo_index', [
             'slots' => Character::myo(1)->orderBy('id', 'DESC')->paginate(30),
         ]);
+    }
+
+    /**
+     * Gets all extant content warnings.
+     *
+     * @return string
+     */
+    public function getContentWarnings() {
+        $contentWarnings = CharacterImage::whereNotNull('content_warnings')->pluck('content_warnings')->flatten()->map(function ($warnings) {
+            return collect($warnings)->map(function ($warning) {
+                $lower = strtolower(trim($warning));
+
+                return ['warning' => ucwords($lower)];
+            });
+        })->collapse()->unique()->sort()->toJson();
+
+        return $contentWarnings;
     }
 }

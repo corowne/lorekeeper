@@ -217,24 +217,9 @@
                             {!! Form::label('is_valid', 'Is Valid', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is turned off, the image will still be visible, but displayed with a note that the image is not a valid reference.') !!}
                         </div>
                         @if (config('lorekeeper.settings.enable_character_content_warnings'))
-                            @php
-                                $contentWarnings = \App\Models\Character\CharacterImage::whereNotNull('content_warnings')
-                                    ->pluck('content_warnings')
-                                    ->flatten()
-                                    ->map(function ($warnings) {
-                                        return collect($warnings)->mapWithKeys(function ($warning) {
-                                            $lower = strtolower(trim($warning));
-                                            return [$lower => ucwords($lower)];
-                                        });
-                                    })
-                                    ->collapse()
-                                    ->unique()
-                                    ->sort()
-                                    ->toArray();
-                            @endphp
                             <div class="form-group">
                                 {!! Form::label('Content Warnings') !!} {!! add_help('These warnings will be displayed on the character\'s page. They are not required, but are recommended if the character contains sensitive content.') !!}
-                                {!! Form::select('content_warnings[]', $contentWarnings, $image->content_warnings ? array_values($image->content_warnings) : [], ['class' => 'form-control', 'id' => 'warningList', 'multiple' => 'multiple']) !!}
+                                {!! Form::text('content_warnings', null, ['class' => 'form-control', 'id' => 'warningList', 'data-init-value' => $image->editWarnings]) !!}
                             </div>
                         @endif
                         <div class="text-right">
@@ -255,13 +240,4 @@
     </div>
 </div>
 
-<script>
-    $(document).ready(function() {
-        $('#warningList').select2({
-            tags: true,
-            placeholder: "Select or add warnings",
-            allowClear: true,
-            width: '100%',
-        });
-    });
-</script>
+@include('widgets._character_warning_js')

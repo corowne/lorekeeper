@@ -275,6 +275,23 @@ class CharacterImage extends Model {
     }
 
     /**
+     * Formats existing content warnings for editing.
+     *
+     * @return string
+     */
+    public function getEditWarningsAttribute() {
+        $contentWarnings = collect($this->content_warnings)->unique()->map(function ($warnings) {
+            return collect($warnings)->map(function ($warning) {
+                $lower = strtolower(trim($warning));
+
+                return ['warning' => ucwords($lower)];
+            });
+        })->collapse()->sort()->toJson();
+
+        return $contentWarnings;
+    }
+
+    /**
      * Determines if the character has content warning display.
      *
      * @param  User
