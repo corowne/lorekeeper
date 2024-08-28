@@ -251,8 +251,60 @@ class BrowseController extends Controller {
                 $query->where('url', 'LIKE', '%'.$designerUrl.'%');
             });
         }
+        if ($request->get('excluded_tags') || $request->get('included_tags')) {
+            $excludedTags = $request->get('excluded_tags');
+            $includedTags = $request->get('included_tags');
+            $images = $imageQuery->get();
+        
+            // first exclude, then include
+            if ($excludedTags) {
+                $filteredImages = $images->filter(function ($image) use ($excludedTags) {
+                    if (!$image->content_warnings) {
+                        return true;
+                    }
 
-        $query->whereIn('id', $imageQuery->pluck('character_id')->toArray());
+                    if (in_array('all', $excludedTags) && $image->content_warnings) {
+                        return false;
+                    }
+
+                    foreach ($excludedTags as $tag) {
+                        if ($image->content_warnings && in_array($tag, $image->content_warnings)) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                });
+            } else {
+                $filteredImages = $images;
+            }
+
+            if ($request->get('included_tags')) {
+                $filteredImages = $filteredImages->filter(function ($image) use ($includedTags) {
+                    if (!$image->content_warnings) {
+                        return false;
+                    }
+
+                    if (in_array('all', $includedTags) && $image->content_warnings) {
+                        return true;
+                    }
+
+                    foreach ($includedTags as $tag) {
+                        if ($image->content_warnings && in_array($tag, $image->content_warnings)) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                });
+            } else {
+                $filteredImages = $imageQuery;
+            }
+        } else {
+            $filteredImages = $imageQuery;
+        }
+
+        $query->whereIn('id', $filteredImages->pluck('character_id')->toArray());
 
         if ($request->get('is_gift_art_allowed')) {
             switch ($request->get('is_gift_art_allowed')) {
@@ -309,6 +361,13 @@ class BrowseController extends Controller {
             $query->visible();
         }
 
+        $contentWarnings = CharacterImage::whereNotNull('content_warnings')->pluck('content_warnings')->flatten()->map(function($warnings) {
+            return collect($warnings)->mapWithKeys(function($warning) {
+                $lower = strtolower(trim($warning));
+                return [$lower => ucfirst($lower)];
+            });
+        })->collapse()->unique()->sort()->toArray();
+
         return view('browse.masterlist', [
             'isMyo'       => false,
             'characters'  => $query->paginate(24)->appends($request->query()),
@@ -319,6 +378,7 @@ class BrowseController extends Controller {
             'features'    => Feature::getDropdownItems(),
             'sublists'    => Sublist::orderBy('sort', 'DESC')->get(),
             'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
+            'contentWarnings' => ['all' => 'Exclude All'] + $contentWarnings,
         ]);
     }
 

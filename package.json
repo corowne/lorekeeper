@@ -22,5 +22,8 @@
         "resolve-url-loader": "^5.0.0",
         "sass": "^1.77.8",
         "sass-loader": "^16.0.1"
+    },
+    "dependencies": {
+        "select2": "^4.1.0-rc.0"
     }
 }

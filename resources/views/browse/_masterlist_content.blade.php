@@ -89,6 +89,16 @@
                 {!! Form::label('Has Traits: ') !!} {!! add_help('This will narrow the search to characters that have ALL of the selected traits at the same time.') !!}
                 {!! Form::select('feature_ids[]', $features, Request::get('feature_ids'), ['class' => 'form-control feature-select userselectize', 'placeholder' => 'Select Traits', 'multiple']) !!}
             </div>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    {!! Form::label('Exclude Selected Tags: ') !!} {!! add_help('This will exclude characters that have ANY of the selected traits at the same time.') !!}
+                    {!! Form::select('excluded_tags[]', $contentWarnings, Request::get('excluded_tags'), ['class' => 'form-control feature-select userselectize', 'placeholder' => 'Select Tags', 'multiple']) !!}
+                </div>
+                <div class="col-md-6 form-group">
+                    {!! Form::label('Include Selected Tags: ') !!} {!! add_help('This will include characters that have ANY of the selected traits at the same time.') !!}
+                    {!! Form::select('included_tags[]', $contentWarnings, Request::get('included_tags'), ['class' => 'form-control feature-select userselectize', 'placeholder' => 'Select Tags', 'multiple']) !!}
+                </div>
+            </div>
             <hr />
             <div class="form-group">
                 {!! Form::checkbox('search_images', 1, Request::get('search_images'), ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}

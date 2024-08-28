@@ -943,6 +943,7 @@ class CharacterManager extends Service {
 
             $image->is_valid = isset($data['is_valid']);
             $image->is_visible = isset($data['is_visible']);
+            $image->content_warnings = isset($data['content_warnings']) ? $data['content_warnings'] : null;
             $image->save();
 
             // Add a log for the character

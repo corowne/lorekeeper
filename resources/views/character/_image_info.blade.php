@@ -217,30 +217,24 @@
                         {!! Form::label('is_valid', 'Is Valid', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is turned off, the image will still be visible, but displayed with a note that the image is not a valid reference.') !!}
                     </div>
                     @if (config('lorekeeper.settings.enable_character_content_warnings'))
+                        @php 
+                            $contentWarnings = \App\Models\Character\CharacterImage::whereNotNull('content_warnings')->pluck('content_warnings')->flatten()->map(function($warnings) {
+                                return collect($warnings)->mapWithKeys(function($warning) {
+                                    $lower = strtolower(trim($warning));
+                                    return [$lower => ucfirst($lower)];
+                                });
+                            })->collapse()->unique()->sort()->toArray();
+                        @endphp
                         <div class="form-group">
                             {!! Form::label('Content Warnings') !!} {!! add_help('These warnings will be displayed on the character\'s page. They are not required, but are recommended if the character contains sensitive content.') !!}
-                            <div id="warningList">
-                            </div>
-                            <div><a href="#" class="btn btn-primary mb-2" id="add-warning">Add Warning</a></div>
+                            {!! Form::select('content_warnings[]', $contentWarnings, $image->content_warnings ? array_values($image->content_warnings) : [], ['class' => 'form-control', 'id' => 'warningList', 'multiple' => 'multiple']) !!}
                         </div>
                     @endif
                     <div class="text-right">
-                        {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
+                        {!! Form::submit('Edit', ['class' => 'btn btn-primary mb-3']) !!}
                     </div>
                     {!! Form::close() !!}
 
-                    <div class="d-flex warning-row original hide mb-2">
-                        {!! Form::text('content_warnings[]', null, ['class' => 'form-control mr-2', 'list' => 'warnings-list', 'placeholder' => 'Enter Warning or Select']) !!}
-                        <datalist>
-                            @if (isset($warnings) && $warnings)
-                                @foreach($warnings as $value => $label)
-                                    <option value="{{ $label }}"></option>
-                                @endforeach
-                            @endif
-                        </datalist>
-                        <a href="#" class="remove-warning btn btn-danger mb-2">×</a>
-                    </div>
-                    <hr />
                     <div class="text-right">
                         @if ($character->character_image_id != $image->id)
                             <a href="#" class="btn btn-outline-info btn-sm active-image" data-id="{{ $image->id }}">Set Active</a>
@@ -255,9 +249,12 @@
 </div>
 
 <script>
-    let $warningRow = $('.warning-row.original').clone();
-    $('#add-warning').click(function(e) {
-        e.preventDefault();
-        $warningRow.clone().removeClass('original hide').appendTo('#warningList');
+    $(document).ready(function() {
+        $('#warningList').select2({
+            tags: true,
+            placeholder: "Select or add warnings",
+            allowClear: true,
+            width: '100%',
+        });
     });
 </script>

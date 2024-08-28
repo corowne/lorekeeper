@@ -47,9 +47,12 @@ class CharacterController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCreateCharacter() {
-        $warnings = CharacterImage::whereNotNull('content_warnings')->pluck('content_warnings')->map(function($item) {
-            return strtolower(implode(',', $item));
-        })->flatten()->unique()->sort()->values()->toArray();
+        $contentWarnings = CharacterImage::whereNotNull('content_warnings')->pluck('content_warnings')->flatten()->map(function($warnings) {
+            return collect($warnings)->mapWithKeys(function($warning) {
+                $lower = strtolower(trim($warning));
+                return ['tag' => ucfirst($lower)];
+            });
+        })->collapse()->unique()->sort()->toArray();
 
         return view('admin.masterlist.create_character', [
             'categories'  => CharacterCategory::orderBy('sort')->get(),
@@ -59,7 +62,7 @@ class CharacterController extends Controller {
             'subtypes'    => ['0' => 'Pick a Species First'],
             'features'    => Feature::getDropdownItems(1),
             'isMyo'       => false,
-            'warnings'    => $warnings,
+            'contentWarnings' => $contentWarnings,
         ]);
     }
 

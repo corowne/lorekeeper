@@ -9,6 +9,8 @@ require('./bootstrap');
 require('./jquery-ui');
 require('./selectize');
 
+import 'select2';
+
 //window.Vue = require('vue');
 
 /**
