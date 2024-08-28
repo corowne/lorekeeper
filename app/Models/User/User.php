@@ -441,9 +441,9 @@ class User extends Authenticatable implements MustVerifyEmail {
                 break;
         }
     }
-    
+
     /**
-     * Check if user is of age
+     * Check if user is of age.
      */
     public function getcheckBirthdayAttribute() {
         $bday = $this->birthday;

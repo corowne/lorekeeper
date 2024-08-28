@@ -33,13 +33,6 @@ class CharacterImage extends Model {
     protected $table = 'character_images';
 
     /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
-
-    /**
      * The attributes that should be cast to native types.
      *
      * @var array
@@ -47,6 +40,13 @@ class CharacterImage extends Model {
     protected $casts = [
         'content_warnings' => 'array',
     ];
+
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
 
     /**
      * Validation rules for image creation.
@@ -276,9 +276,10 @@ class CharacterImage extends Model {
 
     /**
      * Determines if the character has content warning display.
-     * 
+     *
      * @param  User
-     * 
+     * @param mixed|null $user
+     *
      * @return bool
      */
     public function showContentWarnings($user = null) {
