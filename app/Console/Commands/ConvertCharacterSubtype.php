@@ -37,7 +37,7 @@ class ConvertCharacterSubtype extends Command {
      * @return mixed
      */
     public function handle() {
-        if (!Schema::hasTable('character_image_subtypes')) {
+        if (Schema::hasColumn('character_images', 'subtype_id')) {
             $check = $this->confirm('Do you have the second subtype extension installed?', true);
             if ($check) {
                 $this->info('This command will need minor modifications to run correctly with this extension. Please see the comments in the file.');
