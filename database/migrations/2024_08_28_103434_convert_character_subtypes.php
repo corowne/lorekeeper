@@ -13,12 +13,14 @@ return new class extends Migration
     {
         //
         if (!Schema::hasTable('character_image_subtypes')) {
-            $this->call('convert-character-subtype');
-        }
+            Schema::create('character_image_subtypes', function (Blueprint $table) {
+                $table->integer('character_image_id')->unsigned();
+                $table->integer('subtype_id')->unsigned();
+            });
 
-        // check call was successful
-        if (!Schema::hasTable('character_image_subtypes')) {
-            throw new \Exception('The character_image_subtypes table does not exist.');
+            Schema::table('design_updates', function (Blueprint $table) {
+                $table->string('subtype_ids')->nullable()->default(null);
+            });
         }
     }
 
@@ -28,6 +30,16 @@ return new class extends Migration
     public function down(): void
     {
         //
-        throw new \Exception('This migration cannot be reversed.');
+        Schema::dropIfExists('character_image_subtypes');
+
+        Schema::table('design_updates', function (Blueprint $table) {
+            $table->dropColumn('subtype_ids');
+        });
+
+        if (!Schema::hasColumn('design_updates', 'subtype_id')) {
+            Schema::table('design_updates', function (Blueprint $table) {
+                $table->integer('subtype_id')->unsigned()->nullable()->default(null);
+            });
+        }
     }
 };

@@ -45,28 +45,17 @@ class ConvertCharacterSubtype extends Command {
                 return;
             }
 
-            Schema::create('character_image_subtypes', function (Blueprint $table) {
-                $table->integer('character_image_id')->unsigned();
-                $table->integer('subtype_id')->unsigned();
-            });
-
-            // for design update requests
-            // has to be two for the renameColumn to work
-            Schema::table('design_updates', function (Blueprint $table) {
-                // rename the column
-                $table->renameColumn('subtype_id', 'subtype_ids');
-            });
-            Schema::table('design_updates', function (Blueprint $table) {
-                // make it a string type instead of an integer
-                $table->string('subtype_ids')->nullable()->default(null)->change();
-            });
-            $updates = DB::table('design_updates')->where('subtype_ids', '!=', null)->get();
+            // DESIGN UPDATES
+            $updates = DB::table('design_updates')->where('subtype_id', '!=', null)->get();
             // make the string into an array
             foreach ($updates as $update) {
                 $update->update([
                     'subtype_ids' => json_encode([$update->subtype_ids]),
                 ]);
             }
+            Schema::table('design_updates', function (Blueprint $table) {
+                $table->dropColumn('subtype_id');
+            });
 
             $characterImages = CharacterImage::whereNotNull('subtype_id')->get();
 
