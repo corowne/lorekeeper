@@ -428,8 +428,6 @@
                     } else {
                         @if (config('lorekeeper.settings.hide_textarea_on_gallery_submissions.enable') && config('lorekeeper.settings.hide_textarea_on_gallery_submissions.on_image'))
                             $('#writingForm').collapse('show')
-                        @else
-                            // Just a comment if autohide is disabled
                         @endif
                     }
                 }
