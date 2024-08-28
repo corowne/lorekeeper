@@ -224,7 +224,7 @@
                                     ->map(function ($warnings) {
                                         return collect($warnings)->mapWithKeys(function ($warning) {
                                             $lower = strtolower(trim($warning));
-                                            return [$lower => ucfirst($lower)];
+                                            return [$lower => ucwords($lower)];
                                         });
                                     })
                                     ->collapse()

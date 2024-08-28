@@ -50,7 +50,7 @@ class CharacterController extends Controller {
         $contentWarnings = CharacterImage::whereNotNull('content_warnings')->pluck('content_warnings')->flatten()->map(function($warnings) {
             return collect($warnings)->mapWithKeys(function($warning) {
                 $lower = strtolower(trim($warning));
-                return ['tag' => ucfirst($lower)];
+                return [$lower => ucwords($lower)];
             });
         })->collapse()->unique()->sort()->toArray();
 
