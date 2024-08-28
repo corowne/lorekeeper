@@ -216,8 +216,33 @@ class BrowseController extends Controller {
         if ($request->get('species_id')) {
             $imageQuery->where('species_id', $request->get('species_id'));
         }
-        if ($request->get('subtype_id')) {
-            $imageQuery->where('subtype_id', $request->get('subtype_id'));
+        if ($request->get('subtype_ids')) {
+            // if subtype ids contains "any" search for all subtypes
+            if (in_array('any', $request->get('subtype_ids')) || in_array('hybrid', $request->get('subtype_ids'))) {
+                $imageQuery->whereHas('subtypes', function ($query) use ($request) {
+                    $query->havingRaw('COUNT(*) > '.(in_array('hybrid', $request->get('subtype_ids')) ? 1 : 0));
+                });
+            } else {
+                if (config('lorekeeper.extensions.exclusionary_search')) {
+                    $imageQuery->whereHas('subtypes', function ($query) use ($request) {
+                        $subtypeIds = $request->get('subtype_ids');
+
+                        // Filter to ensure the character has all the specified subtypes
+                        $query->whereIn('character_image_subtypes.subtype_id', $subtypeIds)
+                            ->groupBy('character_image_subtypes.character_image_id')
+                            ->havingRaw('COUNT(character_image_subtypes.subtype_id) = ?', [count($subtypeIds)]);
+                    })->whereDoesntHave('subtypes', function ($query) use ($request) {
+                        $subtypeIds = $request->get('subtype_ids');
+
+                        // Ensure that no additional subtypes are present
+                        $query->whereNotIn('character_image_subtypes.subtype_id', $subtypeIds);
+                    });
+                } else {
+                    $imageQuery->whereHas('subtypes', function ($query) use ($request) {
+                        $query->whereIn('character_image_subtypes.subtype_id', $request->get('subtype_ids'));
+                    });
+                }
+            }
         }
         if ($request->get('feature_ids')) {
             $featureIds = $request->get('feature_ids');
@@ -314,7 +339,7 @@ class BrowseController extends Controller {
             'characters'  => $query->paginate(24)->appends($request->query()),
             'categories'  => [0 => 'Any Category'] + CharacterCategory::whereNotIn('id', $subCategories)->visible(Auth::user() ?? null)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses'   => [0 => 'Any Species'] + Species::whereNotIn('id', $subSpecies)->visible(Auth::user() ?? null)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes'    => [0 => 'Any Subtype'] + Subtype::visible(Auth::user() ?? null)->orderBy('subtypes.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes'    => ['any' => 'Any Subtype', 'hybrid' => 'Multiple / Hybrid Subtypes'] + Subtype::visible(Auth::user() ?? null)->orderBy('subtypes.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities'    => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features'    => Feature::getDropdownItems(),
             'sublists'    => Sublist::orderBy('sort', 'DESC')->get(),
