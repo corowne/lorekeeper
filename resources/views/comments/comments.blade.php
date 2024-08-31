@@ -34,7 +34,7 @@
                             'oldest' => 'Oldest First',
                         ],
                         Request::get($commentType . '-sort') ?: 'newest',
-                        ['class' => 'form-control', 'id' => $commentType.'-sort'],
+                        ['class' => 'form-control', 'id' => $commentType . '-sort'],
                     ) !!}
                 </div>
                 <div class="form-group ml-3 mb-3">
@@ -48,7 +48,7 @@
                             100 => '100 Per Page',
                         ],
                         Request::get($commentType . '-perPage') ?: 5,
-                        ['class' => 'form-control', 'id' => $commentType.'-perPage'],
+                        ['class' => 'form-control', 'id' => $commentType . '-perPage'],
                     ) !!}
                 </div>
             </div>
