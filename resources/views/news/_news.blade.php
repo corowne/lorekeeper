@@ -16,11 +16,11 @@
         ->count(); ?>
     @if (!$page)
         <div class="text-right mb-2 mr-2">
-            <a class="btn" href="{{ $news->url }}"><i class="fas fa-comment"></i> {{ $commentCount }} Comment{{ $commentCount != 1 ? 's' : '' }}</a>
+            <a class="btn" href="{{ $news->url }}#comments"><i class="fas fa-comment"></i> {{ $commentCount }} Comment{{ $commentCount != 1 ? 's' : '' }}</a>
         </div>
     @else
         <div class="text-right mb-2 mr-2">
-            <span class="btn"><i class="fas fa-comment"></i> {{ $commentCount }} Comment{{ $commentCount != 1 ? 's' : '' }}</span>
+            <a class="btn" href="#comments"><i class="fas fa-comment"></i> {{ $commentCount }} Comment{{ $commentCount != 1 ? 's' : '' }}</a>
         </div>
     @endif
 </div>
