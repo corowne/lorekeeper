@@ -1,4 +1,4 @@
-<div id="comments">
+<div>
     <div class="d-flex mw-100 row mx-0" style="overflow:hidden;">
         @php
             $comments = isset($sort) && $sort == 'oldest' ? $comments->sortBy('created_at') : $comments->sortByDesc('created_at');
