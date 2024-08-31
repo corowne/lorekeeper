@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Character\CharacterImage;
 use App\Models\Character\CharacterImageSubtype;
+use App\Models\Character\CharacterDesignUpdate;
 use Illuminate\Console\Command;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -46,11 +47,11 @@ class ConvertCharacterSubtype extends Command {
             }
 
             // DESIGN UPDATES
-            $updates = DB::table('design_updates')->where('subtype_id', '!=', null)->get();
+            $updates = CharacterDesignUpdate::where('subtype_id', '!=', null)->get();
             // make the string into an array
             foreach ($updates as $update) {
                 $update->update([
-                    'subtype_ids' => json_encode([$update->subtype_ids]),
+                    'subtype_ids' => $update->subtype_id,
                 ]);
             }
             Schema::table('design_updates', function (Blueprint $table) {
