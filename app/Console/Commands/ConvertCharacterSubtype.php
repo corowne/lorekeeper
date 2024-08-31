@@ -50,7 +50,7 @@ class ConvertCharacterSubtype extends Command {
             // make the string into an array
             foreach ($updates as $update) {
                 $update->update([
-                    'subtype_ids' => $update->subtype_id,
+                    'subtype_ids' => [$update->subtype_id],
                 ]);
             }
             Schema::table('design_updates', function (Blueprint $table) {
