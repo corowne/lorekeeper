@@ -115,11 +115,12 @@
                         if (firstTime != 1) {
                             url.searchParams.set('sort', $('#sort').val());
                             url.searchParams.set('perPage', $('#perPage').val());
+                            
+                            window.history.pushState({}, '', url);
                         } else {
                             firstTime = 0;
                         }
 
-                        window.history.pushState({}, '', url);
                         $('#comments').fadeIn();
                     }
                 });
