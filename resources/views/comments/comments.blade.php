@@ -33,7 +33,7 @@
                             'newest' => 'Newest First',
                             'oldest' => 'Oldest First',
                         ],
-                        Request::get('sort') ?: 'newest',
+                        Request::get($commentType . '-sort') ?: 'newest',
                         ['class' => 'form-control', 'id' => $commentType.'-sort'],
                     ) !!}
                 </div>
@@ -47,7 +47,7 @@
                             50 => '50 Per Page',
                             100 => '100 Per Page',
                         ],
-                        Request::get('perPage') ?: 5,
+                        Request::get($commentType . '-perPage') ?: 5,
                         ['class' => 'form-control', 'id' => $commentType.'-perPage'],
                     ) !!}
                 </div>
@@ -113,7 +113,10 @@
                     success: function(data) {
                         $('#{{ $commentType }}-comments').html(data);
                         // update current url to reflect sort change
-                        if ($('#{{ $commentType }}-sort').val() != 'newest' && $('#{{ $commentType }}-perPage').val() != 5) { // don't add to url if default
+                        if (
+                            ($('#{{ $commentType }}-sort').val() != 'newest' && $('#{{ $commentType }}-perPage').val() != 5) ||
+                            (window.location.href.indexOf('{{ $commentType }}-sort') != -1 || window.location.href.indexOf('{{ $commentType }}-perPage') != -1)
+                        ) { // don't add to url if default
                             var url = new URL(window.location.href);
                             url.searchParams.set('{{ $commentType }}-sort', $('#{{ $commentType }}-sort').val());
                             url.searchParams.set('{{ $commentType }}-perPage', $('#{{ $commentType }}-perPage').val());
