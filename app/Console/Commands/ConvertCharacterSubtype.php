@@ -2,12 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Character\CharacterDesignUpdate;
 use App\Models\Character\CharacterImage;
 use App\Models\Character\CharacterImageSubtype;
-use App\Models\Character\CharacterDesignUpdate;
 use Illuminate\Console\Command;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class ConvertCharacterSubtype extends Command {
