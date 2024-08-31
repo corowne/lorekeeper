@@ -92,6 +92,8 @@
                 target_list: false
             });
 
+            var firstTime = 1;
+
             function sortComments() {
                 $('#comments').fadeOut();
                 $.ajax({
@@ -110,8 +112,12 @@
                         $('#comments').html(data);
                         // update current url to reflect sort change
                         var url = new URL(window.location.href);
-                        url.searchParams.set('sort', $('#sort').val());
-                        url.searchParams.set('perPage', $('#perPage').val());
+                        if (firstTime != 1) {
+                            url.searchParams.set('sort', $('#sort').val());
+                            url.searchParams.set('perPage', $('#perPage').val());
+                        } else {
+                            firstTime = 0;
+                        }
 
                         window.history.pushState({}, '', url);
                         $('#comments').fadeIn();
