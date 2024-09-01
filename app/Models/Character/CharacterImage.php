@@ -47,8 +47,8 @@ class CharacterImage extends Model {
     public static $createRules = [
         'species_id' => 'required',
         'rarity_id'  => 'required',
-        'image'      => 'required|mimes:jpeg,jpg,gif,png,webp|max:2mb',
-        'thumbnail'  => 'nullable|mimes:jpeg,jpg,gif,png,webp|max:2mb',
+        'image'      => 'required|mimes:jpeg,jpg,gif,png,webp|max:2048',
+        'thumbnail'  => 'nullable|mimes:jpeg,jpg,gif,png,webp|max:2048',
     ];
 
     /**
@@ -62,8 +62,8 @@ class CharacterImage extends Model {
         'species_id'   => 'required',
         'rarity_id'    => 'required',
         'description'  => 'nullable',
-        'image'        => 'mimes:jpeg,jpg,gif,png,webp|max:2mb',
-        'thumbnail'    => 'nullable|mimes:jpeg,jpg,gif,png,webp|max:2mb',
+        'image'        => 'mimes:jpeg,jpg,gif,png,webp|max:2048',
+        'thumbnail'    => 'nullable|mimes:jpeg,jpg,gif,png,webp|max:2048',
     ];
 
     /**********************************************************************************************
