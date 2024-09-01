@@ -18,43 +18,41 @@
     }
 @endphp
 
-@if (!isset($type) || $type == 'User-User')
-    <div class="row">
-        <div class="{{ !isset($type) || $type == 'User-User' ? 'h2' : 'hide' }}">
-            Comments
-        </div>
+<div class="row">
+    <div class="{{ !isset($type) || $type == 'User-User' ? 'h2' : 'hide' }}">
+        Comments
+    </div>
 
-        <div class="ml-auto">
-            <div class="form-inline justify-content-end">
-                <div class="form-group ml-3 mb-3">
-                    {!! Form::select(
-                        'sort',
-                        [
-                            'newest' => 'Newest First',
-                            'oldest' => 'Oldest First',
-                        ],
-                        Request::get($commentType . '-sort') ?: 'newest',
-                        ['class' => 'form-control', 'id' => $commentType . '-sort'],
-                    ) !!}
-                </div>
-                <div class="form-group ml-3 mb-3">
-                    {!! Form::select(
-                        'perPage',
-                        [
-                            5 => '5 Per Page',
-                            10 => '10 Per Page',
-                            25 => '25 Per Page',
-                            50 => '50 Per Page',
-                            100 => '100 Per Page',
-                        ],
-                        Request::get($commentType . '-perPage') ?: 5,
-                        ['class' => 'form-control', 'id' => $commentType . '-perPage'],
-                    ) !!}
-                </div>
+    <div class="ml-auto">
+        <div class="form-inline justify-content-end">
+            <div class="form-group ml-3 mb-3">
+                {!! Form::select(
+                    'sort',
+                    [
+                        'newest' => 'Newest First',
+                        'oldest' => 'Oldest First',
+                    ],
+                    Request::get($commentType . '-sort') ?: 'newest',
+                    ['class' => 'form-control', 'id' => $commentType . '-sort'],
+                ) !!}
+            </div>
+            <div class="form-group ml-3 mb-3">
+                {!! Form::select(
+                    'perPage',
+                    [
+                        5 => '5 Per Page',
+                        10 => '10 Per Page',
+                        25 => '25 Per Page',
+                        50 => '50 Per Page',
+                        100 => '100 Per Page',
+                    ],
+                    Request::get($commentType . '-perPage') ?: 5,
+                    ['class' => 'form-control', 'id' => $commentType . '-perPage'],
+                ) !!}
             </div>
         </div>
     </div>
-@endif
+</div>
 <div id="{{ $commentType }}-comments">
     <div class="justify-content-center text-center mb-2">
         <i class="fas fa-spinner fa-spin fa-2x"></i>
