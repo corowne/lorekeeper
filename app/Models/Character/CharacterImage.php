@@ -33,6 +33,15 @@ class CharacterImage extends Model {
     protected $table = 'character_images';
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'content_warnings' => 'array',
+    ];
+
+    /**
      * Whether the model contains timestamps to be saved and updated.
      *
      * @var string
@@ -266,22 +275,35 @@ class CharacterImage extends Model {
     }
 
     /**
-     * Get the data attribute as an associative array.
+     * Formats existing content warnings for editing.
      *
-     * @return array
+     * @return string
      */
-    public function getContentWarningsAttribute() {
-        return json_decode($this->attributes['content_warnings'], true);
+    public function getEditWarningsAttribute() {
+        $contentWarnings = collect($this->content_warnings)->unique()->map(function ($warnings) {
+            return collect($warnings)->map(function ($warning) {
+                $lower = strtolower(trim($warning));
+
+                return ['warning' => ucwords($lower)];
+            });
+        })->collapse()->sort()->toJson();
+
+        return $contentWarnings;
     }
 
     /**
      * Determines if the character has content warning display.
+     *
+     * @param  User
+     * @param mixed|null $user
+     *
+     * @return bool
      */
     public function showContentWarnings($user = null) {
         if ($user) {
             return $user->settings->content_warning_visibility < 2 && $this->content_warnings;
-        } else {
-            return true;
         }
+
+        return count($this->content_warnings ?? []) > 0;
     }
 }

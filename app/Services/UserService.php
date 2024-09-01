@@ -275,14 +275,12 @@ class UserService extends Service {
     }
 
     /**
-     * Updates user's warning visibility setting
+     * Updates user's warning visibility setting.
      *
      * @param mixed $data
      * @param mixed $user
-     *
      */
-    public function updateContentWarningVisibility($data, $user)
-    {
+    public function updateContentWarningVisibility($data, $user) {
         $user->settings->content_warning_visibility = $data;
         $user->settings->save();
 
@@ -290,7 +288,7 @@ class UserService extends Service {
     }
 
     /**
-     * Updates the user's avatar. 
+     * Updates the user's avatar.
      *
      * @param User  $user
      * @param mixed $avatar

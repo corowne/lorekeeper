@@ -36,7 +36,7 @@ class DesignUpdateManager extends Service {
      * @param Character $character
      * @param User      $user
      *
-     * @return \App\Models\Character\CharacterDesignUpdate|bool
+     * @return bool|CharacterDesignUpdate
      */
     public function createDesignUpdateRequest($character, $user) {
         DB::beginTransaction();
@@ -799,10 +799,11 @@ class DesignUpdateManager extends Service {
      * @param array                 $data
      * @param CharacterDesignUpdate $request
      * @param User                  $user
+     * @param bool                  $self
      *
      * @return bool
      */
-    public function cancelRequest($data, $request, $user) {
+    public function cancelRequest($data, $request, $user, $self = 0) {
         DB::beginTransaction();
 
         try {
@@ -819,21 +820,30 @@ class DesignUpdateManager extends Service {
             // to add a comment to it. Status is returned to Draft status.
             // Use when rejecting a request that just requires minor modifications to approve.
 
-            // Set staff comment and status
-            $request->staff_id = $user->id;
-            $request->staff_comments = $data['staff_comments'] ?? null;
-            $request->status = 'Draft';
-            if (!isset($data['preserve_queue'])) {
+            if (!$self) {
+                // Set staff comment if this is not a self-cancel
+                $request->staff_id = $user->id;
+                $request->staff_comments = $data['staff_comments'] ?? null;
+                if (!isset($data['preserve_queue'])) {
+                    $request->submitted_at = null;
+                }
+            } else {
                 $request->submitted_at = null;
             }
+
+            // Set status
+            $request->status = 'Draft';
             $request->save();
 
-            // Notify the user
-            Notifications::create('DESIGN_CANCELED', $request->user, [
-                'design_url'    => $request->url,
-                'character_url' => $request->character->url,
-                'name'          => $request->character->fullName,
-            ]);
+            if (!$self) {
+                // Notify the user if it is not being canceled by the user themself.
+                // Note that an admin canceling their own will also not result in a notification
+                Notifications::create('DESIGN_CANCELED', $request->user, [
+                    'design_url'    => $request->url,
+                    'character_url' => $request->character->url,
+                    'name'          => $request->character->fullName,
+                ]);
+            }
 
             return $this->commitReturn(true);
         } catch (\Exception $e) {

@@ -75,7 +75,7 @@ class CharacterManager extends Service {
      * @param User  $user
      * @param bool  $isMyo
      *
-     * @return \App\Models\Character\Character|bool
+     * @return bool|Character
      */
     public function createCharacter($data, $user, $isMyo = false) {
         DB::beginTransaction();
@@ -533,7 +533,7 @@ class CharacterManager extends Service {
      * @param Character $character
      * @param User      $user
      *
-     * @return \App\Models\Character\Character|bool
+     * @return bool|Character
      */
     public function createImage($data, $character, $user) {
         DB::beginTransaction();
@@ -943,6 +943,7 @@ class CharacterManager extends Service {
 
             $image->is_valid = isset($data['is_valid']);
             $image->is_visible = isset($data['is_visible']);
+            $image->content_warnings = isset($data['content_warnings']) ? explode(',', $data['content_warnings']) : null;
             $image->save();
 
             // Add a log for the character
@@ -1838,7 +1839,7 @@ class CharacterManager extends Service {
      * @param array $data
      * @param bool  $isMyo
      *
-     * @return \App\Models\Character\Character|bool
+     * @return bool|Character
      */
     private function handleCharacter($data, $isMyo = false) {
         try {
@@ -1892,8 +1893,8 @@ class CharacterManager extends Service {
      * @param bool  $isMyo
      * @param mixed $character
      *
-     * @return Character                                 $character
-     * @return \App\Models\Character\CharacterImage|bool
+     * @return Character           $character
+     * @return bool|CharacterImage
      */
     private function handleCharacterImage($data, $character, $isMyo = false) {
         try {
@@ -1914,7 +1915,7 @@ class CharacterManager extends Service {
             }
             $imageData = Arr::only($data, [
                 'species_id', 'subtype_id', 'rarity_id', 'use_cropper',
-                'x0', 'x1', 'y0', 'y1', 'content_warnings'
+                'x0', 'x1', 'y0', 'y1', 'content_warnings',
             ]);
             $imageData['use_cropper'] = isset($data['use_cropper']);
             $imageData['description'] = $data['image_description'] ?? null;
@@ -1927,7 +1928,7 @@ class CharacterManager extends Service {
             $imageData['extension'] = (config('lorekeeper.settings.masterlist_image_format') ?? ($data['extension'] ?? $data['image']->getClientOriginalExtension()));
             $imageData['fullsize_extension'] = (config('lorekeeper.settings.masterlist_fullsizes_format') ?? ($data['fullsize_extension'] ?? $data['image']->getClientOriginalExtension()));
             $imageData['character_id'] = $character->id;
-            $imageData['content_warnings'] = json_encode($data['content_warnings']) ?? null;
+            $imageData['content_warnings'] = isset($data['content_warnings']) ? explode(',', $data['content_warnings']) : null;
 
             $image = CharacterImage::create($imageData);
 

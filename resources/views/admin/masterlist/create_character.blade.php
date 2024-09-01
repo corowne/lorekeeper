@@ -30,47 +30,39 @@
         </div>
 
         <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    {!! Form::label('Owner') !!}
-                    {!! Form::select('user_id', $userOptions, old('user_id'), ['class' => 'form-control', 'placeholder' => 'Select User', 'id' => 'userSelect']) !!}
-                </div>
+            <div class="col-md-6 form-group">
+                {!! Form::label('Owner') !!}
+                {!! Form::select('user_id', $userOptions, old('user_id'), ['class' => 'form-control', 'placeholder' => 'Select User', 'id' => 'userSelect']) !!}
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    {!! Form::label('Owner URL (Optional)') !!}
-                    {!! Form::text('owner_url', old('owner_url'), ['class' => 'form-control']) !!}
-                </div>
+            <div class="col-md-6 form-group">
+                {!! Form::label('Owner URL (Optional)') !!}
+                {!! Form::text('owner_url', old('owner_url'), ['class' => 'form-control']) !!}
             </div>
         </div>
 
         @if (!$isMyo)
             <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        {!! Form::label('Character Category') !!}
-                        <select name="character_category_id" id="category" class="form-control" placeholder="Select Category">
-                            <option value="" data-code="">Select Category</option>
-                            @foreach ($categories as $category)
-                                <option value="{{ $category->id }}" data-code="{{ $category->code }}" {{ old('character_category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }} ({{ $category->code }})</option>
-                            @endforeach
-                        </select>
-                    </div>
+                <div class="col-md-6 form-group">
+                    {!! Form::label('Character Category') !!}
+                    <select name="character_category_id" id="category" class="form-control" placeholder="Select Category">
+                        <option value="" data-code="">Select Category</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}" data-code="{{ $category->code }}" {{ old('character_category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }} ({{ $category->code }})</option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        {!! Form::label('Number') !!} {!! add_help('This number helps to identify the character and should preferably be unique either within the category, or among all characters.') !!}
-                        <div class="d-flex">
-                            {!! Form::text('number', old('number'), ['class' => 'form-control mr-2', 'id' => 'number']) !!}
-                            <a href="#" id="pull-number" class="btn btn-primary" data-toggle="tooltip"
-                                title="This will find the highest number assigned to a character currently and add 1 to it. It can be adjusted to pull the highest number in the category or the highest overall number - this setting is in the code.">Pull
-                                Next Number</a>
-                        </div>
+                <div class="col-md-6 form-group">
+                    {!! Form::label('Number') !!} {!! add_help('This number helps to identify the character and should preferably be unique either within the category, or among all characters.') !!}
+                    <div class="d-flex">
+                        {!! Form::text('number', old('number'), ['class' => 'form-control mr-2', 'id' => 'number']) !!}
+                        <a href="#" id="pull-number" class="btn btn-primary" data-toggle="tooltip"
+                            title="This will find the highest number assigned to a character currently and add 1 to it. It can be adjusted to pull the highest number in the category or the highest overall number - this setting is in the code.">Pull
+                            Next Number</a>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-{{ config('lorekeeper.settings.enable_character_content_warnings' ) ? 6 : 12 }}">
+                <div class="col-md-{{ config('lorekeeper.settings.enable_character_content_warnings') ? 6 : 12 }}">
                     <div class="form-group">
                         {!! Form::label('Character Code') !!} {!! add_help('This code identifies the character itself. You don\'t have to use the automatically generated code, but this must be unique among all characters (as it\'s used to generate the character\'s page URL).') !!}
                         {!! Form::text('slug', old('slug'), ['class' => 'form-control', 'id' => 'code']) !!}
@@ -80,9 +72,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             {!! Form::label('Content Warnings') !!} {!! add_help('These warnings will be displayed on the character\'s page. They are not required, but are recommended if the character contains sensitive content.') !!}
-                            <div id="warningList">
-                            </div>
-                            <div><a href="#" class="btn btn-primary mb-2" id="add-warning">Add Warning</a></div>
+                            {!! Form::text('content_warnings', old('content_warnings'), ['class' => 'form-control', 'id' => 'warningList']) !!}
                         </div>
                     </div>
                 @endif
@@ -271,18 +261,6 @@
             {!! Form::submit('Create Character', ['class' => 'btn btn-primary']) !!}
         </div>
         {!! Form::close() !!}
-
-        <div class="d-flex warning-row original hide mb-2">
-            {!! Form::text('content_warnings[]', null, ['class' => 'form-control mr-2', 'list' => 'warnings-list', 'placeholder' => 'Enter Warning or Select']) !!}
-            <datalist>
-                @if (isset($warnings) && $warnings)
-                    @foreach($warnings as $value => $label)
-                        <option value="{{ $label }}"></option>
-                    @endforeach
-                @endif
-            </datalist>
-            <a href="#" class="remove-warning btn btn-danger mb-2">×</a>
-        </div>
     @endif
 
 @endsection
@@ -292,6 +270,7 @@
     @include('widgets._character_create_options_js')
     @include('widgets._image_upload_js')
     @include('widgets._datetimepicker_js')
+    @include('widgets._character_warning_js')
     @if (!$isMyo)
         @include('widgets._character_code_js')
     @endif
@@ -309,13 +288,6 @@
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 alert("AJAX call failed: " + textStatus + ", " + errorThrown);
             });
-        });
-
-        // get the warning-row with "original" class
-        let $warningRow = $('.warning-row.original').clone();
-        $('#add-warning').click(function(e) {
-            e.preventDefault();
-            $warningRow.clone().removeClass('original hide').appendTo('#warningList');
         });
     </script>
 @endsection

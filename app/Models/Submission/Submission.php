@@ -178,6 +178,10 @@ class Submission extends Model {
      * @return array
      */
     public function getDataAttribute() {
+        if (!$this->id) {
+            return null;
+        }
+
         return json_decode($this->attributes['data'], true);
     }
 

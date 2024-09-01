@@ -76,6 +76,13 @@ Route::group(['prefix' => 'files', 'middleware' => 'power:edit_site_settings'], 
     Route::post('folder/rename', 'FileController@postRenameFolder');
 });
 
+// LOG VIEWER
+Route::group(['prefix' => 'logs', 'middleware' => 'power:edit_site_settings'], function () {
+    Route::get('/', 'LogController@getIndex');
+    Route::get('/{name}', 'LogController@getLog');
+    Route::post('/delete', 'LogController@postDeleteLog');
+});
+
 // SITE IMAGES
 Route::group(['prefix' => 'images', 'middleware' => 'power:edit_site_settings'], function () {
     Route::get('/', 'FileController@getSiteImages');
@@ -313,6 +320,7 @@ Route::group(['prefix' => 'masterlist', 'namespace' => 'Characters', 'middleware
     Route::post('create-myo', 'CharacterController@postCreateMyo');
 
     Route::get('check-subtype', 'CharacterController@getCreateCharacterMyoSubtype');
+    Route::get('get-warnings', 'CharacterController@getContentWarnings');
 });
 Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware' => 'power:edit_inventories'], function () {
     Route::post('{slug}/grant', 'GrantController@postCharacterCurrency');

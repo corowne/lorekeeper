@@ -47,10 +47,6 @@ class CharacterController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getCreateCharacter() {
-        $warnings = CharacterImage::whereNotNull('content_warnings')->pluck('content_warnings')->map(function($item) {
-            return json_decode(strtolower($item));
-        })->flatten()->unique()->sort()->values()->toArray();
-
         return view('admin.masterlist.create_character', [
             'categories'  => CharacterCategory::orderBy('sort')->get(),
             'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
@@ -59,7 +55,6 @@ class CharacterController extends Controller {
             'subtypes'    => ['0' => 'Pick a Species First'],
             'features'    => Feature::getDropdownItems(1),
             'isMyo'       => false,
-            'warnings'    => $warnings,
         ]);
     }
 
@@ -110,7 +105,7 @@ class CharacterController extends Controller {
             'designer_id', 'designer_url',
             'artist_id', 'artist_url',
             'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data',
-            'image', 'thumbnail', 'image_description', 'content_warnings'
+            'image', 'thumbnail', 'image_description', 'content_warnings',
         ]);
         if ($character = $service->createCharacter($data, Auth::user())) {
             flash('Character created successfully.')->success();
@@ -762,5 +757,22 @@ class CharacterController extends Controller {
         return view('admin.masterlist.myo_index', [
             'slots' => Character::myo(1)->orderBy('id', 'DESC')->paginate(30),
         ]);
+    }
+
+    /**
+     * Gets all extant content warnings.
+     *
+     * @return string
+     */
+    public function getContentWarnings() {
+        $contentWarnings = CharacterImage::whereNotNull('content_warnings')->pluck('content_warnings')->flatten()->map(function ($warnings) {
+            return collect($warnings)->map(function ($warning) {
+                $lower = strtolower(trim($warning));
+
+                return ['warning' => ucwords($lower)];
+            });
+        })->collapse()->unique()->sort()->toJson();
+
+        return $contentWarnings;
     }
 }
