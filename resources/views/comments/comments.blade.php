@@ -12,46 +12,48 @@
             $comments = $model->commentz->where('type', 'User-User');
         }
     }
+
+    if (!isset($commentType)) {
+        $commentType = 'comment';
+    }
 @endphp
 
-@if (!isset($type) || $type == 'User-User')
-    <div class="row">
-        <div class="{{ !isset($type) || $type == 'User-User' ? 'h2' : 'hide' }}">
-            Comments
-        </div>
+<div class="row">
+    <div class="{{ !isset($type) || $type == 'User-User' ? 'h2' : 'hide' }}">
+        Comments
+    </div>
 
-        <div class="ml-auto">
-            <div class="form-inline justify-content-end">
-                <div class="form-group ml-3 mb-3">
-                    {!! Form::select(
-                        'sort',
-                        [
-                            'newest' => 'Newest First',
-                            'oldest' => 'Oldest First',
-                        ],
-                        Request::get('sort') ?: 'newest',
-                        ['class' => 'form-control', 'id' => 'sort'],
-                    ) !!}
-                </div>
-                <div class="form-group ml-3 mb-3">
-                    {!! Form::select(
-                        'perPage',
-                        [
-                            5 => '5 Per Page',
-                            10 => '10 Per Page',
-                            25 => '25 Per Page',
-                            50 => '50 Per Page',
-                            100 => '100 Per Page',
-                        ],
-                        Request::get('perPage') ?: 5,
-                        ['class' => 'form-control', 'id' => 'perPage'],
-                    ) !!}
-                </div>
+    <div class="ml-auto">
+        <div class="form-inline justify-content-end">
+            <div class="form-group ml-3 mb-3">
+                {!! Form::select(
+                    'sort',
+                    [
+                        'newest' => 'Newest First',
+                        'oldest' => 'Oldest First',
+                    ],
+                    Request::get($commentType . '-sort') ?: 'newest',
+                    ['class' => 'form-control', 'id' => $commentType . '-sort'],
+                ) !!}
+            </div>
+            <div class="form-group ml-3 mb-3">
+                {!! Form::select(
+                    'perPage',
+                    [
+                        5 => '5 Per Page',
+                        10 => '10 Per Page',
+                        25 => '25 Per Page',
+                        50 => '50 Per Page',
+                        100 => '100 Per Page',
+                    ],
+                    Request::get($commentType . '-perPage') ?: 5,
+                    ['class' => 'form-control', 'id' => $commentType . '-perPage'],
+                ) !!}
             </div>
         </div>
     </div>
-@endif
-<div id="comments">
+</div>
+<div id="{{ $commentType }}-comments">
     <div class="justify-content-center text-center mb-2">
         <i class="fas fa-spinner fa-spin fa-2x"></i>
     </div>
@@ -93,7 +95,7 @@
             });
 
             function sortComments() {
-                $('#comments').fadeOut();
+                $('#{{ $commentType }}-comments').fadeOut();
                 $.ajax({
                     url: "{{ url('sort-comments/' . base64_encode(urlencode(get_class($model))) . '/' . $model->getKey()) }}",
                     type: 'GET',
@@ -102,28 +104,33 @@
                         allow_dislikes: '{{ isset($allow_dislikes) ? $allow_dislikes : false }}',
                         approved: '{{ isset($approved) ? $approved : false }}',
                         type: '{{ isset($type) ? $type : null }}',
-                        sort: $('#sort').val(),
-                        perPage: $('#perPage').val(),
+                        sort: $('#{{ $commentType }}-sort').val(),
+                        perPage: $('#{{ $commentType }}-perPage').val(),
                         page: '{{ request()->query('page') }}',
                     },
                     success: function(data) {
-                        $('#comments').html(data);
+                        $('#{{ $commentType }}-comments').html(data);
                         // update current url to reflect sort change
-                        var url = new URL(window.location.href);
-                        url.searchParams.set('sort', $('#sort').val());
-                        url.searchParams.set('perPage', $('#perPage').val());
+                        if (
+                            ($('#{{ $commentType }}-sort').val() != 'newest' && $('#{{ $commentType }}-perPage').val() != 5) ||
+                            (window.location.href.indexOf('{{ $commentType }}-sort') != -1 || window.location.href.indexOf('{{ $commentType }}-perPage') != -1)
+                        ) { // don't add to url if default
+                            var url = new URL(window.location.href);
+                            url.searchParams.set('{{ $commentType }}-sort', $('#{{ $commentType }}-sort').val());
+                            url.searchParams.set('{{ $commentType }}-perPage', $('#{{ $commentType }}-perPage').val());
 
-                        window.history.pushState({}, '', url);
-                        $('#comments').fadeIn();
+                            window.history.pushState({}, '', url);
+                        }
+                        $('#{{ $commentType }}-comments').fadeIn();
                     }
                 });
             }
 
-            $('#sort').change(function() {
+            $('#{{ $commentType }}-sort').change(function() {
                 sortComments();
             });
 
-            $('#perPage').change(function() {
+            $('#{{ $commentType }}-perPage').change(function() {
                 sortComments();
             });
 

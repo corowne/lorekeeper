@@ -175,7 +175,7 @@ class Subtype extends Model {
      * @return string
      */
     public function getSearchUrlAttribute() {
-        return url('masterlist?subtype_id='.$this->id);
+        return url('masterlist?subtype_ids[]='.$this->id);
     }
 
     /**

@@ -7,7 +7,7 @@
 @section('news-content')
     {!! breadcrumbs(['Site News' => 'news', $news->title => $news->url]) !!}
     @include('news._news', ['news' => $news, 'page' => true])
-    <hr class="mb-5" />
 
+    <hr class="mb-5" />
     @comments(['model' => $news, 'perPage' => 5])
 @endsection

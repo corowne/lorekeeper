@@ -354,6 +354,24 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Hideable Textarea on Gallery Submissions
+    |--------------------------------------------------------------------------
+    |
+    | Whether or not to be able to hide the textarea on gallery Submissions.
+    |
+    | enable: Set to 1 to show a button to hide the textarea.
+    |
+    | on_image Set to 1 to auto-hide on image upload- will only work
+    | if 'enable' is set to 1.
+    |
+    */
+    'hide_textarea_on_gallery_submissions'              => [
+        'enable'   => 0,
+        'on_image' => 0,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Site Logging Webhook
     |--------------------------------------------------------------------------
     |

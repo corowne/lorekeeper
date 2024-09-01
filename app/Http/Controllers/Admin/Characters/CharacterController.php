@@ -52,7 +52,7 @@ class CharacterController extends Controller {
             'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
             'rarities'    => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses'   => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes'    => ['0' => 'Pick a Species First'],
+            'subtypes'    => [],
             'features'    => Feature::getDropdownItems(1),
             'isMyo'       => false,
         ]);
@@ -68,7 +68,7 @@ class CharacterController extends Controller {
             'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
             'rarities'    => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses'   => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes'    => ['0' => 'Pick a Species First'],
+            'subtypes'    => [],
             'features'    => Feature::getDropdownItems(1),
             'isMyo'       => true,
         ]);
@@ -83,7 +83,7 @@ class CharacterController extends Controller {
         $species = $request->input('species');
 
         return view('admin.masterlist._create_character_subtype', [
-            'subtypes' => ['0' => 'Select Subtype'] + Subtype::where('species_id', '=', $species)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => Subtype::where('species_id', '=', $species)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'isMyo'    => $request->input('myo'),
         ]);
     }
@@ -136,7 +136,7 @@ class CharacterController extends Controller {
             'x0', 'x1', 'y0', 'y1',
             'designer_id', 'designer_url',
             'artist_id', 'artist_url',
-            'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data',
+            'species_id', 'subtype_ids', 'rarity_id', 'feature_id', 'feature_data',
             'image', 'thumbnail',
         ]);
         if ($character = $service->createCharacter($data, Auth::user(), true)) {
