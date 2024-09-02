@@ -18,7 +18,7 @@
         "laravel-mix": "^6.0.49",
         "lodash": "^4.17.21",
         "popper.js": "^1.16.1",
-        "postcss": "^8.4.41",
+        "postcss": "^8.4.44",
         "resolve-url-loader": "^5.0.0",
         "sass": "^1.77.8",
         "sass-loader": "^16.0.1"
