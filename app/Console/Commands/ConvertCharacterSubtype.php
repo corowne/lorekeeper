@@ -38,61 +38,90 @@ class ConvertCharacterSubtype extends Command {
      */
     public function handle() {
         if (Schema::hasColumn('character_images', 'subtype_id')) {
-            $check = $this->confirm('Do you have the second subtype extension installed?', true);
-            if ($check) {
-                $this->info('This command will need minor modifications to run correctly with this extension. Please see the comments in the file.');
-
-                return;
+            // Check for second subtype columns up front to save on some redundant checks
+            $secondSubtype = false;
+            if (Schema::hasColumn('character_images', 'subtype_id_2') && Schema::hasColumn('design_updates', 'subtype_id_2')) {
+                $secondSubtype = true;
             }
 
             // DESIGN UPDATES
-            $updates = CharacterDesignUpdate::where('subtype_id', '!=', null)->get();
-            // make the string into an array
+            $updates = CharacterDesignUpdate::where(function ($query) use ($secondSubtype) {
+                if ($secondSubtype) {
+                    $query->whereNotNull('subtype_id')->orWhereNotNull('subtype_id_2');
+                } else {
+                    $query->whereNotNull('subtype_id');
+                }
+            })->get();
+
+            $this->info('Converting '.count($updates).' updates\' subtypes...');
+            $updateBar = $this->output->createProgressBar(count($updates));
+
             foreach ($updates as $update) {
+                $updateSubtypes = [];
+                if ($update->subtype_id) {
+                    $updateSubtypes[] = $update->subtype_id;
+                }
+                if ($secondSubtype && $update->subtype_id_2) {
+                    $updateSubtypes[] = $update->subtype_id_2;
+                }
+
                 $update->update([
-                    'subtype_ids' => $update->subtype_id,
+                    'subtype_ids' => $updateSubtypes,
                 ]);
+                $updateBar->advance();
             }
+
+            $updateBar->finish();
+            $this->info("\n".'Dropping subtype ID column'.($secondSubtype ? 's' : '').' from the design updates table...');
+
             Schema::table('design_updates', function (Blueprint $table) {
                 $table->dropColumn('subtype_id');
             });
-
-            $characterImages = CharacterImage::whereNotNull('subtype_id')->get();
-
-            $this->info('Converting '.count($characterImages).' character images to subtypes...');
-            $bar = $this->output->createProgressBar(count($characterImages));
-            foreach ($characterImages as $characterImage) {
-                /*
-                 * FOR THE SECOND SUBTYPE EXTENSION,
-                 *
-                 * You will need to create two characterImageSubtype records, one for each subtype.
-                 * ex.
-                 *
-                 *  CharacterImageSubtype::create([
-                 *    'character_image_id' => $characterImage->id,
-                 *    'subtype_id' => $characterImage->subtype_one_id // or subtype_two_id
-                 *  ]);
-                 */
-                CharacterImageSubtype::create([
-                    'character_image_id' => $characterImage->id,
-                    'subtype_id'         => $characterImage->subtype_id,
-                ]);
-                $bar->advance();
+            if ($secondSubtype) {
+                Schema::table('design_updates', function (Blueprint $table) {
+                    $table->dropColumn('subtype_id_2');
+                });
             }
 
-            $bar->finish();
-            $this->info('');
+            // CHARACTER IMAGES
+            $characterImages = CharacterImage::where(function ($query) use ($secondSubtype) {
+                if ($secondSubtype) {
+                    $query->whereNotNull('subtype_id')->orWhereNotNull('subtype_id_2');
+                } else {
+                    $query->whereNotNull('subtype_id');
+                }
+            })->get();
 
-            $this->info('Dropping subtype_id column from character_images table...');
+            $this->info('Converting '.count($characterImages).' character images\' subtypes...');
+            $imageBar = $this->output->createProgressBar(count($characterImages));
+            foreach ($characterImages as $characterImage) {
+                if ($characterImage->subtype_id) {
+                    CharacterImageSubtype::create([
+                        'character_image_id' => $characterImage->id,
+                        'subtype_id'         => $characterImage->subtype_id,
+                    ]);
+                }
 
-            /*
-             * FOR THE SECOND SUBTYPE EXTENSION,
-             *
-             * You will need to drop both subtype columns from the character_images table.
-             */
+                if ($secondSubtype && $characterImage->subtype_id_2) {
+                    CharacterImageSubtype::create([
+                        'character_image_id' => $characterImage->id,
+                        'subtype_id'         => $characterImage->subtype_id_2,
+                    ]);
+                }
+                $imageBar->advance();
+            }
+
+            $imageBar->finish();
+            $this->info("\n".'Dropping subtype ID column'.($secondSubtype ? 's' : '').' from the character images table...');
+
             Schema::table('character_images', function (Blueprint $table) {
                 $table->dropColumn('subtype_id');
             });
+            if ($secondSubtype) {
+                Schema::table('character_images', function (Blueprint $table) {
+                    $table->dropColumn('subtype_id_2');
+                });
+            }
 
             $this->info('Done!');
         } else {
