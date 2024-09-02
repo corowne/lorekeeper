@@ -40,9 +40,9 @@ class ConvertCharacterSubtype extends Command {
         if (Schema::hasColumn('character_images', 'subtype_id')) {
             // Check for second subtype columns up front to save on some redundant checks
             $secondSubtype = false;
+            $thirdSubtype = false;
             if (Schema::hasColumn('character_images', 'subtype_id_2') && Schema::hasColumn('design_updates', 'subtype_id_2')) {
                 $secondSubtype = true;
-                $thirdSubtype = false;
                 if (Schema::hasColumn('character_images', 'subtype_id_3') && Schema::hasColumn('design_updates', 'subtype_id_3')) {
                     $thirdSubtype = true;
                 }
