@@ -162,179 +162,7 @@ class BrowseController extends Controller {
         $query->whereNotIn('character_category_id', $subCategories);
         $imageQuery->whereNotIn('species_id', $subSpecies);
 
-        if ($request->get('name')) {
-            $query->where(function ($query) use ($request) {
-                $query->where('characters.name', 'LIKE', '%'.$request->get('name').'%')->orWhere('characters.slug', 'LIKE', '%'.$request->get('name').'%');
-            });
-        }
-        if ($request->get('rarity_id')) {
-            $query->where('rarity_id', $request->get('rarity_id'));
-        }
-        if ($request->get('character_category_id')) {
-            $query->where('character_category_id', $request->get('character_category_id'));
-        }
-
-        if ($request->get('sale_value_min')) {
-            $query->where('sale_value', '>=', $request->get('sale_value_min'));
-        }
-        if ($request->get('sale_value_max')) {
-            $query->where('sale_value', '<=', $request->get('sale_value_max'));
-        }
-
-        if ($request->get('is_trading')) {
-            $query->where('is_trading', 1);
-        }
-        if ($request->get('is_sellable')) {
-            $query->where('is_sellable', 1);
-        }
-        if ($request->get('is_tradeable')) {
-            $query->where('is_tradeable', 1);
-        }
-        if ($request->get('is_giftable')) {
-            $query->where('is_giftable', 1);
-        }
-
-        if ($request->get('owner')) {
-            $owner = User::find($request->get('owner'));
-            $query->where(function ($query) use ($owner) {
-                $query->where('user_id', $owner->id);
-            });
-        }
-        if ($request->get('owner_url')) {
-            $ownerUrl = $request->get('owner_url');
-            $query->where(function ($query) use ($ownerUrl) {
-                $query->where('owner_url', 'LIKE', '%'.$ownerUrl.'%');
-            });
-        }
-
-        // Search only main images
-        if (!$request->get('search_images')) {
-            $imageQuery->whereIn('id', $query->pluck('character_image_id')->toArray());
-        }
-
-        // Searching on image properties
-        if ($request->get('species_id')) {
-            $imageQuery->where('species_id', $request->get('species_id'));
-        }
-        if ($request->get('subtype_ids')) {
-            if (in_array('none', $request->get('subtype_ids'))) {
-                $imageQuery->doesntHave('subtypes');
-            } elseif (in_array('hybrid', $request->get('subtype_ids')) && !in_array('any', $request->get('subtype_ids')) && count($request->get('subtype_ids')) > 1) {
-                // If hybrid + any number of subtype IDs, return characters with the subtype(s) and any additional subtypes
-                // This is functionally somewhat redundant, but allows some specialized searches (e.g. hybrids including a specific subtype)
-                $imageQuery->has('subtypes', '>', 1)->whereHas('subtypes', function ($query) use ($request) {
-                    $query->whereIn('character_image_subtypes.subtype_id', $request->get('subtype_ids'));
-                });
-            } elseif (in_array('any', $request->get('subtype_ids')) || in_array('hybrid', $request->get('subtype_ids'))) {
-                // If subtype ids contains "any" search for all subtypes
-                $imageQuery->has('subtypes', '>', in_array('hybrid', $request->get('subtype_ids')) ? 1 : 0);
-            } else {
-                if (config('lorekeeper.extensions.exclusionary_search')) {
-                    $imageQuery->whereHas('subtypes', function ($query) use ($request) {
-                        $subtypeIds = $request->get('subtype_ids');
-
-                        // Filter to ensure the character has all the specified subtypes
-                        $query->whereIn('character_image_subtypes.subtype_id', $subtypeIds)
-                            ->groupBy('character_image_subtypes.character_image_id')
-                            ->havingRaw('COUNT(character_image_subtypes.subtype_id) = ?', [count($subtypeIds)]);
-                    })->whereDoesntHave('subtypes', function ($query) use ($request) {
-                        // Ensure that no additional subtypes are present
-                        $query->whereNotIn('character_image_subtypes.subtype_id', $request->get('subtype_ids'));
-                    });
-                } else {
-                    $imageQuery->whereHas('subtypes', function ($query) use ($request) {
-                        $query->whereIn('character_image_subtypes.subtype_id', $request->get('subtype_ids'));
-                    });
-                }
-            }
-        }
-        if ($request->get('feature_ids')) {
-            $featureIds = $request->get('feature_ids');
-            foreach ($featureIds as $featureId) {
-                $imageQuery->whereHas('features', function ($query) use ($featureId) {
-                    $query->where('feature_id', $featureId);
-                });
-            }
-        }
-        if ($request->get('artist')) {
-            $artist = User::find($request->get('artist'));
-            $imageQuery->whereHas('artists', function ($query) use ($artist) {
-                $query->where('user_id', $artist->id);
-            });
-        }
-        if ($request->get('designer')) {
-            $designer = User::find($request->get('designer'));
-            $imageQuery->whereHas('designers', function ($query) use ($designer) {
-                $query->where('user_id', $designer->id);
-            });
-        }
-        if ($request->get('artist_url')) {
-            $artistUrl = $request->get('artist_url');
-            $imageQuery->whereHas('artists', function ($query) use ($artistUrl) {
-                $query->where('url', 'LIKE', '%'.$artistUrl.'%');
-            });
-        }
-        if ($request->get('designer_url')) {
-            $designerUrl = $request->get('designer_url');
-            $imageQuery->whereHas('designers', function ($query) use ($designerUrl) {
-                $query->where('url', 'LIKE', '%'.$designerUrl.'%');
-            });
-        }
-
-        $query->whereIn('id', $imageQuery->pluck('character_id')->toArray());
-
-        if ($request->get('is_gift_art_allowed')) {
-            switch ($request->get('is_gift_art_allowed')) {
-                case 1:
-                    $query->where('is_gift_art_allowed', 1);
-                    break;
-                case 2:
-                    $query->where('is_gift_art_allowed', 2);
-                    break;
-                case 3:
-                    $query->where('is_gift_art_allowed', '>=', 1);
-                    break;
-            }
-        }
-        if ($request->get('is_gift_writing_allowed')) {
-            switch ($request->get('is_gift_writing_allowed')) {
-                case 1:
-                    $query->where('is_gift_writing_allowed', 1);
-                    break;
-                case 2:
-                    $query->where('is_gift_writing_allowed', 2);
-                    break;
-                case 3:
-                    $query->where('is_gift_writing_allowed', '>=', 1);
-                    break;
-            }
-        }
-
-        switch ($request->get('sort')) {
-            default:
-                $query->orderBy('characters.number', 'DESC');
-                break;
-            case 'number_desc':
-                $query->orderBy('characters.number', 'DESC');
-                break;
-            case 'number_asc':
-                $query->orderBy('characters.number', 'ASC');
-                break;
-            case 'id_desc':
-                $query->orderBy('characters.id', 'DESC');
-                break;
-            case 'id_asc':
-                $query->orderBy('characters.id', 'ASC');
-                break;
-            case 'sale_value_desc':
-                $query->orderBy('characters.sale_value', 'DESC');
-                break;
-            case 'sale_value_asc':
-                $query->orderBy('characters.sale_value', 'ASC');
-                break;
-        }
-
-        $query->visible(Auth::user() ?? null);
+        $query = $this->handleMasterlistSearch($request, $query, $imageQuery);
 
         return view('browse.masterlist', [
             'isMyo'       => false,
@@ -359,111 +187,7 @@ class BrowseController extends Controller {
 
         $imageQuery = CharacterImage::images(Auth::user() ?? null)->with('features')->with('rarity')->with('species')->with('features');
 
-        if ($request->get('name')) {
-            $query->where(function ($query) use ($request) {
-                $query->where('characters.name', 'LIKE', '%'.$request->get('name').'%')->orWhere('characters.slug', 'LIKE', '%'.$request->get('name').'%');
-            });
-        }
-        if ($request->get('rarity_id')) {
-            $query->where('rarity_id', $request->get('rarity_id'));
-        }
-
-        if ($request->get('sale_value_min')) {
-            $query->where('sale_value', '>=', $request->get('sale_value_min'));
-        }
-        if ($request->get('sale_value_max')) {
-            $query->where('sale_value', '<=', $request->get('sale_value_max'));
-        }
-
-        if ($request->get('is_trading')) {
-            $query->where('is_trading', 1);
-        }
-        if ($request->get('is_sellable')) {
-            $query->where('is_sellable', 1);
-        }
-        if ($request->get('is_tradeable')) {
-            $query->where('is_tradeable', 1);
-        }
-        if ($request->get('is_giftable')) {
-            $query->where('is_giftable', 1);
-        }
-
-        if ($request->get('owner')) {
-            $owner = User::find($request->get('owner'));
-            $query->where(function ($query) use ($owner) {
-                $query->where('user_id', $owner->id);
-            });
-        }
-        if ($request->get('owner_url')) {
-            $ownerUrl = $request->get('owner_url');
-            $query->where(function ($query) use ($ownerUrl) {
-                $query->where('owner_url', 'LIKE', '%'.$ownerUrl.'%');
-            });
-        }
-
-        // Search only main images
-        if (!$request->get('search_images')) {
-            $imageQuery->whereIn('id', $query->pluck('character_image_id')->toArray());
-        }
-
-        // Searching on image properties
-        if ($request->get('species_id')) {
-            $imageQuery->where('species_id', $request->get('species_id'));
-        }
-        if ($request->get('artist')) {
-            $artist = User::find($request->get('artist'));
-            $imageQuery->whereHas('artists', function ($query) use ($artist) {
-                $query->where('user_id', $artist->id);
-            });
-        }
-        if ($request->get('designer')) {
-            $designer = User::find($request->get('designer'));
-            $imageQuery->whereHas('designers', function ($query) use ($designer) {
-                $query->where('user_id', $designer->id);
-            });
-        }
-        if ($request->get('artist_url')) {
-            $artistUrl = $request->get('artist_url');
-            $imageQuery->whereHas('artists', function ($query) use ($artistUrl) {
-                $query->where('url', 'LIKE', '%'.$artistUrl.'%');
-            });
-        }
-        if ($request->get('designer_url')) {
-            $designerUrl = $request->get('designer_url');
-            $imageQuery->whereHas('designers', function ($query) use ($designerUrl) {
-                $query->where('url', 'LIKE', '%'.$designerUrl.'%');
-            });
-        }
-        if ($request->get('feature_ids')) {
-            $featureIds = $request->get('feature_ids');
-            foreach ($featureIds as $featureId) {
-                $imageQuery->whereHas('features', function ($query) use ($featureId) {
-                    $query->where('feature_id', $featureId);
-                });
-            }
-        }
-
-        $query->whereIn('id', $imageQuery->pluck('character_id')->toArray());
-
-        switch ($request->get('sort')) {
-            default:
-                $query->orderBy('characters.id', 'DESC');
-                break;
-            case 'id_desc':
-                $query->orderBy('characters.id', 'DESC');
-                break;
-            case 'id_asc':
-                $query->orderBy('characters.id', 'ASC');
-                break;
-            case 'sale_value_desc':
-                $query->orderBy('characters.sale_value', 'DESC');
-                break;
-            case 'sale_value_asc':
-                $query->orderBy('characters.sale_value', 'ASC');
-                break;
-        }
-
-        $query->visible(Auth::user() ?? null);
+        $query = $this->handleMasterlistSearch($request, $query, $imageQuery, true);
 
         return view('browse.myo_masterlist', [
             'isMyo'       => true,
@@ -501,6 +225,41 @@ class BrowseController extends Controller {
             $imageQuery->whereIn('species_id', $subSpecies);
         }
 
+        $query = $this->handleMasterlistSearch($request, $query, $imageQuery);
+
+        $subCategory = CharacterCategory::where('masterlist_sub_id', $sublist->id)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray();
+        if (!$subCategory) {
+            $subCategory = CharacterCategory::visible(Auth::user() ?? null)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray();
+        }
+        $subSpecies = Species::where('masterlist_sub_id', $sublist->id)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray();
+        if (!$subSpecies) {
+            $subSpecies = Species::visible(Auth::user() ?? null)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray();
+        }
+
+        return view('browse.sub_masterlist', [
+            'isMyo'       => false,
+            'characters'  => $query->paginate(24)->appends($request->query()),
+            'categories'  => [0 => 'Any Category'] + $subCategory,
+            'specieses'   => [0 => 'Any Species'] + $subSpecies,
+            'subtypes'    => ['none' => 'No Subtypes', 'any' => 'Any Subtype', 'hybrid' => 'Multiple / Hybrid Subtypes'] + Subtype::visible(Auth::user() ?? null)->orderBy('subtypes.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'rarities'    => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'features'    => Feature::getDropdownItems(),
+            'sublist'     => $sublist,
+            'sublists'    => Sublist::orderBy('sort', 'DESC')->get(),
+            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
+        ]);
+    }
+
+    /**
+     * Handles character search/filtering.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Builder $imageQuery
+     * @param bool                                  $isMyo
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    private function handleMasterlistSearch(Request $request, $query, $imageQuery, $isMyo = false) {
         if ($request->get('name')) {
             $query->where(function ($query) use ($request) {
                 $query->where('characters.name', 'LIKE', '%'.$request->get('name').'%')->orWhere('characters.slug', 'LIKE', '%'.$request->get('name').'%');
@@ -509,7 +268,7 @@ class BrowseController extends Controller {
         if ($request->get('rarity_id')) {
             $query->where('rarity_id', $request->get('rarity_id'));
         }
-        if ($request->get('character_category_id')) {
+        if (!$isMyo && $request->get('character_category_id')) {
             $query->where('character_category_id', $request->get('character_category_id'));
         }
 
@@ -522,32 +281,6 @@ class BrowseController extends Controller {
 
         if ($request->get('is_trading')) {
             $query->where('is_trading', 1);
-        }
-        if ($request->get('is_gift_art_allowed')) {
-            switch ($request->get('is_gift_art_allowed')) {
-                case 1:
-                    $query->where('is_gift_art_allowed', 1);
-                    break;
-                case 2:
-                    $query->where('is_gift_art_allowed', 2);
-                    break;
-                case 3:
-                    $query->where('is_gift_art_allowed', '>=', 1);
-                    break;
-            }
-        }
-        if ($request->get('is_gift_writing_allowed')) {
-            switch ($request->get('is_gift_writing_allowed')) {
-                case 1:
-                    $query->where('is_gift_writing_allowed', 1);
-                    break;
-                case 2:
-                    $query->where('is_gift_writing_allowed', 2);
-                    break;
-                case 3:
-                    $query->where('is_gift_writing_allowed', '>=', 1);
-                    break;
-            }
         }
         if ($request->get('is_sellable')) {
             $query->where('is_sellable', 1);
@@ -581,7 +314,7 @@ class BrowseController extends Controller {
         if ($request->get('species_id')) {
             $imageQuery->where('species_id', $request->get('species_id'));
         }
-        if ($request->get('subtype_ids')) {
+        if (!$isMyo && $request->get('subtype_ids')) {
             if (in_array('none', $request->get('subtype_ids'))) {
                 $imageQuery->doesntHave('subtypes');
             } elseif (in_array('hybrid', $request->get('subtype_ids')) && !in_array('any', $request->get('subtype_ids')) && count($request->get('subtype_ids')) > 1) {
@@ -648,52 +381,81 @@ class BrowseController extends Controller {
 
         $query->whereIn('id', $imageQuery->pluck('character_id')->toArray());
 
-        switch ($request->get('sort')) {
-            default:
-                $query->orderBy('characters.number', 'DESC');
-                break;
-            case 'number_desc':
-                $query->orderBy('characters.number', 'DESC');
-                break;
-            case 'number_asc':
-                $query->orderBy('characters.number', 'ASC');
-                break;
-            case 'id_desc':
-                $query->orderBy('characters.id', 'DESC');
-                break;
-            case 'id_asc':
-                $query->orderBy('characters.id', 'ASC');
-                break;
-            case 'sale_value_desc':
-                $query->orderBy('characters.sale_value', 'DESC');
-                break;
-            case 'sale_value_asc':
-                $query->orderBy('characters.sale_value', 'ASC');
-                break;
+        if (!$isMyo) {
+            if ($request->get('is_gift_art_allowed')) {
+                switch ($request->get('is_gift_art_allowed')) {
+                    case 1:
+                        $query->where('is_gift_art_allowed', 1);
+                        break;
+                    case 2:
+                        $query->where('is_gift_art_allowed', 2);
+                        break;
+                    case 3:
+                        $query->where('is_gift_art_allowed', '>=', 1);
+                        break;
+                }
+            }
+            if ($request->get('is_gift_writing_allowed')) {
+                switch ($request->get('is_gift_writing_allowed')) {
+                    case 1:
+                        $query->where('is_gift_writing_allowed', 1);
+                        break;
+                    case 2:
+                        $query->where('is_gift_writing_allowed', 2);
+                        break;
+                    case 3:
+                        $query->where('is_gift_writing_allowed', '>=', 1);
+                        break;
+                }
+            }
+        }
+
+        if ($isMyo) {
+            switch ($request->get('sort')) {
+                default:
+                    $query->orderBy('characters.id', 'DESC');
+                    break;
+                case 'id_desc':
+                    $query->orderBy('characters.id', 'DESC');
+                    break;
+                case 'id_asc':
+                    $query->orderBy('characters.id', 'ASC');
+                    break;
+                case 'sale_value_desc':
+                    $query->orderBy('characters.sale_value', 'DESC');
+                    break;
+                case 'sale_value_asc':
+                    $query->orderBy('characters.sale_value', 'ASC');
+                    break;
+            }
+        } else {
+            switch ($request->get('sort')) {
+                default:
+                    $query->orderBy('characters.number', 'DESC');
+                    break;
+                case 'number_desc':
+                    $query->orderBy('characters.number', 'DESC');
+                    break;
+                case 'number_asc':
+                    $query->orderBy('characters.number', 'ASC');
+                    break;
+                case 'id_desc':
+                    $query->orderBy('characters.id', 'DESC');
+                    break;
+                case 'id_asc':
+                    $query->orderBy('characters.id', 'ASC');
+                    break;
+                case 'sale_value_desc':
+                    $query->orderBy('characters.sale_value', 'DESC');
+                    break;
+                case 'sale_value_asc':
+                    $query->orderBy('characters.sale_value', 'ASC');
+                    break;
+            }
         }
 
         $query->visible(Auth::user() ?? null);
 
-        $subCategory = CharacterCategory::where('masterlist_sub_id', $sublist->id)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray();
-        if (!$subCategory) {
-            $subCategory = CharacterCategory::visible(Auth::user() ?? null)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray();
-        }
-        $subSpecies = Species::where('masterlist_sub_id', $sublist->id)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray();
-        if (!$subSpecies) {
-            $subSpecies = Species::visible(Auth::user() ?? null)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray();
-        }
-
-        return view('browse.sub_masterlist', [
-            'isMyo'       => false,
-            'characters'  => $query->paginate(24)->appends($request->query()),
-            'categories'  => [0 => 'Any Category'] + $subCategory,
-            'specieses'   => [0 => 'Any Species'] + $subSpecies,
-            'subtypes'    => ['none' => 'No Subtypes', 'any' => 'Any Subtype', 'hybrid' => 'Multiple / Hybrid Subtypes'] + Subtype::visible(Auth::user() ?? null)->orderBy('subtypes.sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'rarities'    => [0 => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'features'    => Feature::getDropdownItems(),
-            'sublist'     => $sublist,
-            'sublists'    => Sublist::orderBy('sort', 'DESC')->get(),
-            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
-        ]);
+        return $query;
     }
 }
