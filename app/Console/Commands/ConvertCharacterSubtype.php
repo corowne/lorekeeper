@@ -40,13 +40,19 @@ class ConvertCharacterSubtype extends Command {
         if (Schema::hasColumn('character_images', 'subtype_id')) {
             // Check for second subtype columns up front to save on some redundant checks
             $secondSubtype = false;
+            $thirdSubtype = false;
             if (Schema::hasColumn('character_images', 'subtype_id_2') && Schema::hasColumn('design_updates', 'subtype_id_2')) {
                 $secondSubtype = true;
+                if (Schema::hasColumn('character_images', 'subtype_id_3') && Schema::hasColumn('design_updates', 'subtype_id_3')) {
+                    $thirdSubtype = true;
+                }
             }
 
             // DESIGN UPDATES
-            $updates = CharacterDesignUpdate::where(function ($query) use ($secondSubtype) {
-                if ($secondSubtype) {
+            $updates = CharacterDesignUpdate::where(function ($query) use ($secondSubtype, $thirdSubtype) {
+                if ($thirdSubtype) {
+                    $query->whereNotNull('subtype_id')->orWhereNotNull('subtype_id_2')->orWhereNotNull('subtype_id_3');
+                } elseif ($secondSubtype) {
                     $query->whereNotNull('subtype_id')->orWhereNotNull('subtype_id_2');
                 } else {
                     $query->whereNotNull('subtype_id');
@@ -63,6 +69,9 @@ class ConvertCharacterSubtype extends Command {
                 }
                 if ($secondSubtype && $update->subtype_id_2) {
                     $updateSubtypes[] = $update->subtype_id_2;
+                }
+                if ($thirdSubtype && $update->subtype_id_3) {
+                    $updateSubtypes[] = $update->subtype_id_3;
                 }
 
                 $update->update([
@@ -82,10 +91,17 @@ class ConvertCharacterSubtype extends Command {
                     $table->dropColumn('subtype_id_2');
                 });
             }
+            if ($thirdSubtype) {
+                Schema::table('design_updates', function (Blueprint $table) {
+                    $table->dropColumn('subtype_id_3');
+                });
+            }
 
             // CHARACTER IMAGES
-            $characterImages = CharacterImage::where(function ($query) use ($secondSubtype) {
-                if ($secondSubtype) {
+            $characterImages = CharacterImage::where(function ($query) use ($secondSubtype, $thirdSubtype) {
+                if ($thirdSubtype) {
+                    $query->whereNotNull('subtype_id')->orWhereNotNull('subtype_id_2')->orWhereNotNull('subtype_id_3');
+                } elseif ($secondSubtype) {
                     $query->whereNotNull('subtype_id')->orWhereNotNull('subtype_id_2');
                 } else {
                     $query->whereNotNull('subtype_id');
@@ -108,6 +124,13 @@ class ConvertCharacterSubtype extends Command {
                         'subtype_id'         => $characterImage->subtype_id_2,
                     ]);
                 }
+
+                if ($thirdSubtype && $characterImage->subtype_id_3) {
+                    CharacterImageSubtype::create([
+                        'character_image_id' => $characterImage->id,
+                        'subtype_id'         => $characterImage->subtype_id_3,
+                    ]);
+                }
                 $imageBar->advance();
             }
 
@@ -120,6 +143,11 @@ class ConvertCharacterSubtype extends Command {
             if ($secondSubtype) {
                 Schema::table('character_images', function (Blueprint $table) {
                     $table->dropColumn('subtype_id_2');
+                });
+            }
+            if ($thirdSubtype) {
+                Schema::table('character_images', function (Blueprint $table) {
+                    $table->dropColumn('subtype_id_3');
                 });
             }
 
