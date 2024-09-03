@@ -334,9 +334,7 @@ class BrowseController extends Controller {
                 break;
         }
 
-        if (!Auth::check() || !Auth::user()->hasPower('manage_characters')) {
-            $query->visible();
-        }
+        $query->visible(Auth::user() ?? null);
 
         return view('browse.masterlist', [
             'isMyo'       => false,
@@ -465,9 +463,7 @@ class BrowseController extends Controller {
                 break;
         }
 
-        if (!Auth::check() || !Auth::user()->hasPower('manage_characters')) {
-            $query->visible();
-        }
+        $query->visible(Auth::user() ?? null);
 
         return view('browse.myo_masterlist', [
             'isMyo'       => true,
@@ -676,9 +672,7 @@ class BrowseController extends Controller {
                 break;
         }
 
-        if (!Auth::check() || !Auth::user()->hasPower('manage_characters')) {
-            $query->visible();
-        }
+        $query->visible(Auth::user() ?? null);
 
         $subCategory = CharacterCategory::where('masterlist_sub_id', $sublist->id)->orderBy('character_categories.sort', 'DESC')->pluck('name', 'id')->toArray();
         if (!$subCategory) {
