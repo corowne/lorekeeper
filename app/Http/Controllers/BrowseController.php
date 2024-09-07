@@ -164,6 +164,14 @@ class BrowseController extends Controller {
 
         $query = $this->handleMasterlistSearch($request, $query, $imageQuery);
 
+        $contentWarnings = CharacterImage::whereNotNull('content_warnings')->pluck('content_warnings')->flatten()->map(function ($warnings) {
+            return collect($warnings)->mapWithKeys(function ($warning) {
+                $lower = strtolower(trim($warning));
+
+                return [$lower => ucwords($lower)];
+            });
+        })->collapse()->unique()->sort()->toArray();
+
         return view('browse.masterlist', [
             'isMyo'       => false,
             'characters'  => $query->paginate(24)->appends($request->query()),
@@ -174,6 +182,7 @@ class BrowseController extends Controller {
             'features'    => Feature::getDropdownItems(),
             'sublists'    => Sublist::orderBy('sort', 'DESC')->get(),
             'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
+            'contentWarnings' => $contentWarnings,
         ]);
     }
 
@@ -247,6 +256,7 @@ class BrowseController extends Controller {
             'sublist'     => $sublist,
             'sublists'    => Sublist::orderBy('sort', 'DESC')->get(),
             'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
+            'contentWarnings' => $contentWarnings,
         ]);
     }
 
@@ -378,8 +388,58 @@ class BrowseController extends Controller {
                 $query->where('url', 'LIKE', '%'.$designerUrl.'%');
             });
         }
+        if ($request->get('excluded_tags') || $request->get('included_tags')) {
+            $excludedTags = $request->get('excluded_tags');
+            $includedTags = $request->get('included_tags');
+            $images = $imageQuery->get();
 
-        $query->whereIn('id', $imageQuery->pluck('character_id')->toArray());
+            $filteredImageQuery = $images;
+
+            // first exclude, then include
+            if ($excludedTags) {
+                $filteredImageQuery = $images->filter(function ($image) use ($excludedTags) {
+                    if (!$image->content_warnings) {
+                        return true;
+                    }
+
+                    if (in_array('all', $excludedTags) && $image->content_warnings) {
+                        return false;
+                    }
+
+                    foreach ($excludedTags as $tag) {
+                        if ($image->content_warnings && in_array($tag, $image->content_warnings)) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                });
+            }
+
+            if ($request->get('included_tags')) {
+                $filteredImageQuery = $filteredImageQuery->filter(function ($image) use ($includedTags) {
+                    if (!$image->content_warnings) {
+                        return false;
+                    }
+
+                    if (in_array('all', $includedTags) && $image->content_warnings) {
+                        return true;
+                    }
+
+                    foreach ($includedTags as $tag) {
+                        if ($image->content_warnings && in_array($tag, $image->content_warnings)) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                });
+            }
+        } else {
+            $filteredImageQuery = $imageQuery;
+        }
+
+        $query->whereIn('id', $filteredImageQuery->pluck('character_id')->toArray());
 
         if (!$isMyo) {
             if ($request->get('is_gift_art_allowed')) {

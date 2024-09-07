@@ -276,6 +276,25 @@ class AccountController extends Controller {
     }
 
     /**
+     * Changes user character warning visibility setting.
+     *
+     * @param App\Services\UserService $service
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postWarningVisibility(Request $request, UserService $service) {
+        if ($service->updateContentWarningVisibility($request->input('content_warning_visibility'), Auth::user())) {
+            flash('Setting updated successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+
+        return redirect()->back();
+    }
+
+    /**
      * Shows the notifications page.
      *
      * @return \Illuminate\Contracts\Support\Renderable

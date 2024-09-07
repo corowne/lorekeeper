@@ -22,7 +22,7 @@ class CharacterImage extends Model {
         'extension', 'use_cropper', 'hash', 'fullsize_hash', 'fullsize_extension', 'sort',
         'x0', 'x1', 'y0', 'y1',
         'description', 'parsed_description',
-        'is_valid',
+        'is_valid', 'content_warnings',
     ];
 
     /**
@@ -31,6 +31,15 @@ class CharacterImage extends Model {
      * @var string
      */
     protected $table = 'character_images';
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'content_warnings' => 'array',
+    ];
 
     /**
      * Whether the model contains timestamps to be saved and updated.
@@ -265,6 +274,23 @@ class CharacterImage extends Model {
         return asset($this->imageDirectory.'/'.$this->thumbnailFileName);
     }
 
+    /**
+     * Formats existing content warnings for editing.
+     *
+     * @return string
+     */
+    public function getEditWarningsAttribute() {
+        $contentWarnings = collect($this->content_warnings)->unique()->map(function ($warnings) {
+            return collect($warnings)->map(function ($warning) {
+                $lower = strtolower(trim($warning));
+
+                return ['warning' => ucwords($lower)];
+            });
+        })->collapse()->sort()->toJson();
+
+        return $contentWarnings;
+    }
+
     /**********************************************************************************************
 
         OTHER FUNCTIONS
@@ -284,5 +310,21 @@ class CharacterImage extends Model {
         }
 
         return implode(', ', $subtypes);
+    }
+
+    /**
+     * Determines if the character has content warning display.
+     *
+     * @param  User
+     * @param mixed|null $user
+     *
+     * @return bool
+     */
+    public function showContentWarnings($user = null) {
+        if ($user) {
+            return $user->settings->content_warning_visibility < 1 && $this->content_warnings;
+        }
+
+        return count($this->content_warnings ?? []) > 0;
     }
 }

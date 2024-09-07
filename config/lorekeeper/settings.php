@@ -383,4 +383,13 @@ return [
     */
     'site_logging_webhook'                              => env('SITE_LOGGING_WEBHOOK', null),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Enable Character Content Warnings
+    |--------------------------------------------------------------------------
+    |
+    | Allows characters to have content warnings.
+    |
+    */
+    'enable_character_content_warnings'                 => 1,
 ];
