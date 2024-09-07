@@ -281,10 +281,18 @@ class UserService extends Service {
      * @param mixed $user
      */
     public function updateContentWarningVisibility($data, $user) {
-        $user->settings->content_warning_visibility = $data;
-        $user->settings->save();
+        DB::beginTransaction();
 
-        return true;
+        try {
+            $user->settings->content_warning_visibility = $data;
+            $user->settings->save();
+
+            return $this->commitReturn(true);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return $this->rollbackReturn(false);
     }
 
     /**
