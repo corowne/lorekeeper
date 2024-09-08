@@ -1,5 +1,5 @@
 @php
-    if (old('stack_id')) {
+    if (old('stack_id') && old('stack_quantity')) {
         $old_selection = array_combine(old('stack_id'), old('stack_quantity'));
     }
 @endphp

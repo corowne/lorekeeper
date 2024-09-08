@@ -225,7 +225,7 @@ class UserController extends Controller {
     }
 
     /**
-     * Shows a user's profile.
+     * Shows a user's Bank.
      *
      * @param string $name
      *

@@ -16,7 +16,7 @@ class PermalinkController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getComment($id) {
-        $comments = Comment::withTrashed()->get();
+        $comments = Comment::withTrashed();
         //$comments = $comments->sortByDesc('created_at');
         $comment = $comments->find($id);
 
@@ -61,6 +61,7 @@ class PermalinkController extends Controller {
                         }
                         break;
                 }
+                break;
             case 'Staff-Staff':
                 if (!Auth::check()) {
                     abort(404);

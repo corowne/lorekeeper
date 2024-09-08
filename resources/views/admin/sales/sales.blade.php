@@ -16,39 +16,53 @@
         <p>No sales found.</p>
     @else
         {!! $saleses->render() !!}
-        <table class="table table-sm page-table">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Posted At</th>
-                    <th>Last Edited</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
+        <div class="mb-4 logs-table">
+            <div class="logs-table-header">
+                <div class="row">
+                    <div class="col-12 col-md-5">
+                        <div class="logs-table-cell">Title</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="logs-table-cell">Posted At</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="logs-table-cell">Last Edited</div>
+                    </div>
+                </div>
+            </div>
+            <div class="logs-table-body">
                 @foreach ($saleses as $sales)
-                    <tr>
-                        <td>
-                            @if (!$sales->is_visible)
-                                @if ($sales->post_at)
-                                    <i class="fas fa-clock" data-toggle="tooltip" title="This post is scheduled to be posted in the future."></i>
-                                @else
-                                    <i class="fas fa-eye-slash" data-toggle="tooltip" title="This post is hidden."></i>
-                                @endif
-                            @endif
-                            <a href="{{ $sales->url }}">{{ $sales->title }}</a>
-                        </td>
-                        <td>{!! format_date($sales->post_at ?: $sales->created_at) !!}</td>
-                        <td>{!! format_date($sales->updated_at) !!}</td>
-                        <td class="text-right">
-                            <a href="{{ url('admin/sales/edit/' . $sales->id) }}" class="btn btn-primary">Edit</a>
-                        </td>
-                    </tr>
+                    <div class="logs-table-row">
+                        <div class="row flex-wrap">
+                            <div class="col-12 col-md-5">
+                                <div class="logs-table-cell">
+                                    @if (!$sales->is_visible)
+                                        @if ($sales->post_at)
+                                            <i class="fas fa-clock mr-1" data-toggle="tooltip" title="This post is scheduled to be posted in the future."></i>
+                                        @else
+                                            <i class="fas fa-eye-slash mr-1" data-toggle="tooltip" title="This post is hidden."></i>
+                                        @endif
+                                    @endif
+                                    <a href="{{ $sales->url }}">{{ $sales->title }}</a>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="logs-table-cell">{!! pretty_date($sales->post_at ?: $sales->created_at) !!}</div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="logs-table-cell">{!! pretty_date($sales->updated_at) !!}</div>
+                            </div>
+                            <div class="col-12 col-md-1 text-right">
+                                <div class="logs-table-cell"><a href="{{ url('admin/sales/edit/' . $sales->id) }}" class="btn btn-primary py-0 px-2 w-100">Edit</a></div>
+                            </div>
+                        </div>
+                    </div>
                 @endforeach
-            </tbody>
-
-        </table>
+            </div>
+        </div>
         {!! $saleses->render() !!}
+
+        <div class="text-center mt-4 small text-muted">{{ $saleses->total() }} result{{ $saleses->total() == 1 ? '' : 's' }} found.</div>
     @endif
 
 @endsection

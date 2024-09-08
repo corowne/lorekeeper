@@ -249,6 +249,7 @@ class CharacterImageController extends Controller {
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postImageReupload(Request $request, CharacterManager $service, $id) {
+        $request->validate(['image' => CharacterImage::$createRules['image'], 'thumbnail' => CharacterImage::$createRules['thumbnail']]);
         $data = $request->only(['image', 'thumbnail', 'x0', 'x1', 'y0', 'y1', 'use_cropper']);
         $image = CharacterImage::find($id);
         if (!$image) {
