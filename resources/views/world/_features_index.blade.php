@@ -22,7 +22,7 @@
                                         <i class="fas fa-eye-slash mr-1"></i>
                                     @endif
                                     {!! $feature->first()->displayName !!}
-                                    @if ($feature->first()->subtype)
+                                    @if ($showSubtype && $feature->first()->subtype)
                                         <br />({!! $feature->first()->subtype->displayName !!} Subtype)
                                     @endif
                                 </p>
