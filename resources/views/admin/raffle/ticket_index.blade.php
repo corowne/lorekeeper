@@ -84,27 +84,28 @@
                         </div>
                     @endif
                 </div>
-                <div class="logs-table-body">
-                    @foreach ($tickets as $count => $ticket)
-                        <div class="logs-table-row">
-                            <div class="row flex-wrap">
-                                <div class="col-1">
-                                    <div class="logs-table-cell text-center">{{ $page * 200 + $count + 1 }}</div>
-                                </div>
-                                <div class="col-8 col-md-3">
-                                    <div class="logs-table-cell text-left">{!! $ticket->displayHolderName !!}</div>
-                                </div>
-                                @if ($raffle->is_active < 2)
-                                    <div class="col-3">
-                                        <div class="logs-table-cell text-right">{!! Form::open(['url' => 'admin/raffles/view/ticket/delete/' . $ticket->id]) !!}{!! Form::submit('Delete', ['class' => 'btn btn-danger btn-sm']) !!}{!! Form::close() !!}</div>
-                                    </div>
-                                @endif
+            </div>
+            <div class="logs-table-body">
+                @foreach ($tickets as $count => $ticket)
+                    <div class="logs-table-row">
+                        <div class="row flex-wrap">
+                            <div class="col-1">
+                                <div class="logs-table-cell text-center">{{ $page * 200 + $count + 1 }}</div>
                             </div>
+                            <div class="col-8 col-md-3">
+                                <div class="logs-table-cell text-left">{!! $ticket->displayHolderName !!}</div>
+                            </div>
+                            @if ($raffle->is_active < 2)
+                                <div class="col-3">
+                                    <div class="logs-table-cell text-right">{!! Form::open(['url' => 'admin/raffles/view/ticket/delete/' . $ticket->id]) !!}{!! Form::submit('Delete', ['class' => 'btn btn-danger btn-sm']) !!}{!! Form::close() !!}</div>
+                                </div>
+                            @endif
                         </div>
-                    @endforeach
-                </div>
+                    </div>
+                @endforeach
             </div>
         </div>
+    </div>
         <div class="text-right">{!! $tickets->render() !!}</div>
 
         <div class="modal fade" id="raffle-modal" tabindex="-1" role="dialog">
