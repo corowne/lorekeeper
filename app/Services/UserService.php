@@ -275,6 +275,27 @@ class UserService extends Service {
     }
 
     /**
+     * Updates user's warning visibility setting.
+     *
+     * @param mixed $data
+     * @param mixed $user
+     */
+    public function updateContentWarningVisibility($data, $user) {
+        DB::beginTransaction();
+
+        try {
+            $user->settings->content_warning_visibility = $data;
+            $user->settings->save();
+
+            return $this->commitReturn(true);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return $this->rollbackReturn(false);
+    }
+
+    /**
      * Updates the user's avatar.
      *
      * @param User  $user

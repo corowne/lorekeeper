@@ -96,6 +96,18 @@
                 {!! Form::label('Has Traits: ') !!} {!! add_help('This will narrow the search to characters that have ALL of the selected traits at the same time.') !!}
                 {!! Form::select('feature_ids[]', $features, Request::get('feature_ids'), ['class' => 'form-control feature-select userselectize', 'placeholder' => 'Select Traits', 'multiple']) !!}
             </div>
+            @if (!$isMyo)
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        {!! Form::label('Exclude Selected Tags: ') !!} {!! add_help('This will exclude characters that have ANY of the selected tags.') !!}
+                        {!! Form::select('excluded_tags[]', ['all' => 'Exclude All'] + $contentWarnings, Request::get('excluded_tags'), ['class' => 'form-control feature-select userselectize', 'placeholder' => 'Select Tags', 'multiple']) !!}
+                    </div>
+                    <div class="col-md-6 form-group">
+                        {!! Form::label('Include Selected Tags: ') !!} {!! add_help('This will include characters that have ANY of the selected tags.') !!}
+                        {!! Form::select('included_tags[]', ['all' => 'Include All'] + $contentWarnings, Request::get('included_tags'), ['class' => 'form-control feature-select userselectize', 'placeholder' => 'Select Tags', 'multiple']) !!}
+                    </div>
+                </div>
+            @endif
             <hr />
             <div class="form-group">
                 {!! Form::checkbox('search_images', 1, Request::get('search_images'), ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
@@ -136,19 +148,24 @@
     @foreach ($characters->chunk(4) as $chunk)
         <div class="row">
             @foreach ($chunk as $character)
-                <div class="col-md-3 col-6 text-center">
+                <div class="col-md-3 col-6 text-center mb-3">
                     <div>
-                        <a href="{{ $character->url }}"><img src="{{ $character->image->thumbnailUrl }}" class="img-thumbnail" alt="Thumbnail for {{ $character->fullName }}" /></a>
+                        <a href="{{ $character->url }}">
+                            <img src="{{ $character->image->thumbnailUrl }}" class="img-thumbnail {{ $character->image->showContentWarnings(Auth::user() ?? null) ? 'content-warning' : '' }}" alt="Thumbnail for {{ $character->fullName }}" />
+                        </a>
                     </div>
                     <div class="mt-1">
                         <a href="{{ $character->url }}" class="h5 mb-0">
                             @if (!$character->is_visible)
                                 <i class="fas fa-eye-slash"></i>
-                            @endif {{ Illuminate\Support\Str::limit($character->fullName, 20, $end = '...') }}
+                            @endif {!! $character->warnings !!} {{ Illuminate\Support\Str::limit($character->fullName, 20, $end = '...') }}
                         </a>
                     </div>
                     <div class="small">
                         {!! $character->image->species_id ? $character->image->species->displayName : 'No Species' !!} ・ {!! $character->image->rarity_id ? $character->image->rarity->displayName : 'No Rarity' !!} ・ {!! $character->displayOwner !!}
+                        @if (count($character->image->content_warnings ?? []) && (!Auth::check() || (Auth::check() && Auth::user()->settings->content_warning_visibility < 2)))
+                            <p class="mb-0"><span class="text-danger mr-1"><strong>Character Warning:</strong></span> {{ implode(', ', $character->image->content_warnings) }}</p>
+                        @endif
                     </div>
                 </div>
             @endforeach
