@@ -99,11 +99,11 @@
             @if (!$isMyo)
                 <div class="row">
                     <div class="col-md-6 form-group">
-                        {!! Form::label('Exclude Selected Tags: ') !!} {!! add_help('This will exclude characters that have ANY of the selected traits at the same time.') !!}
+                        {!! Form::label('Exclude Selected Tags: ') !!} {!! add_help('This will exclude characters that have ANY of the selected tags.') !!}
                         {!! Form::select('excluded_tags[]', ['all' => 'Exclude All'] + $contentWarnings, Request::get('excluded_tags'), ['class' => 'form-control feature-select userselectize', 'placeholder' => 'Select Tags', 'multiple']) !!}
                     </div>
                     <div class="col-md-6 form-group">
-                        {!! Form::label('Include Selected Tags: ') !!} {!! add_help('This will include characters that have ANY of the selected traits at the same time.') !!}
+                        {!! Form::label('Include Selected Tags: ') !!} {!! add_help('This will include characters that have ANY of the selected tags.') !!}
                         {!! Form::select('included_tags[]', ['all' => 'Include All'] + $contentWarnings, Request::get('included_tags'), ['class' => 'form-control feature-select userselectize', 'placeholder' => 'Select Tags', 'multiple']) !!}
                     </div>
                 </div>
