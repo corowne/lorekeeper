@@ -87,6 +87,25 @@ class CharacterManager extends Service
     {
         DB::beginTransaction();
 
+        // NOTE: (Daire) This will select a random species, rarity, and subtype if the user has not selected one.
+        if ($data['species_id'] == -1) {
+            $allSpecies = Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray();
+            $species = array_rand($allSpecies);
+            $data['species_id'] = $species;
+        }
+
+        if ($data['rarity_id'] == -1) {
+            $allRarities = Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray();
+            $rarity = array_rand($allRarities);
+            $data['rarity_id'] = $rarity;
+        }
+
+        if ($data['subtype_id'] == -1) {
+            $allSubtypes = Subtype::where('species_id','=',$data['species_id'])->pluck('name', 'id')->toArray();
+            $subtype = array_rand($allSubtypes);
+            $data['subtype_id'] = $subtype;
+        }
+
         try {
             if(!$isMyo && Character::where('slug', $data['slug'])->exists()) throw new \Exception("Please enter a unique character code.");
 

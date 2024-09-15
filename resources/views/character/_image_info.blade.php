@@ -90,7 +90,8 @@
 
                 @if(Auth::check() && Auth::user()->hasPower('manage_characters'))
                     <div class="mt-3">
-                        <a href="#" class="btn btn-outline-info btn-sm edit-features" data-id="{{ $image->id }}"><i class="fas fa-cog"></i> Edit</a>
+                        <!-- // NOTE: (Daire) This prevents users from editing their MYO to put a custom rarity, species or subtype on it. -->
+                        <!-- <a href="#" class="btn btn-outline-info btn-sm edit-features" data-id="{{ $image->id }}"><i class="fas fa-cog"></i> Edit</a> -->
                     </div>
                 @endif
             </div>

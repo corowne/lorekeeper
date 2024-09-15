@@ -99,13 +99,17 @@ class CharacterImageController extends Controller
      */
     public function getEditImageFeatures($id)
     {
-      $image = CharacterImage::find($id);
-
+        $image = CharacterImage::find($id);
+        
         return view('character.admin._edit_features_modal', [
             'image' => $image,
-            'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes' => ['0' => 'Select Subtype'] + Subtype::where('species_id','=',$image->species_id)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            // NOTE: (Daire) This prevents users from editing their MYO to put a custom rarity, species or subtype on it.
+            // 'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            // 'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            // 'subtypes' => ['0' => 'Select Subtype'] + Subtype::where('species_id','=',$image->species_id)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'rarities' => Rarity::where('id','=',$image->rarity_id)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'specieses' => Species::where('id','=',$image->species_id)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => Subtype::where('id','=',$image->subtype_id)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray()
         ]);
     }
