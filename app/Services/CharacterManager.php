@@ -102,8 +102,12 @@ class CharacterManager extends Service
 
         if ($data['subtype_id'] == -1) {
             $allSubtypes = Subtype::where('species_id','=',$data['species_id'])->pluck('name', 'id')->toArray();
-            $subtype = array_rand($allSubtypes);
-            $data['subtype_id'] = $subtype;
+            if (count($allSubtypes) > 0) {
+                $subtype = array_rand($allSubtypes);
+                $data['subtype_id'] = $subtype;
+            } else {
+                $data['subtype_id'] = 0;
+            }
         }
 
         try {
@@ -341,9 +345,12 @@ class CharacterManager extends Service
             if(!$isMyo) $this->processImage($image);
 
             // Attach features
-            foreach($data['feature_id'] as $key => $featureId) {
-                if($featureId) {
-                    $feature = CharacterFeature::create(['character_image_id' => $image->id, 'feature_id' => $featureId, 'data' => $data['feature_data'][$key]]);
+            // TODO: (Daire) Randomize features if creating from MYO
+            if (isset($data['feature_id'])) {
+                foreach($data['feature_id'] as $key => $featureId) {
+                    if($featureId) {
+                        $feature = CharacterFeature::create(['character_image_id' => $image->id, 'feature_id' => $featureId, 'data' => $data['feature_data'][$key]]);
+                    }
                 }
             }
 
