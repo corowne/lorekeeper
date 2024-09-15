@@ -1,4 +1,4 @@
-One of my friends wanted to use lorekeeper but have the character creation be ranzomized so I made this fork to support that.
+One of my friends wanted to use lorekeeper but have the character creation be randomized so I made this fork to support that.
 
 # Lorekeeper
 
