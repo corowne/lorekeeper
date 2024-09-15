@@ -1,3 +1,5 @@
+One of my friends wanted to use lorekeeper but have the character creation be ranzomized so I made this fork to support that.
+
 # Lorekeeper
 
 Lorekeeper is a framework for managing deviantART-based ARPGs/closed species masterlists coded using the Laravel framework. In simple terms - you will be able to make a copy of the site, do some minor setup/enter data about your species and game, and it'll provide you with the automation to keep track of your species, players and ARPG submissions.
