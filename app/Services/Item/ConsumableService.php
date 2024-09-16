@@ -177,7 +177,8 @@ class ConsumableService extends Service
         $matching_trait = CharacterFeature::where('feature_id', $trait_removing)->where('character_image_id', $character->image->id)->first();
 
         // Shouldn't be able to remove the trait if it's a born/origin trait Added traits will have the data of "Added from a consumable"
-        if ($matching_trait->data != "Added from a consumable") { throw new \Exception("Cannot remove a born trait"); }
+        // NOTE: Removed at Z's request
+        // if ($matching_trait->data != "Added from a consumable") { throw new \Exception("Cannot remove a born trait"); }
 
         CharacterFeature::where('feature_id', $trait_removing)->delete();
 
