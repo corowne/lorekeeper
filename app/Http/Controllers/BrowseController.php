@@ -245,6 +245,14 @@ class BrowseController extends Controller {
             $subSpecies = Species::visible(Auth::user() ?? null)->orderBy('specieses.sort', 'DESC')->pluck('name', 'id')->toArray();
         }
 
+        $contentWarnings = CharacterImage::whereNotNull('content_warnings')->pluck('content_warnings')->flatten()->map(function ($warnings) {
+            return collect($warnings)->mapWithKeys(function ($warning) {
+                $lower = strtolower(trim($warning));
+
+                return [$lower => ucwords($lower)];
+            });
+        })->collapse()->unique()->sort()->toArray();
+
         return view('browse.sub_masterlist', [
             'isMyo'           => false,
             'characters'      => $query->paginate(24)->appends($request->query()),
