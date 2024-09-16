@@ -321,8 +321,8 @@ class UserController extends Controller {
         }
 
         return view('user.submission_logs', [
-            'user' => $this->user,
-            'logs' => $logs->paginate(30)->appends($request->query()),
+            'user'    => $this->user,
+            'logs'    => $logs->paginate(30)->appends($request->query()),
             'prompts' => Prompt::active()->pluck('name', 'id'),
         ]);
     }
