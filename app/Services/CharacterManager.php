@@ -372,11 +372,31 @@ class CharacterManager extends Service
     }
 
     /**
-     * Returns a list of features for the given image. Should include ID and data for each
+     * NOTE: (Daire) Returns a list of features for the given image. Should include ID and data for each
+     * 0-40 common (40% chance)
+     * 41-75 uncommon (35% chance)
+     * 76-95 rare (20% chance)
+     * 95-100 very rare (5% chance)
      */
     private function getRandomFeatures($featureCount)
     {
-        $allFeatures = Feature::orderBy('id', 'DESC')->pluck('name', 'id')->toArray();
+        $rarityNumber = rand(1, 100);
+
+        $rarityName = "Common";
+        if($rarityNumber >= 95) {
+            $rarityName = "Very Rare";
+        } else if($rarityNumber >= 75) {
+            $rarityName = "Rare";
+        } else if($rarityNumber >= 40) {
+            $rarityName = "Uncommon";
+        } else {
+            $rarityName = "Common";
+        }
+
+        $rarity = Rarity::where('name','=',$rarityName)->pluck('id')->toArray();
+
+        $allFeatures = Feature::where('rarity_id','=',$rarity)->orderBy('id', 'DESC')->pluck('name', 'id')->toArray();
+        if (!is_array($allFeatures)) $allFeatures = [$allFeatures];
         if (count($allFeatures) == 0) return [];
         $featuresGiven = array_rand($allFeatures, $featureCount);
         if (!is_array($featuresGiven)) $featuresGiven = [$featuresGiven];
