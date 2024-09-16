@@ -94,10 +94,7 @@ class CharacterManager extends Service
             $species = array_rand($allSpecies);
             $data['species_id'] = $species;
 
-            // NOTE: (Daire) Random rarity
-            $allRarities = Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray();
-            $rarity = array_rand($allRarities);
-            $data['rarity_id'] = $rarity;
+            $data['rarity_id'] = Rarity::where('name','=','Civillian')->pluck('id')->toArray()[0];
 
             // NOTE: (Daire) Random subtype
             $allSubtypes = Subtype::where('species_id','=',$data['species_id'])->pluck('name', 'id')->toArray();
@@ -185,6 +182,26 @@ class CharacterManager extends Service
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
+    }
+
+    private function getRandomRarity()
+    {
+        $rarityNumber = rand(1, 100);
+
+        $rarityName = "Common";
+        if($rarityNumber >= 95) {
+            $rarityName = "Very Rare";
+        } else if($rarityNumber >= 75) {
+            $rarityName = "Rare";
+        } else if($rarityNumber >= 40) {
+            $rarityName = "Uncommon";
+        } else {
+            $rarityName = "Common";
+        }
+
+        $rarity = Rarity::where('name','=',$rarityName)->pluck('id')->toArray();
+        if (is_array($rarity)) $rarity = $rarity[0];
+        return $rarity;
     }
 
     /**
@@ -380,20 +397,7 @@ class CharacterManager extends Service
      */
     private function getRandomFeatures($featureCount)
     {
-        $rarityNumber = rand(1, 100);
-
-        $rarityName = "Common";
-        if($rarityNumber >= 95) {
-            $rarityName = "Very Rare";
-        } else if($rarityNumber >= 75) {
-            $rarityName = "Rare";
-        } else if($rarityNumber >= 40) {
-            $rarityName = "Uncommon";
-        } else {
-            $rarityName = "Common";
-        }
-
-        $rarity = Rarity::where('name','=',$rarityName)->pluck('id')->toArray();
+        $rarity = CharacterManager::getRandomRarity();
 
         $allFeatures = Feature::where('rarity_id','=',$rarity)->orderBy('id', 'DESC')->pluck('name', 'id')->toArray();
         if (!is_array($allFeatures)) $allFeatures = [$allFeatures];
