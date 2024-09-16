@@ -197,14 +197,11 @@ class ConsumableService extends Service
         // Remove all the traits that were added from consumables
         CharacterFeature::where('character_image_id', $character->image->id)->where('data', 'Added from a consumable')->delete();
 
-        // Get a list of all born traits that exist on the character
-        $born_traits = CharacterFeature::where('character_image_id', $character->image->id)->where('data', '!=', 'Added from a consumable')->get();
-
-        // TODO: Should use drop rates and a roll table to get a random trait
         // Get a lsit of all traits that exist in the game
         $all_traits = Feature::all();
 
         // Add $traits_from_consumables_count new traits to the character but avoid adding the same trait twice
+        // TODO: Might need to prevent re-adding the exact same trait that was removed
         $traits_added = 0;
         while ($traits_added < $traits_from_consumables_count)
         {
