@@ -90,56 +90,7 @@ class ConsumableService extends Service
     {
         DB::beginTransaction();
 
-        try {
-            // TODO: Remove when done testing
-            // throw new \Exception(json_encode($data));
-            // {
-            //     "_token": "89n7FqOH1UpsJElWATzyxJhxu2phKUEUqc6527QL",
-            //     "ids": ["1"],
-            //     "quantities": ["1"],
-            //     "tag": "consumable",
-            //     "character": "41",
-            //     "action": "act"
-            // }
-
-            // TODO: Remove when done testing
-            // throw new \Exception(json_encode($stacks));
-            // [
-            //     {
-            //       "id": 3,
-            //       "item_id": 4,
-            //       "character_id": 41,
-            //       "count": 1,
-            //       "data": { "data": null, "notes": null },
-            //       "created_at": "2024-09-16T12:15:20.000000Z",
-            //       "updated_at": "2024-09-16T12:15:20.000000Z",
-            //       "deleted_at": null,
-            //       "stack_name": null,
-            //       "item": {
-            //         "id": 4,
-            //         "item_category_id": 1,
-            //         "name": "Item trait re-roll",
-            //         "has_image": 0,
-            //         "description": "Re-rolls any non required/born traits</p>",
-            //         "parsed_description": "Re-rolls any non required/born traits</p>",
-            //         "allow_transfer": 1,
-            //         "data": {
-            //           "rarity": null,
-            //           "uses": null,
-            //           "release": null,
-            //           "prompts": null,
-            //           "resell": null
-            //         },
-            //         "reference_url": null,
-            //         "artist_alias": null,
-            //         "artist_url": null,
-            //         "artist_id": null,
-            //         "is_released": 1,
-            //         "image_url": null
-            //       }
-            //     }
-            // ]
-              
+        try {              
             foreach($stacks as $key=>$stack) {
                 // We don't want to let anyone who isn't the owner of the Consumable to use it, so do some validation...
                 if($user->characters()->where('id', $stack->character_id)->count() == 0) {
@@ -147,14 +98,6 @@ class ConsumableService extends Service
                 }
 
                 $quantity = $data['quantities'][$key];
-
-                // TODO: Remove when done testing
-                // throw new \Exception(json_encode($stack->item->tag('consumable')->data));
-                // {
-                //     "trait_added":"1",
-                //     "trait_removed":"0",
-                //     "reroll_traits":"0"
-                // }
 
                 $trait_adding = $stack->item->tag('consumable')->data['trait_added'];
                 $trait_removing = $stack->item->tag('consumable')->data['trait_removed'];
@@ -189,6 +132,7 @@ class ConsumableService extends Service
                     }
                 }
             }
+
             return $this->commitReturn(true);
         } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
@@ -225,14 +169,15 @@ class ConsumableService extends Service
         // Check if the character has the trait
         if (!$character->image->features->contains('feature_id', $trait_removing)) { throw new \Exception("Character does not have this trait."); }
 
-        // TODO: Shouldn't be able to remove the trait if it's a born/origin trait
+        $matching_trait = CharacterFeature::where('feature_id', $trait_removing)->where('character_image_id', $character->image->id)->first();
 
-        // Remove the trait from the character
-        $feature = $character->image->features()->where('feature_id', $trait_removing)->first();
-        $feature->delete();
+        // Shouldn't be able to remove the trait if it's a born/origin trait Added traits will have the data of "Added from a consumable"
+        if ($matching_trait->data != "Added from a consumable") { throw new \Exception("Cannot remove a born trait"); }
+
+        CharacterFeature::where('feature_id', $trait_removing)->delete();
 
         // Return the feature
-        return $feature;
+        return $character;
     }
 
     private function actRerollTraits($reroll_traits, $user, $character_id)
