@@ -345,6 +345,8 @@ class CharacterManager extends Service
 
             // NOTE: (Daire) Randomize features if creating from MYO
             if($isMyo) {
+                $data['feature_id'] = [];
+                $data['feature_data'] = [];
                 $featuresGiven = CharacterManager::getRandomFeatures(rand(1, 1));
                 if (count($featuresGiven) > 0) {
                     foreach($featuresGiven as $key => $featureId) {
