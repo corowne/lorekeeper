@@ -142,8 +142,9 @@ class ConsumableService extends Service
 
     private function actAddTrait($trait_adding, $user, $character_id)
     {
-        // Get the trait to add
+        // Check that the trait exists
         $trait = Feature::find($trait_adding);
+        if (!$trait) { throw new \Exception("Trait not found."); }
 
         // Get the character to add the trait to
         $character = $user->characters()->where('id', $character_id)->first();
@@ -160,8 +161,9 @@ class ConsumableService extends Service
 
     private function actRemoveTrait($trait_removing, $user, $character_id)
     {
-        // Get the trait to remove
+        // Check that the trait exists
         $trait = Feature::find($trait_removing);
+        if (!$trait) { throw new \Exception("Trait not found."); }
 
         // Get the character to remove the trait from
         $character = $user->characters()->where('id', $character_id)->first();
