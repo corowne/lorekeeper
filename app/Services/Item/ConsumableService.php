@@ -1,5 +1,6 @@
 <?php namespace App\Services\Item;
 
+use App\Models\Character\Character;
 use App\Models\Character\CharacterFeature;
 use App\Services\Service;
 use Illuminate\Http\Request;
@@ -93,8 +94,13 @@ class ConsumableService extends Service
 
         try {              
             foreach($stacks as $key=>$stack) {
+                if ($stack->character_id == null) {
+                    throw new \Exception("This consumable is not bound to a character.");
+                }
+
                 // We don't want to let anyone who isn't the owner of the Consumable to use it, so do some validation...
-                if($user->characters()->where('id', $stack->character_id)->count() == 0) {
+                $character = $user->characters()->where('id', $stack->character_id)->first();
+                if($character == null) {
                     throw new \Exception("You do not own this consumable.");
                 }
 
@@ -120,17 +126,17 @@ class ConsumableService extends Service
 
                         if ($trait_adding != 0)
                         {
-                            $this->actAddTrait($trait_adding, $user, $data['character']);
+                            $this->actAddTrait($trait_adding, $user, $character);
                         }
                         
                         if ($trait_removing != 0)
                         {
-                            $this->actRemoveTrait($trait_removing, $user, $data['character']);
+                            $this->actRemoveTrait($trait_removing, $user, $character);
                         }
                         
                         if ($reroll_traits != 0)
                         {
-                            $this->actRerollTraits($reroll_traits, $user, $data['character']);
+                            $this->actRerollTraits($reroll_traits, $user, $character);
                         }
                     }
                 }
@@ -143,14 +149,11 @@ class ConsumableService extends Service
         return $this->rollbackReturn(false);
     }
 
-    private function actAddTrait($trait_adding, $user, $character_id)
+    private function actAddTrait($trait_adding, $user, $character)
     {
         // Check that the trait exists
         $trait = Feature::find($trait_adding);
         if (!$trait) { throw new \Exception("Trait not found."); }
-
-        // Get the character to add the trait to
-        $character = $user->characters()->where('id', $character_id)->first();
 
         // Check if the character already has the trait
         if ($character->image->features->contains('feature_id', $trait_adding)) { throw new \Exception("Character already has this trait."); }
@@ -162,14 +165,11 @@ class ConsumableService extends Service
         return $feature;
     }
 
-    private function actRemoveTrait($trait_removing, $user, $character_id)
+    private function actRemoveTrait($trait_removing, $user, $character)
     {
         // Check that the trait exists
         $trait = Feature::find($trait_removing);
         if (!$trait) { throw new \Exception("Trait not found."); }
-
-        // Get the character to remove the trait from
-        $character = $user->characters()->where('id', $character_id)->first();
 
         // Check if the character has the trait
         if (!$character->image->features->contains('feature_id', $trait_removing)) { throw new \Exception("Character does not have this trait."); }
@@ -185,11 +185,8 @@ class ConsumableService extends Service
         return $character;
     }
 
-    private function actRerollTraits($reroll_traits, $user, $character_id)
+    private function actRerollTraits($reroll_traits, $user, $character)
     {
-        // Get the character to rerooll the traits for
-        $character = $user->characters()->where('id', $character_id)->first();
-
         // Get all the traits that were added from consumables
         $traits = CharacterFeature::where('character_image_id', $character->image->id)->where('data', 'Added from a consumable')->get();
         $traits_from_consumables_count = $traits->count();
