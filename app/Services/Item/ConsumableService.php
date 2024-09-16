@@ -9,6 +9,7 @@ use DB;
 use App\Services\InventoryManager;
 
 use App\Models\Feature\Feature;
+use App\Models\Rarity;
 
 class ConsumableService extends Service
 {
@@ -111,23 +112,25 @@ class ConsumableService extends Service
 
                 // Next, try to delete the tag item. If successful, we can start distributing rewards.
                 if((new InventoryManager)->debitStack($stack->character, 'Consumable Used', ['data' => ''], $stack, $quantity)) {
-                    for($q=0; $q<$quantity; $q++) {
-        
+                    for($q=0; $q<$quantity; $q++) {                        
+                        if ($trait_adding == 0 && $trait_removing == 0 && $reroll_traits == 0)
+                        {
+                            throw new \Exception("No action specified for Consumable.");
+                        }
+
                         if ($trait_adding != 0)
                         {
                             $this->actAddTrait($trait_adding, $user, $data['character']);
                         }
-                        else if ($trait_removing != 0)
+                        
+                        if ($trait_removing != 0)
                         {
                             $this->actRemoveTrait($trait_removing, $user, $data['character']);
                         }
-                        else if ($reroll_traits != 0)
+                        
+                        if ($reroll_traits != 0)
                         {
                             $this->actRerollTraits($reroll_traits, $user, $data['character']);
-                        }
-                        else
-                        {
-                            throw new \Exception("No action specified for Consumable.");
                         }
                     }
                 }
@@ -184,6 +187,55 @@ class ConsumableService extends Service
 
     private function actRerollTraits($reroll_traits, $user, $character_id)
     {
-        throw new \Exception("Rerolling traits is not yet implemented.");
+        // Get the character to rerooll the traits for
+        $character = $user->characters()->where('id', $character_id)->first();
+
+        // Get all the traits that were added from consumables
+        $traits = CharacterFeature::where('character_image_id', $character->image->id)->where('data', 'Added from a consumable')->get();
+        $traits_from_consumables_count = $traits->count();
+
+        // Remove all the traits that were added from consumables
+        CharacterFeature::where('character_image_id', $character->image->id)->where('data', 'Added from a consumable')->delete();
+
+        // Get a list of all born traits that exist on the character
+        $born_traits = CharacterFeature::where('character_image_id', $character->image->id)->where('data', '!=', 'Added from a consumable')->get();
+
+        // TODO: Should use drop rates and a roll table to get a random trait
+        // Get a lsit of all traits that exist in the game
+        $all_traits = Feature::all();
+
+        // Add $traits_from_consumables_count new traits to the character but avoid adding the same trait twice
+        $traits_added = 0;
+        while ($traits_added < $traits_from_consumables_count)
+        {
+            $rarity = $this->getRandomRarity();
+            $trait = $all_traits->where('rarity_id', $rarity)->random();
+            if (!$character->image->features->contains('feature_id', $trait->id))
+            {
+                $feature = CharacterFeature::create(['character_image_id' => $character->image->id, 'feature_id' => $trait->id, 'data' => 'Added from a consumable']);
+                $traits_added++;
+            }
+        }
     }
+
+    private function getRandomRarity()
+    {
+        $rarityNumber = rand(1, 100);
+
+        $rarityName = "Common";
+        if($rarityNumber >= 95) {
+            $rarityName = "Very Rare";
+        } else if($rarityNumber >= 75) {
+            $rarityName = "Rare";
+        } else if($rarityNumber >= 40) {
+            $rarityName = "Uncommon";
+        } else {
+            $rarityName = "Common";
+        }
+
+        $rarity = Rarity::where('name','=',$rarityName)->pluck('id')->toArray();
+        if (is_array($rarity)) $rarity = $rarity[0];
+        return $rarity;
+    }
+
 }
