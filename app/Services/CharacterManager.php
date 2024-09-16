@@ -88,19 +88,18 @@ class CharacterManager extends Service
         DB::beginTransaction();
 
         // NOTE: (Daire) This will select a random species, rarity, and subtype if the user has not selected one.
-        if ($data['species_id'] == -1) {
+        if ($isMyo) {
+            // NOTE: (Daire) Random species
             $allSpecies = Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray();
             $species = array_rand($allSpecies);
             $data['species_id'] = $species;
-        }
 
-        if ($data['rarity_id'] == -1) {
+            // NOTE: (Daire) Random rarity
             $allRarities = Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray();
             $rarity = array_rand($allRarities);
             $data['rarity_id'] = $rarity;
-        }
 
-        if ($data['subtype_id'] == -1) {
+            // NOTE: (Daire) Random subtype
             $allSubtypes = Subtype::where('species_id','=',$data['species_id'])->pluck('name', 'id')->toArray();
             if (count($allSubtypes) > 0) {
                 $subtype = array_rand($allSubtypes);
@@ -344,13 +343,21 @@ class CharacterManager extends Service
             // Process and save the image itself
             if(!$isMyo) $this->processImage($image);
 
-            // Attach features
-            // TODO: (Daire) Randomize features if creating from MYO
-            if (isset($data['feature_id'])) {
-                foreach($data['feature_id'] as $key => $featureId) {
-                    if($featureId) {
-                        $feature = CharacterFeature::create(['character_image_id' => $image->id, 'feature_id' => $featureId, 'data' => $data['feature_data'][$key]]);
+            // NOTE: (Daire) Randomize features if creating from MYO
+            if($isMyo) {
+                $featuresGiven = CharacterManager::getRandomFeatures(rand(1, 1));
+                if (count($featuresGiven) > 0) {
+                    foreach($featuresGiven as $key => $featureId) {
+                        $data['feature_id'][$key] = $featureId;
+                        $data['feature_data'][$key] = '';
                     }
+                }
+            }
+
+            // Attach features
+            foreach($data['feature_id'] as $key => $featureId) {
+                if($featureId) {
+                    $feature = CharacterFeature::create(['character_image_id' => $image->id, 'feature_id' => $featureId, 'data' => $data['feature_data'][$key]]);
                 }
             }
 
@@ -360,6 +367,18 @@ class CharacterManager extends Service
         }
         return false;
 
+    }
+
+    /**
+     * Returns a list of features for the given image. Should include ID and data for each
+     */
+    private function getRandomFeatures($featureCount)
+    {
+        $allFeatures = Feature::orderBy('id', 'DESC')->pluck('name', 'id')->toArray();
+        if (count($allFeatures) == 0) return [];
+        $featuresGiven = array_rand($allFeatures, $featureCount);
+        if (!is_array($featuresGiven)) $featuresGiven = [$featuresGiven];
+        return $featuresGiven;
     }
 
     /**

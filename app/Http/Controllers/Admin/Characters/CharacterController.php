@@ -75,13 +75,9 @@ class CharacterController extends Controller
     {
         return view('admin.masterlist.create_character', [
             'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
-            // NOTE: (Daire) This ensure that the rarity, species and subtype are randomly selected for any MYOs created.
-            // 'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            // 'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            // 'subtypes' => ['0' => 'Pick a Species First'],
-            'rarities' => ['-1' => 'Random Rarity'],
-            'specieses' => ['-1' => 'Random Species'],
-            'subtypes' => ['-1' => 'Random subtype'],
+            'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => ['0' => 'Pick a Species First'],
             'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
             'isMyo' => true
         ]);

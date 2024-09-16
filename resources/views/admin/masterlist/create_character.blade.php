@@ -208,6 +208,7 @@
         </div>
     @endif
 
+    @if(!$isMyo)
     <h3>Traits</h3>
 
     <div class="form-group">
@@ -224,6 +225,7 @@
         {!! Form::label('Character Rarity') !!} @if($isMyo) {!! add_help('This will lock the slot into a particular rarity. Leave it blank if you would like to give the user more choices.') !!} @endif
         {!! Form::select('rarity_id', $rarities, old('rarity_id'), ['class' => 'form-control']) !!}
     </div>
+    @endif
 
     @if(!$isMyo)
         <div class="form-group">
