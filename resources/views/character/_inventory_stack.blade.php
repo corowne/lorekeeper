@@ -64,6 +64,14 @@
         ($owner_id == $user->id || $has_power == TRUE))
         <div class="card mt-3">
             <ul class="list-group list-group-flush">
+                @if(count($item->tags))
+                    @foreach($item->tags as $tag)
+                        @if(View::exists('inventory._'.$tag->tag))
+                            @include('inventory._'.$tag->tag, ['stack' => $stack, 'tag' => $tag, 'character' => $character])
+                        @endif
+                    @endforeach
+                @endif
+
                 @if($item->category->can_name)
                 <li class="list-group-item">
                     <a class="card-title h5 collapse-title" data-toggle="collapse" href="#nameForm">@if($owner_id != $user->id) [ADMIN] @endif Name Item</a>

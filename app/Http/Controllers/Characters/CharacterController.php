@@ -284,8 +284,32 @@ class CharacterController extends Controller
             case 'take':
                 return $this->postItemTransfer($request, $service);
                 break;
+            case 'act':
+                return $this->postAct($request, $service);
+                break;
         }
 
+        return redirect()->back();
+    }
+
+    /**
+     * Acts on an item based on the item's tag.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function postAct(Request $request)
+    {
+        $stacks = CharacterItem::with('item')->find($request->get('ids'));
+        $tag = $request->get('tag');
+        $service = $stacks->first()->item->hasTag($tag) ? $stacks->first()->item->tag($tag)->service : null;
+        if($service && $service->act($stacks, Auth::user(), $request->all())) {
+            flash('Item used successfully.')->success();
+        }
+        else if(!$stacks->first()->item->hasTag($tag)) flash('Invalid action selected.')->error();
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
         return redirect()->back();
     }
 
