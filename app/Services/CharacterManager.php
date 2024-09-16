@@ -94,7 +94,7 @@ class CharacterManager extends Service
             $species = array_rand($allSpecies);
             $data['species_id'] = $species;
 
-            $data['rarity_id'] = Rarity::where('name','=','Civillian')->pluck('id')->toArray()[0];
+            $data['rarity_id'] = Rarity::where('name','=','Civilian')->pluck('id')->toArray()[0];
 
             // NOTE: (Daire) Random subtype
             $allSubtypes = Subtype::where('species_id','=',$data['species_id'])->pluck('name', 'id')->toArray();
