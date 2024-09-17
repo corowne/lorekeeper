@@ -33,6 +33,8 @@ class ConsumableService extends Service
         return [
             'trait_added' => ['0' => 'Select Trait'] + Feature::orderBy('name', 'DESC')->pluck('name', 'id')->toArray(),
             'trait_removed' => ['0' => 'Select Trait'] + Feature::orderBy('name', 'DESC')->pluck('name', 'id')->toArray(),
+            'add_specific_trait' => ['0' => 'Do not add specific trait', '1' => 'Add specific trait'],
+            'remove_specific_trait' => ['0' => 'Do not remove specific trait', '1' => 'Remove specific trait'],
             'reroll_traits' => ['0' => 'Do not reroll traits', '1' => 'Reroll traits']
         ];
     }
@@ -48,6 +50,8 @@ class ConsumableService extends Service
         //fetch data from DB, if there is no data then set to NULL instead
         $consumableData['trait_added'] = isset($tag->data['trait_added']) ? $tag->data['trait_added'] : null;
         $consumableData['trait_removed'] = isset($tag->data['trait_removed']) ? $tag->data['trait_removed'] : null;
+        $consumableData['add_specific_trait'] = isset($tag->data['add_specific_trait']) ? $tag->data['add_specific_trait'] : null;
+        $consumableData['remove_specific_trait'] = isset($tag->data['remove_specific_trait']) ? $tag->data['remove_specific_trait'] : null;
         $consumableData['reroll_traits'] = isset($tag->data['reroll_traits']) ? $tag->data['reroll_traits'] : null;
 
         return $consumableData;
@@ -65,6 +69,8 @@ class ConsumableService extends Service
         //put inputs into an array to transfer to the DB
         $consumableData['trait_added'] = isset($data['trait_added']) ? $data['trait_added'] : null;
         $consumableData['trait_removed'] = isset($data['trait_removed']) ? $data['trait_removed'] : null;
+        $consumableData['add_specific_trait'] = isset($data['add_specific_trait']) ? $data['add_specific_trait'] : null;
+        $consumableData['remove_specific_trait'] = isset($data['remove_specific_trait']) ? $data['remove_specific_trait'] : null;
         $consumableData['reroll_traits'] = isset($data['reroll_traits']) ? $data['reroll_traits'] : null;
 
         DB::beginTransaction();
@@ -92,7 +98,7 @@ class ConsumableService extends Service
     {
         DB::beginTransaction();
 
-        try {              
+        try {
             foreach($stacks as $key=>$stack) {
                 if ($stack->character_id == null) {
                     throw new \Exception("This consumable is not bound to a character.");
@@ -108,6 +114,8 @@ class ConsumableService extends Service
 
                 $trait_adding = $stack->item->tag('consumable')->data['trait_added'];
                 $trait_removing = $stack->item->tag('consumable')->data['trait_removed'];
+                $add_specific_trait = $stack->item->tag('consumable')->data['add_specific_trait'];
+                $remove_specific_trait = $stack->item->tag('consumable')->data['remove_specific_trait'];
                 $reroll_traits = $stack->item->tag('consumable')->data['reroll_traits'];
 
                 // NOTE: (Daire) If modifying traits, we only want to use one consumable at a time regardless of the quantity specified.
@@ -119,24 +127,37 @@ class ConsumableService extends Service
                 // Next, try to delete the tag item. If successful, we can start distributing rewards.
                 if((new InventoryManager)->debitStack($stack->character, 'Consumable Used', ['data' => ''], $stack, $quantity)) {
                     for($q=0; $q<$quantity; $q++) {                        
-                        if ($trait_adding == 0 && $trait_removing == 0 && $reroll_traits == 0)
+                        if ($trait_adding == 0 && $trait_removing == 0 && $reroll_traits == 0 && $add_specific_trait == 0 && $remove_specific_trait == 0)
                         {
                             throw new \Exception("No action specified for Consumable.");
                         }
 
                         if ($trait_adding != 0)
                         {
-                            $this->actAddTrait($trait_adding, $user, $character);
+                            $this->actAddTrait($trait_adding, $character);
                         }
                         
                         if ($trait_removing != 0)
                         {
-                            $this->actRemoveTrait($trait_removing, $user, $character);
+                            $this->actRemoveTrait($trait_removing, $character);
+                        }
+
+                        if ($add_specific_trait != 0)
+                        {
+                            $trait_adding_user = $data['feature_id_adding'];
+                            $this->actAddTrait($trait_adding_user, $character);
                         }
                         
+                        if ($remove_specific_trait != 0)
+                        {
+                            $trait_removing_user = $data['feature_id_removing'];
+                            $this->actRemoveTrait($trait_removing_user, $character);
+                            // TODO: Add an item that stores the removed trait so it can be added back later
+                        }
+
                         if ($reroll_traits != 0)
                         {
-                            $this->actRerollTraits($reroll_traits, $user, $character);
+                            $this->actRerollTraits($character);
                         }
                     }
                 }
@@ -149,7 +170,7 @@ class ConsumableService extends Service
         return $this->rollbackReturn(false);
     }
 
-    private function actAddTrait($trait_adding, $user, $character)
+    private function actAddTrait($trait_adding, $character)
     {
         // Check that the trait exists
         $trait = Feature::find($trait_adding);
@@ -165,7 +186,7 @@ class ConsumableService extends Service
         return $feature;
     }
 
-    private function actRemoveTrait($trait_removing, $user, $character)
+    private function actRemoveTrait($trait_removing, $character)
     {
         // Check that the trait exists
         $trait = Feature::find($trait_removing);
@@ -186,7 +207,7 @@ class ConsumableService extends Service
         return $character;
     }
 
-    private function actRerollTraits($reroll_traits, $user, $character)
+    private function actRerollTraits($character)
     {
         // Get all the traits that were added from consumables
         $traits = CharacterFeature::where('character_image_id', $character->image->id)->where('data', 'Added from a consumable')->get();

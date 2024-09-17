@@ -74,7 +74,7 @@
                 @if(count($item->tags))
                     @foreach($item->tags as $tag)
                         @if(View::exists('inventory._'.$tag->tag))
-                            @include('inventory._'.$tag->tag, ['stack' => $stack, 'tag' => $tag, 'type' => 'user'])
+                            @include('inventory._'.$tag->tag, ['stack' => $stack, 'tag' => $tag, 'type' => 'user', 'character' => null, 'feature_options_adding' => [], 'feature_options_removing' => []])
                         @endif
                     @endforeach
                 @endif

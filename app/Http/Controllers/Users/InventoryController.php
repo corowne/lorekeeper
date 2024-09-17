@@ -20,6 +20,7 @@ use App\Models\Character\CharacterDesignUpdate;
 use App\Models\Submission\Submission;
 
 use App\Http\Controllers\Controller;
+use App\Models\Feature\Feature;
 
 class InventoryController extends Controller
 {
@@ -114,6 +115,7 @@ class InventoryController extends Controller
             'readOnly' => $readOnly,
             'character' => $character,
             'owner_id' => isset($ownerId) ? $ownerId : null,
+            'allFeatures' => Feature::orderBy('name', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
 
@@ -132,7 +134,7 @@ class InventoryController extends Controller
         if($request->ids && $request->quantities) {
             switch($request->action) {
                 default:
-                    flash('Invalid action selected.')->error();
+                    flash('Invalid action selected 1.')->error();
                     break;
                 case 'transfer':
                     return $this->postTransfer($request, $service);
@@ -253,7 +255,7 @@ class InventoryController extends Controller
         if($service && $service->act($stacks, Auth::user(), $request->all())) {
             flash('Item used successfully.')->success();
         }
-        else if(!$stacks->first()->item->hasTag($tag)) flash('Invalid action selected.')->error();
+        else if(!$stacks->first()->item->hasTag($tag)) flash('Invalid action selected 2.')->error();
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
