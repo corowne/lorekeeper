@@ -36,3 +36,6 @@
     {!! Form::checkbox('reroll_traits', 1, $tag->getData()['reroll_traits'], ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'reroll_traits']) !!}
     {!! Form::label('reroll_traits', 'Reroll traits?', ['class' => 'form-check-label ml-3']) !!}
 </div>
+
+<br/>
+<hr/>
