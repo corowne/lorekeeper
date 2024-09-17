@@ -10,6 +10,7 @@ use DB;
 use App\Services\InventoryManager;
 
 use App\Models\Feature\Feature;
+use App\Models\Item\Item;
 use App\Models\Rarity;
 
 class ConsumableService extends Service
@@ -111,12 +112,13 @@ class ConsumableService extends Service
                 }
 
                 $quantity = $data['quantities'][$key];
+                $tagData = $stack->item->tag('consumable')->data;
 
-                $trait_adding = $stack->item->tag('consumable')->data['trait_added'];
-                $trait_removing = $stack->item->tag('consumable')->data['trait_removed'];
-                $add_specific_trait = $stack->item->tag('consumable')->data['add_specific_trait'];
-                $remove_specific_trait = $stack->item->tag('consumable')->data['remove_specific_trait'];
-                $reroll_traits = $stack->item->tag('consumable')->data['reroll_traits'];
+                $trait_adding = $tagData['trait_added'];
+                $trait_removing = $tagData['trait_removed'];
+                $add_specific_trait = (array_key_exists('add_specific_trait', $tagData) ? $tagData['add_specific_trait'] : "0");
+                $remove_specific_trait = (array_key_exists('remove_specific_trait', $tagData) ? $tagData['remove_specific_trait'] : "0");
+                $reroll_traits = $tagData['reroll_traits'];
 
                 // NOTE: (Daire) If modifying traits, we only want to use one consumable at a time regardless of the quantity specified.
                 if ($trait_adding != 0 || $trait_removing != 0 || $reroll_traits != 0)
@@ -152,7 +154,7 @@ class ConsumableService extends Service
                         {
                             $trait_removing_user = $data['feature_id_removing'];
                             $this->actRemoveTrait($trait_removing_user, $character);
-                            // TODO: Add an item that stores the removed trait so it can be added back later
+                            $this->addItemThatAddsTrait($trait_removing_user, $character);
                         }
 
                         if ($reroll_traits != 0)
@@ -254,4 +256,15 @@ class ConsumableService extends Service
         return $rarity;
     }
 
+    private function addItemThatAddsTrait($trait_removing_user, $character)
+    {
+        // Find an item that contains a consumable tag which adds the speified trait ID. Tags are one to many childs of the item.
+        $item = Item::whereHas('tags', function($query) use ($trait_removing_user) {
+            $query->where('data->trait_added', $trait_removing_user);
+        })->first();
+
+        if (!$item) { throw new \Exception("No item found that adds the specified trait."); }
+
+        $stack = (new InventoryManager)->creditItem(null, $character, 'Added from consumable', ['data' => ''], $item, 1);
+    }
 }
