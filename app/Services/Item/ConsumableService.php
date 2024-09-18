@@ -2,6 +2,7 @@
 
 use App\Models\Character\Character;
 use App\Models\Character\CharacterFeature;
+use App\Models\Species\Species;
 use App\Services\Service;
 use Illuminate\Http\Request;
 
@@ -36,6 +37,7 @@ class ConsumableService extends Service
             'trait_removed' => ['0' => 'Select Trait'] + Feature::orderBy('name', 'DESC')->pluck('name', 'id')->toArray(),
             'add_specific_trait' => ['0' => 'Do not add specific trait', '1' => 'Add specific trait'],
             'remove_specific_trait' => ['0' => 'Do not remove specific trait', '1' => 'Remove specific trait'],
+            'reroll_species' => ['0' => 'Do not reroll species', '1' => 'Reroll species'],
             'reroll_traits' => ['0' => 'Do not reroll traits', '1' => 'Reroll traits']
         ];
     }
@@ -53,6 +55,7 @@ class ConsumableService extends Service
         $consumableData['trait_removed'] = isset($tag->data['trait_removed']) ? $tag->data['trait_removed'] : null;
         $consumableData['add_specific_trait'] = isset($tag->data['add_specific_trait']) ? $tag->data['add_specific_trait'] : null;
         $consumableData['remove_specific_trait'] = isset($tag->data['remove_specific_trait']) ? $tag->data['remove_specific_trait'] : null;
+        $consumableData['reroll_species'] = isset($tag->data['reroll_species']) ? $tag->data['reroll_species'] : null;
         $consumableData['reroll_traits'] = isset($tag->data['reroll_traits']) ? $tag->data['reroll_traits'] : null;
 
         return $consumableData;
@@ -72,6 +75,7 @@ class ConsumableService extends Service
         $consumableData['trait_removed'] = isset($data['trait_removed']) ? $data['trait_removed'] : null;
         $consumableData['add_specific_trait'] = isset($data['add_specific_trait']) ? $data['add_specific_trait'] : null;
         $consumableData['remove_specific_trait'] = isset($data['remove_specific_trait']) ? $data['remove_specific_trait'] : null;
+        $consumableData['reroll_species'] = isset($data['reroll_species']) ? $data['reroll_species'] : null;
         $consumableData['reroll_traits'] = isset($data['reroll_traits']) ? $data['reroll_traits'] : null;
 
         DB::beginTransaction();
@@ -118,10 +122,11 @@ class ConsumableService extends Service
                 $trait_removing = $tagData['trait_removed'];
                 $add_specific_trait = (array_key_exists('add_specific_trait', $tagData) ? $tagData['add_specific_trait'] : "0");
                 $remove_specific_trait = (array_key_exists('remove_specific_trait', $tagData) ? $tagData['remove_specific_trait'] : "0");
+                $reroll_species = $tagData['reroll_species'];
                 $reroll_traits = $tagData['reroll_traits'];
 
                 // NOTE: (Daire) If modifying traits, we only want to use one consumable at a time regardless of the quantity specified.
-                if ($trait_adding != 0 || $trait_removing != 0 || $reroll_traits != 0)
+                if ($trait_adding != 0 || $trait_removing != 0 || $reroll_species != 0|| $reroll_traits != 0)
                 {
                     $quantity = "1";
                 }
@@ -129,7 +134,7 @@ class ConsumableService extends Service
                 // Next, try to delete the tag item. If successful, we can start distributing rewards.
                 if((new InventoryManager)->debitStack($stack->character, 'Consumable Used', ['data' => ''], $stack, $quantity)) {
                     for($q=0; $q<$quantity; $q++) {                        
-                        if ($trait_adding == 0 && $trait_removing == 0 && $reroll_traits == 0 && $add_specific_trait == 0 && $remove_specific_trait == 0)
+                        if ($trait_adding == 0 && $trait_removing == 0 && $reroll_species == 0 && $reroll_traits == 0 && $add_specific_trait == 0 && $remove_specific_trait == 0)
                         {
                             throw new \Exception("No action specified for Consumable.");
                         }
@@ -155,6 +160,11 @@ class ConsumableService extends Service
                             $trait_removing_user = $data['feature_id_removing'];
                             $this->actRemoveTrait($trait_removing_user, $character);
                             $this->addItemThatAddsTrait($trait_removing_user, $character);
+                        }
+
+                        if ($reroll_species != 0)
+                        {
+                            $this->actRerollSpecies($character);
                         }
 
                         if ($reroll_traits != 0)
@@ -234,6 +244,21 @@ class ConsumableService extends Service
                 $traits_added++;
             }
         }
+    }
+
+    private function actRerollSpecies($character)
+    {
+        // Get the species that was added from a consumable
+        $species_id = $character->image->species_id;
+
+        // Get a list of all species that exist in the game except the current one
+        $all_species = Species::where('id', '!=', $species_id)->get();
+
+        // Get the new species to add to the character
+        $new_species = $all_species->random();
+        
+        // Update the character's species
+        $character->image->update(['species_id' => $new_species->id]);
     }
 
     private function getRandomRarity()

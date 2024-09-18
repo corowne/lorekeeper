@@ -30,11 +30,16 @@
 
 <br/>
 
-<h3>Trait rerolling</h3>
+<h3>Rerolling</h3>
+
+<div class="form-group">
+    {!! Form::checkbox('reroll_species', 1, $tag->getData()['reroll_species'], ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'reroll_species']) !!}
+    {!! Form::label('reroll_species', 'Reroll species?', ['class' => 'form-check-label ml-3']) !!}
+</div>
 
 <div class="form-group">
     {!! Form::checkbox('reroll_traits', 1, $tag->getData()['reroll_traits'], ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'reroll_traits']) !!}
-    {!! Form::label('reroll_traits', 'Reroll traits?', ['class' => 'form-check-label ml-3']) !!}
+    {!! Form::label('reroll_traits', 'Reroll trait?', ['class' => 'form-check-label ml-3']) !!}
 </div>
 
 <br/>
