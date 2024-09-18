@@ -239,16 +239,17 @@ class ConsumableService extends Service
         $all_traits = Feature::all();
 
         // Add $traits_from_consumables_count new traits to the character but avoid adding the same trait twice
-        // TODO: Might need to prevent re-adding the exact same trait that was removed
         $traits_added = 0;
+        $trait_ids_current = [];
         while ($traits_added < $traits_count)
         {
             $rarity = $this->getRandomRarity();
-            $trait = $all_traits->where('rarity_id', $rarity)->random();
+            $trait = $all_traits->where('rarity_id', $rarity)->whereNotIn('id', $trait_ids_current)->random();
             if (!$character->image->features->contains('feature_id', $trait->id))
             {
                 $feature = CharacterFeature::create(['character_image_id' => $character->image->id, 'feature_id' => $trait->id, 'data' => 'Added from a consumable']);
                 $traits_added++;
+                $trait_ids_current[] = $trait->id;
             }
         }
     }
