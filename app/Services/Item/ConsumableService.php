@@ -154,7 +154,7 @@ class ConsumableService extends Service
                         
                         if ($trait_removing != 0)
                         {
-                            $this->actRemoveTrait($trait_removing, $character);
+                            $this->actRemoveTrait($trait_removing, $character, true);
                         }
 
                         if ($add_specific_trait != 0)
@@ -166,7 +166,7 @@ class ConsumableService extends Service
                         if ($remove_specific_trait != 0)
                         {
                             $trait_removing_user = $data['feature_id_removing'];
-                            $this->actRemoveTrait($trait_removing_user, $character);
+                            $this->actRemoveTrait($trait_removing_user, $character, false);
                             $this->addItemThatAddsTraitToUser($trait_removing_user, $user);
                         }
 
@@ -212,11 +212,13 @@ class ConsumableService extends Service
         return $feature;
     }
 
-    private function actRemoveTrait($trait_removing, $character)
+    private function actRemoveTrait($trait_removing, $character, $canRemoveRestricted)
     {
         // Check that the trait exists
         $trait = Feature::find($trait_removing);
         if (!$trait) { throw new \Exception("Trait not found."); }
+        $restricted_traits = [ "Mutation" ];
+        if (!$canRemoveRestricted && in_array($trait->name, $restricted_traits)) { throw new \Exception("Cannot remove a restricted trait."); }
 
         // Check if the character has the trait
         if (!$character->image->features->contains('feature_id', $trait_removing)) { throw new \Exception("Character does not have this trait."); }
