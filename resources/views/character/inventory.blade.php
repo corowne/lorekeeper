@@ -42,7 +42,7 @@
             </div>
             @if (config('lorekeeper.extensions.item_entry_expansion.extra_fields'))
                 <div class="form-group ml-3 mb-3">
-                    {!! Form::select('artist', $artists, Request::get('artist'), ['class' => 'form-control']) !!}
+                    {!! Form::select('artist', $artists, Request::get('artist'), ['class' => 'form-control', 'placeholder' => 'Any Artist']) !!}
                 </div>
             @endif
             <div class="form-group ml-3 mb-3">

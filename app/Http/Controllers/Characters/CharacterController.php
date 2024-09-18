@@ -267,6 +267,7 @@ class CharacterController extends Controller {
             'categories'            => $categories->keyBy('id'),
             'items'                 => $items,
             'logs'                  => $this->character->getItemLogs(),
+            'artists'               => User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray(),
         ] + (Auth::check() && (Auth::user()->hasPower('edit_inventories') || Auth::user()->id == $this->character->user_id) ? [
             'itemOptions'   => $itemOptions->pluck('name', 'id'),
             'userInventory' => UserItem::with('item')->whereIn('item_id', $itemOptions->pluck('id'))->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get()->filter(function ($userItem) {
