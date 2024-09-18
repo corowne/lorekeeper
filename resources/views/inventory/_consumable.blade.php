@@ -36,48 +36,50 @@
     </li>
     
     <script>
-        const characterSelectInputs = document.querySelectorAll('.character-id-affected');
-        const featureSelectRemoving = document.querySelector('select[name="feature_id_removing"]');
-        const featureSelectRerolling = document.querySelector('select[name="feature_id_rerolling"]');
+        (function() {
+            const characterSelectInputs = document.querySelectorAll('.character-id-affected');
+            const featureSelectRemoving = document.querySelector('select[name="feature_id_removing"]');
+            const featureSelectRerolling = document.querySelector('select[name="feature_id_rerolling"]');
 
-        for (let i = 0; i < characterSelectInputs.length; i++) {
-            const characterSelect = characterSelectInputs[i];
+            for (let i = 0; i < characterSelectInputs.length; i++) {
+                const characterSelect = characterSelectInputs[i];
 
-            characterSelect.addEventListener('change', function () {
-                const characterId = this.value;
+                characterSelect.addEventListener('change', function () {
+                    const characterId = this.value;
 
-                if (characterId) {
-                    fetch(`/myo/${characterId}/features`)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (featureSelectRemoving) {
-                                featureSelectRemoving.innerHTML = '<option value="">Select a trait to remove</option>';
-                                data.forEach(trait => {
-                                    const option = document.createElement('option');
-                                    option.value = trait.id;
-                                    option.textContent = trait.name;
-                                    featureSelectRemoving.appendChild(option);
-                                });
-                            }
-                            if (featureSelectRerolling) {
-                                featureSelectRerolling.innerHTML = '<option value="">Select a trait to reroll</option>';
-                                data.forEach(trait => {
-                                    const option = document.createElement('option');
-                                    option.value = trait.id;
-                                    option.textContent = trait.name;
-                                    featureSelectRerolling.appendChild(option);
-                                });
-                            }
-                        });
-                } else {
-                    if (featureSelectRemoving) {
-                        featureSelectRemoving.innerHTML = '<option value="">Select a trait to remove</option>';
+                    if (characterId) {
+                        fetch(`/myo/${characterId}/features`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (featureSelectRemoving) {
+                                    featureSelectRemoving.innerHTML = '<option value="">Select a trait to remove</option>';
+                                    data.forEach(trait => {
+                                        const option = document.createElement('option');
+                                        option.value = trait.id;
+                                        option.textContent = trait.name;
+                                        featureSelectRemoving.appendChild(option);
+                                    });
+                                }
+                                if (featureSelectRerolling) {
+                                    featureSelectRerolling.innerHTML = '<option value="">Select a trait to reroll</option>';
+                                    data.forEach(trait => {
+                                        const option = document.createElement('option');
+                                        option.value = trait.id;
+                                        option.textContent = trait.name;
+                                        featureSelectRerolling.appendChild(option);
+                                    });
+                                }
+                            });
+                    } else {
+                        if (featureSelectRemoving) {
+                            featureSelectRemoving.innerHTML = '<option value="">Select a trait to remove</option>';
+                        }
+                        if (featureSelectRerolling) {
+                            featureSelectRerolling.innerHTML = '<option value="">Select a trait to reroll</option>';
+                        }
                     }
-                    if (featureSelectRerolling) {
-                        featureSelectRerolling.innerHTML = '<option value="">Select a trait to reroll</option>';
-                    }
-                }
-            });
-        }
+                });
+            }
+        })();
     </script>
 @endif
