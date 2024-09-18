@@ -86,6 +86,7 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() 
 });
 Route::group(['prefix' => 'myo', 'namespace' => 'Characters'], function() {
     Route::get('{id}', 'MyoController@getCharacter');
+    Route::get('{id}/features', 'MyoController@getCharacterFeatures');
     Route::get('{id}/profile', 'MyoController@getCharacterProfile');
     Route::get('{id}/ownership', 'MyoController@getCharacterOwnershipLogs');
     Route::get('{id}/change-log', 'MyoController@getCharacterLogs');

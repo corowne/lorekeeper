@@ -8,7 +8,7 @@
             <p>This action is not reversible. Are you sure you want to use this item?</p>
 
             <div class="form-group">
-                {!! Form::select('character_id_affected', $characterOptionsMyo, null, ['class' => 'form-control mr-2 default character-select', 'placeholder' => 'Select Character']) !!}
+                {!! Form::select('character_id_affected', $characterOptionsMyo, null, ['class' => 'form-control mr-2 default character-id-affected', 'placeholder' => 'Select Character']) !!}
             </div>
 
             @if (array_key_exists('add_specific_trait', $tag->data) && $tag->data['add_specific_trait'])
@@ -21,6 +21,35 @@
                 <div class="form-group">
                     {!! Form::select('feature_id_removing', $feature_options_removing, null, ['class' => 'form-control mr-2 default feature-select', 'placeholder' => 'Select a trait to remove']) !!}
                 </div>
+
+                <script>
+                    const characterSelectInputs = document.querySelectorAll('.character-id-affected');
+                    const featureSelect = document.querySelector('select[name="feature_id_removing"]');
+
+                    for (let i = 0; i < characterSelectInputs.length; i++) {
+                        const characterSelect = characterSelectInputs[i];
+
+                        characterSelect.addEventListener('change', function () {
+                            const characterId = this.value;
+
+                            if (characterId) {
+                                fetch(`/myo/${characterId}/features`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        featureSelect.innerHTML = '<option value="">Select a trait to remove</option>';
+                                        data.forEach(trait => {
+                                            const option = document.createElement('option');
+                                            option.value = trait.id;
+                                            option.textContent = trait.name;
+                                            featureSelect.appendChild(option);
+                                        });
+                                    });
+                            } else {
+                                featureSelect.innerHTML = '<option value="">Select a trait to remove</option>';
+                            }
+                        });
+                    }
+                </script>
             @endif
 
             <div class="text-right">

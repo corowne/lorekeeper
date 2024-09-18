@@ -71,6 +71,11 @@ class MyoController extends Controller
         ]);
     }
 
+    public function getCharacterFeatures($id)
+    {
+        return $this->character->image->features;
+    }
+
     /**
      * Shows an MYO slot's profile.
      *
