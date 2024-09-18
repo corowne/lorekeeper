@@ -1,9 +1,15 @@
-@if ($type != 'user')
+@if ($type == 'user')
     <li class="list-group-item">
         <a class="card-title h5 collapse-title"  data-toggle="collapse" href="#useConsumableForm"> Use Consumable</a>
         <div id="useConsumableForm" class="collapse">
+            <!-- $characterFeatureIds = $character->image->features->pluck('feature_id')->toArray(); -->
             {!! Form::hidden('tag', $tag->tag) !!}
+
             <p>This action is not reversible. Are you sure you want to use this item?</p>
+
+            <div class="form-group">
+                {!! Form::select('character_id_affected', $characterOptionsMyo, null, ['class' => 'form-control mr-2 default character-select', 'placeholder' => 'Select Character']) !!}
+            </div>
 
             @if (array_key_exists('add_specific_trait', $tag->data) && $tag->data['add_specific_trait'])
                 <div class="form-group">

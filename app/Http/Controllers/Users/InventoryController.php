@@ -84,6 +84,8 @@ class InventoryController extends Controller
             'userOptions' => ['' => 'Select User'] + User::visible()->where('id', '!=', $first_instance ? $first_instance->user_id : 0)->orderBy('name')->get()->pluck('verified_name', 'id')->toArray(),
             'readOnly' => $readOnly,
             'characterOptions' => Character::visible()->myo(0)->where('user_id', optional(Auth::user())->id)->orderBy('sort','DESC')->get()->pluck('fullName','id')->toArray(),
+            'characterOptionsMyo' => Character::visible()->myo(1)->where('user_id', optional(Auth::user())->id)->orderBy('sort','DESC')->get()->pluck('fullName','id')->toArray(),
+            'allFeatures' => Feature::orderBy('name', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
 
@@ -107,9 +109,6 @@ class InventoryController extends Controller
         $hasPower = Auth::check() ? Auth::user()->hasPower('edit_inventories') : false;
         $readOnly = $request->get('read_only') ? : ((Auth::check() && $first_instance && (isset($ownerId) == TRUE || $hasPower == TRUE)) ? 0 : 1);
 
-        $characterFeatureIds = $character->image->features->pluck('feature_id')->toArray();
-        $characterFeatures = Feature::whereIn('id', $characterFeatureIds)->orderBy('name', 'DESC')->pluck('name', 'id')->toArray();
-
         return view('character._inventory_stack', [
             'stack' => $stack,
             'item' => $item,
@@ -117,9 +116,7 @@ class InventoryController extends Controller
             'has_power' => $hasPower,
             'readOnly' => $readOnly,
             'character' => $character,
-            'owner_id' => isset($ownerId) ? $ownerId : null,
-            'allFeatures' => Feature::orderBy('name', 'DESC')->pluck('name', 'id')->toArray(),
-            'characterFeatures' => $characterFeatures
+            'owner_id' => isset($ownerId) ? $ownerId : null
         ]);
     }
 

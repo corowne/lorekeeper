@@ -94,7 +94,7 @@ class ConsumableService extends Service
     /**
      * Acts upon the item when used from the inventory.
      *
-     * @param  \App\Models\User\CharacterItem  $stacks
+     * @param  \App\Models\User\UserItem  $stacks
      * @param  \App\Models\User\User      $user
      * @param  array                      $data
      * @return bool
@@ -104,14 +104,19 @@ class ConsumableService extends Service
         DB::beginTransaction();
 
         try {
+            // TODO: Remove - used for testing
+            // throw new \Exception(json_encode($data));
+
             foreach($stacks as $key=>$stack) {
-                if ($stack->character_id == null) {
-                    throw new \Exception("This consumable is not bound to a character.");
+                if ($data['character_id_affected'] == null) {
+                    throw new \Exception("You must select a character to use the consumable on.");
                 }
 
                 // We don't want to let anyone who isn't the owner of the Consumable to use it, so do some validation...
-                $character = $user->characters()->where('id', $stack->character_id)->first();
-                if($character == null) {
+                // $character = $user->characters()->where('id', "=", $data['character_id_affected'])->first();
+                // Find where ID is the character ID and user_id is the user's ID
+                $character = Character::find($data['character_id_affected']);
+                if($character == null || $character->user_id != $user->id) {
                     throw new \Exception("You do not own this consumable.");
                 }
 
@@ -122,8 +127,8 @@ class ConsumableService extends Service
                 $trait_removing = $tagData['trait_removed'];
                 $add_specific_trait = (array_key_exists('add_specific_trait', $tagData) ? $tagData['add_specific_trait'] : "0");
                 $remove_specific_trait = (array_key_exists('remove_specific_trait', $tagData) ? $tagData['remove_specific_trait'] : "0");
-                $reroll_species = $tagData['reroll_species'];
-                $reroll_traits = $tagData['reroll_traits'];
+                $reroll_species = (array_key_exists('reroll_species', $tagData) ? $tagData['reroll_species'] : "0");
+                $reroll_traits = (array_key_exists('reroll_traits', $tagData) ? $tagData['reroll_traits'] : "0");
 
                 // NOTE: (Daire) If modifying traits, we only want to use one consumable at a time regardless of the quantity specified.
                 if ($trait_adding != 0 || $trait_removing != 0 || $reroll_species != 0|| $reroll_traits != 0)
@@ -159,7 +164,7 @@ class ConsumableService extends Service
                         {
                             $trait_removing_user = $data['feature_id_removing'];
                             $this->actRemoveTrait($trait_removing_user, $character);
-                            $this->addItemThatAddsTrait($trait_removing_user, $character);
+                            $this->addItemThatAddsTraitToUser($trait_removing_user, $user);
                         }
 
                         if ($reroll_species != 0)
@@ -221,12 +226,14 @@ class ConsumableService extends Service
 
     private function actRerollTraits($character)
     {
-        // Get all the traits that were added from consumables
-        $traits = CharacterFeature::where('character_image_id', $character->image->id)->where('data', 'Added from a consumable')->get();
-        $traits_from_consumables_count = $traits->count();
+        // NOTE: This is how you get non born traits: $traits = CharacterFeature::where('character_image_id', $character->image->id)->where('data', 'Added from a consumable')->get();
+
+        // Get all of a character's traits
+        $traits = CharacterFeature::where('character_image_id', $character->image->id)->get();
+        $traits_count = $traits->count();
 
         // Remove all the traits that were added from consumables
-        CharacterFeature::where('character_image_id', $character->image->id)->where('data', 'Added from a consumable')->delete();
+        CharacterFeature::where('character_image_id', $character->image->id)->delete();
 
         // Get a lsit of all traits that exist in the game
         $all_traits = Feature::all();
@@ -234,7 +241,7 @@ class ConsumableService extends Service
         // Add $traits_from_consumables_count new traits to the character but avoid adding the same trait twice
         // TODO: Might need to prevent re-adding the exact same trait that was removed
         $traits_added = 0;
-        while ($traits_added < $traits_from_consumables_count)
+        while ($traits_added < $traits_count)
         {
             $rarity = $this->getRandomRarity();
             $trait = $all_traits->where('rarity_id', $rarity)->random();
@@ -281,7 +288,7 @@ class ConsumableService extends Service
         return $rarity;
     }
 
-    private function addItemThatAddsTrait($trait_removing_user, $character)
+    private function addItemThatAddsTraitToCharacter($trait_removing_user, $character)
     {
         // Find an item that contains a consumable tag which adds the speified trait ID. Tags are one to many childs of the item.
         $item = Item::whereHas('tags', function($query) use ($trait_removing_user) {
@@ -292,4 +299,17 @@ class ConsumableService extends Service
 
         $stack = (new InventoryManager)->creditItem(null, $character, 'Added from consumable', ['data' => ''], $item, 1);
     }
+
+    private function addItemThatAddsTraitToUser($trait_removing_user, $user)
+    {
+        // Find an item that contains a consumable tag which adds the speified trait ID. Tags are one to many childs of the item.
+        $item = Item::whereHas('tags', function($query) use ($trait_removing_user) {
+            $query->where('data->trait_added', $trait_removing_user);
+        })->first();
+
+        if (!$item) { throw new \Exception("No item found that adds the specified trait."); }
+
+        $stack = (new InventoryManager)->creditItem(null, $user, 'Added from consumable', ['data' => ''], $item, 1);
+    }
+
 }
