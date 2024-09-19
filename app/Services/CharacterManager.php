@@ -2309,7 +2309,7 @@ is_object($sender) ? $sender->id : null,
 
             foreach($featureIdsToAdd as $featureId)
             {
-                if(in_array($featureId, $featureIdsAdded)) continue;
+                if(in_array($featureId, $featureIdsAdded)) throw new \Exception("Cannot add the same trait twice.");
                 $feature = Feature::find($featureId);
                 if(!$feature) throw new \Exception("Invalid feature selected.");
                 CharacterFeature::create(['character_image_id' => $image->id, 'feature_id' => $featureId, 'character_type' => 'Character', 'data' => 'Added from a consumable']);
