@@ -2312,7 +2312,7 @@ is_object($sender) ? $sender->id : null,
                 if(in_array($featureId, $featureIdsAdded)) continue;
                 $feature = Feature::find($featureId);
                 if(!$feature) throw new \Exception("Invalid feature selected.");
-                CharacterFeature::create(['character_image_id' => $image->id, 'feature_id' => $featureId, 'character_type' => 'Character']);
+                CharacterFeature::create(['character_image_id' => $image->id, 'feature_id' => $featureId, 'character_type' => 'Character', 'data' => 'Added from a consumable']);
                 $featureIdsAdded[] = $featureId;
             }
 
