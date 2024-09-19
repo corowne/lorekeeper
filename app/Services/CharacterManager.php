@@ -2111,19 +2111,20 @@ is_object($sender) ? $sender->id : null,
             // Attach features
             // We'll do the compulsory ones at the time of approval.
 
-            $features = Feature::whereIn('id', $data['feature_id'])->with('rarity')->get()->keyBy('id');
-
-            foreach($data['feature_id'] as $key => $featureId) {
-                if(!$featureId) continue;
-
-                // Skip the feature if the rarity is too high.
-                // Comment out this check if rarities should have more berth for traits choice.
-                //if($features[$featureId]->rarity->sort > $rarity->sort) continue;
-
-                // Skip the feature if it's not the correct species.
-                if($features[$featureId]->species_id && $features[$featureId]->species_id != $species->id) continue;
-
-                $feature = CharacterFeature::create(['character_image_id' => $request->id, 'feature_id' => $featureId, 'data' => $data['feature_data'][$key], 'character_type' => 'Update']);
+            if (isset($data['feature_id'])) {
+                $features = Feature::whereIn('id', $data['feature_id'])->with('rarity')->get()->keyBy('id');
+                foreach($data['feature_id'] as $key => $featureId) {
+                    if(!$featureId) continue;
+    
+                    // Skip the feature if the rarity is too high.
+                    // Comment out this check if rarities should have more berth for traits choice.
+                    //if($features[$featureId]->rarity->sort > $rarity->sort) continue;
+    
+                    // Skip the feature if it's not the correct species.
+                    if($features[$featureId]->species_id && $features[$featureId]->species_id != $species->id) continue;
+    
+                    $feature = CharacterFeature::create(['character_image_id' => $request->id, 'feature_id' => $featureId, 'data' => $data['feature_data'][$key], 'character_type' => 'Update']);
+                }
             }
 
             // Update other stats
