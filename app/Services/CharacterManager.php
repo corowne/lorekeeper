@@ -2297,23 +2297,27 @@ is_object($sender) ? $sender->id : null,
             $request->artists()->update(['character_type' => 'Character', 'character_image_id' => $image->id]);
 
             // Add the compulsory features
-            $featureIdsAdded = [];
             if($request->character->is_myo_slot)
             {
                 foreach($request->character->image->features as $feature)
                 {
                     CharacterFeature::create(['character_image_id' => $image->id, 'feature_id' => $feature->feature_id, 'data' => $feature->data, 'character_type' => 'Character']);
-                    $featureIdsAdded[] = $feature->feature_id;
                 }
+            }
+
+            $existingFeatureIds = [];
+            foreach($request->character->image->features as $feature)
+            {
+                $existingFeatureIds[] = $feature->feature_id;
             }
 
             foreach($featureIdsToAdd as $featureId)
             {
-                if(in_array($featureId, $featureIdsAdded)) throw new \Exception("Cannot add the same trait twice.");
+                if(in_array($featureId, haystack: $existingFeatureIds)) throw new \Exception("Cannot add the same trait twice.");
                 $feature = Feature::find($featureId);
                 if(!$feature) throw new \Exception("Invalid feature selected.");
-                CharacterFeature::create(['character_image_id' => $image->id, 'feature_id' => $featureId, 'character_type' => 'Character', 'data' => 'Added from a consumable']);
-                $featureIdsAdded[] = $featureId;
+                CharacterFeature::create(attributes: ['character_image_id' => $image->id, 'feature_id' => $featureId, 'character_type' => 'Character', 'data' => 'Added from a consumable']);
+                $existingFeatureIds[] = $featureId;
             }
 
             // Shift the image features over to the new image
