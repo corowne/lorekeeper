@@ -9,6 +9,7 @@
 
 <h2>Traits</h2>
 
+<!-- TODO: This form is used in the design update request process. It has a lot of data you shouldn't be able to change on it like species, traits, etc. Need to convert the inputs to regular displays or just disable them all -->
 @if($request->status == 'Draft' && $request->user_id == Auth::user()->id)
     <p>Select the traits for the {{ $request->character->is_myo_slot ? 'created' : 'updated' }} character. @if($request->character->is_myo_slot) Some traits may have been restricted for you - you cannot change them. @endif Staff will not be able to modify these traits for you during approval, so if in doubt, please communicate with them beforehand to make sure that your design is acceptable.</p>
     {!! Form::open(['url' => 'designs/'.$request->id.'/traits']) !!}
@@ -68,7 +69,7 @@
                     @endforeach
                 @endif
             </div>
-            @if(!$request->character->is_myo_slot)
+            @if(false)
                 <div><a href="#" class="btn btn-primary" id="add-feature">Add Trait</a></div>
                 <div class="feature-row hide mb-2">
                     {!! Form::select('feature_id[]', $features, null, ['class' => 'form-control mr-2 feature-select', 'placeholder' => 'Select Trait']) !!}

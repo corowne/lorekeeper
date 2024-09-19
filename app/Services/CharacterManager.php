@@ -28,6 +28,7 @@ use App\Models\Character\CharacterBookmark;
 use App\Models\User\UserCharacterLog;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
+use App\Models\Item\Item;
 use App\Models\Rarity;
 use App\Models\Currency\Currency;
 use App\Models\Feature\Feature;
@@ -2183,6 +2184,23 @@ is_object($sender) ? $sender->id : null,
         DB::beginTransaction();
 
         try {
+            // throw new \Exception(json_encode($data));
+            // {
+            //     "character_category_id": "1",
+            //     "number": "1",
+            //     "slug": "TCC-001",
+            //     "description": "Test random trait 9 description</p>",
+            //     "sale_value": "0.00",
+            //     "transferrable_at": null,
+            //     "set_active": "1",
+            //     "invalidate_old": "1"
+            // }
+            // throw new \Exception(json_encode($request->data));
+            // {
+            //     "user": { "user_items": { "1": "1" } },
+            //     "character": []
+            // } 
+
             if($request->status != 'Pending') throw new \Exception("This request cannot be processed.");
             if(!isset($data['character_category_id'])) throw new \Exception("Please select a character category.");
             if(!isset($data['number'])) throw new \Exception("Please enter a character number.");
@@ -2193,12 +2211,14 @@ is_object($sender) ? $sender->id : null,
             // However logs need to be added for each of these
             $requestData = $request->data;
             $inventoryManager = new InventoryManager;
+            $featureIdsToAdd = [];
             if(isset($requestData['user']) && isset($requestData['user']['user_items'])) {
                 $stacks = $requestData['user']['user_items'];
                 foreach($requestData['user']['user_items'] as $userItemId=>$quantity) {
                     $userItemRow = UserItem::find($userItemId);
                     if(!$userItemRow) throw new \Exception("Cannot return an invalid item. (".$userItemId.")");
                     if($userItemRow->update_count < $quantity) throw new \Exception("Cannot return more items than was held. (".$userItemId.")");
+
                     $userItemRow->update_count -= $quantity;
                     $userItemRow->save();
                 }
@@ -2207,10 +2227,27 @@ is_object($sender) ? $sender->id : null,
                 foreach($stacks as $stackId=>$quantity) {
                     $stack = UserItem::find($stackId);
                     $user = User::find($request->user_id);
+                    
+                    // NOTE: (Daire) If the item has a tag that lets it add a trait, we need to automatically add  that trait to the character
+
+                    // Check if the item has the consumable tag
+                    if ($stack->item->tag('consumable')->exists()) {
+                        $tagData = $stack->item->tag('consumable')->data;
+                        $trait_added = (array_key_exists('trait_added', $tagData) ? $tagData['trait_added'] : "0");
+
+                        if ($trait_added != 0) {
+                            // Add to featureIdsToAdd
+                            $featureIdsToAdd[] = $trait_added;
+                        }
+                    } 
+
                     if(!$inventoryManager->debitStack($user, $request->character->is_myo_slot ? 'MYO Design Approved' : 'Character Design Updated', ['data' => 'Item used in ' . ($request->character->is_myo_slot ? 'MYO design approval' : 'Character design update') . ' (<a href="'.$request->url.'">#'.$request->id.'</a>)'], $stack, $quantity)) throw new \Exception("Failed to create log for item stack.");
                 }
                 $user = $staff;
             }
+
+            // throw new \Exception("Temp exception");
+
             $currencyManager = new CurrencyManager;
             if(isset($requestData['user']['currencies']) && $requestData['user']['currencies'])
             {
@@ -2260,12 +2297,23 @@ is_object($sender) ? $sender->id : null,
             $request->artists()->update(['character_type' => 'Character', 'character_image_id' => $image->id]);
 
             // Add the compulsory features
+            $featureIdsAdded = [];
             if($request->character->is_myo_slot)
             {
                 foreach($request->character->image->features as $feature)
                 {
                     CharacterFeature::create(['character_image_id' => $image->id, 'feature_id' => $feature->feature_id, 'data' => $feature->data, 'character_type' => 'Character']);
+                    $featureIdsAdded[] = $feature->feature_id;
                 }
+            }
+
+            foreach($featureIdsToAdd as $featureId)
+            {
+                if(in_array($featureId, $featureIdsAdded)) continue;
+                $feature = Feature::find($featureId);
+                if(!$feature) throw new \Exception("Invalid feature selected.");
+                CharacterFeature::create(['character_image_id' => $image->id, 'feature_id' => $featureId, 'character_type' => 'Character']);
+                $featureIdsAdded[] = $featureId;
             }
 
             // Shift the image features over to the new image
