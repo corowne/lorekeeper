@@ -246,7 +246,7 @@ class CharacterDesignUpdate extends Model
      */
     public function getIsCompleteAttribute()
     {
-        return ($this->has_comments && $this->has_image && $this->has_addons && $this->has_features);
+        return ($this->has_comments && $this->has_image && $this->has_addons);// && $this->has_features);
     }
 
     /**

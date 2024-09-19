@@ -18,7 +18,7 @@
             @if($request->character->is_myo_slot && $request->character->image->species_id)
                 <div class="alert alert-secondary">{!! $request->character->image->species->displayName !!}</div>
             @else
-                {!! Form::select('species_id', $specieses, $request->species_id, ['class' => 'form-control', 'id' => 'species']) !!}
+                {!! Form::select('species_id', $specieses, $request->species_id, ['class' => 'form-control', 'id' => 'species', 'disabled']) !!}
             @endif
 
         </div>
@@ -29,7 +29,7 @@
                 <div class="alert alert-secondary">{!! $request->character->image->subtype->displayName !!}</div>
             @else
                 <div id="subtypes">
-                  {!! Form::select('subtype_id', $subtypes, $request->subtype_id, ['class' => 'form-control', 'id' => 'subtype']) !!}
+                  {!! Form::select('subtype_id', $subtypes, $request->subtype_id, ['class' => 'form-control', 'id' => 'subtype', 'disabled']) !!}
                 </div>
             @endif
 
@@ -40,7 +40,7 @@
             @if($request->character->is_myo_slot && $request->character->image->rarity_id)
                 <div class="alert alert-secondary">{!! $request->character->image->rarity->displayName !!}</div>
             @else
-                {!! Form::select('rarity_id', $rarities, $request->rarity_id, ['class' => 'form-control', 'id' => 'rarity']) !!}
+                {!! Form::select('rarity_id', $rarities, $request->rarity_id, ['class' => 'form-control', 'id' => 'rarity', 'disabled']) !!}
             @endif
         </div>
 
@@ -62,9 +62,11 @@
                 @if($request->features)
                     @foreach($request->features as $feature)
                         <div class="mb-2 d-flex">
-                            {!! Form::select('feature_id[]', $features, $feature->feature_id, ['class' => 'form-control mr-2 feature-select', 'placeholder' => 'Select Trait']) !!}
-                            {!! Form::text('feature_data[]', $feature->data, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}
-                            <a href="#" class="remove-feature btn btn-danger mb-2">×</a>
+                            {!! Form::select('feature_id[]', $features, $feature->feature_id, ['class' => 'form-control mr-2 feature-select', 'placeholder' => 'Select Trait', 'disabled']) !!}
+                            {!! Form::text('feature_data[]', $feature->data, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)', 'disabled']) !!}
+                            @if(false)
+                                <a href="#" class="remove-feature btn btn-danger mb-2">×</a>
+                            @endif
                         </div>
                     @endforeach
                 @endif
@@ -74,13 +76,17 @@
                 <div class="feature-row hide mb-2">
                     {!! Form::select('feature_id[]', $features, null, ['class' => 'form-control mr-2 feature-select', 'placeholder' => 'Select Trait']) !!}
                     {!! Form::text('feature_data[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}
-                    <a href="#" class="remove-feature btn btn-danger mb-2">×</a>
+                    @if(false)
+                        <a href="#" class="remove-feature btn btn-danger mb-2">×</a>
+                    @endif
                 </div>
             @endif
         </div>
-        <div class="text-right">
-            {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
-        </div>
+        @if(Auth::check() && Auth::user()->hasPower('manage_submissions') && false)
+            <div class="text-right">
+                {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
+            </div>
+        @endif
     {!! Form::close() !!}
 @else
     <div class="mb-1">
