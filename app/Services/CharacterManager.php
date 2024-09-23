@@ -185,26 +185,6 @@ class CharacterManager extends Service
         return $this->rollbackReturn(false);
     }
 
-    private static function getRandomRarity()
-    {
-        $rarityNumber = rand(1, 100);
-
-        $rarityName = "Common";
-        if($rarityNumber >= 95) {
-            $rarityName = "Very Rare";
-        } else if($rarityNumber >= 75) {
-            $rarityName = "Rare";
-        } else if($rarityNumber >= 40) {
-            $rarityName = "Uncommon";
-        } else {
-            $rarityName = "Common";
-        }
-
-        $rarity = Rarity::where('name','=',$rarityName)->pluck('id')->toArray();
-        if (is_array($rarity)) $rarity = $rarity[0];
-        return $rarity;
-    }
-
     /**
      * Handles character data.
      *
@@ -270,6 +250,7 @@ class CharacterManager extends Service
             if($isMyo)
             {
                 $data['species_id'] = (isset($data['species_id']) && $data['species_id']) ? $data['species_id'] : null;
+                $data['secondary_species_id'] = (isset($data['secondary_species_id']) && $data['secondary_species_id']) ? $data['secondary_species_id'] : null;
                 $data['subtype_id'] = isset($data['subtype_id']) && $data['subtype_id'] ? $data['subtype_id'] : null;
                 $data['rarity_id'] = (isset($data['rarity_id']) && $data['rarity_id']) ? $data['rarity_id'] : null;
 
@@ -366,15 +347,16 @@ class CharacterManager extends Service
                 $data['feature_id'] = [];
                 $data['feature_data'] = [];
                 $featuresGiven = CharacterManager::getRandomFeatures(rand(1, 1), []);
+                $hasTraitVariant = false;
                 if (count($featuresGiven) > 0) {
-                    foreach($$featuresGiven as $feature) {
+                    foreach($featuresGiven as $feature) {
                         $data['feature_id'][$key] = $feature->id;
                         $data['feature_data'][$key] = '';
+
+                        if ($feature->name === 'Variant') {
+                            $hasTraitVariant = true;
+                        }
                     }
-                    // foreach($featuresGiven as $key => $featureId) {
-                    //     $data['feature_id'][$key] = $featureId;
-                    //     $data['feature_data'][$key] = '';
-                    // }
                 }
             }
 
@@ -385,75 +367,33 @@ class CharacterManager extends Service
                 }
             }
 
+            
+            if ($hasTraitVariant) {
+                $existingSpeciesIds = [];
+
+                if ($data['species_id'] != null) {
+                    $existingSpeciesIds[] = $data['species_id'];
+                }
+
+                // This will never be populated but it might be relevant in the future
+                // if ($data['secondary_species_id'] != null) {
+                //     $existingSpeciesIds[] = $data['secondary_species_id'];
+                // }
+
+                $randomSpecies = CharacterManager::GetRandomSpecies(Species::all(), $existingSpeciesIds); 
+                $data['secondary_species_id'] = $randomSpecies->id;
+
+                throw new \Exception(json_encode($data));
+            }
+
+            throw new \Exception('No variant found');
+
             return $image;
         } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return false;
 
-    }
-
-    /**
-     * NOTE: (Daire) Returns a list of features for the given image. Should include ID and data for each
-     * 0-40 common (40% chance)
-     * 41-75 uncommon (35% chance)
-     * 76-95 rare (20% chance)
-     * 95-100 very rare (5% chance)
-     */
-    public static function getRandomFeatures($featureCount = 0, $existingFeatures = [])
-    {
-        $features = Feature::all();
-        $selectedFeatures = $existingFeatures;
-        $retries = 0;
-    
-        $hasBonusFeature = false;
-        while (count($selectedFeatures) < $featureCount && $retries < 10) {
-            $randomFeature = CharacterManager::GetRandomFeature($features, $selectedFeatures);
-            if ($randomFeature == null) {
-                $retries++;
-                continue;
-            }
-
-            $selectedFeatures[] = $randomFeature;
-    
-            if ($randomFeature->name === 'Mutation') {
-                $hasBonusFeature = true;
-            }
-        }
-
-        if ($hasBonusFeature) {
-            $retries = 0;
-            while ($hasBonusFeature && $retries < 10) {
-                $randomFeature = CharacterManager::GetRandomFeature($features, $selectedFeatures);
-                if ($randomFeature == null) {
-                    $retries++;
-                    continue;
-                }
-
-                $selectedFeatures[] = $randomFeature;
-                $hasBonusFeature = false;
-            }
-        }
-    
-        return $selectedFeatures;
-    }
-
-    public static function GetRandomFeature($featurePool, $existingFeatures = [])
-    {
-        $existingFeatureIds = [];
-        foreach ($existingFeatures as $feature) {
-            $existingFeatureIds[] = $feature->id;
-        }
-
-        $randomRarity = CharacterManager::getRandomRarity();
-
-        $randomFeaturePool = $featurePool->where('rarity_id','=',$randomRarity)->whereNotIn('id', $existingFeatureIds);
-        if ($randomFeaturePool->count() == 0) {
-            return null;
-        }
-
-        $randomFeature = $randomFeaturePool->random();
-        return $randomFeature;
     }
 
     /**
@@ -2677,4 +2617,105 @@ is_object($sender) ? $sender->id : null,
         }
         return $this->rollbackReturn(false);
     }
+
+    // IW custom stuff
+
+    /**
+     * NOTE: (Daire) Returns random rarity with the following chances:
+     * 0-40 common (40% chance)
+     * 41-75 uncommon (35% chance)
+     * 76-95 rare (20% chance)
+     * 95-100 very rare (5% chance)
+     */
+    private static function getRandomRarity()
+    {
+        $rarityNumber = rand(1, 100);
+
+        $rarityName = "Common";
+        if($rarityNumber >= 95) {
+            $rarityName = "Very Rare";
+        } else if($rarityNumber >= 75) {
+            $rarityName = "Rare";
+        } else if($rarityNumber >= 40) {
+            $rarityName = "Uncommon";
+        } else {
+            $rarityName = "Common";
+        }
+
+        $rarity = Rarity::where('name','=',$rarityName)->pluck('id')->toArray();
+        if (is_array($rarity)) $rarity = $rarity[0];
+        return $rarity;
+    }
+
+    public static function getRandomFeatures($featureCount = 0, $existingFeatures = [])
+    {
+        $features = Feature::all();
+        $selectedFeatures = $existingFeatures;
+        $retries = 0;
+    
+        $hasBonusFeature = false;
+        while (count($selectedFeatures) < $featureCount && $retries < 10) {
+            $randomFeature = CharacterManager::GetRandomFeature($features, $selectedFeatures);
+            if ($randomFeature == null) {
+                $retries++;
+                continue;
+            }
+
+            $selectedFeatures[] = $randomFeature;
+    
+            if ($randomFeature->name === 'Mutation') {
+                $hasBonusFeature = true;
+            }
+        }
+
+        if ($hasBonusFeature) {
+            $retries = 0;
+            while ($hasBonusFeature && $retries < 10) {
+                $randomFeature = CharacterManager::GetRandomFeature($features, $selectedFeatures);
+                if ($randomFeature == null) {
+                    $retries++;
+                    continue;
+                }
+
+                $selectedFeatures[] = $randomFeature;
+                $hasBonusFeature = false;
+            }
+        }
+    
+        return $selectedFeatures;
+    }
+
+    public static function GetRandomFeature($featurePool, $existingFeatures = [])
+    {
+        $existingFeatureIds = [];
+        foreach ($existingFeatures as $feature) {
+            $existingFeatureIds[] = $feature->id;
+        }
+
+        $randomRarity = CharacterManager::getRandomRarity();
+
+        $randomFeaturePool = $featurePool->where('rarity_id','=',$randomRarity)->whereNotIn('id', $existingFeatureIds);
+        if ($randomFeaturePool->count() == 0) {
+            return null;
+        }
+
+        $randomFeature = $randomFeaturePool->random();
+        return $randomFeature;
+    }
+
+    public static function GetRandomSpecies($speciesPool, $existingSpeciesIds =[])
+    {
+        // Species don't have rarities rn, so we'll just get a random one
+        // $randomRarity = CharacterManager::getRandomRarity();
+        // $randomSpeciesPool = $speciesPool->where('rarity_id','=',$randomRarity)->whereNotIn('id', $existingSpeciesIds);
+
+        $randomSpeciesPool = $speciesPool->whereNotIn('id', $existingSpeciesIds);
+        if ($randomSpeciesPool->count() == 0) {
+            return null;
+        }
+
+        $randomSpecies = $randomSpeciesPool->random();
+        return $randomSpecies;
+    }
+
 }

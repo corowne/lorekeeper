@@ -273,19 +273,25 @@ class ConsumableService extends Service
         $feature = CharacterFeature::create(['character_image_id' => $character->image->id, 'feature_id' => $new_trait->id, 'data' => 'Added from a consumable']);
     }
 
-    private function actRerollSpecies($character)
+    private function actRerollSpecies($character, $secondary = false)
     {
-        // Get the species that was added from a consumable
-        $species_id = $character->image->species_id;
+        $existingSpeciesIds = [];
+        if ($character->image->species_id != null) {
+            $existingSpeciesIds[] = $character->image->species_id;
+        }
+        if ($character->image->secondary_species_id != null) {
+            $existingSpeciesIds[] = $character->image->secondary_species_id;
+        }
 
         // Get a list of all species that exist in the game except the current one
-        $all_species = Species::where('id', '!=', $species_id)->get();
-
-        // Get the new species to add to the character
-        $new_species = $all_species->random();
+        $randomSpecies = CharacterManager::getRandomSpecies(Species::all(), $existingSpeciesIds);
         
-        // Update the character's species
-        $character->image->update(['species_id' => $new_species->id]);
+        if ($secondary) {
+            $character->image->update(['secondary_species_id' => $randomSpecies->id]);
+            
+        } else {
+            $character->image->update(['species_id' => $randomSpecies->id]);
+        }
     }
 
     private function addItemThatAddsTraitToCharacter($trait_removing_user, $character)
