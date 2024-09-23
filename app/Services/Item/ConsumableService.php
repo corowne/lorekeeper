@@ -3,6 +3,7 @@
 use App\Models\Character\Character;
 use App\Models\Character\CharacterFeature;
 use App\Models\Species\Species;
+use App\Services\CharacterManager;
 use App\Services\Service;
 use Illuminate\Http\Request;
 
@@ -235,7 +236,7 @@ class ConsumableService extends Service
         return $character;
     }
 
-    private function actRerollAllTraits($character)
+    private function actRerollAllTraits($character): void
     {
         // NOTE: This is how you get non born traits: $traits = CharacterFeature::where('character_image_id', $character->image->id)->where('data', 'Added from a consumable')->get();
 
@@ -250,39 +251,23 @@ class ConsumableService extends Service
         $all_traits = Feature::all();
 
         // Add $traits_from_consumables_count new traits to the character but avoid adding the same trait twice
-        $traits_added = 0;
-        $trait_ids_current = [];
-        while ($traits_added < $traits_count)
+        $new_traits = CharacterManager::getRandomFeatures($traits_count, []);
+        foreach ($new_traits as $trait)
         {
-            $rarity = $this->getRandomRarity();
-            $trait = $all_traits->where('rarity_id', $rarity)->whereNotIn('id', $trait_ids_current)->random();
-            if (!$character->image->features->contains('feature_id', $trait->id))
-            {
-                $feature = CharacterFeature::create(['character_image_id' => $character->image->id, 'feature_id' => $trait->id, 'data' => 'Added from a consumable']);
-                $traits_added++;
-                $trait_ids_current[] = $trait->id;
-            }
+            CharacterFeature::create(['character_image_id' => $character->image->id, 'feature_id' => $trait->id, 'data' => 'Added from a consumable']);
         }
     }
 
     private function actRerollTrait($trait_rerolling_user, $character)
     {
+        // Get all of a character's traits. Do this before removing so we can avoid rerolling into the same trait
+        $character_traits = CharacterFeature::where('character_image_id', $character->image->id)->get();
+
         // Remove the old trait
         CharacterFeature::where('feature_id', $trait_rerolling_user)->where('character_image_id', $character->image->id)->delete();
 
-        // Get all of a character's traits
-        $character_traits = CharacterFeature::where('character_image_id', $character->image->id)->get();
-        $character_trait_feature_ids = $character_traits->pluck('feature_id');
-
-        // Get all traits that exist in the game that the character doesn't have already
-        $all_traits = Feature::whereNotIn('id', $character_trait_feature_ids)->where('id', '!=', $trait_rerolling_user)->get();
-
-        // Get a random rarity
-        // TODO: If the player has all the rare traits and they roll rare, this will fail. Need to check if there are any traits of that rarity left.
-        $rarity = $this->getRandomRarity();
-
-        // Get a new trait
-        $new_trait = $all_traits->where('rarity_id', $rarity)->random();
+        // Get a new trait to add to the character
+        $new_trait = CharacterManager::getRandomFeatures(1, $character_traits);
         
         // Add the new trait to the character
         $feature = CharacterFeature::create(['character_image_id' => $character->image->id, 'feature_id' => $new_trait->id, 'data' => 'Added from a consumable']);
@@ -301,26 +286,6 @@ class ConsumableService extends Service
         
         // Update the character's species
         $character->image->update(['species_id' => $new_species->id]);
-    }
-
-    private function getRandomRarity()
-    {
-        $rarityNumber = rand(1, 100);
-
-        $rarityName = "Common";
-        if($rarityNumber >= 95) {
-            $rarityName = "Very Rare";
-        } else if($rarityNumber >= 75) {
-            $rarityName = "Rare";
-        } else if($rarityNumber >= 40) {
-            $rarityName = "Uncommon";
-        } else {
-            $rarityName = "Common";
-        }
-
-        $rarity = Rarity::where('name','=',$rarityName)->pluck('id')->toArray();
-        if (is_array($rarity)) $rarity = $rarity[0];
-        return $rarity;
     }
 
     private function addItemThatAddsTraitToCharacter($trait_removing_user, $character)

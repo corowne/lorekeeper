@@ -185,7 +185,7 @@ class CharacterManager extends Service
         return $this->rollbackReturn(false);
     }
 
-    private function getRandomRarity()
+    private static function getRandomRarity()
     {
         $rarityNumber = rand(1, 100);
 
@@ -365,7 +365,7 @@ class CharacterManager extends Service
             if($isMyo) {
                 $data['feature_id'] = [];
                 $data['feature_data'] = [];
-                $featuresGiven = CharacterManager::getRandomFeatures(rand(1, 1));
+                $featuresGiven = CharacterManager::getRandomFeatures(rand(1, 1), []);
                 if (count($featuresGiven) > 0) {
                     foreach($$featuresGiven as $feature) {
                         $data['feature_id'][$key] = $feature->id;
@@ -400,10 +400,10 @@ class CharacterManager extends Service
      * 76-95 rare (20% chance)
      * 95-100 very rare (5% chance)
      */
-    public function getRandomFeatures($featureCount)
+    public static function getRandomFeatures($featureCount = 0, $existingFeatures = [])
     {
         $features = Feature::all();
-        $selectedFeatures = [];
+        $selectedFeatures = $existingFeatures;
         $retries = 0;
     
         $hasBonusFeature = false;
@@ -438,7 +438,7 @@ class CharacterManager extends Service
         return $selectedFeatures;
     }
 
-    public function GetRandomFeature($featurePool, $existingFeatures = [])
+    public static function GetRandomFeature($featurePool, $existingFeatures = [])
     {
         $existingFeatureIds = [];
         foreach ($existingFeatures as $feature) {
