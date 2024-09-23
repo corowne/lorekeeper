@@ -266,7 +266,7 @@ class CharacterManager extends Service
                 }
             }
             $imageData = Arr::only($data, [
-                'species_id', 'subtype_id', 'rarity_id', 'use_cropper',
+                'species_id', 'secondary_species_id', 'subtype_id', 'rarity_id', 'use_cropper',
                 'x0', 'x1', 'y0', 'y1',
             ]);
             $imageData['use_cropper'] = isset($data['use_cropper']) ;
@@ -383,10 +383,12 @@ class CharacterManager extends Service
                 $randomSpecies = CharacterManager::GetRandomSpecies(Species::all(), $existingSpeciesIds); 
                 $data['secondary_species_id'] = $randomSpecies->id;
 
-                throw new \Exception(json_encode($data));
+                // Save image
+                $image->update(['secondary_species_id' => $data['secondary_species_id']]);
+                // $image->save();
+            } else {
+                throw new \Exception('No variant found');
             }
-
-            throw new \Exception('No variant found');
 
             return $image;
         } catch(\Exception $e) {
@@ -745,6 +747,7 @@ class CharacterManager extends Service
             $old = [];
             $old['features'] = $this->generateFeatureList($image);
             $old['species'] = $image->species_id ? $image->species->displayName : null;
+            $old['secondary_species'] = $image->secondary_species_id ? $image->secondary_species->displayName : null;
             $old['subtype'] = $image->subtype_id ? $image->subtype->displayName : null;
             $old['rarity'] = $image->rarity_id ? $image->rarity->displayName : null;
 
@@ -767,6 +770,7 @@ class CharacterManager extends Service
             $new = [];
             $new['features'] = $this->generateFeatureList($image);
             $new['species'] = $image->species_id ? $image->species->displayName : null;
+            $new['secondary_species'] = $image->secondary_species_id ? $image->secondary_species->displayName : null;
             $new['subtype'] = $image->subtype_id ? $image->subtype->displayName : null;
             $new['rarity'] = $image->rarity_id ? $image->rarity->displayName : null;
 

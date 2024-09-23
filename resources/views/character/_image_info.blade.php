@@ -35,6 +35,12 @@
                     <div class="col-lg-4 col-md-6 col-4"><h5>Species</h5></div>
                     <div class="col-lg-8 col-md-6 col-8">{!! $image->species_id ? $image->species->displayName : 'None' !!}</div>
                 </div>
+                @if($image->secondary_species_id)
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-4"><h5>Secondary Species</h5></div>
+                        <div class="col-lg-8 col-md-6 col-8">{!! $image->secondary_species_id ? $image->secondarySpecies->displayName : 'None' !!}</div>
+                    </div>
+                @endif
                 @if($image->subtype_id)
                     <div class="row">
                         <div class="col-lg-4 col-md-6 col-4"><h5>Subtype</h5></div>
