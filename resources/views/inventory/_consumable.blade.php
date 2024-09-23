@@ -29,6 +29,12 @@
                 </div>
             @endif
 
+            @if (array_key_exists('reroll_specific_species', $tag->data) && $tag->data['reroll_specific_species'])
+                <div class="form-group">
+                    {!! Form::select('species_id_rerolling', $species_options_rerolling, null, ['class' => 'form-control mr-2 default species-select', 'placeholder' => 'Select a species to reroll']) !!}
+                </div>
+            @endif
+
             <div class="text-right">
                 {!! Form::button('Use', ['class' => 'btn btn-primary', 'name' => 'action', 'value' => 'act', 'type' => 'submit']) !!}
             </div>
@@ -40,6 +46,7 @@
             const characterSelectInputs = document.querySelectorAll('.character-id-affected');
             const featureSelectRemoving = document.querySelector('select[name="feature_id_removing"]');
             const featureSelectRerolling = document.querySelector('select[name="feature_id_rerolling"]');
+            const speciesSelectRerolling = document.querySelector('select[name="species_id_rerolling"]');
 
             for (let i = 0; i < characterSelectInputs.length; i++) {
                 const characterSelect = characterSelectInputs[i];
@@ -48,34 +55,55 @@
                     const characterId = this.value;
 
                     if (characterId) {
-                        fetch(`/myo/${characterId}/features`)
-                            .then(response => response.json())
-                            .then(data => {
-                                if (featureSelectRemoving) {
-                                    featureSelectRemoving.innerHTML = '<option value="">Select a trait to remove</option>';
-                                    data.forEach(trait => {
-                                        const option = document.createElement('option');
-                                        option.value = trait.id;
-                                        option.textContent = trait.name;
-                                        featureSelectRemoving.appendChild(option);
-                                    });
-                                }
-                                if (featureSelectRerolling) {
-                                    featureSelectRerolling.innerHTML = '<option value="">Select a trait to reroll</option>';
-                                    data.forEach(trait => {
-                                        const option = document.createElement('option');
-                                        option.value = trait.id;
-                                        option.textContent = trait.name;
-                                        featureSelectRerolling.appendChild(option);
-                                    });
-                                }
-                            });
+                        if (featureSelectRemoving || featureSelectRerolling) {
+                            fetch(`/myo/${characterId}/features`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (featureSelectRemoving) {
+                                        featureSelectRemoving.innerHTML = '<option value="">Select a trait to remove</option>';
+                                        data.forEach(trait => {
+                                            const option = document.createElement('option');
+                                            option.value = trait.id;
+                                            option.textContent = trait.name;
+                                            featureSelectRemoving.appendChild(option);
+                                        });
+                                    }
+                                    if (featureSelectRerolling) {
+                                        featureSelectRerolling.innerHTML = '<option value="">Select a trait to reroll</option>';
+                                        data.forEach(trait => {
+                                            const option = document.createElement('option');
+                                            option.value = trait.id;
+                                            option.textContent = trait.name;
+                                            featureSelectRerolling.appendChild(option);
+                                        });
+                                    }
+                                });
+                        }
+
+                        if (speciesSelectRerolling) {
+                            fetch(`/myo/${characterId}/specieses`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (speciesSelectRerolling) {
+                                        speciesSelectRerolling.innerHTML = '<option value="">Select a species to reroll</option>';
+                                        data.forEach(species => {
+                                            const option = document.createElement('option');
+                                            option.value = species.id;
+                                            option.textContent = species.name;
+                                            speciesSelectRerolling.appendChild(option);
+                                        });
+                                    }
+                                });
+                        }
                     } else {
                         if (featureSelectRemoving) {
                             featureSelectRemoving.innerHTML = '<option value="">Select a trait to remove</option>';
                         }
                         if (featureSelectRerolling) {
                             featureSelectRerolling.innerHTML = '<option value="">Select a trait to reroll</option>';
+                        }
+                        if (speciesSelectRerolling) {
+                            speciesSelectRerolling.innerHTML = '<option value="">Select a species to reroll</option>';
                         }
                     }
                 });

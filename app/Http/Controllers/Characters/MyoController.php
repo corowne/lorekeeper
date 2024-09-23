@@ -76,6 +76,21 @@ class MyoController extends Controller
         return $this->character->image->features;
     }
 
+    public function getCharacterSpecieses($id)
+    {
+        $list = [];
+
+        if ($this->character->image->species) {
+            $list[] = $this->character->image->species;
+        }
+
+        if ($this->character->image->secondarySpecies) {
+            $list[] = $this->character->image->secondarySpecies;
+        }
+
+        return $list;
+    }
+
     /**
      * Shows an MYO slot's profile.
      *

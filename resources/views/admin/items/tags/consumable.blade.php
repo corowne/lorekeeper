@@ -31,10 +31,16 @@
 <br/>
 
 <h3>Species rerolling</h3>
+<p>Only tick one of these</p>
 
 <div class="form-group">
     {!! Form::checkbox('reroll_species', 1, $tag->getData()['reroll_species'], ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'reroll_species']) !!}
-    {!! Form::label('reroll_species', 'Reroll species', ['class' => 'form-check-label ml-3']) !!}
+    {!! Form::label('reroll_species', 'Reroll all species', ['class' => 'form-check-label ml-3']) !!}
+</div>
+
+<div class="form-group">
+    {!! Form::checkbox('reroll_specific_species', 1, $tag->getData()['reroll_specific_species'], ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'reroll_specific_species']) !!}
+    {!! Form::label('reroll_specific_species', 'Reroll a species chosen by the user', ['class' => 'form-check-label ml-3']) !!}
 </div>
 
 <h3>Trait rerolling</h3>

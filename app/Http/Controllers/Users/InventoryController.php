@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Users;
 
+use App\Models\Species\Species;
 use Illuminate\Http\Request;
 
 use DB;
@@ -84,8 +85,9 @@ class InventoryController extends Controller
             'userOptions' => ['' => 'Select User'] + User::visible()->where('id', '!=', $first_instance ? $first_instance->user_id : 0)->orderBy('name')->get()->pluck('verified_name', 'id')->toArray(),
             'readOnly' => $readOnly,
             'characterOptions' => Character::visible()->myo(0)->where('user_id', optional(Auth::user())->id)->orderBy('sort','DESC')->get()->pluck('fullName','id')->toArray(),
-            'characterOptionsMyo' => Character::visible()->myo(1)->where('user_id', optional(Auth::user())->id)->orderBy('sort','DESC')->get()->pluck('fullName','id')->toArray(),
+            'characterOptionsMyo' => Character::myo(1)->where('user_id', optional(Auth::user())->id)->orderBy('sort','DESC')->get()->pluck('fullName','id')->toArray(),
             'allFeatures' => Feature::orderBy('name', 'DESC')->pluck('name', 'id')->toArray(),
+            'allSpecies' => Species::orderBy('name', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
 
@@ -256,7 +258,7 @@ class InventoryController extends Controller
         if($service && $service->act($stacks, Auth::user(), $request->all())) {
             flash('Item used successfully.')->success();
         }
-        else if(!$stacks->first()->item->hasTag($tag)) flash('Invalid action selected 2.')->error();
+        else if(!$stacks->first()->item->hasTag($tag)) flash('Invalid action selected - Check that the item is active.')->error();
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
