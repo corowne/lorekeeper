@@ -385,9 +385,9 @@ class CharacterManager extends Service
 
                 // Save image
                 $image->update(['secondary_species_id' => $data['secondary_species_id']]);
-                // $image->save();
-            } else {
-                throw new \Exception('No variant found');
+            // NOTE: (Daire) This is used for testing variants - the create MYO flow will fail until a variant trait is rolled
+            // } else {
+            //     throw new \Exception('No variant found');
             }
 
             return $image;
