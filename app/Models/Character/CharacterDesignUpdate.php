@@ -22,7 +22,7 @@ class CharacterDesignUpdate extends Model
         'character_id', 'status', 'user_id', 'staff_id',
         'comments', 'staff_comments', 'data', 'extension',
         'use_cropper', 'x0', 'x1', 'y0', 'y1',
-        'hash', 'species_id', 'subtype_id', 'rarity_id',
+        'hash', 'species_id', 'secondary_species_id', 'subtype_id', 'rarity_id',
         'has_comments', 'has_image', 'has_addons', 'has_features',
         'submitted_at', 'update_type', 'fullsize_hash', 
         'approval_votes', 'rejection_votes'
@@ -97,6 +97,11 @@ class CharacterDesignUpdate extends Model
     public function species()
     {
         return $this->belongsTo('App\Models\Species\Species', 'species_id');
+    }
+
+    public function secondarySpecies()
+    {
+        return $this->belongsTo('App\Models\Species\Species', 'secondary_species_id');
     }
 
     /**

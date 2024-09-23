@@ -19,7 +19,7 @@ class CharacterImage extends Model
      * @var array
      */
     protected $fillable = [
-        'character_id', 'user_id', 'species_id', 'subtype_id', 'rarity_id', 'url',
+        'character_id', 'user_id', 'species_id', 'secondary_species_id', 'subtype_id', 'rarity_id', 'url',
         'extension', 'use_cropper', 'hash', 'fullsize_hash', 'sort',
         'x0', 'x1', 'y0', 'y1',
         'description', 'parsed_description',
@@ -93,6 +93,11 @@ class CharacterImage extends Model
     public function species()
     {
         return $this->belongsTo('App\Models\Species\Species', 'species_id');
+    }
+
+    public function secondarySpecies()
+    {
+        return $this->belongsTo('App\Models\Species\Species', 'secondary_species_id');
     }
 
     /**
