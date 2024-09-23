@@ -21,8 +21,7 @@
                     options: options,
                     onInitialize: function() {
                         console.log(this.$input.attr('data-init-value'));
-                        var existingOptions = JSON.parse(this.$input.attr(
-                            'data-init-value'));
+                        let existingOptions = this.$input.attr('data-init-value') ? JSON.parse(this.$input.attr('data-init-value')) : [];
                         var self = this;
                         if (Object.prototype.toString.call(existingOptions) ===
                             "[object Array]") {
