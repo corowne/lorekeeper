@@ -1126,7 +1126,7 @@ class CharacterManager extends Service {
                     $old['number'] = $character->number;
                     $new['number'] = $characterData['number'];
                 }
-                if ($characterData['slug'] != $character->number) {
+                if ($characterData['slug'] != $character->slug) {
                     $result[] = 'character code';
                     $old['slug'] = $character->slug;
                     $new['slug'] = $characterData['slug'];
