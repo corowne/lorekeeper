@@ -7,41 +7,29 @@
 
 @include('character.design._header', ['request' => $request])
 
-<h2>Traits</h2>
-
-<!-- TODO: This form is used in the design update request process. It has a lot of data you shouldn't be able to change on it like species, traits, etc. Need to convert the inputs to regular displays or just disable them all -->
-@if($request->status == 'Draft' && $request->user_id == Auth::user()->id)
-    <p>Select the traits for the {{ $request->character->is_myo_slot ? 'created' : 'updated' }} character. @if($request->character->is_myo_slot) Some traits may have been restricted for you - you cannot change them. @endif Staff will not be able to modify these traits for you during approval, so if in doubt, please communicate with them beforehand to make sure that your design is acceptable.</p>
+@if($request->status == 'Pending' && $request->character->is_myo_slot && Auth::check() && Auth::user()->hasPower('manage_characters'))
     {!! Form::open(['url' => 'designs/'.$request->id.'/traits']) !!}
+
         <div class="form-group">
             {!! Form::label('species_id', 'Species') !!}
-            @if($request->character->is_myo_slot && $request->character->image->species_id)
-                <div class="alert alert-secondary">{!! $request->character->image->species->displayName !!}</div>
-            @else
-                {!! Form::select('species_id', $specieses, $request->species_id, ['class' => 'form-control', 'id' => 'species', 'disabled']) !!}
-            @endif
+            {!! Form::select('species_id', $specieses, $request->species_id, ['class' => 'form-control', 'id' => 'species']) !!}
+        </div>
 
+        <div class="form-group">
+            {!! Form::label('secondary_species_id', 'Secondary species') !!}
+            {!! Form::select('secondary_species_id', $specieses, $request->secondary_species_id, ['class' => 'form-control', 'id' => 'secondary_species']) !!}
         </div>
 
         <div class="form-group">
             {!! Form::label('subtype_id', 'Species Subtype') !!}
-            @if($request->character->is_myo_slot && $request->character->image->subtype_id)
-                <div class="alert alert-secondary">{!! $request->character->image->subtype->displayName !!}</div>
-            @else
-                <div id="subtypes">
-                  {!! Form::select('subtype_id', $subtypes, $request->subtype_id, ['class' => 'form-control', 'id' => 'subtype', 'disabled']) !!}
-                </div>
-            @endif
-
+            <div id="subtypes">
+                {!! Form::select('subtype_id', $subtypes, $request->subtype_id, ['class' => 'form-control', 'id' => 'subtype']) !!}
+            </div>
         </div>
 
         <div class="form-group">
             {!! Form::label('rarity_id', 'Character Rarity') !!}
-            @if($request->character->is_myo_slot && $request->character->image->rarity_id)
-                <div class="alert alert-secondary">{!! $request->character->image->rarity->displayName !!}</div>
-            @else
-                {!! Form::select('rarity_id', $rarities, $request->rarity_id, ['class' => 'form-control', 'id' => 'rarity', 'disabled']) !!}
-            @endif
+            {!! Form::select('rarity_id', $rarities, $request->rarity_id, ['class' => 'form-control', 'id' => 'rarity']) !!}
         </div>
 
         <div class="form-group">
@@ -51,8 +39,8 @@
                 @if($request->character->is_myo_slot && $request->character->image->features)
                     @foreach($request->character->image->features as $feature)
                         <div class="mb-2 d-flex align-items-center">
-                            {!! Form::text('', $feature->name, ['class' => 'form-control mr-2', 'disabled']) !!}
-                            {!! Form::text('', $feature->data, ['class' => 'form-control mr-2', 'disabled']) !!}
+                            {!! Form::text('', $feature->name, ['class' => 'form-control mr-2']) !!}
+                            {!! Form::text('', $feature->data, ['class' => 'form-control mr-2']) !!}
                             <div>{!! add_help('This trait is required.') !!}</div>
                         </div>
                     @endforeach
@@ -62,8 +50,8 @@
                 @if($request->features)
                     @foreach($request->features as $feature)
                         <div class="mb-2 d-flex">
-                            {!! Form::select('feature_id[]', $features, $feature->feature_id, ['class' => 'form-control mr-2 feature-select', 'placeholder' => 'Select Trait', 'disabled']) !!}
-                            {!! Form::text('feature_data[]', $feature->data, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)', 'disabled']) !!}
+                            {!! Form::select('feature_id[]', $features, $feature->feature_id, ['class' => 'form-control mr-2 feature-select', 'placeholder' => 'Select Trait']) !!}
+                            {!! Form::text('feature_data[]', $feature->data, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}
                             @if(false)
                                 <a href="#" class="remove-feature btn btn-danger mb-2">×</a>
                             @endif
@@ -82,18 +70,23 @@
                 </div>
             @endif
         </div>
-        @if(Auth::check() && Auth::user()->hasPower('manage_submissions') && false)
-            <div class="text-right">
-                {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
-            </div>
-        @endif
+
+        <div class="text-right">
+            {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
+        </div>
     {!! Form::close() !!}
 @else
     <div class="mb-1">
         <div class="row">
             <div class="col-md-2 col-4"><h5>Species</h5></div>
-            <div class="col-md-10 col-8">{!! $request->species ? $request->species->displayName : 'None Selected' !!}</div>
+            <div class="col-md-10 col-8">{!! $request->species ? $request->species->displayName : 'None' !!}</div>
         </div>
+        @if($request->secondarySpecies != null)
+            <div class="row">
+                <div class="col-md-2 col-4"><h5>Secondary species</h5></div>
+                <div class="col-md-10 col-8">{!! $request->secondarySpecies ? $request->secondarySpecies->displayName : 'None' !!}</div>
+            </div>
+        @endif
         @if($request->subtype_id)
         <div class="row">
             <div class="col-md-2 col-4"><h5>Subtype</h5></div>
@@ -115,11 +108,11 @@
     <div>
         @if($request->character && $request->character->is_myo_slot && $request->character->image->features)
             @foreach($request->character->image->features as $feature)
-                <div>@if($feature->feature->feature_category_id) <strong>{!! $feature->feature->category->displayName !!}:</strong> @endif {!! $feature->feature->displayName !!} @if($feature->data) ({{ $feature->data }}) @endif <span class="text-danger">*Required</span></div>
+                <div>@if($feature->feature->feature_category_id) <strong>[{!! $feature->feature->category->displayName !!}]</strong> @endif {!! $feature->feature->displayName !!} @if($feature->data) ({{ $feature->data }}) @endif</div>
             @endforeach
         @endif
         @foreach($request->features as $feature)
-            <div>@if($feature->feature->feature_category_id) <strong>{!! $feature->feature->category->displayName !!}:</strong> @endif {!! $feature->feature->displayName !!} @if($feature->data) ({{ $feature->data }}) @endif</div>
+            <div>@if($feature->feature->feature_category_id) <strong>[{!! $feature->feature->category->displayName !!}]</strong> @endif {!! $feature->feature->displayName !!} @if($feature->data) ({{ $feature->data }}) @endif</div>
         @endforeach
     </div>
 @endif

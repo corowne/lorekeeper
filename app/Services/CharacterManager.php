@@ -1829,6 +1829,7 @@ is_object($sender) ? $sender->id : null,
                 // Set some data based on the character's existing stats
                 'rarity_id' => $character->image->rarity_id,
                 'species_id' => $character->image->species_id,
+                'secondary_species_id' => $character->image->secondary_species_id,
                 'subtype_id' => $character->image->subtype_id
             ];
 
@@ -2090,10 +2091,13 @@ is_object($sender) ? $sender->id : null,
             if(!($request->character->is_myo_slot && $request->character->image->rarity_id) && !isset($data['rarity_id'])) throw new \Exception("Please select a rarity.");
 
             $rarity = ($request->character->is_myo_slot && $request->character->image->rarity_id) ? $request->character->image->rarity : Rarity::find($data['rarity_id']);
-            $species = ($request->character->is_myo_slot && $request->character->image->species_id) ? $request->character->image->species : Species::find($data['species_id']);
+            $species = (array_key_exists('species_id', $data) ? Species::find($data['species_id']) : $request->character->image->species_id);
+            $secondarySpecies = (array_key_exists('secondary_species_id', $data) ? Species::find($data['secondary_species_id']) : $request->character->image->secondary_species_id);
+
             if(isset($data['subtype_id']) && $data['subtype_id'])
                 $subtype = ($request->character->is_myo_slot && $request->character->image->subtype_id) ? $request->character->image->subtype : Subtype::find($data['subtype_id']);
             else $subtype = null;
+
             if(!$rarity) throw new \Exception("Invalid rarity selected.");
             if(!$species) throw new \Exception("Invalid species selected.");
             if($subtype && $subtype->species_id != $species->id) throw new \Exception("Subtype does not match the species.");
@@ -2122,6 +2126,7 @@ is_object($sender) ? $sender->id : null,
 
             // Update other stats
             $request->species_id = $species->id;
+            $request->secondary_species_id = $secondarySpecies ? $secondarySpecies->id : null;
             $request->rarity_id = $rarity->id;
             $request->subtype_id = $subtype ? $subtype->id : null;
             $request->has_features = 1;

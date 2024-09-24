@@ -16,6 +16,9 @@ class IWAddSecondarySpeciesToCharacters extends Migration
         Schema::table('character_images', function (Blueprint $table) {
             $table->integer('secondary_species_id')->nullable(true)->unsigned();
         });
+        Schema::table('design_updates', function (Blueprint $table) {
+            $table->integer('secondary_species_id')->nullable(true)->unsigned();
+        });
     }
 
     /**
@@ -26,6 +29,9 @@ class IWAddSecondarySpeciesToCharacters extends Migration
     public function down()
     {
         Schema::table('character_images', function (Blueprint $table) {
+            $table->dropColumn('secondary_species_id');
+        });
+        Schema::table('design_updates', function (Blueprint $table) {
             $table->dropColumn('secondary_species_id');
         });
     }
