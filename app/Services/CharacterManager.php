@@ -2302,19 +2302,9 @@ is_object($sender) ? $sender->id : null,
                 }
             }
 
-            $existingFeatureIds = [];
-            foreach($request->character->image->features as $feature)
-            {
-                $existingFeatureIds[] = $feature->feature_id;
-            }
-
             foreach($featureIdsToAdd as $featureId)
             {
-                if(in_array($featureId, haystack: $existingFeatureIds)) throw new \Exception("Cannot add the same trait twice.");
-                $feature = Feature::find($featureId);
-                if(!$feature) throw new \Exception("Invalid feature selected.");
-                CharacterFeature::create(attributes: ['character_image_id' => $image->id, 'feature_id' => $featureId, 'character_type' => 'Character', 'data' => 'Added from a consumable']);
-                $existingFeatureIds[] = $featureId;
+                CharacterManager::AddTraitToCharacter($request->character, $featureId, true);
             }
 
             // Shift the image features over to the new image
@@ -2690,6 +2680,11 @@ is_object($sender) ? $sender->id : null,
                 $hasBonusFeature = false;
             }
         }
+
+        // If it's not an array, make it an array
+        if (!is_array($selectedFeatures)) {
+            $selectedFeatures = [$selectedFeatures];
+        }
     
         return $selectedFeatures;
     }
@@ -2725,6 +2720,85 @@ is_object($sender) ? $sender->id : null,
 
         $randomSpecies = $randomSpeciesPool->random();
         return $randomSpecies;
+    }
+
+    public static function AddTraitToCharacter($character, $trait_id_adding, $added_from_consumable): void
+    {
+        // Check that the trait exists
+        $trait = Feature::find($trait_id_adding);
+        if (!$trait) { throw new \Exception("Trait not found to add with id: " . $trait_id_adding); }
+
+        // Check if the character already has the trait
+        if ($character->image->features->contains('feature_id', $trait_id_adding)) { throw new \Exception("Character already has this trait."); }
+        
+        // Add the 'Added from a consumable' data if the trait is being added from a consumable
+        $data_text = $added_from_consumable ? 'Added from a consumable' : '';
+
+        // If the variant trait is being added, add a secondary species to the character image
+        $isVariantTrait = $trait->name === "Variant";
+        if ($isVariantTrait) {
+            $randomSpecies = CharacterManager::GetRandomSpecies(Species::all(), [$character->image->species_id]);
+            if (!$randomSpecies) { throw new \Exception("No species available to add as a variant."); }
+            $character->image->secondary_species_id = $randomSpecies->id;
+            $character->image->save();
+        }
+
+        // If the mutation trait is being added, add an extra trait to the character
+        $isMutationTrait = $trait->name === "Mutation";
+        if ($isMutationTrait) {
+            $randomFeature = CharacterManager::GetRandomFeature(Feature::all(), $character->image->features);
+            if (!$randomFeature) { throw new \Exception("No feature available to add as a mutation."); }
+            CharacterFeature::create(['character_image_id' => $character->image->id, 'feature_id' => $randomFeature->id, 'data' => $data_text]);
+        }
+
+        // Add the trait to the character
+        CharacterFeature::create(['character_image_id' => $character->image->id, 'feature_id' => $trait_id_adding, 'data' => $data_text]);
+    }
+
+
+    public static function RemoveTraitFromCharacter($character, $trait_id_removing, $canRemoveRestricted = false): void
+    {
+        // Check that the trait exists
+        $trait = Feature::find($trait_id_removing);
+        if (!$trait) { throw new \Exception("Trait not found to remove with id: " . $trait_id_removing); }
+
+        // Check if the trait is restricted
+        $restricted_traits = [ "Mutation" ];
+        if (!$canRemoveRestricted && in_array($trait->name, $restricted_traits)) { throw new \Exception("Cannot remove a restricted trait."); }
+
+        // Check if the character has the trait
+        if (!$character->image->features->contains('feature_id', $trait_id_removing)) { throw new \Exception("Character does not have this trait."); }
+        
+        $isVariantTrait = $trait->name === "Variant";
+
+        // If the trait is a variant trait, set the secondary_species_id to null on the image
+        if ($isVariantTrait) {
+            $character->image->secondary_species_id = null;
+            $character->image->save();
+        }
+
+        $matching_character_feature = CharacterFeature::where('feature_id', $trait_id_removing)->where('character_image_id', $character->image->id)->first();
+
+        // (NOTE: Removed at Z's request) Shouldn't be able to remove the trait if it's a born/origin trait Added traits will have the data of "Added from a consumable"
+        // if ($matching_character_feature->data != "Added from a consumable") { throw new \Exception("Cannot remove a born trait"); }
+
+        $matching_character_feature->delete();
+    }
+
+    public static function RerollTraitOnCharacter($character, $trait_id_rerolling, $rerolling_from_consumable)
+    {
+        // Get all of a character's traits. Do this before removing so we can avoid rerolling into the same trait
+        $character_trait_feature_ids = CharacterFeature::where('character_image_id', $character->image->id)->pluck('feature_id')->toArray();
+        $existing_features = Feature::whereIn('id', $character_trait_feature_ids)->get();
+
+        // Remove the old trait
+        CharacterManager::RemoveTraitFromCharacter($character, $trait_id_rerolling);
+
+        // Get a new trait to add to the character
+        $new_trait = CharacterManager::GetRandomFeature(Feature::all(), $existing_features);
+
+        // Add the new trait to the character
+        CharacterManager::AddTraitToCharacter($character, $new_trait->id, $rerolling_from_consumable);
     }
 
 }

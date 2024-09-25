@@ -154,12 +154,12 @@ class ConsumableService extends Service
 
                         if ($trait_adding != 0)
                         {
-                            $this->actAddTrait($trait_adding, $character);
+                            CharacterManager::AddTraitToCharacter($character, $trait_adding, true);
                         }
                         
                         if ($trait_removing != 0)
                         {
-                            $this->actRemoveTrait($trait_removing, $character, true);
+                            CharacterManager::RemoveTraitFromCharacter($character, $trait_removing, true);
                         }
 
                         if ($reroll_species != 0)
@@ -176,20 +176,20 @@ class ConsumableService extends Service
                         if ($add_specific_trait != 0)
                         {
                             $trait_adding_user = $data['feature_id_adding'];
-                            $this->actAddTrait($trait_adding_user, $character);
+                            CharacterManager::AddTraitToCharacter($character, $trait_adding_user, true);
                         }
 
                         if ($remove_specific_trait != 0)
                         {
                             $trait_removing_user = $data['feature_id_removing'];
-                            $this->actRemoveTrait($trait_removing_user, $character, false);
+                            CharacterManager::RemoveTraitFromCharacter($character, $trait_removing_user);
                             $this->addItemThatAddsTraitToUser($trait_removing_user, $user);
                         }
 
                         if ($reroll_specific_trait != 0)
                         {
                             $trait_rerolling_user = $data['feature_id_rerolling'];
-                            $this->actRerollTrait($trait_rerolling_user, $character);
+                            CharacterManager::RerollTraitOnCharacter($character, $trait_rerolling_user, true);
                         }
 
                         if ($reroll_specific_species != 0)
@@ -208,80 +208,30 @@ class ConsumableService extends Service
         return $this->rollbackReturn(false);
     }
 
-    private function actAddTrait($trait_adding, $character)
-    {
-        // Check that the trait exists
-        $trait = Feature::find($trait_adding);
-        if (!$trait) { throw new \Exception("Trait not found."); }
-
-        // Check if the character already has the trait
-        if ($character->image->features->contains('feature_id', $trait_adding)) { throw new \Exception("Character already has this trait."); }
-
-        // Add the trait to the character
-        $feature = CharacterFeature::create(['character_image_id' => $character->image->id, 'feature_id' => $trait_adding, 'data' => 'Added from a consumable']);
-
-        // Return the feature
-        return $feature;
-    }
-
-    private function actRemoveTrait($trait_removing, $character, $canRemoveRestricted)
-    {
-        // Check that the trait exists
-        $trait = Feature::find($trait_removing);
-        if (!$trait) { throw new \Exception("Trait not found."); }
-        $restricted_traits = [ "Mutation" ];
-        if (!$canRemoveRestricted && in_array($trait->name, $restricted_traits)) { throw new \Exception("Cannot remove a restricted trait."); }
-
-        // Check if the character has the trait
-        if (!$character->image->features->contains('feature_id', $trait_removing)) { throw new \Exception("Character does not have this trait."); }
-
-        $matching_trait = CharacterFeature::where('feature_id', $trait_removing)->where('character_image_id', $character->image->id)->first();
-
-        // Shouldn't be able to remove the trait if it's a born/origin trait Added traits will have the data of "Added from a consumable"
-        // NOTE: Removed at Z's request
-        // if ($matching_trait->data != "Added from a consumable") { throw new \Exception("Cannot remove a born trait"); }
-
-        CharacterFeature::where('feature_id', $trait_removing)->delete();
-
-        // Return the feature
-        return $character;
-    }
-
     private function actRerollAllTraits($character): void
     {
-        // NOTE: This is how you get non born traits: $traits = CharacterFeature::where('character_image_id', $character->image->id)->where('data', 'Added from a consumable')->get();
+        // Get a count of how many traits the character currently has
+        $traits_count = $character->image->features->count();
 
-        // Get all of a character's traits
-        $traits = CharacterFeature::where('character_image_id', $character->image->id)->get();
-        $traits_count = $traits->count();
-
-        // Remove all the traits that were added from consumables
-        CharacterFeature::where('character_image_id', $character->image->id)->delete();
-
-        // Get a lsit of all traits that exist in the game
-        $all_traits = Feature::all();
-
-        // Add $traits_from_consumables_count new traits to the character but avoid adding the same trait twice
-        $new_traits = CharacterManager::getRandomFeatures($traits_count, []);
-        foreach ($new_traits as $trait)
-        {
-            CharacterFeature::create(['character_image_id' => $character->image->id, 'feature_id' => $trait->id, 'data' => 'Added from a consumable']);
+        // If the character has the mutation trait, we need to subtract 1 from the count
+        $hasMutationTrait = $character->image->features->where('name', 'Mutation')->exists();
+        if ($hasMutationTrait) {
+            $traits_count--;
         }
-    }
 
-    private function actRerollTrait($trait_rerolling_user, $character)
-    {
-        // Get all of a character's traits. Do this before removing so we can avoid rerolling into the same trait
-        $character_traits = CharacterFeature::where('character_image_id', $character->image->id)->get();
+        // Remove all the traits from the character
+        foreach ($character->image->features as $trait)
+        {
+            CharacterManager::RemoveTraitFromCharacter($character, $trait->id, true);
+        }
 
-        // Remove the old trait
-        CharacterFeature::where('feature_id', $trait_rerolling_user)->where('character_image_id', $character->image->id)->delete();
-
-        // Get a new trait to add to the character
-        $new_trait = CharacterManager::getRandomFeatures(1, $character_traits);
-        
-        // Add the new trait to the character
-        $feature = CharacterFeature::create(['character_image_id' => $character->image->id, 'feature_id' => $new_trait->id, 'data' => 'Added from a consumable']);
+        // Add X random traits to the character
+        for ($i = 0; $i < $traits_count; $i++)
+        {
+            $currentTraitIds = CharacterFeature::where('character_image_id', $character->image->id)->pluck('feature_id')->toArray();
+            $randomTrait = CharacterManager::GetRandomFeature(Feature::all(), $currentTraitIds);
+            CharacterManager::AddTraitToCharacter($character, $randomTrait->id, true);
+        }
     }
 
     private function actRerollAllSpecies($character)
