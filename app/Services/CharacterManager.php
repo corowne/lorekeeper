@@ -2763,15 +2763,14 @@ is_object($sender) ? $sender->id : null,
         if (!$trait) { throw new \Exception("Trait not found to remove with id: " . $trait_id_removing); }
 
         // Check if the trait is restricted
-        $restricted_traits = [ "Mutation" ];
-        if (!$canRemoveRestricted && in_array($trait->name, $restricted_traits)) { throw new \Exception("Cannot remove a restricted trait."); }
+        // $restricted_traits = [ "Mutation" ];
+        // if (!$canRemoveRestricted && in_array($trait->name, $restricted_traits)) { throw new \Exception("Cannot remove a restricted trait."); }
 
         // Check if the character has the trait
         if (!$character->image->features->contains('feature_id', $trait_id_removing)) { throw new \Exception("Character does not have this trait."); }
         
-        $isVariantTrait = $trait->name === "Variant";
-
         // If the trait is a variant trait, set the secondary_species_id to null on the image
+        $isVariantTrait = $trait->name === "Variant";
         if ($isVariantTrait) {
             $character->image->secondary_species_id = null;
             $character->image->save();
@@ -2783,6 +2782,14 @@ is_object($sender) ? $sender->id : null,
         // if ($matching_character_feature->data != "Added from a consumable") { throw new \Exception("Cannot remove a born trait"); }
 
         $matching_character_feature->delete();
+
+        // If the mutation trait is being removed, remove an extra trait from the character
+        $isMutationTrait = $trait->name === "Mutation";
+        if ($isMutationTrait) {
+            $randomTraitFromCharacter = CharacterFeature::where('character_image_id', $character->image->id)->inRandomOrder()->first();
+            if (!$randomTraitFromCharacter) { throw new \Exception("No feature available to remove as a mutation."); }
+            CharacterManager::RemoveTraitFromCharacter($character, $randomTraitFromCharacter->feature_id, true);
+        }
     }
 
     public static function RerollTraitOnCharacter($character, $trait_id_rerolling, $rerolling_from_consumable)
