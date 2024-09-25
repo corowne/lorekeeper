@@ -400,7 +400,7 @@ class BrowseController extends Controller {
             $filteredImageIds = collect();
             $excludedTags = $request->get('excluded_tags', []);
             $includedTags = $request->get('included_tags', []);
-        
+
             $imageQuery->chunk(100, function ($images) use (&$filteredImageIds, $excludedTags, $includedTags) {
                 // excluded tags
                 if (!empty($excludedTags)) {
@@ -416,11 +416,11 @@ class BrowseController extends Controller {
                                 return true;
                             }
                         }
-        
+
                         return false;
                     });
                 }
-        
+
                 // included tags
                 if (!empty($includedTags)) {
                     $images = $images->filter(function ($image) use ($includedTags) {
@@ -435,11 +435,11 @@ class BrowseController extends Controller {
                                 return true;
                             }
                         }
-        
+
                         return false;
                     });
                 }
-        
+
                 $filteredImageIds = $filteredImageIds->merge($images->pluck('character_id'));
             });
         } else {
