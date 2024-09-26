@@ -771,7 +771,7 @@ class CharacterController extends Controller {
 
                 return ['warning' => ucwords($lower)];
             });
-        })->collapse()->unique()->sort()->toJson();
+        })->sort()->flatten(1)->unique()->values()->toJson();
 
         return $contentWarnings;
     }

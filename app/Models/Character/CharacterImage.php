@@ -288,7 +288,7 @@ class CharacterImage extends Model {
 
                 return ['warning' => ucwords($lower)];
             });
-        })->collapse()->sort()->toJson();
+        })->sort()->flatten(1)->values()->toJson();
 
         return $contentWarnings;
     }
