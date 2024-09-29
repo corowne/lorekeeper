@@ -71,7 +71,7 @@ class SpeciesService extends Service
 
             $data = $this->populateData($data, $species);
 
-            $image = null;            
+            $image = null;
             if(isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
                 $image = $data['image'];
@@ -108,6 +108,11 @@ class SpeciesService extends Service
                 $this->deleteImage($species->speciesImagePath, $species->speciesImageFileName); 
             }
             unset($data['remove_image']);
+        }
+
+        if (!isset($data['can_be_rolled']))
+        {
+            $data['can_be_rolled'] = 0;
         }
 
         return $data;

@@ -42,6 +42,13 @@
     {!! Form::textarea('description', $species->description, ['class' => 'form-control wysiwyg']) !!}
 </div>
 
+<br/>
+
+<div class="form-group">
+    {!! Form::label('Can be rolled') !!}
+    {!! Form::checkbox('can_be_rolled', 1, $species->can_be_rolled, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'can_be_rolled']) !!}
+</div>
+
 <div class="text-right">
     {!! Form::submit($species->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
 </div>

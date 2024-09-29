@@ -90,14 +90,9 @@ class CharacterManager extends Service
 
         // NOTE: (Daire) This will select a random species, rarity, and subtype if the user has not selected one.
         if ($isMyo) {
-            // NOTE: (Daire) Random species
-            $allSpecies = Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray();
-            $species = array_rand($allSpecies);
-            $data['species_id'] = $species;
-
+            $data['species_id'] = CharacterManager::GetRandomSpecies(Species::all(), [])->id;
             $data['rarity_id'] = Rarity::where('name','=','Civilian')->pluck('id')->toArray()[0];
 
-            // NOTE: (Daire) Random subtype
             $allSubtypes = Subtype::where('species_id','=',$data['species_id'])->pluck('name', 'id')->toArray();
             if (count($allSubtypes) > 0) {
                 $subtype = array_rand($allSubtypes);
@@ -2709,11 +2704,7 @@ is_object($sender) ? $sender->id : null,
 
     public static function GetRandomSpecies($speciesPool, $existingSpeciesIds =[])
     {
-        // Species don't have rarities rn, so we'll just get a random one
-        // $randomRarity = CharacterManager::getRandomRarity();
-        // $randomSpeciesPool = $speciesPool->where('rarity_id','=',$randomRarity)->whereNotIn('id', $existingSpeciesIds);
-
-        $randomSpeciesPool = $speciesPool->whereNotIn('id', $existingSpeciesIds);
+        $randomSpeciesPool = $speciesPool->whereNotIn('id', $existingSpeciesIds)->where('can_be_rolled', true);
         if ($randomSpeciesPool->count() == 0) {
             return null;
         }
