@@ -169,7 +169,7 @@ class ConsumableService extends Service
 
                         if ($reroll_traits != 0)
                         {
-                            $this->actRerollAllTraits($character);
+                            CharacterManager::RerollAllTraitsOnCharacter($character);
                         }
 
 
@@ -208,32 +208,7 @@ class ConsumableService extends Service
         return $this->rollbackReturn(false);
     }
 
-    private function actRerollAllTraits($character): void
-    {
-        // Get a count of how many traits the character currently has
-        $traits_count = $character->image->features->count();
-
-        // If the character has the mutation trait, we need to subtract 1 from the count
-        $hasMutationTrait = $character->image->features->where('name', 'Mutation')->exists();
-        if ($hasMutationTrait) {
-            $traits_count--;
-        }
-
-        // Remove all the traits from the character
-        foreach ($character->image->features as $trait)
-        {
-            CharacterManager::RemoveTraitFromCharacter($character, $trait->id, true);
-        }
-
-        // Add X random traits to the character
-        for ($i = 0; $i < $traits_count; $i++)
-        {
-            $currentTraitIds = CharacterFeature::where('character_image_id', $character->image->id)->pluck('feature_id')->toArray();
-            $randomTrait = CharacterManager::GetRandomFeature(Feature::all(), $currentTraitIds);
-            CharacterManager::AddTraitToCharacter($character, $randomTrait->id, true);
-        }
-    }
-
+    // TODO: (Daire) Move these to the CharacterManager incase we need to re-use the logic.
     private function actRerollAllSpecies($character)
     {
         $existingSpeciesIds = [];

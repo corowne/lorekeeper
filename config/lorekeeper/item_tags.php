@@ -30,4 +30,10 @@ return [
         'text_color' => '#ffffff',
         'background_color' => '#f44336'
     ],
+
+    'advertisement' => [
+        'name' => 'Advertisement',
+        'text_color' => '#ffffff',
+        'background_color' => '#9c27b0'
+    ]
 ];

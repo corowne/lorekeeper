@@ -84,25 +84,25 @@ class CharacterManager extends Service
      * @param  bool                   $isMyo
      * @return \App\Models\Character\Character|bool
      */
-    public function createCharacter($data, $user, $isMyo = false)
+    public function createCharacter($data, $user, $isMyo = false, $randomizeSpecies = true, $randomizeTraits = true)
     {
         DB::beginTransaction();
 
-        // NOTE: (Daire) This will select a random species, rarity, and subtype if the user has not selected one.
-        if ($isMyo) {
-            $data['species_id'] = CharacterManager::GetRandomSpecies(Species::all(), [])->id;
-            $data['rarity_id'] = Rarity::where('name','=','Civilian')->pluck('id')->toArray()[0];
-
-            $allSubtypes = Subtype::where('species_id','=',$data['species_id'])->pluck('name', 'id')->toArray();
-            if (count($allSubtypes) > 0) {
-                $subtype = array_rand($allSubtypes);
-                $data['subtype_id'] = $subtype;
-            } else {
-                $data['subtype_id'] = 0;
-            }
-        }
-
         try {
+            // NOTE: (Daire) This will select a random species, rarity, and subtype if the user has not selected one.
+            if ($randomizeSpecies) {
+                $data['species_id'] = CharacterManager::GetRandomSpecies(Species::all(), [])->id;
+                $data['rarity_id'] = Rarity::where('name','=','Civilian')->pluck('id')->toArray()[0];
+    
+                $allSubtypes = Subtype::where('species_id','=',$data['species_id'])->pluck('name', 'id')->toArray();
+                if (count($allSubtypes) > 0) {
+                    $subtype = array_rand($allSubtypes);
+                    $data['subtype_id'] = $subtype;
+                } else {
+                    $data['subtype_id'] = 0;
+                }
+            }
+
             if(!$isMyo && Character::where('slug', $data['slug'])->exists()) throw new \Exception("Please enter a unique character code.");
 
             if(!(isset($data['user_id']) && $data['user_id']) && !(isset($data['owner_url']) && $data['owner_url']))
@@ -140,12 +140,25 @@ class CharacterManager extends Service
 
             // Create character image
             $data['is_valid'] = true; // New image of new characters are always valid
-            $image = $this->handleCharacterImage($data, $character, $isMyo);
+            $image = $this->handleCharacterImage($data, $character, $isMyo, false);
             if(!$image) throw new \Exception("Error happened while trying to create image.");
 
             // Update the character's image ID
             $character->character_image_id = $image->id;
             $character->save();
+
+            if ($randomizeTraits) {
+                $randomFeature = CharacterManager::GetRandomFeature(Feature::all(), $character->image->features);
+                CharacterManager::AddTraitToCharacter($character, $randomFeature->id, false);
+            } else {
+                if(isset($data['feature_id']) && $data['feature_id']) {
+                    foreach($data['feature_id'] as $key => $featureId) {
+                        if($featureId) {
+                            CharacterManager::AddTraitToCharacter($character, $featureId, false);
+                        }
+                    }
+                }
+            }
 
             // Add a log for the character
             // This logs all the updates made to the character
@@ -239,7 +252,7 @@ class CharacterManager extends Service
      * @param  bool                             $isMyo
      * @return \App\Models\Character\CharacterImage|bool
      */
-    private function handleCharacterImage($data, $character, $isMyo = false)
+    private function handleCharacterImage($data, $character, $isMyo = false, $addFeatures = true)
     {
         try {
             if($isMyo)
@@ -337,52 +350,13 @@ class CharacterManager extends Service
             // Process and save the image itself
             if(!$isMyo) $this->processImage($image);
 
-            // NOTE: (Daire) Randomize features if creating from MYO
-            if($isMyo) {
-                $data['feature_id'] = [];
-                $data['feature_data'] = [];
-                $featuresGiven = CharacterManager::getRandomFeatures(rand(1, 1), []);
-                $hasTraitVariant = false;
-                if (count($featuresGiven) > 0) {
-                    foreach($featuresGiven as $feature) {
-                        $data['feature_id'][$key] = $feature->id;
-                        $data['feature_data'][$key] = '';
-
-                        if ($feature->name === 'Variant') {
-                            $hasTraitVariant = true;
-                        }
+            // Attach features
+            if ($addFeatures) {
+                foreach($data['feature_id'] as $key => $featureId) {
+                    if($featureId) {
+                        $feature = CharacterFeature::create(['character_image_id' => $image->id, 'feature_id' => $featureId, 'data' => $data['feature_data'][$key]]);
                     }
                 }
-            }
-
-            // Attach features
-            foreach($data['feature_id'] as $key => $featureId) {
-                if($featureId) {
-                    $feature = CharacterFeature::create(['character_image_id' => $image->id, 'feature_id' => $featureId, 'data' => $data['feature_data'][$key]]);
-                }
-            }
-
-            
-            if ($hasTraitVariant) {
-                $existingSpeciesIds = [];
-
-                if ($data['species_id'] != null) {
-                    $existingSpeciesIds[] = $data['species_id'];
-                }
-
-                // This will never be populated but it might be relevant in the future
-                // if ($data['secondary_species_id'] != null) {
-                //     $existingSpeciesIds[] = $data['secondary_species_id'];
-                // }
-
-                $randomSpecies = CharacterManager::GetRandomSpecies(Species::all(), $existingSpeciesIds); 
-                $data['secondary_species_id'] = $randomSpecies->id;
-
-                // Save image
-                $image->update(['secondary_species_id' => $data['secondary_species_id']]);
-            // NOTE: (Daire) This is used for testing variants - the create MYO flow will fail until a variant trait is rolled
-            // } else {
-            //     throw new \Exception('No variant found');
             }
 
             return $image;
@@ -685,7 +659,7 @@ class CharacterManager extends Service
             $data['is_visible'] = 1;
 
             // Create character image
-            $image = $this->handleCharacterImage($data, $character);
+            $image = $this->handleCharacterImage($data, $character, false, false, false);
             if(!$image) throw new \Exception("Error happened while trying to create image.");
 
             // Update the character's image ID
@@ -2662,19 +2636,19 @@ is_object($sender) ? $sender->id : null,
             }
         }
 
-        if ($hasBonusFeature) {
-            $retries = 0;
-            while ($hasBonusFeature && $retries < 10) {
-                $randomFeature = CharacterManager::GetRandomFeature($features, $selectedFeatures);
-                if ($randomFeature == null) {
-                    $retries++;
-                    continue;
-                }
+        // if ($hasBonusFeature) {
+        //     $retries = 0;
+        //     while ($hasBonusFeature && $retries < 10) {
+        //         $randomFeature = CharacterManager::GetRandomFeature($features, $selectedFeatures);
+        //         if ($randomFeature == null) {
+        //             $retries++;
+        //             continue;
+        //         }
 
-                $selectedFeatures[] = $randomFeature;
-                $hasBonusFeature = false;
-            }
-        }
+        //         $selectedFeatures[] = $randomFeature;
+        //         $hasBonusFeature = false;
+        //     }
+        // }
 
         // If it's not an array, make it an array
         if (!is_array($selectedFeatures)) {
@@ -2797,6 +2771,32 @@ is_object($sender) ? $sender->id : null,
 
         // Add the new trait to the character
         CharacterManager::AddTraitToCharacter($character, $new_trait->id, $rerolling_from_consumable);
+    }
+
+    public static function RerollAllTraitsOnCharacter($character): void
+    {
+        // Get a count of how many traits the character currently has
+        $traits_count = $character->image->features->count();
+
+        // If the character has the mutation trait, we need to subtract 1 from the count
+        $hasMutationTrait = $character->image->features->where('name', 'Mutation')->exists();
+        if ($hasMutationTrait) {
+            $traits_count--;
+        }
+
+        // Remove all the traits from the character
+        foreach ($character->image->features as $trait)
+        {
+            CharacterManager::RemoveTraitFromCharacter($character, $trait->id, true);
+        }
+
+        // Add X random traits to the character
+        for ($i = 0; $i < $traits_count; $i++)
+        {
+            $currentTraitIds = CharacterFeature::where('character_image_id', $character->image->id)->pluck('feature_id')->toArray();
+            $randomTrait = CharacterManager::GetRandomFeature(Feature::all(), $currentTraitIds);
+            CharacterManager::AddTraitToCharacter($character, $randomTrait->id, true);
+        }
     }
 
 }

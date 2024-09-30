@@ -117,7 +117,7 @@ class CharacterController extends Controller
             'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data',
             'image', 'thumbnail', 'image_description'
         ]);
-        if ($character = $service->createCharacter($data, Auth::user())) {
+        if ($character = $service->createCharacter($data, Auth::user(), false, false, false)) {
             flash('Character created successfully.')->success();
             return redirect()->to($character->url);
         }
@@ -147,7 +147,7 @@ class CharacterController extends Controller
             'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data',
             'image', 'thumbnail'
         ]);
-        if ($character = $service->createCharacter($data, Auth::user(), true)) {
+        if ($character = $service->createCharacter($data, Auth::user(), true, true, true)) {
             flash('MYO slot created successfully.')->success();
             return redirect()->to($character->url);
         }

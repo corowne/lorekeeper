@@ -1,6 +1,6 @@
 @if ($type == 'user')
     <li class="list-group-item">
-        <a class="card-title h5 collapse-title"  data-toggle="collapse" href="#useConsumableForm"> Use Consumable</a>
+        <a class="card-title h5 collapse-title"  data-toggle="collapse" href="#useConsumableForm">Use Consumable</a>
         <div id="useConsumableForm" class="collapse">
             <!-- $characterFeatureIds = $character->image->features->pluck('feature_id')->toArray(); -->
             {!! Form::hidden('tag', $tag->tag) !!}
