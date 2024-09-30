@@ -27,8 +27,13 @@ class AdvertisementService extends Service
     public function getEditData()
     {
         return [
-            'choose_species' => ['0' => 'Random species', '1' => 'User chooses species'],
-            'choose_trait' => ['0' => 'Random traits', '1' => 'User chooses traits']
+            'method' => [
+                'choose_neither' => 'User can choose neither', // choose_neither
+                'choose_both' => 'User can choose both', // choose_both
+                'choose_either' => 'User can only the species or the trait', // choose_either
+                'choose_species' => 'User can only choose the species', // choose_species
+                'choose_trait' => 'User can only choose the trait' // choose_trait
+            ]
         ];
     }
 
@@ -41,8 +46,7 @@ class AdvertisementService extends Service
     public function getTagData($tag)
     {
         //fetch data from DB, if there is no data then set to NULL instead
-        $AdvertisementData['choose_species'] = isset($tag->data['choose_species']) ? $tag->data['choose_species'] : null;
-        $AdvertisementData['choose_trait'] = isset($tag->data['choose_trait']) ? $tag->data['choose_trait'] : null;
+        $AdvertisementData['method'] = isset($tag->data['method']) ? $tag->data['method'] : null;
 
         return $AdvertisementData;
     }
@@ -57,8 +61,7 @@ class AdvertisementService extends Service
     public function updateData($tag, $data)
     {
         //put inputs into an array to transfer to the DB
-        $AdvertisementData['choose_species'] = isset($data['choose_species']) ? $data['choose_species'] : null;
-        $AdvertisementData['choose_trait'] = isset($data['choose_trait']) ? $data['choose_trait'] : null;
+        $AdvertisementData['method'] = isset($data['method']) ? $data['method'] : null;
 
         DB::beginTransaction();
 
@@ -93,10 +96,10 @@ class AdvertisementService extends Service
 
                 $species_id_user = (array_key_exists('species_id_adding', $data) ? $data['species_id_adding'] : null);
                 $trait_id_user = (array_key_exists('feature_id_adding', $data) ? $data['feature_id_adding'] : null);
+                $setting_species_or_trait_user = (array_key_exists('setting_species_or_trait', $data) ? $data['setting_species_or_trait'] : null);
 
                 $tagData = $stack->item->tag('advertisement')->data;
-                $choose_species = (array_key_exists('choose_species', $tagData) ? $tagData['choose_species'] : "0");
-                $choose_trait = (array_key_exists('choose_trait', $tagData) ? $tagData['choose_trait'] : "0");
+                $method = (array_key_exists('method', $tagData) ? $tagData['method'] : "choose_neither");
 
                 // Next, try to delete the tag item. If successful, we can start distributing rewards.
                 if((new InventoryManager)->debitStack($stack->user, 'Advertisement Used', ['data' => ''], $stack, $data['quantities'][$key])) {
@@ -126,8 +129,44 @@ class AdvertisementService extends Service
                         $characterData['feature_data'][0] = null;
                         $characterData['description']= '';
 
-                        $should_use_random_species = $choose_species == 0;
-                        $should_use_random_trait = $choose_trait == 0;
+                        //DB has 'true' and 'false' as strings, so need to set them to true/null
+                        $characterData['is_sellable'] = true;
+                        $characterData['is_tradeable'] = true;
+                        $characterData['is_giftable'] = true;
+                        $characterData['is_visible'] = true;
+
+                        $should_use_random_species = true;
+                        $should_use_random_trait = true;
+                        switch($method) {
+                            case 'choose_either':
+                                switch ($setting_species_or_trait_user) {
+                                    case "species":
+                                        $should_use_random_species = false;
+                                        $should_use_random_trait = true;
+                                        break;
+                                    case "trait":
+                                        $should_use_random_species = true;
+                                        $should_use_random_trait = false;
+                                        break;
+                                }
+                                break;
+                            case 'choose_neither':
+                                $should_use_random_species = true;
+                                $should_use_random_trait = true;
+                                break;
+                            case 'choose_both':
+                                $should_use_random_species = false;
+                                $should_use_random_trait = false;
+                                break;
+                            case 'choose_species':
+                                $should_use_random_species = false;
+                                $should_use_random_trait = true;
+                                break;
+                            case 'choose_trait':
+                                $should_use_random_species = true;
+                                $should_use_random_trait = false;
+                                break;
+                        }
 
                         if (!$should_use_random_species && $species_id_user != null) {
                             $characterData['species_id'] = $species_id_user;
@@ -138,13 +177,6 @@ class AdvertisementService extends Service
                             $characterData['feature_id'][] = $trait_id_user;
                             $characterData['feature_data'][] = '';
                         }
-
-                        //DB has 'true' and 'false' as strings, so need to set them to true/null
-                        // TODO: (Daire) Check with Z to see if we want these to be true/false
-                        $characterData['is_sellable'] = true;
-                        $characterData['is_tradeable'] = true;
-                        $characterData['is_giftable'] = true;
-                        $characterData['is_visible'] = true;
 
                         // Distribute user rewards
                         $charService = new CharacterManager;
