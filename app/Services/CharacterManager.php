@@ -2663,6 +2663,13 @@ is_object($sender) ? $sender->id : null,
         $existingFeatureIds = [];
         foreach ($existingFeatures as $feature) {
             $existingFeatureIds[] = $feature->id;
+            $fullFeature = Feature::find($feature->id);
+            if ($fullFeature->name === 'Giant') {
+                $existingFeatureIds[] = Feature::where('name', 'Petite')->first()->id;
+            }
+            if ($fullFeature->name === 'Petite') {
+                $existingFeatureIds[] = Feature::where('name', 'Giant')->first()->id;
+            }
         }
 
         $randomRarity = CharacterManager::getRandomRarity();
@@ -2695,6 +2702,18 @@ is_object($sender) ? $sender->id : null,
 
         // Check if the character already has the trait
         if ($character->image->features->contains('feature_id', $trait_id_adding)) { throw new \Exception("Character already has this trait."); }
+
+        $isGiantTrait = $trait->name === "Giant";
+        if ($isGiantTrait) {
+            $existingPetiteTrait = $character->image->features->where('name', 'Petite')->first();
+            if ($existingPetiteTrait) { throw new \Exception("Cannot add a Giant trait to a character that already has a Petite trait."); }
+        }
+
+        $isPetiteTrait = $trait->name === "Petite";
+        if ($isPetiteTrait) {
+            $existingGiantTrait = $character->image->features->where('name', 'Giant')->first();
+            if ($existingGiantTrait) { throw new \Exception("Cannot add a Petite trait to a character that already has a Giant trait."); }
+        }
         
         // Add the 'Added from a consumable' data if the trait is being added from a consumable
         $data_text = $added_from_consumable ? 'Added from a consumable' : '';
