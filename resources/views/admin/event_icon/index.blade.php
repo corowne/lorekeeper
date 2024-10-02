@@ -26,11 +26,6 @@
             {!! Form::text('alt_text', '', ['class' => 'form-control']) !!}
         </div>
 
-        {{-- <div class="form-group">
-            {!! Form::checkbox('is_visible', 1, $eventIcon->id ? $eventIcon->is_visible : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-            {!! Form::label('is_visible', 'Set Active', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned off, the shop will not be visible to regular users.') !!}
-        </div> --}}
-
         <div class="form-group">
             {!! Form::label('Image') !!}
             <div>{!! Form::file('image') !!}</div>
@@ -49,14 +44,14 @@
                 <th>Image</th>
                 <th>Link</th>
                 <th>Alt Text</th>
-                <th>Visibility</th>
                 <th></th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="sortable" class="sortable">
             @foreach ($eventIcons as $eventIcon)
-                <tr>
+            <tr class="sort-item" data-id="{{ $eventIcon->id }}">
                     <td>
+                        <a class="fas fa-arrows-alt-v handle mr-3" href="#"></a>
                         <a href="">{{ $eventIcon->image }}</a>
                     </td>
                     <td>
@@ -65,25 +60,20 @@
                     <td>
                         <a href="">{{ $eventIcon->alt_text }}</a>
                     </td>
-                    {{-- <td>
-                        @if ($eventIcon)
-                            {!! Form::open(['url' => 'admin/data/event-icon/']) !!}
-                            <div class="form-group">
-                                {!! Form::checkbox('is_visible', 1, $eventIcon->id ? $eventIcon->is_visible : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-                                {!! Form::label('is_visible', 'Is Visible', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Toggle for visibility of icon') !!}
-                            </div>
-                        @endif --}}
-                    </td>
                     <td class="text-right">
-                        {{-- {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!} --}}
-                        <a href="#" class="btn btn-outline-danger btn-sm delete-eventicon"
-                            data-name="{{ $eventIcon }}">Delete</a>
-                            {!! Form::close() !!}
+                        <a href="#" class="btn btn-outline-primary btn-sm edit-event-icon" data-id="{{ $eventIcon->id }}">Edit</a>
+                        <a href="#" class="btn btn-outline-danger btn-sm delete-event-icon" data-id="{{ $eventIcon->id }}">Delete</a>
                     </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
+    <div class="mb-4">
+        {!! Form::open(['url' => 'admin/data/event-icon/sort']) !!}
+        {!! Form::hidden('sort', '', ['id' => 'sortableOrder']) !!}
+        {!! Form::submit('Save Order', ['class' => 'btn btn-primary']) !!}
+        {!! Form::close() !!}
+    </div>
 @endsection
 
 @section('scripts')
@@ -91,11 +81,32 @@
     @if (isset($eventIcon))
         <script>
             $(document).ready(function() {
-                $('.delete-eventicon').on('click', function(e) {
+                $('.delete-event-icon').on('click', function(e) {
                     e.preventDefault();
-                    loadModal("{{ url('admin/data/event-icon/delete') }}/{{ $eventIcon->id }}",
-                        'Delete EventIcon');
+                    loadModal("{{ url('admin/data/event-icon/delete/') }}" + "/" + this.getAttribute('data-id'), 'Delete Icon');
                 });
+
+                $('.edit-event-icon').on('click', function(e) {
+                    e.preventDefault();
+                    loadModal("{{ url('admin/data/event-icon/edit/') }}" + "/" + this.getAttribute('data-id'), 'Edit Icon');
+                });
+
+                $("#sortable").sortable({
+                items: '.sort-item',
+                handle: ".handle",
+                placeholder: "sortable-placeholder",
+                stop: function(event, ui) {
+                    $('#sortableOrder').val($(this).sortable("toArray", {
+                        attribute: "data-id"
+                    }));
+                },
+                create: function() {
+                    $('#sortableOrder').val($(this).sortable("toArray", {
+                        attribute: "data-id"
+                    }));
+                }
+                });
+                $("#sortable").disableSelection();
             });
         </script>
     @endif

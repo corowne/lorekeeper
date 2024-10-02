@@ -12,7 +12,7 @@ class EventIcon extends Model {
      * @var array
      */
     protected $fillable = [
-        'alt_text', 'link', 'extension', 'image',
+        'alt_text', 'link', 'extension', 'image', 'sort', 'is_visible',
     ];
 
     /**
@@ -49,7 +49,6 @@ class EventIcon extends Model {
     public static $updateRules = [
         'link' => 'required',
         'alt_text'  => 'required',
-        'is_visible' => 'required',
     ];
 
     /**********************************************************************************************
@@ -62,7 +61,7 @@ class EventIcon extends Model {
      * @return string
      */
     public function getImageDirectoryAttribute() {
-        return 'images/eventicon';
+        return 'images/eventIcon';
     }
 
     /**

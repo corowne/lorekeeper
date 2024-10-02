@@ -233,6 +233,9 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('event-icon/update/{id}', 'EventIconController@postUpdateEventIcon');
     Route::get('event-icon/delete/{id}', 'EventIconController@getDeleteEventIcon');
     Route::post('event-icon/delete/{id}', 'EventIconController@postDeleteEventIcon');
+    Route::post('event-icon/sort', 'EventIconController@postSortEventIcon');
+    Route::get('event-icon/edit/{id}', 'EventIconController@getEditEventIcon');
+    Route::post('event-icon/edit/{id}', 'EventIconController@postEditEventIcon');
 });
 
 
