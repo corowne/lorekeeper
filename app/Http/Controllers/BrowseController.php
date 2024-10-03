@@ -435,8 +435,12 @@ class BrowseController extends Controller {
                     }
 
                     foreach ($includedTags as $tag) {
-                        if ($image->content_warnings && in_array($tag, $image->content_warnings)) {
-                            return true;
+                        if ($image->content_warnings) {
+                            foreach ($image->content_warnings as $warning) {
+                                if (strtolower($warning) == strtolower($tag)) {
+                                    return true;
+                                }
+                            }
                         }
                     }
 
