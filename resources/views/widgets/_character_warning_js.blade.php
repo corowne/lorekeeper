@@ -5,8 +5,9 @@
             type: "GET",
             dataType: 'json',
 
-            error: function() {
-                callback();
+            error: function(data) {
+                console.log('Error getting warnings');
+                console.log(data);
             },
             success: function(options) {
                 $('#warningList').selectize({
@@ -20,7 +21,6 @@
                     preload: true,
                     options: options,
                     onInitialize: function() {
-                        console.log(this.$input.attr('data-init-value'));
                         let existingOptions = this.$input.attr('data-init-value') ? JSON.parse(this.$input.attr('data-init-value')) : [];
                         var self = this;
                         if (Object.prototype.toString.call(existingOptions) ===

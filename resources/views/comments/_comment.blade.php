@@ -79,7 +79,7 @@
     <div class="media-body row mw-100 mx-0 mb-3" style="flex:1;flex-wrap:wrap;">
         @if (isset($compact) && !$compact)
             <div class="d-none d-md-block">
-                <img class="mr-3 mt-2" src="/images/avatars/default.jpg" style="width:70px; height:70px; border-radius:50%;" alt="Default Avatar">
+                <img class="mr-3 mt-2" src="{{ asset('images/avatars/default.jpg') }}" style="width:70px; height:70px; border-radius:50%;" alt="Default Avatar">
             </div>
         @endif
         <div class="d-block bg-light" style="flex:1">

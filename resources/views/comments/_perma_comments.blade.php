@@ -85,7 +85,7 @@ url should be equal to the last replies permalink (e.g reply 5) --}}
 @endif
 <div class="media-body row mw-100 mx-0" style="flex:1;flex-wrap:wrap;">
     <div class="d-none d-md-block">
-        <img class="mr-3 mt-2" src="/images/avatars/default.jpg" style="width:70px; height:70px; border-radius:50%;" alt="Default Avatar">
+        <img class="mr-3 mt-2" src="{{ asset('images/avatars/default.jpg') }}" style="width:70px; height:70px; border-radius:50%;" alt="Default Avatar">
     </div>
     <div class="d-block bg-light" style="flex:1">
         <div class="border p-3 rounded {{ $limit == 0 ? 'shadow-sm border-info' : '' }}">
