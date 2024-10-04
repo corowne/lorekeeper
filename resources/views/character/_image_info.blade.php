@@ -8,7 +8,7 @@
                         <i class="fas fa-times" aria-hidden="true"></i>
                     </a>
                 </span>
-                <img src="{{ asset('images/content_warning.png') }}" class="mb-1" alt="Content Warning" style="height: 10vh;" />
+                <img src="{{ asset('images/content-warning.png') }}" class="mb-1" alt="Content Warning" style="height: 10vh;" />
                 <h5>
                     <i class="fa fa-exclamation-triangle mr-2"></i>Character Warnings<i class="fa fa-exclamation-triangle ml-2"></i>
                 </h5>
