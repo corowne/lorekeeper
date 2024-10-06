@@ -7,7 +7,7 @@
 
 @include('character.design._header', ['request' => $request])
 
-@if($request->status == 'Pending' && $request->character->is_myo_slot && Auth::check() && Auth::user()->hasPower('manage_characters'))
+@if($request->status == 'Pending' && Auth::check() && Auth::user()->hasPower('manage_characters'))
     {!! Form::open(['url' => 'designs/'.$request->id.'/traits']) !!}
 
         <div class="form-group">
