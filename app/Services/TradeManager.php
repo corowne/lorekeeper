@@ -691,7 +691,7 @@ class TradeManager extends Service {
                         if (!$currency) {
                             throw new \Exception('Cannot credit an invalid currency. ('.$currencyId.')');
                         }
-                        if (!$currencyManager->creditCurrency($trade->{$type}, $trade->{$recipientType}, 'Trade', 'Received in trade [<a href="'.$trade->url.'">#'.$trade->id.']', $currency, $quantity)) {
+                        if (!$currencyManager->creditCurrency($trade->{$type}, $trade->{$recipientType}, 'Trade', 'Received in trade [<a href="'.$trade->url.'">#'.$trade->id.'</a>]', $currency, $quantity)) {
                             throw new \Exception('Could not credit currency. ('.$currencyId.')');
                         }
                     }
