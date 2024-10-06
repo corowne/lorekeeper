@@ -2798,7 +2798,7 @@ is_object($sender) ? $sender->id : null,
         $traits_count = $character->image->features->count();
 
         // If the character has the mutation trait, we need to subtract 1 from the count
-        $hasMutationTrait = $character->image->features->where('name', 'Mutation')->exists();
+        $hasMutationTrait = $character->image->features->where('name', 'Mutation')->count() > 0;
         if ($hasMutationTrait) {
             $traits_count--;
         }
