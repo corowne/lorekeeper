@@ -2620,8 +2620,7 @@ is_object($sender) ? $sender->id : null,
         $features = Feature::all();
         $selectedFeatures = $existingFeatures;
         $retries = 0;
-    
-        $hasBonusFeature = false;
+
         while (count($selectedFeatures) < $featureCount && $retries < 10) {
             $randomFeature = CharacterManager::GetRandomFeature($features, $selectedFeatures);
             if ($randomFeature == null) {
@@ -2630,25 +2629,7 @@ is_object($sender) ? $sender->id : null,
             }
 
             $selectedFeatures[] = $randomFeature;
-    
-            if ($randomFeature->name === 'Mutation') {
-                $hasBonusFeature = true;
-            }
         }
-
-        // if ($hasBonusFeature) {
-        //     $retries = 0;
-        //     while ($hasBonusFeature && $retries < 10) {
-        //         $randomFeature = CharacterManager::GetRandomFeature($features, $selectedFeatures);
-        //         if ($randomFeature == null) {
-        //             $retries++;
-        //             continue;
-        //         }
-
-        //         $selectedFeatures[] = $randomFeature;
-        //         $hasBonusFeature = false;
-        //     }
-        // }
 
         // If it's not an array, make it an array
         if (!is_array($selectedFeatures)) {
@@ -2727,14 +2708,6 @@ is_object($sender) ? $sender->id : null,
             $character->image->save();
         }
 
-        // If the mutation trait is being added, add an extra trait to the character
-        $isMutationTrait = $trait->name === "Mutation";
-        if ($isMutationTrait) {
-            $randomFeature = CharacterManager::GetRandomFeature(Feature::all(), $character->image->features);
-            if (!$randomFeature) { throw new \Exception("No feature available to add as a mutation."); }
-            CharacterFeature::create(['character_image_id' => $character->image->id, 'feature_id' => $randomFeature->id, 'data' => $data_text]);
-        }
-
         // Add the trait to the character
         CharacterFeature::create(['character_image_id' => $character->image->id, 'feature_id' => $trait_id_adding, 'data' => $data_text]);
     }
@@ -2766,14 +2739,6 @@ is_object($sender) ? $sender->id : null,
         // if ($matching_character_feature->data != "Added from a consumable") { throw new \Exception("Cannot remove a born trait"); }
 
         $matching_character_feature->delete();
-
-        // If the mutation trait is being removed, remove an extra trait from the character
-        $isMutationTrait = $trait->name === "Mutation";
-        if ($isMutationTrait) {
-            $randomTraitFromCharacter = CharacterFeature::where('character_image_id', $character->image->id)->inRandomOrder()->first();
-            if (!$randomTraitFromCharacter) { throw new \Exception("No feature available to remove as a mutation."); }
-            CharacterManager::RemoveTraitFromCharacter($character, $randomTraitFromCharacter->feature_id, true);
-        }
     }
 
     public static function RerollTraitOnCharacter($character, $trait_id_rerolling, $rerolling_from_consumable)
@@ -2796,12 +2761,6 @@ is_object($sender) ? $sender->id : null,
     {
         // Get a count of how many traits the character currently has
         $traits_count = $character->image->features->count();
-
-        // If the character has the mutation trait, we need to subtract 1 from the count
-        $hasMutationTrait = $character->image->features->where('name', 'Mutation')->count() > 0;
-        if ($hasMutationTrait) {
-            $traits_count--;
-        }
 
         // Remove all the traits from the character
         foreach ($character->image->features as $trait)
