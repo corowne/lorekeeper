@@ -18,7 +18,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
-class SubmissionManager extends Service {
+class SubmissionManager extends Service
+{
     /*
     |--------------------------------------------------------------------------
     | Submission Manager
@@ -26,7 +27,7 @@ class SubmissionManager extends Service {
     |
     | Handles creation and modification of submission data.
     |
-    */
+     */
 
     /**
      * Creates a new submission.
@@ -38,7 +39,8 @@ class SubmissionManager extends Service {
      *
      * @return mixed
      */
-    public function createSubmission($data, $user, $isClaim = false, $isDraft = false) {
+    public function createSubmission($data, $user, $isClaim = false, $isDraft = false)
+    {
         DB::beginTransaction();
 
         try {
@@ -68,11 +70,11 @@ class SubmissionManager extends Service {
 
             // Create the submission itself.
             $submission = Submission::create([
-                'user_id'   => $user->id,
-                'url'       => $data['url'] ?? null,
-                'status'    => $isDraft ? 'Draft' : 'Pending',
-                'comments'  => $data['comments'],
-                'data'      => null,
+                'user_id' => $user->id,
+                'url' => $data['url'] ?? null,
+                'status' => $isDraft ? 'Draft' : 'Pending',
+                'comments' => $data['comments'],
+                'data' => null,
             ] + ($isClaim ? [] : [
                 'prompt_id' => $prompt->id,
             ]));
@@ -84,7 +86,7 @@ class SubmissionManager extends Service {
 
             $submission->update([
                 'data' => json_encode([
-                    'user'    => Arr::only(getDataReadyAssets($userAssets), ['user_items', 'currencies']),
+                    'user' => Arr::only(getDataReadyAssets($userAssets), ['user_items', 'currencies']),
                     'rewards' => getDataReadyAssets($promptRewards),
                 ] + (config('lorekeeper.settings.allow_gallery_submissions_on_prompts') ? ['gallery_submission_id' => $data['gallery_submission_id'] ?? null] : [])),
             ]);
@@ -111,7 +113,8 @@ class SubmissionManager extends Service {
      *
      * @return mixed
      */
-    public function editSubmission($submission, $data, $user, $isClaim = false, $isSubmit = false) {
+    public function editSubmission($submission, $data, $user, $isClaim = false, $isSubmit = false)
+    {
         DB::beginTransaction();
 
         try {
@@ -152,12 +155,12 @@ class SubmissionManager extends Service {
 
             // Modify submission
             $submission->update([
-                'url'           => $data['url'] ?? null,
-                'updated_at'    => Carbon::now(),
-                'comments'      => $data['comments'],
-                'data'          => json_encode([
-                    'user'          => Arr::only(getDataReadyAssets($userAssets), ['user_items', 'currencies']),
-                    'rewards'       => getDataReadyAssets($promptRewards),
+                'url' => $data['url'] ?? null,
+                'updated_at' => Carbon::now(),
+                'comments' => $data['comments'],
+                'data' => json_encode([
+                    'user' => Arr::only(getDataReadyAssets($userAssets), ['user_items', 'currencies']),
+                    'rewards' => getDataReadyAssets($promptRewards),
                 ] + (config('lorekeeper.settings.allow_gallery_submissions_on_prompts') ? ['gallery_submission_id' => $data['gallery_submission_id'] ?? null] : [])),
             ] + ($isClaim ? [] : ['prompt_id' => $prompt->id]));
 
@@ -175,7 +178,8 @@ class SubmissionManager extends Service {
      * @param mixed $data the submission data
      * @param mixed $user the user performing the cancellation
      */
-    public function cancelSubmission($data, $user) {
+    public function cancelSubmission($data, $user)
+    {
         DB::beginTransaction();
 
         try {
@@ -203,6 +207,13 @@ class SubmissionManager extends Service {
             $userAssets = $assets['user'];
             // Remove prompt-only rewards
             $promptRewards = $this->removePromptAttachments($submission);
+            // ...aaand the same for characters
+            if ($submission->characters()->count()) {
+                foreach ($submission->characters as $character) {
+                    $characterPromptRewards = $this->removeCharacterPromptAttachments($submission, $character);
+                    $character->update(['data' => json_encode(getDataReadyAssets($characterPromptRewards))]);
+                }
+            }
 
             if ($user->id != $submission->user_id) {
                 // The only things we need to set are:
@@ -210,31 +221,31 @@ class SubmissionManager extends Service {
                 // 2. staff ID
                 // 3. status
                 $submission->update([
-                    'staff_comments'        => $data['staff_comments'],
+                    'staff_comments' => $data['staff_comments'],
                     'parsed_staff_comments' => $data['parsed_staff_comments'],
-                    'updated_at'            => Carbon::now(),
-                    'staff_id'              => $user->id,
-                    'status'                => 'Draft',
-                    'data'                  => json_encode([
-                        'user'                  => $userAssets,
-                        'rewards'               => getDataReadyAssets($promptRewards),
+                    'updated_at' => Carbon::now(),
+                    'staff_id' => $user->id,
+                    'status' => 'Draft',
+                    'data' => json_encode([
+                        'user' => $userAssets,
+                        'rewards' => getDataReadyAssets($promptRewards),
                         'gallery_submission_id' => $submission->data['gallery_submission_id'] ?? null,
                     ]), // list of rewards and addons
                 ]);
 
                 Notifications::create($submission->prompt_id ? 'SUBMISSION_CANCELLED' : 'CLAIM_CANCELLED', $submission->user, [
-                    'staff_url'     => $user->url,
-                    'staff_name'    => $user->name,
+                    'staff_url' => $user->url,
+                    'staff_name' => $user->name,
                     'submission_id' => $submission->id,
                 ]);
             } else {
                 // This is when a user cancels their own submission back into draft form
                 $submission->update([
-                    'status'     => 'Draft',
+                    'status' => 'Draft',
                     'updated_at' => Carbon::now(),
-                    'data'       => json_encode([
-                        'user'                  => $userAssets,
-                        'rewards'               => getDataReadyAssets($promptRewards),
+                    'data' => json_encode([
+                        'user' => $userAssets,
+                        'rewards' => getDataReadyAssets($promptRewards),
                         'gallery_submission_id' => $submission->data['gallery_submission_id'] ?? null,
                     ]), // list of rewards and addons
                 ]);
@@ -256,7 +267,8 @@ class SubmissionManager extends Service {
      *
      * @return mixed
      */
-    public function rejectSubmission($data, $user) {
+    public function rejectSubmission($data, $user)
+    {
         DB::beginTransaction();
 
         try {
@@ -287,19 +299,19 @@ class SubmissionManager extends Service {
             // 2. staff ID
             // 3. status
             $submission->update([
-                'staff_comments'        => $data['staff_comments'],
+                'staff_comments' => $data['staff_comments'],
                 'parsed_staff_comments' => $data['parsed_staff_comments'],
-                'staff_id'              => $user->id,
-                'status'                => 'Rejected',
+                'staff_id' => $user->id,
+                'status' => 'Rejected',
             ]);
 
             Notifications::create($submission->prompt_id ? 'SUBMISSION_REJECTED' : 'CLAIM_REJECTED', $submission->user, [
-                'staff_url'     => $user->url,
-                'staff_name'    => $user->name,
+                'staff_url' => $user->url,
+                'staff_name' => $user->name,
                 'submission_id' => $submission->id,
             ]);
 
-            if (!$this->logAdminAction($user, 'Submission Rejected', 'Rejected submission <a href="'.$submission->viewurl.'">#'.$submission->id.'</a>')) {
+            if (!$this->logAdminAction($user, 'Submission Rejected', 'Rejected submission <a href="' . $submission->viewurl . '">#' . $submission->id . '</a>')) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -319,7 +331,8 @@ class SubmissionManager extends Service {
      *
      * @return mixed
      */
-    public function approveSubmission($data, $user) {
+    public function approveSubmission($data, $user)
+    {
         DB::beginTransaction();
 
         try {
@@ -338,10 +351,10 @@ class SubmissionManager extends Service {
                 foreach ($addonData['user_items'] as $userItemId => $quantity) {
                     $userItemRow = UserItem::find($userItemId);
                     if (!$userItemRow) {
-                        throw new \Exception('Cannot return an invalid item. ('.$userItemId.')');
+                        throw new \Exception('Cannot return an invalid item. (' . $userItemId . ')');
                     }
                     if ($userItemRow->submission_count < $quantity) {
-                        throw new \Exception('Cannot return more items than was held. ('.$userItemId.')');
+                        throw new \Exception('Cannot return more items than was held. (' . $userItemId . ')');
                     }
                     $userItemRow->submission_count -= $quantity;
                     $userItemRow->save();
@@ -350,10 +363,10 @@ class SubmissionManager extends Service {
                 // Workaround for user not being unset after inventory shuffling, preventing proper staff ID assignment
                 $staff = $user;
 
-                foreach ($stacks as $stackId=> $quantity) {
+                foreach ($stacks as $stackId => $quantity) {
                     $stack = UserItem::find($stackId);
                     $user = User::find($submission->user_id);
-                    if (!$inventoryManager->debitStack($user, $submission->prompt_id ? 'Prompt Approved' : 'Claim Approved', ['data' => 'Item used in submission (<a href="'.$submission->viewUrl.'">#'.$submission->id.'</a>)'], $stack, $quantity)) {
+                    if (!$inventoryManager->debitStack($user, $submission->prompt_id ? 'Prompt Approved' : 'Claim Approved', ['data' => 'Item used in submission (<a href="' . $submission->viewUrl . '">#' . $submission->id . '</a>)'], $stack, $quantity)) {
                         throw new \Exception('Failed to create log for item stack.');
                     }
                 }
@@ -365,7 +378,7 @@ class SubmissionManager extends Service {
             // Log currency removal, etc.
             $currencyManager = new CurrencyManager;
             if (isset($addonData['currencies']) && $addonData['currencies']) {
-                foreach ($addonData['currencies'] as $currencyId=> $quantity) {
+                foreach ($addonData['currencies'] as $currencyId => $quantity) {
                     $currency = Currency::find($currencyId);
                     if (!$currencyManager->createLog(
                         $submission->user_id,
@@ -373,7 +386,7 @@ class SubmissionManager extends Service {
                         null,
                         null,
                         $submission->prompt_id ? 'Prompt Approved' : 'Claim Approved',
-                        'Used in '.($submission->prompt_id ? 'prompt' : 'claim').' (<a href="'.$submission->viewUrl.'">#'.$submission->id.'</a>)',
+                        'Used in ' . ($submission->prompt_id ? 'prompt' : 'claim') . ' (<a href="' . $submission->viewUrl . '">#' . $submission->id . '</a>)',
                         $currencyId,
                         $quantity
                     )) {
@@ -401,7 +414,7 @@ class SubmissionManager extends Service {
             // Logging data
             $promptLogType = $submission->prompt_id ? 'Prompt Rewards' : 'Claim Rewards';
             $promptData = [
-                'data' => 'Received rewards for '.($submission->prompt_id ? 'submission' : 'claim').' (<a href="'.$submission->viewUrl.'">#'.$submission->id.'</a>)',
+                'data' => 'Received rewards for ' . ($submission->prompt_id ? 'submission' : 'claim') . ' (<a href="' . $submission->viewUrl . '">#' . $submission->id . '</a>)',
             ];
 
             // Distribute user rewards
@@ -422,13 +435,13 @@ class SubmissionManager extends Service {
             } elseif (isset($data['character_rewardable_id'])) {
                 $data['character_rewardable_id'] = array_map([$this, 'innerNull'], $data['character_rewardable_id']);
                 foreach ($data['character_rewardable_id'] as $ckey => $c) {
-                    foreach ($c as $key                            => $id) {
+                    foreach ($c as $key => $id) {
                         switch ($data['character_rewardable_type'][$ckey][$key]) {
-                            case 'Currency': $currencyIds[] = $id;
+                            case 'Currency':$currencyIds[] = $id;
                                 break;
-                            case 'Item': $itemIds[] = $id;
+                            case 'Item':$itemIds[] = $id;
                                 break;
-                            case 'LootTable': $tableIds[] = $id;
+                            case 'LootTable':$tableIds[] = $id;
                                 break;
                         }
                     }
@@ -454,9 +467,9 @@ class SubmissionManager extends Service {
                 }
 
                 SubmissionCharacter::create([
-                    'character_id'  => $c->id,
+                    'character_id' => $c->id,
                     'submission_id' => $submission->id,
-                    'data'          => json_encode(getDataReadyAssets($assets)),
+                    'data' => json_encode(getDataReadyAssets($assets)),
                 ]);
             }
 
@@ -478,24 +491,24 @@ class SubmissionManager extends Service {
             // 3. status
             // 4. final rewards
             $submission->update([
-                'staff_comments'        => $data['staff_comments'],
+                'staff_comments' => $data['staff_comments'],
                 'parsed_staff_comments' => $data['parsed_staff_comments'],
-                'staff_id'              => $user->id,
-                'status'                => 'Approved',
-                'data'                  => json_encode([
-                    'user'                  => $addonData,
-                    'rewards'               => getDataReadyAssets($rewards),
+                'staff_id' => $user->id,
+                'status' => 'Approved',
+                'data' => json_encode([
+                    'user' => $addonData,
+                    'rewards' => getDataReadyAssets($rewards),
                     'gallery_submission_id' => $submission->data['gallery_submission_id'] ?? null,
                 ]), // list of rewards
             ]);
 
             Notifications::create($submission->prompt_id ? 'SUBMISSION_APPROVED' : 'CLAIM_APPROVED', $submission->user, [
-                'staff_url'     => $user->url,
-                'staff_name'    => $user->name,
+                'staff_url' => $user->url,
+                'staff_name' => $user->name,
                 'submission_id' => $submission->id,
             ]);
 
-            if (!$this->logAdminAction($user, 'Submission Approved', 'Approved submission <a href="'.$submission->viewurl.'">#'.$submission->id.'</a>')) {
+            if (!$this->logAdminAction($user, 'Submission Approved', 'Approved submission <a href="' . $submission->viewurl . '">#' . $submission->id . '</a>')) {
                 throw new \Exception('Failed to log admin action.');
             }
 
@@ -513,7 +526,8 @@ class SubmissionManager extends Service {
      * @param mixed $data the data of the submission to be deleted
      * @param mixed $user the user performing the deletion
      */
-    public function deleteSubmission($data, $user) {
+    public function deleteSubmission($data, $user)
+    {
         DB::beginTransaction();
         try {
             // 1. check that the submission exists
@@ -558,7 +572,8 @@ class SubmissionManager extends Service {
      *
      * @return array
      */
-    private function innerNull($value) {
+    private function innerNull($value)
+    {
         return array_values(array_filter($value));
     }
 
@@ -572,7 +587,8 @@ class SubmissionManager extends Service {
      *
      * @return array
      */
-    private function processRewards($data, $isCharacter, $isStaff = false, $isClaim = false) {
+    private function processRewards($data, $isCharacter, $isStaff = false, $isClaim = false)
+    {
         if ($isCharacter) {
             $assets = createAssetsArray(true);
 
@@ -587,15 +603,15 @@ class SubmissionManager extends Service {
 
                 foreach ($data['character_rewardable_id'][$data['character_id']] as $key => $reward) {
                     switch ($data['character_rewardable_type'][$data['character_id']][$key]) {
-                        case 'Currency': if ($data['character_rewardable_quantity'][$data['character_id']][$key]) {
-                            addAsset($assets, $data['currencies'][$reward], $data['character_rewardable_quantity'][$data['character_id']][$key]);
-                        } break;
-                        case 'Item': if ($data['character_rewardable_quantity'][$data['character_id']][$key]) {
-                            addAsset($assets, $data['items'][$reward], $data['character_rewardable_quantity'][$data['character_id']][$key]);
-                        } break;
-                        case 'LootTable': if ($data['character_rewardable_quantity'][$data['character_id']][$key]) {
-                            addAsset($assets, $data['tables'][$reward], $data['character_rewardable_quantity'][$data['character_id']][$key]);
-                        } break;
+                        case 'Currency':if ($data['character_rewardable_quantity'][$data['character_id']][$key]) {
+                                addAsset($assets, $data['currencies'][$reward], $data['character_rewardable_quantity'][$data['character_id']][$key]);
+                            }break;
+                        case 'Item':if ($data['character_rewardable_quantity'][$data['character_id']][$key]) {
+                                addAsset($assets, $data['items'][$reward], $data['character_rewardable_quantity'][$data['character_id']][$key]);
+                            }break;
+                        case 'LootTable':if ($data['character_rewardable_quantity'][$data['character_id']][$key]) {
+                                addAsset($assets, $data['tables'][$reward], $data['character_rewardable_quantity'][$data['character_id']][$key]);
+                            }break;
                     }
                 }
             }
@@ -654,7 +670,8 @@ class SubmissionManager extends Service {
      * @param mixed $data       the data for creating the attachments
      * @param mixed $user       the user object
      */
-    private function createUserAttachments($submission, $data, $user) {
+    private function createUserAttachments($submission, $data, $user)
+    {
         $userAssets = createAssetsArray();
 
         // Attach items. Technically, the user doesn't lose ownership of the item - we're just adding an additional holding field.
@@ -677,7 +694,7 @@ class SubmissionManager extends Service {
 
         // Attach currencies.
         if (isset($data['currency_id'])) {
-            foreach ($data['currency_id'] as $holderKey=>$currencyIds) {
+            foreach ($data['currency_id'] as $holderKey => $currencyIds) {
                 $holder = explode('-', $holderKey);
                 $holderType = $holder[0];
                 $holderId = $holder[1];
@@ -685,7 +702,7 @@ class SubmissionManager extends Service {
                 $holder = User::find($holderId);
 
                 $currencyManager = new CurrencyManager;
-                foreach ($currencyIds as $key=>$currencyId) {
+                foreach ($currencyIds as $key => $currencyId) {
                     $currency = Currency::find($currencyId);
                     if (!$currency) {
                         throw new \Exception('Invalid currency selected.');
@@ -712,7 +729,7 @@ class SubmissionManager extends Service {
         $promptRewards = mergeAssetsArrays($promptRewards, $this->processRewards($data, false));
 
         return [
-            'userAssets'    => $userAssets,
+            'userAssets' => $userAssets,
             'promptRewards' => $promptRewards,
         ];
     }
@@ -722,7 +739,8 @@ class SubmissionManager extends Service {
      *
      * @param mixed $submission the submission object
      */
-    private function removePromptAttachments($submission) {
+    private function removePromptAttachments($submission)
+    {
         $assets = $submission->data;
         // Get a list of rewards, then create the submission itself
         $promptRewards = createAssetsArray();
@@ -737,12 +755,33 @@ class SubmissionManager extends Service {
     }
 
     /**
+     * Removes the attachments associated with a prompt from a submission.
+     *
+     * @param mixed $submission the submission object
+     */
+    private function removeCharacterPromptAttachments($submission, $character)
+    {
+        $assets = $character->data;
+        // Get a list of rewards, then create the submission itself
+        $promptRewards = createAssetsArray(true);
+        $promptRewards = mergeAssetsArrays($promptRewards, parseAssetData($assets, true), true);
+        if (isset($submission->prompt_id) && $submission->prompt_id) {
+            foreach ($submission->prompt->characterRewards as $reward) {
+                removeAsset($promptRewards, $reward->reward, $reward->quantity);
+            }
+        }
+
+        return $promptRewards;
+    }
+
+    /**
      * Creates character attachments for a submission.
      *
      * @param mixed $submission the submission object
      * @param mixed $data       the data for creating character attachments
      */
-    private function createCharacterAttachments($submission, $data) {
+    private function createCharacterAttachments($submission, $data)
+    {
         // The character identification comes in both the slug field and as character IDs
         // that key the reward ID/quantity arrays.
         // We'll need to match characters to the rewards for them.
@@ -771,11 +810,11 @@ class SubmissionManager extends Service {
             foreach ($data['character_rewardable_id'] as $ckey => $c) {
                 foreach ($c as $key => $id) {
                     switch ($data['character_rewardable_type'][$ckey][$key]) {
-                        case 'Currency': $currencyIds[] = $id;
+                        case 'Currency':$currencyIds[] = $id;
                             break;
-                        case 'Item': $itemIds[] = $id;
+                        case 'Item':$itemIds[] = $id;
                             break;
-                        case 'LootTable': $tableIds[] = $id;
+                        case 'LootTable':$tableIds[] = $id;
                             break;
                     }
                 }
@@ -793,12 +832,25 @@ class SubmissionManager extends Service {
             // Users might not pass in clean arrays (may contain redundant data) so we need to clean that up
             $assets = $this->processRewards($data + ['character_id' => $c->id, 'currencies' => $currencies, 'items' => $items, 'tables' => $tables], true);
 
+            //add the preset character rewards with any character rewards in data
+            if ($submission->status == 'Pending' && isset($submission->prompt_id) && $submission->prompt_id && $submission->prompt->characterRewards->count() && isset($data['character_is_focus']) && $data['character_is_focus'][$c->id]) {
+                // Get a list of rewards
+                $defaultRewards = createAssetsArray(true);
+                //add to array
+                foreach ($submission->prompt->characterRewards as $reward) {
+                    addAsset($defaultRewards, $reward->reward, $reward->quantity);
+                }
+                //merge with the cleaned up user-set stuff
+                $assets = mergeAssetsArrays($defaultRewards, $assets, true);
+            }
+
             // Now we have a clean set of assets (redundant data is gone, duplicate entries are merged)
             // so we can attach the character to the submission
             SubmissionCharacter::create([
-                'character_id'  => $c->id,
+                'character_id' => $c->id,
                 'submission_id' => $submission->id,
-                'data'          => json_encode(getDataReadyAssets($assets)),
+                'data' => json_encode(getDataReadyAssets($assets)),
+                'is_focus' => isset($data['character_is_focus']) && $data['character_is_focus'][$c->id] ? $data['character_is_focus'][$c->id] : 0,
             ]);
         }
 
@@ -810,7 +862,8 @@ class SubmissionManager extends Service {
      *
      * @param mixed $submission the submission object
      */
-    private function removeAttachments($submission) {
+    private function removeAttachments($submission)
+    {
         // This occurs when a draft is edited or rejected.
 
         // Return all added items
@@ -819,10 +872,10 @@ class SubmissionManager extends Service {
             foreach ($addonData['user_items'] as $userItemId => $quantity) {
                 $userItemRow = UserItem::find($userItemId);
                 if (!$userItemRow) {
-                    throw new \Exception('Cannot return an invalid item. ('.$userItemId.')');
+                    throw new \Exception('Cannot return an invalid item. (' . $userItemId . ')');
                 }
                 if ($userItemRow->submission_count < $quantity) {
-                    throw new \Exception('Cannot return more items than was held. ('.$userItemId.')');
+                    throw new \Exception('Cannot return more items than was held. (' . $userItemId . ')');
                 }
                 $userItemRow->submission_count -= $quantity;
                 $userItemRow->save();
@@ -832,13 +885,13 @@ class SubmissionManager extends Service {
         // And currencies
         $currencyManager = new CurrencyManager;
         if (isset($addonData['currencies']) && $addonData['currencies']) {
-            foreach ($addonData['currencies'] as $currencyId=>$quantity) {
+            foreach ($addonData['currencies'] as $currencyId => $quantity) {
                 $currency = Currency::find($currencyId);
                 if (!$currency) {
-                    throw new \Exception('Cannot return an invalid currency. ('.$currencyId.')');
+                    throw new \Exception('Cannot return an invalid currency. (' . $currencyId . ')');
                 }
                 if (!$currencyManager->creditCurrency(null, $submission->user, null, null, $currency, $quantity)) {
-                    throw new \Exception('Could not return currency to user. ('.$currencyId.')');
+                    throw new \Exception('Could not return currency to user. (' . $currencyId . ')');
                 }
             }
         }
