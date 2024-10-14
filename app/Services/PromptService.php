@@ -384,10 +384,10 @@ class PromptService extends Service {
         if (isset($data['rewardable_type'])) {
             foreach ($data['rewardable_type'] as $key => $type) {
                 PromptReward::create([
-                    'prompt_id'       => $prompt->id,
-                    'rewardable_type' => $type,
-                    'rewardable_id'   => $data['rewardable_id'][$key],
-                    'quantity'        => $data['quantity'][$key],
+                    'prompt_id'          => $prompt->id,
+                    'rewardable_type'    => $type,
+                    'rewardable_id'      => $data['rewardable_id'][$key],
+                    'quantity'           => $data['quantity'][$key],
                     'earner_type'        => 'User',
                 ]);
             }
@@ -396,10 +396,10 @@ class PromptService extends Service {
         if (isset($data['character_rewardable_type'])) {
             foreach ($data['character_rewardable_type'] as $key => $type) {
                 PromptReward::create([
-                    'prompt_id'       => $prompt->id,
-                    'rewardable_type' => $type,
-                    'rewardable_id'   => $data['character_rewardable_id'][$key],
-                    'quantity'        => $data['character_quantity'][$key],
+                    'prompt_id'          => $prompt->id,
+                    'rewardable_type'    => $type,
+                    'rewardable_id'      => $data['character_rewardable_id'][$key],
+                    'quantity'           => $data['character_quantity'][$key],
                     'earner_type'        => 'Character',
                 ]);
             }

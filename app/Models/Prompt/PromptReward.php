@@ -15,7 +15,7 @@ class PromptReward extends Model {
      * @var array
      */
     protected $fillable = [
-        'prompt_id', 'rewardable_type', 'rewardable_id', 'quantity','earner_type'
+        'prompt_id', 'rewardable_type', 'rewardable_id', 'quantity', 'earner_type',
     ];
 
     /**
