@@ -14,6 +14,9 @@
                     <i class="fas fa-search"></i>
                 </a>
             @endif
+             @if(Auth::check())
+                @include('widgets._item_block', ['item' => $item, 'float' => true])
+            @endif
         </h3>
         <div class="row">
             @if (isset($item->category) && $item->category)
