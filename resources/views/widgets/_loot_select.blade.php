@@ -13,7 +13,7 @@
         $items = \App\Models\Item\Item::whereIn('item_category_id', \App\Models\Item\ItemCategory::where('is_character_owned', 1)->pluck('id')->toArray())
             ->orderBy('name')
             ->pluck('name', 'id');
-            $characterCurrencies = \App\Models\Currency\Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id');
+        $characterCurrencies = \App\Models\Currency\Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id');
     }
 
     if ($showLootTables) {
@@ -41,10 +41,15 @@
         @if ($loots)
             @foreach ($loots as $loot)
                 <tr class="{{ $prefix }}loot-row">
-                    <td>{!! Form::select($prefix . 'rewardable_type[]', ['Item' => 'Item', 'Currency' => 'Currency'] + (!isset($isCharacter) ? ($showLootTables ? ['LootTable' => 'Loot Table'] : []) + ($showRaffles ? ['Raffle' => 'Raffle Ticket'] : []) : []), $loot->rewardable_type, [
-                        'class' => 'form-control ' . $prefix . 'reward-type',
-                        'placeholder' => 'Select Reward Type',
-                    ]) !!}</td>
+                    <td>{!! Form::select(
+                        $prefix . 'rewardable_type[]',
+                        ['Item' => 'Item', 'Currency' => 'Currency'] + (!isset($isCharacter) ? ($showLootTables ? ['LootTable' => 'Loot Table'] : []) + ($showRaffles ? ['Raffle' => 'Raffle Ticket'] : []) : []),
+                        $loot->rewardable_type,
+                        [
+                            'class' => 'form-control ' . $prefix . 'reward-type',
+                            'placeholder' => 'Select Reward Type',
+                        ],
+                    ) !!}</td>
                     <td class="{{ $prefix }}loot-row-select">
                         @if ($loot->rewardable_type == 'Item')
                             {!! Form::select($prefix . 'rewardable_id[]', $items, $loot->rewardable_id, ['class' => 'form-control ' . $prefix . 'item-select selectize', 'placeholder' => 'Select Item']) !!}

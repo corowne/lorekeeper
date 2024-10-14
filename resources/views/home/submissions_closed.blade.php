@@ -55,7 +55,8 @@
     @if ($isClaim)
         <p>If there are character-specific rewards you would like to claim, attach them here. Otherwise, this section can be left blank.</p>
     @else
-        <p>Note that any rewards added here are <u>in addition</u> to the default character rewards. Only the focus characters will receive these rewards (in the case of a submission featuring other attached characters that are not intended to recieve rewards.)</p>
+        <p>Note that any rewards added here are <u>in addition</u> to the default character rewards. Only the focus characters will receive these rewards (in the case of a submission featuring other attached characters that are not intended to recieve
+            rewards.)</p>
     @endif
     <div id="characters" class="mb-3">
     </div>
