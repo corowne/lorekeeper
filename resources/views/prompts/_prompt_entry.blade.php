@@ -36,8 +36,9 @@
                 @endif
             </div>
             <h3>Rewards</h3>
+            <h4>User Rewards <i class="fas fa-user"></i></h4>
             @if (!count($prompt->rewards))
-                No rewards.
+                No user rewards.
             @else
                 <table class="table table-sm">
                     <thead>
@@ -48,6 +49,27 @@
                     </thead>
                     <tbody>
                         @foreach ($prompt->rewards as $reward)
+                            <tr>
+                                <td>{!! $reward->reward->displayName !!}</td>
+                                <td>{{ $reward->quantity }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+            <h4>Character Rewards <i class="fas fa-paw"></i></h4>
+            @if (!count($prompt->characterRewards))
+                No character rewards.
+            @else
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th width="70%">Reward</th>
+                            <th width="30%">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($prompt->characterRewards as $reward)
                             <tr>
                                 <td>{!! $reward->reward->displayName !!}</td>
                                 <td>{{ $reward->quantity }}</td>
