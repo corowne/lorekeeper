@@ -65,6 +65,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'Users'], function() {
     Route::get('{name}/exp-logs', 'UserController@getUserExpLogs');
     Route::get('{name}/level-logs', 'UserController@getUserLevelLogs');
     Route::get('{name}/stat-logs', 'UserController@getUserStatLogs');
+    Route::get('{name}/shops', 'UserController@getUserShops');
 });
 
 /**************************************************************************************************

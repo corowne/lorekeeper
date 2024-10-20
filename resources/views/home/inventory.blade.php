@@ -9,6 +9,7 @@
     Inventory
     <div class="float-right mb-3">
         <a class="btn btn-primary" href="{{ url('inventory/account-search') }}"><i class="fas fa-search"></i> Account Search</a>
+        <a class="btn btn-primary" href="{{ url('inventory/quickstock') }}"><i class="fas fa-truck"></i> Quickstock</a>
     </div>
 </h1>
 
