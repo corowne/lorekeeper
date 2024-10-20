@@ -42,4 +42,10 @@ return [
         'text_color' => '#ffffff',
         'background_color' => '#6D18A7'
     ],
+
+    'encounterpotion' => [
+        'name' => 'Encounter Potion',
+        'text_color' => '#ffffff',
+        'background_color' => '#1fd1a7'
+    ],
 ];

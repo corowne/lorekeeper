@@ -102,6 +102,10 @@ return [
                 'name' => 'Recipe Grants',
                 'url' => 'admin/grants/recipes'
             ],
+            [
+                'name' => 'Encounter Energy Grants',
+                'url' => 'admin/grants/encounter-energy'
+            ],
         ]
     ],
     'Masterlist' => [
@@ -210,6 +214,14 @@ return [
             [
                 'name' => 'Recipes',
                 'url' => 'admin/data/recipes'
+            ],
+            [
+                'name' => 'Encounters',
+                'url' => 'admin/data/encounters'
+            ],
+            [
+                'name' => 'Encounter Areas',
+                'url' => 'admin/data/encounters/areas'
             ],
         ]
     ],

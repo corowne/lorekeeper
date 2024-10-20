@@ -46,6 +46,9 @@
                             <a class="dropdown-item" href="{{ url('level') }}">
                                 Level Area
                             </a>
+                            <a class="dropdown-item" href="{{ url('encounter-areas') }}">
+                                Encounters
+                            </a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
