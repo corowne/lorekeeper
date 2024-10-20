@@ -91,6 +91,49 @@
     {!! Form::checkbox('is_active', 1, $prompt->id ? $prompt->is_active : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
     {!! Form::label('is_active', 'Is Active', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Prompts that are not active will be hidden from the prompt list. The start/end time hide settings override this setting, i.e. if this is set to active, it will still be hidden outside of the start/end times.') !!}
 </div>
+<!----Level Area--->
+<h3>Level Rewards (Optional)</h3>
+<p>Leave the following forms blank if you want no reward</p>
+<div class="form-group">
+    <p>User Rewards</p>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                {!! Form::label('user_exp', 'User Exp Reward', ['class' => 'form-control-label ml-3']) !!}
+                {!! Form::number('user_exp', $prompt->expreward ? $prompt->expreward->user_exp : null, ['class' => 'form-control',]) !!}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                {!! Form::label('user_points', 'User Stat Point Reward', ['class' => 'form-control-label ml-3']) !!}
+                {!! Form::number('user_points', $prompt->expreward ? $prompt->expreward->user_points : null, ['class' => 'form-control',]) !!}
+            </div>
+        </div>
+    </div>
+    <p>Character Rewards</p>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                {!! Form::label('chara_exp', 'Character Exp Reward', ['class' => 'form-control-label ml-3']) !!}
+                {!! Form::number('chara_exp', $prompt->expreward ? $prompt->expreward->chara_exp : null, ['class' => 'form-control',]) !!}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                {!! Form::label('chara_points', 'Character Stat Point Reward', ['class' => 'form-control-label ml-3']) !!}
+                {!! Form::number('chara_points', $prompt->expreward ? $prompt->expreward->chara_points : null, ['class' => 'form-control',]) !!}
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        {!! Form::checkbox('level_check', 1, $prompt->level_req ? 1 : 0, ['class' => 'is-level-class form-check-input', 'data-toggle' => 'toggle']) !!}
+        {!! Form::label('level_check', 'Should this prompt have a level requirement?', ['class' => 'form-check-label ml-3']) !!}
+    </div>
+    <div class="level-form-group" style="display: none">
+        {!! Form::number('level_req', $prompt->level_req ? $prompt->level_req : 1, ['class' => 'form-control mb-1', 'min' => 1]) !!}
+    </div>
+</div>
+<!------------------------------------->
 
 <div class="form-group">
     {!! Form::label('Hide Submissions (Optional)') !!} {!! add_help('Hide submissions to this prompt until the prompt ends, or forever. <strong>Hiding until the prompt ends requires a set end time.</strong>') !!}
@@ -135,6 +178,12 @@ $( document ).ready(function() {
         dateFormat: "yy-mm-dd",
         timeFormat: 'HH:mm:ss',
     });
+    $('.is-level-class').change(function(e){
+        console.log(this.checked)
+        $('.level-form-group').css('display',this.checked ? 'block' : 'none')
+    })
+
+    $('.level-form-group').css('display',$('.is-level-class').prop('checked') ? 'block' : 'none')
 });
     
 </script>

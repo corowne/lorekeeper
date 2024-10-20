@@ -33,6 +33,8 @@ use App\Models\Rarity;
 use App\Models\Currency\Currency;
 use App\Models\Feature\Feature;
 
+use App\Models\Stat\CharacterStat;
+
 class CharacterManager extends Service
 {
     /*
@@ -160,6 +162,23 @@ class CharacterManager extends Service
                 }
             }
 
+            // Create character stats
+            $character->level()->create([
+                'character_id' => $character->id
+            ]);
+            
+            if(isset($data['stats']))
+            {
+                foreach($data['stats'] as $key=>$stat)
+                {
+                    CharacterStat::create([
+                        'character_id' => $character->id,
+                        'stat_id' => $key,
+                        'count' => $stat,
+                    ]);
+                }
+            }
+            
             // Add a log for the character
             // This logs all the updates made to the character
             $this->createLog($user->id, null, $recipientId, $url, $character->id, $isMyo ? 'MYO Slot Created' : 'Character Created', 'Initial upload', 'character');

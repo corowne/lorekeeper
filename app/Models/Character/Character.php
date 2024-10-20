@@ -11,7 +11,6 @@ use App\Models\Model;
 use App\Models\User\User;
 use App\Models\User\UserCharacterLog;
 
-use App\Models\Character\Character;
 use App\Models\Character\CharacterCategory;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Character\CharacterBookmark;
@@ -23,6 +22,11 @@ use App\Models\Currency\CurrencyLog;
 use App\Models\Character\CharacterItem;
 use App\Models\Item\Item;
 use App\Models\Item\ItemLog;
+
+use App\Models\Stat\ExpLog;
+use App\Models\Stat\StatTransferLog;
+use App\Models\Level\LevelLog;
+use App\Models\Stat\CountLog;
 
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
@@ -166,6 +170,22 @@ class Character extends Model
     public function profile()
     {
         return $this->hasOne('App\Models\Character\CharacterProfile', 'character_id');
+    }
+
+    /**
+     * Get character level.
+     */
+    public function level() 
+    {
+        return $this->hasOne('App\Models\Level\CharacterLevel');
+    }
+
+    /**
+     * Get characters stats.
+     */
+    public function stats() 
+    {
+        return $this->hasMany('App\Models\Stat\CharacterStat');
     }
 
     /**
@@ -415,6 +435,76 @@ class Character extends Model
     }
 
     /**
+     * Get the character's exp logs.
+     *
+     * @param  int  $limit
+     * @return \Illuminate\Support\Collection|\Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getExpLogs($limit = 10)
+    {
+        $character = $this;
+        $query = ExpLog::where(function($query) use ($character) {
+            $query->with('sender')->where('sender_type', 'Character')->where('sender_id', $character->id)->whereNotIn('log_type', ['Staff Grant', 'Prompt Rewards', 'Claim Rewards']);
+        })->orWhere(function($query) use ($character) {
+            $query->with('recipient')->where('recipient_type', 'Character')->where('recipient_id', $character->id)->where('log_type', '!=', 'Staff Removal');
+        })->orderBy('id', 'DESC');
+        if($limit) return $query->take($limit)->get();
+        else return $query->paginate(30);
+    }
+
+    /**
+     * Get the character's stat logs.
+     *
+     * @param  int  $limit
+     * @return \Illuminate\Support\Collection|\Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getStatLogs($limit = 10)
+    {
+        $character = $this;
+        $query = StatTransferLog::where(function($query) use ($character) {
+            $query->with('sender')->where('sender_type', 'Character')->where('sender_id', $character->id)->whereNotIn('log_type', ['Staff Grant', 'Prompt Rewards', 'Claim Rewards']);
+        })->orWhere(function($query) use ($character) {
+            $query->with('recipient')->where('recipient_type', 'Character')->where('recipient_id', $character->id)->where('log_type', '!=', 'Staff Removal');
+        })->orderBy('id', 'DESC');
+        if($limit) return $query->take($limit)->get();
+        else return $query->paginate(30);
+    }
+
+    /**
+     * Get the character's level logs.
+     *
+     * @param  int  $limit
+     * @return \Illuminate\Support\Collection|\Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getLevelLogs($limit = 10)
+    {
+        $character = $this;
+        $query = LevelLog::where(function($query) use ($character) {
+            $query->with('recipient')->where('leveller_type', 'Character')->where('recipient_id', $character->id);
+        })->orderBy('id', 'DESC');
+        if($limit) return $query->take($limit)->get();
+        else return $query->paginate(30);
+    }
+
+    /**
+     * Get the character's stat count logs
+     *
+     * @param  int  $limit
+     * @return \Illuminate\Support\Collection|\Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getCountLogs($limit = 10)
+    {
+        $character = $this;
+        $query = CountLog::where(function($query) use ($character) {
+            $query->with('sender')->where('sender_type', 'Character')->where('sender_id', $character->id)->whereNotIn('log_type', ['Staff Grant', 'Prompt Rewards', 'Claim Rewards']);
+        })->orWhere(function($query) use ($character) {
+            $query->where('character_id', $character->id)->where('log_type', '!=', 'Staff Removal');
+        })->orderBy('id', 'DESC');
+        if($limit) return $query->take($limit)->get();
+        else return $query->paginate(30);
+    }
+
+    /**
      * Get the character's held currencies as an array for select inputs.
      *
      * @return array
@@ -491,7 +581,8 @@ class Character extends Model
      */
     public function getSubmissions()
     {
-        return Submission::with('user.rank')->with('prompt')->where('status', 'Approved')->whereIn('id', SubmissionCharacter::where('character_id', $this->id)->pluck('submission_id')->toArray())->paginate(30);
+        $first = Submission::with('user.rank')->with('prompt')->where('status', 'Approved')->where('focus_chara_id', $this->id)->pluck('id');
+        return Submission::with('user.rank')->with('prompt')->where('status', 'Approved')->whereIn('id', SubmissionCharacter::where('character_id', $this->id)->pluck('submission_id')->union($first)->toArray())->paginate(30);
 
         // Untested
         //$character = $this;

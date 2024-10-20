@@ -150,7 +150,7 @@ class SubmissionController extends Controller
     public function postNewSubmission(Request $request, SubmissionManager $service)
     {
         $request->validate(Submission::$createRules);
-        if($service->createSubmission($request->only(['url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity']), Auth::user())) {
+        if($service->createSubmission($request->only(['url', 'prompt_id', 'comments', 'slug', 'character_rewardable_type', 'character_rewardable_id', 'character_rewardable_quantity', 'rewardable_type', 'rewardable_id', 'quantity', 'stack_id', 'stack_quantity', 'currency_id', 'currency_quantity','focus_chara']), Auth::user())) {
             flash('Prompt submitted successfully.')->success();
         }
         else {
