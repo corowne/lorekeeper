@@ -98,6 +98,10 @@ return [
                 'name' => 'EXP Grants',
                 'url' => 'admin/grants/exp'
             ],
+            [
+                'name' => 'Recipe Grants',
+                'url' => 'admin/grants/recipes'
+            ],
         ]
     ],
     'Masterlist' => [
@@ -202,6 +206,10 @@ return [
             [
                 'name' => 'Items',
                 'url' => 'admin/data/items'
+            ],
+            [
+                'name' => 'Recipes',
+                'url' => 'admin/data/recipes'
             ],
         ]
     ],

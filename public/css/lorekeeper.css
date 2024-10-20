@@ -637,3 +637,8 @@ tr.accountbound {
 .hidden {
     display: none;
 }
+
+/* RECIPES ***************************************************************************************/
+.recipe-image {
+    width: 150px;
+}

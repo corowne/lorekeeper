@@ -420,4 +420,11 @@ return [
         'message' => 'You have sold a {item_name} from <a href="{url}">{shop_name}</a> and have been credited {currency_quantity} {currency_name}.',
         'url' => 'user-shops/shop/{shop_id}'
     ],
+
+    // RECIPE_GRANT
+    600 => [
+        'name' => 'Recipe Grant',
+        'message' => 'You have received a staff grant of the crafting recipe {recipe_name} from <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Unlocked Recipes</a>)',
+        'url' => 'crafting'
+    ],
 ];

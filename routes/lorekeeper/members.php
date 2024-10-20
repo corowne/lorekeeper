@@ -120,6 +120,12 @@ Route::group(['prefix' => 'user-shops',], function() {
     Route::get('{id}/{stockId}', 'UserShopController@getShopStock')->where(['id' => '[0-9]+', 'stockId' => '[0-9]+']);
 });
 
+Route::group(['prefix' => 'crafting', 'namespace' => 'Users'], function() {
+    Route::get('/', 'CraftingController@getIndex');
+    Route::get('craft/{id}', 'CraftingController@getCraftRecipe');
+    Route::post('craft/{id}', 'CraftingController@postCraftRecipe');
+});
+
 /**************************************************************************************************
     Characters
 **************************************************************************************************/
