@@ -25,9 +25,15 @@ class LootTableController extends Controller {
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex() {
+    public function getIndex(Request $request) {
+        $query = LootTable::query();
+
+        if ($request->get('name')) {
+            $query->where('name', 'LIKE', '%'.$request->get('name').'%');
+        }
+
         return view('admin.loot_tables.loot_tables', [
-            'tables' => LootTable::paginate(20),
+            'tables' => $query->paginate(20)->appends($request->query()),
         ]);
     }
 

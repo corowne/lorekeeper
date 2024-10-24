@@ -228,12 +228,25 @@ class CharacterController extends Controller {
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCharacterInventory($slug) {
+    public function getCharacterInventory(Request $request, $slug) {
         $categories = ItemCategory::visible(Auth::user() ?? null)->where('is_character_owned', '1')->orderBy('sort', 'DESC')->get();
         $itemOptions = Item::whereIn('item_category_id', $categories->pluck('id'));
 
+        $query = Item::query();
+        $data = $request->only(['item_category_id', 'name', 'artist']);
+        if (isset($data['item_category_id']) && $data['item_category_id'] != 'none') {
+            $query->where('item_category_id', $data['item_category_id']);
+        }
+        if (isset($data['name'])) {
+            $query->where('name', 'LIKE', '%'.$data['name'].'%');
+        }
+        if (isset($data['artist']) && $data['artist'] != 'none') {
+            $query->where('artist_id', $data['artist']);
+        }
+
         $items = count($categories) ?
             $this->character->items()
+                ->whereIn('items.id', $query->pluck('id')->toArray())
                 ->where('count', '>', 0)
                 ->orderByRaw('FIELD(item_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
                 ->orderBy('name')
@@ -241,6 +254,7 @@ class CharacterController extends Controller {
                 ->get()
                 ->groupBy(['item_category_id', 'id']) :
             $this->character->items()
+                ->whereIn('items.id', $query->pluck('id')->toArray())
                 ->where('count', '>', 0)
                 ->orderBy('name')
                 ->orderBy('updated_at')
@@ -253,6 +267,7 @@ class CharacterController extends Controller {
             'categories'            => $categories->keyBy('id'),
             'items'                 => $items,
             'logs'                  => $this->character->getItemLogs(),
+            'artists'               => User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray(),
         ] + (Auth::check() && (Auth::user()->hasPower('edit_inventories') || Auth::user()->id == $this->character->user_id) ? [
             'itemOptions'   => $itemOptions->pluck('name', 'id'),
             'userInventory' => UserItem::with('item')->whereIn('item_id', $itemOptions->pluck('id'))->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get()->filter(function ($userItem) {

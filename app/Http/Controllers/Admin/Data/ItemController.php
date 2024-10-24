@@ -208,7 +208,7 @@ class ItemController extends Controller {
         return view('admin.items.items', [
             'items'      => $query->paginate(20)->appends($request->query()),
             'categories' => ['none' => 'Any Category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'artists'    => ['none' => 'Any Artist'] + User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray(),
+            'artists'    => User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray(),
         ]);
     }
 

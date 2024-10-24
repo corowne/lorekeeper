@@ -32,10 +32,23 @@ class InventoryController extends Controller {
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex() {
+    public function getIndex(Request $request) {
         $categories = ItemCategory::visible(Auth::user() ?? null)->orderBy('sort', 'DESC')->get();
+        $query = Item::query();
+        $data = $request->only(['item_category_id', 'name', 'artist']);
+        if (isset($data['item_category_id']) && $data['item_category_id'] != 'none') {
+            $query->where('item_category_id', $data['item_category_id']);
+        }
+        if (isset($data['name'])) {
+            $query->where('name', 'LIKE', '%'.$data['name'].'%');
+        }
+        if (isset($data['artist']) && $data['artist'] != 'none') {
+            $query->where('artist_id', $data['artist']);
+        }
+
         $items = count($categories) ?
             Auth::user()->items()
+                ->whereIn('items.id', $query->pluck('id')->toArray())
                 ->where('count', '>', 0)
                 ->orderByRaw('FIELD(item_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
                 ->orderBy('name')
@@ -43,6 +56,7 @@ class InventoryController extends Controller {
                 ->get()
                 ->groupBy(['item_category_id', 'id']) :
             Auth::user()->items()
+                ->whereIn('items.id', $query->pluck('id')->toArray())
                 ->where('count', '>', 0)
                 ->orderBy('name')
                 ->orderBy('updated_at')
@@ -54,6 +68,7 @@ class InventoryController extends Controller {
             'items'       => $items,
             'userOptions' => User::visible()->where('id', '!=', Auth::user()->id)->orderBy('name')->pluck('name', 'id')->toArray(),
             'user'        => Auth::user(),
+            'artists'     => ['none' => 'Any Artist'] + User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray(),
         ]);
     }
 
