@@ -78,6 +78,18 @@
     @endif
 
     @include('feed::links')
+
+    {{-- Image Blocking --}}
+    @if (Auth::check() && count(Auth::user()->blockedImages))
+        <style>
+            @foreach (Auth::user()->blockedImages as $image)
+                [src="{{ $image->item->imageUrl ? $image->item->imageUrl : ($image->item->currencyImageUrl ? $image->item->currencyImageUrl : ($image->item->avatarUrl ? $image->item->avatarUrl : '')) }}"] {
+                    filter: blur(5px);
+                }
+            @endforeach
+        </style>
+    @endif
+
 </head>
 
 <body>

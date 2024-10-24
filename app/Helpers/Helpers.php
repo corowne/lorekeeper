@@ -7,7 +7,7 @@
 |
 | Miscellaneous helper functions, primarily used for formatting.
 |
-*/
+ */
 
 /**
  * Returns class name if the current URL corresponds to the given path.
@@ -17,7 +17,8 @@
  *
  * @return string
  */
-function set_active($path, $class = 'active') {
+function set_active($path, $class = 'active')
+{
     return call_user_func_array('Request::is', (array) $path) ? $class : '';
 }
 
@@ -28,8 +29,9 @@ function set_active($path, $class = 'active') {
  *
  * @return string
  */
-function add_help($text) {
-    return '<i class="fas fa-question-circle help-icon" data-toggle="tooltip" title="'.$text.'"></i>';
+function add_help($text)
+{
+    return '<i class="fas fa-question-circle help-icon" data-toggle="tooltip" title="' . $text . '"></i>';
 }
 
 /**
@@ -39,10 +41,11 @@ function add_help($text) {
  *
  * @return string
  */
-function breadcrumbs($links) {
+function breadcrumbs($links)
+{
     $ret = '<nav><ol class="breadcrumb">';
     $count = 0;
-    $ret .= '<li class="breadcrumb-item"><a href="'.url('/').'">'.config('lorekeeper.settings.site_name', 'Lorekeeper').'</a></li>';
+    $ret .= '<li class="breadcrumb-item"><a href="' . url('/') . '">' . config('lorekeeper.settings.site_name', 'Lorekeeper') . '</a></li>';
     foreach ($links as $key => $link) {
         $isLast = ($count == count($links) - 1);
 
@@ -53,7 +56,7 @@ function breadcrumbs($links) {
         $ret .= '">';
 
         if (!$isLast) {
-            $ret .= '<a href="'.url($link).'">';
+            $ret .= '<a href="' . url($link) . '">';
         }
         $ret .= $key;
         if (!$isLast) {
@@ -77,12 +80,14 @@ function breadcrumbs($links) {
  *
  * @return string
  */
-function format_date($timestamp, $showTime = true) {
-    return $timestamp->format('j F Y'.($showTime ? ', H:i:s' : '')).($showTime ? ' <abbr data-toggle="tooltip" title="UTC'.$timestamp->timezone->toOffsetName().'">'.strtoupper($timestamp->timezone->getAbbreviatedName($timestamp->isDST())).'</abbr>' : '');
+function format_date($timestamp, $showTime = true)
+{
+    return $timestamp->format('j F Y' . ($showTime ? ', H:i:s' : '')) . ($showTime ? ' <abbr data-toggle="tooltip" title="UTC' . $timestamp->timezone->toOffsetName() . '">' . strtoupper($timestamp->timezone->getAbbreviatedName($timestamp->isDST())) . '</abbr>' : '');
 }
 
-function pretty_date($timestamp, $showTime = true) {
-    return '<abbr data-toggle="tooltip" title="'.$timestamp->format('F j Y'.($showTime ? ', H:i:s' : '')).' '.strtoupper($timestamp->timezone->getAbbreviatedName($timestamp->isDST())).'">'.$timestamp->diffForHumans().'</abbr>';
+function pretty_date($timestamp, $showTime = true)
+{
+    return '<abbr data-toggle="tooltip" title="' . $timestamp->format('F j Y' . ($showTime ? ', H:i:s' : '')) . ' ' . strtoupper($timestamp->timezone->getAbbreviatedName($timestamp->isDST())) . '">' . $timestamp->diffForHumans() . '</abbr>';
 }
 
 /**
@@ -94,8 +99,9 @@ function pretty_date($timestamp, $showTime = true) {
  *
  * @return string
  */
-function format_masterlist_number($number, $digits) {
-    return sprintf('%0'.$digits.'d', $number);
+function format_masterlist_number($number, $digits)
+{
+    return sprintf('%0' . $digits . 'd', $number);
 }
 
 /**
@@ -106,12 +112,13 @@ function format_masterlist_number($number, $digits) {
  *
  * @return string
  */
-function parse($text, &$pings = null) {
+function parse($text, &$pings = null)
+{
     if (!$text) {
         return null;
     }
 
-    require_once base_path().'/vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
+    require_once base_path() . '/vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
 
     $config = HTMLPurifier_Config::createDefault();
     $config->set('Attr.EnableID', true);
@@ -152,7 +159,8 @@ function parse($text, &$pings = null) {
  *
  * @return string
  */
-function parseUsers($text, &$users) {
+function parseUsers($text, &$users)
+{
     $matches = null;
     $users = [];
     $count = preg_match_all('/\B@([A-Za-z0-9_-]+)/', $text, $matches);
@@ -162,7 +170,7 @@ function parseUsers($text, &$users) {
             $user = App\Models\User\User::where('name', $match)->first();
             if ($user) {
                 $users[] = $user;
-                $text = preg_replace('/\B@'.$match.'/', $user->displayName, $text);
+                $text = preg_replace('/\B@' . $match . '/', $user->displayName, $text);
             }
         }
     }
@@ -179,7 +187,8 @@ function parseUsers($text, &$users) {
  *
  * @return string
  */
-function parseUsersAndAvatars($text, &$users) {
+function parseUsersAndAvatars($text, &$users)
+{
     $matches = null;
     $users = [];
     $count = preg_match_all('/\B%([A-Za-z0-9_-]+)/', $text, $matches);
@@ -189,7 +198,7 @@ function parseUsersAndAvatars($text, &$users) {
             $user = App\Models\User\User::where('name', $match)->first();
             if ($user) {
                 $users[] = $user;
-                $text = preg_replace('/\B%'.$match.'/', '<a href="'.$user->url.'"><img src="'.$user->avatarUrl.'" style="width:70px; height:70px; border-radius:50%; " alt="'.$user->name.'\'s Avatar"></a>'.$user->displayName, $text);
+                $text = preg_replace('/\B%' . $match . '/', '<a href="' . $user->url . '"><img src="' . $user->avatarUrl . '" style="width:70px; height:70px; border-radius:50%; " alt="' . $user->name . '\'s Avatar"></a>' . $user->displayName, $text);
             }
         }
     }
@@ -206,7 +215,8 @@ function parseUsersAndAvatars($text, &$users) {
  *
  * @return string
  */
-function parseUserIDs($text, &$users) {
+function parseUserIDs($text, &$users)
+{
     $matches = null;
     $users = [];
     $count = preg_match_all('/\[user=([^\[\]&<>?"\']+)\]/', $text, $matches);
@@ -216,7 +226,7 @@ function parseUserIDs($text, &$users) {
             $user = App\Models\User\User::where('id', $match)->first();
             if ($user) {
                 $users[] = $user;
-                $text = preg_replace('/\[user='.$match.'\]/', $user->displayName, $text);
+                $text = preg_replace('/\[user=' . $match . '\]/', $user->displayName, $text);
             }
         }
     }
@@ -233,7 +243,8 @@ function parseUserIDs($text, &$users) {
  *
  * @return string
  */
-function parseUserIDsForAvatars($text, &$users) {
+function parseUserIDsForAvatars($text, &$users)
+{
     $matches = null;
     $users = [];
     $count = preg_match_all('/\[userav=([^\[\]&<>?"\']+)\]/', $text, $matches);
@@ -243,7 +254,7 @@ function parseUserIDsForAvatars($text, &$users) {
             $user = App\Models\User\User::where('id', $match)->first();
             if ($user) {
                 $users[] = $user;
-                $text = preg_replace('/\[userav='.$match.'\]/', '<a href="'.$user->url.'"><img src="'.$user->avatarUrl.'" style="width:70px; height:70px; border-radius:50%; " alt="'.$user->name.'\'s Avatar"></a>', $text);
+                $text = preg_replace('/\[userav=' . $match . '\]/', '<a href="' . $user->url . '"><img src="' . $user->avatarUrl . '" style="width:70px; height:70px; border-radius:50%; " alt="' . $user->name . '\'s Avatar"></a>', $text);
             }
         }
     }
@@ -260,7 +271,8 @@ function parseUserIDsForAvatars($text, &$users) {
  *
  * @return string
  */
-function parseCharacters($text, &$characters) {
+function parseCharacters($text, &$characters)
+{
     $matches = null;
     $characters = [];
     $count = preg_match_all('/\[character=([^\[\]&<>?"\']+)\]/', $text, $matches);
@@ -270,7 +282,7 @@ function parseCharacters($text, &$characters) {
             $character = App\Models\Character\Character::where('slug', $match)->first();
             if ($character) {
                 $characters[] = $character;
-                $text = preg_replace('/\[character='.$match.'\]/', $character->displayName, $text);
+                $text = preg_replace('/\[character=' . $match . '\]/', $character->displayName, $text);
             }
         }
     }
@@ -287,7 +299,8 @@ function parseCharacters($text, &$characters) {
  *
  * @return string
  */
-function parseCharacterThumbs($text, &$characters) {
+function parseCharacterThumbs($text, &$characters)
+{
     $matches = null;
     $characters = [];
     $count = preg_match_all('/\[charthumb=([^\[\]&<>?"\']+)\]/', $text, $matches);
@@ -297,7 +310,7 @@ function parseCharacterThumbs($text, &$characters) {
             $character = App\Models\Character\Character::where('slug', $match)->first();
             if ($character) {
                 $characters[] = $character;
-                $text = preg_replace('/\[charthumb='.$match.'\]/', '<a href="'.$character->url.'"><img class="img-thumbnail" alt="Thumbnail of '.$character->fullName.'" data-toggle="tooltip" title="'.$character->fullName.'" src="'.$character->image->thumbnailUrl.'"></a>', $text);
+                $text = preg_replace('/\[charthumb=' . $match . '\]/', '<a href="' . $character->url . '"><img class="img-thumbnail" alt="Thumbnail of ' . $character->fullName . '" data-toggle="tooltip" title="' . $character->fullName . '" src="' . $character->image->thumbnailUrl . '"></a>', $text);
             }
         }
     }
@@ -314,7 +327,8 @@ function parseCharacterThumbs($text, &$characters) {
  *
  * @return string
  */
-function parseGalleryThumbs($text, &$submissions) {
+function parseGalleryThumbs($text, &$submissions)
+{
     $matches = null;
     $submissions = [];
     $count = preg_match_all('/\[thumb=([^\[\]&<>?"\']+)\]/', $text, $matches);
@@ -324,7 +338,7 @@ function parseGalleryThumbs($text, &$submissions) {
             $submission = App\Models\Gallery\GallerySubmission::where('id', $match)->first();
             if ($submission) {
                 $submissions[] = $submission;
-                $text = preg_replace('/\[thumb='.$match.'\]/', '<a href="'.$submission->url.'" data-toggle="tooltip" title="'.$submission->displayTitle.' by '.nl2br(htmlentities($submission->creditsPlain)).(isset($submission->content_warning) ? '<br/><strong>Content Warning:</strong> '.nl2br(htmlentities($submission->content_warning)) : '').'">'.view('widgets._gallery_thumb', ['submission' => $submission]).'</a>', $text);
+                $text = preg_replace('/\[thumb=' . $match . '\]/', '<a href="' . $submission->url . '" data-toggle="tooltip" title="' . $submission->displayTitle . ' by ' . nl2br(htmlentities($submission->creditsPlain)) . (isset($submission->content_warning) ? '<br/><strong>Content Warning:</strong> ' . nl2br(htmlentities($submission->content_warning)) : '') . '">' . view('widgets._gallery_thumb', ['submission' => $submission]) . '</a>', $text);
             }
         }
     }
@@ -339,7 +353,8 @@ function parseGalleryThumbs($text, &$submissions) {
  *
  * @return string
  */
-function randomString($characters) {
+function randomString($characters)
+{
     $src = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     $code = '';
     for ($i = 0; $i < $characters; $i++) {
@@ -358,12 +373,13 @@ function randomString($characters) {
  *
  * @return App\Models\User\User|string
  */
-function checkAlias($url, $failOnError = true) {
+function checkAlias($url, $failOnError = true)
+{
     if ($url) {
         $recipient = null;
         $matches = [];
         // Check to see if url is 1. from a site used for auth
-        foreach (config('lorekeeper.sites') as $key=> $site) {
+        foreach (config('lorekeeper.sites') as $key => $site) {
             if (isset($site['auth']) && $site['auth']) {
                 preg_match_all($site['regex'], $url, $matches, PREG_SET_ORDER, 0);
                 if ($matches != []) {
@@ -402,10 +418,11 @@ function checkAlias($url, $failOnError = true) {
  *
  * @return string
  */
-function prettyProfileLink($url) {
+function prettyProfileLink($url)
+{
     $matches = [];
     // Check different sites and return site if a match is made, plus username (retreived from the URL)
-    foreach (config('lorekeeper.sites') as $siteName=> $siteInfo) {
+    foreach (config('lorekeeper.sites') as $siteName => $siteInfo) {
         if (preg_match_all($siteInfo['regex'], $url, $matches)) {
             $site = $siteName;
             $name = $matches[1][0];
@@ -417,9 +434,9 @@ function prettyProfileLink($url) {
 
     // Return formatted link if possible; failing that, an unformatted link
     if (isset($name) && isset($site) && isset($link)) {
-        return '<a href="https://'.$link.'"><i class="'.$icon.' mr-1" style="opacity: 50%;"></i>'.$name.'@'.(config('lorekeeper.sites.'.$site.'.display_name') != null ? config('lorekeeper.sites.'.$site.'.display_name') : $site).'</a>';
+        return '<a href="https://' . $link . '"><i class="' . $icon . ' mr-1" style="opacity: 50%;"></i>' . $name . '@' . (config('lorekeeper.sites.' . $site . '.display_name') != null ? config('lorekeeper.sites.' . $site . '.display_name') : $site) . '</a>';
     } else {
-        return '<a href="'.$url.'"><i class="fas fa-globe mr-1" style="opacity: 50%;"></i>'.$url.'</a>';
+        return '<a href="' . $url . '"><i class="fas fa-globe mr-1" style="opacity: 50%;"></i>' . $url . '</a>';
     }
 }
 
@@ -430,10 +447,11 @@ function prettyProfileLink($url) {
  *
  * @return string
  */
-function prettyProfileName($url) {
+function prettyProfileName($url)
+{
     $matches = [];
     // Check different sites and return site if a match is made, plus username (retreived from the URL)
-    foreach (config('lorekeeper.sites') as $siteName=> $siteInfo) {
+    foreach (config('lorekeeper.sites') as $siteName => $siteInfo) {
         if (preg_match_all($siteInfo['regex'], $url, $matches)) {
             $site = $siteName;
             $name = $matches[1][0];
@@ -443,8 +461,33 @@ function prettyProfileName($url) {
 
     // Return formatted name if possible; failing that, an unformatted url
     if (isset($name) && isset($site)) {
-        return $name.'@'.(config('lorekeeper.sites.'.$site.'.display_name') != null ? config('lorekeeper.sites.'.$site.'.display_name') : $site);
+        return $name . '@' . (config('lorekeeper.sites.' . $site . '.display_name') != null ? config('lorekeeper.sites.' . $site . '.display_name') : $site);
     } else {
         return $url;
+    }
+}
+
+/**
+ * Check if user blocked an item
+ *
+ * @param string $url
+ *
+ * @return string
+ */
+function checkItemBlock($item, $user)
+{
+
+    $model = get_class($item);
+
+    $block = App\Models\ImageBlock::where([
+        ['item_id', '=', $item->id],
+        ['item_type', '=', $model],
+        ['user_id', '=', $user->id],
+    ])->first();
+
+    if ($block) {
+        return true;
+    } else {
+        return false;
     }
 }

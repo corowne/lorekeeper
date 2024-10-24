@@ -8,6 +8,9 @@
         <h3>{{ $currency->name }} @if ($currency->abbreviation)
                 ({{ $currency->abbreviation }})
             @endif
+            @if(Auth::check())
+                @include('widgets._item_block', ['item' => $currency, 'float' => true])
+            @endif
         </h3>
         <div><strong>Displays as:</strong> {!! $currency->display(0) !!}</div>
         <div><strong>Held by:</strong> <?php echo ucfirst(implode(' and ', ($currency->is_user_owned ? ['users'] : []) + ($currency->is_character_owned ? ['characters'] : []))); ?></div>
