@@ -397,57 +397,56 @@ class BrowseController extends Controller {
             });
         }
         if ($request->get('excluded_tags') || $request->get('included_tags')) {
-            $excludedTags = $request->get('excluded_tags');
-            $includedTags = $request->get('included_tags');
-            $images = $imageQuery->get();
+            $filteredImageIds = collect();
+            $excludedTags = $request->get('excluded_tags', []);
+            $includedTags = $request->get('included_tags', []);
 
-            $filteredImageQuery = $images;
-
-            // first exclude, then include
-            if ($excludedTags) {
-                $filteredImageQuery = $images->filter(function ($image) use ($excludedTags) {
-                    if (!$image->content_warnings) {
-                        return true;
-                    }
-
-                    if (in_array('all', $excludedTags) && $image->content_warnings) {
-                        return false;
-                    }
-
-                    foreach ($excludedTags as $tag) {
-                        if ($image->content_warnings && in_array($tag, $image->content_warnings)) {
+            $imageQuery->chunk(100, function ($images) use (&$filteredImageIds, $excludedTags, $includedTags) {
+                // excluded tags
+                if (!empty($excludedTags)) {
+                    $images = $images->reject(function ($image) use ($excludedTags) {
+                        if (!$image->content_warnings) {
                             return false;
                         }
-                    }
-
-                    return true;
-                });
-            }
-
-            if ($request->get('included_tags')) {
-                $filteredImageQuery = $filteredImageQuery->filter(function ($image) use ($includedTags) {
-                    if (!$image->content_warnings) {
-                        return false;
-                    }
-
-                    if (in_array('all', $includedTags) && $image->content_warnings) {
-                        return true;
-                    }
-
-                    foreach ($includedTags as $tag) {
-                        if ($image->content_warnings && in_array($tag, $image->content_warnings)) {
+                        if (in_array('all', $excludedTags)) {
                             return true;
                         }
-                    }
+                        foreach ($excludedTags as $tag) {
+                            if (in_array($tag, $image->content_warnings)) {
+                                return true;
+                            }
+                        }
 
-                    return false;
-                });
-            }
+                        return false;
+                    });
+                }
+
+                // included tags
+                if (!empty($includedTags)) {
+                    $images = $images->filter(function ($image) use ($includedTags) {
+                        if (!$image->content_warnings) {
+                            return false;
+                        }
+                        if (in_array('all', $includedTags)) {
+                            return true;
+                        }
+                        foreach ($includedTags as $tag) {
+                            if (in_array($tag, $image->content_warnings)) {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    });
+                }
+
+                $filteredImageIds = $filteredImageIds->merge($images->pluck('character_id'));
+            });
         } else {
-            $filteredImageQuery = $imageQuery;
+            $filteredImageIds = $imageQuery->pluck('character_id');
         }
 
-        $query->whereIn('id', $filteredImageQuery->pluck('character_id')->toArray());
+        $query->whereIn('id', $filteredImageIds->toArray());
 
         if (!$isMyo) {
             if ($request->get('is_gift_art_allowed')) {
