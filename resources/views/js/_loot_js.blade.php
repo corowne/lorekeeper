@@ -1,30 +1,36 @@
+@php
+    $prefix = $prefix ?? '';
+@endphp
 <script>
     $(document).ready(function() {
-        var $lootTable = $('#lootTableBody');
-        var $lootRow = $('#lootRow').find('.loot-row');
-        var $itemSelect = $('#lootRowData').find('.item-select');
-        var $currencySelect = $('#lootRowData').find('.currency-select');
+        var $lootTable = $('#{{ $prefix }}lootTableBody');
+        var $lootRow = $('#{{ $prefix }}lootRow').find('.{{ $prefix }}loot-row');
+        var $itemSelect = $('#{{ $prefix }}lootRowData').find('.{{ $prefix }}item-select');
+        var $currencySelect = $('#{{ $prefix }}lootRowData').find('.{{ $prefix }}currency-select');
+
         @if ($showLootTables)
-            var $tableSelect = $('#lootRowData').find('.table-select');
+            var $tableSelect = $('#{{ $prefix }}lootRowData').find('.{{ $prefix }}table-select');
         @endif
-        @if ($showRaffles)
-            var $raffleSelect = $('#lootRowData').find('.raffle-select');
+        @if (!isset($isCharacter))
+            @if ($showRaffles)
+                var $raffleSelect = $('#{{ $prefix }}lootRowData').find('.{{ $prefix }}raffle-select');
+            @endif
         @endif
 
-        $('#lootTableBody .selectize').selectize();
-        attachRemoveListener($('#lootTableBody .remove-loot-button'));
+        $('#{{ $prefix }}lootTableBody .selectize').selectize();
+        attachRemoveListener($('#{{ $prefix }}lootTableBody .{{ $prefix }}remove-loot-button'));
 
-        $('#addLoot').on('click', function(e) {
+        $('#{{ $prefix }}addLoot').on('click', function(e) {
             e.preventDefault();
             var $clone = $lootRow.clone();
             $lootTable.append($clone);
-            attachRewardTypeListener($clone.find('.reward-type'));
-            attachRemoveListener($clone.find('.remove-loot-button'));
+            attachRewardTypeListener($clone.find('.{{ $prefix }}reward-type'));
+            attachRemoveListener($clone.find('.{{ $prefix }}remove-loot-button'));
         });
 
-        $('.reward-type').on('change', function(e) {
+        $('.{{ $prefix }}reward-type').on('change', function(e) {
             var val = $(this).val();
-            var $cell = $(this).parent().parent().find('.loot-row-select');
+            var $cell = $(this).parent().parent().find('.{{ $prefix }}loot-row-select');
 
             var $clone = null;
             if (val == 'Item') $clone = $itemSelect.clone();
@@ -32,8 +38,10 @@
             @if ($showLootTables)
                 else if (val == 'LootTable') $clone = $tableSelect.clone();
             @endif
-            @if ($showRaffles)
-                else if (val == 'Raffle') $clone = $raffleSelect.clone();
+            @if (!isset($isCharacter))
+                @if ($showRaffles)
+                    else if (val == 'Raffle') $clone = $raffleSelect.clone();
+                @endif
             @endif
 
             $cell.html('');
@@ -43,7 +51,7 @@
         function attachRewardTypeListener(node) {
             node.on('change', function(e) {
                 var val = $(this).val();
-                var $cell = $(this).parent().parent().find('.loot-row-select');
+                var $cell = $(this).parent().parent().find('.{{ $prefix }}loot-row-select');
 
                 var $clone = null;
                 if (val == 'Item') $clone = $itemSelect.clone();
@@ -51,8 +59,10 @@
                 @if ($showLootTables)
                     else if (val == 'LootTable') $clone = $tableSelect.clone();
                 @endif
-                @if ($showRaffles)
-                    else if (val == 'Raffle') $clone = $raffleSelect.clone();
+                @if (!isset($isCharacter))
+                    @if ($showRaffles)
+                        else if (val == 'Raffle') $clone = $raffleSelect.clone();
+                    @endif
                 @endif
 
                 $cell.html('');

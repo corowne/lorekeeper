@@ -208,7 +208,7 @@ class PromptService extends Service {
                 $this->handleImage($image, $prompt->imagePath, $prompt->imageFileName);
             }
 
-            $this->populateRewards(Arr::only($data, ['rewardable_type', 'rewardable_id', 'quantity']), $prompt);
+            $this->populateRewards(Arr::only($data, ['rewardable_type', 'rewardable_id', 'quantity', 'character_rewardable_type', 'character_rewardable_id', 'character_quantity']), $prompt);
 
             return $this->commitReturn($prompt);
         } catch (\Exception $e) {
@@ -266,7 +266,7 @@ class PromptService extends Service {
                 $this->handleImage($image, $prompt->imagePath, $prompt->imageFileName);
             }
 
-            $this->populateRewards(Arr::only($data, ['rewardable_type', 'rewardable_id', 'quantity']), $prompt);
+            $this->populateRewards(Arr::only($data, ['rewardable_type', 'rewardable_id', 'quantity', 'character_rewardable_type', 'character_rewardable_id', 'character_quantity']), $prompt);
 
             return $this->commitReturn($prompt);
         } catch (\Exception $e) {
@@ -293,6 +293,7 @@ class PromptService extends Service {
             }
 
             $prompt->rewards()->delete();
+            $prompt->characterRewards()->delete();
             if ($prompt->has_image) {
                 $this->deleteImage($prompt->imagePath, $prompt->imageFileName);
             }
@@ -378,14 +379,28 @@ class PromptService extends Service {
     private function populateRewards($data, $prompt) {
         // Clear the old rewards...
         $prompt->rewards()->delete();
+        $prompt->characterRewards()->delete();
 
         if (isset($data['rewardable_type'])) {
             foreach ($data['rewardable_type'] as $key => $type) {
                 PromptReward::create([
-                    'prompt_id'       => $prompt->id,
-                    'rewardable_type' => $type,
-                    'rewardable_id'   => $data['rewardable_id'][$key],
-                    'quantity'        => $data['quantity'][$key],
+                    'prompt_id'          => $prompt->id,
+                    'rewardable_type'    => $type,
+                    'rewardable_id'      => $data['rewardable_id'][$key],
+                    'quantity'           => $data['quantity'][$key],
+                    'earner_type'        => 'User',
+                ]);
+            }
+        }
+
+        if (isset($data['character_rewardable_type'])) {
+            foreach ($data['character_rewardable_type'] as $key => $type) {
+                PromptReward::create([
+                    'prompt_id'          => $prompt->id,
+                    'rewardable_type'    => $type,
+                    'rewardable_id'      => $data['character_rewardable_id'][$key],
+                    'quantity'           => $data['character_quantity'][$key],
+                    'earner_type'        => 'Character',
                 ]);
             }
         }

@@ -119,7 +119,10 @@
                 <div class="submission-character-info card ml-2">
                     <div class="card-body">
                         <div class="submission-character-info-content">
-                            <h3 class="mb-2 submission-character-info-header"><a href="{{ $character->character->url }}">{{ $character->character->fullName }}</a></h3>
+                            <h3 class="mb-2 submission-character-info-header"><a href="{{ $character->character->url }}">{{ $character->character->fullName }}@if ($character->is_focus)
+                                        <i class="fas fa-bullseye float-right mr-2" data-toggle="tooltip" data-placement="top" title="This character is the focus of the submission!"></i>
+                                    @endif
+                                </a></h3>
                             <div class="submission-character-info-body">
                                 @if (array_filter(parseAssetData($character->data)))
                                     <table class="table table-sm mb-0">
