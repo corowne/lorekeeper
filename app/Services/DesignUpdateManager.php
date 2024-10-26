@@ -391,7 +391,7 @@ class DesignUpdateManager extends Service {
             if (!$species) {
                 throw new \Exception('Invalid species selected.');
             }
-            if ($subtype && $subtype->species_id != $species->id) {
+            if (isset($subtype) && $subtype && $subtype->species_id != $species->id) {
                 throw new \Exception('Subtype does not match the species.');
             }
 
