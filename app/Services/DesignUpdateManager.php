@@ -391,9 +391,6 @@ class DesignUpdateManager extends Service {
             if (!$species) {
                 throw new \Exception('Invalid species selected.');
             }
-            if (isset($subtype) && $subtype && $subtype->species_id != $species->id) {
-                throw new \Exception('Subtype does not match the species.');
-            }
 
             // Clear old features
             $request->features()->delete();
