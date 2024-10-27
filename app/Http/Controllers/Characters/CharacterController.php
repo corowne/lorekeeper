@@ -200,9 +200,9 @@ class CharacterController extends Controller {
      */
     public function getCharacterGallery(Request $request, $slug) {
         return view('character.gallery', [
-            'character'             => $this->character,
+            'character' => $this->character,
             'extPrevAndNextBtnsUrl' => '/gallery',
-            'submissions'           => GallerySubmission::whereIn('id', $this->character->gallerySubmissions->pluck('gallery_submission_id')->toArray())->visible()->accepted()->orderBy('created_at', 'DESC')->paginate(20)->appends($request->query()),
+            'submissions' => GallerySubmission::whereIn('id', $this->character->gallerySubmissions->pluck('gallery_submission_id')->toArray())->visible(Auth::user() ?? null)->orderBy('created_at', 'DESC')->paginate(20),
         ]);
     }
 
