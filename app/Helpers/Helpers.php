@@ -137,6 +137,7 @@ function parse($text, &$pings = null) {
     $text = parseCharacterThumbs($text, $characters);
     $text = parseGalleryThumbs($text, $submissions);
     $text = parseItems($text, $items);
+    $text = parseTraitThumbs($text, $traits);
     if ($pings) {
         $pings = ['users' => $users, 'characters' => $characters];
     }
@@ -326,6 +327,35 @@ function parseItems($text, &$items) {
             if ($item) {
                 $items[] = $item;
                 $text = preg_replace('/\[item='.$match.'\]/', '<a href="'.$item->idUrl.'"><img src="'.$item->imageUrl.'" class="mw-100" alt="'.$item->name.'"></a>', $text);
+            }
+        }
+    }
+
+    return $text;
+}
+
+/**
+ * Parses a piece of user-entered text to match trait mentions
+ * and replace with the trait thumbnail.
+ *
+ * @param string $text
+ * @param mixed  $traits
+ *
+ * @return string
+ */
+function parseTraitThumbs($text, &$traits) {
+    $matches = null;
+    $traits = [];
+    $count = preg_match_all('/\[traitthumb=([^\[\]&<>?"\']+)\]/', $text, $matches);
+    if ($count) {
+        $matches = array_unique($matches[1]);
+        foreach ($matches as $match) {
+            $trait = App\Models\Feature\Feature::where('id', $match)->first();
+            if ($trait) {
+                $traits[] = $trait;
+                $trait_hasimg = $trait->has_image ? '<a class="badge" style="border-radius:.5em; '.$traitbg.'" href="'.$trait->url.'"><img class="my-1 modal-image" style="max-height:100%; height:150px; border-radius:.5em;" src="'.$trait->imageUrl.'" alt="'.$trait->name.'" /></a></ br>' : '';
+                $traitbg = $trait->rarity->color ? 'background-color:#'.$trait->rarity->color : '';
+                $text = preg_replace('/\[traitthumb='.$match.'\]/', '<div class="text-center align-self-center inventory-item px-1" style="display: inline-flex; max-width:15%; flex: 0 0 15%;"><p>'.$trait_hasimg.'<a class="display-trait" href="'.$trait->url.'">'.$trait->name.'</a></p></div>', $text);
             }
         }
     }
