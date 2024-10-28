@@ -138,6 +138,7 @@ function parse($text, &$pings = null) {
     $text = parseGalleryThumbs($text, $submissions);
     $text = parseItems($text, $items);
     $text = parseTraitThumbs($text, $traits);
+    $text = parseItemThumbs($text, $items);
     if ($pings) {
         $pings = ['users' => $users, 'characters' => $characters];
     }
@@ -356,6 +357,34 @@ function parseTraitThumbs($text, &$traits) {
                 $trait_hasimg = $trait->has_image ? '<a class="badge" style="border-radius:.5em; '.$traitbg.'" href="'.$trait->url.'"><img class="my-1 modal-image" style="max-height:100%; height:150px; border-radius:.5em;" src="'.$trait->imageUrl.'" alt="'.$trait->name.'" /></a></ br>' : '';
                 $traitbg = $trait->rarity->color ? 'background-color:#'.$trait->rarity->color : '';
                 $text = preg_replace('/\[traitthumb='.$match.'\]/', '<div class="text-center align-self-center inventory-item px-1" style="display: inline-flex; max-width:15%; flex: 0 0 15%;"><p>'.$trait_hasimg.'<a class="display-trait" href="'.$trait->url.'">'.$trait->name.'</a></p></div>', $text);
+            }
+        }
+    }
+
+    return $text;
+}
+
+/**
+ * Parses a piece of user-entered text to match item mentions
+ * and replace with the item thumbnail.
+ *
+ * @param string $text
+ * @param mixed  $items
+ *
+ * @return string
+ */
+function parseItemThumbs($text, &$items) {
+    $matches = null;
+    $items = [];
+    $count = preg_match_all('/\[itemthumb=([^\[\]&<>?"\']+)\]/', $text, $matches);
+    if ($count) {
+        $matches = array_unique($matches[1]);
+        foreach ($matches as $match) {
+            $item = App\Models\Item\Item::where('id', $match)->first();
+            if ($item) {
+                $items[] = $item;
+                $item_hasimg = $item->has_image ? '<a class="badge" style="border-radius:.5em;" href="'.$item->idUrl.'"><img class="my-1 modal-image" style="max-height:100%; height:150px; border-radius:.5em;" src="'.$item->imageUrl.'" alt="'.$item->name.'" /></a></ br>' : '';
+                $text = preg_replace('/\[itemthumb='.$match.'\]/', '<div class="text-center align-self-center inventory-item px-1" style="display: inline-flex; max-width:15%; flex: 0 0 15%;"><p>'.$item_hasimg.'<a class="inventory-stack inventory-stack-name" href="'.$item->idUrl.'">'.$item->name.'</a></p></div>', $text);
             }
         }
     }
