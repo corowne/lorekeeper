@@ -136,6 +136,7 @@ function parse($text, &$pings = null) {
     $text = parseCharacters($text, $characters);
     $text = parseCharacterThumbs($text, $characters);
     $text = parseGalleryThumbs($text, $submissions);
+    $text = parseItems($text, $items);
     if ($pings) {
         $pings = ['users' => $users, 'characters' => $characters];
     }
@@ -298,6 +299,33 @@ function parseCharacterThumbs($text, &$characters) {
             if ($character) {
                 $characters[] = $character;
                 $text = preg_replace('/\[charthumb='.$match.'\]/', '<a href="'.$character->url.'"><img class="img-thumbnail" alt="Thumbnail of '.$character->fullName.'" data-toggle="tooltip" title="'.$character->fullName.'" src="'.$character->image->thumbnailUrl.'"></a>', $text);
+            }
+        }
+    }
+
+    return $text;
+}
+
+/**
+ * Parses a piece of user-entered text to match item mentions
+ * and replace with a thumbnail link.
+ *
+ * @param string $text
+ * @param mixed  $items
+ *
+ * @return string
+ */
+function parseItems($text, &$items) {
+    $matches = null;
+    $items = [];
+    $count = preg_match_all('/\[item=([^\[\]&<>?"\']+)\]/', $text, $matches);
+    if ($count) {
+        $matches = array_unique($matches[1]);
+        foreach ($matches as $match) {
+            $item = App\Models\Item\Item::where('id', $match)->first();
+            if ($item) {
+                $items[] = $item;
+                $text = preg_replace('/\[item='.$match.'\]/', '<a href="'.$item->idUrl.'"><img src="'.$item->imageUrl.'" class="mw-100" alt="'.$item->name.'"></a>', $text);
             }
         }
     }
