@@ -288,7 +288,7 @@ class Prompt extends Model {
     public function getUrlAttribute() {
         return url('prompts/prompts?name='.$this->name);
     }
-    
+
     /**
      * Gets the URL of the individual prompts's page, by ID.
      *
