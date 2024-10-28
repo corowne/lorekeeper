@@ -413,7 +413,6 @@ function parsePrompts($text, &$prompts) {
             $prompt = App\Models\Prompt\Prompt::where('id', $match)->first();
             if ($prompt) {
                 $prompts[] = $prompt;
-                $prompt_hasimg = $prompt->has_image ? '<a class="badge" style="border-radius:.5em;" href="'.$prompt->idUrl.'"><img class="my-1 modal-image" style="max-height:100%; height:150px; border-radius:.5em;" src="'.$prompt->imageUrl.'" alt="'.$prompt->name.'" /></a></ br>' : '';
                 $text = preg_replace('/\[prompt='.$match.'\]/', '<a href="'.$prompt->idUrl.'"><img src="'.$prompt->imageUrl.'" class="mw-100" alt="'.$prompt->name.'"></a>', $text);
             }
         }
