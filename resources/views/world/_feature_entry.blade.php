@@ -16,6 +16,9 @@
             <a href="{{ $feature->searchUrl }}" class="world-entry-search text-muted">
                 <i class="fas fa-search"></i>
             </a>
+            @if(Auth::check())
+                @include('widgets._item_block', ['item' => $feature, 'float' => true])
+            @endif
         </h3>
         @if ($feature->feature_category_id)
             <div>

@@ -6,6 +6,9 @@
     <div class="col-md-2 text-center">
         <!-- User Icon -->
         <img src="{{ $user->avatarUrl }}" class="img-fluid rounded-circle" style="max-height: 125px;" alt="{{ $user->name }}'s Avatar">
+        @if(Auth::check())
+                @include('widgets._item_block', ['item' => $user])
+            @endif
     </div>
 
     <div class="col">

@@ -25,6 +25,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use App\Models\ImageBlock;
 
 class User extends Authenticatable implements MustVerifyEmail {
     use Commenter, Notifiable, TwoFactorAuthenticatable;
@@ -194,6 +195,14 @@ class User extends Authenticatable implements MustVerifyEmail {
      */
     public function commentLikes() {
         return $this->hasMany(CommentLike::class);
+    }
+
+    /**
+     * Get all of the user's blocked images
+     */
+    public function blockedImages()
+    {
+        return $this->hasMany(ImageBlock::class)->where('user_id', $this->id);
     }
 
     /**********************************************************************************************
