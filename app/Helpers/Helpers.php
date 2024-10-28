@@ -139,6 +139,7 @@ function parse($text, &$pings = null) {
     $text = parseItems($text, $items);
     $text = parseTraitThumbs($text, $traits);
     $text = parseItemThumbs($text, $items);
+    $text = parsePromptThumbs($text, $prompts);
     if ($pings) {
         $pings = ['users' => $users, 'characters' => $characters];
     }
@@ -385,6 +386,34 @@ function parseItemThumbs($text, &$items) {
                 $items[] = $item;
                 $item_hasimg = $item->has_image ? '<a class="badge" style="border-radius:.5em;" href="'.$item->idUrl.'"><img class="my-1 modal-image" style="max-height:100%; height:150px; border-radius:.5em;" src="'.$item->imageUrl.'" alt="'.$item->name.'" /></a></ br>' : '';
                 $text = preg_replace('/\[itemthumb='.$match.'\]/', '<div class="text-center align-self-center inventory-item px-1" style="display: inline-flex; max-width:15%; flex: 0 0 15%;"><p>'.$item_hasimg.'<a class="inventory-stack inventory-stack-name" href="'.$item->idUrl.'">'.$item->name.'</a></p></div>', $text);
+            }
+        }
+    }
+
+    return $text;
+}
+
+/**
+ * Parses a piece of user-entered text to match prompt mentions
+ * and replace with the prompt thumbnail.
+ *
+ * @param string $text
+ * @param mixed  $prompts
+ *
+ * @return string
+ */
+function parsePromptThumbs($text, &$prompts) {
+    $matches = null;
+    $prompts = [];
+    $count = preg_match_all('/\[promptthumb=([^\[\]&<>?"\']+)\]/', $text, $matches);
+    if ($count) {
+        $matches = array_unique($matches[1]);
+        foreach ($matches as $match) {
+            $prompt = App\Models\Prompt\Prompt::where('id', $match)->first();
+            if ($prompt) {
+                $prompts[] = $prompt;
+                $prompt_hasimg = $prompt->has_image ? '<a class="badge" style="border-radius:.5em;" href="'.$prompt->idUrl.'"><img class="my-1 modal-image" style="max-height:100%; height:150px; border-radius:.5em;" src="'.$prompt->imageUrl.'" alt="'.$prompt->name.'" /></a></ br>' : '';
+                $text = preg_replace('/\[promptthumb='.$match.'\]/', '<div class="text-center align-self-center inventory-item px-1" style="display: inline-flex; max-width:15%; flex: 0 0 15%;"><p>'.$prompt_hasimg.'<a class="inventory-stack inventory-stack-name" href="prompts/'.$prompt->id.'">'.$prompt->name.'</a></p></div>', $text);
             }
         }
     }
