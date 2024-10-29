@@ -87,8 +87,6 @@ class AddSiteSettings extends Command {
 
         $this->addSiteSetting('can_transfer_items_directly', 1, 'Whether or not users can directly transfer items to other users without trading. 0: Users cannot directly transfer items. 1: Direct item transfers are allowed.');
 
-        $this->addSiteSetting('fontawesome_version', 0, 'What version of FontAwesome the site uses. 0: Version 5. 1: Version 6. 2: A mixed version where icons with v5 classes (i.e. fas) show the v5 icons and icons with v6 classes (i.e. fa-solid) show the v6 icons.');
-
         $this->line("\nSite settings up to date!");
     }
 

@@ -455,7 +455,7 @@ function prettyProfileName($url) {
  * @return string
  */
 function faVersion() {
-    $setting = Settings::get('fontawesome_version');
+    $setting = config('lorekeeper.settings.fa_version');
     $directory = 'css';
 
     switch ($setting) {
