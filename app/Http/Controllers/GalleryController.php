@@ -99,7 +99,7 @@ class GalleryController extends Controller {
         return view('galleries.gallery', [
             'gallery'          => $gallery,
             'submissions'      => $query->paginate(20)->appends($request->query()),
-            'prompts'          => [0 => 'Any Prompt'] + Prompt::whereIn('id', GallerySubmission::where('gallery_id', $gallery->id)->visible(Auth::check() ? Auth::user() : null)->accepted()->whereNotNull('prompt_id')->pluck('prompt_id')->toArray())->orderBy('name')->pluck('name', 'id')->toArray(),
+            'prompts'          => [0 => 'Any Prompt'] + Prompt::whereIn('id', GallerySubmission::where('gallery_id', $gallery->id)->visible(Auth::check() ? Auth::user() : null)->accepted()->whereNotNull('prompt_id')->select('prompt_id')->distinct()->pluck('prompt_id')->toArray())->orderBy('name')->pluck('name', 'id')->toArray(),
             'childSubmissions' => GallerySubmission::whereIn('gallery_id', $gallery->children->pluck('id')->toArray())->where('is_visible', 1)->where('status', 'Accepted'),
             'galleryPage'      => true,
             'sideGallery'      => $gallery,
