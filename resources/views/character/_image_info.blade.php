@@ -36,25 +36,25 @@
 
             {{-- Basic info --}}
             <div class="tab-pane fade show active" id="info-{{ $image->id }}">
-                <div class="row">
-                    <div class="col-lg-4 col-md-6 col-4">
+                <div class="row no-gutters">
+                    <div class="col-lg-4 col-5">
                         <h5>Species</h5>
                     </div>
-                    <div class="col-lg-8 col-md-6 col-8">{!! $image->species_id ? $image->species->displayName : 'None' !!}</div>
+                    <div class="col-lg-8 col-7 pl-1">{!! $image->species_id ? $image->species->displayName : 'None' !!}</div>
                 </div>
                 @if ($image->subtype_id)
-                    <div class="row">
-                        <div class="col-lg-4 col-md-6 col-4">
+                    <div class="row no-gutters">
+                        <div class="col-lg-4 col-5">
                             <h5>Subtype</h5>
                         </div>
-                        <div class="col-lg-8 col-md-6 col-8">{!! $image->subtype_id ? $image->subtype->displayName : 'None' !!}</div>
+                        <div class="col-lg-8 col-7 pl-1">{!! $image->subtype_id ? $image->subtype->displayName : 'None' !!}</div>
                     </div>
                 @endif
-                <div class="row">
-                    <div class="col-lg-4 col-md-6 col-4">
+                <div class="row no-gutters">
+                    <div class="col-lg-4 col-5">
                         <h5>Rarity</h5>
                     </div>
-                    <div class="col-lg-8 col-md-6 col-8">{!! $image->rarity_id ? $image->rarity->displayName : 'None' !!}</div>
+                    <div class="col-lg-8 col-7 pl-1">{!! $image->rarity_id ? $image->rarity->displayName : 'None' !!}</div>
                 </div>
 
                 <div class="mb-3">
@@ -142,21 +142,21 @@
             {{-- Image credits --}}
             <div class="tab-pane fade" id="credits-{{ $image->id }}">
 
-                <div class="row mb-2">
-                    <div class="col-lg-4 col-md-6 col-4">
+                <div class="row no-gutters mb-2">
+                    <div class="col-lg-4 col-4">
                         <h5>Design</h5>
                     </div>
-                    <div class="col-lg-8 col-md-6 col-8">
+                    <div class="col-lg-8 col-8">
                         @foreach ($image->designers as $designer)
                             <div>{!! $designer->displayLink() !!}</div>
                         @endforeach
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-lg-4 col-md-6 col-4">
+                <div class="row no-gutters">
+                    <div class="col-lg-4 col-4">
                         <h5>Art</h5>
                     </div>
-                    <div class="col-lg-8 col-md-6 col-8">
+                    <div class="col-lg-8 col-8">
                         @foreach ($image->artists as $artist)
                             <div>{!! $artist->displayLink() !!}</div>
                         @endforeach
