@@ -44,17 +44,145 @@ return [
     |--------------------------------------------------------------------------
     |
     | This is the original method of mentioning a user. This is used to link
-    | directly to a user's profile page, and give the name the appropriate
+    | directly to a user's profile page, giving the name the appropriate
     | rank icon and coloration.
     |
     | Usage:
     | @username
     | - Replace username with the user's username.
     |
-    | This option has been enabled by default for backwards compatability.
+    | This option has been enabled by default for backwards compatibility.
     |
     */
-    'user_mention'     => [
+    'user_mention'              => [
+        'enable'    => 1,
+        'show_text' => 1,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | User and Avatar Mentions
+    |--------------------------------------------------------------------------
+    |
+    | This is a newer method of mentioning a user. This is used to link
+    | directly to a user's profile page, giving the name the appropriate
+    | rank icon and coloration, and adds the user's avatar in front.
+    |
+    | Usage:
+    | %username
+    | - Replace username with the user's username.
+    |
+    | This option has been enabled by default for backwards compatibility.
+    |
+    */
+    'user_and_avatar_mention'   => [
+        'enable'    => 1,
+        'show_text' => 1,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | User Permalinks
+    |--------------------------------------------------------------------------
+    |
+    | The previous methods are affected negatively by username changes.
+    | This method has the same end result, but instead use a bbcode-like tag
+    | with the user's id to create permanent links.
+    | This is used to link directly to a user's profile page,
+    | giving the name the appropriate rank icon and coloration.
+    |
+    | Usage:
+    | [user=id]
+    | - Replace id with the user's id.
+    |
+    | This option has been enabled by default for backwards compatibility.
+    |
+    */
+    'user_permalink'            => [
+        'enable'    => 1,
+        'show_text' => 1,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | User Avatar Permalinks
+    |--------------------------------------------------------------------------
+    |
+    | Similar to the User Permalinks, this method uses a bbcode-like tag
+    | with the user's id to create permanent links.
+    | This method only displays the user's avatar.
+    |
+    | Usage:
+    | [userav=id]
+    | - Replace id with the user's id.
+    |
+    | This option has been enabled by default for backwards compatibility.
+    |
+    */
+    'user_avatar_permalink'     => [
+        'enable'    => 1,
+        'show_text' => 1,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Character Permalinks
+    |--------------------------------------------------------------------------
+    |
+    | This mention is to link to specific characters using their slug.
+    | This is used to link directly to a character's masterlist entry,
+    | displaying the slug and name of the character.
+    |
+    | Usage:
+    | [character=slug]
+    | - Replace slug with the character's slug.
+    |
+    | This option has been enabled by default for backwards compatibility.
+    |
+    */
+    'character_permalink'       => [
+        'enable'    => 1,
+        'show_text' => 1,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Character Thumbnail Permalinks
+    |--------------------------------------------------------------------------
+    |
+    | Similar to the Character Permalinks, this is used to link to the
+    | character's masterlist entry, instead of the slug and name, however,
+    | it displays the character's thumbnail image.
+    |
+    | Usage:
+    | [charthumb=slug]
+    | - Replace slug with the character's slug.
+    |
+    | This option has been enabled by default for backwards compatibility.
+    |
+    */
+    'character_thumb_permalink' => [
+        'enable'    => 1,
+        'show_text' => 1,
+    ],
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Gallery Thumbnail Permalinks
+    |--------------------------------------------------------------------------
+    |
+    | A method to display the thumbnail for gallery submissions.
+    | This displays either a thumbnail for the submission's image or, if it
+    | has no image, displays a short version of the written text instead.
+    |
+    | Usage:
+    | [thumb=id]
+    | - Replace id with the gallery submission's id.
+    |
+    | This option has been enabled by default for backwards compatibility.
+    |
+    */
+    'gallery_thumb_permalink'   => [
         'enable'    => 1,
         'show_text' => 1,
     ],
