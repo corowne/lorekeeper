@@ -290,7 +290,7 @@ class Prompt extends Model {
     }
 
     /**
-     * Gets the URL of the individual prompts's page, by ID.
+     * Gets the URL of the individual prompt's page, by ID.
      *
      * @return string
      */
