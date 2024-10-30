@@ -54,10 +54,9 @@ return [
     | This option has been enabled by default for backwards compatability.
     |
     */
-        'user_mention'     => [
-            'enable'    => 1,
-            'show_text' => 1,
+    'user_mention'     => [
+        'enable'    => 1,
+        'show_text' => 1,
     ],
 
-  
 ];
