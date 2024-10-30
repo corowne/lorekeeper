@@ -141,6 +141,15 @@ function parse($text, &$pings = null) {
     $text = parseItemThumbs($text, $items);
     $text = parsePrompts($text, $prompts);
     $text = parsePromptThumbs($text, $prompts);
+    // $text = parseRarityThumbs($text, $rarities);
+    // $text = parseSpeciesThumbs($text, $specieses);
+    // $text = parseSubtypeThumbs($text, $subtypes);
+    // $text = parseShopThumbs($text, $shops);
+    // $text = parseCurrencyThumbs($text, $currencies);
+    // $text = parseCharacterCategoryThumbs($text, $charactercategories);
+    // $text = parsePromptCategoryThumbs($text, $promptcategories);
+    // $text = parseTraitCategoryThumbs($text, $traitcategories);
+    // $text = parseItemCategoryThumbs($text, $itemcategories);
     if ($pings) {
         $pings = ['users' => $users, 'characters' => $characters];
     }
