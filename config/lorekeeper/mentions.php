@@ -28,6 +28,8 @@ return [
     |
     | Links to the mentioned user, includes icon and coloration of user's rank.
     |
+    | If the mentioned user changes usernames, mentions using this method break.
+    |
     | Usage:
     | @username
     | - Replace username with the user's username.
@@ -48,6 +50,8 @@ return [
     | Links to the mentioned user, includes user's avatar as well as the icon
     | and coloration of user's rank.
     |
+    | If the mentioned user changes usernames, mentions using this method break.
+    |
     | Usage:
     | %username
     | - Replace username with the user's username.
@@ -67,6 +71,9 @@ return [
     |
     | Links to the mentioned user, includes icon and coloration of user's rank.
     |
+    | Mentions using this method persist even if the mentioned user changes
+    | usernames, but will not update to the new username until edited again.
+    |
     | Usage:
     | [user=id]
     | - Replace id with the user's id.
@@ -85,6 +92,9 @@ return [
     |--------------------------------------------------------------------------
     |
     | Displays the mentioned user's avatar.
+    |
+    | Mentions using this method persist even if the mentioned user changes
+    | usernames, but will not update to the new username until edited again.
     |
     | Usage:
     | [userav=id]
