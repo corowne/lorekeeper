@@ -26,7 +26,7 @@
         </p>
     @endif
     <p>{!! $gallery->description !!}</p>
-    @if (!$gallery->submissions->count() && $gallery->children->count() && $childSubmissions->count())
+    @if (!$gallery->submissions()->count() && $gallery->children->count() && $childSubmissions->count())
         <p>This gallery has no submissions; instead, displayed is a selection of the most recent submissions from its sub-galleries. Please navigate to one of the sub-galleries to view more.</p>
     @endif
 
@@ -59,7 +59,7 @@
         {!! Form::close() !!}
     </div>
 
-    @if ($gallery->submissions->count())
+    @if ($gallery->submissions()->count())
         {!! $submissions->render() !!}
 
         <div class="d-flex align-content-around flex-wrap mb-2">

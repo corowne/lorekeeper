@@ -28,11 +28,11 @@
 
         <!-- User Information -->
         <div class="row no-gutters">
-            <div class="row col-sm-5">
-                <div class="col-lg-2 col-md-3 col-4">
+            <div class="row no-gutters col-sm-5">
+                <div class="col-lg-3 col-md-3 col-4">
                     <h5>Alias</h5>
                 </div>
-                <div class="col-lg-10 col-md-9 col-8">
+                <div class="col-lg-9 col-md-9 col-8">
                     {!! $user->displayAlias !!}
                     @if (count($aliases) > 1 && config('lorekeeper.extensions.aliases_on_userpage'))
                         <a class="small collapse-toggle collapsed" href="#otherUserAliases" data-toggle="collapse">&nbsp;</a>
@@ -46,24 +46,24 @@
                     @endif
                 </div>
             </div>
-            <div class="row col-sm-7">
-                <div class="col-md-3 col-4">
+            <div class="row no-gutters col-sm-7">
+                <div class="col-md-4 col-4">
                     <h5>Joined</h5>
                 </div>
-                <div class="col-md-9 col-8">{!! format_date($user->created_at, false) !!} ({{ $user->created_at->diffForHumans() }})</div>
+                <div class="col-md-8 col-8">{!! format_date($user->created_at, false) !!} ({{ $user->created_at->diffForHumans() }})</div>
             </div>
-            <div class="row col-sm-5">
-                <div class="col-lg-2 col-md-3 col-4">
+            <div class="row no-gutters col-sm-5">
+                <div class="col-lg-3 col-md-3 col-4">
                     <h5>Rank</h5>
                 </div>
-                <div class="col-lg-10 col-md-9 col-8">{!! $user->rank->displayName !!} {!! add_help($user->rank->parsed_description) !!}</div>
+                <div class="col-lg-9 col-md-9 col-8">{!! $user->rank->displayName !!} {!! add_help($user->rank->parsed_description) !!}</div>
             </div>
             @if ($user->birthdayDisplay && isset($user->birthday))
-                <div class="row col-sm-7">
-                    <div class="col-md-3 col-4">
+                <div class="row no-gutters col-sm-7">
+                    <div class="col-md-4 col-4">
                         <h5>Birthday</h5>
                     </div>
-                    <div class="col-md-9 col-8">{!! $user->birthdayDisplay !!}</div>
+                    <div class="col-md-8 col-8">{!! $user->birthdayDisplay !!}</div>
                 </div>
             @endif
         </div>
