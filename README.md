@@ -75,3 +75,7 @@ You will need to send yourself the verification email and then link your social 
 ## Contact
 
 If you have any questions, please feel free to ask in the Discord server: https://discord.gg/U4JZfsu
+
+## Credits
+
+This minor extension uses the [furf/jquery-ui-touch-punch](https://github.com/furf/jquery-ui-touch-punch) library to enable touch on jQuery UI elements.
