@@ -10,6 +10,7 @@
     <h1>{{ $sales->id ? 'Edit' : 'Create' }} Sales Post
         @if ($sales->id)
             <a href="#" class="btn btn-danger float-right delete-sales-button">Delete Post</a>
+            <a href="{{ $sales->url }}" class="btn btn-info float-right mr-md-2">View Post</a>
         @endif
     </h1>
 

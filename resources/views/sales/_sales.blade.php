@@ -1,7 +1,12 @@
 <div class="card mb-3">
     <div class="card-header">
         <x-admin-edit title="Sale" :object="$sales" />
-        <h2 class="card-title mb-0">{!! $sales->displayName !!}</h2>
+        <h2 class="card-title mb-0">
+            @if (!$sales->is_visible)
+                <i class="fas fa-eye-slash mr-1"></i>
+            @endif
+            {!! $sales->displayName !!}
+        </h2>
         <small>
             Posted {!! $sales->post_at ? pretty_date($sales->post_at) : pretty_date($sales->created_at) !!} :: Last edited {!! pretty_date($sales->updated_at) !!} by {!! $sales->user->displayName !!}
         </small>
