@@ -49,6 +49,7 @@
     <script defer src="{{ asset('js/bootstrap-colorpicker.min.js') }}"></script>
     <script defer src="{{ asset('js/jquery-ui-timepicker-addon.js') }}"></script>
     <script defer src="{{ asset('js/croppie.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.ui.touch-punch.min.js') }}"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
