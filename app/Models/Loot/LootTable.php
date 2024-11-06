@@ -3,8 +3,8 @@
 namespace App\Models\Loot;
 
 use App\Models\Item\Item;
-use App\Models\Rarity;
 use App\Models\Model;
+use App\Models\Rarity;
 
 class LootTable extends Model {
     /**
@@ -174,7 +174,7 @@ class LootTable extends Model {
             }
 
             $loot = Item::where('item_category_id', $id)->released()->whereNotNull('data')->get()->filter(function ($item) use ($criteria, $rarity) {
-                $itemRarity = Rarity::find(isset($item->data['rarity_id']) ? $item->data['rarity_id'] : null);
+                $itemRarity = Rarity::find($item->data['rarity_id'] ?? null);
                 if (!$itemRarity) {
                     return false;
                 }
@@ -222,7 +222,7 @@ class LootTable extends Model {
         }
 
         $loot = Item::released()->whereNotNull('data')->get()->filter(function ($item) use ($criteria, $rarity) {
-            $itemRarity = Rarity::find(isset($item->data['rarity_id']) ? $item->data['rarity_id'] : null);
+            $itemRarity = Rarity::find($item->data['rarity_id'] ?? null);
             if (!$itemRarity) {
                 return false;
             }

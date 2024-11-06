@@ -4,9 +4,9 @@ namespace App\Models\Item;
 
 use App\Models\Model;
 use App\Models\Prompt\Prompt;
+use App\Models\Rarity;
 use App\Models\Shop\Shop;
 use App\Models\User\User;
-use App\Models\Rarity;
 
 class Item extends Model {
     /**
@@ -33,15 +33,15 @@ class Item extends Model {
      * @var array
      */
     public static $createRules = [
-        'item_category_id'  => 'nullable',
-        'name'              => 'required|unique:items|between:3,100',
-        'description'       => 'nullable',
-        'image'             => 'mimes:png',
+        'item_category_id'   => 'nullable',
+        'name'               => 'required|unique:items|between:3,100',
+        'description'        => 'nullable',
+        'image'              => 'mimes:png',
         'rarity_id'          => 'nullable',
-        'reference_url'     => 'nullable|between:3,200',
-        'uses'              => 'nullable|between:3,250',
-        'release'           => 'nullable|between:3,100',
-        'currency_quantity' => 'nullable|integer|min:1',
+        'reference_url'      => 'nullable|between:3,200',
+        'uses'               => 'nullable|between:3,250',
+        'release'            => 'nullable|between:3,100',
+        'currency_quantity'  => 'nullable|integer|min:1',
     ];
 
     /**
