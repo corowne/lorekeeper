@@ -56,8 +56,9 @@
 
             function isTouch() {
                 try {
-                    document.createEvent("TouchEvent"); return true;
-                } catch(e) {
+                    document.createEvent("TouchEvent");
+                    return true;
+                } catch (e) {
                     return false;
                 }
             }
