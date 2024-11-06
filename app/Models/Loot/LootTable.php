@@ -168,9 +168,9 @@ class LootTable extends Model {
 
         if (isset($criteria) && $criteria && isset($rarity) && $rarity) {
             if (config('lorekeeper.extensions.item_entry_expansion.loot_tables.alternate_filtering')) {
-                $loot = Item::where('item_category_id', $id)->released()->whereNotNull('data')->where('data->rarity', $criteria, $rarity)->get();
+                $loot = Item::where('item_category_id', $id)->released()->whereNotNull('data')->where('data->rarity_id', $criteria, $rarity)->get();
             } else {
-                $loot = Item::where('item_category_id', $id)->released()->whereNotNull('data')->whereRaw('JSON_EXTRACT(`data`, \'$.rarity\')'.$criteria.$rarity)->get();
+                $loot = Item::where('item_category_id', $id)->released()->whereNotNull('data')->whereRaw('JSON_EXTRACT(`data`, \'$.rarity_id\')'.$criteria.$rarity)->get();
             }
         } else {
             $loot = Item::where('item_category_id', $id)->released()->get();
@@ -207,9 +207,9 @@ class LootTable extends Model {
         $rewards = createAssetsArray();
 
         if (config('lorekeeper.extensions.item_entry_expansion.loot_tables.alternate_filtering')) {
-            $loot = Item::released()->whereNotNull('data')->where('data->rarity', $criteria, $rarity)->get();
+            $loot = Item::released()->whereNotNull('data')->where('data->rarity_id', $criteria, $rarity)->get();
         } else {
-            $loot = Item::released()->whereNotNull('data')->whereRaw('JSON_EXTRACT(`data`, \'$.rarity\')'.$criteria.$rarity)->get();
+            $loot = Item::released()->whereNotNull('data')->whereRaw('JSON_EXTRACT(`data`, \'$.rarity_id\')'.$criteria.$rarity)->get();
         }
         if (!$loot->count()) {
             throw new \Exception('There are no items to select from!');

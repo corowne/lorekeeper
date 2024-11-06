@@ -82,7 +82,7 @@ class LootService extends Service {
                 if (!$type) {
                     throw new \Exception('Loot type is required.');
                 }
-                if ($type != 'ItemRarity' && !$data['rewardable_id'][$key]) {
+                if (($type != 'ItemRarity' && $type != 'ItemCategoryRarity') && !$data['rewardable_id'][$key]) {
                     throw new \Exception('Reward is required.');
                 }
                 if (!$data['quantity'][$key] || $data['quantity'][$key] < 1) {

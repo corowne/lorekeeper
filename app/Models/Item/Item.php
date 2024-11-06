@@ -6,6 +6,7 @@ use App\Models\Model;
 use App\Models\Prompt\Prompt;
 use App\Models\Shop\Shop;
 use App\Models\User\User;
+use App\Models\Rarity;
 
 class Item extends Model {
     /**
@@ -36,7 +37,7 @@ class Item extends Model {
         'name'              => 'required|unique:items|between:3,100',
         'description'       => 'nullable',
         'image'             => 'mimes:png',
-        'rarity'            => 'nullable',
+        'rarity_id'          => 'nullable',
         'reference_url'     => 'nullable|between:3,200',
         'uses'              => 'nullable|between:3,250',
         'release'           => 'nullable|between:3,100',
@@ -84,6 +85,13 @@ class Item extends Model {
      */
     public function artist() {
         return $this->belongsTo(User::class, 'artist_id');
+    }
+
+    /**
+     * Gets the item's rarity.
+     */
+    public function rarity() {
+        return $this->belongsTo(Rarity::class, $this->attributes['rarity_id'] ?? null, 'id');
     }
 
     /**********************************************************************************************
@@ -295,12 +303,12 @@ class Item extends Model {
      *
      * @return string
      */
-    public function getRarityAttribute() {
-        if (!isset($this->data) || !isset($this->data['rarity'])) {
+    public function getRarityIdAttribute() {
+        if (!isset($this->data) || !isset($this->data['rarity_id'])) {
             return null;
         }
 
-        return $this->data['rarity'];
+        return $this->data['rarity_id'];
     }
 
     /**
