@@ -86,6 +86,7 @@ class News extends Model implements Feedable {
      * Scope a query to only include visible posts.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed|null                            $user
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
@@ -93,6 +94,7 @@ class News extends Model implements Feedable {
         if ($user && $user->hasPower('manage_news')) {
             return $query;
         }
+
         return $query->where('is_visible', 1);
     }
 

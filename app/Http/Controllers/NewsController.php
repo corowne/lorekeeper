@@ -50,7 +50,6 @@ class NewsController extends Controller {
             abort(404);
         }
 
-
         return view('news.news', ['news' => $news]);
     }
 }
