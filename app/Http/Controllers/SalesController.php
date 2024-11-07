@@ -83,16 +83,9 @@ class SalesController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getSales($id, $slug = null) {
-        $sales = Sales::where('id', $id)->first();
+        $sales = Sales::where('id', $id)->visible(Auth::user() ?? null)->first();
         if (!$sales) {
             abort(404);
-        }
-
-        if (!$sales->is_visible) {
-            $user = Auth::user() ?? null;
-            if ($user == null || !$user->hasPower('manage_sales')) {
-                abort(404);
-            }
         }
 
         return view('sales.sales', ['sales' => $sales]);

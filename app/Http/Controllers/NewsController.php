@@ -45,17 +45,11 @@ class NewsController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getNews($id, $slug = null) {
-        $news = News::where('id', $id)->first();
+        $news = News::where('id', $id)->visible(Auth::user() ?? null)->first();
         if (!$news) {
             abort(404);
         }
 
-        if (!$news->is_visible) {
-            $user = Auth::user() ?? null;
-            if ($user == null || !$user->hasPower('manage_news')) {
-                abort(404);
-            }
-        }
 
         return view('news.news', ['news' => $news]);
     }
