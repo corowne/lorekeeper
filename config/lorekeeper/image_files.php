@@ -60,6 +60,6 @@ return [
     'content_warning' => [
         'name'        => 'Content Warning Thumbnail',
         'description' => 'Thumbnail used for characters and gallery submissions with a set content warning. PNG format, size of masterlist thumbnails.',
-        'filename'    => 'content_warning.png',
+        'filename'    => 'content-warning.png',
     ],
 ];

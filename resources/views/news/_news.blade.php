@@ -1,7 +1,12 @@
 <div class="card mb-3">
     <div class="card-header">
         <x-admin-edit title="News Post" :object="$news" />
-        <h2 class="card-title mb-0">{!! $news->displayName !!}</h2>
+        <h2 class="card-title mb-0">
+            @if (!$news->is_visible)
+                <i class="fas fa-eye-slash mr-1"></i>
+            @endif
+            {!! $news->displayName !!}
+        </h2>
         <small>
             Posted {!! $news->post_at ? pretty_date($news->post_at) : pretty_date($news->created_at) !!} :: Last edited {!! pretty_date($news->updated_at) !!} by {!! $news->user->displayName !!}
         </small>
