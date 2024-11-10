@@ -7,6 +7,7 @@ use App\Models\Currency\Currency;
 use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
 use App\Models\Prompt\Prompt;
+use App\Models\Rarity;
 use App\Models\Shop\Shop;
 use App\Models\Shop\ShopStock;
 use App\Models\User\User;
@@ -220,6 +221,7 @@ class ItemController extends Controller {
     public function getCreateItem() {
         return view('admin.items.create_edit_item', [
             'item'           => new Item,
+            'rarities'       => Rarity::orderBy('sort', 'DESC')->pluck('name', 'id'),
             'categories'     => ['none' => 'No category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'prompts'        => Prompt::where('is_active', 1)->orderBy('id')->pluck('name', 'id'),
             'userCurrencies' => Currency::where('is_user_owned', 1)->orderBy('sort_user', 'DESC')->pluck('name', 'id'),
@@ -242,6 +244,7 @@ class ItemController extends Controller {
 
         return view('admin.items.create_edit_item', [
             'item'           => $item,
+            'rarities'       => Rarity::orderBy('sort', 'DESC')->pluck('name', 'id'),
             'categories'     => ['none' => 'No category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'shops'          => Shop::whereIn('id', ShopStock::where('item_id', $item->id)->pluck('shop_id')->unique()->toArray())->orderBy('sort', 'DESC')->get(),
             'prompts'        => Prompt::where('is_active', 1)->orderBy('id')->pluck('name', 'id'),
@@ -261,7 +264,7 @@ class ItemController extends Controller {
     public function postCreateEditItem(Request $request, ItemService $service, $id = null) {
         $id ? $request->validate(Item::$updateRules) : $request->validate(Item::$createRules);
         $data = $request->only([
-            'name', 'allow_transfer', 'item_category_id', 'description', 'image', 'remove_image', 'rarity',
+            'name', 'allow_transfer', 'item_category_id', 'description', 'image', 'remove_image', 'rarity_id',
             'reference_url', 'artist_id', 'artist_url', 'uses', 'shops', 'prompts', 'release', 'currency_id', 'currency_quantity',
             'is_released', 'is_deletable',
         ]);
