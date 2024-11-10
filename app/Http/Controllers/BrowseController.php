@@ -412,8 +412,10 @@ class BrowseController extends Controller {
                             return true;
                         }
                         foreach ($excludedTags as $tag) {
-                            if (in_array($tag, $image->content_warnings)) {
-                                return true;
+                            foreach ($image->content_warnings as $warning) {
+                                if (strtolower($warning) == strtolower($tag)) {
+                                    return true;
+                                }
                             }
                         }
 
@@ -431,8 +433,10 @@ class BrowseController extends Controller {
                             return true;
                         }
                         foreach ($includedTags as $tag) {
-                            if (in_array($tag, $image->content_warnings)) {
-                                return true;
+                            foreach ($image->content_warnings as $warning) {
+                                if (strtolower($warning) == strtolower($tag)) {
+                                    return true;
+                                }
                             }
                         }
 
