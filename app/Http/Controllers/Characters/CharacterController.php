@@ -13,6 +13,7 @@ use App\Models\Currency\Currency;
 use App\Models\Gallery\GallerySubmission;
 use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
+use App\Models\Rarity;
 use App\Models\User\User;
 use App\Models\User\UserCurrency;
 use App\Models\User\UserItem;
@@ -233,7 +234,7 @@ class CharacterController extends Controller {
         $itemOptions = Item::whereIn('item_category_id', $categories->pluck('id'));
 
         $query = Item::query();
-        $data = $request->only(['item_category_id', 'name', 'artist']);
+        $data = $request->only(['item_category_id', 'name', 'artist', 'rarity_id']);
         if (isset($data['item_category_id']) && $data['item_category_id'] != 'none') {
             $query->where('item_category_id', $data['item_category_id']);
         }
@@ -242,6 +243,9 @@ class CharacterController extends Controller {
         }
         if (isset($data['artist']) && $data['artist'] != 'none') {
             $query->where('artist_id', $data['artist']);
+        }
+        if (isset($data['rarity_id']) && $data['rarity_id'] != 'none') {
+            $query->where('data->rarity_id', $data['rarity_id']);
         }
 
         $items = count($categories) ?
@@ -268,6 +272,7 @@ class CharacterController extends Controller {
             'items'                 => $items,
             'logs'                  => $this->character->getItemLogs(),
             'artists'               => User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray(),
+            'rarities'              => ['none' => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
         ] + (Auth::check() && (Auth::user()->hasPower('edit_inventories') || Auth::user()->id == $this->character->user_id) ? [
             'itemOptions'   => $itemOptions->pluck('name', 'id'),
             'userInventory' => UserItem::with('item')->whereIn('item_id', $itemOptions->pluck('id'))->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get()->filter(function ($userItem) {
