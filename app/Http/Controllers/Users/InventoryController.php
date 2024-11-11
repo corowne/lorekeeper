@@ -9,6 +9,7 @@ use App\Models\Character\CharacterDesignUpdate;
 use App\Models\Character\CharacterItem;
 use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
+use App\Models\Rarity;
 use App\Models\Submission\Submission;
 use App\Models\Trade;
 use App\Models\User\User;
@@ -35,7 +36,7 @@ class InventoryController extends Controller {
     public function getIndex(Request $request) {
         $categories = ItemCategory::visible(Auth::user() ?? null)->orderBy('sort', 'DESC')->get();
         $query = Item::query();
-        $data = $request->only(['item_category_id', 'name', 'artist']);
+        $data = $request->only(['item_category_id', 'name', 'artist', 'rarity_id']);
         if (isset($data['item_category_id']) && $data['item_category_id'] != 'none') {
             $query->where('item_category_id', $data['item_category_id']);
         }
@@ -44,6 +45,9 @@ class InventoryController extends Controller {
         }
         if (isset($data['artist']) && $data['artist'] != 'none') {
             $query->where('artist_id', $data['artist']);
+        }
+        if (isset($data['rarity_id']) && $data['rarity_id'] != 'none') {
+            $query->where('data->rarity_id', $data['rarity_id']);
         }
 
         $items = count($categories) ?
@@ -69,6 +73,7 @@ class InventoryController extends Controller {
             'userOptions' => User::visible()->where('id', '!=', Auth::user()->id)->orderBy('name')->pluck('name', 'id')->toArray(),
             'user'        => Auth::user(),
             'artists'     => ['none' => 'Any Artist'] + User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray(),
+            'rarities'    => ['none' => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
 

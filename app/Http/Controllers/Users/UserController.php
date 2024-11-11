@@ -12,6 +12,7 @@ use App\Models\Gallery\GalleryCharacter;
 use App\Models\Gallery\GallerySubmission;
 use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
+use App\Models\Rarity;
 use App\Models\Prompt\Prompt;
 use App\Models\User\User;
 use App\Models\User\UserCurrency;
@@ -201,7 +202,7 @@ class UserController extends Controller {
     public function getUserInventory(Request $request, $name) {
         $categories = ItemCategory::visible(Auth::user() ?? null)->orderBy('sort', 'DESC')->get();
         $query = Item::query();
-        $data = $request->only(['item_category_id', 'name', 'artist']);
+        $data = $request->only(['item_category_id', 'name', 'artist', 'rarity_id']);
         if (isset($data['item_category_id']) && $data['item_category_id'] != 'none') {
             $query->where('item_category_id', $data['item_category_id']);
         }
@@ -210,6 +211,9 @@ class UserController extends Controller {
         }
         if (isset($data['artist']) && $data['artist'] != 'none') {
             $query->where('artist_id', $data['artist']);
+        }
+        if (isset($data['rarity_id']) && $data['rarity_id'] != 'none') {
+            $query->where('data->rarity_id', $data['rarity_id']);
         }
 
         $items = count($categories) ?
@@ -237,6 +241,7 @@ class UserController extends Controller {
             'user'        => $this->user,
             'logs'        => $this->user->getItemLogs(),
             'artists'     => User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray(),
+            'rarities'    => ['none' => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
 
