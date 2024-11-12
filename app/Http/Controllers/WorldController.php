@@ -368,8 +368,8 @@ class WorldController extends Controller {
         $query->where(function ($query) use ($categoryVisibleCheck) {
             $query->whereIn('item_category_id', $categoryVisibleCheck)->orWhereNull('item_category_id');
         });
-        $data = $request->only(['item_category_id', 'name', 'sort', 'artist']);
-        if (isset($data['item_category_id']) && $data['item_category_id'] != 'none') {
+        $data = $request->only(['item_category_id', 'name', 'sort', 'artist', 'rarity_id']);
+        if (isset($data['item_category_id'])) {
             if ($data['item_category_id'] == 'withoutOption') {
                 $query->whereNull('item_category_id');
             } else {
@@ -379,8 +379,15 @@ class WorldController extends Controller {
         if (isset($data['name'])) {
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
         }
-        if (isset($data['artist']) && $data['artist'] != 'none') {
+        if (isset($data['artist'])) {
             $query->where('artist_id', $data['artist']);
+        }
+        if (isset($data['rarity_id'])) {
+            if ($data['rarity_id'] == 'withoutOption') {
+                $query->whereNull('data->rarity_id');
+            } else {
+                $query->where('data->rarity_id', $data['rarity_id']);
+            }
         }
 
         if (isset($data['sort'])) {
@@ -406,10 +413,11 @@ class WorldController extends Controller {
         }
 
         return view('world.items', [
-            'items'      => $query->orderBy('id')->paginate(20)->appends($request->query()),
-            'categories' => ['none' => 'Any Category'] + ['withoutOption' => 'Without Category'] + ItemCategory::visible(Auth::user() ?? null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'shops'      => Shop::orderBy('sort', 'DESC')->get(),
-            'artists'    => User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray(),
+            'items'       => $query->orderBy('id')->paginate(20)->appends($request->query()),
+            'categories'  => ['withoutOption' => 'Without Category'] + ItemCategory::visible(Auth::user() ?? null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'shops'       => Shop::orderBy('sort', 'DESC')->get(),
+            'artists'     => User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray(),
+            'rarities'    => ['withoutOption' => 'Without Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
 
