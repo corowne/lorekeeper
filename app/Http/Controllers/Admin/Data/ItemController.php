@@ -167,23 +167,27 @@ class ItemController extends Controller {
     public function getItemIndex(Request $request) {
         $query = Item::query();
         $data = $request->only(['item_category_id', 'name', 'sort', 'artist', 'visibility', 'rarity_id']);
-        if (isset($data['item_category_id']) && $data['item_category_id'] != 'none') {
-            $query->where('item_category_id', $data['item_category_id']);
+        if (isset($data['item_category_id'])) {
+            if ($data['item_category_id'] == 'withoutOption') {
+                $query->whereNull('item_category_id');
+            } else {
+                $query->where('item_category_id', $data['item_category_id']);
+            }
         }
         if (isset($data['name'])) {
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
         }
-        if (isset($data['artist']) && $data['artist'] != 'none') {
+        if (isset($data['artist'])) {
             $query->where('artist_id', $data['artist']);
         }
-        if (isset($data['rarity_id']) && $data['rarity_id'] != 'none') {
-            if ($data['rarity_id'] == 'no_rarity') {
+        if (isset($data['rarity_id'])) {
+            if ($data['rarity_id'] == 'withoutOption') {
                 $query->whereNull('data->rarity_id');
             } else {
                 $query->where('data->rarity_id', $data['rarity_id']);
             }
         }
-        if (isset($data['visibility']) && $data['visibility'] != 'none') {
+        if (isset($data['visibility'])) {
             if ($data['visibility'] == 'visibleOnly') {
                 $query->where('is_released', '=', 1);
             } else {
@@ -215,9 +219,9 @@ class ItemController extends Controller {
 
         return view('admin.items.items', [
             'items'      => $query->paginate(20)->appends($request->query()),
-            'categories' => ['none' => 'Any Category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'categories' => ['withoutOption' => 'Without Category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'artists'    => User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray(),
-            'rarities'   => ['none' => 'Any Rarity'] + ['no_rarity' => 'No Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'rarities'   => ['withoutOption' => 'Without Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
 

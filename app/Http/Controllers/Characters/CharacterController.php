@@ -235,17 +235,17 @@ class CharacterController extends Controller {
 
         $query = Item::query();
         $data = $request->only(['item_category_id', 'name', 'artist', 'rarity_id']);
-        if (isset($data['item_category_id']) && $data['item_category_id'] != 'none') {
+        if (isset($data['item_category_id'])) {
             $query->where('item_category_id', $data['item_category_id']);
         }
         if (isset($data['name'])) {
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
         }
-        if (isset($data['artist']) && $data['artist'] != 'none') {
+        if (isset($data['artist'])) {
             $query->where('artist_id', $data['artist']);
         }
-        if (isset($data['rarity_id']) && $data['rarity_id'] != 'none') {
-            if ($data['rarity_id'] == 'no_rarity') {
+        if (isset($data['rarity_id'])) {
+            if ($data['rarity_id'] == 'withoutOption') {
                 $query->whereNull('data->rarity_id');
             } else {
                 $query->where('data->rarity_id', $data['rarity_id']);
@@ -276,7 +276,7 @@ class CharacterController extends Controller {
             'items'                 => $items,
             'logs'                  => $this->character->getItemLogs(),
             'artists'               => User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray(),
-            'rarities'              => ['none' => 'Any Rarity'] + ['no_rarity' => 'No Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'rarities'              => ['withoutOption' => 'Without Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
         ] + (Auth::check() && (Auth::user()->hasPower('edit_inventories') || Auth::user()->id == $this->character->user_id) ? [
             'itemOptions'   => $itemOptions->pluck('name', 'id'),
             'userInventory' => UserItem::with('item')->whereIn('item_id', $itemOptions->pluck('id'))->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get()->filter(function ($userItem) {
