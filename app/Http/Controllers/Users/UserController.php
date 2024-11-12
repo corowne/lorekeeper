@@ -213,7 +213,11 @@ class UserController extends Controller {
             $query->where('artist_id', $data['artist']);
         }
         if (isset($data['rarity_id']) && $data['rarity_id'] != 'none') {
-            $query->where('data->rarity_id', $data['rarity_id']);
+            if ($data['rarity_id'] == 'no_rarity') {
+                $query->whereNull('data->rarity_id');
+            } else {
+                $query->where('data->rarity_id', $data['rarity_id']);
+            }
         }
 
         $items = count($categories) ?
@@ -241,7 +245,7 @@ class UserController extends Controller {
             'user'        => $this->user,
             'logs'        => $this->user->getItemLogs(),
             'artists'     => User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray(),
-            'rarities'    => ['none' => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'rarities'    => ['none' => 'Any Rarity'] + ['no_rarity' => 'No Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
 

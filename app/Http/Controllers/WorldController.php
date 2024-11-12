@@ -383,7 +383,11 @@ class WorldController extends Controller {
             $query->where('artist_id', $data['artist']);
         }
         if (isset($data['rarity_id']) && $data['rarity_id'] != 'none') {
-            $query->where('data->rarity_id', $data['rarity_id']);
+            if ($data['rarity_id'] == 'no_rarity') {
+                $query->whereNull('data->rarity_id');
+            } else {
+                $query->where('data->rarity_id', $data['rarity_id']);
+            }
         }
 
         if (isset($data['sort'])) {
@@ -413,7 +417,7 @@ class WorldController extends Controller {
             'categories'  => ['none' => 'Any Category'] + ['withoutOption' => 'Without Category'] + ItemCategory::visible(Auth::user() ?? null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'shops'       => Shop::orderBy('sort', 'DESC')->get(),
             'artists'     => User::whereIn('id', Item::whereNotNull('artist_id')->pluck('artist_id')->toArray())->pluck('name', 'id')->toArray(),
-            'rarities'    => ['none' => 'Any Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'rarities'    => ['none' => 'Any Rarity'] + ['no_rarity' => 'No Rarity'] + Rarity::orderBy('rarities.sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
 
