@@ -35,7 +35,10 @@
         <div class="col-md-6">
             <div class="form-group">
                 {!! Form::label('Icon Image (Optional)') !!} {!! add_help('This will be used to denote the currency. If not provided, the abbreviation will be used.') !!}
-                {!! Form::file('icon') !!}
+                <div class="custom-file">
+                    {!! Form::label('icon', 'Choose icon file...', ['class' => 'custom-file-label']) !!}
+                    {!! Form::file('icon', ['class' => 'custom-file-input']) !!}
+                </div>
                 <div class="text-muted">Recommended height: 16px</div>
                 @if ($currency->has_icon)
                     <div class="form-check">
@@ -48,7 +51,10 @@
         <div class="col-md-6">
             <div class="form-group">
                 {!! Form::label('World Page Image (Optional)') !!} {!! add_help('This image is used only on the world information pages.') !!}
-                {!! Form::file('image') !!}
+                <div class="custom-file">
+                    {!! Form::label('image', 'Choose file...', ['class' => 'custom-file-label']) !!}
+                    {!! Form::file('image', ['class' => 'custom-file-input']) !!}
+                </div>
                 <div class="text-muted">Recommended size: 200px x 200px</div>
                 @if ($currency->has_image)
                     <div class="form-check">

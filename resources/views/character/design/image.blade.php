@@ -71,7 +71,10 @@
         @if ($request->status == 'Draft' && $request->user_id == Auth::user()->id)
             <div class="form-group">
                 {!! Form::label('Image') !!} {!! add_help('This is the image that will be used on the masterlist. Note that the image is not protected in any way, so take precautions to avoid art/design theft.') !!}
-                <div>{!! Form::file('image', ['id' => 'mainImage']) !!}</div>
+                <div class="custom-file">
+                    {!! Form::label('image', 'Choose file...', ['class' => 'custom-file-label']) !!}
+                    {!! Form::file('image', ['class' => 'custom-file-input', 'id' => 'mainImage']) !!}
+                </div>
             </div>
         @else
             <div class="form-group">
@@ -117,7 +120,10 @@
             <div class="card mb-3" id="thumbnailUpload">
                 <div class="card-body">
                     {!! Form::label('Thumbnail Image') !!} {!! add_help('This image is shown on the masterlist page.') !!}
-                    <div>{!! Form::file('thumbnail') !!}</div>
+                    <div class="custom-file">
+                        {!! Form::label('thumbnail', 'Choose thumbnail...', ['class' => 'custom-file-label']) !!}
+                        {!! Form::file('thumbnail', ['class' => 'custom-file-input']) !!}
+                    </div>
                     <div class="text-muted">Recommended size: {{ config('lorekeeper.settings.masterlist_thumbnails.width') }}px x {{ config('lorekeeper.settings.masterlist_thumbnails.height') }}px</div>
                 </div>
             </div>
