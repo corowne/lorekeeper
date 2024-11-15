@@ -178,7 +178,10 @@
                     <p>Select a file to upload. (Maximum size {{ min(ini_get('upload_max_filesize'), ini_get('post_max_size')) }}B.)</p>
                     <div id="fileList">
                         <div class="d-flex mb-2">
-                            {!! Form::file('files[]', ['class' => 'form-control']) !!}
+                            <div class="custom-file">
+                                {!! Form::label('files[]', 'No file selected.', ['class' => 'custom-file-label']) !!}
+                                {!! Form::file('files[]', ['class' => 'custom-file-input']) !!}
+                            </div>
                         </div>
                     </div>
                     <div class="text-right">
@@ -189,8 +192,9 @@
                         Add File
                     </div>
                     {!! Form::close() !!}
-                    <div class="file-row hide mb-2">
-                        {!! Form::file('files[]', ['class' => 'form-control']) !!}
+                    <div class="file-row custom-file hide mb-2">
+                        {!! Form::label('files[]', 'No file selected.', ['class' => 'custom-file-label']) !!}
+                        {!! Form::file('files[]', ['class' => 'custom-file-input']) !!}
                     </div>
                 </div>
             </div>
@@ -213,6 +217,7 @@
                 $('#fileList').append($clone);
                 $clone.removeClass('hide file-row');
                 $clone.addClass('d-flex');
+                bsCustomFileInput.init();
             }
 
             /////////

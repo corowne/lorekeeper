@@ -14,15 +14,18 @@
     @foreach ($images as $key => $image)
         <div class="card mb-3">
             <div class="card-body">
-                <div class="d-flex">
+                <div class="d-flex flex-column flex-sm-row">
                     <div class="mr-2" style="width: 200px;"><img src="{{ asset('images/' . $image['filename']) }}" class="mw-100" alt="Site image: {{ $image['name'] }}" /></div>
                     <div style="width: 100%;">
                         <h3 class="card-heading">{{ $image['name'] }} <a href="{{ asset('images/' . $image['filename']) }}" class="btn btn-info btn-sm float-right">View Current</a></h3>
                         <p>{{ $image['description'] }}</p>
                         {!! Form::open(['url' => 'admin/images/upload', 'files' => true]) !!}
                         <div class="d-flex">
-                            {!! Form::file('file', ['class' => 'form-control mr-2']) !!}
-                            {!! Form::submit('Upload', ['class' => 'btn btn-primary']) !!}
+                            <div class="custom-file">
+                                {!! Form::label('file', 'Choose file...', ['class' => 'custom-file-label']) !!}
+                                {!! Form::file('file', ['class' => 'custom-file-input']) !!}
+                            </div>
+                            {!! Form::submit('Upload', ['class' => 'ml-1 btn btn-primary']) !!}
                         </div>
                         {!! Form::hidden('key', $key) !!}
                         {!! Form::close() !!}
@@ -42,8 +45,11 @@
                 <h3 class="card-heading">CSS <a href="{{ asset('css/custom.css') }}" class="btn btn-info btn-sm float-right">View Current</a></h3>
                 {!! Form::open(['url' => 'admin/images/upload/css', 'files' => true]) !!}
                 <div class="d-flex">
-                    {!! Form::file('file', ['class' => 'form-control mr-2']) !!}
-                    {!! Form::submit('Upload', ['class' => 'btn btn-primary']) !!}
+                    <div class="custom-file">
+                        {!! Form::label('file', 'Choose CSS...', ['class' => 'custom-file-label']) !!}
+                        {!! Form::file('file', ['class' => 'custom-file-input']) !!}
+                    </div>
+                    {!! Form::submit('Upload', ['class' => 'ml-1 btn btn-primary']) !!}
                 </div>
                 {!! Form::close() !!}
             </div>

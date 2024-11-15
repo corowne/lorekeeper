@@ -17,11 +17,9 @@
             </div>
         @endif
         {!! Form::open(['url' => 'account/avatar', 'files' => true]) !!}
-        <div class="form-group row">
-            {!! Form::label('avatar', 'Update Profile Image', ['class' => 'col-md-2 col-form-label']) !!}
-            <div class="col-md-10">
-                {!! Form::file('avatar', ['class' => 'form-control']) !!}
-            </div>
+        <div class="custom-file mb-1">
+            {!! Form::label('avatar', 'Update Profile Image', ['class' => 'custom-file-label']) !!}
+            {!! Form::file('avatar', ['class' => 'custom-file-input']) !!}
         </div>
         <div class="text-right">
             {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
