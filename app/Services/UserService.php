@@ -299,7 +299,7 @@ class UserService extends Service {
      * Updates the user's avatar.
      *
      * @param User  $user
-     * @param mixed $avatar
+     * @param mixed $data
      *
      * @return bool
      */
