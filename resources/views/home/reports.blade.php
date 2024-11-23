@@ -19,7 +19,7 @@
             <a class="nav-link {{ !Request::get('type') || Request::get('type') == 'pending' ? 'active' : '' }}" href="{{ url('reports') }}">Pending</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ Request::get('type') == 'approved' ? 'active' : '' }}" href="{{ url('reports') . '?type=assigned' }}">Assigned</a>
+            <a class="nav-link {{ Request::get('type') == 'assigned' ? 'active' : '' }}" href="{{ url('reports') . '?type=assigned' }}">Assigned</a>
         </li>
         <li class="nav-item">
             <a class="nav-link {{ Request::get('type') == 'closed' ? 'active' : '' }}" href="{{ url('reports') . '?type=closed' }}">Closed</a>
