@@ -56,7 +56,7 @@ class SitePage extends Model {
         SCOPES
     **********************************************************************************************/
     /**
-     * Scope a query to only include visible posts.
+     * Scope a query to only include visible pages.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @param mixed|null                            $user
