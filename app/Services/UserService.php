@@ -299,14 +299,15 @@ class UserService extends Service {
      * Updates the user's avatar.
      *
      * @param User  $user
-     * @param mixed $avatar
+     * @param mixed $data
      *
      * @return bool
      */
-    public function updateAvatar($avatar, $user) {
+    public function updateAvatar($data, $user) {
         DB::beginTransaction();
 
         try {
+            $avatar = $data['avatar'];
             if (!$avatar) {
                 throw new \Exception('Please upload a file.');
             }
@@ -329,7 +330,13 @@ class UserService extends Service {
                     throw new \Exception('Failed to move file.');
                 }
             } else {
-                if (!Image::make($avatar)->resize(150, 150)->save(public_path('images/avatars/'.$filename))) {
+                // crop image first
+                $cropWidth = $data['x1'] - $data['x0'];
+                $cropHeight = $data['y1'] - $data['y0'];
+
+                $image = Image::make($avatar);
+                $image->crop($cropWidth, $cropHeight, $data['x0'], $data['y0']);
+                if (!$image->resize(150, 150)->save(public_path('images/avatars/'.$filename))) {
                     throw new \Exception('Failed to process avatar.');
                 }
             }
