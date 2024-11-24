@@ -23,7 +23,7 @@ class PageController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getPage($key) {
-        $page = SitePage::where('key', $key)->where('is_visible', 1)->first();
+        $page = SitePage::where('key', $key)->visible(Auth::user() ?? null)->first();
         if (!$page) {
             abort(404);
         }

@@ -52,6 +52,28 @@ class SitePage extends Model {
         'text'  => 'nullable',
     ];
 
+    /**********************************************************************************************
+        SCOPES
+    **********************************************************************************************/
+    /**
+     * Scope a query to only include visible pages.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed|null                            $user
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeVisible($query, $user = null) {
+        if ($user && $user->hasPower('edit_pages')) {
+            return $query;
+        }
+
+        return $query->where('is_visible', 1);
+    }
+
+    /**********************************************************************************************
+        ACCESSORS
+    **********************************************************************************************/
     /**
      * Gets the URL of the public-facing page.
      *
