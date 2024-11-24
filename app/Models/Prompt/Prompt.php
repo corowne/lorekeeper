@@ -79,7 +79,14 @@ class Prompt extends Model {
      * Get the rewards attached to this prompt.
      */
     public function rewards() {
-        return $this->hasMany(PromptReward::class, 'prompt_id');
+        return $this->hasMany(PromptReward::class, 'prompt_id')->where('earner_type', 'User');
+    }
+
+    /**
+     * Get the character rewards attached to this prompt.
+     */
+    public function characterRewards() {
+        return $this->hasMany(PromptReward::class, 'prompt_id')->where('earner_type', 'Character');
     }
 
     /**********************************************************************************************

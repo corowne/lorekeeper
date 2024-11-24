@@ -26,7 +26,7 @@ class SubmissionManager extends Service {
     |
     | Handles creation and modification of submission data.
     |
-    */
+     */
 
     /**
      * Creates a new submission.
@@ -68,11 +68,11 @@ class SubmissionManager extends Service {
 
             // Create the submission itself.
             $submission = Submission::create([
-                'user_id'   => $user->id,
-                'url'       => $data['url'] ?? null,
-                'status'    => $isDraft ? 'Draft' : 'Pending',
-                'comments'  => $data['comments'],
-                'data'      => null,
+                'user_id'  => $user->id,
+                'url'      => $data['url'] ?? null,
+                'status'   => $isDraft ? 'Draft' : 'Pending',
+                'comments' => $data['comments'],
+                'data'     => null,
             ] + ($isClaim ? [] : [
                 'prompt_id' => $prompt->id,
             ]));
@@ -152,12 +152,12 @@ class SubmissionManager extends Service {
 
             // Modify submission
             $submission->update([
-                'url'           => $data['url'] ?? null,
-                'updated_at'    => Carbon::now(),
-                'comments'      => $data['comments'],
-                'data'          => json_encode([
-                    'user'          => Arr::only(getDataReadyAssets($userAssets), ['user_items', 'currencies']),
-                    'rewards'       => getDataReadyAssets($promptRewards),
+                'url'        => $data['url'] ?? null,
+                'updated_at' => Carbon::now(),
+                'comments'   => $data['comments'],
+                'data'       => json_encode([
+                    'user'    => Arr::only(getDataReadyAssets($userAssets), ['user_items', 'currencies']),
+                    'rewards' => getDataReadyAssets($promptRewards),
                 ] + (config('lorekeeper.settings.allow_gallery_submissions_on_prompts') ? ['gallery_submission_id' => $data['gallery_submission_id'] ?? null] : [])),
             ] + ($isClaim ? [] : ['prompt_id' => $prompt->id]));
 
@@ -203,6 +203,13 @@ class SubmissionManager extends Service {
             $userAssets = $assets['user'];
             // Remove prompt-only rewards
             $promptRewards = $this->removePromptAttachments($submission);
+            // ...aaand the same for characters
+            if ($submission->characters()->count()) {
+                foreach ($submission->characters as $character) {
+                    $characterPromptRewards = $this->removeCharacterPromptAttachments($submission, $character);
+                    $character->update(['data' => json_encode(getDataReadyAssets($characterPromptRewards))]);
+                }
+            }
 
             if ($user->id != $submission->user_id) {
                 // The only things we need to set are:
@@ -350,7 +357,7 @@ class SubmissionManager extends Service {
                 // Workaround for user not being unset after inventory shuffling, preventing proper staff ID assignment
                 $staff = $user;
 
-                foreach ($stacks as $stackId=> $quantity) {
+                foreach ($stacks as $stackId => $quantity) {
                     $stack = UserItem::find($stackId);
                     $user = User::find($submission->user_id);
                     if (!$inventoryManager->debitStack($user, $submission->prompt_id ? 'Prompt Approved' : 'Claim Approved', ['data' => 'Item used in submission (<a href="'.$submission->viewUrl.'">#'.$submission->id.'</a>)'], $stack, $quantity)) {
@@ -365,7 +372,7 @@ class SubmissionManager extends Service {
             // Log currency removal, etc.
             $currencyManager = new CurrencyManager;
             if (isset($addonData['currencies']) && $addonData['currencies']) {
-                foreach ($addonData['currencies'] as $currencyId=> $quantity) {
+                foreach ($addonData['currencies'] as $currencyId => $quantity) {
                     $currency = Currency::find($currencyId);
                     if (!$currencyManager->createLog(
                         $submission->user_id,
@@ -422,13 +429,13 @@ class SubmissionManager extends Service {
             } elseif (isset($data['character_rewardable_id'])) {
                 $data['character_rewardable_id'] = array_map([$this, 'innerNull'], $data['character_rewardable_id']);
                 foreach ($data['character_rewardable_id'] as $ckey => $c) {
-                    foreach ($c as $key                            => $id) {
+                    foreach ($c as $key => $id) {
                         switch ($data['character_rewardable_type'][$ckey][$key]) {
-                            case 'Currency': $currencyIds[] = $id;
+                            case 'Currency':$currencyIds[] = $id;
                                 break;
-                            case 'Item': $itemIds[] = $id;
+                            case 'Item':$itemIds[] = $id;
                                 break;
-                            case 'LootTable': $tableIds[] = $id;
+                            case 'LootTable':$tableIds[] = $id;
                                 break;
                         }
                     }
@@ -587,15 +594,15 @@ class SubmissionManager extends Service {
 
                 foreach ($data['character_rewardable_id'][$data['character_id']] as $key => $reward) {
                     switch ($data['character_rewardable_type'][$data['character_id']][$key]) {
-                        case 'Currency': if ($data['character_rewardable_quantity'][$data['character_id']][$key]) {
+                        case 'Currency':if ($data['character_rewardable_quantity'][$data['character_id']][$key]) {
                             addAsset($assets, $data['currencies'][$reward], $data['character_rewardable_quantity'][$data['character_id']][$key]);
-                        } break;
-                        case 'Item': if ($data['character_rewardable_quantity'][$data['character_id']][$key]) {
+                        }break;
+                        case 'Item':if ($data['character_rewardable_quantity'][$data['character_id']][$key]) {
                             addAsset($assets, $data['items'][$reward], $data['character_rewardable_quantity'][$data['character_id']][$key]);
-                        } break;
-                        case 'LootTable': if ($data['character_rewardable_quantity'][$data['character_id']][$key]) {
+                        }break;
+                        case 'LootTable':if ($data['character_rewardable_quantity'][$data['character_id']][$key]) {
                             addAsset($assets, $data['tables'][$reward], $data['character_rewardable_quantity'][$data['character_id']][$key]);
-                        } break;
+                        }break;
                     }
                 }
             }
@@ -677,7 +684,7 @@ class SubmissionManager extends Service {
 
         // Attach currencies.
         if (isset($data['currency_id'])) {
-            foreach ($data['currency_id'] as $holderKey=>$currencyIds) {
+            foreach ($data['currency_id'] as $holderKey => $currencyIds) {
                 $holder = explode('-', $holderKey);
                 $holderType = $holder[0];
                 $holderId = $holder[1];
@@ -685,7 +692,7 @@ class SubmissionManager extends Service {
                 $holder = User::find($holderId);
 
                 $currencyManager = new CurrencyManager;
-                foreach ($currencyIds as $key=>$currencyId) {
+                foreach ($currencyIds as $key => $currencyId) {
                     $currency = Currency::find($currencyId);
                     if (!$currency) {
                         throw new \Exception('Invalid currency selected.');
@@ -737,6 +744,26 @@ class SubmissionManager extends Service {
     }
 
     /**
+     * Removes the attachments associated with a prompt from a submission.
+     *
+     * @param mixed $submission the submission object
+     * @param mixed $character
+     */
+    private function removeCharacterPromptAttachments($submission, $character) {
+        $assets = $character->data;
+        // Get a list of rewards, then create the submission itself
+        $promptRewards = createAssetsArray(true);
+        $promptRewards = mergeAssetsArrays($promptRewards, parseAssetData($assets, true), true);
+        if (isset($submission->prompt_id) && $submission->prompt_id) {
+            foreach ($submission->prompt->characterRewards as $reward) {
+                removeAsset($promptRewards, $reward->reward, $reward->quantity);
+            }
+        }
+
+        return $promptRewards;
+    }
+
+    /**
      * Creates character attachments for a submission.
      *
      * @param mixed $submission the submission object
@@ -771,11 +798,11 @@ class SubmissionManager extends Service {
             foreach ($data['character_rewardable_id'] as $ckey => $c) {
                 foreach ($c as $key => $id) {
                     switch ($data['character_rewardable_type'][$ckey][$key]) {
-                        case 'Currency': $currencyIds[] = $id;
+                        case 'Currency':$currencyIds[] = $id;
                             break;
-                        case 'Item': $itemIds[] = $id;
+                        case 'Item':$itemIds[] = $id;
                             break;
-                        case 'LootTable': $tableIds[] = $id;
+                        case 'LootTable':$tableIds[] = $id;
                             break;
                     }
                 }
@@ -793,12 +820,25 @@ class SubmissionManager extends Service {
             // Users might not pass in clean arrays (may contain redundant data) so we need to clean that up
             $assets = $this->processRewards($data + ['character_id' => $c->id, 'currencies' => $currencies, 'items' => $items, 'tables' => $tables], true);
 
+            //add the preset character rewards with any character rewards in data
+            if ($submission->status == 'Pending' && isset($submission->prompt_id) && $submission->prompt_id && $submission->prompt->characterRewards->count() && isset($data['character_is_focus']) && $data['character_is_focus'][$c->id]) {
+                // Get a list of rewards
+                $defaultRewards = createAssetsArray(true);
+                //add to array
+                foreach ($submission->prompt->characterRewards as $reward) {
+                    addAsset($defaultRewards, $reward->reward, $reward->quantity);
+                }
+                //merge with the cleaned up user-set stuff
+                $assets = mergeAssetsArrays($defaultRewards, $assets, true);
+            }
+
             // Now we have a clean set of assets (redundant data is gone, duplicate entries are merged)
             // so we can attach the character to the submission
             SubmissionCharacter::create([
                 'character_id'  => $c->id,
                 'submission_id' => $submission->id,
                 'data'          => json_encode(getDataReadyAssets($assets)),
+                'is_focus'      => isset($data['character_is_focus']) && $data['character_is_focus'][$c->id] ? $data['character_is_focus'][$c->id] : 0,
             ]);
         }
 
@@ -832,7 +872,7 @@ class SubmissionManager extends Service {
         // And currencies
         $currencyManager = new CurrencyManager;
         if (isset($addonData['currencies']) && $addonData['currencies']) {
-            foreach ($addonData['currencies'] as $currencyId=>$quantity) {
+            foreach ($addonData['currencies'] as $currencyId => $quantity) {
                 $currency = Currency::find($currencyId);
                 if (!$currency) {
                     throw new \Exception('Cannot return an invalid currency. ('.$currencyId.')');

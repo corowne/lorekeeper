@@ -12,6 +12,7 @@
                 <p>You have completed this prompt <strong>{{ $count }}</strong> time{{ $count == 1 ? '' : 's' }}.</p>
             @endif
         @endif
+        <h4>User Rewards <i class="fas fa-user"></i></h4>
         <table class="table table-sm mb-0">
             <thead>
                 <tr>
@@ -21,6 +22,24 @@
             </thead>
             <tbody>
                 @foreach ($prompt->rewards as $reward)
+                    <tr>
+                        <td>{!! $reward->reward->displayName !!}</td>
+                        <td>{{ $reward->quantity }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+        <h4>Character Rewards <i class="fas fa-paw"></i></h4>
+        <p>Only focus characters will recieve these rewards.</p>
+        <table class="table table-sm mb-0">
+            <thead>
+                <tr>
+                    <th width="70%">Reward</th>
+                    <th width="30%">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($prompt->characterRewards as $reward)
                     <tr>
                         <td>{!! $reward->reward->displayName !!}</td>
                         <td>{{ $reward->quantity }}</td>

@@ -94,9 +94,15 @@
     </div>
 
     <h3>Rewards</h3>
-    <p>Rewards are credited on a per-user basis. Mods are able to modify the specific rewards granted at approval time.</p>
+    <p>Mods are able to modify the specific rewards granted at approval time.</p>
     <p>You can add loot tables containing any kind of currencies (both user- and character-attached), but be sure to keep track of which are being distributed! Character-only currencies cannot be given to users.</p>
+    <h4>User Rewards <i class="fas fa-user"></i></h4>
+    <p>User rewards are credited on a per-user basis.</p>
     @include('widgets._loot_select', ['loots' => $prompt->rewards, 'showLootTables' => true, 'showRaffles' => true])
+
+    <h4>Character Rewards <i class="fas fa-paw"></i></h4>
+    <p>Character rewards are only credited to the focus characters of a submission, both users and moderators can add and edit this status. There can be multiple focus characters.</p>
+    @include('widgets._loot_select', ['loots' => $prompt->characterRewards, 'showLootTables' => true, 'showRaffles' => true, 'prefix' => 'character_', 'isCharacter' => true])
 
     <div class="text-right">
         {!! Form::submit($prompt->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
@@ -105,6 +111,7 @@
     {!! Form::close() !!}
 
     @include('widgets._loot_select_row', ['showLootTables' => true, 'showRaffles' => true])
+    @include('widgets._loot_select_row', ['showLootTables' => true, 'showRaffles' => true, 'prefix' => 'character_', 'isCharacter' => true])
 
     @if ($prompt->id)
         <h3>Preview</h3>
@@ -119,6 +126,7 @@
 @section('scripts')
     @parent
     @include('js._loot_js', ['showLootTables' => true, 'showRaffles' => true])
+    @include('js._loot_js', ['showLootTables' => true, 'showRaffles' => true, 'prefix' => 'character_', 'isCharacter' => true])
     @include('widgets._datetimepicker_js')
     <script>
         $(document).ready(function() {
