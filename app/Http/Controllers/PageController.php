@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SitePage;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PageController extends Controller {
