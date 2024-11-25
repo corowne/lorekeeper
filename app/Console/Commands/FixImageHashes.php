@@ -18,20 +18,20 @@ use App\Services\FeatureService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
-class AddImageHashes extends Command {
+class FixImageHashes extends Command {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'add-image-hashes';
+    protected $signature = 'fix-image-hashes';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Adds hashes to any existing images that don\'t already have them.';
+    protected $description = 'Corrects existing images where the hash appears before the id.';
 
     /**
      * Create a new command instance.
@@ -46,23 +46,23 @@ class AddImageHashes extends Command {
      * @return mixed
      */
     public function handle() {
-        $images = CharacterCategory::where('has_image', 1)->whereNull('hash')->get();
-        $images = $images->concat(Currency::where('has_image', 1)->whereNull('hash')->orWhere('has_icon', 1)->whereNull('hash')->get());
-        $images = $images->concat(Feature::where('has_image', 1)->whereNull('hash')->get());
-        $images = $images->concat(FeatureCategory::where('has_image', 1)->whereNull('hash')->get());
-        $images = $images->concat(Item::where('has_image', 1)->whereNull('hash')->get());
-        $images = $images->concat(ItemCategory::where('has_image', 1)->whereNull('hash')->get());
-        $images = $images->concat(Prompt::where('has_image', 1)->whereNull('hash')->get());
-        $images = $images->concat(PromptCategory::where('has_image', 1)->whereNull('hash')->get());
-        $images = $images->concat(Rarity::where('has_image', 1)->whereNull('hash')->get());
-        $images = $images->concat(Shop::where('has_image', 1)->whereNull('hash')->get());
-        $images = $images->concat(Species::where('has_image', 1)->whereNull('hash')->get());
+        $images = CharacterCategory::where('has_image', 1)->whereNotNull('hash')->get();
+        $images = $images->concat(Currency::where('has_image', 1)->whereNotNull('hash')->orWhere('has_icon', 1)->whereNotNull('hash')->get());
+        $images = $images->concat(Feature::where('has_image', 1)->whereNotNull('hash')->get());
+        $images = $images->concat(FeatureCategory::where('has_image', 1)->whereNotNull('hash')->get());
+        $images = $images->concat(Item::where('has_image', 1)->whereNotNull('hash')->get());
+        $images = $images->concat(ItemCategory::where('has_image', 1)->whereNotNull('hash')->get());
+        $images = $images->concat(Prompt::where('has_image', 1)->whereNotNull('hash')->get());
+        $images = $images->concat(PromptCategory::where('has_image', 1)->whereNotNull('hash')->get());
+        $images = $images->concat(Rarity::where('has_image', 1)->whereNotNull('hash')->get());
+        $images = $images->concat(Shop::where('has_image', 1)->whereNotNull('hash')->get());
+        $images = $images->concat(Species::where('has_image', 1)->whereNotNull('hash')->get());
         $images = $images->concat(Subtype::where('has_image', 1)->whereNull('hash')->get());
 
         if ($images->count()) {
             $this->line('Updating images...');
             foreach ($images as $image) {
-                $oldName = $image->id.'-image.png';
+                $oldName = $image->hash.$image->id.'-image.png';
                 $image->hash = randomString(10);
                 // Any service works, I can't use the abstract one
                 if (
@@ -81,7 +81,7 @@ class AddImageHashes extends Command {
 
                 // Just for currency icons
                 if ($image instanceof Currency) {
-                    $oldName = $image->id.'-icon.png';
+                    $oldName = $image->hash.$image->id.'-icon.png';
                     if (
                         File::exists(public_path($image->imageDirectory).'/'.$oldName) &&
                         (new FeatureService)->handleImage(
