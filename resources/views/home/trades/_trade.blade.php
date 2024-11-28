@@ -5,7 +5,7 @@
             <a href="{{ $trade->url }} ">Trade (#{{ $trade->id }})</a>
         </h2>
         @if ($trade->staff)
-            Proccessed by {!! $trade->staff->displayName !!}
+            Processed by {!! $trade->staff->displayName !!}
         @endif
     </div>
     <div class="card-body">
