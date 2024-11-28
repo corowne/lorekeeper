@@ -27,13 +27,6 @@ class Trade extends Model {
     protected $table = 'trades';
 
     /**
-     * Whether the model contains timestamps to be saved and updated.
-     *
-     * @var string
-     */
-    public $timestamps = true;
-
-    /**
      * The attributes that should be cast to native types.
      *
      * @var array
@@ -41,6 +34,13 @@ class Trade extends Model {
     protected $casts = [
         'data' => 'array',
     ];
+
+    /**
+     * Whether the model contains timestamps to be saved and updated.
+     *
+     * @var string
+     */
+    public $timestamps = true;
 
     /**********************************************************************************************
 
@@ -128,19 +128,20 @@ class Trade extends Model {
 
     /**
      * Gets the stacks of the trade keyed by sender and recipient.
-     * 
+     *
      * @return array
      */
     public function getStacksAttribute() {
         $stacks = [];
         foreach ($this->data as $side => $assets) {
             if (isset($assets['user_items'])) {
-            $user_items = UserItem::with('item')->find(array_keys($assets['user_items']));
-            $items = $user_items->map(function($user_item) use ($assets) {
-                $user_item['quantity'] = $assets['user_items'][$user_item->id];
-                return $user_item;
-            });
-            $stacks[$side] = $items->groupBy('item_id');
+                $user_items = UserItem::with('item')->find(array_keys($assets['user_items']));
+                $items = $user_items->map(function ($user_item) use ($assets) {
+                    $user_item['quantity'] = $assets['user_items'][$user_item->id];
+
+                    return $user_item;
+                });
+                $stacks[$side] = $items->groupBy('item_id');
             }
         }
 
