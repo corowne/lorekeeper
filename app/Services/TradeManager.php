@@ -57,7 +57,7 @@ class TradeManager extends Service {
 
             if ($assetData = $this->handleTradeAssets($trade, $data, $user)) {
                 $trade->data = [
-                    'sender' => getDataReadyAssets($assetData['sender'])
+                    'sender' => getDataReadyAssets($assetData['sender']),
                 ];
                 $trade->save();
 
