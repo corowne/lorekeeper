@@ -36,26 +36,8 @@ class TradeController extends Controller {
             $query->where('recipient_id', Auth::user()->id)->orWhere('sender_id', Auth::user()->id);
         })->where('status', ucfirst($status))->orderBy('id', 'DESC');
 
-        $stacks = [];
-        foreach ($trades->get() as $trade) {
-            foreach ($trade->data as $side=> $assets) {
-                if (isset($assets['user_items'])) {
-                    $user_items = UserItem::with('item')->find(array_keys($assets['user_items']));
-                    $items = [];
-                    foreach ($assets['user_items'] as $id=> $quantity) {
-                        $user_item = $user_items->find($id);
-                        $user_item['quantity'] = $quantity;
-                        array_push($items, $user_item);
-                    }
-                    $items = collect($items)->groupBy('item_id');
-                    $stacks[$trade->id][$side] = $items;
-                }
-            }
-        }
-
         return view('home.trades.index', [
             'trades' => $trades->paginate(20),
-            'stacks' => $stacks,
         ]);
     }
 
