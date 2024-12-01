@@ -63,6 +63,7 @@ class FixImageHashes extends Command {
             $this->line('Updating images...');
             foreach ($images as $image) {
                 $oldName = $image->hash.$image->id.'-image.png';
+                $oldIconName = $image->hash.$image->id.'-icon.png'; //Moving this here, will not be used unless currency icon
                 $image->hash = randomString(10);
                 // Any service works, I can't use the abstract one
                 if (
@@ -81,14 +82,13 @@ class FixImageHashes extends Command {
 
                 // Just for currency icons
                 if ($image instanceof Currency) {
-                    $oldName = $image->hash.$image->id.'-icon.png';
                     if (
-                        File::exists(public_path($image->imageDirectory).'/'.$oldName) &&
+                        File::exists(public_path($image->imageDirectory).'/'.$oldIconName) &&
                         (new FeatureService)->handleImage(
                             null,
                             public_path($image->imageDirectory),
                             $image->id.'-'.$image->hash.'-icon.png',
-                            $oldName
+                            $oldIconName
                         )
                     ) {
                         $image->save();
