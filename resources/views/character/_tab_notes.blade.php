@@ -1,7 +1,7 @@
 @if ($character->parsed_description)
     <div class="parsed-text descriptioneditingparse">{!! $character->parsed_description !!}</div>
 @else
-    <div class="parsed-text descriptioneditingparse">No additional notes given.</div>
+    <div class="parsed-text descriptioneditingparse">No description given.</div>
 @endif
 @if (Auth::check() && Auth::user()->hasPower('manage_characters'))
     <div class="mt-3">
