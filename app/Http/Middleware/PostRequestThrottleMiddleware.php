@@ -43,7 +43,10 @@ class PostRequestThrottleMiddleware {
                 Log::channel('throttle')->info('Rate limited user', ['url' => $request->fullUrl(), 'user' => $request->user()?->name ?: $request->ip()]);
             }
 
-            return redirect()->back();
+            // If the response is from ajax it's not expecting a full redirect with the entire site bundled in as a response
+            return $request->ajax() ?
+                response("<div class='alert alert-danger mb-2'>Too many requests - please try again later.</div><div class='alert alert-success'>Your initial action has likely been performed successfully. Please check to ensure this is the case before trying again.</div>")
+                : redirect()->back();
         }
 
         RateLimiter::hit($key, $decaySeconds);
