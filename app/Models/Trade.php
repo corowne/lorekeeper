@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Facades\Settings;
 use App\Models\Character\Character;
 use App\Models\User\User;
+use App\Models\User\UserItem;
 
 class Trade extends Model {
     /**
@@ -24,6 +25,16 @@ class Trade extends Model {
      * @var string
      */
     protected $table = 'trades';
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'data' => 'array',
+    ];
+
     /**
      * Whether the model contains timestamps to be saved and updated.
      *
@@ -107,21 +118,34 @@ class Trade extends Model {
     }
 
     /**
-     * Get the data attribute as an associative array.
-     *
-     * @return array
-     */
-    public function getDataAttribute() {
-        return json_decode($this->attributes['data'], true);
-    }
-
-    /**
      * Gets the URL of the trade.
      *
      * @return string
      */
     public function getUrlAttribute() {
         return url('trades/'.$this->id);
+    }
+
+    /**
+     * Gets the stacks of the trade keyed by sender and recipient.
+     *
+     * @return array
+     */
+    public function getStacksAttribute() {
+        $stacks = [];
+        foreach ($this->data as $side => $assets) {
+            if (isset($assets['user_items'])) {
+                $user_items = UserItem::with('item')->find(array_keys($assets['user_items']));
+                $items = $user_items->map(function ($user_item) use ($assets) {
+                    $user_item['quantity'] = $assets['user_items'][$user_item->id];
+
+                    return $user_item;
+                });
+                $stacks[$side] = $items->groupBy('item_id');
+            }
+        }
+
+        return $stacks;
     }
 
     /**********************************************************************************************
