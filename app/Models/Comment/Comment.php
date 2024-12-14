@@ -153,7 +153,7 @@ class Comment extends Model {
     public function getCommentAttribute() {
         if (config('lorekeeper.settings.wysiwyg_comments')) {
             return preg_replace_callback(
-                '/(?<!href=")(?<!src=")(?<!\()(https?:\/\/[^\s]+)/',
+                '/(?<!href=")(?<!src=")(?<!\()(https?:\/\/[^\s<]+)/',
                 function ($matches) {
                     $url = $matches[1];
                     $parsedUrl = parse_url($url);
