@@ -57,7 +57,7 @@ class FixImageHashes extends Command {
         $images = $images->concat(Rarity::where('has_image', 1)->whereNotNull('hash')->get());
         $images = $images->concat(Shop::where('has_image', 1)->whereNotNull('hash')->get());
         $images = $images->concat(Species::where('has_image', 1)->whereNotNull('hash')->get());
-        $images = $images->concat(Subtype::where('has_image', 1)->whereNull('hash')->get());
+        $images = $images->concat(Subtype::where('has_image', 1)->whereNotNull('hash')->get());
 
         if ($images->count()) {
             $this->line('Updating images...');
