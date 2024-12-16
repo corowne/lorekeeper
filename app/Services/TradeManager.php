@@ -56,7 +56,9 @@ class TradeManager extends Service {
             ]);
 
             if ($assetData = $this->handleTradeAssets($trade, $data, $user)) {
-                $trade->data = json_encode(['sender' => getDataReadyAssets($assetData['sender'])]);
+                $trade->data = [
+                    'sender' => getDataReadyAssets($assetData['sender']),
+                ];
                 $trade->save();
 
                 // send a notification
@@ -103,7 +105,7 @@ class TradeManager extends Service {
                 $tradeData = $trade->data;
                 $isSender = ($trade->sender_id == $user->id);
                 $tradeData[$isSender ? 'sender' : 'recipient'] = getDataReadyAssets($assetData[$isSender ? 'sender' : 'recipient']);
-                $trade->data = json_encode($tradeData);
+                $trade->data = $tradeData;
                 $trade->{'is_'.($isSender ? 'sender' : 'recipient').'_confirmed'} = 0;
                 $trade->{'is_'.($isSender ? 'recipient' : 'sender').'_trade_confirmed'} = 0;
                 $trade->save();
