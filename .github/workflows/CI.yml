@@ -53,7 +53,7 @@ jobs:
       run: composer lint
 
     - name: Commit changes
-      uses: EndBug/add-and-commit@a94899bca583c204427a224a7af87c02f9b325d5 # v9
+      uses: EndBug/add-and-commit@cc9c08ba6c8df3b93a8f2db63e89b98368ae2ae8 # v11.1.1
       with:
           pull: '--rebase --autostash'
           message: 'refactor: fix PHP styling'
@@ -89,7 +89,7 @@ jobs:
       run: npm run format
 
     - name: Commit changes
-      uses: EndBug/add-and-commit@a94899bca583c204427a224a7af87c02f9b325d5 # v9
+      uses: EndBug/add-and-commit@cc9c08ba6c8df3b93a8f2db63e89b98368ae2ae8 # v11.1.1
       with:
           pull: '--rebase --autostash'
           message: 'refactor: fix blade formatting'
@@ -120,7 +120,7 @@ jobs:
         npm run prod
 
     - name: Commit changes
-      uses: EndBug/add-and-commit@a94899bca583c204427a224a7af87c02f9b325d5 # v9
+      uses: EndBug/add-and-commit@cc9c08ba6c8df3b93a8f2db63e89b98368ae2ae8 # v11.1.1
       with:
           pull: '--rebase --autostash'
           message: 'chore(deps): rebuild mix assets'
