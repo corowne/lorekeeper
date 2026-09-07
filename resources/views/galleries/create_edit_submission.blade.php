@@ -222,14 +222,16 @@
         <h3>Characters</h3>
         <p>
             Add the characters included in this piece.
-            @if ($gallery->criteria)
-                This helps the staff processing your submission award currency for it, so be sure to add every character.
-            @endif
         </p>
         <div id="characters" class="mb-3">
             @if ($submission->id)
                 @foreach ($submission->characters as $character)
-                    @include('galleries._character_select_entry', ['character' => $character])
+                    @include('galleries._character_select_entry', ['character' => $character, 'characters' => $characters])
+                @endforeach
+            @endif
+            @if (old('slug'))
+                @foreach (array_unique(old('slug')) as $slug)
+                    @include('galleries._character_select_entry', ['character' => \App\Models\Character\Character::where('slug', $slug)->first(), 'characters' => $characters])
                 @endforeach
             @endif
         </div>
@@ -286,7 +288,7 @@
             @endif
         </div>
 
-        @include('galleries._character_select')
+        @include('galleries._character_select', ['characters' => $characters])
         <div class="collaborator-row hide mb-2">
             {!! Form::select('collaborator_id[]', $users, null, ['class' => 'form-control mr-2 collaborator-select', 'placeholder' => 'Select User']) !!}
             <div class="d-flex">

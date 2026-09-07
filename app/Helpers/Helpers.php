@@ -405,10 +405,14 @@ function checkAlias($url, $failOnError = true) {
 function prettyProfileLink($url) {
     $matches = [];
     // Check different sites and return site if a match is made, plus username (retreived from the URL)
-    foreach (config('lorekeeper.sites') as $siteName=> $siteInfo) {
+    foreach (config('lorekeeper.sites') as $siteName => $siteInfo) {
         if (preg_match_all($siteInfo['regex'], $url, $matches)) {
             $site = $siteName;
-            $name = $matches[1][0];
+            if ($siteName == 'twitter') {
+                $name = $matches[2][0];
+            } else {
+                $name = $matches[1][0];
+            }
             $link = $matches[0][0];
             $icon = $siteInfo['icon'] ?? 'fas fa-globe';
             break;
@@ -478,19 +482,29 @@ function faVersion() {
  *
  * @param mixed $object
  *
- * @return bool
+ * @return mixed
  */
 function getLimits($object) {
-    return App\Models\Limit\Limit::where('object_model', get_class($object))->where('object_id', $object->id)->get();
+    if (in_array(App\Traits\Limitable::class, class_uses_recursive(get_class($object)))) {
+        return $object->limits;
+    } else {
+        return null;
+    }
 }
 
 /**
  * checks if a certain object has any limits.
  *
  * @param mixed $object
+ *
+ * @return bool
  */
 function hasLimits($object) {
-    return App\Models\Limit\Limit::where('object_model', get_class($object))->where('object_id', $object->id)->exists();
+    if (in_array(App\Traits\Limitable::class, class_uses_recursive(get_class($object)))) {
+        return $object->hasLimits;
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -504,10 +518,10 @@ function hasUnlockedLimits($user, $object) {
         return true;
     }
 
-    return App\Models\Limit\UserUnlockedLimit::where('user_id', $user->id)
+    return $user->unlockedLimits
         ->where('object_model', get_class($object))
         ->where('object_id', $object->id)
-        ->exists();
+        ->count();
 }
 
 /**
@@ -518,7 +532,11 @@ function hasUnlockedLimits($user, $object) {
  * @return bool
  */
 function getRewards($object) {
-    return App\Models\Reward\Reward::where('object_model', get_class($object))->where('object_id', $object->id)->get();
+    if (in_array(App\Traits\Rewardable::class, class_uses_recursive(get_class($object)))) {
+        return $object->rewards;
+    } else {
+        return null;
+    }
 }
 
 /**
@@ -527,5 +545,9 @@ function getRewards($object) {
  * @param mixed $object
  */
 function hasRewards($object) {
-    return App\Models\Reward\Reward::where('object_model', get_class($object))->where('object_id', $object->id)->exists();
+    if (in_array(App\Traits\Rewardable::class, class_uses_recursive(get_class($object)))) {
+        return $object->hasRewards;
+    } else {
+        return false;
+    }
 }

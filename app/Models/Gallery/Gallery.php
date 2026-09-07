@@ -110,6 +110,18 @@ class Gallery extends Model {
         return $this->hasMany(GalleryCriterion::class, 'gallery_id');
     }
 
+    /**
+     * Get the submissions that belong specifically
+     * to children of this gallery.
+     * (This is a builder, not a relation. Just put
+     * up here to be next to the submissions relation.).
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function childSubmissions() {
+        return GallerySubmission::whereIn('gallery_id', $this->children->pluck('id'))->visible()->orderBy('created_at', 'DESC');
+    }
+
     /**********************************************************************************************
 
         SCOPES

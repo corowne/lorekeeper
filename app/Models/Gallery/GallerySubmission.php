@@ -2,7 +2,6 @@
 
 namespace App\Models\Gallery;
 
-use App\Facades\Settings;
 use App\Models\Comment\Comment;
 use App\Models\Currency\Currency;
 use App\Models\Model;
@@ -51,16 +50,7 @@ class GallerySubmission extends Model {
      * @var array
      */
     protected $with = [
-        'user', 'collaborators', 'prompt:id,name,prefix', 'favorites', 'comments:id,commentable_type,commentable_id,type',
-    ];
-
-    /**
-     * 	The relationship counts that should be eager loaded on every query.
-     *
-     * @var array
-     */
-    protected $withCount = [
-        'favorites',
+        'user',
     ];
 
     /**
@@ -162,6 +152,13 @@ class GallerySubmission extends Model {
         return $this->morphMany(Comment::class, 'commentable');
     }
 
+    /**
+     * Get comments made on this submission of type User-User.
+     */
+    public function userComments() {
+        return $this->morphMany(Comment::class, 'commentable')->where('type', 'User-User');
+    }
+
     /**********************************************************************************************
 
         SCOPES
@@ -222,10 +219,6 @@ class GallerySubmission extends Model {
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeRequiresAward($query) {
-        if (!Settings::get('gallery_submissions_reward_currency')) {
-            return $query->whereNull('id');
-        }
-
         return $query->where('status', 'Accepted')->whereIn('gallery_id', Gallery::has('criteria')->pluck('id')->toArray());
     }
 
@@ -269,6 +262,75 @@ class GallerySubmission extends Model {
      */
     public function scopeSortNewest($query, $reverse = false) {
         return $query->orderBy('id', $reverse ? 'ASC' : 'DESC');
+    }
+
+    /**
+     * Scope a query to grab the scopes:
+     * favoritedCount, collaboratedBy, and withCommentCount.
+     * Intentionally its own scope with the included three
+     * left separate so the individual scopes can be used
+     * whenever/wherever needed.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed|null                            $user
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWithDisplayData($query, $user = null) {
+        return $query->favoritedCount($user)
+            ->collaboratedBy($user)
+            ->withCommentCount();
+    }
+
+    /**
+     * Scope a query to grab favorites_count as well as a
+     * favorited check if the user is logged in.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed|null                            $user
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFavoritedCount($query, $user = null) {
+        if ($user) {
+            return $query->withCount([
+                'favorites',
+                'favorites as favorited' => function ($q) use ($user) {
+                    $q->where('user_id', $user->id);
+                },
+            ]);
+        }
+
+        return $query->withCount('favorites');
+    }
+
+    /**
+     * Scope a query to flag whether the given user is a collaborator.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed|null                            $user
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeCollaboratedBy($query, $user = null) {
+        if (!$user) {
+            return $query;
+        }
+
+        return $query->withExists(['collaborators as is_collaborator' => function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        }]);
+    }
+
+    /**
+     * Scope a query to include User-User comment count.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWithCommentCount($query) {
+        return $query->withCount('userComments');
     }
 
     /**********************************************************************************************

@@ -40,7 +40,12 @@ class GalleryController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getGalleryIndex() {
-        $galleries = Gallery::whereNull('parent_id')->active()->sort()->with('children', 'children.submissions', 'submissions')->withCount('submissions', 'children');
+        $galleries = Gallery::whereNull('parent_id')
+            ->active()
+            ->sort()
+            ->with(['children' => function ($q) {
+                $q->visible();
+            }])->withCount('submissions', 'children');
 
         return view('galleries.index', [
             'galleries'       => $galleries->paginate(10),
@@ -102,9 +107,9 @@ class GalleryController extends Controller {
 
         return view('galleries.gallery', [
             'gallery'          => $gallery,
-            'submissions'      => $query->paginate(20)->appends($request->query()),
+            'submissions'      => $query->with('collaborators', 'participants')->withDisplayData(Auth::user() ?? null)->paginate(20)->appends($request->query()),
             'prompts'          => [0 => 'Any Prompt'] + Prompt::whereIn('id', GallerySubmission::where('gallery_id', $gallery->id)->withOnly('prompt')->visible(Auth::user() ?? null)->whereNotNull('prompt_id')->select('prompt_id')->distinct()->pluck('prompt_id')->toArray())->orderBy('name')->pluck('name', 'id')->toArray(),
-            'childSubmissions' => $gallery->through('children')->has('submissions')->where('is_visible', 1)->where('status', 'Accepted'),
+            'childSubmissions' => $gallery->childSubmissions()->with('gallery', 'collaborators', 'participants')->withDisplayData(Auth::user() ?? null)->paginate(20)->appends($request->query()),
             'galleryPage'      => true,
             'sideGallery'      => $gallery,
         ]);
@@ -158,7 +163,7 @@ class GalleryController extends Controller {
         }
 
         return view('galleries.showall', [
-            'submissions' => $query->paginate(20)->appends($request->query()),
+            'submissions' => $query->with('collaborators', 'participants')->withDisplayData(Auth::user() ?? null)->paginate(20)->appends($request->query()),
             'prompts'     => [0 => 'Any Prompt'] + Prompt::whereIn('id', GallerySubmission::visible(Auth::user() ?? null)->accepted()->withOnly('prompt')->whereNotNull('prompt_id')->pluck('prompt_id')->toArray())->orderBy('name')->pluck('name', 'id')->toArray(),
             'galleryPage' => false,
         ]);
@@ -172,7 +177,7 @@ class GalleryController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getSubmission($id) {
-        $submission = GallerySubmission::where('id', $id)->with('gallery', 'participants', 'characters')->first();
+        $submission = GallerySubmission::where('id', $id)->with('gallery', 'participants', 'characters')->withDisplayData(Auth::user() ?? null)->first();
         if (!$submission) {
             abort(404);
         }
@@ -205,6 +210,9 @@ class GalleryController extends Controller {
      */
     public function getSubmissionFavorites($id) {
         $submission = GallerySubmission::where('id', $id)->withOnly('favorites')->first();
+        if (!$submission) {
+            abort(404);
+        }
         $favorites = $submission->favorites()->with('user')->get();
 
         return view('galleries._submission_favorites', [
@@ -221,7 +229,7 @@ class GalleryController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getSubmissionLog($id) {
-        $submission = GallerySubmission::where('id', $id)->with('participants')->without('favorites', 'comments')->first();
+        $submission = GallerySubmission::where('id', $id)->with('participants')->first();
         if (!$submission) {
             abort(404);
         }
@@ -312,7 +320,7 @@ class GalleryController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getUserSubmissions(Request $request, $type) {
-        $submissions = GallerySubmission::userSubmissions(Auth::user())->with('gallery')->without('favorites', 'comments');
+        $submissions = GallerySubmission::userSubmissions(Auth::user())->with('gallery');
         if (!$type) {
             $type = 'Pending';
         }
@@ -341,6 +349,12 @@ class GalleryController extends Controller {
         $gallery = Gallery::find($id);
         $closed = !Settings::get('gallery_submissions_open');
         $galleryCriteria = GalleryCriterion::where('gallery_id', $id)->pluck('criterion_id')->toArray();
+        $characters = Character::visible(Auth::user())
+            ->myo(0)
+            ->orderBy('slug', 'DESC')
+            ->get()
+            ->pluck('fullName', 'slug')
+            ->toArray();
 
         return view('galleries.create_edit_submission', [
             'closed' => $closed,
@@ -352,6 +366,7 @@ class GalleryController extends Controller {
             'galleryPage' => true,
             'sideGallery' => $gallery,
             'criteria'    => Criterion::active()->whereIn('id', $galleryCriteria)->orderBy('name')->pluck('name', 'id'),
+            'characters'  => $characters,
         ]));
     }
 
@@ -366,7 +381,7 @@ class GalleryController extends Controller {
         if (!Auth::check()) {
             abort(404);
         }
-        $submission = GallerySubmission::where('id', $id)->with('gallery')->with('participants', 'characters')->without('comments', 'favorites')->first();
+        $submission = GallerySubmission::where('id', $id)->with('gallery', 'participants', 'characters')->first();
         if (!$submission || $submission->status == 'Rejected') {
             abort(404);
         }
@@ -375,6 +390,12 @@ class GalleryController extends Controller {
         if (!$isMod && !$isOwner) {
             abort(404);
         }
+        $characters = Character::visible(Auth::user())
+            ->myo(0)
+            ->orderBy('slug', 'DESC')
+            ->get()
+            ->pluck('fullName', 'slug')
+            ->toArray();
 
         // Show inactive prompts in the event of being edited by an admin after acceptance
         $prompts = Auth::user()->hasPower('manage_submissions') && $submission->status == 'Pending' ? Prompt::query() : Prompt::active();
@@ -390,6 +411,7 @@ class GalleryController extends Controller {
             'galleryPage'    => true,
             'sideGallery'    => $submission->gallery,
             'criteria'       => Criterion::active()->whereIn('id', $galleryCriteria)->orderBy('name')->pluck('name', 'id'),
+            'characters'     => $characters,
         ]);
     }
 
