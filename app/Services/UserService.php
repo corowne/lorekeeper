@@ -168,7 +168,13 @@ class UserService extends Service {
         $user->email_verified_at = null;
         $user->save();
 
-        $user->sendEmailVerificationNotification();
+        try {
+            $user->sendEmailVerificationNotification();
+        } catch (\Exception $e) {
+            $this->setError('error', 'Email updated successfully! However, we couldn\'t send the verification email due to email configuration issues. Please contact an administrator.');
+
+            return false;
+        }
 
         return true;
     }
@@ -310,6 +316,29 @@ class UserService extends Service {
 
         try {
             $user->settings->allow_profile_comments = $data ?? 0;
+            $user->settings->save();
+
+            return $this->commitReturn(true);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Updates user's inventory stack auto-select setting.
+     *
+     * @param mixed $data
+     * @param mixed $user
+     *
+     * @return bool
+     */
+    public function updateStackAutoSelectSetting($data, $user) {
+        DB::beginTransaction();
+
+        try {
+            $user->settings->stack_auto_selected = $data ?? 0;
             $user->settings->save();
 
             return $this->commitReturn(true);

@@ -86,6 +86,7 @@ class AccountController extends Controller {
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postAvatar(Request $request, UserService $service) {
+        $request->validate(User::$avatarUpdateRules);
         $data = $request->only([
             'avatar', 'x0', 'x1', 'y0', 'y1',
         ]);
@@ -163,6 +164,8 @@ class AccountController extends Controller {
             foreach ($service->errors()->getMessages()['error'] as $error) {
                 flash($error)->error();
             }
+
+            return redirect()->to('email/verify');
         }
 
         return redirect()->back();
@@ -306,6 +309,25 @@ class AccountController extends Controller {
      */
     public function postProfileComments(Request $request, UserService $service) {
         if ($service->updateProfileCommentSetting($request->input('allow_profile_comments'), Auth::user())) {
+            flash('Setting updated successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+
+        return redirect()->back();
+    }
+
+    /**
+     * Changes user inventory stack auto-select setting.
+     *
+     * @param App\Services\UserService $service
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postStackAutoSelect(Request $request, UserService $service) {
+        if ($service->updateStackAutoSelectSetting($request->input('stack_auto_selected'), Auth::user())) {
             flash('Setting updated successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {

@@ -86,6 +86,11 @@ class FeatureService extends Service {
 
             $data = $this->populateCategoryData($data, $category);
 
+            $oldImageFileName = null;
+            if ($category->has_image) {
+                $oldImageFileName = $category->categoryImageFileName;
+            }
+
             $image = null;
             if (isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
@@ -100,12 +105,8 @@ class FeatureService extends Service {
                 throw new \Exception('Failed to log admin action.');
             }
 
-            if (!$this->logAdminAction($user, 'Updated Feature Category', 'Updated '.$category->displayName)) {
-                throw new \Exception('Failed to log admin action.');
-            }
-
-            if ($category) {
-                $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
+            if ($image) {
+                $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName, $oldImageFileName);
             }
 
             return $this->commitReturn($category);
@@ -137,9 +138,7 @@ class FeatureService extends Service {
                 throw new \Exception('Failed to log admin action.');
             }
 
-            if ($category->has_image) {
-                $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName);
-            }
+            $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName);
             $category->delete();
 
             return $this->commitReturn(true);
@@ -302,7 +301,7 @@ class FeatureService extends Service {
                 $data['subtype_ids'] = [];
             }
 
-            $data = $this->populateData($data);
+            $data = $this->populateData($data, $feature);
 
             // remove old subtypes
             $feature->subtypes()->detach();
@@ -310,6 +309,11 @@ class FeatureService extends Service {
                 foreach ($data['subtype_ids'] as $subtypeId) {
                     $feature->subtypes()->attach($subtypeId);
                 }
+            }
+
+            $oldImageFileName = null;
+            if ($feature->has_image) {
+                $oldImageFileName = $feature->imageFileName;
             }
 
             $image = null;
@@ -326,8 +330,8 @@ class FeatureService extends Service {
                 throw new \Exception('Failed to log admin action.');
             }
 
-            if ($feature) {
-                $this->handleImage($image, $feature->imagePath, $feature->imageFileName);
+            if ($image) {
+                $this->handleImage($image, $feature->imagePath, $feature->imageFileName, $oldImageFileName);
             }
 
             return $this->commitReturn($feature);
@@ -361,9 +365,7 @@ class FeatureService extends Service {
 
             $feature->subtypes()->detach();
 
-            if ($feature->has_image) {
-                $this->deleteImage($feature->imagePath, $feature->imageFileName);
-            }
+            $this->deleteImage($feature->imagePath, $feature->imageFileName);
             $feature->delete();
 
             return $this->commitReturn(true);

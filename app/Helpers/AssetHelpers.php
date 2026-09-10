@@ -152,6 +152,22 @@ function getAssetModelString($type, $namespaced = true) {
                 return 'Prompt';
             }
             break;
+
+        case 'dynamic':
+            if ($namespaced) {
+                return '\App\Models\Limit\DynamicLimit';
+            } else {
+                return 'DynamicLimit';
+            }
+            break;
+
+        case 'itemcategory': case 'itemcategoryrarity':
+            if ($namespaced) {
+                return '\App\Models\Item\ItemCategory';
+            } else {
+                return 'ItemCategory';
+            }
+            break;
     }
 
     return null;
@@ -179,11 +195,12 @@ function createAssetsArray($isCharacter = false) {
  *
  * @param array $first
  * @param array $second
+ * @param mixed $isCharacter
  *
  * @return array
  */
-function mergeAssetsArrays($first, $second) {
-    $keys = getAssetKeys();
+function mergeAssetsArrays($first, $second, $isCharacter = false) {
+    $keys = getAssetKeys($isCharacter);
     foreach ($keys as $key) {
         foreach ($second[$key] as $item) {
             addAsset($first, $item['asset'], $item['quantity']);
@@ -262,11 +279,12 @@ function getDataReadyAssets($array, $isCharacter = false) {
  * basically reversing the above function.
  *
  * @param array $array
+ * @param mixed $isCharacter
  *
  * @return array
  */
-function parseAssetData($array) {
-    $assets = createAssetsArray();
+function parseAssetData($array, $isCharacter = false) {
+    $assets = createAssetsArray($isCharacter);
     foreach ($array as $key => $contents) {
         $model = getAssetModelString($key);
         if ($model) {
@@ -294,6 +312,26 @@ function processRewards($rewards, $isCharacter = false) {
     $assets = createAssetsArray($isCharacter);
     foreach ($rewards as $reward) {
         addAsset($assets, $reward->reward, $reward->quantity);
+    }
+}
+
+/**
+ * Creates an asset array directly from dataReadyAssets, without needing to parse it first.
+ *
+ * @param array $array
+ * @param mixed $isCharacter
+ *
+ * @return array
+ */
+function createAssetsFromData($array, $isCharacter = false) {
+    $assets = createAssetsArray($isCharacter);
+    foreach ($array as $key => $contents) {
+        $model = getAssetModelString($key);
+        if ($model) {
+            foreach ($contents as $id => $quantity) {
+                addAsset($assets, $model::find($id), $quantity['quantity'] ?? $quantity);
+            }
+        }
     }
 
     return $assets;
@@ -344,14 +382,20 @@ function compareAssetArrays($first, $second, $isCharacter = false, $absQuantitie
  * @param App\Models\User\User $recipient
  * @param string               $logType
  * @param string               $data
+ * @param mixed                $lootRolls
  *
  * @return array
  */
-function fillUserAssets($assets, $sender, $recipient, $logType, $data) {
+function fillUserAssets($assets, $sender, $recipient, $logType, $data, &$lootRolls = []) {
     // Roll on any loot tables
     if (isset($assets['loot_tables'])) {
         foreach ($assets['loot_tables'] as $table) {
-            $assets = mergeAssetsArrays($assets, $table['asset']->roll($table['quantity']));
+            $lootRoll = $table['asset']->roll($table['quantity']);
+            $lootRolls[$recipient->id][] = [
+                'table'   => $table['asset']->id,
+                'results' => $lootRoll,
+            ];
+            $assets = mergeAssetsArrays($assets, $lootRoll);
         }
         unset($assets['loot_tables']);
     }
@@ -531,10 +575,11 @@ function canTradeAsset($type, $asset) {
  * @param string                         $logType
  * @param string                         $data
  * @param mixed|null                     $submitter
+ * @param mixed                          $lootRolls
  *
  * @return array
  */
-function fillCharacterAssets($assets, $sender, $recipient, $logType, $data, $submitter = null) {
+function fillCharacterAssets($assets, $sender, $recipient, $logType, $data, $submitter = null, &$lootRolls = []) {
     if (!config('lorekeeper.extensions.character_reward_expansion.default_recipient') && $recipient->user) {
         $item_recipient = $recipient->user;
     } else {
@@ -544,7 +589,12 @@ function fillCharacterAssets($assets, $sender, $recipient, $logType, $data, $sub
     // Roll on any loot tables
     if (isset($assets['loot_tables'])) {
         foreach ($assets['loot_tables'] as $table) {
-            $assets = mergeAssetsArrays($assets, $table['asset']->roll($table['quantity']));
+            $lootRoll = $table['asset']->roll($table['quantity']);
+            $lootRolls[$recipient->id][] = [
+                'table'   => $table['asset']->id,
+                'results' => $lootRoll,
+            ];
+            $assets = mergeAssetsArrays($assets, $lootRoll);
         }
         unset($assets['loot_tables']);
     }

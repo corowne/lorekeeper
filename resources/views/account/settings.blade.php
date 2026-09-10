@@ -16,6 +16,9 @@
             <div class="alert alert-info">For admins - note that .GIF avatars leave a tmp file in the directory (e.g php2471.tmp). There is an automatic schedule to delete these files.
             </div>
         @endif
+        <div class="alert alert-info">
+            Allowed avatar image types: jpeg, jpg, gif, png, webp. Max upload size is 1 MB.
+        </div>
         {!! Form::open(['url' => 'account/avatar', 'files' => true]) !!}
         <div class="card mb-3 hide" id="avatarCrop">
             <div class="card-body">
@@ -112,6 +115,32 @@
             <label class="col-md-2 col-form-label">Setting</label>
             <div class="col-md-10">
                 {!! Form::select('allow_profile_comments', ['0' => '0: No one can comment on your profile.', '1' => '1: Users can comment on your profile.'], Auth::user()->settings->allow_profile_comments, ['class' => 'form-control']) !!}
+            </div>
+        </div>
+        <div class="text-right">
+            {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
+        </div>
+        {!! Form::close() !!}
+    </div>
+
+    <div class="card p-3 mb-2">
+        <h3>Auto-Select First Stack</h3>
+        {!! Form::open(['url' => 'account/stack-auto-select']) !!}
+        <p>
+            If enabled, using an item without explicitly selecting a stack will automatically select and use the first stack you own instead of doing nothing.
+        </p>
+        <div class="form-group row">
+            <label class="col-md-2 col-form-label">Setting</label>
+            <div class="col-md-10">
+                {!! Form::select(
+                    'stack_auto_selected',
+                    [
+                        '0' => '0: Disabled. You must select a stack yourself.',
+                        '1' => '1: Enabled. The first stack is used automatically.',
+                    ],
+                    Auth::user()->settings->stack_auto_selected,
+                    ['class' => 'form-control'],
+                ) !!}
             </div>
         </div>
         <div class="text-right">

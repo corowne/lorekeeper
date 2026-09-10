@@ -32,18 +32,18 @@
             'showCharacters' => isset($showCharacters) && $showCharacters ? $showCharacters : false,
         ];
 
-    // Fetch valid reward types, defined in AssetHelpers
-    $rewardTypes = getRewardTypes($showData, $recipient);
-
     // Fetch reward data, defined in AssetHelpers
     // All previous code that defines available asset IDs should now be moved to getRewardLootData
     // Get the character specific loot availability if the recipient is being shown
     if ($showRecipient) {
         foreach ($rewardableRecipients as $recipient) {
             $rewardLootData[$recipient] = getRewardLootData($showData, $recipient, $useCustomSelectize);
+            // Fetch valid reward types, defined in AssetHelpers
+            $rewardTypes[$recipient] = getRewardTypes($showData, $recipient);
         }
     } else {
         $rewardLootData = getRewardLootData($showData, $recipient, $useCustomSelectize);
+        $rewardTypes = getRewardTypes($showData, $recipient);
     }
 @endphp
 
@@ -53,7 +53,7 @@
             <tr class="loot-row">
                 @if ($showRecipient)
                     <td>
-                        {!! Form::select($prefix . 'rewardable_recipient[]', $rewardableRecipients, $recipient, [
+                        {!! Form::select($prefix . 'rewardable_recipient[]', $rewardableRecipients, null, [
                             'class' => 'form-control recipient-type',
                             'placeholder' => 'Select Recipient Type',
                         ]) !!}
@@ -61,7 +61,7 @@
                 @endif
                 <td class="{{ $prefix }}loot-row-type">
                     {{-- The long array of key value pairs is now defined in getRewardTypes and data should be moved there --}}
-                    {!! Form::select($prefix . 'rewardable_type[]', $rewardTypes, null, [
+                    {!! Form::select($prefix . 'rewardable_type[]', $showRecipient ? [] : $rewardTypes, null, [
                         'class' => 'form-control reward-type',
                         'placeholder' => 'Select ' . $type . ' Type',
                     ]) !!}

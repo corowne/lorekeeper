@@ -29,7 +29,7 @@ class HomeController extends Controller {
     public function getIndex() {
         if (config('lorekeeper.extensions.show_all_recent_submissions.enable')) {
             $query = GallerySubmission::visible(Auth::user() ?? null)->accepted()->orderBy('created_at', 'DESC');
-            $gallerySubmissions = $query->get()->take(8);
+            $gallerySubmissions = $query->take(8)->withDisplayData(Auth::user() ?? null)->get();
         } else {
             $gallerySubmissions = [];
         }
@@ -48,7 +48,7 @@ class HomeController extends Controller {
     public function getLink(Request $request) {
         // If the user already has an alias associated with their account, redirect them
         if (Auth::check() && Auth::user()->hasAlias) {
-            redirect()->to('home');
+            return redirect()->route('home');
         }
 
         // Display the login link
@@ -111,7 +111,11 @@ class HomeController extends Controller {
     public function getEmail(Request $request) {
         // If the user already has an email associated with their account, redirect them
         if (Auth::check() && Auth::user()->hasEmail) {
-            return redirect()->to('home');
+            return redirect()->route('home');
+        }
+
+        if (config('lorekeeper.settings.allow_unverified_users_to_modify_emails') && $request->is('email/update')) {
+            return view('auth.update_email');
         }
 
         // Step 1: display a login email
@@ -128,7 +132,7 @@ class HomeController extends Controller {
         if ($service->updateEmail(['email' => $data], Auth::user())) {
             flash('Email added successfully!');
 
-            return redirect()->to('home');
+            return redirect()->route('home');
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
                 flash($error)->error();
