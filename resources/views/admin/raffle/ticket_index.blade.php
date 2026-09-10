@@ -184,7 +184,7 @@
                 @endif
                 @if ($raffle->allow_entry && !$raffle->rolled_at)
                     @if (Auth::user())
-                        <a href="{{ url('raffles/join/' . $raffle->id) }}" class="btn btn-primary float-right @if ($raffle->tickets()->where('user_id', Auth::user()->id)->count() >= 1) disabled @endif">Join Raffle</a>
+                        <a href="{{ url('raffles/enter/' . $raffle->id) }}" class="btn btn-primary float-right @if ($raffle->tickets()->where('user_id', Auth::user()->id)->count() >= 1) disabled @endif">Join Raffle</a>
                     @else
                         <div class="float-right"><i>You must be logged in to join the raffle.</i></div>
                     @endif
