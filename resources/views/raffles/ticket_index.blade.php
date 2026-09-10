@@ -142,7 +142,7 @@
         <div class="card-header h2">Tickets</div>
         <div class="card-body">
             @if (Auth::check() && count($tickets))
-                <?php $chance = number_format((float) (($userCount / $count) * 100), 1, '.', ''); // Change 1 to 0 if you want no decimal place.?>
+                <?php $chance = number_format((float) (($userCount / $count) * 100), 1, '.', ''); // Change 1 to 0 if you want no decimal place. ?>
                 <p class="text-center mb-0">You {{ $raffle->is_active == 2 ? 'had' : 'have' }} <strong>{{ $userCount }}</strong> out of <strong>{{ $count }} tickets</strong> in this raffle.</p>
                 <p class="text-center"> That's a <strong>{{ $chance }}%</strong> chance! </p>
             @endif
