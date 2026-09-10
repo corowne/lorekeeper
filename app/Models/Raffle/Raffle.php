@@ -3,8 +3,12 @@
 namespace App\Models\Raffle;
 
 use App\Models\Model;
+use App\Traits\Limitable;
+use App\Traits\Rewardable;
 
 class Raffle extends Model {
+    use Limitable, Rewardable;
+
     /**
      * The attributes that are mass assignable.
      *

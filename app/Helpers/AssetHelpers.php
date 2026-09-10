@@ -313,6 +313,8 @@ function processRewards($rewards, $isCharacter = false) {
     foreach ($rewards as $reward) {
         addAsset($assets, $reward->reward, $reward->quantity);
     }
+
+    return $assets;
 }
 
 /**

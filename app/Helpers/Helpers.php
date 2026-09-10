@@ -532,8 +532,12 @@ function hasUnlockedLimits($user, $object) {
  *
  * @return bool
  */
-function getRewards($object) {
+function getRewards($object, $query = false) {
     if (in_array(App\Traits\Rewardable::class, class_uses_recursive(get_class($object)))) {
+        if ($query) {
+            return $object->rewards();
+        }
+
         return $object->rewards;
     } else {
         return null;

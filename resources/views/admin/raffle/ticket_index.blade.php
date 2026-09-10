@@ -125,6 +125,74 @@
         </div>
     @endif
 
+    <div class="card mb-3">
+        <div class="card-header h5 row m-0 {{ !$raffle->parsed_description && !hasRewards($raffle) ? 'border-bottom-0' : '' }}" data-toggle="collapse" href="#raffle-{{ $raffle->id }}">
+            <div class="col-lg-9 col-12 p-0">
+                <a href="{{ url('raffles/view/' . $raffle->id) }}">{{ $raffle->name }} {{ $raffle->is_fto ? ' (FTO / Non-Owner Only)' : '' }}</a>
+                {!! $raffle->rolled_at ? '<span class="text-muted small">(Rolled ' . pretty_date($raffle->rolled_at) . ')</span>' : '' !!}
+                @if ($raffle->parsed_description || hasRewards($raffle))
+                    <i class="fas fa-chevron-down float-right mt-1 mr-2"></i>
+                @endif
+            </div>
+            <a class="col-lg-{{ Auth::check() && Auth::user()->isStaff ? '2' : '3' }} col-12 ml-auto btn btn-sm bg-light border" href="{{ url('raffles/view/' . $raffle->id) }}">
+                <i class="fas fa-ticket-alt"></i> Tickets
+            </a>
+            @if (Auth::check() && Auth::user()->isStaff)
+                <div class="col-lg-1 col-12">
+                    <x-admin-edit title="Raffle" :object="$raffle" />
+                </div>
+            @endif
+        </div>
+        @if ($raffle->parsed_description || hasRewards($raffle))
+            <div class="card-body collapse show" id="raffle-{{ $raffle->id }}">
+                @if ($raffle->parsed_description)
+                    {!! $raffle->parsed_description !!}
+                @endif
+                @if ($raffle->parsed_description && hasRewards($raffle))
+                    <hr>
+                @endif
+                @if (getRewards($raffle, true)->where('data->type', 'winner_reward')->count())
+                    <p>A total of {{ $raffle->winner_count }} winner(s) will receive the following rewards:</p>
+                    @php
+                        $winnerRewards = getRewards($raffle, true)->where('data->type', 'winner_reward')->get();
+
+                        $grouped = $winnerRewards
+                            ->groupBy(function ($reward) {
+                                return data_get($reward->data, 'position', 1); // or $reward->data['position'] ?? 1
+                            })
+                            ->sortKeys();
+                    @endphp
+                    @foreach ($grouped as $position => $rewards)
+                        <div class="card mb-3">
+                            <div class="card-header h4">{{ $position ? 'Winner #' . $position : 'All Winners' }}</div>
+                            <div class="card-body">
+                                <div class="row">
+                                    @foreach ($rewards as $reward)
+                                        <div class="col-md-3 mt-3 text-center">
+                                            @if ($reward->reward->imageUrl)
+                                                <div class="mb-2">
+                                                    <img class="border rounded img-fluid" src="{{ $reward->reward->imageUrl }}" alt="{{ $reward->reward->name }}" />
+                                                </div>
+                                            @endif
+                                            <span class="mr-1">{{ $reward->quantity }}x</span> {!! $reward->reward->displayName !!}
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
+                @if ($raffle->allow_entry && !$raffle->rolled_at)
+                    @if (Auth::user())
+                        <a href="{{ url('raffles/join/' . $raffle->id) }}" class="btn btn-primary float-right @if ($raffle->tickets()->where('user_id', Auth::user()->id)->count() >= 1) disabled @endif">Join Raffle</a>
+                    @else
+                        <div class="float-right"><i>You must be logged in to join the raffle.</i></div>
+                    @endif
+                @endif
+            </div>
+        @endif
+    </div>
+
     <h3>Tickets</h3>
 
     <div class="text-right">{!! $tickets->render() !!}</div>

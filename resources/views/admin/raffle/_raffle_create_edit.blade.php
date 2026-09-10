@@ -63,7 +63,7 @@
 
 {{-- blade-formatter-disable --}}
 @include('widgets._add_rewards', [
-    'title' => 'Entry Rewards',
+    'type' => 'Entry Reward',
     'object' => $raffle,
     'useForm' => false,
     'showLootTables' => true,
@@ -73,7 +73,7 @@
     'info' => 'If you want users to receive a reward for entering, add it here. This only applies to users with an account, who are entered by an admin or who self entered.<br><strong>Users entered as an alias are not eligible to receive rewards at this time.</strong>',
 ])
 @include('widgets._add_rewards', [
-    'title' => 'Winner Rewards',
+    'type' => 'Winner Reward',
     'object' => $raffle,
     'useForm' => false,
     'showLootTables' => true,
