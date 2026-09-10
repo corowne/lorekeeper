@@ -16,7 +16,7 @@
     @if (count($raffles))
         @foreach ($raffles as $key => $raffle)
             <div class="card mb-3">
-                @if ($key != 'Ungrouped')
+                @if ($key != '')
                     <div class="card-header">
                         <h3 class="d-inline mb-0">
                             {{ $key }}

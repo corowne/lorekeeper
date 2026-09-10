@@ -9,11 +9,19 @@ return new class extends Migration {
      * Run the migrations.
      */
     public function up(): void {
-        Schema::table('raffles', function (Blueprint $table) {
-            //
-            $table->text('description')->nullable()->default(null);
-            $table->text('parsed_description')->nullable()->default(null);
-        });
+        if (!Schema::hasColumn('raffles', 'description')) {
+            Schema::table('raffles', function (Blueprint $table) {
+                //
+                $table->text('description')->nullable()->default(null);
+            });
+        }
+
+        if (!Schema::hasColumn('raffles', 'parsed_description')) {
+            Schema::table('raffles', function (Blueprint $table) {
+                //
+                $table->text('parsed_description')->nullable()->default(null);
+            });
+        }
     }
 
     /**

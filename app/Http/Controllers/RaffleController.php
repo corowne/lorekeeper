@@ -29,10 +29,9 @@ class RaffleController extends Controller {
         } else {
             $raffles->where('is_active', '=', 1);
         }
-        $query = $raffles->orderBy('group_id')
-            ->orderBy('order');
+        $query = $raffles->orderBy('group_id', 'DESC')->orderBy('order');
 
-        if (!Auth::check() || Auth::check() && !Auth::user()->hasPower('manage_raffles')) {
+        if (!Auth::check() || (Auth::check() && !Auth::user()->hasPower('manage_raffles'))) {
             $query = $query->get()->filter(function ($q) {
                 if ($q->group) {
                     return $q->group->is_active;
@@ -45,7 +44,9 @@ class RaffleController extends Controller {
         }
 
         $grouped = $query->groupBy(function ($item) {
-            return $item->group ? $item->group->name : 'Ungrouped';
+            return $item->group ? $item->group->name : null;
+        })->sortBy(function ($item, $key) {
+            return $key !== '';
         });
 
         return view('raffles.index', [

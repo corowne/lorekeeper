@@ -275,7 +275,7 @@ class RaffleService extends Service {
             foreach ($rewardService->errors()->getMessages()['error'] as $error) {
                 flash($error)->error();
             }
-            throw new \Exception('Failed to create rewdddards.');
+            throw new \Exception('Failed to create rewards.');
         }
 
         return true;
