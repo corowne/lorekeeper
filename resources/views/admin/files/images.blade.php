@@ -17,7 +17,7 @@
                 <div class="row">
                     <div class="col-12 col-md-3 mb-3 mb-md-0">
                         @if (file_exists(public_path('images/' . $image['filename'])))
-                            <img src="{{ asset('images/' . $image['filename'] . '?v=' . filemtime(public_path('images/' . $image['filename']))) }}" class="w-100" alt="Site image: {{ $image['name'] }}" />
+                            <img src="{{ asset('images/' . $image['filename'] . '?v=' . filemtime(public_path('images/' . $image['filename']))) }}" class="mw-100" alt="Site image: {{ $image['name'] }}" />
                         @else
                             No image found.
                             <br>
